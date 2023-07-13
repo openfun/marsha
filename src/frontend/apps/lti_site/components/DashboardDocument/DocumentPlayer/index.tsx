@@ -42,7 +42,7 @@ const DocumentPlayer = (props: DocumentPlayerProps) => {
 
   return (
     <Box align="center" justify="center" direction="row">
-      <IconBox className="icon-file-text2" />
+      <IconBox role="img" className="icon-file-text2" />
       <a onClick={onDownload} href={document.url} download>
         {document.title}
       </a>

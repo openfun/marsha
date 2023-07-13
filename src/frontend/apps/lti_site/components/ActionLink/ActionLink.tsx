@@ -22,4 +22,4 @@ const ActionLinkStyled = styled(Button)`
  */
 export const ActionLink = (
   props: ButtonProps & JSX.IntrinsicElements['button'],
-) => <ActionLinkStyled plain={true} {...(props as any)} />;
+) => <ActionLinkStyled plain={true} {...props} />;

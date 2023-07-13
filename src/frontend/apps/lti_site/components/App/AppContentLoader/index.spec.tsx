@@ -92,6 +92,10 @@ describe('<AppContentLoader />', () => {
   });
 
   it('renders an error page if no jwt provided', async () => {
+    const mockConsoleError = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
+
     render(
       <AppConfigProvider
         value={{
@@ -127,8 +131,12 @@ describe('<AppContentLoader />', () => {
       </AppConfigProvider>,
     );
 
-    screen.queryByText(
-      'Unable to find a jwt Token. The ressource might not exist.',
-    );
+    expect(
+      await screen.findByText(
+        'Unable to find a jwt Token. The ressource might not exist.',
+      ),
+    ).toBeInTheDocument();
+
+    expect(mockConsoleError).toHaveBeenCalled();
   });
 });

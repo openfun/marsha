@@ -12,7 +12,7 @@ describe('<SelectContentResource />', () => {
     jest.resetAllMocks();
   });
 
-  it('displays available file depositories', async () => {
+  it('displays available file depositories', () => {
     const markdown = markdownDocumentMockFactory();
     const mockSelectAddAndSelectContent = jest.fn();
     render(
@@ -31,6 +31,8 @@ describe('<SelectContentResource />', () => {
 
     screen.getByText('Add a markdown document');
 
-    screen.getByLabelText(`Select ${markdown.translations[0].title}`);
+    expect(
+      screen.getByLabelText(`Select ${markdown.translations[0].title}`),
+    ).toBeInTheDocument();
   });
 });

@@ -24,7 +24,12 @@ import React, {
 } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Toaster } from 'react-hot-toast';
-import { RawIntlProvider, defineMessages, useIntl } from 'react-intl';
+import {
+  IntlShape,
+  RawIntlProvider,
+  defineMessages,
+  useIntl,
+} from 'react-intl';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 
@@ -45,18 +50,23 @@ const messages = defineMessages({
   },
 });
 
-const appsContent: Record<string, LazyExoticComponent<ComponentType<any>>> = {
+const appsContent: Record<string, LazyExoticComponent<ComponentType>> = {
   LTI: lazy(() => import('components/LTIRoutes')),
 };
 Object.values(appNames).forEach((app) => {
-  appsContent[app] = lazy(() => import(`apps/${app}/components/Routes`));
+  appsContent[app] = lazy(
+    () =>
+      import(`apps/${app}/components/Routes`) as Promise<{
+        default: ComponentType;
+      }>,
+  );
 });
 
 const AppContent = () => {
   const appConfig = useAppConfig();
   const intlShape = useIntl();
 
-  let Content: LazyExoticComponent<ComponentType<any>>;
+  let Content: LazyExoticComponent<ComponentType>;
   if (appConfig.appName) {
     Content = appsContent[appConfig.appName];
   } else if (appConfig.frontend) {
@@ -112,9 +122,7 @@ const AppContentLoader = () => {
     setIsLoaded(true);
   }, []);
 
-  const intl = useMemo(() => {
-    return createIntl(decodedJwt?.locale || 'en');
-  }, [decodedJwt?.locale]);
+  const [intl, setIntl] = useState<IntlShape>();
 
   const resourceContext: ResourceContext = useMemo(() => {
     const defaultResourceContext: ResourceContext = {
@@ -132,7 +140,15 @@ const AppContentLoader = () => {
     return defaultResourceContext;
   }, [decodedJwt]);
 
-  if (!isLoaded) {
+  useEffect(() => {
+    const loadIntl = async () => {
+      setIntl(await createIntl(decodedJwt?.locale || 'en'));
+    };
+
+    loadIntl();
+  }, [decodedJwt?.locale]);
+
+  if (!isLoaded || !intl) {
     return null;
   }
 
@@ -143,7 +159,7 @@ const AppContentLoader = () => {
         <RawIntlProvider value={intl}>
           <Grommet theme={theme} style={{ height: '100%' }}>
             <ErrorBoundary
-              fallbackRender={({ error }) => (
+              fallbackRender={({ error }: { error: Error }) => (
                 <BoundaryScreenError code={500} message={error.message} />
               )}
             >

@@ -7,7 +7,6 @@ import {
   Playlist,
   PortabilityRequest,
   Thumbnail,
-  TimedText,
   Video,
   actionOne,
   createOne,

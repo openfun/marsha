@@ -19,14 +19,14 @@ jest.mock('lib-components', () => ({
 }));
 
 describe('<DashboardDocumentPaneButtons />', () => {
-  it('only renders the "Display" button if the document is ready', async () => {
+  it('only renders the "Display" button if the document is ready', () => {
     render(
       <DashboardDocumentPaneButtons
         document={documentMockFactory({ id: 'doc1', upload_state: READY })}
       />,
     );
     screen.getByRole('button', { name: 'Display' });
-    await cleanup();
+    cleanup();
 
     // Can't display the document before it's ready and uploaded
     for (const state of [ERROR, PENDING, PROCESSING]) {
@@ -36,7 +36,7 @@ describe('<DashboardDocumentPaneButtons />', () => {
         />,
       );
       expect(screen.queryByText('Display')).toBeNull();
-      await cleanup();
+      cleanup();
     }
   });
 
@@ -69,7 +69,9 @@ describe('<DashboardDocumentPaneButtons />', () => {
         />
       </UploadManagerContext.Provider>,
     );
-    screen.getByRole('button', { name: 'Replace the document' });
+    expect(
+      screen.getByRole('button', { name: 'Replace the document' }),
+    ).toBeInTheDocument();
     cleanup();
 
     for (const state of [ERROR, PROCESSING, READY]) {

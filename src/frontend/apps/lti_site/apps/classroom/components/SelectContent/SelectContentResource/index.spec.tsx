@@ -33,7 +33,7 @@ describe('<SelectContentResource />', () => {
     fetchMock.restore();
   });
 
-  it('displays available classrooms', async () => {
+  it('displays available classrooms', () => {
     render(
       <SelectContentResource
         playlist={currentPlaylist}
@@ -48,7 +48,7 @@ describe('<SelectContentResource />', () => {
     screen.getByRole('heading', { name: 'Classrooms' });
     screen.getByText('Add a classroom');
 
-    screen.getByLabelText('Select classroom title');
+    expect(screen.getByLabelText('Select classroom title')).toBeInTheDocument();
   });
 
   it('displays available classrooms and select existing one', async () => {

@@ -49,13 +49,17 @@ const messages = defineMessages({
     description: 'Error message when file upload fails.',
     id: 'apps.deposit.components.DashboardStudent.UploadFiles.errorFileUpload',
   },
+  ariaLabelFileUpload: {
+    defaultMessage: 'File Upload',
+    description: 'The arial-label for the file upload button.',
+    id: 'apps.deposit.components.DashboardStudent.UploadFiles.ariaLabelFileUpload',
+  },
 });
 
 export const UploadFiles = () => {
   const intl = useIntl();
   const { refetch: refreshDepositedFiles } = useDepositedFiles(
-    depositAppData.fileDepository!.id,
-    {},
+    depositAppData.fileDepository?.id || '',
   );
 
   const { addUpload, uploadManagerState } = useUploadManager();
@@ -71,10 +75,6 @@ export const UploadFiles = () => {
   const uploadsSucceeded = Object.values(uploadManagerState).filter((state) =>
     [UploadManagerStatus.SUCCESS].includes(state.status),
   );
-
-  const onDrop = (files: any) => {
-    setFilesToUpload(filesToUpload.concat(files));
-  };
 
   const uploadFiles = useCallback(async () => {
     if (!filesToUpload.length) {
@@ -117,7 +117,7 @@ export const UploadFiles = () => {
         setUploading(false);
       }
     }
-  }, [uploadsSucceeded.length, uploading, uploadFiles]);
+  }, [uploadsSucceeded.length, filesToUpload.length, uploadFiles, uploading]);
 
   return (
     <Box>
@@ -183,11 +183,18 @@ export const UploadFiles = () => {
             ))}
           </Box>
         )}
-        <Dropzone onDrop={onDrop}>
+        <Dropzone
+          onDrop={(files) => {
+            setFilesToUpload(filesToUpload.concat(files));
+          }}
+        >
           {({ getRootProps, getInputProps }) => (
             <Box pad="large">
               <div {...getRootProps()}>
-                <input {...getInputProps()} />
+                <input
+                  {...getInputProps()}
+                  aria-label={intl.formatMessage(messages.ariaLabelFileUpload)}
+                />
                 <Box
                   direction={filesToUpload.length === 0 ? 'column' : 'row'}
                   align="center"

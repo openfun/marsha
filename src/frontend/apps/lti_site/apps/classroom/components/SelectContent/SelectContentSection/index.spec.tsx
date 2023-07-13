@@ -12,7 +12,7 @@ describe('<SelectContentResource />', () => {
     jest.resetAllMocks();
   });
 
-  it('displays available classrooms', async () => {
+  it('displays available classrooms', () => {
     const classroom = classroomMockFactory();
     const mockSelectAddAndSelectContent = jest.fn();
     render(
@@ -30,6 +30,8 @@ describe('<SelectContentResource />', () => {
 
     screen.getByText('Add a classroom');
 
-    screen.getByLabelText(`Select ${classroom.title}`);
+    expect(
+      screen.getByLabelText(`Select ${classroom.title!}`),
+    ).toBeInTheDocument();
   });
 });

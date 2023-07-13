@@ -27,7 +27,7 @@ interface DashboardStudentProps {
 
 export const DashboardStudent = ({ fileDepository }: DashboardStudentProps) => {
   const { isMobile } = useResponsive();
-  const { data, isError, isLoading } = useDepositedFiles(fileDepository.id, {});
+  const { data, isError, isLoading } = useDepositedFiles(fileDepository.id);
 
   return (
     <React.Fragment>

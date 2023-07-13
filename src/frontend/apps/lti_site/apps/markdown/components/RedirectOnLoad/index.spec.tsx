@@ -51,15 +51,16 @@ describe('<RedirectOnLoad />', () => {
       state: appState.ERROR,
       flags: { markdown: true },
     } as any);
+    mockedUseCurrentResourceContext.mockReturnValue([] as any);
 
-    const { getByText } = render(<RedirectOnLoad />, {
+    render(<RedirectOnLoad />, {
       routerOptions: {
         routes: [
           {
             path: FULL_SCREEN_ERROR_ROUTE.default,
             element: (
               <WithParams>
-                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+                {({ code }) => <span>{`Error Component: ${code!}`}</span>}
               </WithParams>
             ),
           },
@@ -67,15 +68,16 @@ describe('<RedirectOnLoad />', () => {
       },
     });
 
-    getByText('Error Component: lti');
+    expect(screen.getByText('Error Component: lti')).toBeInTheDocument();
   });
 
   it('shows not found when feature is disabled', () => {
     mockedUseAppConfig.mockReturnValue({
       flags: { markdown: false },
     } as any);
+    mockedUseCurrentResourceContext.mockReturnValue([] as any);
 
-    const { getByText } = render(<RedirectOnLoad />, {
+    render(<RedirectOnLoad />, {
       routerOptions: {
         routes: [
           {
@@ -86,10 +88,10 @@ describe('<RedirectOnLoad />', () => {
       },
     });
 
-    getByText('Feature disabled');
+    expect(screen.getByText('Feature disabled')).toBeInTheDocument();
   });
 
-  it('shows editor for instructor who can update an existing document', async () => {
+  it('shows editor for instructor who can update an existing document', () => {
     mockedUseAppConfig.mockReturnValue({
       flags: { markdown: true },
     } as any);
@@ -114,10 +116,10 @@ describe('<RedirectOnLoad />', () => {
       },
     });
 
-    screen.getByText('Markdown editor');
+    expect(screen.getByText('Markdown editor')).toBeInTheDocument();
   });
 
-  it('shows wizard for instructor who can update a document without translation', async () => {
+  it('shows wizard for instructor who can update a document without translation', () => {
     mockedUseAppConfig.mockReturnValue({
       flags: { markdown: true },
     } as any);
@@ -145,10 +147,10 @@ describe('<RedirectOnLoad />', () => {
         ],
       },
     });
-    screen.getByText('Markdown wizard');
+    expect(screen.getByText('Markdown wizard')).toBeInTheDocument();
   });
 
-  it('shows wizard for instructor who can update a document which translation has no title', async () => {
+  it('shows wizard for instructor who can update a document which translation has no title', () => {
     mockedUseAppConfig.mockReturnValue({
       flags: { markdown: true },
     } as any);
@@ -182,10 +184,10 @@ describe('<RedirectOnLoad />', () => {
         ],
       },
     });
-    screen.getByText('Markdown wizard');
+    expect(screen.getByText('Markdown wizard')).toBeInTheDocument();
   });
 
-  it('shows editor for instructor who can update a document if a translation has a title', async () => {
+  it('shows editor for instructor who can update a document if a translation has a title', () => {
     mockedUseAppConfig.mockReturnValue({
       flags: { markdown: true },
     } as any);
@@ -224,10 +226,10 @@ describe('<RedirectOnLoad />', () => {
         ],
       },
     });
-    screen.getByText('Markdown editor');
+    expect(screen.getByText('Markdown editor')).toBeInTheDocument();
   });
 
-  it('shows viewer for student or instructor who cannot update', async () => {
+  it('shows viewer for student or instructor who cannot update', () => {
     mockedUseAppConfig.mockReturnValue({
       flags: { markdown: true },
     } as any);
@@ -252,16 +254,17 @@ describe('<RedirectOnLoad />', () => {
       },
     });
 
-    screen.getByText('Markdown viewer');
+    expect(screen.getByText('Markdown viewer')).toBeInTheDocument();
   });
 
-  it('shows not found for student if still draft', async () => {
+  it('shows not found for student if still draft', () => {
     mockedUseAppConfig.mockReturnValue({
       flags: { markdown: true },
     } as any);
     useJwt.setState({
       jwt: undefined,
     });
+    mockedUseCurrentResourceContext.mockReturnValue([] as any);
 
     render(<RedirectOnLoad />, {
       routerOptions: {
@@ -274,10 +277,10 @@ describe('<RedirectOnLoad />', () => {
       },
     });
 
-    screen.getByText('Markdown not found');
+    expect(screen.getByText('Markdown not found')).toBeInTheDocument();
   });
 
-  it('redirects to portability if app state requires it', async () => {
+  it('redirects to portability if app state requires it', () => {
     mockedUseAppConfig.mockReturnValue({
       flags: { markdown: true },
       state: appState.PORTABILITY,
@@ -285,8 +288,9 @@ describe('<RedirectOnLoad />', () => {
     useJwt.setState({
       jwt: undefined,
     });
+    mockedUseCurrentResourceContext.mockReturnValue([] as any);
 
-    const { getByText } = render(<RedirectOnLoad />, {
+    render(<RedirectOnLoad />, {
       routerOptions: {
         routes: [
           {
@@ -297,6 +301,6 @@ describe('<RedirectOnLoad />', () => {
       },
     });
 
-    getByText('Portability request');
+    expect(screen.getByText('Portability request')).toBeInTheDocument();
   });
 });

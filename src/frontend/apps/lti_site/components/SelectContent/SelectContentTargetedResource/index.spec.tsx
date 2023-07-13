@@ -5,6 +5,7 @@ import {
   documentMockFactory,
   liveMockFactory,
   liveState,
+  playlistMockFactory,
   selectableBaseResource,
   uploadState,
   videoMockFactory,
@@ -67,6 +68,7 @@ describe('SelectContentTargetedResource', () => {
           lti_response_url: 'https://example.com/lti',
           lti_message_type: 'ContentItemSelection',
         }}
+        playlist={playlistMockFactory()}
       />,
     );
 
@@ -105,13 +107,14 @@ describe('SelectContentTargetedResource', () => {
           lti_response_url: 'https://example.com/lti',
           lti_message_type: 'ContentItemSelection',
         }}
+        playlist={playlistMockFactory()}
       />,
     );
 
     screen.getByRole('heading', { name: 'Documents' });
 
     screen.getByLabelText('Select Document 1');
-    screen.getByText('Document 1');
+    expect(screen.getByText('Document 1')).toBeInTheDocument();
   });
 
   it('renders the webinar targeted resource', () => {
@@ -142,6 +145,7 @@ describe('SelectContentTargetedResource', () => {
           lti_response_url: 'https://example.com/lti',
           lti_message_type: 'ContentItemSelection',
         }}
+        playlist={playlistMockFactory()}
       />,
     );
 
@@ -166,9 +170,10 @@ describe('SelectContentTargetedResource', () => {
           lti_response_url: 'https://example.com/lti',
           lti_message_type: 'ContentItemSelection',
         }}
+        playlist={playlistMockFactory()}
       />,
     );
 
-    await screen.findByText('custom app');
+    expect(await screen.findByText('custom app')).toBeInTheDocument();
   });
 });

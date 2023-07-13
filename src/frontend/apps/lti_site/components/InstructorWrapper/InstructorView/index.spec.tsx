@@ -1,3 +1,4 @@
+import { screen } from '@testing-library/react';
 import {
   useCurrentResourceContext,
   useMaintenance,
@@ -34,14 +35,14 @@ describe('<InstructorView />', () => {
       },
     ] as any);
 
-    const { getByText } = render(
+    render(
       <InstructorView resource={video}>
         <div className="some-child" />
       </InstructorView>,
     );
 
-    getByText('Instructor Preview 👆');
-    getByText('Dashboard');
+    screen.getByText('Instructor Preview 👆');
+    expect(screen.getByText('Dashboard')).toBeInTheDocument();
   });
 
   it('removes the button when permissions.can_update is set to false', () => {
@@ -53,16 +54,16 @@ describe('<InstructorView />', () => {
       },
     ] as any);
 
-    const { getByText, queryByText } = render(
+    render(
       <InstructorView resource={video}>
         <div className="some-child" />
       </InstructorView>,
     );
 
-    getByText(
+    screen.getByText(
       `This video is read-only because it belongs to another course: ${video.playlist.lti_id}`,
     );
-    expect(queryByText('Go to Dashboard')).toBeNull();
+    expect(screen.queryByText('Go to Dashboard')).toBeNull();
   });
 
   it('removes the button when permissions.maintenance is set to true', () => {
@@ -77,15 +78,15 @@ describe('<InstructorView />', () => {
       },
     ] as any);
 
-    const { getByText, queryByText } = render(
+    render(
       <InstructorView resource={video}>
         <div className="some-child" />
       </InstructorView>,
     );
 
-    getByText(
+    screen.getByText(
       "The dashboard is undergoing maintenance work, it can't be accessed right now.",
     );
-    expect(queryByText('Go to Dashboard')).toBeNull();
+    expect(screen.queryByText('Go to Dashboard')).toBeNull();
   });
 });

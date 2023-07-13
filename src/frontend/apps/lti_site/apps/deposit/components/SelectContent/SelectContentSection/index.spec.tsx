@@ -13,7 +13,7 @@ describe('<SelectContentResource />', () => {
     jest.resetAllMocks();
   });
 
-  it('displays available file depositories', async () => {
+  it('displays available file depositories', () => {
     const deposit = fileDepositoryMockFactory();
     const mockSelectAddAndSelectContent = jest.fn();
     render(
@@ -31,6 +31,8 @@ describe('<SelectContentResource />', () => {
 
     screen.getByText('Add a file depository');
 
-    screen.getByLabelText(`Select ${deposit.title}`);
+    expect(
+      screen.getByLabelText(`Select ${deposit.title!}`),
+    ).toBeInTheDocument();
   });
 });

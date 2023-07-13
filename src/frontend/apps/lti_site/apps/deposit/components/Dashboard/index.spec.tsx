@@ -84,7 +84,7 @@ describe('<DashboardFileDepository />', () => {
     screen.getByText('Loading file depository...');
     fileDepositoryDeferred.resolve(fileDepository);
     await screen.findByText('File depository loaded.');
-    screen.getByText('Student view');
+    expect(screen.getByText('Student view')).toBeInTheDocument();
   });
 
   it('shows instructor dashboard', async () => {
@@ -101,7 +101,7 @@ describe('<DashboardFileDepository />', () => {
     screen.getByText('Loading file depository...');
     fileDepositoryDeferred.resolve(fileDepository);
     await screen.findByText('File depository loaded.');
-    screen.getByText('Instructor view');
+    expect(screen.getByText('Instructor view')).toBeInTheDocument();
   });
 
   it('shows an error message when it fails to get the fileDepository', async () => {
@@ -125,6 +125,8 @@ describe('<DashboardFileDepository />', () => {
     });
     screen.getByText('Loading file depository...');
     fileDepositoryDeferred.resolve(500);
-    await screen.findByText('File depository not loaded!');
+    expect(
+      await screen.findByText('File depository not loaded!'),
+    ).toBeInTheDocument();
   });
 });

@@ -6,7 +6,7 @@ import { createRoot } from 'react-dom/client';
 import { App } from 'components/App';
 
 // Wait for the DOM to load before we scour it for an element that requires React to render
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
   const container = document.querySelector('#marsha-frontend-root');
   if (!container) {
     throw new Error('container not found!');

@@ -112,6 +112,6 @@ describe('<VideoWizard />', () => {
 
     await userEvent.click(configureLiveButton);
 
-    await screen.findByText('live dashboard');
+    expect(await screen.findByText('live dashboard')).toBeInTheDocument();
   });
 });

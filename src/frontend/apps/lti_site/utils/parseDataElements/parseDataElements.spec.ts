@@ -2,7 +2,7 @@ import { modelName } from 'lib-components';
 
 import { parseDataElements } from './parseDataElements';
 
-describe.only('utils/parseDataElements', () => {
+describe('utils/parseDataElements', () => {
   describe('parseDataElements()', () => {
     it('parses the data-context and creates a video attribute', () => {
       const dataElement = document.createElement('div');

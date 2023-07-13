@@ -94,12 +94,12 @@ describe('<VideoCreateForm />', () => {
       });
       screen.getByRole('status', { name: 'Creating video...' });
 
-      await act(async () => postStep1Deferred.resolve(video));
+      act(() => postStep1Deferred.resolve(video));
     }
 
     {
       // Step 2 is the file upload field
-      screen.getByRole('button', {
+      await screen.findByRole('button', {
         name: 'Select a file to upload',
       });
       {
@@ -201,10 +201,10 @@ describe('<VideoCreateForm />', () => {
     });
     screen.getByRole('status', { name: 'Creating video...' });
 
-    await act(async () => postStep1Deferred.resolve(video));
+    act(() => postStep1Deferred.resolve(video));
 
     // We move on to step 2, which is covered by the previous test
-    screen.getByRole('button', {
+    await screen.findByRole('button', {
       name: 'Select a file to upload',
     });
   });
@@ -238,7 +238,7 @@ describe('<VideoCreateForm />', () => {
     });
     screen.getByRole('status', { name: 'Creating video...' });
 
-    await act(async () =>
+    act(() =>
       postStep1Deferred.resolve({
         status: 400,
         body: {
@@ -251,7 +251,7 @@ describe('<VideoCreateForm />', () => {
       }),
     );
 
-    screen.getByText('Some title related error.');
+    await screen.findByText('Some title related error.');
     screen.getByText('Another title error.');
   });
 
@@ -284,7 +284,7 @@ describe('<VideoCreateForm />', () => {
     });
     screen.getByRole('status', { name: 'Creating video...' });
 
-    await act(async () =>
+    act(() =>
       postStep1Deferred.resolve({
         status: 400,
         body: {
@@ -300,7 +300,7 @@ describe('<VideoCreateForm />', () => {
       }),
     );
 
-    screen.getByText('Some playlist related error.');
+    await screen.findByText('Some playlist related error.');
     screen.getByText('Another playlist error.');
   });
 });

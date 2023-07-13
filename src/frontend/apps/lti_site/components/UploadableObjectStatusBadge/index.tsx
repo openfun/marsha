@@ -132,7 +132,8 @@ export const UploadableObjectStatusBadge = ({
             </Badge>
           );
       }
-  }
 
-  throw new Error('Unexpected object status in object status badge.');
+    default:
+      throw new Error('Unexpected object status in object status badge.');
+  }
 };

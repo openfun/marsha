@@ -10,7 +10,7 @@ import {
   useUploadManager,
 } from 'lib-components';
 import { useCreateVideo } from 'lib-video';
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
@@ -256,7 +256,7 @@ const VideoCreateFormStep1 = ({
           if (!!playlist || !!value.playlist) {
             mutation.mutate({
               ...value,
-              playlist: playlist! || value.playlist!,
+              playlist: playlist || value.playlist || '',
             });
           }
         }}
@@ -347,14 +347,13 @@ const VideoCreateFormStep2 = ({
   onNextStep,
 }: VideoCreateFormStep2Props) => {
   const { uploadManagerState } = useUploadManager();
+  const uploadManagerStatus = uploadManagerState[objectId]?.status;
 
   useEffect(() => {
-    if (
-      uploadManagerState[objectId]?.status === UploadManagerStatus.UPLOADING
-    ) {
+    if (uploadManagerStatus === UploadManagerStatus.UPLOADING) {
       onNextStep();
     }
-  }, [uploadManagerState[objectId]?.status]);
+  }, [onNextStep, uploadManagerStatus]);
 
   return (
     <Box direction="column" width="large" height="16rem" justify="center">
@@ -403,7 +402,7 @@ export const VideoCreateForm = ({ playlist }: VideoCreateFormProps) => {
     useState<Nullable<UploadableObject['id']>>(null);
   const [step, setStep] = useState<1 | 2 | 3>(1);
 
-  let formContent: JSX.Element;
+  let formContent: JSX.Element = <Fragment />;
   switch (step) {
     case 1:
       formContent = (
@@ -418,12 +417,14 @@ export const VideoCreateForm = ({ playlist }: VideoCreateFormProps) => {
       break;
 
     case 2:
-      formContent = (
-        <VideoCreateFormStep2
-          objectId={objectId!}
-          onNextStep={() => setStep(3)}
-        />
-      );
+      if (objectId) {
+        formContent = (
+          <VideoCreateFormStep2
+            objectId={objectId}
+            onNextStep={() => setStep(3)}
+          />
+        );
+      }
       break;
 
     case 3:
@@ -435,6 +436,9 @@ export const VideoCreateForm = ({ playlist }: VideoCreateFormProps) => {
           }}
         />
       );
+      break;
+
+    default:
       break;
   }
 

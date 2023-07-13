@@ -4,10 +4,11 @@ import {
   FullScreenError,
   Loader,
   WithParams,
+  builderFullScreenErrorRoute,
   useAppConfig,
 } from 'lib-components';
 import { Fragment, Suspense, lazy } from 'react';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { MemoryRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 import { PortabilityRequest } from 'components/PortabilityRequest';
 import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
@@ -43,7 +44,15 @@ const RoutesDeposit = () => {
 
           <Route
             path={RESOURCE_PORTABILITY_REQUEST_ROUTE}
-            element={<PortabilityRequest portability={appData.portability!} />}
+            element={
+              appData.portability ? (
+                <PortabilityRequest portability={appData.portability} />
+              ) : (
+                <Navigate
+                  to={builderFullScreenErrorRoute(ErrorComponents.notFound)}
+                />
+              )
+            }
           />
 
           <Route path={REDIRECT_ON_LOAD_ROUTE} element={<RedirectOnLoad />} />

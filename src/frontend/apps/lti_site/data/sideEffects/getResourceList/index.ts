@@ -1,8 +1,11 @@
 import {
+  APIList,
   APIListCommonRequestParams,
   API_ENDPOINT,
   API_LIST_DEFAULT_PARAMS,
+  UploadableObject,
   addMultipleResources,
+  fetchResponseHandler,
   fetchWrapper,
   modelName,
   report,
@@ -24,27 +27,31 @@ export const getResourceList = async (
 ): Promise<requestStatus> => {
   const endpoint = `${API_ENDPOINT}/${resourceName}/`;
 
+  const jwt = useJwt.getState().getJwt();
+  if (!jwt) {
+    throw new Error('JWT not available');
+  }
+
   try {
     const response = await fetchWrapper(
       `${endpoint}?limit=${params.limit}&offset=${params.offset}`,
       {
         headers: {
-          Authorization: `Bearer ${useJwt.getState().getJwt()}`,
+          Authorization: `Bearer ${jwt}`,
           'Content-Type': 'application/json',
         },
       },
     );
 
-    if (!response.ok) {
+    const resourcesResponse = await fetchResponseHandler<
+      APIList<UploadableObject>
+    >(response, {
       // Push remote errors to the error channel for consistency
-      throw new Error(
-        `Failed to get list for ${endpoint} and ${JSON.stringify(params)} : ${
-          response.status
-        }.`,
-      );
-    }
+      errorMessage: `Failed to get list for ${endpoint} and ${JSON.stringify(
+        params,
+      )} : ${response.status}.`,
+    });
 
-    const resourcesResponse = await response.json();
     await addMultipleResources(resourceName, resourcesResponse.results);
     return requestStatus.SUCCESS;
   } catch (error) {

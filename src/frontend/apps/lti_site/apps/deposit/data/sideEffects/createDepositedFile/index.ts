@@ -1,6 +1,7 @@
 import {
   API_ENDPOINT,
   DepositedFile,
+  fetchResponseHandler,
   fetchWrapper,
   FileDepositoryModelName as modelName,
   useJwt,
@@ -9,12 +10,18 @@ import {
 export const createDepositedFile = async (file: {
   size: number;
   filename: string;
-}) => {
+}): Promise<DepositedFile> => {
+  const jwt = useJwt.getState().getJwt();
+
+  if (!jwt) {
+    throw new Error('No JWT found.');
+  }
+
   const response = await fetchWrapper(
     `${API_ENDPOINT}/${modelName.DepositedFiles}/`,
     {
       headers: {
-        Authorization: `Bearer ${useJwt.getState().getJwt()}`,
+        Authorization: `Bearer ${jwt}`,
         'Content-Type': 'application/json',
       },
       method: 'POST',
@@ -22,11 +29,5 @@ export const createDepositedFile = async (file: {
     },
   );
 
-  if (!response.ok) {
-    throw await response.json();
-  }
-
-  const depositedFile: DepositedFile = await response.json();
-
-  return depositedFile;
+  return await fetchResponseHandler(response);
 };

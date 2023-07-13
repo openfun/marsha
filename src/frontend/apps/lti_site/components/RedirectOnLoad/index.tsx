@@ -5,6 +5,7 @@ import {
   modelName,
   useAppConfig,
 } from 'lib-components';
+import { Fragment } from 'react';
 import { Navigate } from 'react-router-dom';
 
 import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
@@ -39,10 +40,13 @@ export const RedirectOnLoad = () => {
     );
   }
 
-  switch (appData.modelName) {
-    case modelName.DOCUMENTS:
-      return <RedirectDocument document={appData.document!} />;
-    case modelName.VIDEOS:
-      return <RedirectVideo video={appData.video!} />;
+  if (appData.modelName === modelName.DOCUMENTS && appData.document) {
+    return <RedirectDocument document={appData.document} />;
   }
+
+  if (appData.modelName === modelName.VIDEOS && appData.video) {
+    return <RedirectVideo video={appData.video} />;
+  }
+
+  return <Fragment />;
 };

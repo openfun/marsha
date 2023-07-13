@@ -1,3 +1,4 @@
+import { screen } from '@testing-library/react';
 import { useCurrentResourceContext, videoMockFactory } from 'lib-components';
 import { render } from 'lib-tests';
 import React from 'react';
@@ -36,14 +37,14 @@ describe('<InstructorWrapper />', () => {
       },
     ] as any);
 
-    const { getByText, getByTitle } = render(
+    render(
       <InstructorWrapper resource={video}>
         <div title="some-child" />
       </InstructorWrapper>,
     );
 
-    getByText('InstructorView');
-    getByTitle('some-child');
+    screen.getByText('InstructorView');
+    expect(screen.getByTitle('some-child')).toBeInTheDocument();
   });
 
   it('just renders the children if the current user is not an instructor', () => {
@@ -55,13 +56,13 @@ describe('<InstructorWrapper />', () => {
       },
     ] as any);
 
-    const { getByTitle, queryByText } = render(
+    render(
       <InstructorWrapper resource={video}>
         <div title="some-child" />
       </InstructorWrapper>,
     );
 
-    expect(queryByText('InstructorView')).toBeNull();
-    getByTitle('some-child');
+    expect(screen.queryByText('InstructorView')).toBeNull();
+    screen.getByTitle('some-child');
   });
 });

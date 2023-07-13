@@ -1,4 +1,5 @@
 import { act, fireEvent, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { documentMockFactory, uploadState, useJwt } from 'lib-components';
 import { Deferred, render } from 'lib-tests';
@@ -35,9 +36,7 @@ describe('DashboardDocumentTitleForm', () => {
       />,
     );
 
-    const inputTitle = screen.getByRole('textbox');
-
-    expect(inputTitle.value).toEqual('document title');
+    expect(screen.getByRole('textbox')).toHaveValue('document title');
   });
 
   it('successfully update document title', async () => {
@@ -57,8 +56,8 @@ describe('DashboardDocumentTitleForm', () => {
     fireEvent.change(inputTitle, {
       target: { value: 'updated document title' },
     });
-    fireEvent.click(screen.getByText('Submit'));
-    await act(async () =>
+    await userEvent.click(screen.getByText('Submit'));
+    act(() =>
       deferred.resolve(
         JSON.stringify({
           ...document,
@@ -70,8 +69,8 @@ describe('DashboardDocumentTitleForm', () => {
       true,
     );
 
-    expect(inputTitle.value).toEqual('updated document title');
-    screen.getByText('Title successfully updated');
+    expect(inputTitle).toHaveValue('updated document title');
+    await screen.findByText('Title successfully updated');
   });
 
   it('successfully update null document title', async () => {
@@ -91,8 +90,8 @@ describe('DashboardDocumentTitleForm', () => {
     fireEvent.change(inputTitle, {
       target: { value: 'updated document title' },
     });
-    fireEvent.click(screen.getByText('Submit'));
-    await act(async () =>
+    await userEvent.click(screen.getByText('Submit'));
+    act(() =>
       deferred.resolve(
         JSON.stringify({
           ...document,
@@ -104,8 +103,8 @@ describe('DashboardDocumentTitleForm', () => {
       true,
     );
 
-    expect(inputTitle.value).toEqual('updated document title');
-    screen.getByText('Title successfully updated');
+    expect(inputTitle).toHaveValue('updated document title');
+    await screen.findByText('Title successfully updated');
   });
 
   it('fails to update document title', async () => {
@@ -113,7 +112,7 @@ describe('DashboardDocumentTitleForm', () => {
 
     fetchMock.mock('/api/documents/47/', deferred.promise, { method: 'PUT' });
 
-    const { container, getByText } = render(
+    render(
       <DashboardDocumentTitleForm
         document={documentMockFactory({
           id: '47',
@@ -122,15 +121,14 @@ describe('DashboardDocumentTitleForm', () => {
       />,
     );
 
-    const inputTitle = container.querySelector('#title');
-    fireEvent.change(inputTitle!, { target: { value: 'Bar.pdf' } });
-    fireEvent.click(getByText('Submit'));
-    await act(async () => deferred.reject(400));
+    await userEvent.type(screen.getByRole('textbox'), 'Bar.pdf');
+    await userEvent.click(screen.getByText('Submit'));
+    act(() => deferred.reject(400));
 
     expect(fetchMock.called('/api/documents/47/', { method: 'PUT' })).toBe(
       true,
     );
 
-    getByText('Impossible to update the title. Try again later.');
+    await screen.findByText('Impossible to update the title. Try again later.');
   });
 });

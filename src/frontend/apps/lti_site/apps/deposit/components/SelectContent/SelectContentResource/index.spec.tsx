@@ -33,7 +33,7 @@ describe('<SelectContentResource />', () => {
     fetchMock.restore();
   });
 
-  it('displays available file depositories', async () => {
+  it('displays available file depositories', () => {
     render(
       <SelectContentResource
         playlist={currentPlaylist}
@@ -48,7 +48,7 @@ describe('<SelectContentResource />', () => {
     screen.getByRole('heading', { name: 'File Depositories' });
     screen.getByText('Add a file depository');
 
-    screen.getByLabelText('Select deposit title');
+    expect(screen.getByLabelText('Select deposit title')).toBeInTheDocument();
   });
 
   it('displays available file depositories and select existing one', async () => {

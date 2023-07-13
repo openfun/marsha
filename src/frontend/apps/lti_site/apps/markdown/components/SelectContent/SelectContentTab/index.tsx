@@ -22,7 +22,7 @@ const Internal = ({
   const useCreateMarkdownDocumentMutation = useCreateMarkdownDocument({
     onSuccess: (markdownDocument) =>
       buildContentItems(
-        MarkdownAppData.new_markdown_url! + markdownDocument.id,
+        `${MarkdownAppData.new_markdown_url || ''}${markdownDocument.id}}`,
         markdownDocument.translations[0].title,
         null,
         lti_select_form_data,
@@ -38,8 +38,8 @@ const Internal = ({
           title: lti_select_form_data?.activity_title,
         });
       }}
-      newLtiUrl={MarkdownAppData.new_markdown_url!}
-      items={MarkdownAppData.markdowns!}
+      newLtiUrl={MarkdownAppData.new_markdown_url || ''}
+      items={MarkdownAppData.markdowns || null}
       language={browserLanguage}
       lti_select_form_data={lti_select_form_data}
       setContentItemsValue={setContentItemsValue}

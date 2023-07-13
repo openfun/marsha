@@ -57,7 +57,7 @@ describe('RedirectVideo', () => {
             path: FULL_SCREEN_ERROR_ROUTE.default,
             element: (
               <WithParams>
-                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+                {({ code }) => <span>{`Error Component: ${code!}`}</span>}
               </WithParams>
             ),
           },
@@ -70,7 +70,7 @@ describe('RedirectVideo', () => {
       },
     });
 
-    screen.getByText('dashboard');
+    expect(screen.getByText('dashboard')).toBeInTheDocument();
   });
 
   it('redirects to the player when the video is ready to show', () => {
@@ -98,7 +98,7 @@ describe('RedirectVideo', () => {
             path: FULL_SCREEN_ERROR_ROUTE.default,
             element: (
               <WithParams>
-                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+                {({ code }) => <span>{`Error Component: ${code!}`}</span>}
               </WithParams>
             ),
           },
@@ -114,7 +114,7 @@ describe('RedirectVideo', () => {
       },
     });
 
-    screen.getByText('video player');
+    expect(screen.getByText('video player')).toBeInTheDocument();
   });
 
   it('redirects to the wizard when the user has update permission', () => {
@@ -134,7 +134,7 @@ describe('RedirectVideo', () => {
             path: FULL_SCREEN_ERROR_ROUTE.default,
             element: (
               <WithParams>
-                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+                {({ code }) => <span>{`Error Component: ${code!}`}</span>}
               </WithParams>
             ),
           },
@@ -154,7 +154,7 @@ describe('RedirectVideo', () => {
       },
     });
 
-    screen.getByText('wizard');
+    expect(screen.getByText('wizard')).toBeInTheDocument();
   });
 
   it('redirects to the wizard VOD creation when the video update state is initialized', () => {
@@ -175,7 +175,7 @@ describe('RedirectVideo', () => {
             path: FULL_SCREEN_ERROR_ROUTE.default,
             element: (
               <WithParams>
-                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+                {({ code }) => <span>{`Error Component: ${code!}`}</span>}
               </WithParams>
             ),
           },
@@ -195,7 +195,7 @@ describe('RedirectVideo', () => {
       },
     });
 
-    screen.getByText('VOD creation');
+    expect(screen.getByText('VOD creation')).toBeInTheDocument();
   });
 
   it('redirects to the error view when the user has no update permission and the video is not ready to show', () => {
@@ -221,7 +221,7 @@ describe('RedirectVideo', () => {
             path: FULL_SCREEN_ERROR_ROUTE.default,
             element: (
               <WithParams>
-                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+                {({ code }) => <span>{`Error Component: ${code!}`}</span>}
               </WithParams>
             ),
           },
@@ -237,7 +237,7 @@ describe('RedirectVideo', () => {
       },
     });
 
-    screen.getByText('Error Component: notFound');
+    expect(screen.getByText('Error Component: notFound')).toBeInTheDocument();
   });
 
   it('redirects to the error view when the video is deleted', () => {
@@ -264,7 +264,7 @@ describe('RedirectVideo', () => {
             path: FULL_SCREEN_ERROR_ROUTE.default,
             element: (
               <WithParams>
-                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+                {({ code }) => <span>{`Error Component: ${code!}`}</span>}
               </WithParams>
             ),
           },
@@ -280,7 +280,9 @@ describe('RedirectVideo', () => {
       },
     });
 
-    screen.getByText('Error Component: videoDeleted');
+    expect(
+      screen.getByText('Error Component: videoDeleted'),
+    ).toBeInTheDocument();
   });
 
   it('redirects to the player view when the starting date is set to past', () => {
@@ -309,7 +311,7 @@ describe('RedirectVideo', () => {
             path: FULL_SCREEN_ERROR_ROUTE.default,
             element: (
               <WithParams>
-                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+                {({ code }) => <span>{`Error Component: ${code!}`}</span>}
               </WithParams>
             ),
           },
@@ -325,7 +327,7 @@ describe('RedirectVideo', () => {
       },
     });
 
-    screen.getByText('video player');
+    expect(screen.getByText('video player')).toBeInTheDocument();
   });
 
   it('redirects to the player view when the starting date is set to future', () => {
@@ -354,7 +356,7 @@ describe('RedirectVideo', () => {
             path: FULL_SCREEN_ERROR_ROUTE.default,
             element: (
               <WithParams>
-                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+                {({ code }) => <span>{`Error Component: ${code!}`}</span>}
               </WithParams>
             ),
           },
@@ -370,6 +372,6 @@ describe('RedirectVideo', () => {
       },
     });
 
-    screen.getByText('video player');
+    expect(screen.getByText('video player')).toBeInTheDocument();
   });
 });

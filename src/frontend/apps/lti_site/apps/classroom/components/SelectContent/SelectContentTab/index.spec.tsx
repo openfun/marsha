@@ -28,7 +28,7 @@ describe('<SelectContentTab />', () => {
     jest.resetAllMocks();
   });
 
-  it('displays the content section in a tab', async () => {
+  it('displays the content section in a tab', () => {
     const currentPlaylist = playlistMockFactory();
     render(
       <Tabs>
@@ -45,6 +45,6 @@ describe('<SelectContentTab />', () => {
 
     screen.getByRole('tab', { name: 'Classrooms' });
     screen.getByText('Add a classroom');
-    screen.getByLabelText('Select classroom title');
+    expect(screen.getByLabelText('Select classroom title')).toBeInTheDocument();
   });
 });

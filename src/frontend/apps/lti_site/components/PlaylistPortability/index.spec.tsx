@@ -1,4 +1,4 @@
-import { act, fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import {
   playlistLiteMockFactory,
@@ -67,7 +67,7 @@ describe('<PlaylistPortability />', () => {
       },
     });
 
-    await act(async () => currentPlaylistDeferred.resolve(currentPlaylist));
+    act(() => currentPlaylistDeferred.resolve(currentPlaylist));
 
     const deferredPatch = new Deferred();
     fetchMock.patch(
@@ -75,7 +75,7 @@ describe('<PlaylistPortability />', () => {
       deferredPatch.promise,
     );
 
-    const input = screen.getByRole('textbox', {
+    const input = await screen.findByRole('textbox', {
       name: /share with another playlist/i,
     });
     fireEvent.change(input, { target: { value: otherPlaylist.id } });
@@ -88,11 +88,11 @@ describe('<PlaylistPortability />', () => {
       { overwriteRoutes: true },
     );
 
-    await act(async () => deferredPatch.resolve(updatedPlaylist));
+    act(() => deferredPatch.resolve(updatedPlaylist));
 
-    await act(async () => updatedPlaylistDeferred.resolve(updatedPlaylist));
+    act(() => updatedPlaylistDeferred.resolve(updatedPlaylist));
 
-    expect(fetchMock.calls()).toHaveLength(3);
+    await waitFor(() => expect(fetchMock.calls()).toHaveLength(3));
 
     expect(fetchMock.calls()[1]![0]).toEqual(
       `/api/playlists/${currentPlaylist.id}/`,
@@ -144,12 +144,14 @@ describe('<PlaylistPortability />', () => {
     );
 
     render(<PlaylistPortability object={video} />);
-    await act(async () => currentPlaylistDeferred.resolve(currentPlaylist));
+    act(() => currentPlaylistDeferred.resolve(currentPlaylist));
 
-    currentPlaylist.portable_to.map((playlist) => {
-      screen.getByRole('listitem', {
-        name: `Shared with ${playlist.title}`,
-      });
-    });
+    for (const playlist of currentPlaylist.portable_to) {
+      expect(
+        await screen.findByRole('listitem', {
+          name: `Shared with ${playlist.title!}`,
+        }),
+      ).toBeInTheDocument();
+    }
   });
 });

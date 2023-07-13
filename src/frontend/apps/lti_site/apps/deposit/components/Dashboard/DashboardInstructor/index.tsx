@@ -79,7 +79,11 @@ export const DashboardInstructor = ({
 
   const { data, isError, isLoading, refetch } = useDepositedFiles(
     fileDepository.id,
-    { limit: PAGE_SIZE, offset: depositedFilesOffset, read: readFilter },
+    {
+      limit: `${PAGE_SIZE}`,
+      offset: `${depositedFilesOffset}`,
+      read: readFilter,
+    },
     {
       keepPreviousData: true,
     },
@@ -102,11 +106,6 @@ export const DashboardInstructor = ({
   const onReadFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setReadFilter(event.target.value);
     refetch();
-  };
-
-  const onPageChange = async (event: any) => {
-    setDepositedFilesOffset(event.startIndex);
-    setIndices([event.startIndex, Math.min(event.endIndex, data!.count)]);
   };
 
   const { mutate } = useUpdateFileDepository(fileDepository.id);
@@ -216,7 +215,16 @@ export const DashboardInstructor = ({
                 <Pagination
                   step={PAGE_SIZE}
                   numberItems={data.count}
-                  onChange={onPageChange}
+                  onChange={({
+                    startIndex,
+                    endIndex,
+                  }: {
+                    startIndex: number;
+                    endIndex: number;
+                  }) => {
+                    setDepositedFilesOffset(startIndex);
+                    setIndices([startIndex, Math.min(endIndex, data.count)]);
+                  }}
                 />
               </Box>
               <Box fill margin={{ top: 'small' }} pad="medium" round="xsmall">

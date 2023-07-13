@@ -18,7 +18,7 @@ const SelectContentResource = ({
   const useCreateFileDepositoryMutation = useCreateFileDepository({
     onSuccess: (fileDepository) =>
       buildContentItems(
-        depositAppData.new_deposit_url! + fileDepository.id,
+        `${depositAppData.new_deposit_url || ''}${fileDepository.id}`,
         fileDepository.title,
         fileDepository.description,
         lti_select_form_data,
@@ -39,8 +39,8 @@ const SelectContentResource = ({
             description: lti_select_form_data?.activity_description,
           });
         }}
-        newLtiUrl={depositAppData.new_deposit_url!}
-        items={depositAppData.deposits!}
+        newLtiUrl={depositAppData.new_deposit_url || ''}
+        items={depositAppData.deposits || null}
         lti_select_form_data={lti_select_form_data}
         setContentItemsValue={setContentItemsValue}
       />

@@ -165,10 +165,14 @@ export const useUpdateFileDepository = (
 };
 
 type DepositedFilesResponse = APIList<DepositedFile>;
-type UseDepositedFilesParams = {};
+type UseDepositedFilesParams = {
+  limit?: string;
+  offset?: string;
+  read?: string;
+};
 export const useDepositedFiles = (
   fileDepositoryId: string,
-  params: UseDepositedFilesParams,
+  params?: UseDepositedFilesParams,
   queryConfig?: UseQueryOptions<
     DepositedFilesResponse,
     modelName.DepositedFiles,

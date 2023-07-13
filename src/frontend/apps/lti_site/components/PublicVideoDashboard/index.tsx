@@ -34,7 +34,7 @@ const PublicVideoDashboard = ({
 
       if (!checkToken(decodeJwt(jwt))) {
         const anonymousId = getOrInitAnonymousId();
-        url = `${url}&anonymous_id=${anonymousId}`;
+        url = `${url}&anonymous_id=${anonymousId || ''}`;
       }
       return url;
     });

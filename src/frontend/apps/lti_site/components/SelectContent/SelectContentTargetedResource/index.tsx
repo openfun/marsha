@@ -11,7 +11,7 @@ import {
   uploadState,
 } from 'lib-components';
 import { UseCreateVideoData, initiateLive, useCreateVideo } from 'lib-video';
-import React, { Fragment, Suspense, lazy } from 'react';
+import React, { ComponentType, Fragment, Suspense, lazy } from 'react';
 import { useIntl } from 'react-intl';
 
 import { useCreateDocument } from 'data/queries';
@@ -139,7 +139,7 @@ const SelectContentDocument = ({
 };
 
 interface SelectContentTargetedResourceProps {
-  playlist?: Playlist;
+  playlist: Playlist;
   documents?: Document[];
   videos?: Video[];
   webinars?: Live[];
@@ -172,9 +172,9 @@ export const SelectContentTargetedResource = ({
     case selectableBaseResource.DOCUMENT:
       content = (
         <SelectContentDocument
-          documents={documents!}
-          new_document_url={new_document_url!}
-          playlist={playlist!}
+          documents={documents || []}
+          new_document_url={new_document_url || ''}
+          playlist={playlist}
           lti_select_form_data={lti_select_form_data}
           setContentItemsValue={setContentItemsValue}
         />
@@ -183,9 +183,9 @@ export const SelectContentTargetedResource = ({
     case selectableBaseResource.VIDEO:
       content = (
         <SelectContentVideo
-          videos={videos!}
-          new_video_url={new_video_url!}
-          playlist={playlist!}
+          videos={videos || []}
+          new_video_url={new_video_url || ''}
+          playlist={playlist}
           lti_select_form_data={lti_select_form_data}
           setContentItemsValue={setContentItemsValue}
           isWebinar={false}
@@ -197,9 +197,9 @@ export const SelectContentTargetedResource = ({
     case selectableBaseResource.WEBINAR:
       content = (
         <SelectContentVideo
-          videos={webinars!}
-          new_video_url={new_webinar_url!}
-          playlist={playlist!}
+          videos={webinars || []}
+          new_video_url={new_webinar_url || ''}
+          playlist={playlist}
           lti_select_form_data={lti_select_form_data}
           setContentItemsValue={setContentItemsValue}
           isWebinar={true}
@@ -213,12 +213,12 @@ export const SelectContentTargetedResource = ({
         () =>
           import(
             `apps/${targeted_resource}/components/SelectContent/SelectContentResource`
-          ),
+          ) as Promise<{ default: ComponentType<SelectContentResourceProps> }>,
       );
       content = (
         <Suspense fallback={<Loader />}>
           <LazyComponent
-            playlist={playlist!}
+            playlist={playlist}
             lti_select_form_data={lti_select_form_data}
             setContentItemsValue={setContentItemsValue}
           />

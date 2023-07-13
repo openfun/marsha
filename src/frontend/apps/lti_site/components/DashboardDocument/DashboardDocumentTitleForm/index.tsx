@@ -64,7 +64,11 @@ export const DashboardDocumentTitleForm = ({
 
   return (
     <Fragment>
-      <Form onSubmit={updateTitle}>
+      <Form
+        onSubmit={() => {
+          updateTitle();
+        }}
+      >
         <FormField
           label={intl.formatMessage(messages.updateTitle)}
           htmlFor="title"
