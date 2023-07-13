@@ -80,6 +80,7 @@ const AppConfig = ({ children }: PropsWithChildren<unknown>) => {
       logo_url: config.logo_url,
       login_html: config.login_html,
       footer_copyright: config.footer_copyright,
+      vod_conversion_enabled: config.vod_conversion_enabled,
     });
   }, [setSentry, setP2PConfig, config, setSiteConfig]);
 

@@ -47,6 +47,7 @@ const frontendConfiguration: ConfigResponse = {
   release: 'some release',
   sentry_dsn: null,
   inactive_resources: [],
+  vod_conversion_enabled: true,
   p2p: {
     isEnabled: false,
     stunServerUrls: [],

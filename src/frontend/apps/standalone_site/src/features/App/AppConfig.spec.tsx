@@ -25,6 +25,7 @@ const config: ConfigResponse = {
   release: 'some release',
   sentry_dsn: 'some dsn',
   inactive_resources: [],
+  vod_conversion_enabled: true,
   p2p: {
     isEnabled: false,
     stunServerUrls: [],
@@ -160,7 +161,7 @@ describe('AppConfig', () => {
     ]);
   });
 
-  it('should inactive features', async () => {
+  it('should inactive resources', async () => {
     deferredConfig.resolve({
       ...config,
       inactive_resources: ['classroom', 'webinar', 'video'],
@@ -183,6 +184,7 @@ describe('AppConfig', () => {
       logo_url: 'some logo',
       login_html: 'some login',
       footer_copyright: 'some footer',
+      vod_conversion_enabled: false,
     });
 
     render(<AppConfig />);
@@ -194,6 +196,7 @@ describe('AppConfig', () => {
         logo_url: 'some logo',
         login_html: 'some login',
         footer_copyright: 'some footer',
+        vod_conversion_enabled: false,
       });
     });
     expect(useSiteConfig.getState().siteConfig).toEqual({
@@ -201,7 +204,23 @@ describe('AppConfig', () => {
       logo_url: 'some logo',
       login_html: 'some login',
       footer_copyright: 'some footer',
+      vod_conversion_enabled: false,
     });
+  });
+
+  it('should inactive features', async () => {
+    deferredConfig.resolve({
+      ...config,
+      vod_conversion_enabled: false,
+    });
+
+    render(<AppConfig>My app</AppConfig>);
+
+    expect(await screen.findByText('My app')).toBeInTheDocument();
+    expect(fetchMock.called('/api/config/')).toBe(true);
+    expect(
+      useSiteConfig.getState().getSiteConfig().vod_conversion_enabled,
+    ).toEqual(false);
   });
 
   it('should translate to another language', async () => {

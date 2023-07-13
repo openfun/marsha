@@ -7,6 +7,7 @@ describe('useSiteConfig', () => {
       logo_url: undefined,
       login_html: undefined,
       footer_copyright: undefined,
+      vod_conversion_enabled: true,
     });
 
     useSiteConfig.getState().setSiteConfig({
@@ -14,6 +15,7 @@ describe('useSiteConfig', () => {
       logo_url: 'logoSvg',
       login_html: 'login_html',
       footer_copyright: 'footer copyright',
+      vod_conversion_enabled: false,
     });
 
     expect(useSiteConfig.getState().getSiteConfig()).toEqual({
@@ -21,6 +23,7 @@ describe('useSiteConfig', () => {
       logo_url: 'logoSvg',
       login_html: 'login_html',
       footer_copyright: 'footer copyright',
+      vod_conversion_enabled: false,
     });
   });
 });
