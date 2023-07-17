@@ -1,9 +1,9 @@
 import { Box, Stack, Tab, Text } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
-import { colors as themeColors, theme } from 'lib-common';
+import { theme, colors as themeColors } from 'lib-common';
 import { RingingBellSVG, useCurrentResourceContext } from 'lib-components';
 import React from 'react';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import { FormattedMessage, defineMessages } from 'react-intl';
 import styled from 'styled-components';
 
 import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';

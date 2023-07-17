@@ -1,12 +1,12 @@
 import { Box, Button, Select, Text } from 'grommet';
 import { Nullable } from 'lib-common';
 import {
-  TimedText,
-  timedTextMode,
-  TimedTextTranscript,
-  useTimedTextTrack,
-  TimedTextTrackState,
   FoldableItem,
+  TimedText,
+  TimedTextTrackState,
+  TimedTextTranscript,
+  timedTextMode,
+  useTimedTextTrack,
 } from 'lib-components';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';

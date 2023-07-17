@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { Button as StudentButton, JoinDiscussionSVG } from 'lib-components';
+import { JoinDiscussionSVG, Button as StudentButton } from 'lib-components';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 

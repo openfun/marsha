@@ -1,4 +1,4 @@
-import { report, isLocalStorageEnabled } from 'lib-components';
+import { isLocalStorageEnabled, report } from 'lib-components';
 import { v4 as uuidv4 } from 'uuid';
 
 export const ANONYMOUS_ID_KEY = 'marsha_anonymous_id';

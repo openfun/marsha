@@ -1,10 +1,10 @@
-import { Box, Text, Anchor } from 'grommet';
+import { Anchor, Box, Text } from 'grommet';
 import {
   ObjectStatusPicker,
   RetryUploadButton,
+  TimedText,
   UploadingObject,
   uploadState,
-  TimedText,
 } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';

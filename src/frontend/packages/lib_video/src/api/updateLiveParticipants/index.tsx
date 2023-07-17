@@ -1,9 +1,9 @@
 import {
-  fetchWrapper,
-  useJwt,
   API_ENDPOINT,
   Participant,
   Video,
+  fetchWrapper,
+  useJwt,
 } from 'lib-components';
 
 const updateLiveParticipants = async (

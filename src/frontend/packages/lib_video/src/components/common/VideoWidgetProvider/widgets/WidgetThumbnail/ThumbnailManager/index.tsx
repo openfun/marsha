@@ -1,8 +1,8 @@
 import { Box, Text } from 'grommet';
 import {
+  Thumbnail,
   ThumbnailDisplayer,
   UploadManagerState,
-  Thumbnail,
 } from 'lib-components';
 import React from 'react';
 

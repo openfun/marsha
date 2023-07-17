@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react';
-import { videoMockFactory, LiveModeType, liveState } from 'lib-components';
+import { LiveModeType, liveState, videoMockFactory } from 'lib-components';
 import { render } from 'lib-tests';
 import React from 'react';
 

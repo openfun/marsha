@@ -2,13 +2,13 @@ import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
-  useUploadManager,
-  uploadState,
   ClassroomDocument,
   ClassroomModelName as modelName,
   report,
+  uploadState,
+  useUploadManager,
 } from 'lib-components';
-import { render, Deferred } from 'lib-tests';
+import { Deferred, render } from 'lib-tests';
 import React, { PropsWithChildren } from 'react';
 
 import { createClassroomDocument } from '@lib-classroom/data/sideEffects/createClassroomDocument';

@@ -1,5 +1,5 @@
 import { LiveModeType, ShouldNotHappen } from 'lib-components';
-import React, { Dispatch, lazy, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, lazy } from 'react';
 
 import { InvalidJitsiLiveException } from '@lib-video/errors';
 import { useCurrentLive } from '@lib-video/hooks/useCurrentVideo';

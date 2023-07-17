@@ -1,8 +1,8 @@
 import { Nullable } from 'lib-common';
 import {
+  Thumbnail,
   UploadManagerState,
   UploadManagerStatus,
-  Thumbnail,
   uploadState,
 } from 'lib-components';
 import { defineMessages, useIntl } from 'react-intl';

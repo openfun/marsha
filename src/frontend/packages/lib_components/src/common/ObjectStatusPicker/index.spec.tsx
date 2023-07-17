@@ -5,8 +5,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { UploadManagerStatus } from '@lib-components/common/UploadManager';
 import {
-  liveState,
   UploadableObject,
+  liveState,
   uploadState,
 } from '@lib-components/types/tracks';
 

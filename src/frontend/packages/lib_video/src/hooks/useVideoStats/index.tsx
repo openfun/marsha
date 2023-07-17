@@ -1,5 +1,5 @@
-import { fetchOne, VideoStats } from 'lib-components';
-import { useQuery, UseQueryOptions } from 'react-query';
+import { VideoStats, fetchOne } from 'lib-components';
+import { UseQueryOptions, useQuery } from 'react-query';
 
 export const useStatsVideo = (
   videoId: string,

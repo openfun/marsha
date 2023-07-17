@@ -1,4 +1,4 @@
-import { createIntl, IntlShape } from 'react-intl';
+import { IntlShape, createIntl } from 'react-intl';
 
 import { ParticipantType } from '@lib-video/hooks/useParticipantsStore';
 import { generateAnonymousNickname } from '@lib-video/utils/chat/chat';

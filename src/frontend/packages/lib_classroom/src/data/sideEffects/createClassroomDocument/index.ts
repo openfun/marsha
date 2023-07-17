@@ -1,10 +1,10 @@
 import {
-  useJwt,
   API_ENDPOINT,
+  Classroom,
   ClassroomDocument,
   ClassroomModelName,
-  Classroom,
   fetchWrapper,
+  useJwt,
 } from 'lib-components';
 
 export const createClassroomDocument = async (file: {

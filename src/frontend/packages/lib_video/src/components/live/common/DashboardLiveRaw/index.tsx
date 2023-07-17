@@ -1,8 +1,8 @@
 import { Box, Heading, Paragraph } from 'grommet';
-import { CopyClipboard, liveState, Video } from 'lib-components';
+import { CopyClipboard, Video, liveState } from 'lib-components';
 import React, { Fragment } from 'react';
 import { toast } from 'react-hot-toast';
-import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
+import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
   copied: {

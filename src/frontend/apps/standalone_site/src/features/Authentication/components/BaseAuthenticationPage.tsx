@@ -1,7 +1,7 @@
 import { Box } from 'grommet';
 import { useResponsive } from 'lib-components';
 import React, { Fragment, PropsWithChildren, useEffect, useState } from 'react';
-import { useIntl, defineMessages } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 
 import imageLeft from 'assets/img/telescope.png';
 import { ReactComponent as LogoIcon } from 'assets/svg/logo_marsha.svg';

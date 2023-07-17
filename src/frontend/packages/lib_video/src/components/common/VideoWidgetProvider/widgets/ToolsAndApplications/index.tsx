@@ -1,5 +1,5 @@
 import { Box } from 'grommet';
-import { report, ToggleInput, FoldableItem } from 'lib-components';
+import { FoldableItem, ToggleInput, report } from 'lib-components';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';

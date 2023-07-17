@@ -18,7 +18,7 @@ import { PictureActionLayer } from './PictureActionLayer';
 import { PictureInPictureElement } from './PictureInPictureElement';
 import { PictureInPictureSwitchAction } from './PictureInPictureSwitchAction';
 import { usePIPDragger } from './usePIPDragger';
-import { defaultmarginSize, Point } from './usePIPDragger/utils';
+import { Point, defaultmarginSize } from './usePIPDragger/utils';
 
 const pictureAnimationStyle: CSSProperties = {
   transitionProperty: 'left, top',

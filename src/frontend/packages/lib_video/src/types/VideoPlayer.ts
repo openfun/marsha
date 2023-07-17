@@ -1,5 +1,5 @@
 import { Maybe } from 'lib-common';
-import { Video, TimedText } from 'lib-components';
+import { TimedText, Video } from 'lib-components';
 import { VideoJsPlayer } from 'video.js';
 
 export interface VideoPlayerInterface {

@@ -13,18 +13,18 @@ import { DecodedJwtLTI, DecodedJwtUser } from '@lib-components/types/jwt';
 import {
   JoinMode,
   Live,
-  LiveModeType,
   LiveAttendance,
+  LiveModeType,
   LiveSession,
-  liveState,
   Playlist,
   PlaylistLite,
   SharedLiveMedia,
   Thumbnail,
   TimedText,
+  Video,
+  liveState,
   timedTextMode,
   uploadState,
-  Video,
 } from '@lib-components/types/tracks';
 
 import { User } from '../../types';

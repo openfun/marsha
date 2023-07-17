@@ -1,8 +1,8 @@
 import { cleanup, screen } from '@testing-library/react';
 import {
-  modelName,
   LiveModeType,
   liveState,
+  modelName,
   uploadState,
   videoMockFactory,
 } from 'lib-components';

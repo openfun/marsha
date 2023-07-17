@@ -1,9 +1,9 @@
 import {
-  Video,
-  report,
-  TextAreaInput,
   FoldableItem,
+  TextAreaInput,
+  Video,
   debounce,
+  report,
 } from 'lib-components';
 import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';

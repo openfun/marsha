@@ -1,5 +1,5 @@
 import fetchMock from 'fetch-mock';
-import { useJwt, timedTextMode } from 'lib-components';
+import { timedTextMode, useJwt } from 'lib-components';
 
 import { createTimedTextTrack } from '.';
 

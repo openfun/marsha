@@ -1,6 +1,6 @@
 import { Maybe } from 'lib-common';
-import { deleteOne, FetchResponseError, Thumbnail } from 'lib-components';
-import { useMutation, UseMutationOptions, useQueryClient } from 'react-query';
+import { FetchResponseError, Thumbnail, deleteOne } from 'lib-components';
+import { UseMutationOptions, useMutation, useQueryClient } from 'react-query';
 
 type UseDeleteThumbnailData = {
   videoId: string;

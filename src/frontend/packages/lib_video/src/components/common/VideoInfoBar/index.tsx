@@ -1,7 +1,7 @@
 import { Box, Heading, Paragraph } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { Nullable, theme } from 'lib-common';
-import { EditionSVG, report, TextInput, Video } from 'lib-components';
+import { EditionSVG, TextInput, Video, report } from 'lib-components';
 import { DateTime } from 'luxon';
 import React, {
   Fragment,

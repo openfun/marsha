@@ -1,4 +1,4 @@
-import { Box, Card as GrommetCard, CardBody, BoxTypes, Button } from 'grommet';
+import { Box, BoxTypes, Button, CardBody, Card as GrommetCard } from 'grommet';
 import { FormClose } from 'grommet-icons';
 import { PropsWithChildren, ReactNode, useState } from 'react';
 import styled from 'styled-components';

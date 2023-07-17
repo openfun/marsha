@@ -1,4 +1,4 @@
-import { TimedText, timedTextMode, report } from 'lib-components';
+import { TimedText, report, timedTextMode } from 'lib-components';
 
 import { VideoPlayerCreator } from '@lib-video/types/VideoPlayer';
 

@@ -64,6 +64,12 @@ module.exports = {
           'error',
           { varsIgnorePattern: '^_', argsIgnorePattern: '^_' },
         ],
+        'sort-imports': [
+          'error',
+          {
+            ignoreDeclarationSort: true,
+          },
+        ],
       },
     },
     {

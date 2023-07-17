@@ -2,12 +2,12 @@ import { Button, Paragraph, TextInput, ThemeContext } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { Maybe, theme } from 'lib-common';
 import {
-  decodeJwt,
-  useJwt,
-  LiveSession,
   Form,
   FormField,
+  LiveSession,
   checkToken,
+  decodeJwt,
+  useJwt,
 } from 'lib-components';
 import React, { useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';

@@ -1,4 +1,4 @@
-import { useVideo, uploadState, Video } from 'lib-components';
+import { Video, uploadState, useVideo } from 'lib-components';
 import React, { useMemo } from 'react';
 
 import { LiveTeacherDashboard } from '@lib-video/components/live';

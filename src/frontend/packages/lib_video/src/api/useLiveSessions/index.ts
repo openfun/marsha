@@ -1,10 +1,10 @@
 import {
   APIList,
-  fetchList,
   FetchListQueryKey,
   LiveSession,
+  fetchList,
 } from 'lib-components';
-import { useQuery, UseQueryOptions } from 'react-query';
+import { UseQueryOptions, useQuery } from 'react-query';
 
 type LiveSessionsResponse = APIList<LiveSession>;
 type UseLiveSessionsParams = { anonymous_id?: string };

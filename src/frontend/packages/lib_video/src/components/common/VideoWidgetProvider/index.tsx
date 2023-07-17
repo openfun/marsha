@@ -1,8 +1,8 @@
 import {
   InfoWidgetModalProvider,
   WidgetProps,
-  WidgetsContainer,
   WidgetSize,
+  WidgetsContainer,
 } from 'lib-components';
 import React from 'react';
 

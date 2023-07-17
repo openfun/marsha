@@ -1,30 +1,30 @@
 import { Box } from 'grommet';
 import {
   AnonymousUser,
-  useCurrentResourceContext,
-  useCurrentUser,
   Classroom,
   Spinner,
+  useCurrentResourceContext,
+  useCurrentUser,
 } from 'lib-components';
 import React, {
-  useState,
   Suspense,
-  useRef,
-  useEffect,
   lazy,
   useCallback,
+  useEffect,
+  useRef,
+  useState,
 } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
 import {
-  useJoinClassroomAction,
   useClassroom,
+  useJoinClassroomAction,
 } from '@lib-classroom/data/queries';
 
 import {
-  DashboardClassroomAskUsernameStudent,
   DashboardClassroomAskUsername,
+  DashboardClassroomAskUsernameStudent,
 } from '../DashboardClassroomAskUsername';
 import { DashboardClassroomError } from '../DashboardClassroomError';
 

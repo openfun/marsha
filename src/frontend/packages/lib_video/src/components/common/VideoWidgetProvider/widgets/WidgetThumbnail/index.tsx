@@ -2,18 +2,18 @@ import { Box, Button, Stack, Text } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { Nullable, theme } from 'lib-common';
 import {
+  FoldableItem,
+  Loader,
   PictureSVG,
   ThumbnailDisplayer,
-  useUploadManager,
+  UploadManagerStatus,
+  formatSizeErrorScale,
+  modelName,
+  report,
+  uploadState,
   useAppConfig,
   useThumbnail,
-  modelName,
-  uploadState,
-  report,
-  formatSizeErrorScale,
-  Loader,
-  UploadManagerStatus,
-  FoldableItem,
+  useUploadManager,
 } from 'lib-components';
 import React, { useCallback, useEffect } from 'react';
 import toast from 'react-hot-toast';

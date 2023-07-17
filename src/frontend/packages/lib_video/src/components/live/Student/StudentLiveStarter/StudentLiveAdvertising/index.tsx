@@ -1,15 +1,15 @@
 import { Box, Paragraph, Stack, Text } from 'grommet';
 import { Schedule } from 'grommet-icons';
 import {
-  useAppConfig,
-  liveState,
   ThumbnailDisplayer,
+  liveState,
+  useAppConfig,
   useResponsive,
 } from 'lib-components';
 import { DateTime, Duration } from 'luxon';
 import React, { CSSProperties, useEffect, useMemo, useState } from 'react';
 import ICalendarLink from 'react-icalendar-link';
-import { useIntl, defineMessages } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { useCurrentLive } from '@lib-video/hooks/useCurrentVideo';

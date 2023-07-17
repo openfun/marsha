@@ -1,11 +1,11 @@
 import {
   APIList,
-  fetchList,
   FetchListQueryKey,
   FetchResponseError,
   Playlist,
+  fetchList,
 } from 'lib-components';
-import { useQuery, UseQueryOptions } from 'react-query';
+import { UseQueryOptions, useQuery } from 'react-query';
 
 export enum PlaylistOrderType {
   BY_CREATED_ON = 'created_on',

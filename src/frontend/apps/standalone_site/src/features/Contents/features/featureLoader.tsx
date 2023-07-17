@@ -11,13 +11,13 @@ import { Fragment } from 'react';
 import { FeatureSample, useContentFeatures } from '../store/contentsStore';
 
 import {
-  classRoomContents,
   ClassRoomRouter,
   ClassRoomShuffle,
+  classRoomContents,
   routesClassRoom,
 } from './ClassRoom';
-import { liveContents, LiveRouter, routesLive } from './Live';
-import { videoContents, VideoRouter, routesVideo } from './Video';
+import { LiveRouter, liveContents, routesLive } from './Live';
+import { VideoRouter, routesVideo, videoContents } from './Video';
 
 enum RESOURCES_CHOICES {
   VIDEO = 'video',

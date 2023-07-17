@@ -1,5 +1,5 @@
 import { FetchResponseError, bulkDelete } from 'lib-components';
-import { useMutation, UseMutationOptions, useQueryClient } from 'react-query';
+import { UseMutationOptions, useMutation, useQueryClient } from 'react-query';
 
 type UseDeleteVideosData = { ids: string[] };
 type UseDeleteVideosError = FetchResponseError<UseDeleteVideosData>;

@@ -5,7 +5,7 @@ import { defineMessages, useIntl } from 'react-intl';
 
 import { ReactComponent as CheckListIcon } from 'assets/svg/iko_checklistsvg.svg';
 import { WhiteCard } from 'components/Cards';
-import { commonSortMessages, SortableTable } from 'components/SortableTable';
+import { SortableTable, commonSortMessages } from 'components/SortableTable';
 import { ITEM_PER_PAGE } from 'conf/global';
 
 import { usePortabilityRequests } from '../api/usePortabilityRequests';

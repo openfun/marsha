@@ -1,4 +1,4 @@
-import { fetchWrapper, useJwt, API_ENDPOINT, Video } from 'lib-components';
+import { API_ENDPOINT, Video, fetchWrapper, useJwt } from 'lib-components';
 
 export const navigateSharingDoc = async (
   video: Video,

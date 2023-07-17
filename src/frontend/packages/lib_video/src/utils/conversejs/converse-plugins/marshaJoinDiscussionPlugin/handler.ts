@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Video, useVideo, EventType, MessageType } from 'lib-components';
+import { EventType, MessageType, Video, useVideo } from 'lib-components';
 
 import {
   addParticipantAskingToJoin,

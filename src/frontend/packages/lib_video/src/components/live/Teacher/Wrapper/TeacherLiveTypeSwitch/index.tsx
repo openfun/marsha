@@ -1,9 +1,9 @@
 import { Box, CheckBox, Paragraph } from 'grommet';
 import {
-  updateResource,
-  modelName,
-  useVideo,
   LiveModeType,
+  modelName,
+  updateResource,
+  useVideo,
 } from 'lib-components';
 import React from 'react';
 import toast from 'react-hot-toast';

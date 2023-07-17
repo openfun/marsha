@@ -15,6 +15,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   object after 21 days.
 - Add P2p feature on videojs player
 - Webtorrent tracker for P2P video feature
+- eslint sort the modules name (#2338)
 
 ### Changed
 

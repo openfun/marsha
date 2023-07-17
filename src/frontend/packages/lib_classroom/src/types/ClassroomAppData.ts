@@ -1,9 +1,9 @@
 import { Nullable } from 'lib-common';
 import {
   AppData,
-  ClassroomModelName,
   Classroom,
   ClassroomDocument,
+  ClassroomModelName,
   ResourceMetadata,
 } from 'lib-components';
 

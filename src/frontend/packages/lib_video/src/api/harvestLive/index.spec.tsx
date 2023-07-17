@@ -1,5 +1,5 @@
 import fetchMock from 'fetch-mock';
-import { useJwt, videoMockFactory, liveState } from 'lib-components';
+import { liveState, useJwt, videoMockFactory } from 'lib-components';
 
 import { harvestLive } from '.';
 

@@ -1,4 +1,4 @@
-import { screen, renderHook } from '@testing-library/react';
+import { renderHook, screen } from '@testing-library/react';
 import { ResponsiveContext } from 'grommet';
 import { theme } from 'lib-common';
 import { render, wrapperUtils } from 'lib-tests';

@@ -1,4 +1,4 @@
-import { init, configureScope } from '@sentry/browser';
+import { configureScope, init } from '@sentry/browser';
 
 import { useSentry } from '.';
 

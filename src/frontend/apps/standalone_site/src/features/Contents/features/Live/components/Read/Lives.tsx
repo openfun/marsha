@@ -1,4 +1,4 @@
-import { useVideos, VideosOrderType } from 'lib-video';
+import { VideosOrderType, useVideos } from 'lib-video';
 import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 

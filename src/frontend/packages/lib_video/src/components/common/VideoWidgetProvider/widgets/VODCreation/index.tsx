@@ -1,5 +1,5 @@
 import { Box, Paragraph, Spinner } from 'grommet';
-import { liveState, FoldableItem } from 'lib-components';
+import { FoldableItem, liveState } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 

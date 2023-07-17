@@ -1,5 +1,5 @@
 import fetchMock from 'fetch-mock';
-import { useJwt, liveSessionFactory } from 'lib-components';
+import { liveSessionFactory, useJwt } from 'lib-components';
 import { v4 as uuidv4 } from 'uuid';
 
 import { pushAttendance } from '.';

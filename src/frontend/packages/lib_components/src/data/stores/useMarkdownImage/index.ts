@@ -7,8 +7,8 @@ import {
   removeResource,
 } from '@lib-components/data/stores/actions';
 import {
-  MarkdownImage,
   MarkdownDocumentModelName,
+  MarkdownImage,
 } from '@lib-components/types/apps/markdown/models';
 import { StoreState } from '@lib-components/types/stores';
 

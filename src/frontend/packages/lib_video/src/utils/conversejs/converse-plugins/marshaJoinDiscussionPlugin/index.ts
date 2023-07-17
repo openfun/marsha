@@ -6,13 +6,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Maybe } from 'lib-common';
 import {
-  fetchJitsiInfo,
-  Participant,
-  Video,
   EventType,
   MessageType,
+  Participant,
+  Video,
   VideoJitsiConnectionInfos,
   XMPP,
+  fetchJitsiInfo,
 } from 'lib-components';
 
 import { useParticipantWorkflow } from '@lib-video/hooks/useParticipantWorkflow';

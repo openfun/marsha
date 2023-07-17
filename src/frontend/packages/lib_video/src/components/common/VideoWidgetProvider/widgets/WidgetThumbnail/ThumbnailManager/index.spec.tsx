@@ -1,9 +1,9 @@
 import { screen } from '@testing-library/react';
 import {
-  thumbnailMockFactory,
   UploadManagerState,
   UploadManagerStatus,
   modelName,
+  thumbnailMockFactory,
   uploadState,
 } from 'lib-components';
 import { render } from 'lib-tests';

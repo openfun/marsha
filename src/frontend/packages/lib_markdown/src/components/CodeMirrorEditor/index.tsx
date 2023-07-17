@@ -21,21 +21,21 @@ import {
 import { languages } from '@codemirror/language-data';
 import { lintKeymap } from '@codemirror/lint';
 import {
-  highlightSelectionMatches,
   RegExpCursor,
+  highlightSelectionMatches,
   searchKeymap,
 } from '@codemirror/search';
 import { EditorState, Text } from '@codemirror/state';
 import {
   EditorView,
-  keymap,
   ViewUpdate,
-  highlightSpecialChars,
+  crosshairCursor,
   drawSelection,
   dropCursor,
-  rectangularSelection,
-  crosshairCursor,
   highlightActiveLine,
+  highlightSpecialChars,
+  keymap,
+  rectangularSelection,
 } from '@codemirror/view';
 import { Nullable } from 'lib-common';
 import React, { useCallback, useEffect, useRef } from 'react';

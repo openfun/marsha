@@ -4,8 +4,8 @@ import { QualitySelectorMenuButton } from './components/QualitySelectorMenuButto
 import { QualitySelectorMenuItem } from './components/QualitySelectorMenuItem';
 import {
   Events,
-  QualitySelectorOptions,
   QualitySelectorMenuItemOptions,
+  QualitySelectorOptions,
 } from './types';
 import './middleware';
 

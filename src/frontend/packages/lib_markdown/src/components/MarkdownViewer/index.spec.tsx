@@ -2,8 +2,8 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
   markdownDocumentMockFactory,
-  markdownTranslationMockFactory,
   markdownImageMockFactory,
+  markdownTranslationMockFactory,
 } from 'index';
 import { useJwt } from 'lib-components';
 import { render } from 'lib-tests';

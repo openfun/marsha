@@ -1,4 +1,4 @@
-import { Image, Box, Text, Heading } from 'grommet';
+import { Box, Heading, Image, Text } from 'grommet';
 import { StyledLink, useResponsive } from 'lib-components';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';

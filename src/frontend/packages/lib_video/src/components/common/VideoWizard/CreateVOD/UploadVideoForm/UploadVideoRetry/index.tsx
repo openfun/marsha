@@ -1,5 +1,5 @@
 import { Text } from 'grommet';
-import { formatSizeErrorScale, RetryUploadButton } from 'lib-components';
+import { RetryUploadButton, formatSizeErrorScale } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 

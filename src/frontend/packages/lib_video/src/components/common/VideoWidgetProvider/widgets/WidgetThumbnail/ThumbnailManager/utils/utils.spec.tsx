@@ -1,8 +1,8 @@
 import { renderHook } from '@testing-library/react';
 import {
-  thumbnailMockFactory,
   UploadManagerStatus,
   modelName,
+  thumbnailMockFactory,
   uploadState,
 } from 'lib-components';
 import { wrapperUtils } from 'lib-tests';

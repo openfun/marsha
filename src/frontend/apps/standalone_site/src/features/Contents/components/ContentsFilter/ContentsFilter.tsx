@@ -1,4 +1,4 @@
-import { Text, Button, Box } from 'grommet';
+import { Box, Button, Text } from 'grommet';
 import { Filter } from 'grommet-icons';
 import { Breakpoints } from 'lib-common';
 import { Playlist, useResponsive } from 'lib-components';

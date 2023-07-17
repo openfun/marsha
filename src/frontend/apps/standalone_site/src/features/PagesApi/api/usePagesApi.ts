@@ -4,7 +4,7 @@ import {
   FetchResponseError,
   fetchResponseHandler,
 } from 'lib-components';
-import { useQuery, UseQueryOptions } from 'react-query';
+import { UseQueryOptions, useQuery } from 'react-query';
 
 export interface PagesApi {
   slug: string;

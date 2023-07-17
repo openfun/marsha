@@ -3,8 +3,8 @@ import { normalizeColor } from 'grommet/utils';
 import { Nullable, theme } from 'lib-common';
 import {
   OpenClosePanelSVG,
-  useResizer,
   StyledNoSelectElement,
+  useResizer,
   useResponsive,
 } from 'lib-components';
 import React, { useRef } from 'react';

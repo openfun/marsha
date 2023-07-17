@@ -1,11 +1,11 @@
 import { Box, Text } from 'grommet';
 import { Nullable } from 'lib-common';
 import {
-  UploadingObject,
-  SharedLiveMedia,
-  uploadState,
   ObjectStatusPicker,
   RetryUploadButton,
+  SharedLiveMedia,
+  UploadingObject,
+  uploadState,
 } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';

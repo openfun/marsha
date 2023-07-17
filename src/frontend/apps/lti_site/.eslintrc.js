@@ -9,12 +9,6 @@ module.exports = {
     {
       files: ['*.ts', '*.tsx'],
       rules: {
-        'sort-imports': [
-          'error',
-          {
-            ignoreDeclarationSort: true,
-          },
-        ],
         'import/order': [
           'error',
           {

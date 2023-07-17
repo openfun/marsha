@@ -1,4 +1,4 @@
-import { ConfirmationModal, useTimedTextTrack, report } from 'lib-components';
+import { ConfirmationModal, report, useTimedTextTrack } from 'lib-components';
 import React from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';

@@ -2,14 +2,14 @@ import { cleanup, screen } from '@testing-library/react';
 import faker from 'faker';
 import fetchMock from 'fetch-mock';
 import {
-  useCurrentUser,
-  liveState,
-  liveSessionFactory,
-  thumbnailMockFactory,
-  liveMockFactory,
   LiveModeType,
+  liveMockFactory,
+  liveSessionFactory,
+  liveState,
+  thumbnailMockFactory,
+  useCurrentUser,
 } from 'lib-components';
-import { render, Deferred } from 'lib-tests';
+import { Deferred, render } from 'lib-tests';
 import { DateTime, Duration } from 'luxon';
 import React from 'react';
 

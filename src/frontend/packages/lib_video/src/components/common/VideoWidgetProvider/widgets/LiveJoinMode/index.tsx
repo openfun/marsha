@@ -1,5 +1,5 @@
 import { Box, Select } from 'grommet';
-import { JoinMode, report, FoldableItem } from 'lib-components';
+import { FoldableItem, JoinMode, report } from 'lib-components';
 import React from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';

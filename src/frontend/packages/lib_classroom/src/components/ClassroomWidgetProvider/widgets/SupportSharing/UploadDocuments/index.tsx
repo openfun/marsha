@@ -1,13 +1,13 @@
 import { Box, Button, Paragraph, Text } from 'grommet';
 import { Nullable } from 'lib-common';
 import {
+  Classroom,
   PlusSVG,
   UploadManagerStatus,
-  useUploadManager,
-  ClassroomModelName as modelName,
-  Classroom,
   formatSizeErrorScale,
+  ClassroomModelName as modelName,
   report,
+  useUploadManager,
 } from 'lib-components';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Dropzone from 'react-dropzone';
@@ -15,8 +15,8 @@ import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
 import {
-  useClassroomDocuments,
   useClassroomDocumentMetadata,
+  useClassroomDocuments,
 } from '@lib-classroom/data/queries';
 import { createClassroomDocument } from '@lib-classroom/data/sideEffects/createClassroomDocument';
 

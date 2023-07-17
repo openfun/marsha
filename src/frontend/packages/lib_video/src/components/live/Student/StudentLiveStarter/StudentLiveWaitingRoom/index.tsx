@@ -1,7 +1,7 @@
 import { Box, Heading, Paragraph } from 'grommet';
 import { useAppConfig, useResponsive } from 'lib-components';
 import React, { CSSProperties } from 'react';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import { FormattedMessage, defineMessages } from 'react-intl';
 
 import { AdvertisingBox } from '@lib-video/components/live/Student/StudentLiveStarter/StudentLiveAdvertising/AdvertisingBox';
 import { StudentLiveDescription } from '@lib-video/components/live/Student/StudentLiveStarter/StudentLiveAdvertising/StudentLiveDescription';

@@ -1,4 +1,4 @@
-import { AnonymousUser, fetchWrapper, User } from 'lib-components';
+import { AnonymousUser, User, fetchWrapper } from 'lib-components';
 
 const isPresentWithType = (value: unknown, type: 'string' | 'boolean') => {
   return value !== null && value !== undefined && typeof value === type;

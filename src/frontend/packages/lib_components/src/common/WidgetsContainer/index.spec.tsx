@@ -4,7 +4,7 @@ import React from 'react';
 
 import { InfoWidgetModalProvider } from '@lib-components/hooks/stores/useInfoWidgetModal';
 
-import { WidgetsContainer, WidgetSize } from '.';
+import { WidgetSize, WidgetsContainer } from '.';
 
 const GenericComponent1 = () => <p>Generic component 1</p>;
 const GenericComponent2 = () => <p>Generic component 2</p>;

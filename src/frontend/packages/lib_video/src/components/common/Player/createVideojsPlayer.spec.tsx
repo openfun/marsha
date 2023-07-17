@@ -2,15 +2,15 @@
 /* eslint-disable testing-library/no-container */
 import { waitFor } from '@testing-library/react';
 import {
-  useJwt,
+  Id3VideoType,
+  VideoXAPIStatementInterface,
+  XAPIStatement,
+  liveMockFactory,
   liveState,
   timedTextMode,
   uploadState,
-  VideoXAPIStatementInterface,
-  XAPIStatement,
+  useJwt,
   useVideo,
-  Id3VideoType,
-  liveMockFactory,
   videoMockFactory,
 } from 'lib-components';
 import { render } from 'lib-tests';

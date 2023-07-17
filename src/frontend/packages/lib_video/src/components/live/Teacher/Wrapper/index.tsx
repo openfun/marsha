@@ -2,10 +2,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Box } from 'grommet';
 import {
-  useAppConfig,
-  liveState,
-  LiveModeType,
   JoinMode,
+  LiveModeType,
+  liveState,
+  useAppConfig,
 } from 'lib-components';
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
@@ -28,8 +28,8 @@ import { DashboardControlPane } from '../../../common/DashboardControlPane';
 import { Controls } from './Controls';
 import { MainContent } from './MainContent';
 import {
-  OnStageRequestToast,
   ON_STAGE_REQUEST_TOAST_ID,
+  OnStageRequestToast,
 } from './OnStageRequestToast';
 import { TeacherLiveTypeSwitch } from './TeacherLiveTypeSwitch';
 

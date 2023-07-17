@@ -4,9 +4,9 @@ import { normalizeColor } from 'grommet/utils';
 import { Maybe, theme } from 'lib-common';
 import {
   DownloadSVG,
-  videoSize,
   useFetchButton,
   useVideo,
+  videoSize,
 } from 'lib-components';
 import React, { useEffect } from 'react';
 import { useIntl } from 'react-intl';

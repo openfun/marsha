@@ -1,10 +1,10 @@
 import {
   APIList,
-  fetchList,
   FetchListQueryKey,
   FetchResponseError,
+  fetchList,
 } from 'lib-components';
-import { useQuery, UseQueryOptions } from 'react-query';
+import { UseQueryOptions, useQuery } from 'react-query';
 
 export interface UserLite {
   email: string;

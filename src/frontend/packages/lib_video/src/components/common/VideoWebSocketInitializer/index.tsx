@@ -1,10 +1,10 @@
 import RobustWebSocket from 'altamoon-robust-websocket';
 import { Nullable } from 'lib-common';
 import {
+  UploadableObject,
   addResource,
   getResource,
   modelName,
-  UploadableObject,
 } from 'lib-components';
 import React, {
   PropsWithChildren,
@@ -15,9 +15,9 @@ import React, {
 } from 'react';
 
 import {
+  WEB_SOCKET_INITIALIZED,
   WebSocketInitializer,
   WebSocketInitializerProps,
-  WEB_SOCKET_INITIALIZED,
 } from './WebSocketInitializer';
 
 type WSMessageType = {

@@ -1,10 +1,10 @@
 import { act } from '@testing-library/react';
 import faker from 'faker';
 import {
-  sharedLiveMediaMockFactory,
+  LiveModeType,
   liveMockFactory,
   liveState,
-  LiveModeType,
+  sharedLiveMediaMockFactory,
   useVideo,
 } from 'lib-components';
 import { render } from 'lib-tests';

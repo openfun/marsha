@@ -8,7 +8,7 @@ import {
 } from 'lib-components';
 import React, { useCallback } from 'react';
 import { toast } from 'react-hot-toast';
-import { defineMessages, IntlShape, useIntl } from 'react-intl';
+import { IntlShape, defineMessages, useIntl } from 'react-intl';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 

@@ -1,10 +1,10 @@
 import {
-  fetchWrapper,
-  useJwt,
   API_ENDPOINT,
-  modelName,
   Thumbnail,
   fetchResponseHandler,
+  fetchWrapper,
+  modelName,
+  useJwt,
 } from 'lib-components';
 
 interface createThumbnailBody {

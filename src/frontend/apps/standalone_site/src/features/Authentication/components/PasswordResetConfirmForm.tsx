@@ -6,8 +6,8 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
 import {
-  usePasswordResetConfirm,
   UsePasswordResetConfirmError,
+  usePasswordResetConfirm,
 } from '../api/usePasswordResetConfirm';
 
 const messages = defineMessages({

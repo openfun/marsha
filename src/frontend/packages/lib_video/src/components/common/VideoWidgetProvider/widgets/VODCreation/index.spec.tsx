@@ -1,10 +1,10 @@
 /* eslint-disable testing-library/no-node-access */
 import { cleanup, screen } from '@testing-library/react';
 import {
+  InfoWidgetModalProvider,
+  liveState,
   useJwt,
   videoMockFactory,
-  liveState,
-  InfoWidgetModalProvider,
 } from 'lib-components';
 import { render } from 'lib-tests';
 import React from 'react';

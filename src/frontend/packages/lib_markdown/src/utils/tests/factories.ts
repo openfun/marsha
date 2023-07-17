@@ -1,10 +1,10 @@
 import * as faker from 'faker';
 import {
-  playlistMockFactory,
-  uploadState,
   MarkdownDocument,
   MarkdownDocumentTranslation,
   MarkdownImage,
+  playlistMockFactory,
+  uploadState,
 } from 'lib-components';
 
 export const markdownDocumentMockFactory = (

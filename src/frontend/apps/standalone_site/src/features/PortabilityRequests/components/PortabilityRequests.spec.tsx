@@ -2,8 +2,8 @@ import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
-  playlistMockFactory,
   PortabilityRequest,
+  playlistMockFactory,
   portabilityRequestMockFactory,
 } from 'lib-components';
 import { Deferred, render } from 'lib-tests';

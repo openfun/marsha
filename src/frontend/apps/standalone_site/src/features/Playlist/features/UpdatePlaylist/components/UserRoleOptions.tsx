@@ -1,4 +1,4 @@
-import { defineMessages, IntlShape } from 'react-intl';
+import { IntlShape, defineMessages } from 'react-intl';
 
 import { PlaylistRole } from '../types/playlistAccess';
 

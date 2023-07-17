@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react';
-import { videoMockFactory, liveState } from 'lib-components';
+import { liveState, videoMockFactory } from 'lib-components';
 import { render } from 'lib-tests';
 import React from 'react';
 import { QueryClient } from 'react-query';

@@ -8,7 +8,7 @@ import {
 } from '@lib-components/data/stores/actions';
 import { modelName } from '@lib-components/types/models';
 import { StoreState } from '@lib-components/types/stores';
-import { Video, Id3VideoType } from '@lib-components/types/tracks';
+import { Id3VideoType, Video } from '@lib-components/types/tracks';
 
 type VideoStateResource = {
   [modelName.VIDEOS]: {

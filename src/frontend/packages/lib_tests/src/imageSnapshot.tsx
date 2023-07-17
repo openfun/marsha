@@ -2,7 +2,7 @@ import path from 'path';
 
 import { cleanup, render } from '@testing-library/react';
 import { Grommet } from 'grommet';
-import { generateImage, GenerateImageOptions } from 'jsdom-screenshot';
+import { GenerateImageOptions, generateImage } from 'jsdom-screenshot';
 import { GlobalStyles, theme } from 'lib-common';
 import React from 'react';
 

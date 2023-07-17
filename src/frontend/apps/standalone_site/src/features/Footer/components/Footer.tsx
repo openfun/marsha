@@ -1,5 +1,5 @@
 import { Box, Text } from 'grommet';
-import { Twitter, Facebook, Mail, Linkedin, Github } from 'grommet-icons';
+import { Facebook, Github, Linkedin, Mail, Twitter } from 'grommet-icons';
 import { Breakpoints } from 'lib-common';
 import { StyledLink, useResponsive } from 'lib-components';
 

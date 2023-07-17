@@ -1,4 +1,4 @@
-import { timedTextMode, FoldableItem } from 'lib-components';
+import { FoldableItem, timedTextMode } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 

@@ -1,10 +1,10 @@
-import { Tabs, Box, ThemeType, ThemeContext } from 'grommet';
+import { Box, Tabs, ThemeContext, ThemeType } from 'grommet';
 import {
-  useCurrentResourceContext,
   ShouldNotHappen,
+  useCurrentResourceContext,
   useResponsive,
 } from 'lib-components';
-import React, { useEffect, Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import styled from 'styled-components';
 
 import { Chat } from '@lib-video/components/live/common/Chat';

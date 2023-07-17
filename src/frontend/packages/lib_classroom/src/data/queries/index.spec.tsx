@@ -4,21 +4,21 @@ import { useJwt } from 'lib-components';
 import { WrapperReactQuery } from 'lib-tests';
 
 import {
-  classroomMockFactory,
   classroomDocumentMockFactory,
+  classroomMockFactory,
 } from '@lib-classroom/utils/tests/factories';
 
 import {
   useClassroom,
+  useClassroomDocuments,
   useClassrooms,
   useCreateClassroom,
-  useUpdateClassroom,
   useCreateClassroomAction,
-  useJoinClassroomAction,
-  useClassroomDocuments,
-  useUpdateClassroomDocument,
   useDeleteClassroom,
   useDeleteClassrooms,
+  useJoinClassroomAction,
+  useUpdateClassroom,
+  useUpdateClassroomDocument,
 } from '.';
 
 jest.mock('lib-components', () => ({

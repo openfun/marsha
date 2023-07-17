@@ -1,5 +1,5 @@
 import { fetchWrapper } from 'lib-components';
-import { useMutation, UseMutationOptions } from 'react-query';
+import { UseMutationOptions, useMutation } from 'react-query';
 
 type UsePasswordResetData = {
   email: string;

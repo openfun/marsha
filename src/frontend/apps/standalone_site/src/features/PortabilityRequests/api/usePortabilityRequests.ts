@@ -1,16 +1,16 @@
 import {
-  actionOne,
   APIList,
-  fetchList,
   FetchListQueryKey,
   PortabilityRequest,
+  actionOne,
+  fetchList,
 } from 'lib-components';
 import {
-  useMutation,
   UseMutationOptions,
+  UseQueryOptions,
+  useMutation,
   useQuery,
   useQueryClient,
-  UseQueryOptions,
 } from 'react-query';
 
 type UsePortabilityRequestsParams = {

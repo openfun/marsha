@@ -1,12 +1,12 @@
 import * as faker from 'faker';
 import {
-  playlistMockFactory,
-  uploadState,
   Classroom,
   ClassroomDocument,
   ClassroomInfos,
   ClassroomRecording,
   ClassroomRecordingVod,
+  playlistMockFactory,
+  uploadState,
 } from 'lib-components';
 
 const { READY } = uploadState;

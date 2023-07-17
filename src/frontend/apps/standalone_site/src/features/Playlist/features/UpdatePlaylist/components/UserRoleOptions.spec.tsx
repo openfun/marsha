@@ -1,4 +1,4 @@
-import { createIntl, IntlShape } from 'react-intl';
+import { IntlShape, createIntl } from 'react-intl';
 
 import { userRoleOptions } from './UserRoleOptions';
 
