@@ -1,6 +1,6 @@
 import { fireEvent, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { render, Deferred } from 'lib-tests';
+import { Deferred, render } from 'lib-tests';
 import React from 'react';
 
 import { classroomMockFactory } from '@lib-classroom/utils/tests/factories';

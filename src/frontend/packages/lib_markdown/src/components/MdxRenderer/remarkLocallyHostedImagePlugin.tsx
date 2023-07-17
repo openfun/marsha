@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import { Image } from 'mdast';
-import { visit, Test } from 'unist-util-visit';
+import { Test, visit } from 'unist-util-visit';
 
 import { fetchOneMarkdownImage } from '@lib-markdown/data/queries';
 

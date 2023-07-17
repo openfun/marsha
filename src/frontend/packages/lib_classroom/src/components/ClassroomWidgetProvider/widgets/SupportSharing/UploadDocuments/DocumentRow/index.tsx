@@ -1,12 +1,12 @@
 import { Anchor, Box, Button, Text } from 'grommet';
 import {
-  UploadingObject,
-  uploadState,
-  ObjectStatusPicker,
-  RetryUploadButton,
   BinSVG,
   ClassroomDocument,
+  ObjectStatusPicker,
+  RetryUploadButton,
+  UploadingObject,
   ValidSVG,
+  uploadState,
 } from 'lib-components';
 import React, { useCallback, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';

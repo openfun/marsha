@@ -1,8 +1,8 @@
 import { screen } from '@testing-library/react';
 import {
+  liveState,
   participantMockFactory,
   videoMockFactory,
-  liveState,
 } from 'lib-components';
 import { render } from 'lib-tests';
 import React from 'react';

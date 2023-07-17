@@ -1,6 +1,6 @@
 import { Form, FormField, TextArea } from 'grommet';
 import { Maybe } from 'lib-common';
-import { Classroom, debounce, FoldableItem } from 'lib-components';
+import { Classroom, FoldableItem, debounce } from 'lib-components';
 import React, { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';

@@ -1,4 +1,4 @@
-import { defineMessages, IntlShape } from 'react-intl';
+import { IntlShape, defineMessages } from 'react-intl';
 
 import { ParticipantType } from '@lib-video/hooks/useParticipantsStore';
 import { isAnonymous } from '@lib-video/utils/chat/chat';

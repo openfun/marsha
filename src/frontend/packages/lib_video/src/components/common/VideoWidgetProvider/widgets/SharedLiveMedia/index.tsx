@@ -1,11 +1,11 @@
 import { Box, Button } from 'grommet';
 import { Nullable } from 'lib-common';
 import {
-  useUploadManager,
-  useSharedLiveMedia,
-  modelName,
-  ItemList,
   FoldableItem,
+  ItemList,
+  modelName,
+  useSharedLiveMedia,
+  useUploadManager,
 } from 'lib-components';
 import React, { useEffect, useRef } from 'react';
 import { defineMessages, useIntl } from 'react-intl';

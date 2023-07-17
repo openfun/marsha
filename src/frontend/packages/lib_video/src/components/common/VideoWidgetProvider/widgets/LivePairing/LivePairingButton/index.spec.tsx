@@ -1,7 +1,7 @@
 import { screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { useJwt, videoMockFactory, liveState } from 'lib-components';
-import { render, Deferred, advanceJestTimersByTime } from 'lib-tests';
+import { liveState, useJwt, videoMockFactory } from 'lib-components';
+import { Deferred, advanceJestTimersByTime, render } from 'lib-tests';
 import React from 'react';
 
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';

@@ -2,12 +2,12 @@ import { Button, Text } from 'grommet';
 import {
   BinSVG,
   ButtonLoaderStyle,
-  useThumbnail,
-  Thumbnail,
-  report,
   Modal,
   ModalButton,
   ModalControlMethods,
+  Thumbnail,
+  report,
+  useThumbnail,
 } from 'lib-components';
 import React, { useRef } from 'react';
 import toast from 'react-hot-toast';

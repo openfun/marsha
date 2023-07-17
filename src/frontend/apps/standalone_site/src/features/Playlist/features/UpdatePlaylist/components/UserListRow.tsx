@@ -3,10 +3,10 @@ import {
   AnonymousUser,
   BinSVG,
   ButtonLoaderStyle,
-  useCurrentUser,
   Modal,
   ModalButton,
   ModalControlMethods,
+  useCurrentUser,
 } from 'lib-components';
 import { Fragment, useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';

@@ -1,4 +1,4 @@
-import { Box, Spinner, BoxProps, SpinnerProps } from 'grommet';
+import { Box, BoxProps, Spinner, SpinnerProps } from 'grommet';
 
 export const ContentSpinner = ({
   boxProps,

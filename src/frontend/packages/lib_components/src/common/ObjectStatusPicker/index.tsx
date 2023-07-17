@@ -5,10 +5,10 @@ import { defineMessages, useIntl } from 'react-intl';
 import { Spinner } from '@lib-components/common/Loader';
 import { UploadManagerStatus } from '@lib-components/common/UploadManager';
 import {
-  liveState,
   UploadableObject,
-  uploadState,
   Video,
+  liveState,
+  uploadState,
 } from '@lib-components/types/tracks';
 
 const { DELETED, ERROR, PENDING, PROCESSING } = uploadState;

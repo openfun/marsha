@@ -1,7 +1,7 @@
 import { Fragment, PropsWithChildren } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
-import { appendUtilsElement, RenderOptions } from './render';
+import { RenderOptions, appendUtilsElement } from './render';
 
 export const WrapperReactQuery = ({ children }: PropsWithChildren) => {
   const queryClient = new QueryClient({

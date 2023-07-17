@@ -1,7 +1,7 @@
 import { Box, Button, Grid } from 'grommet';
 import { Breakpoints, Nullable } from 'lib-common';
-import { Classroom, useResponsive, Spinner } from 'lib-components';
-import React, { lazy, Suspense } from 'react';
+import { Classroom, Spinner, useResponsive } from 'lib-components';
+import React, { Suspense, lazy } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 

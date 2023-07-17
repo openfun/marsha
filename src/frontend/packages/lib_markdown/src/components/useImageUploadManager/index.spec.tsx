@@ -4,11 +4,11 @@ import { markdownImageMockFactory } from 'index';
 import {
   UploadManager,
   UploadManagerStatus,
-  useUploadManager,
   MarkdownDocumentModelName as modelName,
   uploadState,
+  useUploadManager,
 } from 'lib-components';
-import { render, Deferred } from 'lib-tests';
+import { Deferred, render } from 'lib-tests';
 import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import xhrMock, { MockResponse } from 'xhr-mock';

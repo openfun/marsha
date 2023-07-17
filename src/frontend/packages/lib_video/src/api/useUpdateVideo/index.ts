@@ -1,5 +1,5 @@
-import { updateOne, Video } from 'lib-components';
-import { useMutation, UseMutationOptions, useQueryClient } from 'react-query';
+import { Video, updateOne } from 'lib-components';
+import { UseMutationOptions, useMutation, useQueryClient } from 'react-query';
 
 type UseUpdateVideoData = Partial<Video>;
 type UseUpdateVideoError =

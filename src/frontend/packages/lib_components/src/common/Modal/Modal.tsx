@@ -3,9 +3,9 @@ import { normalizeColor } from 'grommet/utils';
 import { FormClose } from 'grommet-icons';
 import { Nullable, theme } from 'lib-common';
 import {
-  forwardRef,
   MutableRefObject,
   PropsWithChildren,
+  forwardRef,
   useCallback,
   useEffect,
   useState,

@@ -7,18 +7,18 @@ import {
   FileDepositoryModelName,
 } from '@lib-components/types/apps/deposit/models';
 import {
-  MarkdownImage,
   MarkdownDocumentModelName,
+  MarkdownImage,
 } from '@lib-components/types/apps/markdown/models';
 
 import { Document } from './file';
 import { modelName } from './models';
 import {
   Resource,
+  SharedLiveMedia,
   Thumbnail,
   TimedText,
   Video,
-  SharedLiveMedia,
 } from './tracks';
 
 export type StoreState<R extends Resource> = {

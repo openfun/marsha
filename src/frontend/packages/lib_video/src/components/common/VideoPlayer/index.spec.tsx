@@ -1,16 +1,16 @@
 /* eslint-disable testing-library/no-node-access */
 /* eslint-disable testing-library/no-container */
-import { screen, waitFor, act } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import {
+  LiveModeType,
+  liveState,
+  thumbnailMockFactory,
   timedTextMockFactory,
-  videoMockFactory,
   timedTextMode,
   uploadState,
-  liveState,
-  LiveModeType,
-  thumbnailMockFactory,
   useThumbnail,
+  videoMockFactory,
 } from 'lib-components';
 import { render } from 'lib-tests';
 import React from 'react';

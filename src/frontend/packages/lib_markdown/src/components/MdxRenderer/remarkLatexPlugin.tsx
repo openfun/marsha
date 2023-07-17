@@ -8,7 +8,7 @@
 import { fromParse5 } from 'hast-util-from-parse5';
 import { Code, Parent } from 'mdast';
 import { parseFragment } from 'parse5';
-import { visit, Test } from 'unist-util-visit';
+import { Test, visit } from 'unist-util-visit';
 
 import { markdownRenderLatex } from '@lib-markdown/data/queries';
 

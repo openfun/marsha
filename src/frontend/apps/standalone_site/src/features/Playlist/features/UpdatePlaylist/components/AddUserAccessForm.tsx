@@ -1,6 +1,6 @@
 import { Box, Heading, Paragraph, Select } from 'grommet';
 import { Nullable } from 'lib-common';
-import { TextInput, ModalButton } from 'lib-components';
+import { ModalButton, TextInput } from 'lib-components';
 import { debounce } from 'lodash';
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';

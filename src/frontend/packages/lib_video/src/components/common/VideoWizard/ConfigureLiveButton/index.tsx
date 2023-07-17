@@ -1,6 +1,6 @@
 import { Button } from 'grommet';
 import { Nullable } from 'lib-common';
-import { Loader, useVideo, LiveModeType, Video } from 'lib-components';
+import { LiveModeType, Loader, Video, useVideo } from 'lib-components';
 import React, { ReactElement, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 

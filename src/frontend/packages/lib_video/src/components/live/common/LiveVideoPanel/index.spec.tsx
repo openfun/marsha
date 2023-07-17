@@ -1,8 +1,8 @@
 import { screen } from '@testing-library/react';
 import { ResponsiveContext } from 'grommet';
 import {
-  useCurrentResourceContext,
   participantMockFactory,
+  useCurrentResourceContext,
   videoMockFactory,
 } from 'lib-components';
 import { render, renderImageSnapshot } from 'lib-tests';

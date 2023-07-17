@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react';
-import { renderImageSnapshot, render } from 'lib-tests';
+import { render, renderImageSnapshot } from 'lib-tests';
 import { DateTime } from 'luxon';
 import React from 'react';
 

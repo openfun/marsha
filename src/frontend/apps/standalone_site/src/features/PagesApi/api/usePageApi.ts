@@ -1,5 +1,5 @@
-import { fetchOne, FetchResponseError } from 'lib-components';
-import { useQuery, UseQueryOptions } from 'react-query';
+import { FetchResponseError, fetchOne } from 'lib-components';
+import { UseQueryOptions, useQuery } from 'react-query';
 
 export interface PageResponse {
   slug: string;

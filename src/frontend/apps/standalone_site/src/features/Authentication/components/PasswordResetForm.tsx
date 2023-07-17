@@ -8,8 +8,8 @@ import { useNavigate } from 'react-router-dom';
 import { routes } from 'routes';
 
 import {
-  usePasswordReset,
   UsePasswordResetError,
+  usePasswordReset,
 } from '../api/usePasswordReset';
 
 const messages = defineMessages({

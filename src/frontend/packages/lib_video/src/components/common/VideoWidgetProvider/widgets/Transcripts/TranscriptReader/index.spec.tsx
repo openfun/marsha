@@ -1,7 +1,7 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { timedTextMode, uploadState } from 'lib-components';
-import { render, Deferred } from 'lib-tests';
+import { Deferred, render } from 'lib-tests';
 import React, { Fragment } from 'react';
 import { VTTCue } from 'vtt.js';
 import 'vtt.js/lib/vttcue';

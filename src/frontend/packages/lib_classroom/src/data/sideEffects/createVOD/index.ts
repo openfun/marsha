@@ -2,10 +2,10 @@ import {
   API_ENDPOINT,
   ClassroomModelName,
   ClassroomRecording,
+  Video,
   fetchResponseHandler,
   fetchWrapper,
   useJwt,
-  Video,
 } from 'lib-components';
 
 export const createVOD = async (

@@ -1,5 +1,5 @@
 import RobustWebSocket from 'altamoon-robust-websocket';
-import { useJwt, WS_ENPOINT } from 'lib-components';
+import { WS_ENPOINT, useJwt } from 'lib-components';
 
 export const generateVideoWebsocketUrl = (
   videoId: string,

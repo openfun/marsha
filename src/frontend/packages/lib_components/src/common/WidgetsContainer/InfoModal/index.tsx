@@ -1,6 +1,6 @@
 import { Box, Button, Layer, Text } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
-import { theme, isFirefox, isIframe } from 'lib-common';
+import { isFirefox, isIframe, theme } from 'lib-common';
 import React, { useCallback, useEffect } from 'react';
 import styled from 'styled-components';
 

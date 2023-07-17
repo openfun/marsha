@@ -6,10 +6,10 @@
 import { Box } from 'grommet';
 import { Nullable } from 'lib-common';
 import {
+  JitsiMeetExternalAPI,
   LiveJitsi,
   liveState,
   report,
-  JitsiMeetExternalAPI,
 } from 'lib-components';
 import React, {
   useCallback,

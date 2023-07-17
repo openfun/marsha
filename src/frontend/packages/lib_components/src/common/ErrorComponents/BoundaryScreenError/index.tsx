@@ -1,8 +1,8 @@
-import { Box, Paragraph, Image, Text, Stack, Heading } from 'grommet';
+import { Box, Heading, Image, Paragraph, Stack, Text } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
 import React from 'react';
-import { useIntl, FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { useAppConfig } from '@lib-components/data/stores/useAppConfig';

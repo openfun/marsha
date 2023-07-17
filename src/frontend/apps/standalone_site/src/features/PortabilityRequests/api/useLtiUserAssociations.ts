@@ -1,5 +1,5 @@
 import { createOne } from 'lib-components';
-import { useMutation, UseMutationOptions, useQueryClient } from 'react-query';
+import { UseMutationOptions, useMutation, useQueryClient } from 'react-query';
 
 type UseCreateLtiUserAssociationData = {
   association_jwt: string;

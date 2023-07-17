@@ -8,7 +8,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { routes } from 'routes/routes';
 import { getLocalStorage } from 'utils/browser';
 
-import { useBasicLogin, UseBasicLoginError } from '../api/basicLogin';
+import { UseBasicLoginError, useBasicLogin } from '../api/basicLogin';
 
 const messages = defineMessages({
   labelSubmit: {

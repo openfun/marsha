@@ -1,4 +1,4 @@
-import { Heading, Paragraph, Box } from 'grommet';
+import { Box, Heading, Paragraph } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
 import { DateTime } from 'luxon';

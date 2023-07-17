@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 
 import { useJwt } from '@lib-components/hooks/stores/useJwt';
 import {
-  ServiceworkerAuthMessage,
   EServiceworkerAuthAction,
+  ServiceworkerAuthMessage,
 } from '@lib-components/types/serviceWorker';
 
 /**

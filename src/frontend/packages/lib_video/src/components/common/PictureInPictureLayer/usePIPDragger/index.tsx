@@ -7,7 +7,7 @@ import React, {
   useState,
 } from 'react';
 
-import { computePicturePosition, defaultmarginSize, Point } from './utils';
+import { Point, computePicturePosition, defaultmarginSize } from './utils';
 
 export type startDraggingHandler = (
   event: React.MouseEvent<HTMLDivElement, MouseEvent>,

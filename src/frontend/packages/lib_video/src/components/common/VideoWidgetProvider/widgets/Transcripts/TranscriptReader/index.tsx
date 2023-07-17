@@ -1,6 +1,6 @@
 import { Box, Paragraph } from 'grommet';
 import { TimedTextTranscript } from 'lib-components';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { VTTCue, WebVTT } from 'vtt.js';
 
 import { useTranscriptReaderRequest } from '@lib-video/api/useTranscriptReaderRequest';

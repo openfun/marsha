@@ -1,8 +1,8 @@
 import { Nullable } from 'lib-common';
 import {
   UploadManagerStatus,
-  useUploadManager,
   uploadState,
+  useUploadManager,
 } from 'lib-components';
 import React, { useState } from 'react';
 import { useIntl } from 'react-intl';

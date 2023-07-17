@@ -1,4 +1,4 @@
-import { liveState, Video } from 'lib-components';
+import { Video, liveState } from 'lib-components';
 
 export const shouldDisplayDefaultMessage = (video: Video) => {
   return (

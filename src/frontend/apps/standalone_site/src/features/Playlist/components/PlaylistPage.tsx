@@ -6,7 +6,7 @@ import { Route, Routes, useNavigate } from 'react-router-dom';
 
 import { ReactComponent as CheckListIcon } from 'assets/svg/iko_checklistsvg.svg';
 import { WhiteCard } from 'components/Cards';
-import { commonSortMessages, SortableTable } from 'components/SortableTable';
+import { SortableTable, commonSortMessages } from 'components/SortableTable';
 import { ITEM_PER_PAGE } from 'conf/global';
 import { routes } from 'routes';
 

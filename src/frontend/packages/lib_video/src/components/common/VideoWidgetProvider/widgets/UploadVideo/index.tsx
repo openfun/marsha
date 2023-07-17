@@ -1,13 +1,13 @@
 import { Box, Button, Spinner, Text } from 'grommet';
 import { Nullable } from 'lib-common';
 import {
-  ValidSVG,
-  useUploadManager,
-  modelName,
-  uploadState,
+  FoldableItem,
   ProgressionBar,
   UploadManagerStatus,
-  FoldableItem,
+  ValidSVG,
+  modelName,
+  uploadState,
+  useUploadManager,
 } from 'lib-components';
 import React, { useEffect, useRef } from 'react';
 import { defineMessages, useIntl } from 'react-intl';

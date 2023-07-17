@@ -1,4 +1,4 @@
-import { waitFor, screen, act } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { useP2PConfig, useSentry } from 'lib-components';
 import { Deferred, render } from 'lib-tests';

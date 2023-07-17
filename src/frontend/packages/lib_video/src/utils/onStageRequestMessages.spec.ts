@@ -1,5 +1,5 @@
 import { participantMockFactory } from 'lib-components';
-import { createIntl, IntlShape } from 'react-intl';
+import { IntlShape, createIntl } from 'react-intl';
 
 import { onStageRequestMessage } from './onStageRequestMessage';
 

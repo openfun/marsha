@@ -1,10 +1,10 @@
 import { Box, Button, Select, Text } from 'grommet';
 import {
-  videoSize,
-  report,
+  FoldableItem,
   ToggleInput,
   Video,
-  FoldableItem,
+  report,
+  videoSize,
 } from 'lib-components';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-hot-toast';

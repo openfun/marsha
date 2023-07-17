@@ -1,7 +1,7 @@
 import {
+  TokenResponse,
   fetchResponseHandler,
   fetchWrapper,
-  TokenResponse,
 } from 'lib-components';
 
 export interface IValidateClassroomInvite {

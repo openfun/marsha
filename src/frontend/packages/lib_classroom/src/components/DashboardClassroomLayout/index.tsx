@@ -1,5 +1,5 @@
 import { Box, Grid, Text } from 'grommet';
-import { Nullable, Breakpoints } from 'lib-common';
+import { Breakpoints, Nullable } from 'lib-common';
 import { useAppConfig, useResponsive } from 'lib-components';
 import React from 'react';
 

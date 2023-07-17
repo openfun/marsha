@@ -2,17 +2,17 @@
 import { screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import {
-  useJwt,
-  timedTextMockFactory,
-  videoMockFactory,
-  useTimedTextTrack,
-  timedTextMode,
-  useSharedLiveMedia,
-  sharedLiveMediaMockFactory,
   PersistentStore,
-  liveState,
-  useCurrentResourceContext,
   decodeJwt,
+  liveState,
+  sharedLiveMediaMockFactory,
+  timedTextMockFactory,
+  timedTextMode,
+  useCurrentResourceContext,
+  useJwt,
+  useSharedLiveMedia,
+  useTimedTextTrack,
+  videoMockFactory,
 } from 'lib-components';
 import { render } from 'lib-tests';
 import React from 'react';

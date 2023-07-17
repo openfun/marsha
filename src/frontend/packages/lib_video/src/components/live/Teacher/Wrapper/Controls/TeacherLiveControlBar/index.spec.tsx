@@ -1,6 +1,6 @@
 import { screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { videoMockFactory, LiveModeType, liveState } from 'lib-components';
+import { LiveModeType, liveState, videoMockFactory } from 'lib-components';
 import { render } from 'lib-tests';
 
 import * as pollForLiveModule from '@lib-video/api/pollForLive';

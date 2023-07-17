@@ -1,11 +1,11 @@
 import {
-  fetchWrapper,
-  useJwt,
   API_ENDPOINT,
-  modelName,
   TimedText,
-  timedTextMode,
   fetchResponseHandler,
+  fetchWrapper,
+  modelName,
+  timedTextMode,
+  useJwt,
 } from 'lib-components';
 
 interface createTimedTextTrackBody {

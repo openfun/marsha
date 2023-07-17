@@ -1,13 +1,13 @@
 import { Maybe } from 'lib-common';
 import {
   APIList,
-  fetchList,
   FetchListQueryKey,
-  fetchOne,
   FetchResponseError,
   Video,
+  fetchList,
+  fetchOne,
 } from 'lib-components';
-import { useQuery, UseQueryOptions } from 'react-query';
+import { UseQueryOptions, useQuery } from 'react-query';
 
 type VideoResponseError = FetchResponseError<Video>;
 export const useVideo = (

@@ -1,5 +1,5 @@
 import { Box, Spinner } from 'grommet';
-import { useCurrentResourceContext, liveState } from 'lib-components';
+import { liveState, useCurrentResourceContext } from 'lib-components';
 import React, {
   Fragment,
   PropsWithChildren,

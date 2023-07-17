@@ -5,8 +5,8 @@ import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
 import {
-  useLivePanelState,
   LivePanelItem,
+  useLivePanelState,
 } from '@lib-video/hooks/useLivePanelState';
 import { onStageRequestMessage } from '@lib-video/utils/onStageRequestMessage';
 

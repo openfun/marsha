@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { Nullable } from 'lib-common';
-import { forwardRef, Fragment } from 'react';
+import { Fragment, forwardRef } from 'react';
 
 import MainLayout from './MainLayout';
 

@@ -1,6 +1,6 @@
 import { Box, Text } from 'grommet';
 import React from 'react';
-import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
+import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
 
 import {
   DashboardClassroomLayout,

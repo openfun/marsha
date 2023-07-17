@@ -1,16 +1,16 @@
 /* eslint-disable testing-library/no-container */
 /* eslint-disable testing-library/no-node-access */
 import {
-  within,
   act,
   fireEvent,
   screen,
   waitFor,
+  within,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { useJwt, uploadState, UploadManager } from 'lib-components';
-import { createDtWithFiles, createFile, Deferred, render } from 'lib-tests';
+import { UploadManager, uploadState, useJwt } from 'lib-components';
+import { Deferred, createDtWithFiles, createFile, render } from 'lib-tests';
 import React from 'react';
 import xhrMock, { MockResponse } from 'xhr-mock';
 

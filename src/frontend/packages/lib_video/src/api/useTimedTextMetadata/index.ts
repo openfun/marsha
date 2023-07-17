@@ -1,5 +1,5 @@
 import { FetchResponseError, metadata } from 'lib-components';
-import { useQuery, UseQueryOptions } from 'react-query';
+import { UseQueryOptions, useQuery } from 'react-query';
 
 import { TimedTextMetadata } from '@lib-video/types/metadata';
 

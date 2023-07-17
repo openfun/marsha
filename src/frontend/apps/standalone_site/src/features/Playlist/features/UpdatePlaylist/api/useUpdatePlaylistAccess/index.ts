@@ -1,5 +1,5 @@
 import { updateOne } from 'lib-components';
-import { useMutation, UseMutationOptions, useQueryClient } from 'react-query';
+import { UseMutationOptions, useMutation, useQueryClient } from 'react-query';
 
 import { PlaylistAccess, PlaylistRole } from '../../types/playlistAccess';
 

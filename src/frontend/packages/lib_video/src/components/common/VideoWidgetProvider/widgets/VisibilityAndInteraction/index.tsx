@@ -1,9 +1,9 @@
 import { Box, Collapsible } from 'grommet';
 import {
-  report,
   CopyClipboard,
-  ToggleInput,
   FoldableItem,
+  ToggleInput,
+  report,
 } from 'lib-components';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';

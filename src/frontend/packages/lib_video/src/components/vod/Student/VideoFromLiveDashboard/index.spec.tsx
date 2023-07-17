@@ -1,8 +1,8 @@
 import fetchMock from 'fetch-mock';
 import {
+  PersistentStore,
   decodeJwt,
   liveState,
-  PersistentStore,
   useCurrentResourceContext,
   useJwt,
   videoMockFactory,

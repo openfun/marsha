@@ -2,7 +2,7 @@ import { Box, Grid, Text } from 'grommet';
 import { Nullable } from 'lib-common';
 import { ClassroomInfos } from 'lib-components';
 import React, { Fragment } from 'react';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import { FormattedMessage, defineMessages } from 'react-intl';
 
 import DashboardCopyClipboard from '@lib-classroom/components/DashboardCopyClipboard';
 

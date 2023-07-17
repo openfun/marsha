@@ -1,5 +1,5 @@
 import { fetchWrapper } from 'lib-components';
-import { useQuery, UseQueryOptions } from 'react-query';
+import { UseQueryOptions, useQuery } from 'react-query';
 
 export const useTranscriptReaderRequest = (
   id: string,

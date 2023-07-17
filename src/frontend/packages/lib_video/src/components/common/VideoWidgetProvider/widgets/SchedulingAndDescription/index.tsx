@@ -1,16 +1,16 @@
 import { Box, Text } from 'grommet';
 import {
   DashedBoxCustom,
+  FoldableItem,
   SchedulingFields,
   TextAreaInput,
-  liveState,
   Video,
-  report,
-  FoldableItem,
   debounce,
+  liveState,
+  report,
 } from 'lib-components';
 import { DateTime, Duration } from 'luxon';
-import React, { Fragment, useRef, useState, useEffect } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 

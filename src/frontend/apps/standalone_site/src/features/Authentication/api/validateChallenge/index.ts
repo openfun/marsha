@@ -1,7 +1,7 @@
 import {
+  TokenResponse,
   fetchResponseHandler,
   fetchWrapper,
-  TokenResponse,
 } from 'lib-components';
 
 const isValidateChallenge = (response: unknown): response is TokenResponse => {

@@ -1,6 +1,6 @@
 /* eslint-disable testing-library/no-node-access */
 import { screen } from '@testing-library/react';
-import { useJwt, liveMockFactory } from 'lib-components';
+import { liveMockFactory, useJwt } from 'lib-components';
 import { render, wrapInIntlProvider } from 'lib-tests';
 import React from 'react';
 

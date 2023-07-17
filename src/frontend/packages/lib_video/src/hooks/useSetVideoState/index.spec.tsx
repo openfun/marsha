@@ -1,13 +1,13 @@
 import { renderHook } from '@testing-library/react';
 import {
-  useVideo,
-  useTimedTextTrack,
-  useThumbnail,
-  useSharedLiveMedia,
-  videoMockFactory,
+  sharedLiveMediaMockFactory,
   thumbnailMockFactory,
   timedTextMockFactory,
-  sharedLiveMediaMockFactory,
+  useSharedLiveMedia,
+  useThumbnail,
+  useTimedTextTrack,
+  useVideo,
+  videoMockFactory,
 } from 'lib-components';
 
 import { useSetVideoState } from '.';

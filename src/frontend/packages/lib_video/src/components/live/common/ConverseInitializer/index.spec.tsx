@@ -1,9 +1,9 @@
 import { act, screen } from '@testing-library/react';
 import {
-  useCurrentResourceContext,
-  liveState,
   PersistentStore,
   liveSessionFactory,
+  liveState,
+  useCurrentResourceContext,
   videoMockFactory,
 } from 'lib-components';
 import { render } from 'lib-tests';

@@ -3,10 +3,10 @@ import { normalizeColor } from 'grommet/utils';
 import { Maybe, theme } from 'lib-common';
 import {
   AnonymousUser,
+  checkToken,
   decodeJwt,
   useCurrentUser,
   useJwt,
-  checkToken,
 } from 'lib-components';
 import React, { Fragment, useMemo } from 'react';
 import { defineMessages, useIntl } from 'react-intl';

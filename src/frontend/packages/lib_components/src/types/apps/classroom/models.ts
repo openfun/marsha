@@ -3,8 +3,8 @@ import { Nullable } from 'lib-common';
 import {
   Playlist,
   Resource,
-  uploadState,
   Video,
+  uploadState,
 } from '@lib-components/types/tracks';
 
 export interface Classroom extends Resource {

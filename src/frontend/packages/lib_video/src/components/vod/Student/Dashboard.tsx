@@ -1,5 +1,5 @@
 import { Box } from 'grommet';
-import { liveState, useTimedTextTrack, Video } from 'lib-components';
+import { Video, liveState, useTimedTextTrack } from 'lib-components';
 import React from 'react';
 
 import { VideoPlayer } from '@lib-video/components/common/VideoPlayer';

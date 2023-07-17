@@ -1,9 +1,9 @@
 import {
-  useCurrentUser,
   JoinMode,
   LiveModeType,
-  liveState,
   liveMockFactory,
+  liveState,
+  useCurrentUser,
 } from 'lib-components';
 
 import { useLiveSession } from '@lib-video/hooks/useLiveSession';

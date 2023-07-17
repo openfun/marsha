@@ -2,13 +2,13 @@ import { Box } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
 import {
+  FoldableItem,
+  InfoWidgetModalProvider,
+  ThumbnailDisplayer,
+  Video,
   useAppConfig,
   useThumbnail,
   useTimedTextTrack,
-  Video,
-  ThumbnailDisplayer,
-  InfoWidgetModalProvider,
-  FoldableItem,
 } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';

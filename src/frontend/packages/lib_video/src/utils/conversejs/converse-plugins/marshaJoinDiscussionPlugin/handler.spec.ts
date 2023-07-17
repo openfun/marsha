@@ -1,12 +1,12 @@
 import fetchMock from 'fetch-mock';
 import {
-  useJwt,
-  participantMockFactory,
-  videoMockFactory,
   EventType,
-  MessageType,
-  useVideo,
   JitsiMeetExternalAPI,
+  MessageType,
+  participantMockFactory,
+  useJwt,
+  useVideo,
+  videoMockFactory,
 } from 'lib-components';
 
 import { useParticipantWorkflow } from '@lib-video/hooks/useParticipantWorkflow';

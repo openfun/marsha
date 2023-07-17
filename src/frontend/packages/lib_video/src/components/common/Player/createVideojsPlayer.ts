@@ -6,19 +6,19 @@ import './videojs/qualitySelectorPlugin';
 import './videojs/p2pHlsPlugin';
 import { Maybe, Nullable } from 'lib-common';
 import {
-  useCurrentSession,
-  useJwt,
-  liveState,
-  Video,
-  videoSize,
   Id3VideoType,
-  report,
   InitializedContextExtensions,
   InteractedContextExtensions,
+  Video,
   VideoXAPIStatementInterface,
   XAPIStatement,
-  useVideo,
+  liveState,
+  report,
+  useCurrentSession,
+  useJwt,
   useP2PConfig,
+  useVideo,
+  videoSize,
 } from 'lib-components';
 import videojs, {
   VideoJsPlayer,

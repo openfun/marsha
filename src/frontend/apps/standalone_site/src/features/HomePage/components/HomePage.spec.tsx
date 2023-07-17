@@ -1,4 +1,4 @@
-import { screen, act } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import { render } from 'lib-tests';
 import React from 'react';
 import ReactTestUtils from 'react-dom/test-utils';

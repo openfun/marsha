@@ -1,12 +1,12 @@
 import { Box, FormField, Image, Text, ThemeContext } from 'grommet';
-import { useResponsive, Select, ClosingCard } from 'lib-components';
-import { Fragment, useEffect, useState, useMemo } from 'react';
-import { useIntl, defineMessages } from 'react-intl';
+import { ClosingCard, Select, useResponsive } from 'lib-components';
+import { Fragment, useEffect, useMemo, useState } from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import { useLocation } from 'react-router-dom';
 
 import {
-  getRenaterFerIdpList,
   RenaterSamlFerIdp,
+  getRenaterFerIdpList,
 } from '../api/getRenaterFerIdpList';
 
 const messages = defineMessages({

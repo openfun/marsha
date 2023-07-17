@@ -1,4 +1,4 @@
-import { defineMessages, FormattedMessage } from 'react-intl';
+import { FormattedMessage, defineMessages } from 'react-intl';
 
 import { ReactComponent as VideoIcon } from 'assets/svg/iko_next.svg';
 import { LoadSVG } from 'components/Assets';

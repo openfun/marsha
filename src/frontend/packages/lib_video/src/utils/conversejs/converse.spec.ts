@@ -1,4 +1,4 @@
-import { useJwt, videoMockFactory, PersistentStore } from 'lib-components';
+import { PersistentStore, useJwt, videoMockFactory } from 'lib-components';
 
 import { generateAnonymousNickname } from '@lib-video/utils/chat/chat';
 import * as mockWindow from '@lib-video/utils/window';

@@ -1,4 +1,4 @@
-import { Box, CheckBox, FormField, TextInput, Text } from 'grommet';
+import { Box, CheckBox, FormField, Text, TextInput } from 'grommet';
 import { Classroom, DashboardButton } from 'lib-components';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
