@@ -9,7 +9,7 @@
     "@testing-library/react": "*",
     "@testing-library/user-event": "*",
     "@types/fetch-mock": "7.3.5",
-    "@types/jest": "29.5.2",
+    "@types/jest": "29.5.3",
     "@types/node": "18.16.19",
     "@types/react": "*",
     "@types/react-dom": "*",
@@ -43,7 +43,7 @@
     "react-scripts": "5.0.1",
     "resize-observer-polyfill": "^1.5.1",
     "styled-components": "*",
-    "web-vitals": "3.3.2",
+    "web-vitals": "3.4.0",
     "zustand": "*"
   },
   "scripts": {
