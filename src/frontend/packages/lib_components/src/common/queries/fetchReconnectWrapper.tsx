@@ -109,6 +109,7 @@ const fetchReconnect = async (
 
         body = bodyResult.value;
       } else if (currentRequest.body.constructor.name === 'Buffer') {
+        // eslint-disable-next-line @typescript-eslint/no-base-to-string
         body = currentRequest.body.toString();
       }
     }

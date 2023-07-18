@@ -14,7 +14,7 @@ import { MarkdownViewer } from '.';
 describe('<MarkdownViewer />', () => {
   beforeEach(() => {
     useJwt.setState({
-      getDecodedJwt: () => ({ locale: 'en_US' } as any),
+      getDecodedJwt: () => ({ locale: 'en_US' }) as any,
     });
   });
   afterEach(() => {

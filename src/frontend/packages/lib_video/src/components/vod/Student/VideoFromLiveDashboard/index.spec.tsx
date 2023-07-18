@@ -103,7 +103,7 @@ describe('<LiveToVODDashboard />', () => {
           permissions: {
             can_update: false,
           },
-        } as any),
+        }) as any,
     });
   });
 

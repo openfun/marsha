@@ -64,7 +64,7 @@ describe('<DashboardLiveJitsi />', () => {
             id: '7f93178b-e578-44a6-8c85-ef267b6bf431',
             username: 'jane_doe',
           },
-        } as DecodedJwt),
+        }) as DecodedJwt,
     });
 
     events = {};

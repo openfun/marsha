@@ -32,7 +32,8 @@ interface ButtonFilterProps {
 }
 
 const ButtonFilter = styled(Button)<ButtonFilterProps>`
-  box-shadow: inset 0px 0px 0px 0px rgba(2, 117, 180, 0.3),
+  box-shadow:
+    inset 0px 0px 0px 0px rgba(2, 117, 180, 0.3),
     rgba(2, 117, 180, 0.3) 2px 2px 3px 0px;
   border-radius: 25px;
   border: none;

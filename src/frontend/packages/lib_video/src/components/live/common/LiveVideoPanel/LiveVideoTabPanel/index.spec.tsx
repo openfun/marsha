@@ -77,7 +77,7 @@ describe('<LiveVideoTabPanel /> styles', () => {
       getDecodedJwt: () =>
         ({
           permissions: { can_update: true },
-        } as any),
+        }) as any,
     });
   });
 

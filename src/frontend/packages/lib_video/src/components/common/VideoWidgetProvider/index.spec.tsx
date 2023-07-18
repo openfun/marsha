@@ -273,7 +273,7 @@ describe('<VideoWidgetProvider />', () => {
     useThumbnail.getState().addResource(mockedThumbnail);
 
     useJwt.setState({
-      getDecodedJwt: () => ({ locale: 'en' } as any),
+      getDecodedJwt: () => ({ locale: 'en' }) as any,
     });
 
     render(
@@ -351,7 +351,7 @@ describe('<VideoWidgetProvider />', () => {
     useSharedLiveMedia.getState().addResource(mockedSharedLiveMedia);
 
     useJwt.setState({
-      getDecodedJwt: () => ({ locale: 'en' } as any),
+      getDecodedJwt: () => ({ locale: 'en' }) as any,
     });
 
     render(

@@ -50,7 +50,7 @@ describe('initConverse', () => {
           user: {
             username: 'jane_doe',
           },
-        } as any),
+        }) as any,
     });
     document.body.innerHTML = '<div id="converse-container"></div>';
     mockGenerateAnonymousNickname.mockReturnValue('Anonymous-generated_id');
@@ -160,7 +160,7 @@ describe('converseCleanup', () => {
           user: {
             username: 'jane_doe',
           },
-        } as any),
+        }) as any,
     });
     document.body.innerHTML = '<div id="converse-container"></div>';
 

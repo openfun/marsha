@@ -30,13 +30,12 @@ jest.mock('components/DashboardClassroomForm', () => {
 jest.mock(
   'components/DashboardClassroomInfos',
   () =>
-    ({ inviteToken }: { inviteToken?: string }) =>
-      (
-        <div>
-          <p>classroom infos</p>
-          {inviteToken && <p>Invite link</p>}
-        </div>
-      ),
+    ({ inviteToken }: { inviteToken?: string }) => (
+      <div>
+        <p>classroom infos</p>
+        {inviteToken && <p>Invite link</p>}
+      </div>
+    ),
 );
 
 describe('<DashboardClassroomInstructor />', () => {

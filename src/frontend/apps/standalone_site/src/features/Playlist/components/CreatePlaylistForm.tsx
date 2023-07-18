@@ -38,7 +38,9 @@ export const CreatePlaylistForm = () => {
           //  should not happen with validation.
           report(
             new Error(
-              `Submit create playlist form succeed with invalid data, submited data : ${values.toString()}`,
+              `Submit create playlist form succeed with invalid data, submited data : ${JSON.stringify(
+                values,
+              )}`,
             ),
           );
           return;

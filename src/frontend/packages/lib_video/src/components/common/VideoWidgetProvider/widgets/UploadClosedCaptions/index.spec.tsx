@@ -19,7 +19,7 @@ const languageChoices = [
 describe('<UploadClosedCaptions />', () => {
   beforeEach(() => {
     useJwt.setState({
-      getDecodedJwt: () => ({ locale: 'en_US' } as any),
+      getDecodedJwt: () => ({ locale: 'en_US' }) as any,
     });
   });
 

@@ -85,7 +85,7 @@ describe('<Dashboard />', () => {
           permissions: {
             can_update: false,
           },
-        } as any),
+        }) as any,
     });
 
     fetchMock.mock(

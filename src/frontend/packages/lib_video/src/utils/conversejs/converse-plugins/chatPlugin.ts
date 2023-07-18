@@ -113,7 +113,7 @@ const addChatPlugin = (xmpp: XMPP) =>
 
 const determineMessageType = (msgStanza: HTMLElement): StanzaMessageType => {
   const forwardedMessage = msgStanza.getElementsByTagName('message')[0];
-  const msgType = msgStanza.getAttribute('type');
+  const msgType = msgStanza.getAttribute('type') as MessageType;
 
   if (msgType && msgType === MessageType.GROUPCHAT) {
     const msgBody = msgStanza.getElementsByTagName('body')[0];
