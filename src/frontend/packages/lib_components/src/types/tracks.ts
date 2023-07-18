@@ -230,6 +230,7 @@ export interface Video extends Resource {
   urls: Nullable<VideoUrls>;
   lti_url?: Nullable<string>;
   license: Nullable<string>;
+  retention_date: Nullable<string>;
   should_use_subtitle_as_transcript: boolean;
   starting_at: Nullable<string>;
   estimated_duration: Nullable<string>;

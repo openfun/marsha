@@ -181,6 +181,7 @@ export const videoMockFactory = (video: Partial<Video> = {}): Video => {
     live_info: {},
     live_type: null,
     xmpp: null,
+    retention_date: null,
     shared_live_medias: [],
     ...video,
   };
