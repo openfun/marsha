@@ -127,7 +127,7 @@ class ResourceAccessMixin:
         lti,
         permissions,
         session_id,
-        playlist_id=None,
+        playlist_id,
     ):
         """
         Returns an authorization token for the resource in the LTI request that will be provided
@@ -167,7 +167,7 @@ class ResourceAccessMixin:
                 - user_fullname
         """
         token = cls.for_resource_id(
-            str(lti.resource_id),
+            str(playlist_id),
             session_id,
             permissions=permissions,
             roles=lti.roles,
@@ -180,9 +180,7 @@ class ResourceAccessMixin:
             }
         )
 
-        if playlist_id:
-            assert lti.is_instructor or lti.is_admin  # nosec
-            token.payload["playlist_id"] = playlist_id
+        token.payload["playlist_id"] = playlist_id
 
         user_id = getattr(lti, "user_id", None)
         if user_id:

@@ -72,7 +72,7 @@ class DocumentLTIViewTestCase(TestCase):
         context = json.loads(html.unescape(match.group(1)))
         jwt_token = ResourceAccessToken(context.get("jwt"))
         ResourceRefreshToken(context.get("refresh_token"))  # Must not raise
-        self.assertEqual(jwt_token.payload["resource_id"], str(document.id))
+        self.assertEqual(jwt_token.payload["resource_id"], str(document.playlist.id))
         self.assertEqual(
             jwt_token.payload["user"],
             {
@@ -137,7 +137,7 @@ class DocumentLTIViewTestCase(TestCase):
         context = json.loads(html.unescape(match.group(1)))
         jwt_token = ResourceAccessToken(context.get("jwt"))
         ResourceRefreshToken(context.get("refresh_token"))  # Must not raise
-        self.assertEqual(jwt_token.payload["resource_id"], str(document.id))
+        self.assertEqual(jwt_token.payload["resource_id"], str(document.playlist.id))
         self.assertEqual(
             jwt_token.payload["user"],
             {
@@ -198,7 +198,7 @@ class DocumentLTIViewTestCase(TestCase):
         context = json.loads(html.unescape(match.group(1)))
         jwt_token = ResourceAccessToken(context.get("jwt"))
         ResourceRefreshToken(context.get("refresh_token"))  # Must not raise
-        self.assertEqual(jwt_token.payload["resource_id"], str(document.id))
+        self.assertEqual(jwt_token.payload["resource_id"], str(document.playlist.id))
         self.assertEqual(
             jwt_token.payload["user"],
             {
