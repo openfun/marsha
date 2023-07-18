@@ -170,7 +170,7 @@ class PairingDeviceAPITest(TestCase):
     def test_api_video_student_pairing_secret(self):
         """A student should not be able to request a live pairing secret."""
         video = factories.VideoFactory()
-        jwt_token = StudentLtiTokenFactory(resource=video)
+        jwt_token = StudentLtiTokenFactory(resource=video.playlist)
 
         response = self.client.get(
             f"/api/videos/{video.id}/pairing-secret/",
@@ -199,7 +199,7 @@ class PairingDeviceAPITest(TestCase):
     def test_api_video_instructor_pairing_secret_non_jitsi(self):
         """A request related to a non jitsi video should raise a 400 error."""
         video = factories.VideoFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
 
         response = self.client.get(
             f"/api/videos/{video.id}/pairing-secret/",
@@ -215,7 +215,7 @@ class PairingDeviceAPITest(TestCase):
     def test_api_video_instructor_pairing_secret_1st_request(self):
         """An instructor should be able to request a live pairing secret."""
         video = factories.VideoFactory(live_state=IDLE, live_type=JITSI)
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
 
         response = self.client.get(
             f"/api/videos/{video.id}/pairing-secret/",
@@ -235,7 +235,7 @@ class PairingDeviceAPITest(TestCase):
         live_pairing = LivePairingFactory(video=video)
         previous_secret = live_pairing.secret
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
 
         response = self.client.get(
             f"/api/videos/{video.id}/pairing-secret/",
@@ -256,7 +256,7 @@ class PairingDeviceAPITest(TestCase):
         )
         with mock.patch.object(timezone, "now", return_value=expired_date):
             video = factories.VideoFactory()
-            jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+            jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
 
             self.client.get(
                 f"/api/videos/{video.id}/pairing-secret/",

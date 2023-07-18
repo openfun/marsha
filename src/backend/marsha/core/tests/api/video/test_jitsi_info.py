@@ -33,7 +33,7 @@ class VideoJitsiInfoTest(TestCase):
     def test_jitsi_info_for_a_student(self):
         """A student user can not fetch jitsi info."""
         video = VideoFactory(live_state=RUNNING, live_type=JITSI)
-        jwt_token = StudentLtiTokenFactory(resource=video)
+        jwt_token = StudentLtiTokenFactory(resource=video.playlist)
 
         response = self.client.get(
             f"/api/videos/{video.id}/jitsi/",
@@ -46,7 +46,7 @@ class VideoJitsiInfoTest(TestCase):
         An instructor or an adminstrator with a resource token should be able to fetch jitsi info.
         """
         video = VideoFactory(live_state=RUNNING, live_type=JITSI)
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
 
         response = self.client.get(
             f"/api/videos/{video.id}/jitsi/",
@@ -75,7 +75,7 @@ class VideoJitsiInfoTest(TestCase):
         When the moderator query string is not specified, the False value should be used.
         """
         video = VideoFactory(live_state=RUNNING, live_type=JITSI)
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
 
         response = self.client.get(
             f"/api/videos/{video.id}/jitsi/",
@@ -117,7 +117,7 @@ class VideoJitsiInfoTest(TestCase):
         not be in the response.
         """
         video = VideoFactory(live_state=RUNNING, live_type=JITSI)
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
 
         response = self.client.get(
             f"/api/videos/{video.id}/jitsi/?moderator=false",
@@ -159,7 +159,7 @@ class VideoJitsiInfoTest(TestCase):
         be in the response.
         """
         video = VideoFactory(live_state=RUNNING, live_type=JITSI)
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
 
         response = self.client.get(
             f"/api/videos/{video.id}/jitsi/?moderator=true",
@@ -277,7 +277,7 @@ class VideoJitsiInfoTest(TestCase):
         """
 
         video = VideoFactory(live_state=None, live_type=None)
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
 
         response = self.client.get(
             f"/api/videos/{video.id}/jitsi/",
@@ -291,7 +291,7 @@ class VideoJitsiInfoTest(TestCase):
         """
 
         video = VideoFactory(live_state=RUNNING, live_type=RAW)
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
 
         response = self.client.get(
             f"/api/videos/{video.id}/jitsi/",

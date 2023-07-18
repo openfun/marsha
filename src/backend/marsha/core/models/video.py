@@ -643,6 +643,16 @@ class Thumbnail(AbstractImage):
         on_delete=models.CASCADE,
     )
 
+    @property
+    def playlist(self):
+        """Return the playlist of the video."""
+        return self.video.playlist
+
+    @property
+    def playlist_id(self):
+        """Return the playlist id of the video."""
+        return self.video.playlist_id
+
     class Meta:
         """Options for the ``Thumbnail`` model."""
 
@@ -951,7 +961,7 @@ class LiveSession(BaseModel):
         """Returns url to access video from mails."""
         return (
             f"//{Site.objects.get_current()}"
-            f"{reverse('video_direct_access',kwargs={'uuid': self.video.pk})}"
+            f"{reverse('video_direct_access', kwargs={'uuid': self.video.pk})}"
             f"?lrpk={self.pk}&key={self.get_generate_salted_hmac()}"
         )
 

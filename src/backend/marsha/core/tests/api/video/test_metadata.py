@@ -20,7 +20,7 @@ class VideoMetadataAPITest(TestCase):
         """A student can fetch the video options endpoint"""
 
         video = VideoFactory()
-        jwt_token = StudentLtiTokenFactory(resource=video)
+        jwt_token = StudentLtiTokenFactory(resource=video.playlist)
         response = self.client.options(
             "/api/videos/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
@@ -61,7 +61,7 @@ class VideoMetadataAPITest(TestCase):
 
         video = VideoFactory()
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             permissions__can_update=False,
         )
 

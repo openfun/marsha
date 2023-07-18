@@ -159,6 +159,28 @@ class IsTokenResourceRouteObjectRelatedVideo(permissions.BasePermission):
             return False
 
 
+class IsPlaylistToken(permissions.BasePermission):
+    """
+    Allow a request to proceed. Permission class.
+
+    Only if the user has a playlist token payload.
+    """
+
+    def has_permission(self, request, view):
+        """
+        Allow the request.
+
+        Only if the playlist exists.
+        """
+        if request.resource:
+            playlist_id = request.resource.id
+            return models.Playlist.objects.filter(id=playlist_id).exists() and (
+                str(view.get_queryset().get(id=view.get_object_pk()).playlist_id)
+                == playlist_id
+            )
+        return False
+
+
 class HasPlaylistToken(permissions.BasePermission):
     """
     Allow a request to proceed. Permission class.
