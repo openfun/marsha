@@ -1,14 +1,25 @@
 """This module holds the model for playlist resources."""
+from datetime import timedelta
+import logging
+
 from django.db import models
 from django.db.models import Q
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from botocore.exceptions import ClientError
 from safedelete import HARD_DELETE
 from safedelete.managers import SafeDeleteManager
 from safedelete.queryset import SafeDeleteQueryset
 
+from marsha import settings
+from marsha.core.utils import s3_utils
+
 from .account import ADMINISTRATOR, INSTRUCTOR, ROLE_CHOICES
 from .base import BaseModel
+
+
+logger = logging.getLogger(__name__)
 
 
 class PlaylistQueryset(SafeDeleteQueryset):
@@ -128,6 +139,14 @@ class Playlist(BaseModel):
         symmetrical=False,
         related_name="reachable_from",
         blank=True,
+    )
+    retention_duration = models.PositiveIntegerField(
+        blank=True,
+        null=True,
+        help_text=_(
+            "Duration in days after which the related objects should be deleted"
+        ),
+        verbose_name=_("retention duration in day"),
     )
 
     objects = SafeDeleteManager(PlaylistQueryset)
@@ -267,3 +286,64 @@ class PlaylistAccess(BaseModel):
                 name="playlist_access_unique_idx",
             )
         ]
+
+
+class RetentionDateObjectMixin(models.Model):
+    """Mixin adding retention date fields and behaviors to playlist related resources."""
+
+    retention_date = models.DateField(
+        blank=True,
+        null=True,
+        help_text=_("Date when this playlist related object should be deleted"),
+        verbose_name=_("retention date"),
+    )
+
+    def _handle_playlist_related_resource_expiration(self, is_created):
+        """
+        If the instance is being created, the function checks if the related playlist exists
+        and if it has a retention duration.
+        If it does, the function sets the `retention_date` of the instance to
+        the current time plus the duration.
+
+        If the instance is being updated, nothing should be dnoe.
+
+        If the instance is soft deleted. It calls `s3_utils.update_expiration_date` with an
+        expiration date equals to the current time plus settings.AWS_S3_EXPIRATION_DURATION.
+        If the instance is soft deleted. It calls `s3_utils.update_expiration_date` with
+        an expiration date equals to `None`.
+        """
+        # pylint: disable=protected-access
+        try:
+            if is_created:  # Creation
+                playlist = self.playlist
+                if (
+                    playlist and playlist.retention_duration
+                ):  # Check if a related playlist is given
+                    self.retention_date = timezone.now().date() + timedelta(
+                        days=playlist.retention_duration
+                    )
+            else:  # Update or soft delete
+                old_value = self.__class__.all_objects.get(pk=self.pk)
+                if old_value.deleted != self.deleted:  # Soft delete behavior
+                    if self.deleted:  # Delete
+                        expiration_date = timezone.now().date() + timedelta(
+                            days=settings.AWS_S3_EXPIRATION_DURATION
+                        )
+                        s3_utils.update_expiration_date(str(self.pk), expiration_date)
+                    else:  # Undelete
+                        self.retention_date = None
+                        s3_utils.update_expiration_date(str(self.pk), None)
+        except ClientError as exception:
+            logger.error("Error while updating expiration date in S3: %s", exception)
+
+    class Meta:
+        """Options for the ``RetentionObjectMixin`` model."""
+
+        abstract = True
+
+    def save(self, *args, **kwargs):
+        """
+        Handle lifecycle configuration in S3.
+        """
+        self._handle_playlist_related_resource_expiration(self._state.adding)
+        super().save(*args, **kwargs)

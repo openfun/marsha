@@ -287,6 +287,7 @@ class VideoAdmin(BaseFileAdmin):
         "estimated_duration",
         "join_mode",
         "is_public",
+        "retention_date",
         "tags",
         "license",
     )
@@ -383,6 +384,7 @@ class PlaylistAdmin(admin.ModelAdmin):
         "is_portable_to_consumer_site",
         "created_by",
         "duplicated_from",
+        "retention_duration",
         "updated_on",
         "created_on",
     )

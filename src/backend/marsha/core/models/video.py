@@ -36,6 +36,7 @@ from ..utils.api_utils import generate_salted_hmac
 from ..utils.time_utils import to_timestamp
 from .base import BaseModel
 from .file import AbstractImage, BaseFile, UploadableFileMixin
+from .playlist import RetentionDateObjectMixin
 
 
 # pylint: disable=too-many-lines
@@ -103,7 +104,7 @@ class VideoQueryset(SafeDeleteQueryset):
         )
 
 
-class Video(BaseFile):
+class Video(BaseFile, RetentionDateObjectMixin):
     """Model representing a video, created by an author."""
 
     RESOURCE_NAME = "videos"
