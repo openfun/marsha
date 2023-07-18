@@ -308,6 +308,7 @@ class VideoAPITest(TestCase):
                     "lti_id": "course-v1:ufr+mathematics+00001",
                 },
                 "recording_time": 0,
+                "retention_date": None,
                 "shared_live_medias": [],
                 "live_state": STOPPING,
                 "live_info": {
@@ -467,6 +468,7 @@ class VideoAPITest(TestCase):
                     "lti_id": "course-v1:ufr+mathematics+00001",
                 },
                 "recording_time": 600,
+                "retention_date": None,
                 "shared_live_medias": [],
                 "live_state": STOPPING,
                 "live_info": {

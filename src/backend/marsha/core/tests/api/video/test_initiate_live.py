@@ -133,6 +133,7 @@ class VideoInitiateLiveAPITest(TestCase):
                     "lti_id": "course-v1:ufr+mathematics+00001",
                 },
                 "recording_time": 0,
+                "retention_date": None,
                 "shared_live_medias": [],
                 "live_state": "idle",
                 "live_info": {},
@@ -205,6 +206,7 @@ class VideoInitiateLiveAPITest(TestCase):
                     "lti_id": "course-v1:ufr+mathematics+00001",
                 },
                 "recording_time": 0,
+                "retention_date": None,
                 "shared_live_medias": [],
                 "live_state": "idle",
                 "live_info": {},
@@ -274,6 +276,7 @@ class VideoInitiateLiveAPITest(TestCase):
                     "lti_id": "course-v1:ufr+mathematics+00001",
                 },
                 "recording_time": 0,
+                "retention_date": None,
                 "shared_live_medias": [],
                 "live_state": "idle",
                 "live_info": {
@@ -355,6 +358,7 @@ class VideoInitiateLiveAPITest(TestCase):
                     "lti_id": "course-v1:ufr+mathematics+00001",
                 },
                 "recording_time": 0,
+                "retention_date": None,
                 "shared_live_medias": [],
                 "live_state": "idle",
                 "live_info": {

@@ -786,6 +786,7 @@ class TestVideoSharedLiveMedia(TestCase):
                         "lti_id": "course-v1:ufr+mathematics+00001",
                     },
                     "recording_time": 0,
+                    "retention_date": None,
                     "shared_live_medias": [
                         {
                             "active_stamp": "1638230400",
@@ -1150,6 +1151,7 @@ class TestVideoSharedLiveMedia(TestCase):
                         "lti_id": "course-v1:ufr+mathematics+00001",
                     },
                     "recording_time": 0,
+                    "retention_date": None,
                     "shared_live_medias": [
                         {
                             "active_stamp": None,
@@ -1541,6 +1543,7 @@ class TestVideoSharedLiveMedia(TestCase):
                         "lti_id": "course-v1:ufr+mathematics+00001",
                     },
                     "recording_time": 0,
+                    "retention_date": None,
                     "shared_live_medias": [
                         {
                             "active_stamp": None,
