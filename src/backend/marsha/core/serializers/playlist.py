@@ -32,6 +32,7 @@ class PlaylistSerializer(serializers.ModelSerializer):
             "portable_to",
             "title",
             "users",
+            "retention_duration",
             # Non-model fields
             "can_edit",
         ]

@@ -480,6 +480,7 @@ class TestApiVideoRecording(TestCase):
                     "lti_id": str(video.playlist.lti_id),
                 },
                 "recording_time": 0,
+                "retention_date": None,
                 "shared_live_medias": [],
                 "live_state": "running",
                 "live_info": {
@@ -746,6 +747,7 @@ class TestApiVideoRecording(TestCase):
                     "lti_id": str(video.playlist.lti_id),
                 },
                 "recording_time": 600,
+                "retention_date": None,
                 "shared_live_medias": [],
                 "live_state": "running",
                 "live_info": {

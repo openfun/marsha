@@ -234,6 +234,7 @@ class VideoSerializer(VideoBaseSerializer):
             "participants_in_discussion",
             "playlist",
             "recording_time",
+            "retention_date",
             "live_info",
             "live_state",
             "live_type",

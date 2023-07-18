@@ -87,6 +87,7 @@ class ClassroomSerializer(serializers.ModelSerializer):
             "enable_presentation_supports",
             "enable_recordings",
             "recording_purpose",
+            "retention_date",
         )
         read_only_fields = (
             "id",

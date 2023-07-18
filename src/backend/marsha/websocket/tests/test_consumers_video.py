@@ -498,6 +498,7 @@ class VideoConsumerTest(TransactionTestCase):
                         "lti_id": video.playlist.lti_id,
                     },
                     "recording_time": 0,
+                    "retention_date": None,
                     "live_info": {},
                     "live_state": RUNNING,
                     "live_type": JITSI,
@@ -626,6 +627,7 @@ class VideoConsumerTest(TransactionTestCase):
                         "lti_id": video.playlist.lti_id,
                     },
                     "recording_time": 0,
+                    "retention_date": None,
                     "live_info": {
                         "jitsi": {
                             "config_overwrite": {},
