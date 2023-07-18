@@ -51,6 +51,8 @@ describe('<PlaylistForm />', () => {
     ).not.toBeInTheDocument();
     expect(screen.queryByLabelText('Organization')).not.toBeInTheDocument();
     expect(screen.queryByLabelText('Name')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Retention Date')).not.toBeInTheDocument();
+
     expect(
       screen.queryByRole('button', { name: 'Save' }),
     ).not.toBeInTheDocument();
@@ -276,6 +278,7 @@ describe('<PlaylistForm />', () => {
         initialValues={{
           name: 'some initial name',
           organizationId: 'third id',
+          retention_duration: 365,
         }}
       />,
     );
@@ -290,6 +293,7 @@ describe('<PlaylistForm />', () => {
     expect(mockedOnSubmit).toHaveBeenCalledWith({
       name: 'some initial name',
       organizationId: 'third id',
+      retention_duration: 365,
     });
 
     userEvent.click(screen.getByRole('button', { name: 'Cancel' }));

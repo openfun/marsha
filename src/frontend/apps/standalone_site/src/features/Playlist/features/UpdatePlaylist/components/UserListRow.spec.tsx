@@ -32,6 +32,7 @@ describe('<UserListRow />', () => {
         playlistAccess={{
           playlist: {
             consumer_site: null,
+            retention_duration: null,
             created_by: 'nobody',
             duplicated_from: null,
             is_portable_to_playlist: false,
@@ -91,6 +92,7 @@ describe('<UserListRow />', () => {
         playlistAccess={{
           playlist: {
             consumer_site: null,
+            retention_duration: null,
             created_by: 'nobody',
             duplicated_from: null,
             is_portable_to_playlist: false,
@@ -151,6 +153,7 @@ describe('<UserListRow />', () => {
         playlistAccess={{
           playlist: {
             consumer_site: null,
+            retention_duration: null,
             created_by: 'nobody',
             duplicated_from: null,
             is_portable_to_playlist: false,
@@ -210,6 +213,7 @@ describe('<UserListRow />', () => {
         playlistAccess={{
           playlist: {
             consumer_site: null,
+            retention_duration: null,
             created_by: 'nobody',
             duplicated_from: null,
             is_portable_to_playlist: false,
@@ -273,6 +277,7 @@ describe('<UserListRow />', () => {
         playlistAccess={{
           playlist: {
             consumer_site: null,
+            retention_duration: null,
             created_by: 'nobody',
             duplicated_from: null,
             is_portable_to_playlist: false,
@@ -332,6 +337,7 @@ describe('<UserListRow />', () => {
         playlistAccess={{
           playlist: {
             consumer_site: null,
+            retention_duration: null,
             created_by: 'nobody',
             duplicated_from: null,
             is_portable_to_playlist: false,

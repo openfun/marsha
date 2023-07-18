@@ -18,6 +18,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - eslint sort the modules name (#2338)
 - Add retention date and s3 lifecycle rules to classroom / video
 - Add a command to delete expired classrooms / videos
+- Add retention duration on playlist form
 
 ### Changed
 
