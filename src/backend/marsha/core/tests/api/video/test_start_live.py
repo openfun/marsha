@@ -203,7 +203,7 @@ class VideoStartLiveAPITest(TestCase):
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             user__id="56255f3807599c377bf0e5bf072359fd",
         )
 
@@ -372,7 +372,7 @@ class VideoStartLiveAPITest(TestCase):
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             user__id="56255f3807599c377bf0e5bf072359fd",
         )
 
@@ -527,7 +527,7 @@ class VideoStartLiveAPITest(TestCase):
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             user__id="56255f3807599c377bf0e5bf072359fd",
         )
 
@@ -686,7 +686,7 @@ class VideoStartLiveAPITest(TestCase):
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             user__id="56255f3807599c377bf0e5bf072359fd",
         )
 
@@ -867,7 +867,7 @@ class VideoStartLiveAPITest(TestCase):
             id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
             upload_state=random.choice([s[0] for s in STATE_CHOICES]),
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
 
         # start a live video,
         with mock.patch.object(api.video, "start_live_channel"), mock.patch(
@@ -894,7 +894,7 @@ class VideoStartLiveAPITest(TestCase):
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             user__id="56255f3807599c377bf0e5bf072359fd",
         )
 
@@ -944,7 +944,7 @@ class VideoStartLiveAPITest(TestCase):
             ),
             live_type=RAW,
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
 
         with mock.patch(
             "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"

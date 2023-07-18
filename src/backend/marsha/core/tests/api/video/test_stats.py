@@ -218,7 +218,7 @@ class TestApiVideoStats(TestCase):
         video = VideoFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
         )
 
         with mock.patch(

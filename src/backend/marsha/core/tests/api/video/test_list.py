@@ -31,7 +31,7 @@ class VideoListAPITest(TestCase):
         """
         video = factories.VideoFactory()
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             permissions__can_update=False,
         )
 

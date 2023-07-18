@@ -39,7 +39,7 @@ class VideoCreateAPITest(TestCase):
     def test_api_video_create_student(self):
         """Student users should not be able to create videos."""
         video = factories.VideoFactory()
-        jwt_token = StudentLtiTokenFactory(resource=video)
+        jwt_token = StudentLtiTokenFactory(resource=video.playlist)
         response = self.client.post(
             "/api/videos/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
