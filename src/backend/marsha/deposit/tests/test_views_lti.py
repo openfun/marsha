@@ -219,7 +219,9 @@ class FileDepositoryLTIViewTestCase(TestCase):
 
         context = json.loads(html.unescape(match.group(1)))
         jwt_token = ResourceAccessToken(context.get("jwt"))
-        self.assertEqual(jwt_token.payload["resource_id"], str(file_depository.id))
+        self.assertEqual(
+            jwt_token.payload["resource_id"], str(file_depository.playlist.id)
+        )
         self.assertEqual(
             jwt_token.payload["user"],
             {
