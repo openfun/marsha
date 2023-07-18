@@ -7,6 +7,7 @@ import {
   TextInput,
   ThemeContext,
 } from 'grommet';
+import { Nullable } from 'lib-common';
 import {
   ButtonLoaderStyle,
   FetchResponseError,
@@ -19,7 +20,7 @@ import {
   Spinner,
   report,
 } from 'lib-components';
-import { ReactNode, useLayoutEffect, useState } from 'react';
+import { ReactNode, useLayoutEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
@@ -78,6 +79,42 @@ const messages = defineMessages({
     description: 'Playlist name helper in create playlist form.',
     id: 'feature.Playlist.PlaylistForm.playlistNameHelper',
   },
+  playlistRetentionDurationFieldLabel: {
+    defaultMessage: 'Retention duration',
+    description:
+      'Playlist retention duration field label in create playlist form.',
+    id: 'feature.Playlist.PlaylistForm.playlistRetentionDurationFieldLabel',
+  },
+  playlistRetentionDurationHelper: {
+    defaultMessage:
+      'This retention duration is use to know how long related resources will be kept.',
+    description: 'Playlist retention duration helper in create playlist form .',
+    id: 'feature.Playlist.PlaylistForm.playlistRetentionDurationHelper',
+  },
+  playlistRetentionDurationChoiceNoDuration: {
+    defaultMessage: 'No retention duration',
+    description:
+      'Playlist retention duration choice: "no duration", in create playlist form.',
+    id: 'feature.Playlist.PlaylistForm.playlistRetentionDurationChoiceNoDuration',
+  },
+  playlistRetentionDurationChoice30Days: {
+    defaultMessage: '30 days',
+    description:
+      'Playlist retention duration choice: "30 days", in create playlist form.',
+    id: 'feature.Playlist.PlaylistForm.playlistRetentionDurationChoice30Days',
+  },
+  playlistRetentionDurationChoice1Year: {
+    defaultMessage: '1 year',
+    description:
+      'Playlist retention duration choice: "1 year", in create playlist form.',
+    id: 'feature.Playlist.PlaylistForm.playlistRetentionDurationChoice1Year',
+  },
+  playlistRetentionDurationChoice5years: {
+    defaultMessage: '5 years',
+    description:
+      'Playlist retention duration choice: "5 years", in create playlist form.',
+    id: 'feature.Playlist.PlaylistForm.playlistRetentionDurationChoice5years',
+  },
   requiredField: {
     defaultMessage: 'This field is required to create the playlist.',
     description: 'Message when playlist field is missing.',
@@ -117,6 +154,7 @@ const StyledAnchorButton = styled(Button)`
 interface PlaylistFormValues {
   organizationId?: string;
   name?: string;
+  retention_duration?: Nullable<number>;
 }
 
 interface PlaylistFormProps {
@@ -148,6 +186,7 @@ export const PlaylistForm = ({
   const [formValues, setFormValues] = useState<Partial<PlaylistFormValues>>({
     organizationId: initialValues?.organizationId,
     name: initialValues?.name || '',
+    retention_duration: initialValues?.retention_duration || null,
   });
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [currentOrganizationPage, setCurrentOrganizationPage] = useState(0);
@@ -229,6 +268,36 @@ export const PlaylistForm = ({
     },
   );
   const [organizations, setOrganizations] = useState<Organization[]>([]);
+
+  const retentionDurationChoices = useMemo(
+    () => [
+      {
+        label: intl.formatMessage(
+          messages.playlistRetentionDurationChoiceNoDuration,
+        ),
+        value: null,
+      },
+      {
+        label: intl.formatMessage(
+          messages.playlistRetentionDurationChoice30Days,
+        ),
+        value: 30,
+      },
+      {
+        label: intl.formatMessage(
+          messages.playlistRetentionDurationChoice1Year,
+        ),
+        value: 365,
+      },
+      {
+        label: intl.formatMessage(
+          messages.playlistRetentionDurationChoice5years,
+        ),
+        value: 365 * 5,
+      },
+    ],
+    [intl],
+  );
 
   useLayoutEffect(() => {
     if (!organizationResponse) {
@@ -353,6 +422,33 @@ export const PlaylistForm = ({
             </FormField>
             <FormHelpText>
               {intl.formatMessage(messages.playlistNameHelper)}
+            </FormHelpText>
+          </Box>
+          <Box>
+            <FormField
+              disabled={!isEditable}
+              label={intl.formatMessage(
+                messages.playlistRetentionDurationFieldLabel,
+              )}
+              htmlFor="select-retention_duration-id"
+              name="retention_duration"
+              margin="0"
+            >
+              <Select
+                aria-label={intl.formatMessage(
+                  messages.playlistRetentionDurationFieldLabel,
+                )}
+                defaultValue={retentionDurationChoices[0]}
+                id="select-retention_duration-id"
+                name="retention_duration"
+                labelKey="label"
+                options={retentionDurationChoices}
+                replace={false}
+                valueKey={{ key: 'value', reduce: true }}
+              />
+            </FormField>
+            <FormHelpText>
+              {intl.formatMessage(messages.playlistRetentionDurationHelper)}
             </FormHelpText>
           </Box>
         </Box>

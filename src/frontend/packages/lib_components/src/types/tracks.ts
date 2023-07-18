@@ -77,6 +77,7 @@ export interface Playlist extends Resource {
   organization: Nullable<{ name: string; id: string }>;
   portable_to: PlaylistLite[];
   title: string;
+  retention_duration: Nullable<number>;
   users: string[];
 }
 

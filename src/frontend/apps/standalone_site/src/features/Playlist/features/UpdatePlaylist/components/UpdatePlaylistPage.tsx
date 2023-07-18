@@ -78,6 +78,7 @@ export const UpdatePlaylistPage = ({ playlistId }: UpdatePlaylistPageProps) => {
             initialValues={{
               name: playlist.title,
               organizationId: playlist.organization?.id,
+              retention_duration: playlist.retention_duration,
             }}
             isEditable={!isSubmitting}
             onSubmit={(values) => {
@@ -94,6 +95,7 @@ export const UpdatePlaylistPage = ({ playlistId }: UpdatePlaylistPageProps) => {
               updatePlaylist({
                 organization: values.organizationId,
                 title: values.name,
+                retention_duration: values.retention_duration || null,
               });
             }}
             submitTitle={intl.formatMessage(messages.saveButtonTitle)}

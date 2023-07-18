@@ -1,9 +1,11 @@
+import { Nullable } from 'lib-common';
 import { Playlist, createOne } from 'lib-components';
 import { UseMutationOptions, useMutation, useQueryClient } from 'react-query';
 
 type UseCreatePlaylistData = {
   organization: string;
   title: string;
+  retention_duration: Nullable<number>;
 };
 type UseCreatePlaylistError =
   | { code: 'exception' }

@@ -11,6 +11,7 @@ import { UpdatePlaylistPage } from './UpdatePlaylistPage';
 const deferredPlaylist = new Deferred<Playlist>();
 const playlist = {
   id: 'some-id',
+  retention_duration: 365,
   consumer_site: null,
   created_by: null,
   duplicated_from: null,
@@ -82,6 +83,7 @@ describe('<UpdatePlaylistPage />', () => {
       }),
     ).not.toBeDisabled();
     expect(screen.getByDisplayValue('playlist title')).not.toBeDisabled();
+    expect(screen.getByDisplayValue('1 year')).not.toBeDisabled();
 
     expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument();
 

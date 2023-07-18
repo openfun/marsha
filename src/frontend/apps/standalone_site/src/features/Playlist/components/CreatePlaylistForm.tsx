@@ -47,6 +47,7 @@ export const CreatePlaylistForm = () => {
         mutate({
           organization: values.organizationId,
           title: values.name,
+          retention_duration: values.retention_duration || null,
         });
       }}
       onCancel={() => {
