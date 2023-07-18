@@ -15,6 +15,7 @@ import { DownloadVideo } from './widgets/DownloadVideo';
 import { LicenseManager } from './widgets/LicenseManager';
 import { LiveJoinMode } from './widgets/LiveJoinMode';
 import { LivePairing } from './widgets/LivePairing';
+import { RetentionDate } from './widgets/RetentionDate';
 import { SchedulingAndDescription } from './widgets/SchedulingAndDescription';
 import { SharedLiveMedia } from './widgets/SharedLiveMedia';
 import { ToolsAndApplications } from './widgets/ToolsAndApplications';
@@ -50,6 +51,7 @@ enum WidgetType {
   SHARED_MEDIA_VOD_TEACHER = 'SHARED_MEDIA_VOD_TEACHER',
   SHARED_MEDIA_VOD_PUBLIC = 'SHARED_MEDIA_VOD_PUBLIC',
   TRANSCRIPTS = 'TRANSCRIPTS',
+  RETENTION_DATE = 'RETENTION_DATE',
   DELETE_VIDEO = 'DELETE_VIDEO',
 }
 
@@ -142,6 +144,10 @@ const widgetLoader: { [key in WidgetType]: WidgetProps } = {
     component: <LicenseManager key="license_manager" />,
     size: WidgetSize.DEFAULT,
   },
+  [WidgetType.RETENTION_DATE]: {
+    component: <RetentionDate key="retention_date" />,
+    size: WidgetSize.DEFAULT,
+  },
   [WidgetType.DELETE_VIDEO]: {
     component: <DeleteVideo key="delete_video" />,
     size: WidgetSize.DEFAULT,
@@ -157,6 +163,7 @@ const teacherLiveWidgets: WidgetType[] = [
   WidgetType.LIVE_PAIRING,
   WidgetType.LIVE_JOIN_MODE,
   WidgetType.SHARED_MEDIA_LIVE_TEACHER,
+  WidgetType.RETENTION_DATE,
   WidgetType.DELETE_VIDEO,
 ];
 const teacherVodWidgets: WidgetType[] = [
@@ -171,6 +178,7 @@ const teacherVodWidgets: WidgetType[] = [
   WidgetType.UPLOAD_CLOSED_CAPTATIONS,
   WidgetType.SHARED_MEDIA_VOD_TEACHER,
   WidgetType.TOOLS_AND_APPLICATIONS,
+  WidgetType.RETENTION_DATE,
   WidgetType.DELETE_VIDEO,
 ];
 const publicLiveWidgets: WidgetType[] = [];

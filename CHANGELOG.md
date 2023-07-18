@@ -19,6 +19,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add retention date and s3 lifecycle rules to classroom / video
 - Add a command to delete expired classrooms / videos
 - Add retention duration on playlist form
+- Add retention date widget to video and classroom
 
 ### Changed
 
