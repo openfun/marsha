@@ -11,6 +11,7 @@ import { DeleteClassroom } from './widgets/DeleteClassroom';
 import { Description } from './widgets/Description';
 import { Invite } from './widgets/Invite';
 import { Recordings } from './widgets/Recordings';
+import { RetentionDate } from './widgets/RetentionDate';
 import { Scheduling } from './widgets/Scheduling';
 import { SupportSharing } from './widgets/SupportSharing';
 import { ToolsAndApplications } from './widgets/ToolsAndApplications';
@@ -23,6 +24,7 @@ enum WidgetType {
   SUPPORT_SHARING = 'SUPPORT_SHARING',
   RECORDINGS = 'RECORDINGS',
   DELETE_CLASSROOM = 'DELETE_CLASSROOM',
+  RETENTION_DATE = 'RETENTION_DATE',
 }
 
 const widgetLoader: { [key in WidgetType]: WidgetProps } = {
@@ -50,6 +52,10 @@ const widgetLoader: { [key in WidgetType]: WidgetProps } = {
     component: <ToolsAndApplications />,
     size: WidgetSize.DEFAULT,
   },
+  [WidgetType.RETENTION_DATE]: {
+    component: <RetentionDate />,
+    size: WidgetSize.DEFAULT,
+  },
   [WidgetType.DELETE_CLASSROOM]: {
     component: <DeleteClassroom />,
     size: WidgetSize.DEFAULT,
@@ -63,6 +69,7 @@ const classroomWidgets: WidgetType[] = [
   WidgetType.SCHEDULING,
   WidgetType.SUPPORT_SHARING,
   WidgetType.RECORDINGS,
+  WidgetType.RETENTION_DATE,
   WidgetType.DELETE_CLASSROOM,
 ];
 
