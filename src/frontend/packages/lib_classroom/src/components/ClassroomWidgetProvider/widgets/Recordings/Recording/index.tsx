@@ -4,6 +4,7 @@ import { Nullable } from 'lib-common';
 import {
   ClassroomRecording,
   CopyClipboard,
+  uploadState,
   useCurrentResourceContext,
 } from 'lib-components';
 import React, { useCallback } from 'react';
@@ -235,7 +236,7 @@ export const Recording = ({
         gap="medium"
         pad="small"
       >
-        {recording.vod.upload_state === 'ready' ? (
+        {recording.vod.upload_state === uploadState.READY ? (
           <VodReady recording={recording} />
         ) : (
           <VodNotReady recording={recording} />

@@ -1,6 +1,6 @@
 interface Manifest {
   playlists: { uri: string }[];
-  endList?: unknown | null;
+  endList?: unknown;
 }
 
 declare module 'm3u8-parser' {

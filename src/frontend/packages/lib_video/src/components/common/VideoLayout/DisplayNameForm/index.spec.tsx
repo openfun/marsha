@@ -23,7 +23,7 @@ const live = liveMockFactory({
 describe('<DisplayNameForm />', () => {
   beforeEach(() => {
     useJwt.setState({
-      getDecodedJwt: () => ({ user: {} } as any),
+      getDecodedJwt: () => ({ user: {} }) as any,
     });
   });
 

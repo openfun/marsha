@@ -86,7 +86,9 @@ export const UpdatePlaylistPage = ({ playlistId }: UpdatePlaylistPageProps) => {
                 //  should not happen with validation.
                 report(
                   new Error(
-                    `Submit update playlist form succeed with invalid data, submitted data : ${values.toString()}`,
+                    `Submit update playlist form succeed with invalid data, submitted data : ${JSON.stringify(
+                      values,
+                    )}`,
                   ),
                 );
                 return;

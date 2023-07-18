@@ -21,7 +21,7 @@ describe('<UploadSubtitles />', () => {
   beforeEach(() => {
     useJwt.setState({
       jwt: 'some token',
-      getDecodedJwt: () => ({ locale: 'fr_FR' } as any),
+      getDecodedJwt: () => ({ locale: 'fr_FR' }) as any,
     });
   });
 

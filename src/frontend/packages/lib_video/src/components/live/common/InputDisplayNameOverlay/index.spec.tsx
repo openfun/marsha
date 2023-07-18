@@ -72,7 +72,7 @@ describe('<InputDisplayNameOverlay />', () => {
 
   it(`controls input and shows error when input contains "${ANONYMOUS_ID_PREFIX}"`, async () => {
     useJwt.setState({
-      getDecodedJwt: () => ({} as any),
+      getDecodedJwt: () => ({}) as any,
     });
 
     render(wrapInVideo(<InputDisplayNameOverlay />, live));
@@ -95,7 +95,7 @@ describe('<InputDisplayNameOverlay />', () => {
 
   it(`controls input and shows error when input contains less than ${NICKNAME_MIN_LENGTH} characters.`, async () => {
     useJwt.setState({
-      getDecodedJwt: () => ({} as any),
+      getDecodedJwt: () => ({}) as any,
     });
 
     render(wrapInVideo(<InputDisplayNameOverlay />, live));
@@ -118,7 +118,7 @@ describe('<InputDisplayNameOverlay />', () => {
 
   it(`controls input and shows error when input contains more than ${NICKNAME_MAX_LENGTH} characters.`, async () => {
     useJwt.setState({
-      getDecodedJwt: () => ({} as any),
+      getDecodedJwt: () => ({}) as any,
     });
 
     render(wrapInVideo(<InputDisplayNameOverlay />, live));
@@ -179,7 +179,7 @@ describe('<InputDisplayNameOverlay />', () => {
 
   it('enters a valid nickname but it is already used by a live registration', async () => {
     useJwt.setState({
-      getDecodedJwt: () => ({} as any),
+      getDecodedJwt: () => ({}) as any,
     });
 
     mockConverse.mockImplementation(
@@ -226,7 +226,7 @@ describe('<InputDisplayNameOverlay />', () => {
 
   it('enters a valid nickname but it is already used in the chat', async () => {
     useJwt.setState({
-      getDecodedJwt: () => ({} as any),
+      getDecodedJwt: () => ({}) as any,
     });
 
     mockConverse.mockImplementation(
@@ -277,7 +277,7 @@ describe('<InputDisplayNameOverlay />', () => {
 
   it('enters a valid nickname but the server returns an unknown response', async () => {
     useJwt.setState({
-      getDecodedJwt: () => ({} as any),
+      getDecodedJwt: () => ({}) as any,
     });
 
     mockConverse.mockImplementation(

@@ -48,8 +48,9 @@ jest.mock('lib-components', () => ({
 
 jest.mock(
   './MainContent/TeacherLiveContent/TeacherLiveRawWrapper',
-  () => (props: { video: Video }) =>
-    <span title={props.video.id}>live raw</span>,
+  () => (props: { video: Video }) => (
+    <span title={props.video.id}>live raw</span>
+  ),
 );
 
 let mockCanShowStartButton = false;
