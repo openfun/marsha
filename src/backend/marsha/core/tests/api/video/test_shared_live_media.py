@@ -547,7 +547,7 @@ class TestVideoSharedLiveMedia(TestCase):
         shared_live_media = SharedLiveMediaFactory()
 
         jwt_token = StudentLtiTokenFactory(
-            resource=shared_live_media.video,
+            resource=shared_live_media.video.playlist,
             context_id=str(shared_live_media.video.playlist.lti_id),
             consumer_site=str(shared_live_media.video.playlist.consumer_site.id),
         )
@@ -569,7 +569,7 @@ class TestVideoSharedLiveMedia(TestCase):
         shared_live_media = SharedLiveMediaFactory()
 
         jwt_token = StudentLtiTokenFactory(
-            resource=shared_live_media.video,
+            resource=shared_live_media.video.playlist,
         )
 
         response = self.client.patch(
@@ -589,7 +589,7 @@ class TestVideoSharedLiveMedia(TestCase):
         shared_live_media = SharedLiveMediaFactory()
 
         jwt_token = StudentLtiTokenFactory(
-            resource=shared_live_media.video,
+            resource=shared_live_media.video.playlist,
         )
 
         response = self.client.patch(
@@ -692,7 +692,7 @@ class TestVideoSharedLiveMedia(TestCase):
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=shared_live_media.video,
+            resource=shared_live_media.video.playlist,
         )
         with mock.patch.object(
             channel_layers_utils, "dispatch_video_to_groups"
@@ -906,7 +906,7 @@ class TestVideoSharedLiveMedia(TestCase):
             )
 
             jwt_token = InstructorOrAdminLtiTokenFactory(
-                resource=shared_live_media.video,
+                resource=shared_live_media.video.playlist,
             )
 
             with mock.patch.object(
@@ -959,7 +959,7 @@ class TestVideoSharedLiveMedia(TestCase):
         other_shared_live_media = SharedLiveMediaFactory(upload_state=READY)
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=shared_live_media.video,
+            resource=shared_live_media.video.playlist,
         )
 
         with mock.patch.object(
@@ -1016,7 +1016,7 @@ class TestVideoSharedLiveMedia(TestCase):
         shared_live_media = SharedLiveMediaFactory(video=video)
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=shared_live_media.video,
+            resource=shared_live_media.video.playlist,
         )
 
         with mock.patch.object(
@@ -1075,7 +1075,7 @@ class TestVideoSharedLiveMedia(TestCase):
         video.shared_live_medias.set([shared_live_media])
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=shared_live_media.video,
+            resource=shared_live_media.video.playlist,
         )
 
         with mock.patch.object(
@@ -1234,7 +1234,7 @@ class TestVideoSharedLiveMedia(TestCase):
         )
         video.shared_live_medias.set([shared_live_media])
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
 
         with mock.patch.object(
             channel_layers_utils, "dispatch_video_to_groups"
@@ -1295,7 +1295,7 @@ class TestVideoSharedLiveMedia(TestCase):
         video.shared_live_medias.set([shared_live_media])
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=shared_live_media.video,
+            resource=shared_live_media.video.playlist,
         )
 
         with mock.patch.object(
@@ -1357,7 +1357,7 @@ class TestVideoSharedLiveMedia(TestCase):
         video.shared_live_medias.set([shared_live_media])
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=shared_live_media.video,
+            resource=shared_live_media.video.playlist,
         )
 
         with mock.patch.object(
@@ -1419,7 +1419,7 @@ class TestVideoSharedLiveMedia(TestCase):
         video.shared_live_medias.set([shared_live_media])
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=shared_live_media.video,
+            resource=shared_live_media.video.playlist,
         )
 
         with mock.patch.object(
@@ -1480,7 +1480,7 @@ class TestVideoSharedLiveMedia(TestCase):
         video.shared_live_medias.set([shared_live_media])
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=shared_live_media.video,
+            resource=shared_live_media.video.playlist,
         )
 
         with mock.patch.object(
@@ -1626,7 +1626,7 @@ class TestVideoSharedLiveMedia(TestCase):
         )
         video.shared_live_medias.set([shared_live_media])
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
 
         with mock.patch.object(
             channel_layers_utils, "dispatch_video_to_groups"

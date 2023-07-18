@@ -133,7 +133,7 @@ class VideoViewSet(
             # `VideoConsumer` websocket consumer.
             permission_classes = [
                 # With LTI: anyone with a valid token for the video can access
-                permissions.IsTokenResourceRouteObject
+                permissions.IsPlaylistToken
                 # With standalone site, only playlist admin or organization admin can access
                 | permissions.IsObjectPlaylistAdminOrInstructor
                 | permissions.IsObjectPlaylistOrganizationAdmin
@@ -167,10 +167,9 @@ class VideoViewSet(
             permission_classes = [
                 # With LTI: playlist admin or instructor admin or playlist access can access
                 (
-                    permissions.IsTokenResourceRouteObject
+                    permissions.IsPlaylistToken
                     & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
                 )
-                | permissions.HasPlaylistToken
                 # With standalone site, only playlist admin or instructor
                 # and organization admin can access
                 | permissions.IsObjectPlaylistAdminOrInstructor
@@ -197,7 +196,7 @@ class VideoViewSet(
         ]:
             permission_classes = [
                 # With LTI: playlist admin or instructor admin can access
-                permissions.IsTokenResourceRouteObject
+                permissions.IsPlaylistToken
                 & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
                 # With standalone site, playlist admin or instructor can access
                 | permissions.IsObjectPlaylistAdminOrInstructor
