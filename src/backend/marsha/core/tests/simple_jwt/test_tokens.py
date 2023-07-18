@@ -141,8 +141,14 @@ class ResourceAccessTokenTestCase(TestCase):
         session_id = str(uuid.uuid4())
         resource_id = str(uuid.uuid4())
         lti, passport = self.make_lti_instance(resource_id=resource_id)
+        playlist_id = str(uuid.uuid4())
 
-        refresh_token = ResourceRefreshToken.for_lti(lti, permissions, session_id)
+        refresh_token = ResourceRefreshToken.for_lti(
+            lti,
+            permissions,
+            session_id,
+            playlist_id=playlist_id,
+        )
         token = refresh_token.access_token
 
         refresh_token.verify()  # Must not raise
@@ -150,7 +156,7 @@ class ResourceAccessTokenTestCase(TestCase):
         self.assertEqual(refresh_token.payload["access_token_type"], "resource_access")
         self.assertEqual(token.payload["token_type"], "resource_access")
         self.assertEqual(token.payload["session_id"], session_id)
-        self.assertEqual(token.payload["resource_id"], resource_id)
+        self.assertEqual(token.payload["resource_id"], playlist_id)
         self.assertEqual(token.payload["roles"], [INSTRUCTOR])
         self.assertEqual(token.payload["locale"], "en_US")
         self.assertDictEqual(token.payload["permissions"], permissions)
@@ -189,7 +195,7 @@ class ResourceAccessTokenTestCase(TestCase):
         self.assertEqual(refresh_token.payload["access_token_type"], "resource_access")
         self.assertEqual(token.payload["token_type"], "resource_access")
         self.assertEqual(token.payload["session_id"], session_id)
-        self.assertEqual(token.payload["resource_id"], resource_id)
+        self.assertEqual(token.payload["resource_id"], playlist_id)
         self.assertEqual(token.payload["roles"], [INSTRUCTOR])
         self.assertEqual(token.payload["locale"], "en_US")
         self.assertDictEqual(token.payload["permissions"], permissions)
@@ -207,31 +213,6 @@ class ResourceAccessTokenTestCase(TestCase):
             },
         )
         self.assertEqual(token.payload["playlist_id"], playlist_id)
-
-    def test_for_lti_with_playlist_for_student(self):
-        """Test JWT initialization from `for_lti` method with a playlist but student role."""
-        permissions = {"can_access_dashboard": False, "can_update": False}
-        session_id = str(uuid.uuid4())
-        resource_id = str(uuid.uuid4())
-        lti, _passport = self.make_lti_instance(resource_id=resource_id, role=STUDENT)
-
-        playlist_id = str(uuid.uuid4())
-
-        with self.assertRaises(AssertionError):
-            ResourceAccessToken.for_lti(
-                lti,
-                permissions,
-                session_id,
-                playlist_id=playlist_id,
-            )
-
-        with self.assertRaises(AssertionError):
-            ResourceRefreshToken.for_lti(
-                lti,
-                permissions,
-                session_id,
-                playlist_id=playlist_id,
-            )
 
     def test_for_live_session_anonymous(self):
         """Test JWT initialization from `for_live_session` method with public session."""

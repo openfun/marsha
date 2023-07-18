@@ -539,6 +539,7 @@ class BaseLTIView(BaseModelResourceView, ABC):
                 lti=self.lti,
                 permissions=permissions,
                 session_id=session_id,
+                playlist_id=str(app_data["resource"]["playlist"]["id"]),
             )
             jwt_token = refresh_token.access_token
             app_data["jwt"] = str(jwt_token)

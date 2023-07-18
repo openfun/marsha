@@ -33,6 +33,7 @@ class LTIResourceAccessTokenFactoryTestCase(TestCase):
                 "lis_person_contact_email_primary": "jane@test-mooc.fr",
             },
         )
+        playlist_id = uuid.uuid4()
 
         request = RequestFactory().post(
             url,
@@ -43,9 +44,9 @@ class LTIResourceAccessTokenFactoryTestCase(TestCase):
         self.assertTrue(lti.verify())
 
         session_id = uuid.uuid4()
-        jwt = ResourceAccessToken.for_lti(lti, {}, session_id)
+        jwt = ResourceAccessToken.for_lti(lti, {}, session_id, playlist_id)
 
-        jwt_from_factory = LTIResourceAccessTokenFactory()
+        jwt_from_factory = LTIResourceAccessTokenFactory(playlist_id=playlist_id)
 
         self.assertSetEqual(
             set(jwt.payload.keys()),
