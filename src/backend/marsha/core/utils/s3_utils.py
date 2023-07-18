@@ -3,6 +3,7 @@ from django.conf import settings
 
 import boto3
 from botocore.client import Config
+from botocore.exceptions import ClientError
 
 
 def create_presigned_post(conditions, fields, key):
@@ -66,4 +67,63 @@ def create_presigned_post(conditions, fields, key):
         Fields=fields,
         Conditions=[{"acl": acl}] + conditions,
         ExpiresIn=settings.AWS_UPLOAD_EXPIRATION_DELAY,
+    )
+
+
+def update_expiration_date(key, expiration_date):
+    """
+    Updates the expiration date for a given key in an S3 bucket.
+
+    Parameters:
+        key (str): The key of the object in the S3 bucket.
+        expiration_date (datetime): The new expiration date for the object.
+    """
+    s3_client = boto3.client(
+        "s3",
+        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        config=Config(
+            region_name=settings.AWS_S3_REGION_NAME,
+            signature_version="s3v4",
+        ),
+    )
+
+    try:
+        response = s3_client.get_bucket_lifecycle_configuration(
+            Bucket=settings.AWS_DESTINATION_BUCKET_NAME
+        )
+        current_config = response.get("Rules", [])
+    except ClientError as client_error:
+        if client_error.response["Error"]["Code"] == "NoSuchLifecycleConfiguration":
+            # Handle when the bucket does not have a lifecycle configuration yet
+            current_config = []
+        else:
+            raise client_error
+
+    if expiration_date:
+        # Update the expiration date
+        expiration_date_config = {"Date": expiration_date.strftime("%Y-%m-%d")}
+        rule_key_expiration_date_config = {
+            "ID": key,
+            "Filter": {"Prefix": key},
+            "Status": "Enabled",
+            "Expiration": expiration_date_config,
+        }
+
+        is_update = False
+        for rule in current_config:
+            if rule["ID"] == key:
+                is_update = True
+                rule["Expiration"] = expiration_date_config
+                break
+        if not is_update:
+            current_config.append(rule_key_expiration_date_config)
+    else:
+        # Remove the expiration date
+        current_config = [rule for rule in current_config if rule.get("ID") != key]
+
+    # Update the lifecycle configuration for the bucket
+    s3_client.put_bucket_lifecycle_configuration(
+        Bucket=settings.AWS_DESTINATION_BUCKET_NAME,
+        LifecycleConfiguration={"Rules": current_config},
     )

@@ -368,6 +368,7 @@ class Base(Configuration):
     AWS_MEDIAPACKAGE_HARVEST_JOB_TIMEOUT = values.PositiveIntegerValue(10)
     AWS_MEDIALIVE_INPUT_WAITER_DELAY = values.PositiveIntegerValue(5)
     AWS_MEDIALIVE_INPUT_WAITER_MAX_ATTEMPTS = values.PositiveIntegerValue(84)
+    AWS_S3_EXPIRATION_DURATION = values.PositiveIntegerValue(30)  # 30 days
 
     # LTI Config
     LTI_CONFIG_TITLE = values.Value("Marsha")

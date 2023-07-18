@@ -14,7 +14,13 @@ from django.utils.translation import gettext_lazy as _
 
 from safedelete.managers import SafeDeleteManager
 
-from marsha.core.models import BaseModel, Playlist, UploadableFileMixin, Video
+from marsha.core.models import (
+    BaseModel,
+    Playlist,
+    RetentionDateObjectMixin,
+    UploadableFileMixin,
+    Video,
+)
 from marsha.core.utils.time_utils import to_timestamp
 
 
@@ -31,7 +37,7 @@ class ClassroomManager(SafeDeleteManager):
         return super().create(*args, **kwargs)
 
 
-class Classroom(BaseModel):
+class Classroom(BaseModel, RetentionDateObjectMixin):
     """Model representing a BBB classroom."""
 
     RESOURCE_NAME = "classrooms"
