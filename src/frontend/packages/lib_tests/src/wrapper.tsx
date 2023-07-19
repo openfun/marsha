@@ -3,6 +3,13 @@ import { Fragment, PropsWithChildren } from 'react';
 
 import { RenderOptions, appendUtilsElement } from './render';
 
+const customLogger = {
+  log: console.log,
+  warn: console.warn,
+  // disable the "invalid json response body" error when testing failure
+  error: jest.fn(),
+};
+
 export const WrapperReactQuery = ({ children }: PropsWithChildren) => {
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -10,6 +17,7 @@ export const WrapperReactQuery = ({ children }: PropsWithChildren) => {
         retry: false,
       },
     },
+    logger: customLogger,
   });
 
   return (

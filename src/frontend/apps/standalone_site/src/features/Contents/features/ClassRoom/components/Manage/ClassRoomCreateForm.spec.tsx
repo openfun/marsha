@@ -21,10 +21,6 @@ const playlistsResponse = {
   ],
 };
 
-const consoleError = jest
-  .spyOn(console, 'error')
-  .mockImplementation(() => jest.fn());
-
 describe('<ClassRoomCreateForm />', () => {
   const deferred = new Deferred();
 
@@ -37,7 +33,6 @@ describe('<ClassRoomCreateForm />', () => {
 
   afterEach(() => {
     fetchMock.restore();
-    consoleError.mockClear();
   });
 
   test('renders ClassRoomCreateForm', () => {
@@ -195,8 +190,6 @@ describe('<ClassRoomCreateForm />', () => {
         /Sorry, an error has occurred. Please try again./i,
       ),
     ).toBeInTheDocument();
-
-    expect(consoleError).toHaveBeenCalled();
   });
 
   test('error permission', async () => {
@@ -246,8 +239,6 @@ describe('<ClassRoomCreateForm />', () => {
         /Sorry, you don't have the permission to create a classroom./i,
       ),
     ).toBeInTheDocument();
-
-    expect(consoleError).toHaveBeenCalled();
   });
 
   it('renders correctly the form when there is no existing plyalist', () => {

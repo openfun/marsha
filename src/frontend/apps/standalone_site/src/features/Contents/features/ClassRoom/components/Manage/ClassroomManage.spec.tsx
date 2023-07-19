@@ -5,17 +5,10 @@ import fetchMock from 'fetch-mock';
 import { render } from 'lib-tests';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-import { setLogger } from '@tanstack/react-query';
 
 import { useSelectFeatures } from 'features/Contents/store/selectionStore';
 
 import ClassroomManage from './ClassroomManage';
-
-setLogger({
-  log: console.log,
-  warn: console.warn,
-  error: jest.fn(),
-});
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),

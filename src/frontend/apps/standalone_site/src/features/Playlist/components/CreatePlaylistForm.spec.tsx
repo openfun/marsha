@@ -3,18 +3,10 @@ import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { APIList, Organization } from 'lib-components';
 import { Deferred, render } from 'lib-tests';
-import { setLogger } from '@tanstack/react-query';
 
 import { routes } from 'routes';
 
 import { CreatePlaylistForm } from './CreatePlaylistForm';
-
-setLogger({
-  log: console.log,
-  warn: console.warn,
-  // no more errors on the console
-  error: () => {},
-});
 
 const organizationResult = {
   count: 1,

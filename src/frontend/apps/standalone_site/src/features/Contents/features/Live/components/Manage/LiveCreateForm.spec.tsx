@@ -21,10 +21,6 @@ const playlistsResponse = {
   ],
 };
 
-const consoleError = jest
-  .spyOn(console, 'error')
-  .mockImplementation(() => jest.fn());
-
 let deferredPlaylists: Deferred<unknown>;
 describe('<LiveCreateForm />', () => {
   beforeEach(() => {
@@ -38,7 +34,6 @@ describe('<LiveCreateForm />', () => {
   afterEach(() => {
     fetchMock.restore();
     jest.resetAllMocks();
-    consoleError.mockClear();
   });
 
   test('renders LiveCreateForm', async () => {
@@ -246,8 +241,6 @@ describe('<LiveCreateForm />', () => {
         /Sorry, an error has occurred. Please try again./i,
       ),
     ).toBeInTheDocument();
-
-    expect(consoleError).toHaveBeenCalled();
   });
 
   test('error playlist', async () => {
@@ -260,7 +253,5 @@ describe('<LiveCreateForm />', () => {
         /Sorry, an error has occurred. Please try again./i,
       ),
     ).toBeInTheDocument();
-
-    expect(consoleError).toHaveBeenCalled();
   });
 });

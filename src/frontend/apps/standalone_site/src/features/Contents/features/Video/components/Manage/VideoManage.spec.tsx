@@ -3,17 +3,10 @@ import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { useJwt } from 'lib-components';
 import { render } from 'lib-tests';
-import { setLogger } from '@tanstack/react-query';
 
 import { useSelectFeatures } from 'features/Contents/store/selectionStore';
 
 import VideoManage from './VideoManage';
-
-setLogger({
-  log: console.log,
-  warn: console.warn,
-  error: jest.fn(),
-});
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),

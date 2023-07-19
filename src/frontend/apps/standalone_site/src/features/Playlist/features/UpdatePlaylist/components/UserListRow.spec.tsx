@@ -3,13 +3,10 @@ import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { useCurrentUser } from 'lib-components';
 import { Deferred, render } from 'lib-tests';
-import { setLogger } from '@tanstack/react-query';
 
 import { PlaylistRole } from '../types/playlistAccess';
 
 import { UserListRow } from './UserListRow';
-
-setLogger({ log: console.log, warn: console.warn, error: () => {} });
 
 describe('<UserListRow />', () => {
   beforeEach(() => {

@@ -135,9 +135,6 @@ describe('SearchUserList', () => {
       '/api/users/?limit=999&fullname_or_email__icontains=example&id_not_in=1',
       deferred.promise,
     );
-    const consoleError = jest
-      .spyOn(console, 'error')
-      .mockImplementation(() => jest.fn());
 
     const mockSetSelectedUser = jest.fn();
     render(
@@ -164,6 +161,5 @@ describe('SearchUserList', () => {
       }),
     );
     expect(fetchMock.calls().length).toBe(2);
-    expect(consoleError).toHaveBeenCalled();
   });
 });

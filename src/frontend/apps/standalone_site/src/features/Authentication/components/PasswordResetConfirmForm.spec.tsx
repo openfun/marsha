@@ -11,14 +11,9 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-const consoleError = jest
-  .spyOn(console, 'error')
-  .mockImplementation(() => jest.fn());
-
 describe('<PasswordResetConfirmForm />', () => {
   afterEach(() => {
     jest.resetAllMocks();
-    consoleError.mockClear();
     fetchMock.restore();
   });
 
@@ -78,8 +73,6 @@ describe('<PasswordResetConfirmForm />', () => {
     );
 
     expect(await screen.findByText('An error occurred')).toBeInTheDocument();
-
-    expect(consoleError).toHaveBeenCalled();
 
     expect(fetchMock.lastCall()![0]).toEqual(
       '/account/api/password/reset/confirm/',
