@@ -304,7 +304,7 @@ describe('<VideoWidgetProvider />', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders widget for vod student', async () => {
+  it('renders widget for vod student', () => {
     mockedUseCurrentResourceContext.mockReturnValue([
       {
         permissions: {
@@ -361,8 +361,8 @@ describe('<VideoWidgetProvider />', () => {
       ),
     );
 
-    //  Download video
-    expect(await screen.findByText('Download video')).toBeInTheDocument();
+    //  Download video as student should not appear in the widgets
+    expect(screen.queryByText('Download video')).not.toBeInTheDocument();
 
     //  Transcripts
     expect(screen.getByText('Transcripts')).toBeInTheDocument();

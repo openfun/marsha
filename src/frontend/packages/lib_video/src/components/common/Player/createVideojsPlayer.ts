@@ -4,6 +4,7 @@ import 'videojs-contrib-quality-levels';
 import 'videojs-http-source-selector';
 import './videojs/qualitySelectorPlugin';
 import './videojs/p2pHlsPlugin';
+import './videojs/downloadVideoPlugin';
 import { Maybe, Nullable } from 'lib-common';
 import {
   Id3VideoType,
@@ -162,6 +163,9 @@ export const createVideojsPlayer = (
   if (isMSESupported()) {
     if (isP2pQueryEnabled && isP2PEnabled) {
       player.p2pHlsPlugin();
+    }
+    if (!video.is_live && video.urls.mp4) {
+      player.downloadVideoPlugin({ urls: video.urls.mp4 });
     }
     player.httpSourceSelector();
     const qualityLevels = player.qualityLevels();

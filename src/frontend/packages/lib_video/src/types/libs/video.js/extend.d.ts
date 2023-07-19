@@ -1,6 +1,8 @@
 import 'video.js';
 import { Engine } from 'p2p-media-loader-hlsjs';
 
+import { DownloadVideoPluginOptions } from '../../../components/common/Player/videojs/downloadVideoPlugin/types';
+
 declare module 'video.js' {
   interface VideoJsPlayerOptions {
     debug?: boolean;
@@ -24,6 +26,7 @@ declare module 'video.js' {
     // p2p-media-loader-hlsjs
     config: { loader: { getEngine: () => Engine } };
     media: { currentTime: number };
+    downloadVideoPlugin: (options: DownloadVideoPluginOptions) => void;
     p2pHlsPlugin: () => void;
     // videojs-http-source-selector
     httpSourceSelector: () => void;
