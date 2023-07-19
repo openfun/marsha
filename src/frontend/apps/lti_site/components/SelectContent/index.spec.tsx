@@ -26,7 +26,7 @@ jest.mock(
   () =>
     ({
       useIsFeatureEnabled: () => () => true,
-    } as any),
+    }) as any,
 );
 
 const mockAppData = {

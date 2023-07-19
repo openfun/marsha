@@ -1,4 +1,4 @@
-import { QueryFunctionContext, QueryKey } from 'react-query';
+import { QueryFunctionContext, QueryKey } from '@tanstack/react-query';
 
 import { useJwt } from '@lib-components/hooks/stores/useJwt';
 

@@ -7,7 +7,7 @@ import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { Button } from 'grommet';
 import { Deferred, render } from 'lib-tests';
-import { setLogger } from 'react-query';
+import { setLogger } from '@tanstack/react-query';
 
 import { PlaylistForm } from './PlaylistForm';
 

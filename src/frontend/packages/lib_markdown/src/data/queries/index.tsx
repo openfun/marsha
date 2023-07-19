@@ -1,5 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
+  UseMutationOptions,
+  UseQueryOptions,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
+import {
   MarkdownDocument,
   MarkdownSaveTranslationsRequest,
   MarkdownSaveTranslationsResponse,
@@ -8,13 +15,6 @@ import {
   fetchOne,
   updateOne,
 } from 'lib-components';
-import {
-  UseMutationOptions,
-  UseQueryOptions,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from 'react-query';
 
 interface MarkdownDocumentsSelectResponse {
   new_url: string;
@@ -28,11 +28,11 @@ export const useSelectMarkdownDocument = (
   >,
 ) => {
   const key = ['markdown-documents', 'lti-select'];
-  return useQuery<MarkdownDocumentsSelectResponse, 'markdown-documents'>(
-    key,
-    fetchOne,
-    queryConfig,
-  );
+  return useQuery<MarkdownDocumentsSelectResponse, 'markdown-documents'>({
+    queryKey: key,
+    queryFn: fetchOne,
+    ...queryConfig,
+  });
 };
 
 export const useMarkdownDocument = (
@@ -44,11 +44,11 @@ export const useMarkdownDocument = (
   >,
 ) => {
   const key = ['markdown-documents', documentId];
-  return useQuery<MarkdownDocument, 'markdown-documents'>(
-    key,
-    fetchOne,
-    queryConfig,
-  );
+  return useQuery<MarkdownDocument, 'markdown-documents'>({
+    queryKey: key,
+    queryFn: fetchOne,
+    ...queryConfig,
+  });
 };
 
 type UseCreateMarkdownDocumentData = {
@@ -76,19 +76,17 @@ export const useCreateMarkdownDocument = (
     MarkdownDocument,
     UseCreateMarkdownDocumentError,
     UseCreateMarkdownDocumentData
-  >(
-    (newMarkdownDocument) =>
+  >({
+    mutationFn: (newMarkdownDocument) =>
       createOne({ name: 'markdown-documents', object: newMarkdownDocument }),
-    {
-      ...options,
-      onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('markdown-documents');
-        if (options?.onSuccess) {
-          options.onSuccess(data, variables, context);
-        }
-      },
+    ...options,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries(['markdown-documents']);
+      if (options?.onSuccess) {
+        options.onSuccess(data, variables, context);
+      }
     },
-  );
+  });
 };
 
 type UseUpdateMarkdownDocumentData = Partial<
@@ -114,29 +112,27 @@ export const useUpdateMarkdownDocument = (
     MarkdownDocument,
     UseUpdateMarkdownDocumentError,
     UseUpdateMarkdownDocumentData
-  >(
-    (updatedMarkdownDocument) =>
+  >({
+    mutationFn: (updatedMarkdownDocument) =>
       updateOne({
         name: 'markdown-documents',
         id,
         object: updatedMarkdownDocument,
       }),
-    {
-      ...options,
-      onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('markdown-documents');
-        if (options?.onSuccess) {
-          options.onSuccess(data, variables, context);
-        }
-      },
-      onError: (error, variables, context) => {
-        queryClient.invalidateQueries('markdown-documents');
-        if (options?.onError) {
-          options.onError(error, variables, context);
-        }
-      },
+    ...options,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries(['markdown-documents']);
+      if (options?.onSuccess) {
+        options.onSuccess(data, variables, context);
+      }
     },
-  );
+    onError: (error, variables, context) => {
+      queryClient.invalidateQueries(['markdown-documents']);
+      if (options?.onError) {
+        options.onError(error, variables, context);
+      }
+    },
+  });
 };
 
 type MutationMarkdownData<MarkdownRequest> = Partial<MarkdownRequest>;
@@ -169,34 +165,32 @@ const markdownDocumentActionMutation =
       MarkdownResponse,
       MutationMarkdownError<MarkdownRequest>,
       MutationMarkdownData<MarkdownRequest>
-    >(
-      (object) =>
+    >({
+      mutationFn: (object) =>
         actionOne({
           name: 'markdown-documents',
           id,
           action,
           object,
         }),
-      {
-        ...options,
-        onSuccess: (data, variables, context) => {
-          if (!doNotInvalidateQueries) {
-            queryClient.invalidateQueries('markdown-documents');
-          }
-          if (options?.onSuccess) {
-            options.onSuccess(data, variables, context);
-          }
-        },
-        onError: (error, variables, context) => {
-          if (!doNotInvalidateQueries) {
-            queryClient.invalidateQueries('markdown-documents');
-          }
-          if (options?.onError) {
-            options.onError(error, variables, context);
-          }
-        },
+      ...options,
+      onSuccess: (data, variables, context) => {
+        if (!doNotInvalidateQueries) {
+          queryClient.invalidateQueries(['markdown-documents']);
+        }
+        if (options?.onSuccess) {
+          options.onSuccess(data, variables, context);
+        }
       },
-    );
+      onError: (error, variables, context) => {
+        if (!doNotInvalidateQueries) {
+          queryClient.invalidateQueries(['markdown-documents']);
+        }
+        if (options?.onError) {
+          options.onError(error, variables, context);
+        }
+      },
+    });
   };
 export const useSaveTranslations = markdownDocumentActionMutation<
   MarkdownSaveTranslationsResponse,

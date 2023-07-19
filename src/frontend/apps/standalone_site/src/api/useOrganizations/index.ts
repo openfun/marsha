@@ -1,10 +1,10 @@
+import { UseQueryOptions, useQuery } from '@tanstack/react-query';
 import {
   APIList,
   FetchListQueryKey,
   Organization,
   fetchList,
 } from 'lib-components';
-import { UseQueryOptions, useQuery } from 'react-query';
 
 type OrganizationsResponse = APIList<Organization>;
 type UseOrganizationsParams = {
@@ -27,5 +27,5 @@ export const useOrganizations = (
     'organizations',
     OrganizationsResponse,
     FetchListQueryKey
-  >(keys, fetchList, queryConfig);
+  >({ queryKey: keys, queryFn: fetchList, ...queryConfig });
 };

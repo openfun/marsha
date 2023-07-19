@@ -1,10 +1,10 @@
+import { QueryClient } from '@tanstack/react-query';
 import { act, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { APIList, DepositedFile, uploadState } from 'lib-components';
 import { Deferred, render } from 'lib-tests';
 import React from 'react';
-import { QueryClient } from 'react-query';
 
 import {
   depositedFileMockFactory,

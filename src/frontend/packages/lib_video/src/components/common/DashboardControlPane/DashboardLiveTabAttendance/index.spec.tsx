@@ -1,9 +1,9 @@
+import { QueryClient } from '@tanstack/react-query';
 import { screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { liveState, useJwt, videoMockFactory } from 'lib-components';
 import { Deferred, render } from 'lib-tests';
 import React from 'react';
-import { QueryClient } from 'react-query';
 
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 

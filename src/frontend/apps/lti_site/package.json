@@ -8,7 +8,7 @@
     "build-dev": "yarn copy-iframe-resizer; yarn copy-katex-fonts; yarn build",
     "copy-iframe-resizer": "cp ../../node_modules/iframe-resizer/js/*.min.js ../../../backend/marsha/static/js",
     "copy-katex-fonts": "mkdir -p ../../../backend/marsha/static/css/fonts && cp ../../node_modules/katex/dist/fonts/* ../../../backend/marsha/static/css/fonts",
-    "lint": "eslint **/*.{ts,tsx}",
+    "lint": "tsc --noEmit && eslint **/*.{ts,tsx}",
     "lint:fix": "yarn run lint --fix",
     "prettier": "prettier --list-different '**/*.+(ts|tsx|json|js|jsx)' --ignore-path ../../../.prettierignore",
     "prettier-write": "prettier --write '**/*.+(ts|tsx|json|js|jsx)' --ignore-path ../../../.prettierignore",

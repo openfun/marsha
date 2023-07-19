@@ -1,7 +1,7 @@
+import { UseQueryResult } from '@tanstack/react-query';
 import { Pagination } from 'grommet';
 import { APIList, ContentCards } from 'lib-components';
 import { Fragment } from 'react';
-import { UseQueryResult } from 'react-query';
 
 import useContentPerPage from '../../hooks/useContentPerPage';
 import ContentsFilter, {

@@ -1,3 +1,4 @@
+import { QueryClient } from '@tanstack/react-query';
 import { screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import {
@@ -8,7 +9,6 @@ import {
 } from 'lib-components';
 import { Deferred, render } from 'lib-tests';
 import React from 'react';
-import { QueryClient } from 'react-query';
 
 import { fileDepositoryMockFactory } from 'apps/deposit/utils/tests/factories';
 

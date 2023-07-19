@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { Box, Text, TextArea, TextInput } from 'grommet';
 import { Alert } from 'grommet-icons';
 import { Nullable } from 'lib-common';
@@ -11,7 +12,6 @@ import {
 import { initiateLive, useCreateVideo } from 'lib-video';
 import { Fragment, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 
 import { useSelectPlaylist } from 'features/Playlist';

@@ -1,5 +1,5 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Fragment, PropsWithChildren } from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { RenderOptions, appendUtilsElement } from './render';
 

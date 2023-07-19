@@ -1,5 +1,5 @@
+import { UseMutationOptions, useMutation } from '@tanstack/react-query';
 import { fetchWrapper } from 'lib-components';
-import { UseMutationOptions, useMutation } from 'react-query';
 
 type UsePasswordResetData = {
   email: string;
@@ -45,11 +45,11 @@ export const usePasswordReset = (options?: UsePasswordResetOptions) => {
     UsePasswordResetResponseData,
     UsePasswordResetError,
     UsePasswordResetData
-  >(
-    (object) =>
+  >({
+    mutationFn: (object) =>
       actionPasswordReset({
         object,
       }),
-    options,
-  );
+    ...options,
+  });
 };

@@ -1,7 +1,7 @@
 import { renderHook, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { WrapperReactQuery } from 'lib-tests';
-import { setLogger } from 'react-query';
+import { setLogger } from '@tanstack/react-query';
 
 import { usePagesApi } from './usePagesApi';
 

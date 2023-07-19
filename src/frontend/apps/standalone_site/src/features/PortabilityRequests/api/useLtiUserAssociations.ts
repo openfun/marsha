@@ -1,5 +1,9 @@
+import {
+  UseMutationOptions,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { createOne } from 'lib-components';
-import { UseMutationOptions, useMutation, useQueryClient } from 'react-query';
 
 type UseCreateLtiUserAssociationData = {
   association_jwt: string;
@@ -23,22 +27,20 @@ export const useCreateLtiUserAssociation = (
     null, // TData, the mutation result : nothing
     UseCreateLtiUserAssociationError,
     UseCreateLtiUserAssociationData
-  >(
-    (newLtiUserAssociation) =>
+  >({
+    mutationFn: (newLtiUserAssociation) =>
       createOne({
         name: 'lti-user-associations',
         object: newLtiUserAssociation,
       }),
-    {
-      ...options,
-      onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('lti-user-associations');
-        // Also refresh portability requests because requesting user may have been updated
-        queryClient.invalidateQueries('portability-requests');
-        if (options?.onSuccess) {
-          options.onSuccess(data, variables, context);
-        }
-      },
+    ...options,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries(['lti-user-associations']);
+      // Also refresh portability requests because requesting user may have been updated
+      queryClient.invalidateQueries(['portability-requests']);
+      if (options?.onSuccess) {
+        options.onSuccess(data, variables, context);
+      }
     },
-  );
+  });
 };

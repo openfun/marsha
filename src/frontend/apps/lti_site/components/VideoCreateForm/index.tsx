@@ -195,8 +195,10 @@ const VideoCreateFormStepIndicator = ({
                 ? intl.formatMessage(messages.stepCompleted)
                 : ''
             }${
-            step === stepNumber ? intl.formatMessage(messages.stepCurrent) : ''
-          } ${intl.formatMessage(title)} (${stepNumber}/3)
+              step === stepNumber
+                ? intl.formatMessage(messages.stepCurrent)
+                : ''
+            } ${intl.formatMessage(title)} (${stepNumber}/3)
             `}
           as="li"
           flex="grow"

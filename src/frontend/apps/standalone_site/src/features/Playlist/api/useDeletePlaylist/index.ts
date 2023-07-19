@@ -1,6 +1,10 @@
+import {
+  UseMutationOptions,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { Maybe } from 'lib-common';
 import { FetchResponseError, Playlist, deleteOne } from 'lib-components';
-import { UseMutationOptions, useMutation, useQueryClient } from 'react-query';
 
 type UseDeletePlaylistData = string;
 type UseDeletePlaylistError = FetchResponseError<UseDeletePlaylistData>;
@@ -15,26 +19,24 @@ export const useDeletePlaylist = (options?: UseDeletePlaylistOptions) => {
     Maybe<Playlist>,
     UseDeletePlaylistError,
     UseDeletePlaylistData
-  >(
-    (playlistId) =>
+  >({
+    mutationFn: (playlistId) =>
       deleteOne({
         name: 'playlists',
         id: playlistId,
       }),
-    {
-      ...options,
-      onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('playlists');
-        if (options?.onSuccess) {
-          options.onSuccess(data, variables, context);
-        }
-      },
-      onError: (error, variables, context) => {
-        queryClient.invalidateQueries('playlists');
-        if (options?.onError) {
-          options.onError(error, variables, context);
-        }
-      },
+    ...options,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries(['playlists']);
+      if (options?.onSuccess) {
+        options.onSuccess(data, variables, context);
+      }
     },
-  );
+    onError: (error, variables, context) => {
+      queryClient.invalidateQueries(['playlists']);
+      if (options?.onError) {
+        options.onError(error, variables, context);
+      }
+    },
+  });
 };

@@ -1,10 +1,10 @@
+import { UseQueryOptions, useQuery } from '@tanstack/react-query';
 import {
   APIList,
   FetchListQueryKey,
   FetchResponseError,
   fetchResponseHandler,
 } from 'lib-components';
-import { UseQueryOptions, useQuery } from 'react-query';
 
 export interface PagesApi {
   slug: string;
@@ -40,5 +40,5 @@ export function usePagesApi(
     FetchResponseError<PagesApiResponse>,
     PagesApiResponse,
     FetchListQueryKey
-  >(keys, getPages, queryConfig);
+  >({ queryKey: keys, queryFn: getPages, ...queryConfig });
 }

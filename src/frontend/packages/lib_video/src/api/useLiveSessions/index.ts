@@ -1,10 +1,10 @@
+import { UseQueryOptions, useQuery } from '@tanstack/react-query';
 import {
   APIList,
   FetchListQueryKey,
   LiveSession,
   fetchList,
 } from 'lib-components';
-import { UseQueryOptions, useQuery } from 'react-query';
 
 type LiveSessionsResponse = APIList<LiveSession>;
 type UseLiveSessionsParams = { anonymous_id?: string };
@@ -24,5 +24,5 @@ export const useLiveSessionsQuery = (
     'livesessions',
     LiveSessionsResponse,
     FetchListQueryKey
-  >(key, fetchList, queryConfig);
+  >({ queryKey: key, queryFn: fetchList, ...queryConfig });
 };

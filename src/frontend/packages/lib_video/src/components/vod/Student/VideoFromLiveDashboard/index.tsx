@@ -2,7 +2,7 @@ import { Box } from 'grommet';
 import { TimedText, Video } from 'lib-components';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useIntl } from 'react-intl';
-import { useQueryClient } from 'react-query';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { pushAttendance } from '@lib-video/api/pushAttendance';
 import { useLiveSessionsQuery } from '@lib-video/api/useLiveSessions';
@@ -56,7 +56,7 @@ export const VideoFromLiveDashboard = ({
             setLiveSession(
               await pushAttendance(video.id, {}, intl.locale, anonymousId),
             );
-            queryClient.invalidateQueries('livesessions', {
+            queryClient.invalidateQueries(['livesessions'], {
               refetchActive: false,
             });
           };

@@ -1,3 +1,4 @@
+import { QueryClient } from '@tanstack/react-query';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
@@ -9,7 +10,6 @@ import {
   useJwt,
 } from 'lib-components';
 import { Deferred, render } from 'lib-tests';
-import { QueryClient } from 'react-query';
 
 import { classroomMockFactory } from '@lib-classroom/utils/tests/factories';
 

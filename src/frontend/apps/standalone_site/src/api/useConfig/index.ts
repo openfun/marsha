@@ -1,10 +1,10 @@
+import { UseQueryOptions, useQuery } from '@tanstack/react-query';
 import {
   FetchListQueryKey,
   FetchResponseError,
   fetchResponseHandler,
   fetchWrapper,
 } from 'lib-components';
-import { UseQueryOptions, useQuery } from 'react-query';
 
 export interface ConfigResponse {
   p2p: {
@@ -47,5 +47,5 @@ export function useConfig(
     ConfigResponse,
     FetchResponseError<ConfigResponse>,
     ConfigResponse
-  >(keys, getConfig, queryConfig);
+  >({ queryKey: keys, queryFn: getConfig, ...queryConfig });
 }

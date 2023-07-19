@@ -5,7 +5,7 @@ import fetchMock from 'fetch-mock';
 import { render } from 'lib-tests';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-import { setLogger } from 'react-query';
+import { setLogger } from '@tanstack/react-query';
 
 import { useSelectFeatures } from 'features/Contents/store/selectionStore';
 
