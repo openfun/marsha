@@ -7,7 +7,6 @@ import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { Button } from 'grommet';
 import { Deferred, render } from 'lib-tests';
-import { setLogger } from '@tanstack/react-query';
 
 import { PlaylistForm } from './PlaylistForm';
 
@@ -15,13 +14,6 @@ jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
   report: jest.fn(),
 }));
-
-setLogger({
-  log: console.log,
-  warn: console.warn,
-  // no more errors on the console
-  error: () => {},
-});
 
 describe('<PlaylistForm />', () => {
   beforeEach(() => {

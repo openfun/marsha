@@ -2,17 +2,8 @@ import { renderHook, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { LiveModeType, useJwt, videoMockFactory } from 'lib-components';
 import { WrapperReactQuery } from 'lib-tests';
-import { setLogger } from '@tanstack/react-query';
 
 import { useCreateVideo } from '.';
-
-setLogger({
-  // tslint:disable-next-line:no-console
-  log: console.log,
-  warn: console.warn,
-  // no more errors on the console
-  error: () => {},
-});
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),

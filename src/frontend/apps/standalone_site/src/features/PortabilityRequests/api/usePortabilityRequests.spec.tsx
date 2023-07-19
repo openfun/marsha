@@ -2,7 +2,6 @@ import { renderHook, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { portabilityRequestMockFactory, useJwt } from 'lib-components';
 import { WrapperReactQuery } from 'lib-tests';
-import { setLogger } from '@tanstack/react-query';
 
 import {
   acceptPortabilityRequest,
@@ -11,15 +10,6 @@ import {
 } from './usePortabilityRequests';
 
 describe('features/PortabilityRequests/api/usePortabilityRequests', () => {
-  beforeAll(() => {
-    setLogger({
-      log: console.log,
-      warn: console.warn,
-      // disable the "invalid json response body" error when testing failure
-      error: jest.fn(),
-    });
-  });
-
   beforeEach(() => {
     useJwt.getState().setJwt('some token');
   });

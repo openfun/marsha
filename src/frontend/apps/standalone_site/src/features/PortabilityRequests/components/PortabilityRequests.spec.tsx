@@ -7,7 +7,6 @@ import {
   portabilityRequestMockFactory,
 } from 'lib-components';
 import { Deferred, render } from 'lib-tests';
-import { setLogger } from '@tanstack/react-query';
 
 import { PortabilityRequests } from './PortabilityRequests';
 
@@ -85,13 +84,6 @@ describe('<PortabilityRequests />', () => {
   });
 
   it('displays an error', async () => {
-    setLogger({
-      log: console.log,
-      warn: console.warn,
-      // disable the "invalid json response body" error when testing failure
-      error: jest.fn(),
-    });
-
     const deferred = new Deferred();
     fetchMock.get(
       '/api/portability-requests/?limit=20&offset=0&ordering=-created_on&state=&for_playlist_id=',

@@ -3,7 +3,6 @@ import fetchMock from 'fetch-mock';
 import { useJwt } from 'lib-components';
 import { render } from 'lib-tests';
 import React from 'react';
-import { setLogger } from '@tanstack/react-query';
 import { useLocation } from 'react-router-dom';
 
 import { useLtiUserAssociationJwtQueryParam } from './useLtiUserAssociationJwtQueryParam';
@@ -17,15 +16,6 @@ const WrappedHookComponent = () => {
 };
 
 describe('features/PortabilityRequests/hooks/useLtiUserAssociationJwtQueryParam', () => {
-  beforeAll(() => {
-    setLogger({
-      log: console.log,
-      warn: console.warn,
-      // disable the "invalid json response body" error when testing failure
-      error: jest.fn(),
-    });
-  });
-
   beforeEach(() => {
     useJwt.getState().setJwt('some token');
   });

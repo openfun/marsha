@@ -2,20 +2,10 @@ import { renderHook, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { useJwt } from 'lib-components';
 import { WrapperReactQuery } from 'lib-tests';
-import { setLogger } from '@tanstack/react-query';
 
 import { useCreateLtiUserAssociation } from './useLtiUserAssociations';
 
 describe('features/PortabilityRequests/api/useLtiUserAssociations', () => {
-  beforeAll(() => {
-    setLogger({
-      log: console.log,
-      warn: console.warn,
-      // disable the "invalid json response body" error when testing failure
-      error: jest.fn(),
-    });
-  });
-
   beforeEach(() => {
     useJwt.getState().setJwt('some token');
   });

@@ -8,7 +8,6 @@ import {
   userMockFactory,
 } from 'lib-components';
 import { Deferred, render } from 'lib-tests';
-import { setLogger } from '@tanstack/react-query';
 
 import { ItemTableRow } from './ItemTableRow';
 
@@ -206,13 +205,6 @@ describe('<ItemTableRow />', () => {
   });
 
   it('displays an error when API call fails (accept)', async () => {
-    setLogger({
-      log: console.log,
-      warn: console.warn,
-      // disable the "invalid json response body" error when testing failure
-      error: jest.fn(),
-    });
-
     const portabilityRequest = portabilityRequestMockFactory({
       from_playlist: playlistMockFactory({ title: 'playlist FROM' }),
       for_playlist: playlistMockFactory({ title: 'playlist FOR' }),
@@ -247,13 +239,6 @@ describe('<ItemTableRow />', () => {
   });
 
   it('displays an error when API call fails (reject)', async () => {
-    setLogger({
-      log: console.log,
-      warn: console.warn,
-      // disable the "invalid json response body" error when testing failure
-      error: jest.fn(),
-    });
-
     const portabilityRequest = portabilityRequestMockFactory({
       from_playlist: playlistMockFactory({ title: 'playlist FROM' }),
       for_playlist: playlistMockFactory({ title: 'playlist FOR' }),

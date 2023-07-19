@@ -2,16 +2,8 @@ import { renderHook, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { thumbnailMockFactory, useJwt } from 'lib-components';
 import { WrapperReactQuery } from 'lib-tests';
-import { setLogger } from '@tanstack/react-query';
 
 import { useDeleteThumbnail } from '.';
-
-setLogger({
-  log: console.log,
-  warn: console.warn,
-  // no more errors on the console
-  error: () => {},
-});
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),

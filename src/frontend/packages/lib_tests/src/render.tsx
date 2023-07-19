@@ -71,7 +71,12 @@ const ToastHack = () => {
 
 /////////////////////////
 //  react-query setup
-
+const customLogger = {
+  log: console.log,
+  warn: console.warn,
+  // disable the "invalid json response body" error when testing failure
+  error: jest.fn(),
+};
 //  create the default client used by react-query
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -79,6 +84,7 @@ const queryClient = new QueryClient({
       retry: false,
     },
   },
+  logger: customLogger,
 });
 
 /////////////////////////

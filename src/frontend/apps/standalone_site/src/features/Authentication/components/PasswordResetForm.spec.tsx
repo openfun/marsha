@@ -51,8 +51,6 @@ describe('<PasswordResetForm />', () => {
 
     expect(await screen.findByText('An error occurred')).toBeInTheDocument();
 
-    expect(consoleError).toHaveBeenCalled();
-
     expect(fetchMock.lastCall()![0]).toEqual('/account/api/password/reset/');
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {

@@ -14,10 +14,6 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-const consoleError = jest
-  .spyOn(console, 'error')
-  .mockImplementation(() => jest.fn());
-
 describe('<LoginFrom />', () => {
   beforeEach(() => {
     fetchMockAuth();
@@ -25,7 +21,6 @@ describe('<LoginFrom />', () => {
 
   afterEach(() => {
     jest.resetAllMocks();
-    consoleError.mockClear();
     fetchMock.restore();
   });
 
@@ -79,8 +74,6 @@ describe('<LoginFrom />', () => {
         'No active account found with the given credentials',
       ),
     ).toBeInTheDocument();
-
-    expect(consoleError).toHaveBeenCalled();
 
     expect(fetchMock.lastCall()![0]).toEqual('/account/api/token/');
     expect(fetchMock.lastCall()![1]).toEqual({

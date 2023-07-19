@@ -62,10 +62,6 @@ const mockUseUploadManager = useUploadManager as jest.MockedFunction<
   typeof useUploadManager
 >;
 
-const consoleError = jest
-  .spyOn(console, 'error')
-  .mockImplementation(() => jest.fn());
-
 let deferredPlaylists: Deferred<unknown>;
 let deferredVideos: Deferred<unknown>;
 describe('<VideoCreateForm />', () => {
@@ -91,7 +87,6 @@ describe('<VideoCreateForm />', () => {
   afterEach(() => {
     fetchMock.restore();
     jest.resetAllMocks();
-    consoleError.mockClear();
   });
 
   test('renders VideoCreateForm', async () => {
@@ -356,8 +351,6 @@ describe('<VideoCreateForm />', () => {
         /Sorry, an error has occurred. Please try again./i,
       ),
     ).toBeInTheDocument();
-
-    expect(consoleError).toHaveBeenCalled();
   });
 
   test('error playlist', async () => {
@@ -375,7 +368,5 @@ describe('<VideoCreateForm />', () => {
         /Sorry, an error has occurred. Please try again./i,
       ),
     ).toBeInTheDocument();
-
-    expect(consoleError).toHaveBeenCalled();
   });
 });

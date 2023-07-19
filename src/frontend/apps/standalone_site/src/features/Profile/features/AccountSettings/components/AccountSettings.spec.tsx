@@ -2,15 +2,8 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { render } from 'lib-tests';
-import { setLogger } from '@tanstack/react-query';
 
 import { AccountSettings } from './AccountSettings';
-
-setLogger({
-  log: jest.fn(),
-  warn: jest.fn(),
-  error: jest.fn(),
-});
 
 describe('<AccountSettings />', () => {
   beforeEach(() => {
