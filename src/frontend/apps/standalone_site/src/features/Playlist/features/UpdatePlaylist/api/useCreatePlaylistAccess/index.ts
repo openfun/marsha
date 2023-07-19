@@ -1,5 +1,9 @@
+import {
+  UseMutationOptions,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { FetchResponseError, createOne } from 'lib-components';
-import { UseMutationOptions, useMutation, useQueryClient } from 'react-query';
 
 import { PlaylistAccess, PlaylistRole } from '../../types/playlistAccess';
 
@@ -23,18 +27,16 @@ export const useCreatePlaylistAccess = (
     PlaylistAccess,
     UseCreatePlaylistAccessError,
     UseCreatePlaylistAccessData
-  >(
-    (newPlaylistAccess) =>
+  >({
+    mutationFn: (newPlaylistAccess) =>
       createOne({
         name: 'playlist-accesses',
         object: newPlaylistAccess,
       }),
-    {
-      ...options,
-      onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries(['playlist-accesses']);
-        options?.onSuccess?.(data, variables, context);
-      },
+    ...options,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries(['playlist-accesses']);
+      options?.onSuccess?.(data, variables, context);
     },
-  );
+  });
 };

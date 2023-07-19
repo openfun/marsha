@@ -1,5 +1,5 @@
+import { UseMutationOptions, useMutation } from '@tanstack/react-query';
 import { TokenResponse, fetchWrapper, useJwt } from 'lib-components';
-import { UseMutationOptions, useMutation } from 'react-query';
 
 type UseBasicLoginData = {
   username: string;
@@ -42,20 +42,18 @@ export const useBasicLogin = (options?: UseBasicLoginOptions) => {
     setRefreshJwt: state.setRefreshJwt,
   }));
 
-  return useMutation<TokenResponse, UseBasicLoginError, UseBasicLoginData>(
-    (basicCredentials) =>
+  return useMutation<TokenResponse, UseBasicLoginError, UseBasicLoginData>({
+    mutationFn: (basicCredentials) =>
       actionLogin({
         object: basicCredentials,
       }),
-    {
-      ...options,
-      onSuccess: (data, variables, context) => {
-        setJwt(data.access);
-        setRefreshJwt(data.refresh);
-        if (options?.onSuccess) {
-          options.onSuccess(data, variables, context);
-        }
-      },
+    ...options,
+    onSuccess: (data, variables, context) => {
+      setJwt(data.access);
+      setRefreshJwt(data.refresh);
+      if (options?.onSuccess) {
+        options.onSuccess(data, variables, context);
+      }
     },
-  );
+  });
 };

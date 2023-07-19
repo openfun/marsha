@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { render } from 'lib-tests';
 import { act } from 'react-dom/test-utils';
-import { setLogger } from 'react-query';
+import { setLogger } from '@tanstack/react-query';
 
 import { useSelectFeatures } from 'features/Contents/store/selectionStore';
 

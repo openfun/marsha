@@ -2,13 +2,13 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/require-await */
 /* eslint-disable react-hooks/exhaustive-deps */
+import { useQueryClient } from '@tanstack/react-query';
 import { Anchor, Box, Button, Footer, Text, TextInput } from 'grommet';
 import { Nullable } from 'lib-common';
 import { Loader, MarkdownDocumentRenderingOptions } from 'lib-components';
 import React, { Suspense, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
-import { useQueryClient } from 'react-query';
 
 import {
   CodeMirrorEditor,

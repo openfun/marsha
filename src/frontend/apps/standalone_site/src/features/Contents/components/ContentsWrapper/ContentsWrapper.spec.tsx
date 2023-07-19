@@ -1,8 +1,8 @@
+import { UseQueryResult } from '@tanstack/react-query';
 import { screen } from '@testing-library/react';
 import { APIList } from 'lib-components';
 import { render } from 'lib-tests';
 import { Fragment } from 'react';
-import { UseQueryResult } from 'react-query';
 
 import ContentsWrapper from './ContentsWrapper';
 

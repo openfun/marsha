@@ -1,5 +1,5 @@
+import { UseQueryOptions, useQuery } from '@tanstack/react-query';
 import { APIList, FetchListQueryKey, fetchList } from 'lib-components';
-import { UseQueryOptions, useQuery } from 'react-query';
 
 import { PlaylistAccess } from '../../types/playlistAccess';
 
@@ -25,5 +25,5 @@ export const usePlaylistAccess = (
     'playlist-accesses',
     PlaylistAccessResponse,
     FetchListQueryKey
-  >(keys, fetchList, queryConfig);
+  >({ queryKey: keys, queryFn: fetchList, ...queryConfig });
 };

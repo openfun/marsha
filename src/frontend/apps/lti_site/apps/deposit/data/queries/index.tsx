@@ -1,3 +1,10 @@
+import {
+  UseMutationOptions,
+  UseQueryOptions,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { Maybe } from 'lib-common';
 import {
   APIList,
@@ -10,13 +17,6 @@ import {
   FileDepositoryModelName as modelName,
   updateOne,
 } from 'lib-components';
-import {
-  UseMutationOptions,
-  UseQueryOptions,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from 'react-query';
 
 type FileDepositoriesResponse = APIList<FileDepository>;
 type UseFileDepositoriesParams = { organization: Maybe<string> };
@@ -35,7 +35,7 @@ export const useFileDepositories = (
     modelName.FileDepositories,
     FileDepositoriesResponse,
     FetchListQueryKey
-  >(key, fetchList, queryConfig);
+  >({ queryKey: key, queryFn: fetchList, ...queryConfig });
 };
 
 interface FileDepositoriesSelectResponse {
@@ -50,11 +50,11 @@ export const useSelectFileDepository = (
   >,
 ) => {
   const key = [modelName.FileDepositories, 'lti-select'];
-  return useQuery<FileDepositoriesSelectResponse, modelName.FileDepositories>(
-    key,
-    fetchOne,
-    queryConfig,
-  );
+  return useQuery<FileDepositoriesSelectResponse, modelName.FileDepositories>({
+    queryKey: key,
+    queryFn: fetchOne,
+    ...queryConfig,
+  });
 };
 
 export const useFileDepository = (
@@ -66,11 +66,11 @@ export const useFileDepository = (
   >,
 ) => {
   const key = [modelName.FileDepositories, fileDepositoryId];
-  return useQuery<FileDepository, modelName.FileDepositories>(
-    key,
-    fetchOne,
-    queryConfig,
-  );
+  return useQuery<FileDepository, modelName.FileDepositories>({
+    queryKey: key,
+    queryFn: fetchOne,
+    ...queryConfig,
+  });
 };
 
 type UseCreateFileDepositoryData = {
@@ -98,22 +98,20 @@ export const useCreateFileDepository = (
     FileDepository,
     UseCreateFileDepositoryError,
     UseCreateFileDepositoryData
-  >(
-    (newFileDepository) =>
+  >({
+    mutationFn: (newFileDepository) =>
       createOne({
         name: modelName.FileDepositories,
         object: newFileDepository,
       }),
-    {
-      ...options,
-      onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries(modelName.FileDepositories);
-        if (options?.onSuccess) {
-          options.onSuccess(data, variables, context);
-        }
-      },
+    ...options,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries([modelName.FileDepositories]);
+      if (options?.onSuccess) {
+        options.onSuccess(data, variables, context);
+      }
     },
-  );
+  });
 };
 
 type UseUpdateFileDepositoryData = Partial<
@@ -139,29 +137,27 @@ export const useUpdateFileDepository = (
     FileDepository,
     UseUpdateFileDepositoryError,
     UseUpdateFileDepositoryData
-  >(
-    (updatedFileDepository) =>
+  >({
+    mutationFn: (updatedFileDepository) =>
       updateOne({
         name: modelName.FileDepositories,
         id,
         object: updatedFileDepository,
       }),
-    {
-      ...options,
-      onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries(modelName.FileDepositories);
-        if (options?.onSuccess) {
-          options.onSuccess(data, variables, context);
-        }
-      },
-      onError: (error, variables, context) => {
-        queryClient.invalidateQueries(modelName.FileDepositories);
-        if (options?.onError) {
-          options.onError(error, variables, context);
-        }
-      },
+    ...options,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries([modelName.FileDepositories]);
+      if (options?.onSuccess) {
+        options.onSuccess(data, variables, context);
+      }
     },
-  );
+    onError: (error, variables, context) => {
+      queryClient.invalidateQueries([modelName.FileDepositories]);
+      if (options?.onError) {
+        options.onError(error, variables, context);
+      }
+    },
+  });
 };
 
 type DepositedFilesResponse = APIList<DepositedFile>;
@@ -189,7 +185,7 @@ export const useDepositedFiles = (
     modelName.DepositedFiles,
     DepositedFilesResponse,
     FetchListQueryKey
-  >(key, fetchList, queryConfig);
+  >({ queryKey: key, queryFn: fetchList, ...queryConfig });
 };
 
 type UseUpdateDepositedFileData = Partial<DepositedFile>;
@@ -213,27 +209,25 @@ export const useUpdateDepositedFile = (
     DepositedFile,
     UseUpdateDepositedFileError,
     UseUpdateDepositedFileData
-  >(
-    (updatedDepositedFile) =>
+  >({
+    mutationFn: (updatedDepositedFile) =>
       updateOne({
         name: modelName.DepositedFiles,
         id,
         object: updatedDepositedFile,
       }),
-    {
-      ...options,
-      onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries(modelName.DepositedFiles);
-        if (options?.onSuccess) {
-          options.onSuccess(data, variables, context);
-        }
-      },
-      onError: (error, variables, context) => {
-        queryClient.invalidateQueries(modelName.DepositedFiles);
-        if (options?.onError) {
-          options.onError(error, variables, context);
-        }
-      },
+    ...options,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries([modelName.DepositedFiles]);
+      if (options?.onSuccess) {
+        options.onSuccess(data, variables, context);
+      }
     },
-  );
+    onError: (error, variables, context) => {
+      queryClient.invalidateQueries([modelName.DepositedFiles]);
+      if (options?.onError) {
+        options.onError(error, variables, context);
+      }
+    },
+  });
 };

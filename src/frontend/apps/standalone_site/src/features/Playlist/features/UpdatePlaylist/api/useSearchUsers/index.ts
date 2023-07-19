@@ -1,10 +1,10 @@
+import { UseQueryOptions, useQuery } from '@tanstack/react-query';
 import {
   APIList,
   FetchListQueryKey,
   FetchResponseError,
   fetchList,
 } from 'lib-components';
-import { UseQueryOptions, useQuery } from 'react-query';
 
 export interface UserLite {
   email: string;
@@ -37,5 +37,5 @@ export const useSearchUsers = (
     FetchResponseError<SearchUsersResponse>,
     SearchUsersResponse,
     FetchListQueryKey
-  >(keys, fetchList, queryConfig);
+  >({ queryKey: keys, queryFn: fetchList, ...queryConfig });
 };

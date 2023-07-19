@@ -2,7 +2,7 @@ import { renderHook, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { useJwt, videoMockFactory } from 'lib-components';
 import { WrapperReactQuery } from 'lib-tests';
-import { setLogger } from 'react-query';
+import { setLogger } from '@tanstack/react-query';
 
 import { useUpdateVideo } from '.';
 

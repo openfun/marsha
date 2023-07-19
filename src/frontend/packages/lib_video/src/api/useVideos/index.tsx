@@ -1,3 +1,4 @@
+import { UseQueryOptions, useQuery } from '@tanstack/react-query';
 import { Maybe } from 'lib-common';
 import {
   APIList,
@@ -7,7 +8,6 @@ import {
   fetchList,
   fetchOne,
 } from 'lib-components';
-import { UseQueryOptions, useQuery } from 'react-query';
 
 type VideoResponseError = FetchResponseError<Video>;
 export const useVideo = (
@@ -15,7 +15,11 @@ export const useVideo = (
   queryConfig?: UseQueryOptions<Video, VideoResponseError, Video>,
 ) => {
   const key = ['videos', videoId];
-  return useQuery<Video, VideoResponseError>(key, fetchOne, queryConfig);
+  return useQuery<Video, VideoResponseError>({
+    queryKey: key,
+    queryFn: fetchOne,
+    ...queryConfig,
+  });
 };
 
 export enum VideosOrderType {
@@ -44,9 +48,9 @@ export const useVideos = (
   >,
 ) => {
   const key: FetchListQueryKey = ['videos', params];
-  return useQuery<VideosResponse, 'videos', VideosResponse, FetchListQueryKey>(
-    key,
-    fetchList,
-    queryConfig,
-  );
+  return useQuery<VideosResponse, 'videos', VideosResponse, FetchListQueryKey>({
+    queryKey: key,
+    queryFn: fetchList,
+    ...queryConfig,
+  });
 };

@@ -1,3 +1,5 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Grommet } from 'grommet';
 import { colors, theme } from 'lib-common';
 import {
@@ -30,8 +32,6 @@ import {
   defineMessages,
   useIntl,
 } from 'react-intl';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
 
 import { createIntl } from 'utils/lang';
 import { GlobalStyles } from 'utils/theme/baseStyles';

@@ -1,6 +1,10 @@
+import {
+  UseMutationOptions,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { Nullable } from 'lib-common';
 import { Playlist, createOne } from 'lib-components';
-import { UseMutationOptions, useMutation, useQueryClient } from 'react-query';
 
 type UseCreatePlaylistData = {
   organization: string;
@@ -22,18 +26,16 @@ export const useCreatePlaylist = (
   >,
 ) => {
   const queryClient = useQueryClient();
-  return useMutation<Playlist, UseCreatePlaylistError, UseCreatePlaylistData>(
-    (newPlaylist) =>
+  return useMutation<Playlist, UseCreatePlaylistError, UseCreatePlaylistData>({
+    mutationFn: (newPlaylist) =>
       createOne({
         name: 'playlists',
         object: { ...newPlaylist, consumer_site: null },
       }),
-    {
-      ...options,
-      onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries(['playlists']);
-        options?.onSuccess?.(data, variables, context);
-      },
+    ...options,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries(['playlists']);
+      options?.onSuccess?.(data, variables, context);
     },
-  );
+  });
 };

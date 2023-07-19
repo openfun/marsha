@@ -1,10 +1,10 @@
+import { UseQueryOptions, useQuery } from '@tanstack/react-query';
 import {
   APIList,
   FetchListQueryKey,
   LiveAttendance,
   fetchList,
 } from 'lib-components';
-import { UseQueryOptions, useQuery } from 'react-query';
 
 export type LiveAttendancesResponse = APIList<LiveAttendance>;
 export const useLiveAttendances = (
@@ -24,5 +24,5 @@ export const useLiveAttendances = (
     'livesessions/list_attendances',
     LiveAttendancesResponse,
     FetchListQueryKey
-  >(key, fetchList, queryConfig);
+  >({ queryKey: key, queryFn: fetchList, ...queryConfig });
 };

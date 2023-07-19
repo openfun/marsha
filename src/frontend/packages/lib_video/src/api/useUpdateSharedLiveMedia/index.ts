@@ -1,5 +1,9 @@
+import {
+  UseMutationOptions,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { SharedLiveMedia, updateOne } from 'lib-components';
-import { UseMutationOptions, useMutation, useQueryClient } from 'react-query';
 
 type UseUpdateSharedLiveMediaData = Partial<SharedLiveMedia>;
 type UseUpdateSharedLiveMediaError =
@@ -23,27 +27,25 @@ export const useUpdateSharedLiveMedia = (
     SharedLiveMedia,
     UseUpdateSharedLiveMediaError,
     UseUpdateSharedLiveMediaData
-  >(
-    (updatedSharedLiveMedia) =>
+  >({
+    mutationFn: (updatedSharedLiveMedia) =>
       updateOne({
         name: `videos/${videoId}/sharedlivemedias`,
         id,
         object: updatedSharedLiveMedia,
       }),
-    {
-      ...options,
-      onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries(`videos/${videoId}/sharedlivemedias`);
-        if (options?.onSuccess) {
-          options.onSuccess(data, variables, context);
-        }
-      },
-      onError: (error, variables, context) => {
-        queryClient.invalidateQueries(`videos/${videoId}/sharedlivemedias`);
-        if (options?.onError) {
-          options.onError(error, variables, context);
-        }
-      },
+    ...options,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries([`videos/${videoId}/sharedlivemedias`]);
+      if (options?.onSuccess) {
+        options.onSuccess(data, variables, context);
+      }
     },
-  );
+    onError: (error, variables, context) => {
+      queryClient.invalidateQueries([`videos/${videoId}/sharedlivemedias`]);
+      if (options?.onError) {
+        options.onError(error, variables, context);
+      }
+    },
+  });
 };

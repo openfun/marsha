@@ -6,7 +6,7 @@ import {
   videoMockFactory,
 } from 'lib-components';
 import { WrapperReactQuery } from 'lib-tests';
-import { setLogger } from 'react-query';
+import { setLogger } from '@tanstack/react-query';
 
 import { useStopSharingMedia } from '.';
 

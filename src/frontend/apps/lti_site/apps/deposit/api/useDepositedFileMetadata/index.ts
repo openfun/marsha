@@ -1,5 +1,5 @@
+import { UseQueryOptions, useQuery } from '@tanstack/react-query';
 import { metadata } from 'lib-components';
-import { UseQueryOptions, useQuery } from 'react-query';
 
 import { DepositedFileMetadata } from 'apps/deposit/types/metadata';
 
@@ -18,7 +18,9 @@ export const useDepositedFileMetadata = (
     'depositedfiles',
     DepositedFileMetadata,
     string[]
-  >(key, metadata, {
+  >({
+    queryKey: key,
+    queryFn: metadata,
     refetchInterval: false,
     refetchIntervalInBackground: false,
     refetchOnWindowFocus: false,

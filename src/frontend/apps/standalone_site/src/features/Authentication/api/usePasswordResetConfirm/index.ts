@@ -1,5 +1,5 @@
+import { UseMutationOptions, useMutation } from '@tanstack/react-query';
 import { fetchWrapper } from 'lib-components';
-import { UseMutationOptions, useMutation } from 'react-query';
 
 type UsePasswordResetConfirmData = {
   uid: string;
@@ -52,11 +52,11 @@ export const usePasswordResetConfirm = (
     UsePasswordResetConfirmResponseData,
     UsePasswordResetConfirmError,
     UsePasswordResetConfirmData
-  >(
-    (object) =>
+  >({
+    mutationFn: (object) =>
       actionPasswordResetConfirm({
         object,
       }),
-    options,
-  );
+    ...options,
+  });
 };

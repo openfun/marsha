@@ -13,8 +13,8 @@ export const isDecodedJwtLTI = (jwt: unknown): jwt is DecodedJwtLTI => {
     const userId = (jwt as DecodedJwtLTI).user?.id;
     return (
       // A resource is defined
-      (!!resourceId && typeof resourceId === 'string') ||
       // Or we are in a portability request context and a playlist and user ID are mandatory
+      (!!resourceId && typeof resourceId === 'string') ||
       (!resourceId && !!playlistId && !!userId)
     );
   }

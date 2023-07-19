@@ -122,7 +122,6 @@ export const RenaterAuthenticator = () => {
         </Box>
         <Box background="blue-active" height="1px" width="100%" />
       </Box>
-
       <ThemeContext.Extend value={{ select: { step: options.length || 20 } }}>
         <FormField label={intl.formatMessage(messages.labelSelectRenater)}>
           <Select

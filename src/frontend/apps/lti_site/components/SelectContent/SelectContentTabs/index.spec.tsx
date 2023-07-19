@@ -112,7 +112,7 @@ jest.mock(
   () =>
     ({
       useIsFeatureEnabled: jest.fn(),
-    } as any),
+    }) as any,
 );
 
 const mockUseIsFeatureEnabled = useIsFeatureEnabled as jest.MockedFunction<

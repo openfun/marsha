@@ -1,5 +1,9 @@
+import {
+  UseMutationOptions,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { SharedLiveMedia, actionOne } from 'lib-components';
-import { UseMutationOptions, useMutation, useQueryClient } from 'react-query';
 
 type UseStartSharingData = { sharedlivemedia: string };
 type UseStartSharingError =
@@ -22,8 +26,8 @@ export const useStartSharingMedia = (
     SharedLiveMedia,
     UseStartSharingError,
     UseStartSharingData
-  >(
-    (sharedLiveMedia) =>
+  >({
+    mutationFn: (sharedLiveMedia) =>
       actionOne({
         name: 'videos',
         id: videoId,
@@ -31,20 +35,18 @@ export const useStartSharingMedia = (
         method: 'PATCH',
         object: sharedLiveMedia,
       }),
-    {
-      ...options,
-      onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('videos');
-        if (options?.onSuccess) {
-          options.onSuccess(data, variables, context);
-        }
-      },
-      onError: (error, variables, context) => {
-        queryClient.invalidateQueries('videos');
-        if (options?.onError) {
-          options.onError(error, variables, context);
-        }
-      },
+    ...options,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries(['videos']);
+      if (options?.onSuccess) {
+        options.onSuccess(data, variables, context);
+      }
     },
-  );
+    onError: (error, variables, context) => {
+      queryClient.invalidateQueries(['videos']);
+      if (options?.onError) {
+        options.onError(error, variables, context);
+      }
+    },
+  });
 };

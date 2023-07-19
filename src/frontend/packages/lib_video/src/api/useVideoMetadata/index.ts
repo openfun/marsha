@@ -1,5 +1,5 @@
+import { UseQueryOptions, useQuery } from '@tanstack/react-query';
 import { FetchResponseError, metadata } from 'lib-components';
-import { UseQueryOptions, useQuery } from 'react-query';
 
 import { VideoMetadata } from '@lib-video/types/metadata';
 
@@ -18,7 +18,9 @@ export const useVideoMetadata = (
     FetchResponseError<VideoMetadata>,
     VideoMetadata,
     string[]
-  >(key, metadata, {
+  >({
+    queryKey: key,
+    queryFn: metadata,
     refetchInterval: false,
     refetchIntervalInBackground: false,
     refetchOnWindowFocus: false,

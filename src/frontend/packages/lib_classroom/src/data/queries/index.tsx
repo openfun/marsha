@@ -1,3 +1,10 @@
+import {
+  UseMutationOptions,
+  UseQueryOptions,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { Maybe } from 'lib-common';
 import {
   APIList,
@@ -23,13 +30,6 @@ import {
   metadata,
   updateOne,
 } from 'lib-components';
-import {
-  UseMutationOptions,
-  UseQueryOptions,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from 'react-query';
 
 import { ClassroomDocumentMetadata } from '@lib-classroom/types/ClassroomAppData';
 
@@ -55,7 +55,7 @@ export const useClassrooms = (
     'classrooms',
     ClassroomsResponse,
     FetchListQueryKey
-  >(key, fetchList, queryConfig);
+  >({ queryKey: key, queryFn: fetchList, ...queryConfig });
 };
 
 interface ClassroomsSelectResponse {
@@ -70,11 +70,11 @@ export const useSelectClassroom = (
   >,
 ) => {
   const key = ['classrooms', 'lti-select'];
-  return useQuery<ClassroomsSelectResponse, 'classrooms'>(
-    key,
-    fetchOne,
-    queryConfig,
-  );
+  return useQuery<ClassroomsSelectResponse, 'classrooms'>({
+    queryKey: key,
+    queryFn: fetchOne,
+    ...queryConfig,
+  });
 };
 
 export const useClassroom = (
@@ -82,7 +82,11 @@ export const useClassroom = (
   queryConfig?: UseQueryOptions<Classroom, 'classrooms', Classroom>,
 ) => {
   const key = ['classrooms', classroomId];
-  return useQuery<Classroom, 'classrooms'>(key, fetchOne, queryConfig);
+  return useQuery<Classroom, 'classrooms'>({
+    queryKey: key,
+    queryFn: fetchOne,
+    ...queryConfig,
+  });
 };
 
 type UseCreateClassroomData = {
@@ -103,10 +107,12 @@ export const useCreateClassroom = (options?: UseCreateClassroomOptions) => {
     Classroom,
     UseCreateClassroomError,
     UseCreateClassroomData
-  >((newClassroom) => createOne({ name: 'classrooms', object: newClassroom }), {
+  >({
+    mutationFn: (newClassroom) =>
+      createOne({ name: 'classrooms', object: newClassroom }),
     ...options,
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries('classrooms');
+      queryClient.invalidateQueries(['classrooms']);
       if (options?.onSuccess) {
         options.onSuccess(data, variables, context);
       }
@@ -137,25 +143,23 @@ export const useUpdateClassroom = (
     Classroom,
     UseUpdateClassroomError,
     UseUpdateClassroomData
-  >(
-    (updatedClassroom) =>
+  >({
+    mutationFn: (updatedClassroom) =>
       updateOne({ name: 'classrooms', id, object: updatedClassroom }),
-    {
-      ...options,
-      onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('classrooms');
-        if (options?.onSuccess) {
-          options.onSuccess(data, variables, context);
-        }
-      },
-      onError: (error, variables, context) => {
-        queryClient.invalidateQueries('classrooms');
-        if (options?.onError) {
-          options.onError(error, variables, context);
-        }
-      },
+    ...options,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries(['classrooms']);
+      if (options?.onSuccess) {
+        options.onSuccess(data, variables, context);
+      }
     },
-  );
+    onError: (error, variables, context) => {
+      queryClient.invalidateQueries(['classrooms']);
+      if (options?.onError) {
+        options.onError(error, variables, context);
+      }
+    },
+  });
 };
 
 type UseDeleteClassroomData = string;
@@ -171,28 +175,26 @@ export const useDeleteClassroom = (options?: UseDeleteClassroomOptions) => {
     Maybe<Classroom>,
     UseDeleteClassroomError,
     UseDeleteClassroomData
-  >(
-    (classroomId) =>
+  >({
+    mutationFn: (classroomId) =>
       deleteOne({
         name: 'classrooms',
         id: classroomId,
       }),
-    {
-      ...options,
-      onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('classrooms');
-        if (options?.onSuccess) {
-          options.onSuccess(data, variables, context);
-        }
-      },
-      onError: (error, variables, context) => {
-        queryClient.invalidateQueries('classrooms');
-        if (options?.onError) {
-          options.onError(error, variables, context);
-        }
-      },
+    ...options,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries(['classrooms']);
+      if (options?.onSuccess) {
+        options.onSuccess(data, variables, context);
+      }
     },
-  );
+    onError: (error, variables, context) => {
+      queryClient.invalidateQueries(['classrooms']);
+      if (options?.onError) {
+        options.onError(error, variables, context);
+      }
+    },
+  });
 };
 
 type UseDeleteClassroomRecordingData = {
@@ -214,28 +216,26 @@ export const useDeleteClassroomRecording = (
     Maybe<ClassroomRecording>,
     UseDeleteClassroomRecordingError,
     UseDeleteClassroomRecordingData
-  >(
-    ({ classroomId, classroomRecordingId }) =>
+  >({
+    mutationFn: ({ classroomId, classroomRecordingId }) =>
       deleteOne({
         name: `classrooms/${classroomId}/recordings`,
         id: classroomRecordingId,
       }),
-    {
-      ...options,
-      onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries(`classrooms`);
-        if (options?.onSuccess) {
-          options.onSuccess(data, variables, context);
-        }
-      },
-      onError: (error, variables, context) => {
-        queryClient.invalidateQueries(`classrooms`);
-        if (options?.onError) {
-          options.onError(error, variables, context);
-        }
-      },
+    ...options,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries([`classrooms`]);
+      if (options?.onSuccess) {
+        options.onSuccess(data, variables, context);
+      }
     },
-  );
+    onError: (error, variables, context) => {
+      queryClient.invalidateQueries([`classrooms`]);
+      if (options?.onError) {
+        options.onError(error, variables, context);
+      }
+    },
+  });
 };
 
 type ClassroomDocumentsResponse = APIList<ClassroomDocument>;
@@ -259,7 +259,7 @@ export const useClassroomDocuments = (
     ClassroomModelName.CLASSROOM_DOCUMENTS,
     ClassroomDocumentsResponse,
     FetchListQueryKey
-  >(key, fetchList, queryConfig);
+  >({ queryKey: key, queryFn: fetchList, ...queryConfig });
 };
 
 type UseUpdateClassroomDocumentData = Partial<ClassroomDocument>;
@@ -283,29 +283,27 @@ export const useUpdateClassroomDocument = (
     ClassroomDocument,
     UseUpdateClassroomDocumentError,
     UseUpdateClassroomDocumentData
-  >(
-    (updatedClassroomDocument) =>
+  >({
+    mutationFn: (updatedClassroomDocument) =>
       updateOne({
         name: 'classroomdocuments',
         id,
         object: updatedClassroomDocument,
       }),
-    {
-      ...options,
-      onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('classroomdocuments');
-        if (options?.onSuccess) {
-          options.onSuccess(data, variables, context);
-        }
-      },
-      onError: (error, variables, context) => {
-        queryClient.invalidateQueries('classroomdocuments');
-        if (options?.onError) {
-          options.onError(error, variables, context);
-        }
-      },
+    ...options,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries(['classroomdocuments']);
+      if (options?.onSuccess) {
+        options.onSuccess(data, variables, context);
+      }
     },
-  );
+    onError: (error, variables, context) => {
+      queryClient.invalidateQueries(['classroomdocuments']);
+      if (options?.onError) {
+        options.onError(error, variables, context);
+      }
+    },
+  });
 };
 
 type UseDeleteClassroomDocumentData = string;
@@ -328,28 +326,26 @@ export const useDeleteClassroomDocument = (
     Maybe<ClassroomDocument>,
     UseDeleteClassroomDocumentError,
     UseDeleteClassroomDocumentData
-  >(
-    (classroomDocumentId) =>
+  >({
+    mutationFn: (classroomDocumentId) =>
       deleteOne({
         name: 'classroomdocuments',
         id: classroomDocumentId,
       }),
-    {
-      ...options,
-      onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('classroomdocuments');
-        if (options?.onSuccess) {
-          options.onSuccess(data, variables, context);
-        }
-      },
-      onError: (error, variables, context) => {
-        queryClient.invalidateQueries('classroomdocuments');
-        if (options?.onError) {
-          options.onError(error, variables, context);
-        }
-      },
+    ...options,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries(['classroomdocuments']);
+      if (options?.onSuccess) {
+        options.onSuccess(data, variables, context);
+      }
     },
-  );
+    onError: (error, variables, context) => {
+      queryClient.invalidateQueries(['classroomdocuments']);
+      if (options?.onError) {
+        options.onError(error, variables, context);
+      }
+    },
+  });
 };
 
 type MutationClassroomData<ClassroomRequest> = Partial<ClassroomRequest>;
@@ -383,30 +379,28 @@ const classroomActionMutation =
       ClassroomResponse,
       MutationClassroomError<ClassroomRequest>,
       MutationClassroomData<ClassroomRequest>
-    >(
-      (object) =>
+    >({
+      mutationFn: (object) =>
         actionOne({
           name: 'classrooms',
           id,
           action,
           object,
         }),
-      {
-        ...options,
-        onSuccess: (data, variables, context) => {
-          queryClient.invalidateQueries('classrooms');
-          if (options?.onSuccess) {
-            options.onSuccess(data, variables, context);
-          }
-        },
-        onError: (error, variables, context) => {
-          queryClient.invalidateQueries('classrooms');
-          if (options?.onError) {
-            options.onError(error, variables, context);
-          }
-        },
+      ...options,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries(['classrooms']);
+        if (options?.onSuccess) {
+          options.onSuccess(data, variables, context);
+        }
       },
-    );
+      onError: (error, variables, context) => {
+        queryClient.invalidateQueries(['classrooms']);
+        if (options?.onError) {
+          options.onError(error, variables, context);
+        }
+      },
+    });
   };
 
 export const useCreateClassroomAction = classroomActionMutation<
@@ -437,7 +431,9 @@ export const useClassroomDocumentMetadata = (
     'classroomdocuments',
     ClassroomDocumentMetadata,
     string[]
-  >(key, metadata, {
+  >({
+    queryKey: key,
+    queryFn: metadata,
     refetchInterval: false,
     refetchIntervalInBackground: false,
     refetchOnWindowFocus: false,
@@ -456,26 +452,24 @@ type UseDeleteClassroomsOptions = UseMutationOptions<
 >;
 export const useDeleteClassrooms = (options?: UseDeleteClassroomsOptions) => {
   const queryClient = useQueryClient();
-  return useMutation<void, UseDeleteClassroomsError, UseDeleteClassroomsData>(
-    (classroomIds) =>
+  return useMutation<void, UseDeleteClassroomsError, UseDeleteClassroomsData>({
+    mutationFn: (classroomIds) =>
       bulkDelete({
         name: 'classrooms',
         objects: classroomIds,
       }),
-    {
-      ...options,
-      onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('classrooms');
-        if (options?.onSuccess) {
-          options.onSuccess(data, variables, context);
-        }
-      },
-      onError: (error, variables, context) => {
-        queryClient.invalidateQueries('classrooms');
-        if (options?.onError) {
-          options.onError(error, variables, context);
-        }
-      },
+    ...options,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries(['classrooms']);
+      if (options?.onSuccess) {
+        options.onSuccess(data, variables, context);
+      }
     },
-  );
+    onError: (error, variables, context) => {
+      queryClient.invalidateQueries(['classrooms']);
+      if (options?.onError) {
+        options.onError(error, variables, context);
+      }
+    },
+  });
 };

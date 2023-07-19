@@ -1,6 +1,10 @@
+import {
+  UseMutationOptions,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { Maybe } from 'lib-common';
 import { FetchResponseError, Thumbnail, deleteOne } from 'lib-components';
-import { UseMutationOptions, useMutation, useQueryClient } from 'react-query';
 
 type UseDeleteThumbnailData = {
   videoId: string;
@@ -18,26 +22,24 @@ export const useDeleteThumbnail = (options?: UseDeleteThumbnailOptions) => {
     Maybe<Thumbnail>,
     UseDeleteThumbnailError,
     UseDeleteThumbnailData
-  >(
-    ({ videoId, thumbnailId }) =>
+  >({
+    mutationFn: ({ videoId, thumbnailId }) =>
       deleteOne({
         name: `videos/${videoId}/thumbnails`,
         id: thumbnailId,
       }),
-    {
-      ...options,
-      onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries(`videos/${variables.videoId}/thumbnails`);
-        if (options?.onSuccess) {
-          options.onSuccess(data, variables, context);
-        }
-      },
-      onError: (error, variables, context) => {
-        queryClient.invalidateQueries(`videos/${variables.videoId}/thumbnails`);
-        if (options?.onError) {
-          options.onError(error, variables, context);
-        }
-      },
+    ...options,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries([`videos/${variables.videoId}/thumbnails`]);
+      if (options?.onSuccess) {
+        options.onSuccess(data, variables, context);
+      }
     },
-  );
+    onError: (error, variables, context) => {
+      queryClient.invalidateQueries([`videos/${variables.videoId}/thumbnails`]);
+      if (options?.onError) {
+        options.onError(error, variables, context);
+      }
+    },
+  });
 };

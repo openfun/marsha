@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { render } from 'lib-tests';
-import { setLogger } from 'react-query';
+import { setLogger } from '@tanstack/react-query';
 
 import { AccountSettings } from './AccountSettings';
 

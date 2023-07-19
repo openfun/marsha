@@ -1,17 +1,17 @@
 import {
+  UseMutationOptions,
+  UseQueryOptions,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
+import {
   APIList,
   FetchListQueryKey,
   PortabilityRequest,
   actionOne,
   fetchList,
 } from 'lib-components';
-import {
-  UseMutationOptions,
-  UseQueryOptions,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from 'react-query';
 
 type UsePortabilityRequestsParams = {
   limit: string;
@@ -36,7 +36,7 @@ export const usePortabilityRequests = (
     'portability-requests',
     APIList<PortabilityRequest>,
     FetchListQueryKey
-  >(keys, fetchList, queryConfig);
+  >({ queryKey: keys, queryFn: fetchList, ...queryConfig });
 };
 
 type MutationPortabilityRequestData<PortabilityRequest> =
@@ -81,8 +81,8 @@ const PortabilityRequestActionMutation = <
       MutationPortabilityRequestData<PortabilityRequestRequest>,
       MutationPortabilityRequestError<PortabilityRequestRequest>,
       MutationPortabilityRequestData<PortabilityRequestRequest>
-    >(
-      (object) =>
+    >({
+      mutationFn: (object) =>
         actionOne({
           name: 'portability-requests',
           id,
@@ -90,26 +90,24 @@ const PortabilityRequestActionMutation = <
           method,
           object,
         }),
-      {
-        ...options,
-        onSuccess: (data, variables, context) => {
-          if (!doNotInvalidateQueries) {
-            queryClient.invalidateQueries('portability-requests');
-          }
-          if (options?.onSuccess) {
-            options.onSuccess(data, variables, context);
-          }
-        },
-        onError: (error, variables, context) => {
-          if (!doNotInvalidateQueries) {
-            queryClient.invalidateQueries('portability-requests');
-          }
-          if (options?.onError) {
-            options.onError(error, variables, context);
-          }
-        },
+      ...options,
+      onSuccess: (data, variables, context) => {
+        if (!doNotInvalidateQueries) {
+          queryClient.invalidateQueries(['portability-requests']);
+        }
+        if (options?.onSuccess) {
+          options.onSuccess(data, variables, context);
+        }
       },
-    );
+      onError: (error, variables, context) => {
+        if (!doNotInvalidateQueries) {
+          queryClient.invalidateQueries(['portability-requests']);
+        }
+        if (options?.onError) {
+          options.onError(error, variables, context);
+        }
+      },
+    });
   }
   return usePortabilityRequestActionMutation;
 };

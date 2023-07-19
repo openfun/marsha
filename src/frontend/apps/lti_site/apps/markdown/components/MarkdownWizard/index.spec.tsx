@@ -30,7 +30,7 @@ describe('MarkdownWizard', () => {
   beforeEach(() => {
     useJwt.setState({
       jwt: 'some token',
-      getDecodedJwt: () => ({ locale: 'en_US' } as any),
+      getDecodedJwt: () => ({ locale: 'en_US' }) as any,
     });
   });
 

@@ -2,7 +2,7 @@ import { renderHook, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { liveSessionFactory, useJwt } from 'lib-components';
 import { WrapperReactQuery } from 'lib-tests';
-import { setLogger } from 'react-query';
+import { setLogger } from '@tanstack/react-query';
 import { v4 as uuidv4 } from 'uuid';
 
 import { useLiveSessionsQuery } from '.';

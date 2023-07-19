@@ -1,5 +1,5 @@
+import { UseQueryOptions, useQuery } from '@tanstack/react-query';
 import { FetchResponseError, metadata } from 'lib-components';
-import { UseQueryOptions, useQuery } from 'react-query';
 
 import { ThumbnailMetadata } from '@lib-video/types/metadata';
 
@@ -20,7 +20,9 @@ export const useThumbnailMetadata = (
     UseThumbnailMetadataError,
     ThumbnailMetadata,
     string[]
-  >(key, metadata, {
+  >({
+    queryKey: key,
+    queryFn: metadata,
     refetchInterval: false,
     refetchIntervalInBackground: false,
     refetchOnWindowFocus: false,

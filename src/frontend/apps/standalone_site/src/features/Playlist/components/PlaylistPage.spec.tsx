@@ -2,7 +2,7 @@ import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { Deferred, render } from 'lib-tests';
-import { setLogger } from 'react-query';
+import { setLogger } from '@tanstack/react-query';
 
 import { PlaylistPage } from './PlaylistPage';
 

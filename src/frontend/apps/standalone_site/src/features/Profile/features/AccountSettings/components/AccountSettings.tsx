@@ -1,9 +1,9 @@
+import { useMutation } from '@tanstack/react-query';
 import { Box, Button, Heading } from 'grommet';
 import { Form } from 'lib-components';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
-import { useMutation } from 'react-query';
 
 import { resetPassword } from '../api/resetPassword';
 import { isError } from '../utils';
@@ -101,32 +101,30 @@ type FormValue = {
 export const AccountSettings = () => {
   const intl = useIntl();
 
-  const { mutateAsync } = useMutation<void, unknown, FormValue>(
-    (value) =>
+  const { mutateAsync } = useMutation<void, unknown, FormValue>({
+    mutationFn: (value) =>
       resetPassword(
         value.currentPassword,
         value.newPassword,
         value.passwordValidation,
       ),
-    {
-      onSuccess: () => {
-        toast.success(intl.formatMessage(messages.onSuccessMessage));
-        //  reset form values
-        setValues({
-          currentPassword: '',
-          newPassword: '',
-          passwordValidation: '',
-        });
-      },
-      onError: (backError) => {
-        if (isError(backError)) {
-          return;
-        }
-
-        toast.error(intl.formatMessage(messages.onErrorMessage));
-      },
+    onSuccess: () => {
+      toast.success(intl.formatMessage(messages.onSuccessMessage));
+      //  reset form values
+      setValues({
+        currentPassword: '',
+        newPassword: '',
+        passwordValidation: '',
+      });
     },
-  );
+    onError: (backError) => {
+      if (isError(backError)) {
+        return;
+      }
+
+      toast.error(intl.formatMessage(messages.onErrorMessage));
+    },
+  });
   const [values, setValues] = useState<FormValue>({
     currentPassword: '',
     newPassword: '',

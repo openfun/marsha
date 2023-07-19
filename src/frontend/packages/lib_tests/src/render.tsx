@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   RenderResult,
   RenderOptions as TestingLibraryRenderOptions,
@@ -10,7 +11,6 @@ import MatchMediaMock from 'jest-matchmedia-mock';
 import { BreadCrumbsProvider, GlobalStyles, Nullable, theme } from 'lib-common';
 import React, { CSSProperties, ReactElement } from 'react';
 import toast, { Toast, Toaster, useToaster } from 'react-hot-toast';
-import { QueryClient, QueryClientProvider } from 'react-query';
 import { RouteProps } from 'react-router-dom';
 
 import { wrapInIntlProvider } from './intl';

@@ -1,5 +1,5 @@
+import { QueryFunctionContext } from '@tanstack/react-query';
 import { Maybe } from 'lib-common';
-import { QueryFunctionContext } from 'react-query';
 
 import { useJwt } from '@lib-components/hooks/stores/useJwt';
 

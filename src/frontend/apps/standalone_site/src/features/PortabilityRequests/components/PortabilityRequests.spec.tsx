@@ -7,7 +7,7 @@ import {
   portabilityRequestMockFactory,
 } from 'lib-components';
 import { Deferred, render } from 'lib-tests';
-import { setLogger } from 'react-query';
+import { setLogger } from '@tanstack/react-query';
 
 import { PortabilityRequests } from './PortabilityRequests';
 

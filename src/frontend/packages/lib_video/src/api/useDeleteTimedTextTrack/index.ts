@@ -1,6 +1,10 @@
+import {
+  UseMutationOptions,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { Maybe } from 'lib-common';
 import { FetchResponseError, TimedText, deleteOne } from 'lib-components';
-import { UseMutationOptions, useMutation, useQueryClient } from 'react-query';
 
 type UseDeleteTimedTextTrackData = {
   videoId: string;
@@ -21,30 +25,28 @@ export const useDeleteTimedTextTrack = (
     Maybe<TimedText>,
     UseDeleteTimedTextTrackError,
     UseDeleteTimedTextTrackData
-  >(
-    ({ videoId, timedTextTrackId }) =>
+  >({
+    mutationFn: ({ videoId, timedTextTrackId }) =>
       deleteOne({
         name: `videos/${videoId}/timedtexttracks`,
         id: timedTextTrackId,
       }),
-    {
-      ...options,
-      onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries(
-          `videos/${variables.videoId}/timedtexttracks`,
-        );
-        if (options?.onSuccess) {
-          options.onSuccess(data, variables, context);
-        }
-      },
-      onError: (error, variables, context) => {
-        queryClient.invalidateQueries(
-          `videos/${variables.videoId}/timedtexttracks`,
-        );
-        if (options?.onError) {
-          options.onError(error, variables, context);
-        }
-      },
+    ...options,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries([
+        `videos/${variables.videoId}/timedtexttracks`,
+      ]);
+      if (options?.onSuccess) {
+        options.onSuccess(data, variables, context);
+      }
     },
-  );
+    onError: (error, variables, context) => {
+      queryClient.invalidateQueries([
+        `videos/${variables.videoId}/timedtexttracks`,
+      ]);
+      if (options?.onError) {
+        options.onError(error, variables, context);
+      }
+    },
+  });
 };

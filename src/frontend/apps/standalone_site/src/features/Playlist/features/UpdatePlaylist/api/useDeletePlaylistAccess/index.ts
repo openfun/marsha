@@ -1,5 +1,9 @@
+import {
+  UseMutationOptions,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { deleteOne } from 'lib-components';
-import { UseMutationOptions, useMutation, useQueryClient } from 'react-query';
 
 type UseDeletePlaylistAccessData = string;
 type UseDeletePlaylistAccessError = { code: 'exception' };
@@ -16,24 +20,22 @@ export const useDeletePlaylistAccess = (
     unknown,
     UseDeletePlaylistAccessError,
     UseDeletePlaylistAccessData
-  >(
-    (playlistAccess) =>
+  >({
+    mutationFn: (playlistAccess) =>
       deleteOne({
         name: 'playlist-accesses',
         id: playlistAccess,
       }),
-    {
-      ...options,
-      onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('playlist-accesses');
+    ...options,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries(['playlist-accesses']);
 
-        options?.onSuccess?.(data, variables, context);
-      },
-      onError: (error, variables, context) => {
-        queryClient.invalidateQueries('playlist-accesses');
-
-        options?.onError?.(error, variables, context);
-      },
+      options?.onSuccess?.(data, variables, context);
     },
-  );
+    onError: (error, variables, context) => {
+      queryClient.invalidateQueries(['playlist-accesses']);
+
+      options?.onError?.(error, variables, context);
+    },
+  });
 };

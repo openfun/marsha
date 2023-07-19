@@ -1,5 +1,5 @@
+import { UseQueryOptions, useQuery } from '@tanstack/react-query';
 import { fetchWrapper } from 'lib-components';
-import { UseQueryOptions, useQuery } from 'react-query';
 
 export const useTranscriptReaderRequest = (
   id: string,
@@ -7,7 +7,7 @@ export const useTranscriptReaderRequest = (
   queryConfig?: UseQueryOptions<string, 'useTranscriptReaderRequest', string>,
 ) => {
   return useQuery({
-    queryKey: ['useTranscriptReaderRequest', id],
+    queryKey: ['useTranscriptReaderRequest', id, url],
     queryFn: async () => {
       const response = await fetchWrapper(url);
       return await response.text();

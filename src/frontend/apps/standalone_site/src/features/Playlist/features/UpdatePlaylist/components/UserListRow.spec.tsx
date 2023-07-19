@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { useCurrentUser } from 'lib-components';
 import { Deferred, render } from 'lib-tests';
-import { setLogger } from 'react-query';
+import { setLogger } from '@tanstack/react-query';
 
 import { PlaylistRole } from '../types/playlistAccess';
 

@@ -1,9 +1,9 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { uploadState, useJwt } from 'lib-components';
 import { wrapInIntlProvider } from 'lib-tests';
 import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
 
 import {
   classroomDocumentMockFactory,

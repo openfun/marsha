@@ -1,3 +1,4 @@
+import { QueryClient } from '@tanstack/react-query';
 import { getDefaultNormalizer, screen, waitFor } from '@testing-library/react';
 import userEventInit from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
@@ -16,7 +17,6 @@ import {
 } from 'lib-components';
 import { render } from 'lib-tests';
 import { Suspense, useEffect } from 'react';
-import { QueryClient } from 'react-query';
 
 import DashboardLiveJitsi from '@lib-video/components/live/common/DashboardLiveJitsi';
 import { useChatItemState } from '@lib-video/hooks/useChatItemsStore';

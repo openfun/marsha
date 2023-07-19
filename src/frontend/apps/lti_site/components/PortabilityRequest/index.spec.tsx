@@ -73,7 +73,7 @@ describe('<PortabilityRequest />', () => {
           playlist_id: '488db2d0-4ec3-11ed-8b4a-7f52311c654f',
           consumer_site: '5b22e8ca-4ec3-11ed-95e2-7b05c22e9f1b',
           user: { id: '6b45a4d6-4ec3-11ed-a182-ebcb09a7afc0' },
-        } as any),
+        }) as any,
     });
 
     const portabilityAppdata = PortabilityConfigMockFactory({
@@ -126,7 +126,7 @@ describe('<PortabilityRequest />', () => {
           playlist_id: '488db2d0-4ec3-11ed-8b4a-7f52311c654f',
           consumer_site: '5b22e8ca-4ec3-11ed-95e2-7b05c22e9f1b',
           user: { id: '6b45a4d6-4ec3-11ed-a182-ebcb09a7afc0' },
-        } as any),
+        }) as any,
     });
 
     render(

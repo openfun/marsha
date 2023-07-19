@@ -1,10 +1,10 @@
+import { QueryClient } from '@tanstack/react-query';
 import { getDefaultNormalizer, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { ResponsiveContext } from 'grommet';
 import { playlistMockFactory, useJwt } from 'lib-components';
 import { Deferred, render } from 'lib-tests';
-import { QueryClient } from 'react-query';
 
 import { getFullThemeExtend } from 'styles/theme.extend';
 

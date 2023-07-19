@@ -1,3 +1,8 @@
+import {
+  UseMutationOptions,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { Nullable } from 'lib-common';
 import {
   FetchResponseError,
@@ -6,7 +11,6 @@ import {
   createOne,
   uploadState,
 } from 'lib-components';
-import { UseMutationOptions, useMutation, useQueryClient } from 'react-query';
 
 export type UseCreateVideoData = {
   playlist: string;
@@ -24,16 +28,14 @@ type UseCreateVideoOptions = UseMutationOptions<
 >;
 export const useCreateVideo = (options?: UseCreateVideoOptions) => {
   const queryClient = useQueryClient();
-  return useMutation<Video, UseCreateVideoError, UseCreateVideoData>(
-    (newVideo) => createOne({ name: 'videos', object: newVideo }),
-    {
-      ...options,
-      onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('videos');
-        if (options?.onSuccess) {
-          options.onSuccess(data, variables, context);
-        }
-      },
+  return useMutation<Video, UseCreateVideoError, UseCreateVideoData>({
+    mutationFn: (newVideo) => createOne({ name: 'videos', object: newVideo }),
+    ...options,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries(['videos']);
+      if (options?.onSuccess) {
+        options.onSuccess(data, variables, context);
+      }
     },
-  );
+  });
 };

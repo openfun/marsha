@@ -1,3 +1,10 @@
+import {
+  UseMutationOptions,
+  UseQueryOptions,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { Maybe } from 'lib-common';
 import {
   APIList,
@@ -15,20 +22,17 @@ import {
   updateOne,
   useVideo as useVideoStore,
 } from 'lib-components';
-import {
-  UseMutationOptions,
-  UseQueryOptions,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from 'react-query';
 
 export const useOrganization = (
   organizationId: string,
   queryConfig?: UseQueryOptions<Organization, 'organizations', Organization>,
 ) => {
   const key = ['organizations', organizationId];
-  return useQuery<Organization, 'organizations'>(key, fetchOne, queryConfig);
+  return useQuery<Organization, 'organizations'>({
+    queryKey: key,
+    queryFn: fetchOne,
+    ...queryConfig,
+  });
 };
 
 export const usePlaylist = (
@@ -36,7 +40,11 @@ export const usePlaylist = (
   queryConfig?: UseQueryOptions<Playlist, 'playlists', Playlist>,
 ) => {
   const key = ['playlists', playlistId];
-  return useQuery<Playlist, 'playlists'>(key, fetchOne, queryConfig);
+  return useQuery<Playlist, 'playlists'>({
+    queryKey: key,
+    queryFn: fetchOne,
+    ...queryConfig,
+  });
 };
 
 type UseUpdatePlaylistData = Partial<
@@ -58,25 +66,23 @@ export const useUpdatePlaylist = (
   options?: UseUpdatePlaylistOptions,
 ) => {
   const queryClient = useQueryClient();
-  return useMutation<Playlist, UseUpdatePlaylistError, UseUpdatePlaylistData>(
-    (updatedPlaylist) =>
+  return useMutation<Playlist, UseUpdatePlaylistError, UseUpdatePlaylistData>({
+    mutationFn: (updatedPlaylist) =>
       updateOne({ name: 'playlists', id, object: updatedPlaylist }),
-    {
-      ...options,
-      onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('playlists');
-        if (options?.onSuccess) {
-          options.onSuccess(data, variables, context);
-        }
-      },
-      onError: (error, variables, context) => {
-        queryClient.invalidateQueries('playlists');
-        if (options?.onError) {
-          options.onError(error, variables, context);
-        }
-      },
+    ...options,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries(['playlists']);
+      if (options?.onSuccess) {
+        options.onSuccess(data, variables, context);
+      }
     },
-  );
+    onError: (error, variables, context) => {
+      queryClient.invalidateQueries(['playlists']);
+      if (options?.onError) {
+        options.onError(error, variables, context);
+      }
+    },
+  });
 };
 
 type PlaylistsResponse = APIList<Playlist>;
@@ -96,7 +102,7 @@ export const usePlaylists = (
     'playlists',
     PlaylistsResponse,
     FetchListQueryKey
-  >(key, fetchList, queryConfig);
+  >({ queryKey: key, queryFn: fetchList, ...queryConfig });
 };
 
 export const useThumbnail = (
@@ -104,53 +110,53 @@ export const useThumbnail = (
   queryConfig?: UseQueryOptions<Thumbnail, 'thumbnails', Thumbnail>,
 ) => {
   const key = ['thumbnails', thumbnailId];
-  return useQuery<Thumbnail, 'thumbnails'>(key, fetchOne, queryConfig);
+  return useQuery<Thumbnail, 'thumbnails'>({
+    queryKey: key,
+    queryFn: fetchOne,
+    ...queryConfig,
+  });
 };
 
 export const useStartLiveRecording = (id: string, onError: () => void) => {
   const queryClient = useQueryClient();
-  return useMutation<Video>(
-    () =>
+  return useMutation<Video>({
+    mutationFn: () =>
       actionOne({
         name: 'videos',
         id,
         action: 'start-recording',
         method: 'PATCH',
       }),
-    {
-      onSuccess: (data) => {
-        queryClient.invalidateQueries('videos');
-        useVideoStore.getState().addResource(data);
-      },
-      onError: () => {
-        queryClient.invalidateQueries('videos');
-        onError();
-      },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(['videos']);
+      useVideoStore.getState().addResource(data);
     },
-  );
+    onError: () => {
+      queryClient.invalidateQueries(['videos']);
+      onError();
+    },
+  });
 };
 
 export const useStopLiveRecording = (id: string, onError: () => void) => {
   const queryClient = useQueryClient();
-  return useMutation<Video>(
-    () =>
+  return useMutation<Video>({
+    mutationFn: () =>
       actionOne({
         name: 'videos',
         id,
         action: 'stop-recording',
         method: 'PATCH',
       }),
-    {
-      onSuccess: (data) => {
-        queryClient.invalidateQueries('videos');
-        useVideoStore.getState().addResource(data);
-      },
-      onError: () => {
-        queryClient.invalidateQueries('videos');
-        onError();
-      },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(['videos']);
+      useVideoStore.getState().addResource(data);
     },
-  );
+    onError: () => {
+      queryClient.invalidateQueries(['videos']);
+      onError();
+    },
+  });
 };
 
 type UseCreateDocumentData = {
@@ -172,18 +178,17 @@ type UseCreateDocumentOptions = UseMutationOptions<
 >;
 export const useCreateDocument = (options?: UseCreateDocumentOptions) => {
   const queryClient = useQueryClient();
-  return useMutation<Document, UseCreateDocumentError, UseCreateDocumentData>(
-    (newDocument) => createOne({ name: 'documents', object: newDocument }),
-    {
-      ...options,
-      onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('documents');
-        if (options?.onSuccess) {
-          options.onSuccess(data, variables, context);
-        }
-      },
+  return useMutation<Document, UseCreateDocumentError, UseCreateDocumentData>({
+    mutationFn: (newDocument) =>
+      createOne({ name: 'documents', object: newDocument }),
+    ...options,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries(['documents']);
+      if (options?.onSuccess) {
+        options.onSuccess(data, variables, context);
+      }
     },
-  );
+  });
 };
 
 type UseCreatePortabilityRequestData = {
@@ -212,20 +217,18 @@ export const useCreatePortabilityRequest = (
     PortabilityRequest,
     UseCreatePortabilityRequestError,
     UseCreatePortabilityRequestData
-  >(
-    (newPortabilityRequest) =>
+  >({
+    mutationFn: (newPortabilityRequest) =>
       createOne({
         name: 'portability-requests',
         object: newPortabilityRequest,
       }),
-    {
-      ...options,
-      onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('portability-requests');
-        if (options?.onSuccess) {
-          options.onSuccess(data, variables, context);
-        }
-      },
+    ...options,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries(['portability-requests']);
+      if (options?.onSuccess) {
+        options.onSuccess(data, variables, context);
+      }
     },
-  );
+  });
 };

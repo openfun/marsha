@@ -1,6 +1,10 @@
+import {
+  UseMutationOptions,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { Maybe } from 'lib-common';
 import { FetchResponseError, SharedLiveMedia, deleteOne } from 'lib-components';
-import { UseMutationOptions, useMutation, useQueryClient } from 'react-query';
 
 type UseDeleteSharedLiveMediaData = {
   videoId: string;
@@ -21,30 +25,28 @@ export const useDeleteSharedLiveMedia = (
     Maybe<SharedLiveMedia>,
     UseDeleteSharedLiveMediaError,
     UseDeleteSharedLiveMediaData
-  >(
-    ({ videoId, sharedLiveMediaId }) =>
+  >({
+    mutationFn: ({ videoId, sharedLiveMediaId }) =>
       deleteOne({
         name: `videos/${videoId}/sharedlivemedias`,
         id: sharedLiveMediaId,
       }),
-    {
-      ...options,
-      onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries(
-          `videos/${variables.videoId}/sharedlivemedias`,
-        );
-        if (options?.onSuccess) {
-          options.onSuccess(data, variables, context);
-        }
-      },
-      onError: (error, variables, context) => {
-        queryClient.invalidateQueries(
-          `videos/${variables.videoId}/sharedlivemedias`,
-        );
-        if (options?.onError) {
-          options.onError(error, variables, context);
-        }
-      },
+    ...options,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries([
+        `videos/${variables.videoId}/sharedlivemedias`,
+      ]);
+      if (options?.onSuccess) {
+        options.onSuccess(data, variables, context);
+      }
     },
-  );
+    onError: (error, variables, context) => {
+      queryClient.invalidateQueries([
+        `videos/${variables.videoId}/sharedlivemedias`,
+      ]);
+      if (options?.onError) {
+        options.onError(error, variables, context);
+      }
+    },
+  });
 };

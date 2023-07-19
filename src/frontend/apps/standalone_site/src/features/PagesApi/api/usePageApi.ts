@@ -1,5 +1,5 @@
+import { UseQueryOptions, useQuery } from '@tanstack/react-query';
 import { FetchResponseError, fetchOne } from 'lib-components';
-import { UseQueryOptions, useQuery } from 'react-query';
 
 export interface PageResponse {
   slug: string;
@@ -16,8 +16,6 @@ export const usePageApi = (
 ) => {
   const key = ['pages', slug];
   return useQuery<PageResponse, FetchResponseError<PageResponse>, PageResponse>(
-    key,
-    fetchOne,
-    queryConfig,
+    { queryKey: key, queryFn: fetchOne, ...queryConfig },
   );
 };

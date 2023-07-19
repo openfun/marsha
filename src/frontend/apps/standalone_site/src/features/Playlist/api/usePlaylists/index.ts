@@ -1,3 +1,4 @@
+import { UseQueryOptions, useQuery } from '@tanstack/react-query';
 import {
   APIList,
   FetchListQueryKey,
@@ -5,7 +6,6 @@ import {
   Playlist,
   fetchList,
 } from 'lib-components';
-import { UseQueryOptions, useQuery } from 'react-query';
 
 export enum PlaylistOrderType {
   BY_CREATED_ON = 'created_on',
@@ -37,5 +37,5 @@ export const usePlaylists = (
     FetchResponseError<PlaylistsResponse>,
     PlaylistsResponse,
     FetchListQueryKey
-  >(keys, fetchList, queryConfig);
+  >({ queryKey: keys, queryFn: fetchList, ...queryConfig });
 };

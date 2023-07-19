@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { Box } from 'grommet';
 import { Maybe, Nullable } from 'lib-common';
 import {
@@ -9,7 +10,6 @@ import {
 } from 'lib-components';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { useIntl } from 'react-intl';
-import { useQueryClient } from 'react-query';
 import styled from 'styled-components';
 
 import { useTimedTextMetadata } from '@lib-video/api/useTimedTextMetadata';
