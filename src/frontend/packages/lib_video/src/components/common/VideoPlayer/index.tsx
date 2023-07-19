@@ -10,6 +10,7 @@ import {
 import React, { useEffect, useMemo, useRef } from 'react';
 import { useIntl } from 'react-intl';
 import { useQueryClient } from 'react-query';
+import styled from 'styled-components';
 
 import { useTimedTextMetadata } from '@lib-video/api/useTimedTextMetadata';
 import { createPlayer } from '@lib-video/components/common/Player/createPlayer';
@@ -23,6 +24,23 @@ interface BaseVideoPlayerProps {
   timedTextTracks: TimedText[];
   defaultVolume?: number;
 }
+
+export const StyledBox = styled(Box)`
+  /* 
+    This make the control bar visible when the video
+    has not been played yet.
+  */
+  .vjs-control-bar {
+    display: flex;
+  }
+
+  .vjs-icon-download {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="white" d="M16.59,10 L15,10 L15,5 C15,4.45 14.55,4 14,4 L10,4 C9.45,4 9,4.45 9,5 L9,10 L7.41,10 C6.52,10 6.07,11.08 6.7,11.71 L11.29,16.3 C11.68,16.69 12.31,16.69 12.7,16.3 L17.29,11.71 C17.92,11.08 17.48,10 16.59,10 Z M5,20 C5,20.55 5.45,21 6,21 L18,21 C18.55,21 19,20.55 19,20 C19,19.45 18.55,19 18,19 L6,19 C5.45,19 5,19.45 5,20 Z" /></svg>');
+    background-repeat: no-repeat;
+    background-position: center;
+    fill: white;
+  }
+`;
 
 export const VideoPlayer = ({
   video,
@@ -202,7 +220,7 @@ export const VideoPlayer = ({
   }, [resolutions, thumbnail, video.urls?.thumbnails]);
 
   return (
-    <Box ref={containerVideoRef}>
+    <StyledBox ref={containerVideoRef}>
       <video
         ref={videoNodeRef}
         crossOrigin="anonymous"
@@ -221,6 +239,6 @@ export const VideoPlayer = ({
           />
         ))}
       </video>
-    </Box>
+    </StyledBox>
   );
 };

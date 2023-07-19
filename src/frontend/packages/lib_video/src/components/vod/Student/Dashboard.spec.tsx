@@ -217,7 +217,6 @@ describe('<Dashboard />', () => {
     );
 
     screen.getByText('Transcripts');
-    screen.getByText('Download video');
     screen.getByText('Supports sharing');
   });
 
@@ -268,7 +267,6 @@ describe('<Dashboard />', () => {
     );
 
     screen.getByText('Transcripts');
-    screen.getByText('Download video');
   });
 
   it('uses the VideoLayout when the video is a Live-converted VOD', () => {

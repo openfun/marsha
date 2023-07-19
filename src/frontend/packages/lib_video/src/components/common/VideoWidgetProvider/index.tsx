@@ -184,7 +184,6 @@ const teacherVodWidgets: WidgetType[] = [
 const publicLiveWidgets: WidgetType[] = [];
 const publicVodWidgets: WidgetType[] = [
   WidgetType.TRANSCRIPTS,
-  WidgetType.DOWNLOAD_VOD_PUBLIC,
   WidgetType.SHARED_MEDIA_VOD_PUBLIC,
 ];
 
