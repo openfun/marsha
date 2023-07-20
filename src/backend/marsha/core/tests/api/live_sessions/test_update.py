@@ -210,7 +210,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
             starting_at=timezone.now() + timedelta(days=100),
         )
         live_session = AnonymousLiveSessionFactory(video=video)
-        jwt_token = ResourceAccessTokenFactory(resource=video)
+        jwt_token = ResourceAccessTokenFactory(resource=video.playlist)
 
         response = self.client.put(
             self._update_url(video, live_session),
@@ -234,7 +234,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
         )
 
         jwt_token = LTIResourceAccessTokenFactory(
-            resource=video,
+            resource=video.playlist,
             consumer_site=str(video.playlist.consumer_site.id),
             context_id=live_session.lti_id,
             user__id=live_session.lti_user_id,
@@ -631,7 +631,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             consumer_site=str(video.playlist.consumer_site.id),
             context_id="Maths",
         )
@@ -699,7 +699,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             consumer_site=str(video.playlist.consumer_site.id),
             context_id="Maths",
         )
@@ -732,7 +732,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
         )
         self.assertIsNone(live_session.registered_at)
 
-        jwt_token = ResourceAccessTokenFactory(resource=video)
+        jwt_token = ResourceAccessTokenFactory(resource=video.playlist)
 
         now = datetime(2022, 4, 7, tzinfo=baseTimezone.utc)
         with mock.patch.object(LiveSessionTimezone, "now", return_value=now):
@@ -782,7 +782,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
             video=video,
         )
 
-        jwt_token = ResourceAccessTokenFactory(resource=video)
+        jwt_token = ResourceAccessTokenFactory(resource=video.playlist)
 
         other_anonymous_id = uuid.uuid4()
         response = self.client.patch(
@@ -813,7 +813,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
         self.assertIsNone(live_session.registered_at)
         self.assertEqual(live_session.language, "en")
 
-        jwt_token = ResourceAccessTokenFactory(resource=video)
+        jwt_token = ResourceAccessTokenFactory(resource=video.playlist)
 
         # if a wrong language is set
         response = self.client.patch(

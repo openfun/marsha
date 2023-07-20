@@ -45,7 +45,7 @@ class SharedLiveMediaDeleteAPITest(TestCase):
         """A student can not delete a shared live media."""
         shared_live_media = SharedLiveMediaFactory()
 
-        jwt_token = StudentLtiTokenFactory(resource=shared_live_media.video)
+        jwt_token = StudentLtiTokenFactory(resource=shared_live_media.video.playlist)
 
         response = self.client.delete(
             self._delete_url(shared_live_media.video, shared_live_media),
@@ -60,7 +60,9 @@ class SharedLiveMediaDeleteAPITest(TestCase):
         video = VideoFactory()
         video.shared_live_medias.set([shared_live_media])
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=shared_live_media.video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=shared_live_media.video.playlist
+        )
 
         self.assertTrue(SharedLiveMedia.objects.exists())
 
@@ -247,7 +249,9 @@ class SharedLiveMediaDeleteAPITest(TestCase):
         )
         video.shared_live_medias.set([shared_live_media])
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=shared_live_media.video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=shared_live_media.video.playlist
+        )
 
         self.assertTrue(SharedLiveMedia.objects.exists())
 

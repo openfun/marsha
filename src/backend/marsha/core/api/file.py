@@ -26,8 +26,8 @@ class DocumentViewSet(
     queryset = Document.objects.all()
     serializer_class = serializers.DocumentSerializer
     permission_classes = [
-        permissions.IsTokenResourceRouteObject & permissions.IsTokenInstructor
-        | permissions.IsTokenResourceRouteObject & permissions.IsTokenAdmin
+        permissions.IsPlaylistToken
+        & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
     ]
 
     def get_permissions(self):

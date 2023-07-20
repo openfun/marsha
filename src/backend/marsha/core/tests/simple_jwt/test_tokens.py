@@ -236,7 +236,9 @@ class ResourceAccessTokenTestCase(TestCase):
         self.assertDictEqual(token.payload["permissions"], permissions)
         self.assertFalse(token.payload["maintenance"])  # settings.MAINTENANCE_MODE
 
-        self.assertEqual(token.payload["resource_id"], str(live_session.video.pk))
+        self.assertEqual(
+            token.payload["resource_id"], str(live_session.video.playlist.pk)
+        )
         self.assertDictEqual(
             token.payload["user"],
             {
@@ -278,7 +280,7 @@ class ResourceAccessTokenTestCase(TestCase):
             token.payload["consumer_site"], str(video.playlist.consumer_site.pk)
         )
         self.assertEqual(token.payload["context_id"], str(video.playlist.lti_id))
-        self.assertEqual(token.payload["resource_id"], str(video.pk))
+        self.assertEqual(token.payload["resource_id"], str(video.playlist.pk))
         self.assertDictEqual(
             token.payload["user"],
             {

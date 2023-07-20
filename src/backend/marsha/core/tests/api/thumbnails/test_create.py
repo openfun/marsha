@@ -159,7 +159,7 @@ class ThumbnailCreateApiTest(TestCase):
         """Student users should not be able to create a thumbnail."""
         video = VideoFactory()
 
-        jwt_token = StudentLtiTokenFactory(resource=video)
+        jwt_token = StudentLtiTokenFactory(resource=video.playlist)
 
         response = self.client.post(
             self._post_url(video), HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -171,7 +171,7 @@ class ThumbnailCreateApiTest(TestCase):
         """LTI instructor or admin should be able to create a thumbnail."""
         video = VideoFactory()
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
 
         response = self.client.post(
             self._post_url(video),
@@ -199,7 +199,7 @@ class ThumbnailCreateApiTest(TestCase):
     def test_api_thumbnail_create_instructor_file_too_large(self):
         """Instructor users should not be able to create a thumbnail if file is too large"""
         video = VideoFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
 
         response = self.client.post(
             self._post_url(video),
@@ -215,7 +215,7 @@ class ThumbnailCreateApiTest(TestCase):
     def test_api_thumbnail_create_instructor_no_size_parameter_provided(self):
         """Instructor users shouldn't be able to create a thumbnail without a file size"""
         video = VideoFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
 
         response = self.client.post(
             self._post_url(video), HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -232,7 +232,7 @@ class ThumbnailCreateApiTest(TestCase):
         video = VideoFactory()
         ThumbnailFactory(video=video)
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
 
         response = self.client.post(
             self._post_url(video),
@@ -252,7 +252,7 @@ class ThumbnailCreateApiTest(TestCase):
         thumbnail = ThumbnailFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=thumbnail.video,
+            resource=thumbnail.video.playlist,
             permissions__can_update=False,
         )
 

@@ -300,7 +300,7 @@ class VideoConsumerTest(TransactionTestCase):
 
         self.assertIsNone(live_session.channel_name)
 
-        jwt_token = ResourceAccessTokenFactory(resource=video)
+        jwt_token = ResourceAccessTokenFactory(resource=video.playlist)
 
         communicator = WebsocketCommunicator(
             base_application,
@@ -331,7 +331,7 @@ class VideoConsumerTest(TransactionTestCase):
         self.assertIsNone(live_session.channel_name)
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             consumer_site=str(video.consumer_site.id),
             context_id=str(video.playlist.lti_id),
             user__id=live_session.lti_user_id,
@@ -361,7 +361,7 @@ class VideoConsumerTest(TransactionTestCase):
         other_video = await self._get_video()
 
         jwt_token = StudentLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             consumer_site=str(video.consumer_site.id),
             context_id=str(video.playlist.lti_id),
         )
@@ -432,7 +432,7 @@ class VideoConsumerTest(TransactionTestCase):
         )
 
         jwt_token = StudentLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             consumer_site=str(video.consumer_site.id),
         )
 
@@ -551,7 +551,7 @@ class VideoConsumerTest(TransactionTestCase):
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             consumer_site=str(video.consumer_site.id),
         )
 
@@ -684,7 +684,7 @@ class VideoConsumerTest(TransactionTestCase):
         thumbnail = await self._get_thumbnail()
 
         jwt_token = StudentLtiTokenFactory(
-            resource=thumbnail.video,
+            resource=thumbnail.video.playlist,
             consumer_site=str(thumbnail.video.consumer_site.id),
         )
 
@@ -728,7 +728,7 @@ class VideoConsumerTest(TransactionTestCase):
         timed_text_track = await self._get_timed_text_track()
 
         jwt_token = StudentLtiTokenFactory(
-            resource=timed_text_track.video,
+            resource=timed_text_track.video.playlist,
             consumer_site=str(timed_text_track.video.consumer_site.id),
         )
 

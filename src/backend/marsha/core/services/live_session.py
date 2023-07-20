@@ -33,12 +33,12 @@ def is_public_token(token):
     )
 
 
-def get_livesession_from_lti(token):
+def get_livesession_from_lti(token, video_id=None):
     """Get or create livesession for a LTI connection."""
     if not is_lti_token(token):
         raise NotLtiTokenException()
 
-    video = Video.objects.get(pk=token.payload["resource_id"])
+    video = Video.objects.get(pk=video_id)
     token_user = token.payload.get("user")
     consumer_site = ConsumerSite.objects.get(pk=token.payload["consumer_site"])
 

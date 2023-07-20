@@ -107,9 +107,8 @@ class XAPIStatementView(APIViewMixin, APIView):
             return Response(partial_xapi_statement.errors, status=400)
 
         if request.resource:
-            if request.resource.resource_id != str(resource_id):
+            if request.resource.resource_id != str(object_instance.playlist.id):
                 return HttpResponseNotFound()
-
             (
                 statement,
                 lrs_url,

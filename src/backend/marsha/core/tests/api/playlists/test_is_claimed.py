@@ -29,7 +29,7 @@ class PlaylistIsClaimedAPITest(TestCase):
     def test_playlist_is_claimed_student(self):
         """Random logged-in users cannot check if a playlist is claimed."""
         video = factories.VideoFactory()
-        jwt_token = StudentLtiTokenFactory(resource=video)
+        jwt_token = StudentLtiTokenFactory(resource=video.playlist)
 
         response = self.client.get(
             f"/api/playlists/{video.playlist.id}/is-claimed/",
@@ -43,7 +43,7 @@ class PlaylistIsClaimedAPITest(TestCase):
         video = factories.VideoFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             roles=[ADMINISTRATOR],
         )
 
@@ -61,7 +61,7 @@ class PlaylistIsClaimedAPITest(TestCase):
         video = factories.VideoFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             roles=[INSTRUCTOR],
         )
 
@@ -79,7 +79,7 @@ class PlaylistIsClaimedAPITest(TestCase):
         video = factories.VideoFactory(upload_state="pending")
         consumer_site = factories.ConsumerSiteFactory()
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             roles=[INSTRUCTOR],
             consumer_site=str(consumer_site.id),
         )
