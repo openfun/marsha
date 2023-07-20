@@ -11,7 +11,7 @@ import './videojs/xapiPlugin';
 import { Maybe } from 'lib-common';
 import { Video, useP2PConfig, videoSize } from 'lib-components';
 import videojs, {
-  VideoJsPlayer,
+  Player,
   VideoJsPlayerOptions,
   VideoJsPlayerPluginOptions,
 } from 'video.js';
@@ -25,8 +25,8 @@ export const createVideojsPlayer = (
   dispatchPlayerTimeUpdate: (time: number) => void,
   video: Video,
   locale: Maybe<string>,
-  onReady: Maybe<(player: VideoJsPlayer) => void> = undefined,
-): VideoJsPlayer => {
+  onReady: Maybe<(player: Player) => void> = undefined,
+): Player => {
   const { isP2PEnabled } = useP2PConfig.getState();
   // This property should be deleted once the feature has been
   // deployed, tested and approved in a production environment
@@ -94,12 +94,13 @@ export const createVideojsPlayer = (
     sources,
   };
 
-  const player = videojs(videoNode, options, function () {
-    if (video.is_live) {
-      this.play();
-    }
-    onReady?.(this);
-  });
+  const player = videojs(videoNode, options);
+
+  if (video.is_live) {
+    player.play();
+  }
+
+  onReady?.(player);
 
   if (isMSESupported()) {
     if (isP2pQueryEnabled && isP2PEnabled) {

@@ -1,21 +1,47 @@
 import 'video.js';
-import { Engine } from 'p2p-media-loader-hlsjs';
-import Player from 'video.js/dist/types/player';
-import PluginType from 'video.js/dist/types/plugin';
+import PlayerInit from 'video.js/dist/types/player';
+import Tech from 'video.js/dist/types/tech/tech';
 
 import { DownloadVideoPluginOptions } from '../../../components/common/Player/videojs/downloadVideoPlugin/types';
 import { XapiPluginOptions } from '../../../components/common/Player/videojs/xapiPlugin/types';
 
-declare module 'video.js/dist/types/player' {
-  class Player {
+declare module 'video.js' {
+  type VideoJsPlayerOptions = PlayerInit.options_ & {
+    autoplay?: boolean;
+    controls?: boolean;
+    fluid?: boolean;
+    debug?: boolean;
+    responsive?: boolean;
+    html5: {
+      vhs?: {
+        limitRenditionByPlayerDimensions?: boolean;
+        overrideNative?: boolean;
+        useDevicePixelRatio?: boolean;
+      };
+      nativeAudioTracks?: boolean;
+      nativeVideoTracks?: boolean;
+      hlsjsConfig?: {
+        liveSyncDurationCount?: number;
+        loader: Engine;
+      };
+    };
+    language?: string;
+    liveui?: boolean;
+    plugins?: VideoJsPlayerPluginOptions;
+    sources?: VideoJsExtendedSourceObject[];
+  };
+
+  interface VideoJsPlayerPluginOptions {
+    httpSourceSelector?: VideoJsHttpSourceSelectorPluginOptions;
+    qualitySelector?: QualitySelectorOptions;
+  }
+
+  interface Player extends PlayerInit {
     // videojs-quality-selector-plugin
     videojs_quality_selector_plugin_initialized: boolean;
     videojs_quality_selector_plugin_is_paused?: boolean;
     videojs_quality_selector_plugin_currentime?: number;
     videojs_quality_selector_plugin_default?: string;
-    cache_: {
-      initTime: number;
-    };
     // p2p-media-loader-hlsjs
     config: { loader: { getEngine: () => Engine } };
     media: { currentTime: number };
@@ -32,21 +58,16 @@ declare module 'video.js/dist/types/player' {
       ): void;
     };
     qualityLevels: () => QualityLevels;
-    currentSources(): VideoJsExtendedSourceObject[];
-    currentSource(): VideoJsExtendedSourceObject;
-  }
-}
-
-declare module 'video.js' {
-  interface VideoJsPlayerOptions {
-    debug?: boolean;
-    responsive?: boolean;
+    currentSources(): Tech & VideoJsExtendedSourceObject[];
+    currentSource(): Tech & VideoJsExtendedSourceObject;
+    options_: VideoJsPlayerOptions;
   }
 
-  interface VideoJsPlayerPluginOptions {
-    httpSourceSelector?: VideoJsHttpSourceSelectorPluginOptions;
-    qualitySelector?: QualitySelectorOptions;
-  }
+  export default function (
+    id: string | Element,
+    options?: VideoJsPlayerOptions,
+    ready?: ReadyCallback,
+  ): Player;
 }
 
 interface QualityLevels {
@@ -60,12 +81,12 @@ interface QualityLevels {
   trigger: (event: string) => void;
 }
 
-interface VideoJsExtendedSourceObject {
+type VideoJsExtendedSourceObject = {
   src: string;
   type?: string;
   size?: string;
   selected?: boolean;
-}
+};
 
 interface VideoJsHttpSourceSelectorPluginOptions {
   default: 'low' | 'high' | 'auto';

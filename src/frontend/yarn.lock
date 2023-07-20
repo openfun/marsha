@@ -5124,10 +5124,17 @@
   resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-9.0.2.tgz#ede1d1b1e451548d44919dc226253e32a6952c4b"
   integrity sha512-kNnC1GFBLuhImSnV7w4njQkUiJi0ZXUycu1rUaouPqiKlXkh77JKgdRnTAp1x5eBwcIwbtI+3otwzuIDEuDoxQ==
 
-"@types/video.js@7.3.52":
+"@types/video.js@*", "@types/video.js@7.3.52":
   version "7.3.52"
   resolved "https://registry.yarnpkg.com/@types/video.js/-/video.js-7.3.52.tgz#0d5edd867e534ec97075505d14c111f57c044d53"
   integrity sha512-WFj/HkNVCfkchXDeDU0QbimC356FB5vva3g5mgsjk8n3UMKqP9S522rQAmu9LGPiCmShZRPuAlkXmbp5WId6ow==
+
+"@types/videojs-contrib-quality-levels@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@types/videojs-contrib-quality-levels/-/videojs-contrib-quality-levels-2.0.1.tgz#e0ff356539fe524209e89f794c339f87c6311953"
+  integrity sha512-a7vNjolI9zG269Ks8y6JC/Eut+BXex0/1haB8c2J7RCIn365EdTxgiT0udG2ObaCkQqZsa2+4KS7ZE1HMo113w==
+  dependencies:
+    "@types/video.js" "*"
 
 "@types/web@^0.0.46":
   version "0.0.46"

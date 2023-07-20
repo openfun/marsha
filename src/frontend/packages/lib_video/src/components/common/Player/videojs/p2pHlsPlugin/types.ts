@@ -1,4 +1,4 @@
-import Player from 'video.js/dist/types/player';
+import { Player } from 'video.js';
 
 export interface HlsData {
   frag: {

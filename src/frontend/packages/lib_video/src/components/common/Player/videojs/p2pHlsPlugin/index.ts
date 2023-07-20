@@ -1,12 +1,12 @@
 import videojsHlsjsSourceHandler from '@streamroot/videojs-hlsjs-plugin';
 import { useJwt, useP2PConfig } from 'lib-components';
 import { Byterange, Engine } from 'p2p-media-loader-hlsjs';
-import videojs from 'video.js';
-import Player from 'video.js/dist/types/player';
-import Plugin from 'video.js/dist/types/plugin';
+import videojs, { Player } from 'video.js';
+//import Plugin from 'video.js/dist/types/plugin';
 
 import { ExtendedVideoJs, HlsData } from './types';
 
+const Plugin = videojs.getPlugin('plugin');
 /**
  * A VideoJS Plugin enabling the P2P for HLS.
  *
@@ -22,7 +22,8 @@ import { ExtendedVideoJs, HlsData } from './types';
  * necessary metadata to make `p2p-media-loader-hlsjs` works.
  * @class P2pPlugin
  */
-export class P2pHlsPlugin extends Plugin {
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+export class P2pHlsPlugin extends Plugin.prototype.constructor {
   constructor(player: Player) {
     const { stunServersUrls, webTorrentServerTrackerUrls } =
       useP2PConfig.getState();
@@ -68,7 +69,10 @@ export class P2pHlsPlugin extends Plugin {
       'beforeinitialize',
       (videojsPlayer, hlsjs) => {
         if (typeof hlsjs.config?.loader?.getEngine === 'function') {
-          this.initHlsJsEvents(videojsPlayer, hlsjs.config.loader.getEngine());
+          this.initHlsJsEvents(
+            videojsPlayer,
+            hlsjs.config.loader.getEngine() as Engine,
+          );
         }
       },
     );
@@ -83,10 +87,13 @@ export class P2pHlsPlugin extends Plugin {
       Example taken from: https://github.com/Novage/p2p-media-loader/blob/master/p2p-media-loader-hlsjs/demo/videojs-hlsjs-plugin.html
     */
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-    player.options_.html5.hlsjsConfig = {
-      liveSyncDurationCount: 7, // To have at least 7 segments in queue
-      loader: engine.createLoaderClass() as unknown,
+    player.options_.html5 = {
+      hlsjsConfig: {
+        liveSyncDurationCount: 7, // To have at least 7 segments in queue
+        loader: engine.createLoaderClass() as unknown,
+      },
     };
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     super(player);
   }
 
