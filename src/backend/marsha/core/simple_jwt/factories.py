@@ -132,6 +132,31 @@ class BaseResourceTokenFactory(BaseTokenFactory):
     to forge the JWT, or nothing to use a random UUID.
     """
 
+    # Should we force the resource to be a playlist?
+    #
+    # @staticmethod
+    # def get_playlist_id(o):
+    #     """Get the playlist id from the resource."""
+    #     # print("woot")
+    #     # breakpoint()
+    #     resource_id = uuid.uuid4()
+    #     if not o.resource:
+    #         print("no resource")
+    #         pass
+    #     elif o.resource.__class__.__name__ == "Playlist":
+    #         print("playlist resource")
+    #         resource_id = o.resource.id
+    #     elif o.resource.playlist:
+    #         print("resource has playlist")
+    #         resource_id = o.resource.playlist.id
+    #     elif o.resource.video.playlist.id:
+    #         print("resource has video")
+    #         resource_id = o.resource.video.playlist.id
+    #
+    #     return str(resource_id)
+    #
+    # resource_id = factory.LazyAttribute(get_playlist_id)
+
     resource_id = factory.LazyAttribute(
         lambda o: str(o.resource.id if o.resource else uuid.uuid4())
     )
@@ -242,7 +267,7 @@ class LiveSessionLtiTokenFactory(LTIResourceAccessTokenFactory):
     but this one allows to deeply customize the final JWT.
     """
 
-    resource_id = factory.LazyAttribute(lambda o: str(o.live_session.video.id))
+    resource_id = factory.LazyAttribute(lambda o: str(o.live_session.video.playlist.id))
     roles = factory.fuzzy.FuzzyChoice([STUDENT, NONE], getter=lambda x: [x])
 
     consumer_site = factory.LazyAttribute(

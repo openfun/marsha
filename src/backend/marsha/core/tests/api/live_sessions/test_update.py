@@ -45,10 +45,10 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
 
     def assert_response_resource_not_accessible(self, response):
         """Assert response resource not the same as video_id"""
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 403)
         self.assertEqual(
             response.json(),
-            {"detail": "Resource from token does not match given parameters."},
+            {"detail": "You do not have permission to perform this action."},
         )
 
     def assert_user_cannot_patch(self, user, video):
@@ -210,7 +210,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
             starting_at=timezone.now() + timedelta(days=100),
         )
         live_session = AnonymousLiveSessionFactory(video=video)
-        jwt_token = ResourceAccessTokenFactory(resource=video)
+        jwt_token = ResourceAccessTokenFactory(resource=video.playlist)
 
         response = self.client.put(
             self._update_url(video, live_session),
@@ -234,7 +234,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
         )
 
         jwt_token = LTIResourceAccessTokenFactory(
-            resource=video,
+            resource=video.playlist,
             consumer_site=str(video.playlist.consumer_site.id),
             context_id=live_session.lti_id,
             user__id=live_session.lti_user_id,
@@ -631,7 +631,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             consumer_site=str(video.playlist.consumer_site.id),
             context_id="Maths",
         )
@@ -699,7 +699,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             consumer_site=str(video.playlist.consumer_site.id),
             context_id="Maths",
         )
@@ -732,7 +732,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
         )
         self.assertIsNone(live_session.registered_at)
 
-        jwt_token = ResourceAccessTokenFactory(resource=video)
+        jwt_token = ResourceAccessTokenFactory(resource=video.playlist)
 
         now = datetime(2022, 4, 7, tzinfo=baseTimezone.utc)
         with mock.patch.object(LiveSessionTimezone, "now", return_value=now):
@@ -782,7 +782,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
             video=video,
         )
 
-        jwt_token = ResourceAccessTokenFactory(resource=video)
+        jwt_token = ResourceAccessTokenFactory(resource=video.playlist)
 
         other_anonymous_id = uuid.uuid4()
         response = self.client.patch(
@@ -813,7 +813,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
         self.assertIsNone(live_session.registered_at)
         self.assertEqual(live_session.language, "en")
 
-        jwt_token = ResourceAccessTokenFactory(resource=video)
+        jwt_token = ResourceAccessTokenFactory(resource=video.playlist)
 
         # if a wrong language is set
         response = self.client.patch(
@@ -880,41 +880,3 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
                 "video": str(video.id),
             },
         )
-
-
-# Old routes to remove
-class LiveSessionUpdateApiOldTest(LiveSessionUpdateApiTest):
-    """Test the update API of the liveSession object with old URLs."""
-
-    def _update_url(self, video, live_session):
-        """Return the url to use in tests."""
-        return f"/api/livesessions/{live_session.pk}/"
-
-    def test_api_livesession_update_with_token_patch_not_allowed(self):
-        """Patch update is not allowed."""
-        video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        AnonymousLiveSessionFactory(video=video)
-        jwt_token = ResourceAccessTokenFactory(resource=video)
-
-        # This is not clear why this is tested as this is not an expected URL
-        # still we keep the test for old URLs
-        response = self.client.patch(
-            "/api/livesessions/",
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": False},
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(response.status_code, 405)
-        self.assertEqual(response.json(), {"detail": 'Method "PATCH" not allowed.'})
-
-    def assert_user_can_patch(self, user, video):
-        """Defuse original assertion for old URLs"""
-        self.assert_user_cannot_patch(user, video)
-
-    def assert_response_resource_not_accessible(self, response):
-        """Assert response resource not accessible"""
-        self.assertEqual(response.status_code, 403)

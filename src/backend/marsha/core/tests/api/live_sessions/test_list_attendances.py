@@ -1743,16 +1743,3 @@ class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
         self.assertEqual(
             response.json(), {"live_attendance": "keys in fields should be timestamps"}
         )
-
-
-# Old routes to remove
-class LiveSessionListAttendancesApiOldTest(LiveSessionListAttendancesApiTest):
-    """Test the list-attendances API of the liveSession object with old URLs."""
-
-    def _get_url(self, video):
-        """Return the url to use in tests."""
-        return "/api/livesessions/list_attendances/"
-
-    def assert_user_can_read_attendances(self, user, video):
-        """Defuse original assertion for old URLs"""
-        self.assert_user_cannot_read_attendances(user, video)

@@ -40,7 +40,7 @@ class SharedLiveMediaCreateAPITest(TestCase):
         """An instructor should be able to create a shared live media for an existing video."""
 
         video = VideoFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
 
         response = self.client.post(
             self._post_url(video),
@@ -71,7 +71,7 @@ class SharedLiveMediaCreateAPITest(TestCase):
         """An instructor in read only should not be able to create a shared live media."""
         video = VideoFactory()
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             permissions__can_update=False,
         )
 
@@ -86,7 +86,7 @@ class SharedLiveMediaCreateAPITest(TestCase):
     def test_api_shared_live_media_create_student(self):
         """A student should not be able to create a shared live media."""
         video = VideoFactory()
-        jwt_token = StudentLtiTokenFactory(resource=video)
+        jwt_token = StudentLtiTokenFactory(resource=video.playlist)
 
         response = self.client.post(
             self._post_url(video),
@@ -276,11 +276,3 @@ class SharedLiveMediaCreateAPITest(TestCase):
                 "video": str(video.id),
             },
         )
-
-
-class SharedLiveMediaCreateAPIOldTest(SharedLiveMediaCreateAPITest):
-    """Test the create API of the shared live media object."""
-
-    def _post_url(self, video):
-        """Return the url to use in tests."""
-        return "/api/sharedlivemedias/"

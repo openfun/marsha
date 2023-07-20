@@ -62,7 +62,7 @@ class SharedLiveMediaListAPITest(TestCase):
             nb_pages=3,
         )
 
-        jwt_token = StudentLtiTokenFactory(resource=video)
+        jwt_token = StudentLtiTokenFactory(resource=video.playlist)
 
         response = self.client.get(
             self._get_url(video),
@@ -94,7 +94,7 @@ class SharedLiveMediaListAPITest(TestCase):
             nb_pages=3,
         )
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
 
         response = self.client.get(
             self._get_url(video),
@@ -180,7 +180,7 @@ class SharedLiveMediaListAPITest(TestCase):
             video=other_video,
         )
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
 
         response = self.client.get(
             self._get_url(other_video),
@@ -188,7 +188,11 @@ class SharedLiveMediaListAPITest(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {"count": 0, "next": None, "previous": None, "results": []},
+        )
 
     @override_settings(
         CLOUDFRONT_SIGNED_URLS_ACTIVE=True,
@@ -220,7 +224,7 @@ class SharedLiveMediaListAPITest(TestCase):
             nb_pages=3,
         )
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
 
         # fix the time so that the url signature is deterministic and can be checked
         now = datetime(2021, 11, 30, tzinfo=baseTimezone.utc)
@@ -625,11 +629,3 @@ class SharedLiveMediaListAPITest(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
-
-
-class SharedLiveMediaListAPIOldTest(SharedLiveMediaListAPITest):
-    """Test the list API of the shared live media object."""
-
-    def _get_url(self, video):
-        """Return the url to use in tests."""
-        return f"/api/sharedlivemedias/?video={video.id}"

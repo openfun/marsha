@@ -43,10 +43,10 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
 
     def assert_response_resource_not_accessible(self, response):
         """Assert response resource not the same as video_id"""
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 403)
         self.assertEqual(
             response.json(),
-            {"detail": "Resource from token does not match given parameters."},
+            {"detail": "You do not have permission to perform this action."},
         )
 
     def assert_user_cannot_read(self, user, video):
@@ -181,7 +181,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         video = VideoFactory()
         livesession = AnonymousLiveSessionFactory(video=video)
         # token has no consumer_site, no context_id and no user's info
-        jwt_token = ResourceAccessTokenFactory(resource=video)
+        jwt_token = ResourceAccessTokenFactory(resource=video.playlist)
 
         response = self.client.get(
             self._get_url(livesession.video, livesession),
@@ -200,7 +200,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         """
         livesession = AnonymousLiveSessionFactory()
         # token has no consumer_site, no context_id and no user's info
-        jwt_token = ResourceAccessTokenFactory(resource=livesession.video)
+        jwt_token = ResourceAccessTokenFactory(resource=livesession.video.playlist)
 
         response = self.client.get(
             f"{self._get_url(livesession.video, livesession)}"
@@ -366,7 +366,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
 
         # token has context_id so different consumer_site
         jwt_token = LTIResourceAccessTokenFactory(
-            resource=livesession.video,  # as usual
+            resource=livesession.video.playlist,  # as usual
             roles=[random.choice([STUDENT, NONE])],
             user__email=livesession.email,  # as usual
             # below arguments are not usual for anonymous live session
@@ -541,7 +541,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
             username="Sam",  # explicit to be found in response
         )
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=livesession.video,
+            resource=livesession.video.playlist,
             context_id=str(livesession.video.playlist.lti_id),
             consumer_site=str(livesession.consumer_site.id),
         )
@@ -586,7 +586,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         )
         # token with right context_id
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=livesession.video,
+            resource=livesession.video.playlist,
             context_id=str(livesession.video.playlist.lti_id),
             consumer_site=str(livesession.consumer_site.id),
             user__email=None,
@@ -627,7 +627,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
             # context_id and consumer_site are not determinant (random uuid here)
-            resource=livesession.video,
+            resource=livesession.video.playlist,
         )
 
         response = self.client.get(
@@ -667,7 +667,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
 
         # token with context_id leading to another consumer site
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=livesession.video,
+            resource=livesession.video.playlist,
             context_id=str(livesession.video.playlist.lti_id),
             # consumer_site is not other_consumer_site
             consumer_site=str(livesession.video.playlist.consumer_site.id),
@@ -710,7 +710,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
 
         # token with context_id leading to another consumer site
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=livesession.video,
+            resource=livesession.video.playlist,
             context_id=f"{livesession.video.playlist.lti_id}_diff",
             # consumer_site is not other_consumer_site
             consumer_site=str(livesession.video.playlist.consumer_site.id),
@@ -779,7 +779,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         livesession = AnonymousLiveSessionFactory()
 
         # token with no context_id leading to the same undefined consumer_site
-        jwt_token = ResourceAccessTokenFactory(resource=VideoFactory())
+        jwt_token = ResourceAccessTokenFactory(resource=VideoFactory().playlist)
 
         response = self.client.get(
             self._get_url(livesession.video, livesession),
@@ -793,7 +793,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         livesession = LiveSessionFactory(is_from_lti_connection=True)
 
         jwt_token = LTIResourceAccessTokenFactory(
-            resource=VideoFactory(),  # other video
+            resource=VideoFactory().playlist,  # other video
             context_id=str(livesession.video.playlist.lti_id),
             consumer_site=str(livesession.video.playlist.consumer_site.id),
             user__email=None,
@@ -807,7 +807,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         self.assert_response_resource_not_accessible(response)
 
     def test_api_livesession_read_detail_unknown_video(self):
-        """Token with wrong resource_id should render a 404."""
+        """Token with wrong resource_id should render a 403."""
         starting_at = timezone.now() + timedelta(days=5)
         video = VideoFactory(live_state=IDLE, live_type=RAW, starting_at=starting_at)
         livesession = AnonymousLiveSessionFactory(video=video)
@@ -819,20 +819,3 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assert_response_resource_not_accessible(response)
-
-
-# Old routes to remove
-class LiveSessionRetrieveApiOldTest(LiveSessionRetrieveApiTest):
-    """Test the retrieve API of the liveSession object using old URLs."""
-
-    def _get_url(self, video, live_session):
-        """Return the url to use in tests."""
-        return f"/api/livesessions/{live_session.pk}/"
-
-    def assert_user_can_read(self, user, video):
-        """Defuse original assertion for old URLs"""
-        self.assert_user_cannot_read(user, video)
-
-    def assert_response_resource_not_accessible(self, response):
-        """Assert response resource not accessible"""
-        self.assertEqual(response.status_code, 403)

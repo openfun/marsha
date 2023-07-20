@@ -74,7 +74,7 @@ class TimedTextTrackDeleteAPITest(TestCase):
         # Delete the timed text tracks using the JWT token
         for timed_text_track in timed_text_tracks:
             jwt_token = InstructorOrAdminLtiTokenFactory(
-                resource=timed_text_track.video
+                resource=timed_text_track.video.playlist,
             )
             response = self.client.delete(
                 self._delete_url(timed_text_track.video, timed_text_track),
@@ -111,7 +111,7 @@ class TimedTextTrackDeleteAPITest(TestCase):
         timed_text_track = TimedTextTrackFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=timed_text_track.video,
+            resource=timed_text_track.video.playlist,
             permissions__can_update=False,
         )
 
@@ -256,11 +256,3 @@ class TimedTextTrackDeleteAPITest(TestCase):
 
         self.assertEqual(response.status_code, 204)
         self.assertEqual(TimedTextTrack.objects.count(), 0)
-
-
-class TimedTextTrackDeleteAPIOldTest(TimedTextTrackDeleteAPITest):
-    """Test the delete API of the timed text track object with old URLs."""
-
-    def _delete_url(self, video, track):
-        """Return the url to delete a timed text track."""
-        return f"/api/timedtexttracks/{track.id}/"

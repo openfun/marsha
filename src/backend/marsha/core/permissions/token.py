@@ -1,6 +1,5 @@
 """Custom permission classes for the Marsha project."""
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Q
 
 from rest_framework import permissions
 
@@ -116,13 +115,8 @@ class IsTokenResourceRouteObjectRelatedPlaylist(permissions.BasePermission):
         """
         return (
             request.resource
-            and models.Playlist.objects.filter(
-                Q(pk=view.get_object_pk())
-                & (
-                    Q(videos__id=request.resource.id)
-                    | Q(documents__id=request.resource.id)
-                ),
-            ).exists()
+            and request.resource.id == view.get_object_pk()
+            and models.Playlist.objects.filter(pk=request.resource.id).exists()
         )
 
 
@@ -153,7 +147,8 @@ class IsTokenResourceRouteObjectRelatedVideo(permissions.BasePermission):
         try:
             return (
                 request.resource
-                and str(view.get_related_object().video.id) == request.resource.id
+                and str(view.get_related_object().video.playlist.id)
+                == request.resource.id
             )
         except ObjectDoesNotExist:
             return False
@@ -174,10 +169,23 @@ class IsPlaylistToken(permissions.BasePermission):
         """
         if request.resource:
             playlist_id = request.resource.id
-            return models.Playlist.objects.filter(id=playlist_id).exists() and (
-                str(view.get_queryset().get(id=view.get_object_pk()).playlist_id)
-                == playlist_id
-            )
+            try:
+                return models.Playlist.objects.filter(id=playlist_id).exists() and (
+                    str(view.get_queryset().get(id=view.get_object_pk()).playlist_id)
+                    == playlist_id
+                )
+            except (AttributeError, ObjectDoesNotExist):
+                try:
+                    return models.Playlist.objects.filter(id=playlist_id).exists() and (
+                        str(
+                            view.get_queryset()
+                            .get(id=view.get_object_pk())
+                            .video.playlist_id
+                        )
+                        == playlist_id
+                    )
+                except ObjectDoesNotExist:
+                    return False
         return False
 
 

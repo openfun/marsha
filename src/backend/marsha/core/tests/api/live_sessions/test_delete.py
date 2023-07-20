@@ -34,12 +34,3 @@ class LiveSessionDeleteApiTest(LiveSessionApiTestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 405)
-
-
-# Old routes to remove
-class LiveSessionDeleteApiOldTest(LiveSessionDeleteApiTest):
-    """Test the delete API of the liveSession object with old URLs."""
-
-    def _delete_url(self, video, live_session):
-        """Return the url to use to delete a live session."""
-        return f"/api/livesessions/{live_session.pk}/"

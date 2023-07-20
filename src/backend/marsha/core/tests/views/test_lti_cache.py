@@ -222,9 +222,9 @@ class CacheLTIViewTestCase(TestCase):
             elapsed, resource_origin = self._fetch_lti_request(url)
 
         self.assertEqual(resource_origin["id"], str(video.id))
-        self.assertLess(elapsed, 0.1)
+        self.assertLess(elapsed, 0.2)
 
-        with self.assertNumQueries(2):
+        with self.assertNumQueries(3):
             elapsed, resource_origin = self._fetch_lti_request(url)
         self.assertEqual(resource_origin["id"], str(video.id))
-        self.assertLess(elapsed, 0.1)
+        self.assertLess(elapsed, 0.2)

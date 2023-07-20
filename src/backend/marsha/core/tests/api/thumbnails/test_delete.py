@@ -155,7 +155,7 @@ class ThumbnailDeleteApiTest(TestCase):
         video = VideoFactory()
         thumbnail = ThumbnailFactory(video=video)
 
-        jwt_token = StudentLtiTokenFactory(resource=video)
+        jwt_token = StudentLtiTokenFactory(resource=video.playlist)
 
         response = self.client.delete(
             self._delete_url(video, thumbnail),
@@ -165,7 +165,7 @@ class ThumbnailDeleteApiTest(TestCase):
 
     def test_api_thumbnail_delete_instructor(self):
         """Instructor should be able to delete a thumbnail for its video."""
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=self.some_video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=self.some_video.playlist)
 
         self.assertEqual(Thumbnail.objects.count(), 1)
 
@@ -187,7 +187,9 @@ class ThumbnailDeleteApiTest(TestCase):
 
         # Creating a new thumbnail should be allowed.
         response = self.client.post(
-            "/api/thumbnails/", {"size": 10}, HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+            f"/api/videos/{self.some_video.pk}/thumbnails/",
+            {"size": 10},
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
         self.assertEqual(response.status_code, 201)
@@ -197,7 +199,7 @@ class ThumbnailDeleteApiTest(TestCase):
         thumbnail = ThumbnailFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=thumbnail.video,
+            resource=thumbnail.video.playlist,
             permissions__can_update=False,
         )
 
@@ -214,18 +216,10 @@ class ThumbnailDeleteApiTest(TestCase):
         video_other = VideoFactory()
         thumbnail = ThumbnailFactory(video=video_other)
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video_token)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video_token.playlist)
 
         response = self.client.delete(
             self._delete_url(video_other, thumbnail),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
-
-
-class ThumbnailDeleteApiOldTest(ThumbnailDeleteApiTest):
-    """Test the delete API of the thumbnail object."""
-
-    def _delete_url(self, video, thumbnail):
-        """Return the url to use to delete a thumbnail."""
-        return f"/api/thumbnails/{thumbnail.id}/"

@@ -56,7 +56,7 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
 
         shared_live_media = SharedLiveMediaFactory()
 
-        jwt_token = StudentLtiTokenFactory(resource=shared_live_media.video)
+        jwt_token = StudentLtiTokenFactory(resource=shared_live_media.video.playlist)
 
         response = self.client.post(
             self._post_url(shared_live_media.video, shared_live_media),
@@ -79,7 +79,9 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
             video__id="ed08da34-7447-4141-96ff-5740315d7b99",
         )
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=shared_live_media.video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=shared_live_media.video.playlist
+        )
 
         now = datetime(2021, 12, 2, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
@@ -141,7 +143,9 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
             video__id="ed08da34-7447-4141-96ff-5740315d7b99",
         )
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=shared_live_media.video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=shared_live_media.video.playlist
+        )
 
         now = datetime(2021, 12, 2, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
@@ -203,7 +207,9 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
             video__id="ed08da34-7447-4141-96ff-5740315d7b99",
         )
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=shared_live_media.video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=shared_live_media.video.playlist
+        )
 
         now = datetime(2021, 12, 2, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
@@ -232,7 +238,9 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
             video__id="ed08da34-7447-4141-96ff-5740315d7b99",
         )
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=shared_live_media.video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=shared_live_media.video.playlist
+        )
 
         now = datetime(2021, 12, 2, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
@@ -566,11 +574,3 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
 
         shared_live_media.refresh_from_db()
         self.assertEqual(shared_live_media.upload_state, defaults.PENDING)
-
-
-class SharedLiveMediaInitiateUploadAPIOldTest(SharedLiveMediaInitiateUploadAPITest):
-    """Test the update API of the shared live media object."""
-
-    def _post_url(self, video, shared_live_media):
-        """Return the url to use in tests."""
-        return f"/api/sharedlivemedias/{shared_live_media.id}/initiate-upload/"

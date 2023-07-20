@@ -54,7 +54,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
             nb_pages=None,
         )
 
-        jwt_token = StudentLtiTokenFactory(resource=shared_live_media.video)
+        jwt_token = StudentLtiTokenFactory(resource=shared_live_media.video.playlist)
 
         response = self.client.get(
             self._get_url(shared_live_media.video, shared_live_media),
@@ -92,7 +92,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
             video__id="d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb",
         )
 
-        jwt_token = StudentLtiTokenFactory(resource=shared_live_media.video)
+        jwt_token = StudentLtiTokenFactory(resource=shared_live_media.video.playlist)
 
         response = self.client.get(
             self._get_url(shared_live_media.video, shared_live_media),
@@ -154,7 +154,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
             video__id="d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb",
         )
 
-        jwt_token = StudentLtiTokenFactory(resource=shared_live_media.video)
+        jwt_token = StudentLtiTokenFactory(resource=shared_live_media.video.playlist)
 
         # fix the time so that the url signature is deterministic and can be checked
         now = datetime(2021, 11, 30, tzinfo=baseTimezone.utc)
@@ -244,7 +244,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
             video__id="d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb",
         )
 
-        jwt_token = StudentLtiTokenFactory(resource=shared_live_media.video)
+        jwt_token = StudentLtiTokenFactory(resource=shared_live_media.video.playlist)
 
         # fix the time so that the url signature is deterministic and can be checked
         now = datetime(2021, 11, 30, tzinfo=baseTimezone.utc)
@@ -315,7 +315,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=shared_live_media.video,
+            resource=shared_live_media.video.playlist,
             permissions__can_update=False,
         )
 
@@ -356,7 +356,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=shared_live_media.video,
+            resource=shared_live_media.video.playlist,
             permissions__can_update=False,
         )
 
@@ -421,7 +421,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=shared_live_media.video,
+            resource=shared_live_media.video.playlist,
             permissions__can_update=False,
         )
 
@@ -497,7 +497,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
         other_video = VideoFactory()
 
         jwt_token = StudentLtiTokenFactory(
-            resource=other_video,
+            resource=other_video.playlist,
             roles=[random.choice(["instructor", "administrator", "student"])],
         )
 
@@ -513,7 +513,10 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
         shared_live_media = SharedLiveMediaFactory()
         for user in [UserFactory(), UserFactory(is_staff=True)]:
             self.client.login(username=user.username, password="test")
-            response = self.client.get(f"/api/sharedlivemedias/{shared_live_media.id}/")
+            response = self.client.get(
+                f"/api/videos/{shared_live_media.video.id}/"
+                f"sharedlivemedias/{shared_live_media.id}/"
+            )
             self.assertEqual(response.status_code, 401)
 
     def test_api_shared_live_media_read_detail_by_user_with_no_access(self):
@@ -675,11 +678,3 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
                 "video": str(video.id),
             },
         )
-
-
-class SharedLiveMediaRetrieveAPIOldTest(SharedLiveMediaRetrieveAPITest):
-    """Test the retrieve API of the shared live media object."""
-
-    def _get_url(self, video, shared_live_media):
-        """Return the url to use in tests."""
-        return f"/api/sharedlivemedias/{shared_live_media.id}/"

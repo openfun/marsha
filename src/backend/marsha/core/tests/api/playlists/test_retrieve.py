@@ -54,7 +54,7 @@ class PlaylistRetrieveAPITest(TestCase):
         """Playlist instructors can retrieve playlists through video token."""
         video = factories.VideoFactory()
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
 
         response = self.client.get(
             f"/api/playlists/{video.playlist.id}/",
@@ -67,7 +67,7 @@ class PlaylistRetrieveAPITest(TestCase):
         """Playlist instructors can retrieve playlists through document token."""
         document = factories.DocumentFactory()
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=document)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=document.playlist)
 
         response = self.client.get(
             f"/api/playlists/{document.playlist.id}/",

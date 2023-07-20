@@ -47,7 +47,7 @@ class SharedLiveMediaUpdateAPITest(TestCase):
         """A student can not update a shared live media."""
         shared_live_media = SharedLiveMediaFactory()
 
-        jwt_token = StudentLtiTokenFactory(resource=shared_live_media.video)
+        jwt_token = StudentLtiTokenFactory(resource=shared_live_media.video.playlist)
 
         response = self.client.put(
             self._update_url(shared_live_media.video, shared_live_media),
@@ -62,7 +62,9 @@ class SharedLiveMediaUpdateAPITest(TestCase):
         """An instructor can update a shared live media."""
         shared_live_media = SharedLiveMediaFactory(title="update me!")
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=shared_live_media.video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=shared_live_media.video.playlist
+        )
 
         with mock.patch(
             "marsha.websocket.utils.channel_layers_utils.dispatch_shared_live_media"
@@ -306,11 +308,3 @@ class SharedLiveMediaUpdateAPITest(TestCase):
                 "video": str(video.id),
             },
         )
-
-
-class SharedLiveMediaUpdateAPIOldTest(SharedLiveMediaUpdateAPITest):
-    """Test the update API of the shared live media object."""
-
-    def _update_url(self, video, shared_live_media):
-        """Return the url to use in tests."""
-        return f"/api/sharedlivemedias/{shared_live_media.id}/"

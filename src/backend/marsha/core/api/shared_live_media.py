@@ -43,6 +43,7 @@ class SharedLiveMediaViewSet(
 
     permission_classes = [permissions.NotAllowed]
     queryset = SharedLiveMedia.objects.select_related("video")
+
     serializer_class = serializers.SharedLiveMediaSerializer
     filter_backends = [
         filters.OrderingFilter,
@@ -102,7 +103,13 @@ class SharedLiveMediaViewSet(
         queryset = super().get_queryset()
         if self.action in ["list"]:
             video_id = self.get_related_video_id()
-            return queryset.filter(video__id=video_id)
+            queryset = queryset.filter(
+                video__id=video_id,
+            )
+            if self.request.resource:
+                queryset = queryset.filter(
+                    video__playlist__id=self.request.resource.id,
+                )
 
         return queryset
 

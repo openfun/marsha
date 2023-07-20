@@ -61,7 +61,7 @@ class ThumbnailOptionsApiTest(TestCase):
         can query the thumbnail options' endpoint.
         """
         video = VideoFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
 
         response = self.client.options(
             self._options_url(video), HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -76,7 +76,7 @@ class ThumbnailOptionsApiTest(TestCase):
         can query the thumbnail options' endpoint.
         """
         video = VideoFactory()
-        jwt_token = StudentLtiTokenFactory(resource=video)
+        jwt_token = StudentLtiTokenFactory(resource=video.playlist)
 
         response = self.client.options(
             self._options_url(video), HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -84,11 +84,3 @@ class ThumbnailOptionsApiTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["upload_max_size_bytes"], 10)
-
-
-class ThumbnailOptionsApiOldTest(ThumbnailOptionsApiTest):
-    """Test the options API of the thumbnail object."""
-
-    def _options_url(self, video):
-        """Return the url to use to create a live session."""
-        return "/api/thumbnails/"
