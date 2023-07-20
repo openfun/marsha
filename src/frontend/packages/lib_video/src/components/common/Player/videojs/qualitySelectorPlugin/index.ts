@@ -1,4 +1,6 @@
-import videojs from 'video.js';
+import videojs, { Player } from 'video.js';
+import Component from 'video.js/dist/types/component';
+import Plugin from 'video.js/dist/types/plugin';
 
 import { QualitySelectorMenuButton } from './components/QualitySelectorMenuButton';
 import { QualitySelectorMenuItem } from './components/QualitySelectorMenuItem';
@@ -7,30 +9,30 @@ import {
   QualitySelectorMenuItemOptions,
   QualitySelectorOptions,
 } from './types';
+
 import './middleware';
 
-const Plugin = videojs.getPlugin('plugin');
+const PluginClass = videojs.getPlugin('plugin') as typeof Plugin;
 
-export class QualitySelector extends Plugin {
-  constructor(player: videojs.Player, options?: QualitySelectorOptions) {
-    super(player, options);
+export class QualitySelector extends PluginClass {
+  constructor(player: Player, options?: QualitySelectorOptions) {
+    super(player);
 
     videojs.registerComponent(
       'QualitySelectorMenuButton',
-      QualitySelectorMenuButton,
+      QualitySelectorMenuButton as unknown as Component,
     );
     videojs.registerComponent(
       'QualitySelectorMenuItem',
-      QualitySelectorMenuItem,
+      QualitySelectorMenuItem as unknown as Component,
     );
     if (options?.default) {
       player.videojs_quality_selector_plugin_default = options.default;
     }
 
-    this.on(player, 'loadedmetadata', this.initPlugin.bind(this));
-    this.on(player, Events.QUALITY_REQUESTED, this.changeQuality.bind(this));
-    this.on(
-      player,
+    this.player.on('loadedmetadata', this.initPlugin.bind(this));
+    this.player.on(Events.QUALITY_REQUESTED, this.changeQuality.bind(this));
+    this.player.on(
       Events.PLAYER_SOURCES_CHANGED,
       this.sourcesChanged.bind(this),
     );

@@ -1,6 +1,9 @@
 import 'video.js';
+import ControlBar from 'video.js/dist/types/control-bar/control-bar';
 import PlayerInit from 'video.js/dist/types/player';
-import Tech from 'video.js/dist/types/tech/tech';
+import TextTrackList from 'video.js/dist/types/tracks/text-track-list';
+
+//import Tech from 'video.js/dist/types/tech/tech';
 
 import { DownloadVideoPluginOptions } from '../../../components/common/Player/videojs/downloadVideoPlugin/types';
 import { XapiPluginOptions } from '../../../components/common/Player/videojs/xapiPlugin/types';
@@ -28,7 +31,7 @@ declare module 'video.js' {
     language?: string;
     liveui?: boolean;
     plugins?: VideoJsPlayerPluginOptions;
-    sources?: VideoJsExtendedSourceObject[];
+    //sources?: VideoJsExtendedSourceObject[];
   };
 
   interface VideoJsPlayerPluginOptions {
@@ -38,6 +41,7 @@ declare module 'video.js' {
 
   interface Player extends PlayerInit {
     // videojs-quality-selector-plugin
+    controlBar: ControlBar;
     videojs_quality_selector_plugin_initialized: boolean;
     videojs_quality_selector_plugin_is_paused?: boolean;
     videojs_quality_selector_plugin_currentime?: number;
@@ -58,8 +62,9 @@ declare module 'video.js' {
       ): void;
     };
     qualityLevels: () => QualityLevels;
-    currentSources(): Tech & VideoJsExtendedSourceObject[];
-    currentSource(): Tech & VideoJsExtendedSourceObject;
+    textTracks: () => TextTrackList;
+    //currentSources(): VideoJsExtendedSourceObject[];
+    //currentSource(): VideoJsExtendedSourceObject;
     options_: VideoJsPlayerOptions;
   }
 
@@ -81,12 +86,12 @@ interface QualityLevels {
   trigger: (event: string) => void;
 }
 
-type VideoJsExtendedSourceObject = {
-  src: string;
-  type?: string;
-  size?: string;
-  selected?: boolean;
-};
+// type VideoJsExtendedSourceObject = Tech & {
+//   src: string;
+//   type?: string;
+//   size?: string;
+//   selected?: boolean;
+// };
 
 interface VideoJsHttpSourceSelectorPluginOptions {
   default: 'low' | 'high' | 'auto';

@@ -2,11 +2,11 @@ import videojsHlsjsSourceHandler from '@streamroot/videojs-hlsjs-plugin';
 import { useJwt, useP2PConfig } from 'lib-components';
 import { Byterange, Engine } from 'p2p-media-loader-hlsjs';
 import videojs, { Player } from 'video.js';
-//import Plugin from 'video.js/dist/types/plugin';
+import Plugin from 'video.js/dist/types/plugin';
 
 import { ExtendedVideoJs, HlsData } from './types';
 
-const Plugin = videojs.getPlugin('plugin');
+const PluginClass = videojs.getPlugin('plugin') as typeof Plugin;
 /**
  * A VideoJS Plugin enabling the P2P for HLS.
  *
@@ -22,8 +22,7 @@ const Plugin = videojs.getPlugin('plugin');
  * necessary metadata to make `p2p-media-loader-hlsjs` works.
  * @class P2pPlugin
  */
-// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-export class P2pHlsPlugin extends Plugin.prototype.constructor {
+export class P2pHlsPlugin extends PluginClass {
   constructor(player: Player) {
     const { stunServersUrls, webTorrentServerTrackerUrls } =
       useP2PConfig.getState();
@@ -93,7 +92,6 @@ export class P2pHlsPlugin extends Plugin.prototype.constructor {
         loader: engine.createLoaderClass() as unknown,
       },
     };
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     super(player);
   }
 

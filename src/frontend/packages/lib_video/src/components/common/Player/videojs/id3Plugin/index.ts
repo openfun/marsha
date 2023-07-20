@@ -1,17 +1,19 @@
 import { Id3VideoType, useVideo } from 'lib-components';
-import videojs from 'video.js';
-const Plugin = videojs.getPlugin('plugin');
+import videojs, { Player } from 'video.js';
+import Plugin from 'video.js/dist/types/plugin';
+
+const PluginClass = videojs.getPlugin('plugin') as typeof Plugin;
 
 type Id3MessageType = {
   video: Id3VideoType;
 };
 
-export class id3Plugin extends Plugin {
+export class id3Plugin extends PluginClass {
   lastReceivedVideo: Id3VideoType | undefined;
   videoState;
 
-  constructor(player: videojs.Player, options: unknown) {
-    super(player, options);
+  constructor(player: Player) {
+    super(player);
 
     this.videoState = useVideo.getState();
 
@@ -22,6 +24,10 @@ export class id3Plugin extends Plugin {
     player.on('ended', this.handleEnded.bind(this));
 
     player.on('dispose', this.handleDispose.bind(this));
+    const tracks = player.textTracks();
+    for (let index = 0; index < tracks.tracks_.length; index++) {
+      console.log(tracks.tracks_[index].label);
+    }
   }
 
   handleLoadedMetadata() {

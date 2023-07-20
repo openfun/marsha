@@ -15,9 +15,9 @@ import videojs, {
   VideoJsPlayerOptions,
   VideoJsPlayerPluginOptions,
 } from 'video.js';
+import { Tech } from 'video.js/dist/types/tech/tech';
 
 import { useTranscriptTimeSelector } from '@lib-video/hooks/useTranscriptTimeSelector';
-import { VideoJsExtendedSourceObject } from '@lib-video/types/libs/video.js/extend';
 import { isMSESupported } from '@lib-video/utils/isMSESupported';
 
 export const createVideojsPlayer = (
@@ -42,7 +42,7 @@ export const createVideojsPlayer = (
   // add the video-js class name to the video attribute.
   videoNode.classList.add('video-js', 'vjs-big-play-centered');
 
-  const sources: VideoJsExtendedSourceObject[] = [];
+  const sources: Tech[] = [];
   const plugins: VideoJsPlayerPluginOptions = {};
 
   if (!isMSESupported()) {

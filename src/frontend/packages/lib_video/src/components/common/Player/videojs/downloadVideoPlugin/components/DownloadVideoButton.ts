@@ -1,14 +1,15 @@
 import { videoSize } from '@lib-components/types';
-import videojs from 'video.js';
+import videojs, { Player } from 'video.js';
+import { MenuButton } from 'video.js/dist/types/menu/menu-button';
 
 import { DownloadVideoPluginOptions } from '../types';
 
 import { DownloadVideoQualityItem } from './DownloadVideoQualityItem';
 
-const MenuButton = videojs.getComponent('MenuButton');
+const MenuButtonClass = videojs.getComponent('MenuButton');
 
-export class DownloadVideoButton extends MenuButton {
-  constructor(player: videojs.Player, options?: videojs.MenuItemOptions) {
+export class DownloadVideoButton extends MenuButtonClass {
+  constructor(player: Player, options?: MenuButtonClass) {
     super(player, options);
     this.menuButton_.setAttribute('aria-label', 'Download Video');
   }
