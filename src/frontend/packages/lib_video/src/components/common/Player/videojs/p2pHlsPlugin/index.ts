@@ -1,11 +1,11 @@
 import videojsHlsjsSourceHandler from '@streamroot/videojs-hlsjs-plugin';
 import { useJwt, useP2PConfig } from 'lib-components';
 import { Byterange, Engine } from 'p2p-media-loader-hlsjs';
-import videojs, { VideoJsPlayer } from 'video.js';
+import videojs from 'video.js';
+import Player from 'video.js/dist/types/player';
+import Plugin from 'video.js/dist/types/plugin';
 
 import { ExtendedVideoJs, HlsData } from './types';
-
-const Plugin = videojs.getPlugin('plugin');
 
 /**
  * A VideoJS Plugin enabling the P2P for HLS.
@@ -23,7 +23,7 @@ const Plugin = videojs.getPlugin('plugin');
  * @class P2pPlugin
  */
 export class P2pHlsPlugin extends Plugin {
-  constructor(player: videojs.Player, options: unknown) {
+  constructor(player: Player) {
     const { stunServersUrls, webTorrentServerTrackerUrls } =
       useP2PConfig.getState();
 
@@ -87,17 +87,17 @@ export class P2pHlsPlugin extends Plugin {
       liveSyncDurationCount: 7, // To have at least 7 segments in queue
       loader: engine.createLoaderClass() as unknown,
     };
-    super(player, options);
+    super(player);
   }
 
   /**
    * Initialize the HLS.js events to update the engine.
-   * @param {VideoJsPlayer} player - The videojs player
+   * @param {Player} player - The videojs player
    * @param {Engine} engine - The P2P engine
    * @private
    */
-  private initHlsJsEvents(player: VideoJsPlayer, engine: Engine) {
-    player.on('hlsFragChanged', (_event, data: HlsData) => {
+  private initHlsJsEvents(player: Player, engine: Engine) {
+    player.on('hlsFragChanged', (_event: unknown, data: HlsData) => {
       const frag = data.frag;
       const byterange: Byterange =
         frag.byteRange?.length !== 2
@@ -114,7 +114,7 @@ export class P2pHlsPlugin extends Plugin {
       await engine.destroy();
     });
 
-    player.on('hlsError', (_event, errorData: { details: string }) => {
+    player.on('hlsError', (_event: unknown, errorData: { details: string }) => {
       if (errorData.details === 'bufferStalledError') {
         if (player.media === undefined) {
           return;

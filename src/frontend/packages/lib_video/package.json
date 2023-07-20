@@ -91,8 +91,8 @@
     "p2p-media-loader-hlsjs": "0.6.2",
     "process": "0.11.10",
     "react-icalendar-link": "3.0.2",
-    "video.js": "7.21.1",
-    "videojs-contrib-quality-levels": "2.2.1",
+    "video.js": "8.5.0",
+    "videojs-contrib-quality-levels": "4.0.0",
     "videojs-http-source-selector": "1.1.6",
     "vtt.js": "0.13.0"
   }

@@ -1,4 +1,4 @@
-import { VideoJsPlayer } from 'video.js';
+import Player from 'video.js/dist/types/player';
 
 export interface HlsData {
   frag: {
@@ -13,7 +13,7 @@ export interface ExtendedVideoJs {
   Html5Hlsjs: {
     addHook: (
       action: string,
-      func: (videojsPlayer: VideoJsPlayer, hlsjs: VideoJsPlayer) => void,
+      func: (videojsPlayer: Player, hlsjs: Player) => void,
     ) => void;
   };
 }

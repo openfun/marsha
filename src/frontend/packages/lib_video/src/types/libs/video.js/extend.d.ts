@@ -1,21 +1,13 @@
 import 'video.js';
 import { Engine } from 'p2p-media-loader-hlsjs';
+import Player from 'video.js/dist/types/player';
+import PluginType from 'video.js/dist/types/plugin';
 
 import { DownloadVideoPluginOptions } from '../../../components/common/Player/videojs/downloadVideoPlugin/types';
 import { XapiPluginOptions } from '../../../components/common/Player/videojs/xapiPlugin/types';
 
-declare module 'video.js' {
-  interface VideoJsPlayerOptions {
-    debug?: boolean;
-    responsive?: boolean;
-  }
-
-  interface VideoJsPlayerPluginOptions {
-    httpSourceSelector?: VideoJsHttpSourceSelectorPluginOptions;
-    qualitySelector?: QualitySelectorOptions;
-  }
-
-  interface VideoJsPlayer {
+declare module 'video.js/dist/types/player' {
+  class Player {
     // videojs-quality-selector-plugin
     videojs_quality_selector_plugin_initialized: boolean;
     videojs_quality_selector_plugin_is_paused?: boolean;
@@ -42,6 +34,18 @@ declare module 'video.js' {
     qualityLevels: () => QualityLevels;
     currentSources(): VideoJsExtendedSourceObject[];
     currentSource(): VideoJsExtendedSourceObject;
+  }
+}
+
+declare module 'video.js' {
+  interface VideoJsPlayerOptions {
+    debug?: boolean;
+    responsive?: boolean;
+  }
+
+  interface VideoJsPlayerPluginOptions {
+    httpSourceSelector?: VideoJsHttpSourceSelectorPluginOptions;
+    qualitySelector?: QualitySelectorOptions;
   }
 }
 

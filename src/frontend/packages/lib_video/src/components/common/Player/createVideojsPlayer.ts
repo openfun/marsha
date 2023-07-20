@@ -109,7 +109,6 @@ export const createVideojsPlayer = (
       player.downloadVideoPlugin({ urls: video.urls.mp4 });
     }
     player.id3Plugin();
-    player.httpSourceSelector();
     player.xapiPlugin({ video, locale, dispatchPlayerTimeUpdate });
   }
 
