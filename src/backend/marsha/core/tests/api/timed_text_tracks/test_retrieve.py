@@ -41,7 +41,7 @@ class TimedTextTrackRetrieveAPITest(TestCase):
     def test_api_timed_text_track_read_detail_student(self):
         """Student users should not be allowed to read a timed text track detail."""
         timed_text_track = TimedTextTrackFactory()
-        jwt_token = StudentLtiTokenFactory(resource=timed_text_track.video)
+        jwt_token = StudentLtiTokenFactory(resource=timed_text_track.video.playlist)
         # Get the timed text track using the JWT token
         response = self.client.get(
             self._get_url(timed_text_track.video, timed_text_track),
@@ -66,7 +66,9 @@ class TimedTextTrackRetrieveAPITest(TestCase):
             extension="srt",
         )
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=timed_text_track.video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=timed_text_track.video.playlist
+        )
 
         # Get the timed text track using the JWT token
         response = self.client.get(
@@ -123,7 +125,9 @@ class TimedTextTrackRetrieveAPITest(TestCase):
             upload_state="ready",
         )
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=timed_text_track.video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=timed_text_track.video.playlist
+        )
 
         # Get the timed text track using the JWT token
         response = self.client.get(
@@ -178,7 +182,7 @@ class TimedTextTrackRetrieveAPITest(TestCase):
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=timed_text_track.video,
+            resource=timed_text_track.video.playlist,
             roles=["administrator"],
         )
 
@@ -230,7 +234,7 @@ class TimedTextTrackRetrieveAPITest(TestCase):
         timed_text_track = TimedTextTrackFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=timed_text_track.video,
+            resource=timed_text_track.video.playlist,
             permissions__can_update=False,
         )
 
@@ -247,7 +251,9 @@ class TimedTextTrackRetrieveAPITest(TestCase):
         Its "url" field should be set to None.
         """
         timed_text_track = TimedTextTrackFactory(uploaded_on=None)
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=timed_text_track.video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=timed_text_track.video.playlist
+        )
 
         # Get the timed text track using the JWT token
         response = self.client.get(
@@ -265,7 +271,9 @@ class TimedTextTrackRetrieveAPITest(TestCase):
         timed_text_track = TimedTextTrackFactory(
             uploaded_on=None, upload_state=random.choice(["pending", "error", "ready"])
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=timed_text_track.video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=timed_text_track.video.playlist
+        )
 
         # Get the timed_text_track linked to the JWT token
         response = self.client.get(
@@ -293,7 +301,9 @@ class TimedTextTrackRetrieveAPITest(TestCase):
             upload_state="ready",
             extension="srt",
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=timed_text_track.video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=timed_text_track.video.playlist
+        )
 
         # Get the timed_text_track via the API using the JWT token
         # fix the time so that the url signature is deterministic and can be checked

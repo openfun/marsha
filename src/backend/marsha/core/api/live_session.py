@@ -296,7 +296,7 @@ class LiveSessionViewSet(
             ):  # LTI context
                 token = self.request.resource.token
                 token_user = self.request.resource.user
-                livesession, _ = get_livesession_from_lti(token)
+                livesession, _ = get_livesession_from_lti(token, video_id)
 
                 # Update username only if defined in the token user
                 if token_user.get("username"):

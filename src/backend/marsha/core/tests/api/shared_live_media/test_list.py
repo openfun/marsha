@@ -62,7 +62,7 @@ class SharedLiveMediaListAPITest(TestCase):
             nb_pages=3,
         )
 
-        jwt_token = StudentLtiTokenFactory(resource=video)
+        jwt_token = StudentLtiTokenFactory(resource=video.playlist)
 
         response = self.client.get(
             self._get_url(video),
@@ -94,7 +94,7 @@ class SharedLiveMediaListAPITest(TestCase):
             nb_pages=3,
         )
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
 
         response = self.client.get(
             self._get_url(video),
@@ -180,7 +180,7 @@ class SharedLiveMediaListAPITest(TestCase):
             video=other_video,
         )
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
 
         response = self.client.get(
             self._get_url(other_video),
@@ -224,7 +224,7 @@ class SharedLiveMediaListAPITest(TestCase):
             nb_pages=3,
         )
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
 
         # fix the time so that the url signature is deterministic and can be checked
         now = datetime(2021, 11, 30, tzinfo=baseTimezone.utc)

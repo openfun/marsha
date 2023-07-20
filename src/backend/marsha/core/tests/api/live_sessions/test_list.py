@@ -231,7 +231,7 @@ class LiveSessionListApiTest(LiveSessionApiTestCase):
         AnonymousLiveSessionFactory(email=user.email, video=video2)
 
         # public token
-        jwt_token = ResourceAccessTokenFactory(resource=video)
+        jwt_token = ResourceAccessTokenFactory(resource=video.playlist)
         response = self.client.get(
             self._get_url(video),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -245,7 +245,7 @@ class LiveSessionListApiTest(LiveSessionApiTestCase):
         # first 3 requests shouldn't be throttled
         for _i in range(3):
             video = VideoFactory()
-            jwt_token = ResourceAccessTokenFactory(resource=video)
+            jwt_token = ResourceAccessTokenFactory(resource=video.playlist)
 
             response = self.client.get(
                 f"{self._get_url(video)}?anonymous_id={uuid.uuid4()}",
@@ -293,7 +293,7 @@ class LiveSessionListApiTest(LiveSessionApiTestCase):
         # first 3 requests shouldn't be throttled
         for _i in range(3):
             video = VideoFactory()
-            jwt_token = ResourceAccessTokenFactory(resource=video)
+            jwt_token = ResourceAccessTokenFactory(resource=video.playlist)
 
             response = self.client.get(
                 self._get_url(video),
@@ -346,7 +346,7 @@ class LiveSessionListApiTest(LiveSessionApiTestCase):
         )
 
         # public token
-        jwt_token = ResourceAccessTokenFactory(resource=video)
+        jwt_token = ResourceAccessTokenFactory(resource=video.playlist)
         response = self.client.get(
             f"{self._get_url(video)}?anonymous_id={livesession.anonymous_id}",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -528,7 +528,7 @@ class LiveSessionListApiTest(LiveSessionApiTestCase):
 
         # context_id in the token
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             context_id="Maths",
             consumer_site=str(video.playlist.consumer_site.id),
         )

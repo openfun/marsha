@@ -348,7 +348,7 @@ class ResourceAccessMixin:
                 - anonymous_id (if not from LTI connection)
         """
         token = cls.for_resource_id(
-            str(live_session.video.id),
+            str(live_session.video.playlist.id),
             session_id,
             locale=react_locale(live_session.language),
         )

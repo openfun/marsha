@@ -12,9 +12,9 @@ from .. import factories
 class PlaylistPortabilityAPITest(TestCase):
     """Test the API for playlist portability."""
 
-    def _jwt_token(self, video):
-        """Build JWT token for a video with admin or instructor role."""
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+    def _jwt_token(self, playlist):
+        """Build JWT token for a playlist with admin or instructor role."""
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=playlist)
         return jwt_token
 
     def _patch_video(self, video, params):
@@ -22,7 +22,7 @@ class PlaylistPortabilityAPITest(TestCase):
         return self.client.patch(
             f"/api/playlists/{video.playlist_id}/",
             json.dumps(params),
-            HTTP_AUTHORIZATION=f"Bearer {self._jwt_token(video)}",
+            HTTP_AUTHORIZATION=f"Bearer {self._jwt_token(video.playlist)}",
             content_type="application/json",
         )
 

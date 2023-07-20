@@ -66,7 +66,7 @@ class TimedTextTrackOptionsAPITest(TestCase):
         """The details of choices fields should be available via http options for an instructor."""
         timed_text_track = TimedTextTrackFactory(language="af")
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=timed_text_track.video,
+            resource=timed_text_track.video.playlist,
             permissions__can_update=False,
         )
 
@@ -75,7 +75,7 @@ class TimedTextTrackOptionsAPITest(TestCase):
     def test_api_timed_text_track_options_as_student(self):
         """The details of choices fields should be available via http options for a student."""
         timed_text_track = TimedTextTrackFactory(language="af")
-        jwt_token = StudentLtiTokenFactory(resource=timed_text_track.video)
+        jwt_token = StudentLtiTokenFactory(resource=timed_text_track.video.playlist)
 
         self.assert_jwt_can_query_options(jwt_token, timed_text_track)
 
@@ -83,7 +83,7 @@ class TimedTextTrackOptionsAPITest(TestCase):
         """The details of choices fields should be available via http options for an admin."""
         timed_text_track = TimedTextTrackFactory(language="af")
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=timed_text_track.video,
+            resource=timed_text_track.video.playlist,
             permissions__can_update=False,
             roles=["administrator"],
         )
@@ -105,6 +105,8 @@ class TimedTextTrackOptionsAPITest(TestCase):
             upload_state=random.choice(["ready", "error"]),
             mode="cc",
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=timed_text_track.video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=timed_text_track.video.playlist
+        )
 
         self.assert_jwt_can_query_options(jwt_token, timed_text_track)

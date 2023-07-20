@@ -932,7 +932,7 @@ class TestVideoSharedLiveMedia(TestCase):
         other_shared_live_media = SharedLiveMediaFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=other_shared_live_media.video,
+            resource=other_shared_live_media.video.playlist,
         )
 
         response = self.client.patch(

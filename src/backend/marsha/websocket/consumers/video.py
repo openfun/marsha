@@ -45,7 +45,7 @@ class VideoConsumer(AsyncJsonWebsocketConsumer):
 
         if isinstance(token, ResourceAccessToken):
             # With LTI: anyone with a valid token for the video can access
-            if token.payload.get("resource_id") != self.__get_video_id():
+            if not await self._has_access_to_video(token):
                 raise ConnectionRefusedError()
 
         elif isinstance(token, UserAccessToken):
@@ -57,6 +57,13 @@ class VideoConsumer(AsyncJsonWebsocketConsumer):
 
         else:
             raise RuntimeError("This should not happen")
+
+    @database_sync_to_async
+    def _has_access_to_video(self, token):
+        """Return if the user has access to the video."""
+        return Video.objects.filter(
+            pk=self.__get_video_id(), playlist_id=token.payload.get("resource_id")
+        ).exists()
 
     async def connect(self):
         """
@@ -116,14 +123,16 @@ class VideoConsumer(AsyncJsonWebsocketConsumer):
         """Guess a live_session from the token and create it id not present."""
         token = self.scope["token"]
         if LiveSessionServices.is_lti_token(token):
-            live_session, _ = LiveSessionServices.get_livesession_from_lti(token)
+            live_session, _ = LiveSessionServices.get_livesession_from_lti(
+                token, self.__get_video_id()
+            )
         else:
             query_string = parse_qs(self.scope["query_string"])
             if b"anonymous_id" not in query_string:
                 raise ConnectionRefusedError()
             live_session, _ = LiveSessionServices.get_livesession_from_anonymous_id(
                 anonymous_id=query_string[b"anonymous_id"][0].decode("utf-8"),
-                video_id=token.payload["resource_id"],
+                video_id=self.__get_video_id(),
             )
 
         return live_session

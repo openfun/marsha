@@ -222,7 +222,7 @@ class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
 
         # token with right context_id and lti_user_id
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             consumer_site=str(video.playlist.consumer_site.id),
             context_id=str(video.playlist.lti_id),
         )
@@ -303,7 +303,7 @@ class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
         )
         # token with right context_id and lti_user_id
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             consumer_site=str(video.playlist.consumer_site.id),
             context_id=str(video.playlist.lti_id),
         )
@@ -386,7 +386,7 @@ class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
 
         # token with right context_id and lti_user_id
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             consumer_site=str(video.playlist.consumer_site.id),
             context_id=str(video.playlist.lti_id),
         )
@@ -468,7 +468,7 @@ class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
         )
         # token with right context_id and lti_user_id
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             consumer_site=str(video.playlist.consumer_site.id),
             context_id=str(video.playlist.lti_id),
         )
@@ -588,7 +588,7 @@ class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
 
         # token with right context_id and lti_user_id
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             consumer_site=str(video.playlist.consumer_site.id),
             context_id=str(video.playlist.lti_id),
         )
@@ -748,7 +748,7 @@ class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
 
         # token with right context_id and lti_user_id
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             consumer_site=str(video.playlist.consumer_site.id),
             context_id=str(video.playlist.lti_id),
         )
@@ -883,7 +883,7 @@ class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
 
         # token with right context_id and lti_user_id
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             consumer_site=str(video.playlist.consumer_site.id),
             context_id=str(video.playlist.lti_id),
         )
@@ -951,7 +951,7 @@ class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
 
         # we now query the list of attendance for video2
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video2,
+            resource=video2.playlist,
             consumer_site=str(video2.playlist.consumer_site.id),
             context_id=str(video2.playlist.lti_id),
         )
@@ -1036,7 +1036,7 @@ class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
 
         # token with right context_id and lti_user_id
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             consumer_site=str(video.playlist.consumer_site.id),
             context_id=str(video.playlist.lti_id),
         )
@@ -1165,7 +1165,7 @@ class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
 
         # token with right context_id and lti_user_id
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             consumer_site=str(video.playlist.consumer_site.id),
             context_id=str(video.playlist.lti_id),
         )
@@ -1260,7 +1260,7 @@ class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
 
         # token with right context_id and lti_user_id
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             consumer_site=str(video.playlist.consumer_site.id),
             context_id=str(video.playlist.lti_id),
         )
@@ -1340,7 +1340,7 @@ class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
 
         # token with right context_id and lti_user_id
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             consumer_site=str(video.playlist.consumer_site.id),
             context_id=str(video.playlist.lti_id),
         )
@@ -1406,7 +1406,7 @@ class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
 
         # token with right context_id and lti_user_id
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             consumer_site=str(video.playlist.consumer_site.id),
             context_id=str(video.playlist.lti_id),
         )
@@ -1516,7 +1516,7 @@ class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
 
         # token with right context_id and lti_user_id
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             consumer_site=str(video.playlist.consumer_site.id),
             context_id=str(video.playlist.lti_id),
         )
@@ -1627,7 +1627,7 @@ class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
         livesession.refresh_from_db()
         # token with right context_id and lti_user_id
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             consumer_site=str(video.playlist.consumer_site.id),
             context_id=str(video.playlist.lti_id),
         )
@@ -1681,7 +1681,7 @@ class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
 
         # token with right context_id and lti_user_id
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             consumer_site=str(video.playlist.consumer_site.id),
             context_id=str(video.playlist.lti_id),
         )
@@ -1728,7 +1728,7 @@ class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
 
         # token with right context_id and lti_user_id
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             consumer_site=str(video.playlist.consumer_site.id),
             context_id=str(video.playlist.lti_id),
         )

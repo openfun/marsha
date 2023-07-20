@@ -107,7 +107,7 @@ class SharedLiveMediaViewSet(
             )
             if self.request.resource:
                 queryset = queryset.filter(
-                    video__id=self.request.resource.id,
+                    video__playlist__id=self.request.resource.id,
                 )
 
         return queryset

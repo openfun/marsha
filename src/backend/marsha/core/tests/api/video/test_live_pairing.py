@@ -269,7 +269,9 @@ class PairingDeviceAPITest(TestCase):
         """Post request is not allowed."""
         live_pairing = LivePairingFactory()
         initial_secret = live_pairing.secret
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=live_pairing.video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=live_pairing.video.playlist
+        )
 
         response = self.client.post(
             f"/api/videos/{live_pairing.video.id}/pairing-secret/",
@@ -286,7 +288,9 @@ class PairingDeviceAPITest(TestCase):
         """Patch request is not allowed."""
         live_pairing = LivePairingFactory()
         initial_secret = live_pairing.secret
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=live_pairing.video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=live_pairing.video.playlist
+        )
 
         response = self.client.patch(
             f"/api/videos/{live_pairing.video.id}/pairing-secret/",
@@ -303,7 +307,9 @@ class PairingDeviceAPITest(TestCase):
         """Put request is not allowed."""
         live_pairing = LivePairingFactory()
         initial_secret = live_pairing.secret
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=live_pairing.video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=live_pairing.video.playlist
+        )
 
         response = self.client.put(
             f"/api/videos/{live_pairing.video.id}/pairing-secret/",

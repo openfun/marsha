@@ -94,7 +94,7 @@ class PortabilityRequestCreateAPITest(TestCase):
         """
 
         video = UploadedVideoFactory()
-        jwt_token = StudentLtiTokenFactory(resource=video)
+        jwt_token = StudentLtiTokenFactory(resource=video.playlist)
 
         response = self.client.post(
             "/api/portability-requests/",
@@ -119,7 +119,7 @@ class PortabilityRequestCreateAPITest(TestCase):
         when he has no access to the requesting playlist.
         """
         video = UploadedVideoFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
 
         response = self.client.post(
             "/api/portability-requests/",
@@ -151,7 +151,7 @@ class PortabilityRequestCreateAPITest(TestCase):
         jwt_token = PlaylistLtiTokenFactory(
             consumer_site=str(consumer_site.pk),
             playlist_id=str(destination_playlist.pk),
-            resource=video,
+            resource=video.playlist,
             user__id=str(lti_user_id),
         )
 
@@ -227,7 +227,7 @@ class PortabilityRequestCreateAPITest(TestCase):
         jwt_token = PlaylistLtiTokenFactory(
             consumer_site=str(consumer_site.pk),
             playlist_id=str(destination_playlist.pk),
-            resource=video,
+            resource=video.playlist,
             user__id=str(lti_user_id),
         )
 
@@ -305,7 +305,7 @@ class PortabilityRequestCreateAPITest(TestCase):
         jwt_token = PlaylistLtiTokenFactory(
             consumer_site=str(consumer_site.pk),
             playlist_id=str(destination_playlist.pk),
-            resource=video,
+            resource=video.playlist,
             user__id=str(lti_user_id),
         )
 

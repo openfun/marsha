@@ -173,7 +173,7 @@ class TestApiVideoStats(TestCase):
         video = VideoFactory()
 
         jwt_token = StudentLtiTokenFactory(
-            resource=video,
+            resource=video.playlist,
             context_id=str(video.playlist.lti_id),
             consumer_site=str(video.playlist.consumer_site.id),
         )

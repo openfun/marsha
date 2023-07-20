@@ -36,7 +36,9 @@ class TimedTextTrackUpdateAPITest(TestCase):
     def test_api_timed_text_track_update_detail_token_user_language(self):
         """Token users should be able to update the language of their timed_text_track."""
         timed_text_track = TimedTextTrackFactory(language="fr")
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=timed_text_track.video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=timed_text_track.video.playlist
+        )
 
         response = self.client.get(
             self._update_url(timed_text_track.video, timed_text_track),
@@ -57,7 +59,9 @@ class TimedTextTrackUpdateAPITest(TestCase):
     def test_api_timed_text_track_update_detail_token_user_closed_captioning(self):
         """Token users should be able to update the mode flag through the API."""
         timed_text_track = TimedTextTrackFactory(mode="cc")
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=timed_text_track.video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=timed_text_track.video.playlist
+        )
 
         response = self.client.get(
             self._update_url(timed_text_track.video, timed_text_track),
@@ -79,7 +83,9 @@ class TimedTextTrackUpdateAPITest(TestCase):
     def test_api_timed_text_track_update_detail_token_user_active_stamp(self):
         """Token users trying to update "active_stamp" through the API should be ignored."""
         timed_text_track = TimedTextTrackFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=timed_text_track.video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=timed_text_track.video.playlist
+        )
 
         response = self.client.get(
             self._update_url(timed_text_track.video, timed_text_track),
@@ -102,7 +108,9 @@ class TimedTextTrackUpdateAPITest(TestCase):
     def test_api_timed_text_track_update_detail_token_user_upload_state(self):
         """Token users trying to update "upload_state" through the API should be ignored."""
         timed_text_track = TimedTextTrackFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=timed_text_track.video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=timed_text_track.video.playlist
+        )
 
         response = self.client.get(
             self._update_url(timed_text_track.video, timed_text_track),
@@ -127,7 +135,7 @@ class TimedTextTrackUpdateAPITest(TestCase):
         timed_text_track = TimedTextTrackFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=timed_text_track.video,
+            resource=timed_text_track.video.playlist,
             permissions__can_update=False,
         )
 
@@ -313,7 +321,9 @@ class TimedTextTrackUpdateAPITest(TestCase):
         These 2 fields can only be updated by AWS via the separate update-state API endpoint.
         """
         timed_text_track = TimedTextTrackFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=timed_text_track.video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=timed_text_track.video.playlist
+        )
         self.assertEqual(timed_text_track.upload_state, "pending")
         self.assertIsNone(timed_text_track.uploaded_on)
 
@@ -335,7 +345,9 @@ class TimedTextTrackUpdateAPITest(TestCase):
         """Token users trying to update the ID of a timed text track they own should be ignored."""
         timed_text_track = TimedTextTrackFactory()
         original_id = timed_text_track.id
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=timed_text_track.video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=timed_text_track.video.playlist
+        )
 
         response = self.client.get(
             f"/api/videos/{timed_text_track.video.id}/timedtexttracks/{timed_text_track.id}/",
@@ -358,7 +370,9 @@ class TimedTextTrackUpdateAPITest(TestCase):
         """Token users trying to update the video of a timed text track should be ignored."""
         timed_text_track = TimedTextTrackFactory()
         original_video = timed_text_track.video
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=timed_text_track.video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=timed_text_track.video.playlist
+        )
 
         response = self.client.get(
             f"/api/videos/{timed_text_track.video.id}/timedtexttracks/{timed_text_track.id}/",
@@ -381,7 +395,7 @@ class TimedTextTrackUpdateAPITest(TestCase):
         """Token users are not allowed to update a timed text track related to another video."""
         other_video = VideoFactory()
         timed_text_track_update = TimedTextTrackFactory(language="en")
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=other_video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=other_video.playlist)
 
         data = {"language": "fr", "size": 10}
         response = self.client.put(

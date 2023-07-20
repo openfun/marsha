@@ -46,7 +46,9 @@ class TimedTextTrackInitiateUploadAPITest(TestCase):
             upload_state=random.choice(["ready", "error"]),
             mode="cc",
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=timed_text_track.video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=timed_text_track.video.playlist
+        )
 
         # Create other timed text tracks to check that their upload state are unaffected
         # Make sure we avoid unicty constraints by setting a different language
@@ -149,7 +151,7 @@ class TimedTextTrackInitiateUploadAPITest(TestCase):
         timed_text_track = TimedTextTrackFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=timed_text_track.video,
+            resource=timed_text_track.video.playlist,
             permissions__can_update=False,
         )
 
@@ -465,7 +467,7 @@ class TimedTextTrackInitiateUploadAPITest(TestCase):
             upload_state=random.choice(["ready", "error"]),
             mode="cc",
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=track.video)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=track.video.playlist)
 
         # Get the upload policy for this timed text track
         # It should generate a key file with the Unix timestamp of the present time

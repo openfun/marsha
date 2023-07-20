@@ -6,6 +6,7 @@ from django.conf import settings
 
 import factory
 from faker.utils.text import slugify
+from rest_framework_simplejwt.exceptions import TokenError
 
 from marsha.core.factories import (
     ConsumerSiteFactory,
@@ -13,7 +14,14 @@ from marsha.core.factories import (
     PlaylistFactory,
     UserFactory,
 )
-from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, LTI_ROLES, NONE, STUDENT
+from marsha.core.models import (
+    ADMINISTRATOR,
+    INSTRUCTOR,
+    LTI_ROLES,
+    NONE,
+    STUDENT,
+    Playlist,
+)
 from marsha.core.simple_jwt.permissions import ResourceAccessPermissions
 from marsha.core.simple_jwt.tokens import (
     ChallengeToken,
@@ -128,13 +136,24 @@ class ResourcePermissionsFactory(factory.DictFactory):
 class BaseResourceTokenFactory(BaseTokenFactory):
     """
     Base class for all resource token factories.
-    This allows to provide a resource (video, document, ...)
-    to forge the JWT, or nothing to use a random UUID.
+    This forces to provide a playlist to forge the JWT,
+    or nothing to use a random UUID.
     """
 
-    resource_id = factory.LazyAttribute(
-        lambda o: str(o.resource.id if o.resource else uuid.uuid4())
-    )
+    @staticmethod
+    def get_playlist_id(params):
+        """Ensure the resource is a playlist."""
+        resource_id = uuid.uuid4()
+        if not params.resource:
+            pass
+        elif isinstance(params.resource, Playlist):
+            resource_id = params.resource.id
+        else:
+            raise TokenError("resource is not a playlist")
+
+        return str(resource_id)
+
+    resource_id = factory.LazyAttribute(get_playlist_id)
 
     class Meta:  # pylint:disable=missing-class-docstring
         abstract = True
@@ -242,7 +261,7 @@ class LiveSessionLtiTokenFactory(LTIResourceAccessTokenFactory):
     but this one allows to deeply customize the final JWT.
     """
 
-    resource_id = factory.LazyAttribute(lambda o: str(o.live_session.video.id))
+    resource_id = factory.LazyAttribute(lambda o: str(o.live_session.video.playlist.id))
     roles = factory.fuzzy.FuzzyChoice([STUDENT, NONE], getter=lambda x: [x])
 
     consumer_site = factory.LazyAttribute(
