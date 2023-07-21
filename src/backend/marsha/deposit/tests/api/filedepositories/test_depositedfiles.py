@@ -51,7 +51,7 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
         DepositedFileFactory.create_batch(3, file_depository=file_depository)
         owned_deposited_file = DepositedFileFactory(file_depository=file_depository)
         jwt_token = StudentLtiTokenFactory(
-            resource=file_depository,
+            resource=file_depository.playlist,
             permissions__can_update=True,
             user__id=owned_deposited_file.author_id,
             user__full_username=owned_deposited_file.author_name,
@@ -90,7 +90,7 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
         deposited_files = DepositedFileFactory.create_batch(
             3, file_depository=file_depository
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=file_depository)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=file_depository.playlist)
 
         response = self.client.get(
             f"/api/filedepositories/{file_depository.id}/depositedfiles/?limit=2",
@@ -140,7 +140,7 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
         deposited_files_new = DepositedFileFactory.create_batch(
             2, file_depository=file_depository
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=file_depository)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=file_depository.playlist)
 
         response = self.client.get(
             f"/api/filedepositories/{file_depository.id}/depositedfiles/?limit=10",
@@ -291,7 +291,7 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
         deposited_files = DepositedFileFactory.create_batch(
             3, file_depository=file_depository, uploaded_on=now
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=file_depository)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=file_depository.playlist)
 
         now = datetime(2021, 11, 30, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(

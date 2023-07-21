@@ -38,7 +38,7 @@ class FileDepositoryRetrieveAPITest(TestCase):
     def test_api_file_depository_fetch_student(self):
         """A student should be allowed to fetch a file_depository."""
         file_depository = FileDepositoryFactory()
-        jwt_token = StudentLtiTokenFactory(resource=file_depository)
+        jwt_token = StudentLtiTokenFactory(resource=file_depository.playlist)
 
         response = self.client.get(
             f"/api/filedepositories/{file_depository.id!s}/",
@@ -68,7 +68,7 @@ class FileDepositoryRetrieveAPITest(TestCase):
         """
         file_depository = FileDepositoryFactory()
         other_file_depository = FileDepositoryFactory()
-        jwt_token = StudentLtiTokenFactory(resource=other_file_depository)
+        jwt_token = StudentLtiTokenFactory(resource=other_file_depository.playlist)
 
         response = self.client.get(
             f"/api/filedepositories/{file_depository.id!s}/",
@@ -79,7 +79,7 @@ class FileDepositoryRetrieveAPITest(TestCase):
     def test_api_file_depository_fetch_instructor(self):
         """An instructor should be able to fetch a file_depository."""
         file_depository = FileDepositoryFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=file_depository)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=file_depository.playlist)
 
         response = self.client.get(
             f"/api/filedepositories/{file_depository.id!s}/",

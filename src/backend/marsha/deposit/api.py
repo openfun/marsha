@@ -25,6 +25,20 @@ from .permissions import (
 )
 
 
+class ObjectFileDepositoryRelatedMixin:
+    """
+    Get the related depository id contained in resource.
+
+    It exposes a function used to get the related depository.
+    """
+
+    def get_related_filedepository_id(self):
+        """Get the related file depository ID from the request."""
+
+        # The file depository ID in the URL is mandatory.
+        return self.kwargs.get("filedepository_id")
+
+
 class FileDepositoryFilter(django_filters.FilterSet):
     """Filter for file depository."""
 
@@ -93,7 +107,7 @@ class FileDepositoryViewSet(
             ]
         elif self.action in ["retrieve"]:
             permission_classes = [
-                core_permissions.IsTokenResourceRouteObject
+                core_permissions.IsPlaylistToken
                 & (
                     core_permissions.IsTokenInstructor
                     | core_permissions.IsTokenAdmin
@@ -104,7 +118,7 @@ class FileDepositoryViewSet(
         elif self.action in ["update", "partial_update", "destroy"]:
             permission_classes = [
                 (
-                    core_permissions.IsTokenResourceRouteObject
+                    core_permissions.IsPlaylistToken
                     & (
                         core_permissions.IsTokenInstructor
                         | core_permissions.IsTokenAdmin
@@ -195,57 +209,14 @@ class FileDepositoryViewSet(
             }
         )
 
-    @action(
-        methods=["get"],
-        detail=True,
-        url_path="depositedfiles",
-        permission_classes=[
-            core_permissions.IsTokenInstructor
-            | core_permissions.IsTokenAdmin
-            | core_permissions.IsTokenStudent
-            | IsFileDepositoryPlaylistOrOrganizationAdmin
-        ],
-    )
-    # pylint: disable=unused-argument
-    def depositedfiles(self, request, pk=None):
-        """Get deposited files from a file_depository.
-
-        Calling the endpoint returns a list of deposited files.
-
-        Parameters
-        ----------
-        request : Type[django.http.request.HttpRequest]
-            The request on the API endpoint
-        pk : int
-            The primary key of the file_depository
-
-        Returns
-        -------
-        Type[rest_framework.response.Response]
-            HttpResponse carrying deposited files as a JSON object.
-
-        """
-        file_depository = self.get_object()
-        queryset = file_depository.deposited_files.all()
-        if request.resource and any(
-            x in LTI_ROLES.get(STUDENT) for x in request.resource.roles
-        ):
-            queryset = queryset.filter(author_id=request.resource.user.get("id"))
-        filter_set = DepositedFileFilter(request.query_params, queryset=queryset)
-        page = self.paginate_queryset(filter_set.qs)
-        serializer = serializers.DepositedFileSerializer(
-            page,
-            many=True,
-            context={"request": self.request},
-        )
-        return self.get_paginated_response(serializer.data)
-
 
 class DepositedFileViewSet(
     APIViewMixin,
     ObjectPkMixin,
     ObjectRelatedMixin,
+    ObjectFileDepositoryRelatedMixin,
     mixins.CreateModelMixin,
+    mixins.ListModelMixin,
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
@@ -272,7 +243,7 @@ class DepositedFileViewSet(
                 | core_permissions.IsTokenStudent
                 | core_permissions.UserIsAuthenticated
             ]
-        elif self.action in ["create", "list", "metadata"]:
+        elif self.action in ["list", "metadata"]:
             permission_classes = [
                 core_permissions.IsTokenInstructor
                 | core_permissions.IsTokenAdmin
@@ -289,9 +260,44 @@ class DepositedFileViewSet(
             permission_classes = self.permission_classes
         return [permission() for permission in permission_classes]
 
+    def list(self, request, *args, **kwargs):
+        """Get a list of deposited files.
+
+        Calling the endpoint returns a list of deposited files.
+
+        Parameters
+        ----------
+        request : Type[django.http.request.HttpRequest]
+            The request on the API endpoint
+
+        Returns
+        -------
+        Type[rest_framework.response.Response]
+            HttpResponse carrying deposited files as a JSON object.
+
+        """
+        queryset = self.filter_queryset(self.get_queryset())
+        if request.resource and any(
+            x in LTI_ROLES.get(STUDENT) for x in request.resource.roles
+        ):
+            queryset = queryset.filter(author_id=request.resource.user.get("id"))
+        filter_set = DepositedFileFilter(request.query_params, queryset=queryset)
+        page = self.paginate_queryset(filter_set.qs)
+        serializer = serializers.DepositedFileSerializer(
+            page,
+            many=True,
+            context={"request": self.request},
+        )
+        return self.get_paginated_response(serializer.data)
+
     @action(methods=["post"], detail=True, url_path="initiate-upload")
     # pylint: disable=unused-argument
-    def initiate_upload(self, request, pk=None):
+    def initiate_upload(
+        self,
+        request,
+        pk=None,
+        filedepository_id=None,
+    ):
         """Get an upload policy for a deposited file.
 
         Calling the endpoint resets the upload state to `pending` and returns an upload policy to

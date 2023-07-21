@@ -1,9 +1,8 @@
 """Custom permission classes for the Deposit app."""
-from django.core.exceptions import ObjectDoesNotExist
-
 from rest_framework import permissions
 
 from marsha.core import models
+from marsha.deposit.models import FileDepository
 
 
 def _is_organization_admin(user_id, file_depository_id):
@@ -59,12 +58,10 @@ class IsTokenResourceRouteObjectRelatedFileDepository(permissions.BasePermission
         """
         if not request.resource:
             return False
-        try:
-            return (
-                str(view.get_related_object().file_depository.id) == request.resource.id
-            )
-        except ObjectDoesNotExist:
-            return False
+
+        return FileDepository.objects.filter(
+            pk=view.get_related_filedepository_id(), playlist_id=request.resource.id
+        ).exists()
 
 
 class IsFileDepositoryPlaylistOrOrganizationAdmin(permissions.BasePermission):
@@ -108,10 +105,7 @@ class IsRelatedFileDepositoryPlaylistOrOrganizationAdmin(permissions.BasePermiss
         which exists, and if the current user is an admin for the playlist this file depository
         is a part of or admin of the linked organization.
         """
-        try:
-            file_depository_id = view.get_related_object().file_depository.id
-        except (AttributeError, ObjectDoesNotExist):
-            file_depository_id = request.data.get("file_depository")
+        file_depository_id = view.get_related_filedepository_id()
 
         if not file_depository_id:
             return False
