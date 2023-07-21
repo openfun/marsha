@@ -215,9 +215,7 @@ describe('<Dashboard />', () => {
         expect.any(Function),
       ),
     );
-
     screen.getByText('Transcripts');
-    screen.getByText('Supports sharing');
   });
 
   it('uses subtitles as transcripts', async () => {

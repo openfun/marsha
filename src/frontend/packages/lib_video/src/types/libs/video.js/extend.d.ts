@@ -2,6 +2,7 @@ import 'video.js';
 import { Engine } from 'p2p-media-loader-hlsjs';
 
 import { DownloadVideoPluginOptions } from '../../../components/common/Player/videojs/downloadVideoPlugin/types';
+import { SharedLiveMediaOptions } from '../../../components/common/Player/videojs/sharedMediaPlugin/types';
 import { XapiPluginOptions } from '../../../components/common/Player/videojs/xapiPlugin/types';
 
 declare module 'video.js' {
@@ -28,6 +29,7 @@ declare module 'video.js' {
     config: { loader: { getEngine: () => Engine } };
     media: { currentTime: number };
     downloadVideoPlugin: (options: DownloadVideoPluginOptions) => void;
+    sharedMediaPlugin: (options: SharedLiveMediaOptions) => void;
     p2pHlsPlugin: () => void;
     id3Plugin: () => void;
     xapiPlugin: (options: XapiPluginOptions) => void;

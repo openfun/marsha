@@ -7,6 +7,7 @@ import './videojs/p2pHlsPlugin';
 import './videojs/downloadVideoPlugin';
 import './videojs/id3Plugin';
 import './videojs/xapiPlugin';
+import './videojs/sharedMediaPlugin';
 
 import { Maybe } from 'lib-common';
 import { Video, useP2PConfig, videoSize } from 'lib-components';
@@ -110,6 +111,11 @@ export const createVideojsPlayer = (
     }
     if (!video.is_live && video.urls.mp4) {
       player.downloadVideoPlugin({ urls: video.urls.mp4 });
+    }
+    if (video.shared_live_medias && video.shared_live_medias.length) {
+      player.sharedMediaPlugin({
+        sharedLiveMedias: video.shared_live_medias,
+      });
     }
     player.httpSourceSelector();
   }
