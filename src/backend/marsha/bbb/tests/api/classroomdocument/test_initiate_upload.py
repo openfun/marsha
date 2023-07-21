@@ -48,7 +48,7 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
             classroom__id="ed08da34-7447-4141-96ff-5740315d7b99",
         )
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=classroom_document.classroom
+            resource=classroom_document.classroom.playlist
         )
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
@@ -57,7 +57,8 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                f"/api/classroomdocuments/{classroom_document.id}/initiate-upload/",
+                f"/api/classrooms/{classroom_document.classroom.id}"
+                f"/classroomdocuments/{classroom_document.id}/initiate-upload/",
                 {"filename": "foo.pdf", "mimetype": "application/pdf", "size": 10},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",
@@ -106,7 +107,7 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
             classroom__id="ed08da34-7447-4141-96ff-5740315d7b99",
         )
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=classroom_document.classroom
+            resource=classroom_document.classroom.playlist
         )
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
@@ -115,7 +116,8 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                f"/api/classroomdocuments/{classroom_document.id}/initiate-upload/",
+                f"/api/classrooms/{classroom_document.classroom.id}"
+                f"/classroomdocuments/{classroom_document.id}/initiate-upload/",
                 {"filename": "foo", "mimetype": "application/pdf", "size": 10},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",
@@ -164,7 +166,7 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
             classroom__id="ed08da34-7447-4141-96ff-5740315d7b99",
         )
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=classroom_document.classroom
+            resource=classroom_document.classroom.playlist
         )
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
@@ -173,7 +175,8 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                f"/api/classroomdocuments/{classroom_document.id}/initiate-upload/",
+                f"/api/classrooms/{classroom_document.classroom.id}"
+                f"/classroomdocuments/{classroom_document.id}/initiate-upload/",
                 {"filename": "foo", "mimetype": "", "size": 10},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",
@@ -194,7 +197,7 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
             classroom__id="ed08da34-7447-4141-96ff-5740315d7b99",
         )
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=classroom_document.classroom
+            resource=classroom_document.classroom.playlist
         )
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
@@ -203,7 +206,8 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                f"/api/classroomdocuments/{classroom_document.id}/initiate-upload/",
+                f"/api/classrooms/{classroom_document.classroom.id}"
+                f"/classroomdocuments/{classroom_document.id}/initiate-upload/",
                 {"filename": "foo", "mimetype": "application/wrong-type", "size": 10},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",
@@ -235,7 +239,8 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                f"/api/classroomdocuments/{classroom_document.id}/initiate-upload/",
+                f"/api/classrooms/{classroom_document.classroom.id}"
+                f"/classroomdocuments/{classroom_document.id}/initiate-upload/",
                 {"filename": "foo.pdf", "mimetype": "application/pdf", "size": 10},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",
@@ -264,7 +269,8 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                f"/api/classroomdocuments/{classroom_document.id}/initiate-upload/",
+                f"/api/classrooms/{classroom_document.classroom.id}"
+                f"/classroomdocuments/{classroom_document.id}/initiate-upload/",
                 {"filename": "foo.pdf", "mimetype": "application/pdf", "size": 10},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",
@@ -325,7 +331,8 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                f"/api/classroomdocuments/{classroom_document.id}/initiate-upload/",
+                f"/api/classrooms/{classroom_document.classroom.id}"
+                f"/classroomdocuments/{classroom_document.id}/initiate-upload/",
                 {"filename": "foo.pdf", "mimetype": "application/pdf", "size": 10},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",
@@ -386,7 +393,8 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                f"/api/classroomdocuments/{classroom_document.id}/initiate-upload/",
+                f"/api/classrooms/{classroom_document.classroom.id}"
+                f"/classroomdocuments/{classroom_document.id}/initiate-upload/",
                 {"filename": "foo.pdf", "mimetype": "application/pdf", "size": 10},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",
@@ -448,7 +456,8 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                f"/api/classroomdocuments/{classroom_document.id}/initiate-upload/",
+                f"/api/classrooms/{classroom_document.classroom.id}"
+                f"/classroomdocuments/{classroom_document.id}/initiate-upload/",
                 {"filename": "foo.pdf", "mimetype": "application/pdf", "size": 10},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",
@@ -467,7 +476,7 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
             classroom__id="ed08da34-7447-4141-96ff-5740315d7b99",
         )
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=classroom_document.classroom
+            resource=classroom_document.classroom.playlist
         )
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
@@ -476,7 +485,8 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                f"/api/classroomdocuments/{classroom_document.id}/initiate-upload/",
+                f"/api/classrooms/{classroom_document.classroom.id}"
+                f"/classroomdocuments/{classroom_document.id}/initiate-upload/",
                 {"filename": "foo.pdf", "mimetype": "application/pdf", "size": 100},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",

@@ -51,7 +51,7 @@ class ClassroomCreateAPITest(TestCase):
         classroom = ClassroomFactory()
 
         jwt_token = StudentLtiTokenFactory(
-            resource=classroom,
+            resource=classroom.playlist,
             permissions__can_update=True,
         )
 
@@ -77,7 +77,7 @@ class ClassroomCreateAPITest(TestCase):
         """An instructor without playlist token should not be able to create a classroom."""
         classroom = ClassroomFactory()
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom.playlist)
 
         response = self.client.post(
             "/api/classrooms/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"

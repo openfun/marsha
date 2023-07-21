@@ -25,16 +25,20 @@ class ClassroomDocumentCreateAPITest(TestCase):
 
     def test_api_classroom_document_options_anonymous(self):
         """Anonymous user can't fetch the classroom document options endpoint"""
-
-        response = self.client.options("/api/classroomdocuments/")
+        classroom = ClassroomFactory()
+        response = self.client.options(
+            f"/api/classrooms/{classroom.id}/classroomdocuments/"
+        )
 
         self.assertEqual(response.status_code, 401)
 
     def test_api_classroom_document_options_as_logged_user(self):
         """A logged user can fetch the classroom document options endpoint"""
         jwt_token = UserAccessTokenFactory()
+        classroom = ClassroomFactory()
         response = self.client.options(
-            "/api/classroomdocuments/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+            f"/api/classrooms/{classroom.id}/classroomdocuments/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
 
@@ -42,9 +46,12 @@ class ClassroomDocumentCreateAPITest(TestCase):
         """A student can fetch the classroom document options endpoint"""
 
         classroom_document = ClassroomDocumentFactory()
-        jwt_token = StudentLtiTokenFactory(resource=classroom_document)
+        jwt_token = StudentLtiTokenFactory(
+            resource=classroom_document.classroom.playlist
+        )
         response = self.client.options(
-            "/api/classroomdocuments/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+            f"/api/classrooms/{classroom_document.classroom.id}/classroomdocuments/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
 
@@ -53,10 +60,11 @@ class ClassroomDocumentCreateAPITest(TestCase):
         """An instructor can fetch the classroom document options endpoint"""
 
         classroom = ClassroomFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom.playlist)
 
         response = self.client.options(
-            "/api/classroomdocuments/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+            f"/api/classrooms/{classroom.id}/classroomdocuments/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
         self.assertEqual(response.status_code, 200)

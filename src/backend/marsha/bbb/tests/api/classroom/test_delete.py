@@ -46,7 +46,7 @@ class ClassroomDeleteAPITest(TestCase):
         classroom = ClassroomFactory()
 
         jwt_token = StudentLtiTokenFactory(
-            resource=classroom,
+            resource=classroom.playlist,
             permissions__can_update=True,
         )
 
@@ -72,7 +72,7 @@ class ClassroomDeleteAPITest(TestCase):
         """An instructor without playlist token should not be able to delete a classroom."""
         classroom = ClassroomFactory()
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom.playlist)
 
         response = self.client.delete(
             f"/api/classrooms/{classroom.id}/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -86,7 +86,7 @@ class ClassroomDeleteAPITest(TestCase):
         playlist = PlaylistFactory()
         classroom = ClassroomFactory(playlist=playlist)
 
-        jwt_token = PlaylistLtiTokenFactory(resource=classroom)
+        jwt_token = PlaylistLtiTokenFactory(resource=classroom.playlist)
 
         self.assertEqual(Classroom.objects.count(), 1)
 

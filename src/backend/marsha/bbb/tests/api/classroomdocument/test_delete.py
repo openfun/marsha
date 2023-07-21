@@ -41,11 +41,14 @@ class ClassroomDocumentDeleteAPITest(TestCase):
         """
 
         classroom_document = ClassroomDocumentFactory()
-        jwt_token = StudentLtiTokenFactory(resource=classroom_document.classroom)
+        jwt_token = StudentLtiTokenFactory(
+            resource=classroom_document.classroom.playlist
+        )
 
         self.assertEqual(ClassroomDocument.objects.count(), 1)
         response = self.client.delete(
-            f"/api/classroomdocuments/{classroom_document.id}/",
+            f"/api/classrooms/{classroom_document.classroom.id}"
+            f"/classroomdocuments/{classroom_document.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
@@ -60,12 +63,13 @@ class ClassroomDocumentDeleteAPITest(TestCase):
         """
         classroom_document = ClassroomDocumentFactory()
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=classroom_document.classroom
+            resource=classroom_document.classroom.playlist
         )
 
         self.assertEqual(ClassroomDocument.objects.count(), 1)
         response = self.client.delete(
-            f"/api/classroomdocuments/{classroom_document.id}/",
+            f"/api/classrooms/{classroom_document.classroom.id}"
+            f"/classroomdocuments/{classroom_document.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
@@ -93,11 +97,11 @@ class ClassroomDocumentDeleteAPITest(TestCase):
             classroom=classroom,
             is_default=False,
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom.playlist)
 
         self.assertEqual(ClassroomDocument.objects.count(), 3)
         response = self.client.delete(
-            f"/api/classroomdocuments/{first_document.id}/",
+            f"/api/classrooms/{classroom.id}/classroomdocuments/{first_document.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
@@ -123,11 +127,11 @@ class ClassroomDocumentDeleteAPITest(TestCase):
             classroom=classroom,
             is_default=False,
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom.playlist)
 
         self.assertEqual(ClassroomDocument.objects.count(), 2)
         response = self.client.delete(
-            f"/api/classroomdocuments/{second_document.id}/",
+            f"/api/classrooms/{classroom.id}/classroomdocuments/{second_document.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
@@ -149,7 +153,8 @@ class ClassroomDocumentDeleteAPITest(TestCase):
 
         self.assertEqual(ClassroomDocument.objects.count(), 1)
         response = self.client.delete(
-            f"/api/classroomdocuments/{classroom_document.id}/",
+            f"/api/classrooms/{classroom_document.classroom.id}"
+            f"/classroomdocuments/{classroom_document.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
@@ -170,7 +175,8 @@ class ClassroomDocumentDeleteAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=organization_access.user)
         self.assertEqual(ClassroomDocument.objects.count(), 1)
         response = self.client.delete(
-            f"/api/classroomdocuments/{classroom_document.id}/",
+            f"/api/classrooms/{classroom_document.classroom.id}"
+            f"/classroomdocuments/{classroom_document.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
@@ -193,7 +199,8 @@ class ClassroomDocumentDeleteAPITest(TestCase):
 
         self.assertEqual(ClassroomDocument.objects.count(), 1)
         response = self.client.delete(
-            f"/api/classroomdocuments/{classroom_document.id}/",
+            f"/api/classrooms/{classroom_document.classroom.id}"
+            f"/classroomdocuments/{classroom_document.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
@@ -216,7 +223,8 @@ class ClassroomDocumentDeleteAPITest(TestCase):
 
         self.assertEqual(ClassroomDocument.objects.count(), 1)
         response = self.client.delete(
-            f"/api/classroomdocuments/{classroom_document.id}/",
+            f"/api/classrooms/{classroom_document.classroom.id}"
+            f"/classroomdocuments/{classroom_document.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
@@ -237,7 +245,8 @@ class ClassroomDocumentDeleteAPITest(TestCase):
 
         self.assertEqual(ClassroomDocument.objects.count(), 1)
         response = self.client.delete(
-            f"/api/classroomdocuments/{classroom_document.id}/",
+            f"/api/classrooms/{classroom_document.classroom.id}"
+            f"/classroomdocuments/{classroom_document.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
@@ -263,7 +272,8 @@ class ClassroomDocumentDeleteAPITest(TestCase):
 
         self.assertEqual(ClassroomDocument.objects.count(), 1)
         response = self.client.delete(
-            f"/api/classroomdocuments/{classroom_document.id}/",
+            f"/api/classrooms/{classroom_document.classroom.id}"
+            f"/classroomdocuments/{classroom_document.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )

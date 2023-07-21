@@ -43,10 +43,10 @@ class ClassroomDocumentCreateAPITest(TestCase):
         """
 
         classroom = ClassroomFactory()
-        jwt_token = StudentLtiTokenFactory(resource=classroom)
+        jwt_token = StudentLtiTokenFactory(resource=classroom.playlist)
 
         response = self.client.post(
-            "/api/classroomdocuments/",
+            f"/api/classrooms/{classroom.id}/classroomdocuments/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
             data=json.dumps(
@@ -69,10 +69,10 @@ class ClassroomDocumentCreateAPITest(TestCase):
         First created document should be the default one.
         """
         classroom = ClassroomFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom.playlist)
 
         response = self.client.post(
-            "/api/classroomdocuments/",
+            f"/api/classrooms/{classroom.id}/classroomdocuments/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
             data=json.dumps(
@@ -110,9 +110,9 @@ class ClassroomDocumentCreateAPITest(TestCase):
             classroom=classroom,
             is_default=True,
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom.playlist)
         response = self.client.post(
-            "/api/classroomdocuments/",
+            f"/api/classrooms/{classroom.id}/classroomdocuments/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
             data=json.dumps(
@@ -152,7 +152,7 @@ class ClassroomDocumentCreateAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=organization_access.user)
 
         response = self.client.post(
-            "/api/classroomdocuments/",
+            f"/api/classrooms/{classroom.id}/classroomdocuments/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
             data=json.dumps(
@@ -181,7 +181,7 @@ class ClassroomDocumentCreateAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=organization_access.user)
 
         response = self.client.post(
-            "/api/classroomdocuments/",
+            f"/api/classrooms/{classroom.id}/classroomdocuments/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
             data=json.dumps(
@@ -220,7 +220,7 @@ class ClassroomDocumentCreateAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=playlist_access.user)
 
         response = self.client.post(
-            "/api/classroomdocuments/",
+            f"/api/classrooms/{classroom.id}/classroomdocuments/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
             data=json.dumps(
@@ -259,7 +259,7 @@ class ClassroomDocumentCreateAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=playlist_access.user)
 
         response = self.client.post(
-            "/api/classroomdocuments/",
+            f"/api/classrooms/{classroom.id}/classroomdocuments/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
             data=json.dumps(
@@ -296,7 +296,7 @@ class ClassroomDocumentCreateAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=playlist_access.user)
 
         response = self.client.post(
-            "/api/classroomdocuments/",
+            f"/api/classrooms/{classroom.id}/classroomdocuments/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
             data=json.dumps(
@@ -326,7 +326,7 @@ class ClassroomDocumentCreateAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=ohter_playlist_access.user)
 
         response = self.client.post(
-            "/api/classroomdocuments/",
+            f"/api/classrooms/{classroom.id}/classroomdocuments/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
             data=json.dumps(
@@ -346,10 +346,10 @@ class ClassroomDocumentCreateAPITest(TestCase):
     def test_api_classroom_document_create_file_too_large(self):
         """With a file size too large the request should fail"""
         classroom = ClassroomFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom.playlist)
 
         response = self.client.post(
-            "/api/classroomdocuments/",
+            f"/api/classrooms/{classroom.id}/classroomdocuments/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
             data=json.dumps(
@@ -370,10 +370,10 @@ class ClassroomDocumentCreateAPITest(TestCase):
     def test_api_classroom_document_create_file_no_size(self):
         """Without file size the request should fail"""
         classroom = ClassroomFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom.playlist)
 
         response = self.client.post(
-            "/api/classroomdocuments/",
+            f"/api/classrooms/{classroom.id}/classroomdocuments/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
             data=json.dumps(
