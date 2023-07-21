@@ -107,7 +107,7 @@ class FileDepositoryViewSet(
             ]
         elif self.action in ["retrieve"]:
             permission_classes = [
-                core_permissions.IsTokenResourceRouteObject
+                core_permissions.IsPlaylistToken
                 & (
                     core_permissions.IsTokenInstructor
                     | core_permissions.IsTokenAdmin
@@ -118,7 +118,7 @@ class FileDepositoryViewSet(
         elif self.action in ["update", "partial_update", "destroy"]:
             permission_classes = [
                 (
-                    core_permissions.IsTokenResourceRouteObject
+                    core_permissions.IsPlaylistToken
                     & (
                         core_permissions.IsTokenInstructor
                         | core_permissions.IsTokenAdmin
@@ -243,7 +243,7 @@ class DepositedFileViewSet(
                 | core_permissions.IsTokenStudent
                 | core_permissions.UserIsAuthenticated
             ]
-        elif self.action in ["create", "list", "metadata"]:
+        elif self.action in ["list", "metadata"]:
             permission_classes = [
                 core_permissions.IsTokenInstructor
                 | core_permissions.IsTokenAdmin

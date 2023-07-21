@@ -29,7 +29,7 @@ class DepositedFiletCreateAPITest(TestCase):
         """A student can fetch the deposited files options endpoint"""
 
         file_depository = FileDepositoryFactory()
-        jwt_token = StudentLtiTokenFactory(resource=file_depository)
+        jwt_token = StudentLtiTokenFactory(resource=file_depository.playlist)
         response = self.client.options(
             f"/api/filedepositories/{file_depository.id}/depositedfiles/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -42,7 +42,7 @@ class DepositedFiletCreateAPITest(TestCase):
         """An instructor can fetch the deposited files options endpoint"""
 
         file_depository = FileDepositoryFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=file_depository)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=file_depository.playlist)
 
         response = self.client.options(
             f"/api/filedepositories/{file_depository.id}/depositedfiles/",
