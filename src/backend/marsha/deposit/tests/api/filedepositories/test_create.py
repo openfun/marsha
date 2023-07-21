@@ -66,7 +66,7 @@ class FileDepositoryCreateAPITest(TestCase):
     def test_api_file_depository_create_instructor(self):
         """An instructor without playlist token should not be able to create a file_depository."""
         file_depository = FileDepositoryFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=file_depository)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=file_depository.playlist)
 
         response = self.client.post(
             "/api/filedepositories/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"

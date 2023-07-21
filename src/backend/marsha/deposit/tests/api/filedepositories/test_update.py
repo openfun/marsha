@@ -55,7 +55,7 @@ class FileDepositoryUpdateAPITest(TestCase):
     def test_api_file_depository_update_student(self):
         """A student user should not be able to update a file_depository."""
         file_depository = FileDepositoryFactory()
-        jwt_token = StudentLtiTokenFactory(resource=file_depository)
+        jwt_token = StudentLtiTokenFactory(resource=file_depository.playlist)
         data = {"title": "new title"}
 
         response = self.client.patch(
@@ -70,7 +70,7 @@ class FileDepositoryUpdateAPITest(TestCase):
         """An instructor should not be able to update a file_depository in read_only."""
         file_depository = FileDepositoryFactory()
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=file_depository,
+            resource=file_depository.playlist,
             permissions__can_update=False,
         )
         data = {"title": "new title"}
@@ -86,7 +86,7 @@ class FileDepositoryUpdateAPITest(TestCase):
     def test_api_file_depository_update_instructor(self):
         """An instructor should be able to update a file_depository."""
         file_depository = FileDepositoryFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=file_depository)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=file_depository.playlist)
         data = {"title": "new title", "description": "Hello"}
 
         response = self.client.patch(

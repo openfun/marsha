@@ -43,7 +43,7 @@ class FileDepositoryListAPITest(TestCase):
         """A student should not be able to fetch a list of file_depository."""
         file_depository = FileDepositoryFactory()
         jwt_token = StudentLtiTokenFactory(
-            resource=file_depository,
+            resource=file_depository.playlist,
             permissions__can_update=True,
         )
 
@@ -55,7 +55,7 @@ class FileDepositoryListAPITest(TestCase):
     def test_api_file_depository_fetch_list_instructor(self):
         """An instructor should not be able to fetch a file_depository list."""
         file_depository = FileDepositoryFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=file_depository)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=file_depository.playlist)
 
         response = self.client.get(
             "/api/filedepositories/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"

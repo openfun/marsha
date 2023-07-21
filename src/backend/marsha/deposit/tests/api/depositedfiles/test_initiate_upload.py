@@ -49,7 +49,9 @@ class DepositedFileInitiateUploadAPITest(TestCase):
             upload_state=random.choice(["ready", "error"]),
             file_depository__id="ed08da34-7447-4141-96ff-5740315d7b99",
         )
-        jwt_token = StudentLtiTokenFactory(resource=deposited_file.file_depository)
+        jwt_token = StudentLtiTokenFactory(
+            resource=deposited_file.file_depository.playlist
+        )
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
@@ -106,7 +108,9 @@ class DepositedFileInitiateUploadAPITest(TestCase):
             upload_state=random.choice(["ready", "error"]),
             file_depository__id="ed08da34-7447-4141-96ff-5740315d7b99",
         )
-        jwt_token = StudentLtiTokenFactory(resource=deposited_file.file_depository)
+        jwt_token = StudentLtiTokenFactory(
+            resource=deposited_file.file_depository.playlist
+        )
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
@@ -134,7 +138,9 @@ class DepositedFileInitiateUploadAPITest(TestCase):
             upload_state=random.choice(["ready", "error"]),
             file_depository__id="ed08da34-7447-4141-96ff-5740315d7b99",
         )
-        jwt_token = StudentLtiTokenFactory(resource=deposited_file.file_depository)
+        jwt_token = StudentLtiTokenFactory(
+            resource=deposited_file.file_depository.playlist
+        )
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(

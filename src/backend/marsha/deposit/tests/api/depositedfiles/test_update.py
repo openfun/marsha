@@ -38,7 +38,9 @@ class DepositedFileUpdateAPITest(TestCase):
     def test_api_deposited_file_update_student(self):
         """A student user should not be able to update a deposited_file."""
         deposited_file = DepositedFileFactory()
-        jwt_token = StudentLtiTokenFactory(resource=deposited_file.file_depository)
+        jwt_token = StudentLtiTokenFactory(
+            resource=deposited_file.file_depository.playlist
+        )
         data = {"read": True}
 
         response = self.client.patch(
@@ -54,7 +56,7 @@ class DepositedFileUpdateAPITest(TestCase):
         """An instructor should be able to update a deposited_file."""
         deposited_file = DepositedFileFactory()
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=deposited_file.file_depository
+            resource=deposited_file.file_depository.playlist
         )
         data = {"read": True}
 
