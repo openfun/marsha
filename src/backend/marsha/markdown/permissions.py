@@ -4,6 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import permissions
 
 from marsha.core import models
+from marsha.markdown.models import MarkdownDocument
 
 
 def _is_organization_admin(user_id, markdown_document_id):
@@ -32,24 +33,23 @@ def _is_playlist_admin(user_id, markdown_document_id):
     ).exists()
 
 
-class IsTokenResourceRouteObjectRelatedResource(permissions.BasePermission):
+class IsTokenResourceRouteObjectRelatedMarkdownDocument(permissions.BasePermission):
     """
-    Base permission class for JWT Tokens related to a resource object linked to a resource.
+    Base permission class for JWT Tokens related to a resource object linked to a
+    Markdown document.
 
-    These permissions grant access to users authenticated with a resource JWT token built from a
-    resource.
+    These permissions grants access to users authenticated with a JWT token built from a
+    resource ie related to a TokenUser as defined in `rest_framework_simplejwt`.
     """
-
-    linked_resource_attribute = ""
 
     def has_permission(self, request, view):
         """
-        Allow the request if the JWT resource matches the resource
-        related to the object in the url.
+        Allow the request if the JWT resource matches the Markdown document related to the object
+        in the url.
 
         Parameters
         ----------
-        request : Type[rest_framework.request.Request]
+        request : Type[django.http.request.HttpRequest]
             The request that holds the authenticated user
         view : Type[rest_framework.viewsets or rest_framework.views]
             The API view for which permissions are being checked
@@ -62,29 +62,9 @@ class IsTokenResourceRouteObjectRelatedResource(permissions.BasePermission):
         if not request.resource:
             return False
 
-        try:
-            return (
-                str(
-                    getattr(
-                        view.get_related_object(),
-                        self.linked_resource_attribute,
-                    ).id
-                )
-                == request.resource.id
-            )
-        except ObjectDoesNotExist:
-            return False
-
-
-class IsTokenResourceRouteObjectRelatedMarkdownDocument(
-    IsTokenResourceRouteObjectRelatedResource
-):
-    """
-    Base permission class for JWT Tokens related to a resource object
-    linked to a Markdown document.
-    """
-
-    linked_resource_attribute = "markdown_document"
+        return MarkdownDocument.objects.filter(
+            pk=view.get_related_markdown_document_id(), playlist_id=request.resource.id
+        ).exists()
 
 
 class IsMarkdownDocumentPlaylistOrOrganizationAdmin(permissions.BasePermission):

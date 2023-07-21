@@ -30,7 +30,7 @@ class MarkdownUpdateTranslationsAPITest(TestCase):
         markdown_document = MarkdownDocumentFactory()
 
         jwt_token = StudentLtiTokenFactory(
-            resource=markdown_document,
+            resource=markdown_document.playlist,
             permissions__can_update=True,
         )
 
@@ -53,7 +53,9 @@ class MarkdownUpdateTranslationsAPITest(TestCase):
         """An instructor should be able to update a Markdown document translated content."""
         markdown_document = MarkdownDocumentFactory(is_draft=True)
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=markdown_document)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=markdown_document.playlist
+        )
 
         data = {
             "language_code": "en",

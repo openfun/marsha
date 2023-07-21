@@ -23,6 +23,22 @@ from .permissions import IsRelatedMarkdownDocumentPlaylistOrOrganizationAdmin
 from .utils.converter import LatexConversionException, render_latex_to_image
 
 
+class ObjectMarkdownDocumentRelatedMixin:
+    """
+    Get the related markdown document id contained in resource.
+
+    It exposes a function used to get the related markdown document.
+    It is also useful to avoid URL crafting (when the url markdown_document_id doesn't
+    match token resource markdown document id).
+    """
+
+    def get_related_markdown_document_id(self):
+        """Get the related markdown document ID from the request."""
+
+        # The video ID in the URL is mandatory.
+        return self.kwargs.get("markdown_document_id")
+
+
 class MarkdownDocumentFilter(django_filters.FilterSet):
     """Filter for file depository."""
 
@@ -57,7 +73,7 @@ class MarkdownDocumentViewSet(
 
     permission_classes = [
         (
-            core_permissions.IsTokenResourceRouteObject
+            core_permissions.IsPlaylistToken
             & (core_permissions.IsTokenInstructor | core_permissions.IsTokenAdmin)
         )
         | markdown_permissions.IsMarkdownDocumentPlaylistOrOrganizationAdmin
@@ -272,6 +288,7 @@ class MarkdownImageViewSet(
     APIViewMixin,
     ObjectPkMixin,
     ObjectRelatedMixin,
+    ObjectMarkdownDocumentRelatedMixin,
     mixins.CreateModelMixin,
     mixins.DestroyModelMixin,
     mixins.RetrieveModelMixin,
@@ -293,9 +310,7 @@ class MarkdownImageViewSet(
         else:
             permission_classes = [
                 markdown_permissions.IsTokenResourceRouteObjectRelatedMarkdownDocument
-                & core_permissions.IsTokenInstructor
-                | markdown_permissions.IsTokenResourceRouteObjectRelatedMarkdownDocument
-                & core_permissions.IsTokenAdmin
+                & (core_permissions.IsTokenInstructor | core_permissions.IsTokenAdmin)
                 | IsRelatedMarkdownDocumentPlaylistOrOrganizationAdmin
             ]
         return [permission() for permission in permission_classes]
@@ -306,7 +321,8 @@ class MarkdownImageViewSet(
         """
         if self.request.resource:
             return MarkdownImage.objects.filter(
-                markdown_document__id=self.request.resource.id,
+                markdown_document__id=self.get_related_markdown_document_id(),
+                markdown_document__playlist__id=self.request.resource.id,
             )
         return MarkdownImage.objects.all()
 

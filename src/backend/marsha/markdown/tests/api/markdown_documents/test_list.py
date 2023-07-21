@@ -36,7 +36,7 @@ class MarkdownListAPITest(TestCase):
         markdown_document = MarkdownDocumentFactory()
 
         jwt_token = StudentLtiTokenFactory(
-            resource=markdown_document,
+            resource=markdown_document.playlist,
             permissions__can_update=True,
         )
 
@@ -49,7 +49,9 @@ class MarkdownListAPITest(TestCase):
         """An instrustor should not be able to fetch a Markdown document list."""
         markdown_document = MarkdownDocumentFactory()
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=markdown_document)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=markdown_document.playlist
+        )
 
         response = self.client.get(
             "/api/markdown-documents/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"

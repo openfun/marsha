@@ -40,7 +40,9 @@ class MarkdownImageRetrieveApiTest(TestCase):
         """Students users should not be allowed to read a Markdown image detail."""
         markdown_image = MarkdownImageFactory()
 
-        jwt_token = StudentLtiTokenFactory(resource=markdown_image.markdown_document)
+        jwt_token = StudentLtiTokenFactory(
+            resource=markdown_image.markdown_document.playlist
+        )
 
         response = self.client.get(
             f"/api/markdown-documents/{markdown_image.markdown_document.id}"
@@ -55,7 +57,7 @@ class MarkdownImageRetrieveApiTest(TestCase):
         markdown_image = MarkdownImageFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=markdown_image.markdown_document,
+            resource=markdown_image.markdown_document.playlist,
             permissions__can_update=False,
         )
 
@@ -79,7 +81,9 @@ class MarkdownImageRetrieveApiTest(TestCase):
             upload_state="pending",
         )
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=markdown_document)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=markdown_document.playlist
+        )
 
         response = self.client.get(
             f"/api/markdown-documents/{markdown_image.markdown_document.id}"
@@ -108,7 +112,7 @@ class MarkdownImageRetrieveApiTest(TestCase):
         markdown_image = MarkdownImageFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=markdown_image.markdown_document,
+            resource=markdown_image.markdown_document.playlist,
             permissions__can_update=False,
         )
 
@@ -133,7 +137,7 @@ class MarkdownImageRetrieveApiTest(TestCase):
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=markdown_document,
+            resource=markdown_document.playlist,
             roles=["administrator"],
         )
 
@@ -172,7 +176,9 @@ class MarkdownImageRetrieveApiTest(TestCase):
             extension="gif",
         )
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=markdown_document)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=markdown_document.playlist
+        )
 
         response = self.client.get(
             f"/api/markdown-documents/{markdown_image.markdown_document.id}"

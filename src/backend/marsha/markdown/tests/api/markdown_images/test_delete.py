@@ -35,7 +35,9 @@ class MarkdownImageDeleteApiTest(TestCase):
         """Student users should not be able to delete a Markdown image."""
         markdown_image = MarkdownImageFactory()
 
-        jwt_token = StudentLtiTokenFactory(resource=markdown_image.markdown_document)
+        jwt_token = StudentLtiTokenFactory(
+            resource=markdown_image.markdown_document.playlist
+        )
 
         response = self.client.delete(
             f"/api/markdown-documents/{markdown_image.markdown_document.id}"
@@ -49,7 +51,7 @@ class MarkdownImageDeleteApiTest(TestCase):
         markdown_image = MarkdownImageFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=markdown_image.markdown_document,
+            resource=markdown_image.markdown_document.playlist,
         )
 
         self.assertEqual(MarkdownImage.objects.count(), 1)
@@ -84,7 +86,7 @@ class MarkdownImageDeleteApiTest(TestCase):
         markdown_image = MarkdownImageFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=markdown_image.markdown_document,
+            resource=markdown_image.markdown_document.playlist,
             permissions__can_update=False,
         )
 
@@ -105,7 +107,9 @@ class MarkdownImageDeleteApiTest(TestCase):
         markdown_document_other = MarkdownDocumentFactory()
         markdown_image = MarkdownImageFactory(markdown_document=markdown_document_other)
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=markdown_document_token)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=markdown_document_token.playlist
+        )
 
         response = self.client.delete(
             f"/api/markdown-documents/{markdown_image.markdown_document.id}"

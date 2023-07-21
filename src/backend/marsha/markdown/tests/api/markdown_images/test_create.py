@@ -35,7 +35,7 @@ class MarkdownImageCreateApiTest(TestCase):
         """Student users should not be able to create a Markdown image."""
         markdown_document = MarkdownDocumentFactory()
 
-        jwt_token = StudentLtiTokenFactory(resource=markdown_document)
+        jwt_token = StudentLtiTokenFactory(resource=markdown_document.playlist)
 
         response = self.client.post(
             f"/api/markdown-documents/{markdown_document.id}/markdown-images/",
@@ -48,7 +48,9 @@ class MarkdownImageCreateApiTest(TestCase):
         """Instructors users should be able to create a Markdown image."""
         markdown_document = MarkdownDocumentFactory()
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=markdown_document)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=markdown_document.playlist
+        )
 
         response = self.client.post(
             f"/api/markdown-documents/{markdown_document.id}/markdown-images/",
@@ -80,7 +82,9 @@ class MarkdownImageCreateApiTest(TestCase):
         markdown_document = MarkdownDocumentFactory()
         MarkdownImageFactory(markdown_document=markdown_document)
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=markdown_document)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=markdown_document.playlist
+        )
 
         response = self.client.post(
             f"/api/markdown-documents/{markdown_document.id}/markdown-images/",
@@ -109,7 +113,7 @@ class MarkdownImageCreateApiTest(TestCase):
         markdown_image = MarkdownImageFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=markdown_image.markdown_document,
+            resource=markdown_image.markdown_document.playlist,
             permissions__can_update=False,
         )
 
