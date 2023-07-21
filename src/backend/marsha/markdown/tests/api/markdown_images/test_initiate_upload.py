@@ -30,17 +30,21 @@ class MarkdownImageInitiateUploadApiTest(TestCase):
         markdown_image = MarkdownImageFactory()
 
         response = self.client.post(
-            f"/api/markdown-images/{markdown_image.id}/initiate-upload/"
+            f"/api/markdown-documents/{markdown_image.markdown_document.id}"
+            f"/markdown-images/{markdown_image.id}/initiate-upload/"
         )
         self.assertEqual(response.status_code, 401)
 
     def test_api_markdown_image_initiate_upload_student(self):
         """Student users should not be allowed to initiate an upload."""
         markdown_image = MarkdownImageFactory()
-        jwt_token = StudentLtiTokenFactory(resource=markdown_image.markdown_document)
+        jwt_token = StudentLtiTokenFactory(
+            resource=markdown_image.markdown_document.playlist
+        )
 
         response = self.client.post(
-            f"/api/markdown-images/{markdown_image.id}/initiate-upload/",
+            f"/api/markdown-documents/{markdown_image.markdown_document.id}"
+            f"/markdown-images/{markdown_image.id}/initiate-upload/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
@@ -55,7 +59,9 @@ class MarkdownImageInitiateUploadApiTest(TestCase):
             markdown_document=markdown_document,
             upload_state="ready",
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=markdown_document)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=markdown_document.playlist
+        )
 
         # Get the upload policy for this Markdown image
         # It should generate a key file with the Unix timestamp of the present time
@@ -65,7 +71,8 @@ class MarkdownImageInitiateUploadApiTest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                f"/api/markdown-images/{markdown_image.id}/initiate-upload/",
+                f"/api/markdown-documents/{markdown_image.markdown_document.id}"
+                f"/markdown-images/{markdown_image.id}/initiate-upload/",
                 data={"filename": "not_used.png", "mimetype": "image/png", "size": 10},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
@@ -111,12 +118,13 @@ class MarkdownImageInitiateUploadApiTest(TestCase):
         markdown_image = MarkdownImageFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=markdown_image.markdown_document,
+            resource=markdown_image.markdown_document.playlist,
             permissions__can_update=False,
         )
 
         response = self.client.post(
-            f"/api/markdown-images/{markdown_image.id}/initiate-upload/",
+            f"/api/markdown-documents/{markdown_image.markdown_document.id}"
+            f"/markdown-images/{markdown_image.id}/initiate-upload/",
             data={"filename": "not_used.gif", "mimetype": "image/gif", "size": 10},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -132,7 +140,8 @@ class MarkdownImageInitiateUploadApiTest(TestCase):
         jwt_token = UserAccessTokenFactory(user=organization_access.user)
 
         response = self.client.post(
-            f"/api/markdown-images/{markdown_image.id}/initiate-upload/",
+            f"/api/markdown-documents/{markdown_image.markdown_document.id}"
+            f"/markdown-images/{markdown_image.id}/initiate-upload/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
@@ -160,7 +169,8 @@ class MarkdownImageInitiateUploadApiTest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                f"/api/markdown-images/{markdown_image.id}/initiate-upload/",
+                f"/api/markdown-documents/{markdown_image.markdown_document.id}"
+                f"/markdown-images/{markdown_image.id}/initiate-upload/",
                 data={"filename": "not_used.png", "mimetype": "image/png", "size": 10},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
@@ -221,7 +231,8 @@ class MarkdownImageInitiateUploadApiTest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                f"/api/markdown-images/{markdown_image.id}/initiate-upload/",
+                f"/api/markdown-documents/{markdown_image.markdown_document.id}"
+                f"/markdown-images/{markdown_image.id}/initiate-upload/",
                 data={"filename": "not_used.png", "mimetype": "image/png", "size": 10},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )

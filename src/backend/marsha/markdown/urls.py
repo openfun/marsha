@@ -16,7 +16,11 @@ router.register(
     MarkdownDocumentViewSet,
     basename="markdown-documents",
 )
-router.register("markdown-images", MarkdownImageViewSet, basename="markdown-images")
+
+markdown_document_related_router = DefaultRouter()
+markdown_document_related_router.register(
+    "markdown-images", MarkdownImageViewSet, basename="markdown-images"
+)
 
 urlpatterns = [
     path(
@@ -25,4 +29,8 @@ urlpatterns = [
         name="markdown_document_lti_view",
     ),
     path("api/", include(router.urls)),
+    path(
+        "api/markdown-documents/<uuid:markdown_document_id>/",
+        include(markdown_document_related_router.urls),
+    ),
 ]

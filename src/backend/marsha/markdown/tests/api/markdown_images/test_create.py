@@ -25,17 +25,21 @@ class MarkdownImageCreateApiTest(TestCase):
 
     def test_api_markdown_image_create_anonymous(self):
         """Anonymous users should not be able to create a Markdown image."""
-        response = self.client.post("/api/markdown-images/")
+        markdown_document = MarkdownDocumentFactory()
+        response = self.client.post(
+            f"/api/markdown-documents/{markdown_document.id}/markdown-images/"
+        )
         self.assertEqual(response.status_code, 401)
 
     def test_api_markdown_image_create_student(self):
         """Student users should not be able to create a Markdown image."""
         markdown_document = MarkdownDocumentFactory()
 
-        jwt_token = StudentLtiTokenFactory(resource=markdown_document)
+        jwt_token = StudentLtiTokenFactory(resource=markdown_document.playlist)
 
         response = self.client.post(
-            "/api/markdown-images/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+            f"/api/markdown-documents/{markdown_document.id}/markdown-images/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
         self.assertEqual(response.status_code, 403)
@@ -44,10 +48,13 @@ class MarkdownImageCreateApiTest(TestCase):
         """Instructors users should be able to create a Markdown image."""
         markdown_document = MarkdownDocumentFactory()
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=markdown_document)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=markdown_document.playlist
+        )
 
         response = self.client.post(
-            "/api/markdown-images/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+            f"/api/markdown-documents/{markdown_document.id}/markdown-images/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
         self.assertEqual(response.status_code, 201)
@@ -75,10 +82,13 @@ class MarkdownImageCreateApiTest(TestCase):
         markdown_document = MarkdownDocumentFactory()
         MarkdownImageFactory(markdown_document=markdown_document)
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=markdown_document)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=markdown_document.playlist
+        )
 
         response = self.client.post(
-            "/api/markdown-images/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+            f"/api/markdown-documents/{markdown_document.id}/markdown-images/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
         self.assertEqual(response.status_code, 201)
@@ -108,7 +118,8 @@ class MarkdownImageCreateApiTest(TestCase):
         )
 
         response = self.client.post(
-            "/api/markdown-images/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+            f"/api/markdown-documents/{markdown_image.markdown_document.id}/markdown-images/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
         self.assertEqual(response.status_code, 403)
@@ -122,7 +133,8 @@ class MarkdownImageCreateApiTest(TestCase):
         jwt_token = UserAccessTokenFactory(user=organization_access.user)
 
         response = self.client.post(
-            "/api/markdown-images/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+            f"/api/markdown-documents/{markdown_document.id}/markdown-images/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
         self.assertEqual(response.status_code, 403)
@@ -138,7 +150,7 @@ class MarkdownImageCreateApiTest(TestCase):
         jwt_token = UserAccessTokenFactory(user=organization_access.user)
 
         response = self.client.post(
-            "/api/markdown-images/",
+            f"/api/markdown-documents/{markdown_document.id}/markdown-images/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             data={"markdown_document": str(markdown_document.id)},
         )
@@ -167,7 +179,7 @@ class MarkdownImageCreateApiTest(TestCase):
         jwt_token = UserAccessTokenFactory(user=playlist_access.user)
 
         response = self.client.post(
-            "/api/markdown-images/",
+            f"/api/markdown-documents/{markdown_document.id}/markdown-images/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             data={"markdown_document": str(markdown_document.id)},
         )

@@ -32,7 +32,7 @@ class MarkdownRenderLatexAPITest(TestCase):
         markdown_document = MarkdownDocumentFactory()
 
         jwt_token = StudentLtiTokenFactory(
-            resource=markdown_document,
+            resource=markdown_document.playlist,
             permissions__can_update=True,
         )
 
@@ -48,7 +48,9 @@ class MarkdownRenderLatexAPITest(TestCase):
         """An instructor should be able to render LaTeX content."""
         markdown_document = MarkdownDocumentFactory(is_draft=True)
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=markdown_document)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=markdown_document.playlist
+        )
 
         response = self.client.post(
             f"/api/markdown-documents/{markdown_document.pk}/latex-rendering/",

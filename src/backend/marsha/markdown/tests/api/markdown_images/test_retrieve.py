@@ -26,7 +26,10 @@ class MarkdownImageRetrieveApiTest(TestCase):
     def test_api_markdown_image_read_detail_anonymous(self):
         """Anonymous users should not be allowed to retrieve a Markdown image."""
         markdown_image = MarkdownImageFactory()
-        response = self.client.get(f"/api/markdown-images/{markdown_image.id}/")
+        response = self.client.get(
+            f"/api/markdown-documents/{markdown_image.markdown_document.id}"
+            f"/markdown-images/{markdown_image.id}/"
+        )
         self.assertEqual(response.status_code, 401)
         content = json.loads(response.content)
         self.assertEqual(
@@ -37,10 +40,13 @@ class MarkdownImageRetrieveApiTest(TestCase):
         """Students users should not be allowed to read a Markdown image detail."""
         markdown_image = MarkdownImageFactory()
 
-        jwt_token = StudentLtiTokenFactory(resource=markdown_image.markdown_document)
+        jwt_token = StudentLtiTokenFactory(
+            resource=markdown_image.markdown_document.playlist
+        )
 
         response = self.client.get(
-            f"/api/markdown-images/{markdown_image.id}/",
+            f"/api/markdown-documents/{markdown_image.markdown_document.id}"
+            f"/markdown-images/{markdown_image.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -51,12 +57,13 @@ class MarkdownImageRetrieveApiTest(TestCase):
         markdown_image = MarkdownImageFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=markdown_image.markdown_document,
+            resource=markdown_image.markdown_document.playlist,
             permissions__can_update=False,
         )
 
         response = self.client.get(
-            f"/api/markdown-images/{markdown_image.id}/",
+            f"/api/markdown-documents/{markdown_image.markdown_document.id}"
+            f"/markdown-images/{markdown_image.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -74,10 +81,13 @@ class MarkdownImageRetrieveApiTest(TestCase):
             upload_state="pending",
         )
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=markdown_document)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=markdown_document.playlist
+        )
 
         response = self.client.get(
-            f"/api/markdown-images/{markdown_image.id}/",
+            f"/api/markdown-documents/{markdown_image.markdown_document.id}"
+            f"/markdown-images/{markdown_image.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -102,12 +112,13 @@ class MarkdownImageRetrieveApiTest(TestCase):
         markdown_image = MarkdownImageFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=markdown_image.markdown_document,
+            resource=markdown_image.markdown_document.playlist,
             permissions__can_update=False,
         )
 
         response = self.client.get(
-            f"/api/markdown-images/{markdown_image.id}/",
+            f"/api/markdown-documents/{markdown_image.markdown_document.id}"
+            f"/markdown-images/{markdown_image.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -126,12 +137,13 @@ class MarkdownImageRetrieveApiTest(TestCase):
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=markdown_document,
+            resource=markdown_document.playlist,
             roles=["administrator"],
         )
 
         response = self.client.get(
-            f"/api/markdown-images/{markdown_image.id}/",
+            f"/api/markdown-documents/{markdown_image.markdown_document.id}"
+            f"/markdown-images/{markdown_image.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -164,10 +176,13 @@ class MarkdownImageRetrieveApiTest(TestCase):
             extension="gif",
         )
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=markdown_document)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=markdown_document.playlist
+        )
 
         response = self.client.get(
-            f"/api/markdown-images/{markdown_image.id}/",
+            f"/api/markdown-documents/{markdown_image.markdown_document.id}"
+            f"/markdown-images/{markdown_image.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -200,7 +215,8 @@ class MarkdownImageRetrieveApiTest(TestCase):
         jwt_token = UserAccessTokenFactory(user=organization_access.user)
 
         response = self.client.get(
-            f"/api/markdown-images/{markdown_image.id}/",
+            f"/api/markdown-documents/{markdown_image.markdown_document.id}"
+            f"/markdown-images/{markdown_image.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -219,7 +235,8 @@ class MarkdownImageRetrieveApiTest(TestCase):
         jwt_token = UserAccessTokenFactory(user=organization_access.user)
 
         response = self.client.get(
-            f"/api/markdown-images/{markdown_image.id}/",
+            f"/api/markdown-documents/{markdown_image.markdown_document.id}"
+            f"/markdown-images/{markdown_image.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -253,7 +270,8 @@ class MarkdownImageRetrieveApiTest(TestCase):
         jwt_token = UserAccessTokenFactory(user=playlist_access.user)
 
         response = self.client.get(
-            f"/api/markdown-images/{markdown_image.id}/",
+            f"/api/markdown-documents/{markdown_image.markdown_document.id}"
+            f"/markdown-images/{markdown_image.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 

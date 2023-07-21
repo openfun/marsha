@@ -43,7 +43,7 @@ class MarkdownRetrieveAPITest(TestCase):
         markdown_document = MarkdownDocumentFactory()
 
         jwt_token = StudentLtiTokenFactory(
-            resource=markdown_document,
+            resource=markdown_document.playlist,
             permissions__can_update=True,
         )
 
@@ -69,7 +69,9 @@ class MarkdownRetrieveAPITest(TestCase):
             translations__rendered_content="<h1>Heading1</h1>\n<p>Some content</p>",
         )
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=markdown_document)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=markdown_document.playlist
+        )
 
         response = self.client.get(
             f"/api/markdown-documents/{markdown_document.pk}/",
@@ -130,7 +132,7 @@ class MarkdownRetrieveAPITest(TestCase):
         markdown_document = MarkdownDocumentFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=markdown_document,
+            resource=markdown_document.playlist,
             permissions__can_update=False,
         )
 

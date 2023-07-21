@@ -64,14 +64,9 @@ class MarkdownImageSerializer(
             The "validated_data" dictionary is returned after modification.
 
         """
-        # resource here is a Markdown document
-        resource = self.context["request"].resource
-        markdown_document_id = self.context["request"].data.get("markdown_document")
+        markdown_document_id = self.context["view"].get_related_markdown_document_id()
         if not validated_data.get("markdown_document_id"):
-            if resource:
-                validated_data["markdown_document_id"] = resource.id
-            elif markdown_document_id:
-                validated_data["markdown_document_id"] = markdown_document_id
+            validated_data["markdown_document_id"] = markdown_document_id
 
         return super().create(validated_data)
 
