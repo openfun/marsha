@@ -94,7 +94,7 @@ class ClassroomViewSet(
 
     permission_classes = [
         (
-            core_permissions.IsTokenResourceRouteObject
+            core_permissions.IsPlaylistToken
             & (core_permissions.IsTokenInstructor | core_permissions.IsTokenAdmin)
         )
         | (
@@ -142,7 +142,8 @@ class ClassroomViewSet(
             ]
         elif self.action in ["retrieve", "service_join"]:
             permission_classes = [
-                core_permissions.IsTokenResourceRouteObject
+                core_permissions.IsPlaylistToken
+                | core_permissions.IsTokenResourceRouteObject  # needed for invite links
                 | (
                     core_permissions.UserIsAuthenticated  # asserts request.resource is None
                     & (
@@ -188,7 +189,7 @@ class ClassroomViewSet(
                 # For LTI
                 | (
                     core_permissions.ResourceIsAuthenticated
-                    & core_permissions.IsTokenResourceRouteObject
+                    & core_permissions.IsPlaylistToken
                     & (
                         core_permissions.IsTokenInstructor
                         | core_permissions.IsTokenAdmin
@@ -592,7 +593,6 @@ class ClassroomDocumentViewSet(
         serializer = serializers.ClassroomDocumentInitiateUploadSerializer(
             data=request.data
         )
-
         if serializer.is_valid() is not True:
             return Response(serializer.errors, status=400)
 

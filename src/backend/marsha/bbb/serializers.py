@@ -296,13 +296,9 @@ class ClassroomDocumentSerializer(
             The "validated_data" dictionary is returned after modification.
 
         """
-        resource = self.context["request"].resource
-        classroom_id = self.context["request"].data.get("classroom_id")
+        classroom_id = self.context["view"].get_related_classroom_id()
         if not validated_data.get("classroom_id"):
-            if resource:
-                validated_data["classroom_id"] = resource.id
-            elif classroom_id:
-                validated_data["classroom_id"] = classroom_id
+            validated_data["classroom_id"] = classroom_id
 
         if not ClassroomDocument.objects.filter(
             classroom_id=validated_data["classroom_id"]
