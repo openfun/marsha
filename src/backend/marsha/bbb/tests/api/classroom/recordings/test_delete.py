@@ -68,7 +68,7 @@ class ClassroomDeletingRecordingAPITest(TestCase):
     def test_api_delete_classroom_recording_student(self, delete_recording_mock):
         """Students should not be able to delete a recording."""
         recording = ClassroomRecordingFactory()
-        jwt_token = StudentLtiTokenFactory(resource=recording.classroom)
+        jwt_token = StudentLtiTokenFactory(resource=recording.classroom.playlist)
         self.assertEqual(ClassroomRecording.objects.count(), 1)
 
         response = self.client.delete(
@@ -93,7 +93,9 @@ class ClassroomDeletingRecordingAPITest(TestCase):
         recording = ClassroomRecordingFactory(
             started_at="2019-08-21T15:00:02Z",
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=recording.classroom)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=recording.classroom.playlist
+        )
         self.assertEqual(ClassroomRecording.objects.count(), 1)
 
         response = self.client.delete(

@@ -2,6 +2,7 @@
 
 from rest_framework import permissions
 
+from marsha.bbb.models import Classroom
 from marsha.core import models, permissions as core_permissions
 
 
@@ -33,7 +34,9 @@ class IsTokenResourceRouteObjectRelatedClassroom(permissions.BasePermission):
         if not request.resource:
             return False
 
-        return str(view.get_related_classroom_id()) == request.resource.id
+        return Classroom.objects.filter(
+            pk=view.get_related_classroom_id(), playlist_id=request.resource.id
+        ).exists()
 
 
 class BaseIsRelatedClassroomPlaylistRoleMixin:

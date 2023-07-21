@@ -67,7 +67,7 @@ class ClassroomServiceCreateAPITest(TestCase):
         """A student should not be able to create a classroom."""
         classroom = ClassroomFactory()
 
-        jwt_token = StudentLtiTokenFactory(resource=classroom)
+        jwt_token = StudentLtiTokenFactory(resource=classroom.playlist)
 
         response = self.client.patch(
             f"/api/classrooms/{classroom.id}/create/",
@@ -86,7 +86,7 @@ class ClassroomServiceCreateAPITest(TestCase):
         mock_get_meeting_infos.return_value = {"returncode": "SUCCESS"}
         mock_create_request.return_value = {"returncode": "SUCCESS"}
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom.playlist)
         data = {"title": "new title", "welcome_text": "Hello"}
 
         response = self.client.patch(
@@ -126,7 +126,7 @@ class ClassroomServiceCreateAPITest(TestCase):
             {"message": "A classroom already exists with that classroom ID."}
         )
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom.playlist)
         data = {"title": classroom.title, "welcome_text": classroom.welcome_text}
 
         response = self.client.patch(

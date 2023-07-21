@@ -49,7 +49,7 @@ class ClassroomClassroomdocumentsAPITest(TestCase):
         """A student should not be able to fetch a list of classroom documents."""
         classroom = ClassroomFactory()
         ClassroomDocumentFactory.create_batch(3, classroom=classroom)
-        jwt_token = StudentLtiTokenFactory(resource=classroom)
+        jwt_token = StudentLtiTokenFactory(resource=classroom.playlist)
 
         response = self.client.get(
             f"/api/classrooms/{classroom.id}/classroomdocuments/",
@@ -63,7 +63,7 @@ class ClassroomClassroomdocumentsAPITest(TestCase):
         classroom_documents = ClassroomDocumentFactory.create_batch(
             3, classroom=classroom
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom.playlist)
 
         response = self.client.get(
             f"/api/classrooms/{classroom.id}/classroomdocuments/?limit=2",
@@ -118,7 +118,7 @@ class ClassroomClassroomdocumentsAPITest(TestCase):
                 uploaded_on=now,
             )
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom.playlist)
 
         response = self.client.get(
             f"/api/classrooms/{classroom.id}/classroomdocuments/",
