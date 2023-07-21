@@ -368,6 +368,6 @@ describe('<VideoWidgetProvider />', () => {
     expect(screen.getByText('Transcripts')).toBeInTheDocument();
 
     // Media sharing
-    expect(screen.getByText('Supports sharing')).toBeInTheDocument();
+    expect(screen.queryByText('Supports sharing')).not.toBeInTheDocument();
   });
 });

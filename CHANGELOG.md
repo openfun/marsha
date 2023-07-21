@@ -26,6 +26,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add custom frontend site management
 - Manage multiple ingresses
 - Manage shibboleth config per site config
+- Add a shared media widget directly in the video player
 
 ### Changed
 

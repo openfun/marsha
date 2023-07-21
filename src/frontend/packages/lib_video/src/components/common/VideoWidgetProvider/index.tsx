@@ -182,10 +182,7 @@ const teacherVodWidgets: WidgetType[] = [
   WidgetType.DELETE_VIDEO,
 ];
 const publicLiveWidgets: WidgetType[] = [];
-const publicVodWidgets: WidgetType[] = [
-  WidgetType.TRANSCRIPTS,
-  WidgetType.SHARED_MEDIA_VOD_PUBLIC,
-];
+const publicVodWidgets: WidgetType[] = [WidgetType.TRANSCRIPTS];
 
 interface VideoWidgetProviderProps {
   isLive: boolean;
