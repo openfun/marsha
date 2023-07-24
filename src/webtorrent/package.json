@@ -31,7 +31,7 @@
     "@types/jsonwebtoken": "9.0.2",
     "@types/node": "20.4.4",
     "@types/ws": "8.5.5",
-    "@typescript-eslint/eslint-plugin": "6.2.0",
+    "@typescript-eslint/eslint-plugin": "5.62.0",
     "eslint": "8.45.0",
     "eslint-config-standard-with-typescript": "37.0.0",
     "eslint-plugin-import": "2.27.5",
