@@ -30,6 +30,7 @@ module.exports = {
         'newlines-between': 'always',
       },
     ],
+    'react/jsx-curly-brace-presence': ['off'],
   },
   ignorePatterns: ['node_modules/'],
 };

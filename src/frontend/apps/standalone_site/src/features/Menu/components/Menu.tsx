@@ -59,7 +59,7 @@ const Menu = () => {
   return (
     <MenuBox
       role="menu"
-      width={`${sizeMenu}`}
+      width={sizeMenu}
       pad={{
         vertical: '0.625rem',
         left: '0.825rem',

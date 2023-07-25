@@ -26,7 +26,7 @@ const LiveRouter = () => {
         {[`${liveCreatePath}/*`, ''].map((path, index) => {
           return (
             <Route
-              path={`${path}`}
+              path={path}
               element={
                 <Fragment>
                   <LiveManage />

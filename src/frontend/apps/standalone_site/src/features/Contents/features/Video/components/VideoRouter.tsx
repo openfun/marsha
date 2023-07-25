@@ -26,7 +26,7 @@ const VideoRouter = () => {
         {[`${videoCreatePath}/*`, ''].map((path, index) => {
           return (
             <Route
-              path={`${path}`}
+              path={path}
               element={
                 <Fragment>
                   <VideoManage />

@@ -26,7 +26,7 @@ const ClassRoomRouter = () => {
         {[`${classroomCreatePath}/*`, ''].map((path, index) => {
           return (
             <Route
-              path={`${path}`}
+              path={path}
               element={
                 <Fragment>
                   <ClassroomManage />
