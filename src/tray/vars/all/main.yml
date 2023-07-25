@@ -45,7 +45,7 @@ marsha_activate_http_basic_auth: false
 # -- marsha webtorrent
 
 marsha_webtorrent_image_name: "fundocker/marsha-webtorrent"
-marsha_webtorrent_image_tag: "development"
+marsha_webtorrent_image_tag: "master"
 marsha_webtorrent_port: 3000
 marsha_webtorrent_secret_name: "marsha-webtorrent-{{ marsha_vault_checksum | default('undefined_marsha_vault_checksum') }}"
 marsha_webtorrent_nginx_port: 8080
