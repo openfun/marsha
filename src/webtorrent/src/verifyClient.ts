@@ -1,5 +1,6 @@
 import { type IncomingMessage, type OutgoingHttpHeaders } from 'http';
-import { verify } from 'jsonwebtoken';
+import pkg from 'jsonwebtoken';
+const { verify } = pkg;
 
 const jwtSecretKey = process.env.JWT_SIGNING_KEY ?? '';
 
