@@ -96,6 +96,9 @@ export const createVideojsPlayer = (
   const options: VideoJsPlayerOptions = {
     autoplay: video.is_live,
     controls: true,
+    controlBar: {
+      audioTrackButton: false,
+    },
     debug: false,
     fluid: true,
     html5: {
