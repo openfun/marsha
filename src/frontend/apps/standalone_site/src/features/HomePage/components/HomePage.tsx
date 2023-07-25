@@ -107,7 +107,7 @@ const HomePage = () => {
       <Box margin={{ top: 'medium' }}>
         <Box direction="row" justify="end" margin={{ bottom: 'small' }}>
           <Text weight="bolder" color="blue-content">
-            <StyledLink to={`${routes.CONTENTS.path}`}>
+            <StyledLink to={routes.CONTENTS.path}>
               › {intl.formatMessage(messages.SeeEverything)}
             </StyledLink>
           </Text>
