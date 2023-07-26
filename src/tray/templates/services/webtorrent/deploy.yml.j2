@@ -33,7 +33,8 @@ spec:
 {% endif %}
       containers:
         - image: "{{ marsha_webtorrent_image_name }}:{{ marsha_webtorrent_image_tag }}"
-          name: nginx
+          imagePullPolicy: Always
+          name: webtorrent
           env:
             - name: APP_PORT
               value: "{{ marsha_webtorrent_port }}"
