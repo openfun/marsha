@@ -215,7 +215,6 @@ describe('<Dashboard />', () => {
         expect.any(Function),
       ),
     );
-    screen.getByText('Transcripts');
   });
 
   it('uses subtitles as transcripts', async () => {
@@ -263,8 +262,6 @@ describe('<Dashboard />', () => {
         expect.any(Function),
       ),
     );
-
-    screen.getByText('Transcripts');
   });
 
   it('uses the VideoLayout when the video is a Live-converted VOD', () => {

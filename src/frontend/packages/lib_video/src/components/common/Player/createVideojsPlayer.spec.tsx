@@ -13,7 +13,6 @@ import { render } from 'lib-tests';
 import React from 'react';
 import videojs from 'video.js';
 
-import { useTranscriptTimeSelector } from '@lib-video/hooks/useTranscriptTimeSelector';
 import { isMSESupported } from '@lib-video/utils/isMSESupported';
 
 import { VideoPlayer } from '../VideoPlayer';
@@ -263,34 +262,5 @@ describe('createVideoJsPlayer', () => {
     expect(player.options_.autoplay).toBe(true);
     expect(player.options_.liveui).toBe(true);
     expect(player.options_.playbackRates).toEqual([]);
-  });
-
-  it('changes current time when useTranscriptTimeSelector is modified', async () => {
-    const video = liveMockFactory();
-
-    const { container } = render(
-      <VideoPlayer video={video} playerType="videojs" timedTextTracks={[]} />,
-    );
-
-    await waitFor(() =>
-      // The player is created
-      expect(mockCreatePlayer).toHaveBeenCalled(),
-    );
-
-    const videoElement = container.querySelector('video');
-
-    const player = createVideojsPlayer(videoElement!, jest.fn(), video, 'en');
-
-    // when the video is not played yet, the currentTime
-    // is not modified. It is the initTime that is modified.
-    // Playing a video in our tests is not possible because we don't have
-    // a real browser implementing media sources.
-    // If cache_.initTime is modified, we know player.currentTime(seconds)
-    // has been called.
-    expect(player.cache_.initTime).toEqual(0);
-
-    useTranscriptTimeSelector.getState().setTime(10);
-
-    expect(player.cache_.initTime).toEqual(10);
   });
 });

@@ -1,5 +1,4 @@
-import { configure, fireEvent, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { fireEvent, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import {
   InfoWidgetModalProvider,
@@ -10,6 +9,7 @@ import {
   videoMockFactory,
 } from 'lib-components';
 import { render } from 'lib-tests';
+import { act } from 'react-dom/test-utils';
 import { VTTCue } from 'vtt.js';
 
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
@@ -58,11 +58,6 @@ const transcripts = [
   },
 ];
 
-const languagechoices = [
-  { display_name: 'English', label: 'en' },
-  { display_name: 'French', label: 'fr' },
-];
-
 const mockedVideo = videoMockFactory({
   id: '42',
   has_transcript: true,
@@ -73,20 +68,6 @@ describe('<Transcripts />', () => {
     useJwt.setState({
       jwt: 'foo',
     });
-
-    fetchMock.mock(
-      `/api/videos/42/timedtexttracks/`,
-      {
-        actions: {
-          POST: {
-            language: {
-              choices: [languagechoices],
-            },
-          },
-        },
-      },
-      { method: 'OPTIONS' },
-    );
   });
 
   afterEach(() => {
@@ -94,39 +75,10 @@ describe('<Transcripts />', () => {
     jest.resetAllMocks();
   });
 
-  it('displays a list of available transcripts', async () => {
-    useTimedTextTrack.getState().addMultipleResources(transcripts);
-
-    render(
-      wrapInVideo(
-        <InfoWidgetModalProvider value={null}>
-          <Transcripts />
-        </InfoWidgetModalProvider>,
-        mockedVideo,
-      ),
-    );
-
-    const languageSelect = screen.getByRole('button', {
-      name: 'Open Drop; Selected: Choose a language',
-    });
-
-    await userEvent.click(languageSelect);
-
-    expect(
-      await screen.findByRole('option', {
-        name: 'fr',
-      }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('option', {
-        name: 'en',
-      }),
-    ).toBeInTheDocument();
-  });
-
   it('downloads transcript when the user clicks the download button', async () => {
     fetchMock.mock('https://example.com/vtt/fr.vtt', transcriptContent);
     useTimedTextTrack.getState().addMultipleResources(transcripts);
+    useTimedTextTrack.getState().setSelectedTranscript(transcripts[0]);
 
     render(
       wrapInVideo(
@@ -137,19 +89,7 @@ describe('<Transcripts />', () => {
       ),
     );
 
-    const languageSelect = screen.getByRole('button', {
-      name: 'Open Drop; Selected: Choose a language',
-    });
-
-    await userEvent.click(languageSelect);
-
-    const frenchSelect = await screen.findByRole('option', {
-      name: 'fr',
-    });
-
-    await userEvent.click(frenchSelect);
-
-    const downloadButton = await screen.findByText('Download');
+    const downloadButton = await screen.findByText('Download transcript');
     expect(downloadButton).toHaveAttribute(
       'href',
       'https://example.com/vtt/fr',
@@ -157,18 +97,10 @@ describe('<Transcripts />', () => {
     fireEvent.click(downloadButton);
   });
 
-  it('shows the transcript when the user selects a language', async () => {
-    configure({
-      getElementError: (message) => {
-        const error = new Error(message || '');
-        error.name = 'TestingLibraryElementError';
-        error.stack = undefined;
-        return error;
-      },
-    });
-
+  it('shows the transcript when language has changed', async () => {
     fetchMock.mock('https://example.com/vtt/fr.vtt', transcriptContent);
     useTimedTextTrack.getState().addMultipleResources(transcripts);
+    useTimedTextTrack.getState().setSelectedTranscript(transcripts[1]);
     const mockedVideo = videoMockFactory({
       id: '42',
       has_transcript: true,
@@ -181,23 +113,45 @@ describe('<Transcripts />', () => {
         mockedVideo,
       ),
     );
+    await screen.findByText('Download transcript');
 
-    const languageSelect = screen.getByRole('button', {
-      name: 'Open Drop; Selected: Choose a language',
+    expect(
+      screen.queryByText((content) =>
+        content.includes('Bienvenue dans ce nouveau MOOC'),
+      ),
+    ).not.toBeInTheDocument();
+    act(() => {
+      useTimedTextTrack.getState().setSelectedTranscript(transcripts[0]);
     });
-
-    await userEvent.click(languageSelect);
-
-    const frenchSelect = await screen.findByRole('option', {
-      name: 'fr',
-    });
-
-    await userEvent.click(frenchSelect);
-
     expect(
       await screen.findByText((content) =>
         content.includes('Bienvenue dans ce nouveau MOOC'),
       ),
     ).toBeInTheDocument();
+  });
+
+  it('transcript should not be displayed when there is no transcript', () => {
+    fetchMock.mock('https://example.com/vtt/fr.vtt', transcriptContent);
+    useTimedTextTrack.getState().addMultipleResources(transcripts);
+    useTimedTextTrack.getState().setSelectedTranscript(null);
+    const mockedVideo = videoMockFactory({
+      id: '42',
+      has_transcript: true,
+    });
+
+    render(
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <Transcripts />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
+    );
+
+    const languageSelect = screen.queryByRole('button', {
+      name: 'Choose a language; Selected: [object Object]',
+    });
+
+    expect(languageSelect).not.toBeInTheDocument();
   });
 });
