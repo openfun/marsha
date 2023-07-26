@@ -37,6 +37,10 @@ spec:
           env:
             - name: APP_PORT
               value: "{{ marsha_webtorrent_port }}"
+            - name: WEBTORRENT_RELEASE
+              value: "{{ marsha_webtorrent_image_tag }}"
+            - name: WEBTORRENT_ENVIRONMENT
+              value: "{{ env_type }}"
           envFrom:
             - secretRef:
                 name: "{{ marsha_webtorrent_secret_name }}"
