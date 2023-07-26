@@ -18,8 +18,9 @@
   },
   "volta": {
     "node": "18.16.1"
-  },  
+  },
   "dependencies": {
+    "@sentry/node": "7.60.0",
     "bittorrent-tracker": "10.0.10",
     "express": "4.18.2",
     "jsonwebtoken": "9.0.1",
