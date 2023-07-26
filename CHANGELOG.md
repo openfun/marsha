@@ -21,6 +21,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add retention duration on playlist form
 - Add retention date widget to video and classroom
 - Add a download-video widget directly in the video player
+- Configure sentry in the webtorrent application
 
 ### Changed
 
