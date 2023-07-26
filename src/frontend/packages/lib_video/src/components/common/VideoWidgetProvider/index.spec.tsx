@@ -1,13 +1,15 @@
-import { screen, within } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import faker from 'faker';
 import fetchMock from 'fetch-mock';
 import {
   JoinMode,
+  TimedTextTranscript,
   Video,
   liveState,
   sharedLiveMediaMockFactory,
   thumbnailMockFactory,
+  timedTextMockFactory,
   timedTextMode,
   uploadState,
   useCurrentResourceContext,
@@ -304,7 +306,7 @@ describe('<VideoWidgetProvider />', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders widget for vod student', () => {
+  it('renders widget for vod student', async () => {
     mockedUseCurrentResourceContext.mockReturnValue([
       {
         permissions: {
@@ -364,8 +366,19 @@ describe('<VideoWidgetProvider />', () => {
     //  Download video as student should not appear in the widgets
     expect(screen.queryByText('Download video')).not.toBeInTheDocument();
 
-    //  Transcripts
-    expect(screen.getByText('Transcripts')).toBeInTheDocument();
+    //  Transcripts should not be displayed by default
+    expect(screen.queryByText('Transcripts')).not.toBeInTheDocument();
+
+    const timedTextMock = timedTextMockFactory({
+      language: 'fr',
+      is_ready_to_show: true,
+      mode: timedTextMode.TRANSCRIPT,
+    }) as TimedTextTranscript;
+    useTimedTextTrack.getState().setSelectedTranscript(timedTextMock);
+
+    await waitFor(() => {
+      expect(screen.getByText('Transcripts')).toBeInTheDocument();
+    });
 
     // Media sharing
     expect(screen.queryByText('Supports sharing')).not.toBeInTheDocument();

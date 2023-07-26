@@ -8,6 +8,7 @@ import './videojs/downloadVideoPlugin';
 import './videojs/id3Plugin';
 import './videojs/xapiPlugin';
 import './videojs/sharedMediaPlugin';
+import './videojs/transcriptPlugin';
 
 import { Maybe } from 'lib-common';
 import { Video, useP2PConfig, videoSize } from 'lib-components';
@@ -17,7 +18,6 @@ import videojs, {
   VideoJsPlayerPluginOptions,
 } from 'video.js';
 
-import { useTranscriptTimeSelector } from '@lib-video/hooks/useTranscriptTimeSelector';
 import { VideoJsExtendedSourceObject } from '@lib-video/types/libs/video.js/extend';
 import { isMSESupported } from '@lib-video/utils/isMSESupported';
 
@@ -105,6 +105,7 @@ export const createVideojsPlayer = (
     onReady?.(this);
   });
 
+  // plugins initialization
   if (isMSESupported()) {
     if (isP2pQueryEnabled && isP2PEnabled) {
       player.p2pHlsPlugin();
@@ -117,20 +118,11 @@ export const createVideojsPlayer = (
         sharedLiveMedias: video.shared_live_medias,
       });
     }
+    player.transcriptPlugin({ video });
     player.httpSourceSelector();
   }
   player.id3Plugin();
   player.xapiPlugin({ video, locale, dispatchPlayerTimeUpdate });
-
-  const unsubscribeTranscriptTimeSelector = useTranscriptTimeSelector.subscribe(
-    (state) => state.time,
-    (time) => player.currentTime(time),
-  );
-
-  // When the player is dispose, unsubscribe to the useTranscriptTimeSelector store.
-  player.on('dispose', () => {
-    unsubscribeTranscriptTimeSelector();
-  });
 
   return player;
 };

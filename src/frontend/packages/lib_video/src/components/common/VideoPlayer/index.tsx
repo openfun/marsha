@@ -35,12 +35,23 @@ export const StyledBox = styled(Box)`
   }
 
   .vjs-icon-download {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="white" d="M16.59,10 L15,10 L15,5 C15,4.45 14.55,4 14,4 L10,4 C9.45,4 9,4.45 9,5 L9,10 L7.41,10 C6.52,10 6.07,11.08 6.7,11.71 L11.29,16.3 C11.68,16.69 12.31,16.69 12.7,16.3 L17.29,11.71 C17.92,11.08 17.48,10 16.59,10 Z M5,20 C5,20.55 5.45,21 6,21 L18,21 C18.55,21 19,20.55 19,20 C19,19.45 18.55,19 18,19 L6,19 C5.45,19 5,19.45 5,20 Z" /></svg>');
+    background-image: url('data:image/svg+xml; utf8, 
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="white" d="M16.59,10 L15,10 L15,5 C15,4.45 14.55,4 14,4 L10,4 C9.45,4 9,4.45 9,5 L9,10 L7.41,10 C6.52,10 6.07,11.08 6.7,11.71 L11.29,16.3 C11.68,16.69 12.31,16.69 12.7,16.3 L17.29,11.71 C17.92,11.08 17.48,10 16.59,10 Z M5,20 C5,20.55 5.45,21 6,21 L18,21 C18.55,21 19,20.55 19,20 C19,19.45 18.55,19 18,19 L6,19 C5.45,19 5,19.45 5,20 Z" /></svg>
+    ');
     background-repeat: no-repeat;
     background-position: center;
-    fill: white;
   }
-  
+
+  .vjs-icon-transcript {
+    background-image: url('data:image/svg+xml; utf8,
+      <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="white">
+        <path d="M240-350h360v-60H240v60Zm420 0h60v-60h-60v60ZM240-470h60v-60h-60v60Zm120 0h360v-60H360v60ZM140-160q-24 0-42-18t-18-42v-520q0-24 18-42t42-18h680q24 0 42 18t18 42v520q0 24-18 42t-42 18H140Zm0-60h680v-520H140v520Zm0 0v-520 520Z"/>
+      </svg>
+    ');
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
   .vjs-icon-shared-media {
     background-image: url('data:image/svg+xml; utf8,
       <svg width="18" height="18" viewBox="0 0 24 24" fill="white" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">

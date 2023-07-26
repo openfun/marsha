@@ -1,3 +1,4 @@
+import { Nullable } from '@lib-common/types';
 import { create } from 'zustand';
 
 import {
@@ -7,7 +8,7 @@ import {
 } from '@lib-components/data/stores/actions';
 import { modelName } from '@lib-components/types/models';
 import { StoreState } from '@lib-components/types/stores';
-import { TimedText } from '@lib-components/types/tracks';
+import { TimedText, TimedTextTranscript } from '@lib-components/types/tracks';
 
 type TimedTextTrackStore = {
   [modelName.TIMEDTEXTTRACKS]: {
@@ -19,6 +20,8 @@ export type TimedTextTrackState = StoreState<TimedText> &
   TimedTextTrackStore & {
     getTimedTextTracks: () => TimedText[];
     reset: () => void;
+    selectedTranscript: Nullable<TimedTextTranscript>;
+    setSelectedTranscript: (transcript: Nullable<TimedTextTranscript>) => void;
   };
 
 export const useTimedTextTrack = create<TimedTextTrackState>((set, get) => {
@@ -53,6 +56,10 @@ export const useTimedTextTrack = create<TimedTextTrackState>((set, get) => {
     [modelName.TIMEDTEXTTRACKS]: {},
     reset: () => {
       set({ [modelName.TIMEDTEXTTRACKS]: {} });
+    },
+    selectedTranscript: null,
+    setSelectedTranscript: (transcript: Nullable<TimedTextTranscript>) => {
+      set({ selectedTranscript: transcript });
     },
   };
 });

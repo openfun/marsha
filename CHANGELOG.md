@@ -27,6 +27,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Manage multiple ingresses
 - Manage shibboleth config per site config
 - Add a shared media widget directly in the video player
+- Add a transcript plugin to the video player
 
 ### Changed
 

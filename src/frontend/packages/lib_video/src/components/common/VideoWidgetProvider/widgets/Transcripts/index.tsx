@@ -1,5 +1,4 @@
-import { Box, Button, Select, Text } from 'grommet';
-import { Nullable } from 'lib-common';
+import { Box, Button } from 'grommet';
 import {
   FoldableItem,
   TimedText,
@@ -8,10 +7,9 @@ import {
   timedTextMode,
   useTimedTextTrack,
 } from 'lib-components';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { useTimedTextMetadata } from '@lib-video/api/useTimedTextMetadata';
 import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
 
 import { TranscriptReader } from './TranscriptReader';
@@ -33,13 +31,8 @@ const messages = defineMessages({
     description: 'Text to hide a displayed transcript',
     id: 'components.Transcripts.hideTranscript',
   },
-  transcriptSelectPlaceholder: {
-    defaultMessage: 'Choose a language',
-    description: 'Placeholder for the transcript select box',
-    id: 'components.Transcripts.transcriptSelect',
-  },
   transcriptDownload: {
-    defaultMessage: 'Download',
+    defaultMessage: 'Download transcript',
     description: 'Download Transcript',
     id: 'components.Transcripts.download',
   },
@@ -51,22 +44,12 @@ const messages = defineMessages({
 export const Transcripts = () => {
   const intl = useIntl();
   const video = useCurrentVideo();
-
+  const { selectedTranscript } = useTimedTextTrack((state) => state);
   const timeTextFetcher = useCallback(
     (state: TimedTextTrackState) => state.getTimedTextTracks(),
     [],
   );
   const timedTextTracks: TimedText[] = useTimedTextTrack(timeTextFetcher);
-
-  const { data } = useTimedTextMetadata(video.id);
-  const choices = useMemo(
-    () =>
-      data?.actions.POST.language.choices?.map((choice) => ({
-        label: choice.display_name,
-        value: choice.value,
-      })),
-    [data?.actions.POST.language.choices],
-  );
 
   const transcripts = useMemo(() => {
     return timedTextTracks
@@ -83,51 +66,7 @@ export const Transcripts = () => {
     video.should_use_subtitle_as_transcript,
   ]);
 
-  const options = transcripts.map((transcript) => {
-    const language =
-      choices &&
-      choices.find(
-        (languageChoice) => languageChoice.value === transcript.language,
-      );
-    return {
-      label: language ? language.label : transcript.language,
-      value: transcript.id,
-    };
-  });
-
-  const [selectedOption, setSelectedOption] = useState({
-    label: intl.formatMessage(messages.transcriptSelectPlaceholder),
-    value: '',
-  });
-
-  const [selectedTranscript, setSelectedTranscript] = useState<{
-    language: string;
-    transcript: Nullable<TimedTextTranscript>;
-  }>({
-    language: '',
-    transcript: null,
-  });
-
-  useEffect(() => {
-    const onSelectChange = (option: { label: string; value: string }) => {
-      if (option.value === '') {
-        return setSelectedTranscript({
-          language: '',
-          transcript: null,
-        });
-      }
-      const transcript = transcripts.find((ts) => ts.id === option.value);
-      if (transcript) {
-        setSelectedTranscript({
-          language: option.label,
-          transcript,
-        });
-      }
-    };
-    onSelectChange(selectedOption);
-  }, [selectedOption, transcripts]);
-
-  if (!transcripts || transcripts.length === 0) {
+  if (!selectedTranscript || !transcripts || transcripts.length === 0) {
     return null;
   }
 
@@ -145,53 +84,26 @@ export const Transcripts = () => {
           marginBottom: '0.75rem',
         }}
       >
-        <Box width="50%">
-          <Select
-            id="languages"
-            name="language_choices"
-            options={options}
-            replace={false}
-            labelKey="label"
-            value={selectedOption.label}
-            valueKey={{ key: 'value', reduce: true }}
-            valueLabel={(label: string) => (
-              <Box pad="small">
-                <Text color="blue-active">{`${label}`}</Text>
-              </Box>
-            )}
-            onChange={({
-              option,
-            }: {
-              option: { label: string; value: string };
-            }) => {
-              setSelectedOption(option);
-            }}
-          />
-        </Box>
-        <Box width="50%">
-          <Button
-            a11yTitle={intl.formatMessage(messages.transcriptDownload)}
-            download
-            disabled={!selectedTranscript.transcript}
-            label={intl.formatMessage(messages.transcriptDownload)}
-            href={
-              (selectedTranscript.transcript &&
-                selectedTranscript.transcript.source_url) ??
-              undefined
-            }
-            target="_blank"
-            rel="noopener noreferrer"
-            primary
-            title={intl.formatMessage(messages.transcriptDownload)}
-            style={{ height: '50px' }}
-          />
-        </Box>
+        <Button
+          a11yTitle={intl.formatMessage(messages.transcriptDownload)}
+          download
+          disabled={!selectedTranscript}
+          label={intl.formatMessage(messages.transcriptDownload)}
+          href={
+            (selectedTranscript && selectedTranscript.source_url) ?? undefined
+          }
+          target="_blank"
+          rel="noopener noreferrer"
+          primary
+          title={intl.formatMessage(messages.transcriptDownload)}
+          style={{ height: '50px' }}
+        />
       </Box>
-      {selectedTranscript.transcript && (
+      {selectedTranscript && (
         <Box>
           <TranscriptReader
-            transcript={selectedTranscript.transcript}
-            key={selectedTranscript.transcript.id}
+            transcript={selectedTranscript}
+            key={selectedTranscript.id}
           />
         </Box>
       )}
