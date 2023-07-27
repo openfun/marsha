@@ -2,6 +2,7 @@
 from datetime import timedelta
 import logging
 
+from django.conf import settings
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
@@ -12,7 +13,6 @@ from safedelete import HARD_DELETE
 from safedelete.managers import SafeDeleteManager
 from safedelete.queryset import SafeDeleteQueryset
 
-from marsha import settings
 from marsha.core.utils import s3_utils
 
 from .account import ADMINISTRATOR, INSTRUCTOR, ROLE_CHOICES

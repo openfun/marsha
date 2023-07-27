@@ -83,7 +83,7 @@ class RetentionDateObjectMixinTextCase(TestCase):
             video.refresh_from_db()
 
             self.mock_s3_utils.update_expiration_date.assert_called_once_with(
-                str(video.pk), date(2022, 1, 31)
+                str(video.pk), date(2022, 1, 16)
             )
 
     def test_soft_undelete_of_retention_date_object_mixin(self):
