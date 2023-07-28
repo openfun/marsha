@@ -1,5 +1,5 @@
 import { shouldPolyfill } from '@formatjs/intl-pluralrules/should-polyfill';
-import { createIntlCache, createIntl as createIntlInit } from 'react-intl';
+import { getIntl } from 'lib-common';
 
 const getLocales = (baseLocale: string) => {
   let localeCode: string;
@@ -42,12 +42,5 @@ export const createIntl = async (locale: string) => {
     )) as Record<string, string>;
   } catch (e) {}
 
-  const cache = createIntlCache();
-  return createIntlInit(
-    {
-      locale: locales.localeCode,
-      messages: translatedMessages,
-    },
-    cache,
-  );
+  return getIntl({ locale: locales.localeCode, messages: translatedMessages });
 };

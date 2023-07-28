@@ -1,7 +1,7 @@
-import { IntlErrorCode } from '@formatjs/intl';
+import { getIntl } from 'lib-common';
 import { useP2PConfig, useSentry, useSiteConfig } from 'lib-components';
 import { PropsWithChildren, useEffect, useState } from 'react';
-import { IntlProvider } from 'react-intl';
+import { IntlShape, RawIntlProvider } from 'react-intl';
 
 import { useConfig } from 'api/useConfig';
 import { ContentSpinner } from 'components/Spinner';
@@ -14,6 +14,8 @@ const AppConfig = ({ children }: PropsWithChildren<unknown>) => {
     useState<Record<string, string>>();
   const [language, setLanguage] = useState<string>();
   const [localCode, setLocalCode] = useState<string>();
+  const [intl, setIntl] = useState<IntlShape>();
+
   const [isDomReady, setIsDomReady] = useState(false);
   const setSentry = useSentry((state) => state.setSentry);
   const setP2PConfig = useP2PConfig((state) => state.setP2PConfig);
@@ -23,7 +25,7 @@ const AppConfig = ({ children }: PropsWithChildren<unknown>) => {
     staleTime: Infinity,
   });
   const isFeatureLoaded = useContentFeatures((state) => state.isFeatureLoaded);
-  const isConfigReady = isFeatureLoaded && isDomReady;
+  const isConfigReady = isFeatureLoaded && isDomReady && intl;
 
   useEffect(() => {
     const language = getLanguage();
@@ -84,26 +86,20 @@ const AppConfig = ({ children }: PropsWithChildren<unknown>) => {
     });
   }, [setSentry, setP2PConfig, config, setSiteConfig]);
 
+  useEffect(() => {
+    setIntl(
+      getIntl({
+        locale: localCode || getLocaleCode(DEFAULT_LANGUAGE),
+        messages: currentTranslation,
+      }),
+    );
+  }, [currentTranslation, localCode]);
+
   if (!isConfigReady) {
     return <ContentSpinner boxProps={{ height: '100vh' }} />;
   }
 
-  return (
-    <IntlProvider
-      messages={currentTranslation}
-      locale={localCode || ''}
-      defaultLocale={getLocaleCode(DEFAULT_LANGUAGE)}
-      onError={(err) => {
-        // https://github.com/formatjs/formatjs/issues/465
-        if (err.code === (IntlErrorCode.MISSING_TRANSLATION as IntlErrorCode)) {
-          return;
-        }
-        throw err;
-      }}
-    >
-      {children}
-    </IntlProvider>
-  );
+  return <RawIntlProvider value={intl}>{children}</RawIntlProvider>;
 };
 
 export default AppConfig;
