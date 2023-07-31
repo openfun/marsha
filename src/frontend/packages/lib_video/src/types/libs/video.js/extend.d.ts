@@ -2,6 +2,7 @@ import 'video.js';
 import { Engine } from 'p2p-media-loader-hlsjs';
 
 import { DownloadVideoPluginOptions } from '../../../components/common/Player/videojs/downloadVideoPlugin/types';
+import { XapiPluginOptions } from '../../../components/common/Player/videojs/xapiPlugin/types';
 
 declare module 'video.js' {
   interface VideoJsPlayerOptions {
@@ -29,6 +30,7 @@ declare module 'video.js' {
     downloadVideoPlugin: (options: DownloadVideoPluginOptions) => void;
     p2pHlsPlugin: () => void;
     id3Plugin: () => void;
+    xapiPlugin: (options: XapiPluginOptions) => void;
     // videojs-http-source-selector
     httpSourceSelector: () => void;
     qualitySelector: () => {

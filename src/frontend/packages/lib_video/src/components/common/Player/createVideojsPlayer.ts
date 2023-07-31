@@ -6,38 +6,19 @@ import './videojs/qualitySelectorPlugin';
 import './videojs/p2pHlsPlugin';
 import './videojs/downloadVideoPlugin';
 import './videojs/id3Plugin';
+import './videojs/xapiPlugin';
 
-import { Maybe, Nullable } from 'lib-common';
-import {
-  InitializedContextExtensions,
-  InteractedContextExtensions,
-  Video,
-  VideoXAPIStatementInterface,
-  XAPIStatement,
-  liveState,
-  report,
-  useCurrentSession,
-  useJwt,
-  useP2PConfig,
-  videoSize,
-} from 'lib-components';
+import { Maybe } from 'lib-common';
+import { Video, useP2PConfig, videoSize } from 'lib-components';
 import videojs, {
   VideoJsPlayer,
   VideoJsPlayerOptions,
   VideoJsPlayerPluginOptions,
 } from 'video.js';
 
-import { pushAttendance } from '@lib-video/api/pushAttendance';
-import { useAttendance } from '@lib-video/hooks/useAttendance';
 import { useTranscriptTimeSelector } from '@lib-video/hooks/useTranscriptTimeSelector';
-import {
-  QualityLevels,
-  VideoJsExtendedSourceObject,
-} from '@lib-video/types/libs/video.js/extend';
-import { getOrInitAnonymousId } from '@lib-video/utils/getOrInitAnonymousId';
+import { VideoJsExtendedSourceObject } from '@lib-video/types/libs/video.js/extend';
 import { isMSESupported } from '@lib-video/utils/isMSESupported';
-
-import { Events } from './videojs/qualitySelectorPlugin/types';
 
 export const createVideojsPlayer = (
   videoNode: HTMLVideoElement,
@@ -46,7 +27,6 @@ export const createVideojsPlayer = (
   locale: Maybe<string>,
   onReady: Maybe<(player: VideoJsPlayer) => void> = undefined,
 ): VideoJsPlayer => {
-  const { jwt } = useJwt.getState();
   const { isP2PEnabled } = useP2PConfig.getState();
   // This property should be deleted once the feature has been
   // deployed, tested and approved in a production environment
@@ -64,7 +44,6 @@ export const createVideojsPlayer = (
 
   const sources: VideoJsExtendedSourceObject[] = [];
   const plugins: VideoJsPlayerPluginOptions = {};
-  const anonymousId = getOrInitAnonymousId();
 
   if (!isMSESupported()) {
     plugins.qualitySelector = {
@@ -133,14 +112,9 @@ export const createVideojsPlayer = (
       player.downloadVideoPlugin({ urls: video.urls.mp4 });
     }
     player.httpSourceSelector();
-    const qualityLevels = player.qualityLevels();
-    qualityLevels.on('change', () => interacted(qualityLevels));
-  } else {
-    player.on(Events.PLAYER_SOURCES_CHANGED, () => interacted());
   }
   player.id3Plugin();
-
-  const tracks = player.remoteTextTracks();
+  player.xapiPlugin({ video, locale, dispatchPlayerTimeUpdate });
 
   const unsubscribeTranscriptTimeSelector = useTranscriptTimeSelector.subscribe(
     (state) => state.time,
@@ -150,179 +124,6 @@ export const createVideojsPlayer = (
   // When the player is dispose, unsubscribe to the useTranscriptTimeSelector store.
   player.on('dispose', () => {
     unsubscribeTranscriptTimeSelector();
-  });
-
-  /************************** XAPI **************************/
-
-  if (!jwt) {
-    throw new Error('Authenticated jwt is required.');
-  }
-
-  let xapiStatement: VideoXAPIStatementInterface;
-  try {
-    xapiStatement = XAPIStatement(
-      jwt,
-      useCurrentSession.getState().sessionId,
-      video,
-    );
-  } catch (error) {
-    report(error);
-    throw error;
-  }
-
-  let currentTime = 0;
-  let seekingAt = 0;
-  let hasSeeked = false;
-  let isInitialized = false;
-  let interval: number;
-  const hasAttendance =
-    video.live_state === liveState.RUNNING && video.can_edit === false;
-
-  const trackAttendance = () => {
-    const attendance = {
-      [Math.round(Date.now() / 1000)]: {
-        fullScreen: player.isFullscreen(),
-        muted: player.muted(),
-        player_timer: player.currentTime(),
-        playing: !player.paused(),
-        timestamp: Date.now(),
-        volume: player.volume(),
-      },
-    };
-    if (!locale) {
-      throw new Error('Locale is undefined.');
-    }
-    pushAttendance(video.id, attendance, locale, anonymousId);
-  };
-  const getCurrentTrack = (): Nullable<TextTrack> => {
-    // TextTrackList is not an iterable object
-    for (let i = 0; i < tracks.length; i++) {
-      if (tracks[i].mode === 'showing') {
-        return tracks[i];
-      }
-    }
-
-    return null;
-  };
-  let currentTrack = getCurrentTrack();
-
-  const initialize = () => {
-    if (isInitialized) {
-      return;
-    }
-
-    const contextExtensions: InitializedContextExtensions = {
-      ccSubtitleEnabled: currentTrack !== null,
-      fullScreen: player.isFullscreen(),
-      length: player.duration(),
-      speed: `${player.playbackRate()}x`,
-      volume: player.volume(),
-    };
-
-    xapiStatement.initialized(contextExtensions);
-    isInitialized = true;
-    // setTimer
-    if (hasAttendance) {
-      const delay = useAttendance.getState().delay;
-      interval = player.setInterval(trackAttendance, delay);
-    }
-  };
-
-  player.on('canplaythrough', initialize);
-
-  player.on('play', () => {
-    xapiStatement.played({
-      time: player.currentTime(),
-    });
-  });
-
-  player.on('pause', () => {
-    xapiStatement.paused({
-      time: player.currentTime(),
-    });
-  });
-
-  /**************** Seeked statement ***********************/
-
-  player.on('timeupdate', () => {
-    if (isInitialized && !player.seeking()) {
-      currentTime = player.currentTime();
-    }
-    dispatchPlayerTimeUpdate(player.currentTime());
-  });
-
-  player.on('seeking', () => {
-    seekingAt = currentTime;
-    hasSeeked = true;
-  });
-
-  player.on('seeked', () => {
-    if (!hasSeeked) {
-      return;
-    }
-    hasSeeked = false;
-    xapiStatement.seeked({
-      timeFrom: seekingAt,
-      timeTo: player.currentTime(),
-    });
-  });
-
-  /**************** Interacted event *************************/
-  const interacted = (qualityLevels?: QualityLevels): void => {
-    if (!isInitialized) {
-      // For a live video, no event to detect when the video is fully initialized is triggered
-      // before the first "play" action. To mitigate this, we can call "initialize"
-      // on the first "interact" action and we don't log this interaction. The first interact
-      // action is when the first quality to play is chosen, the default one. To choose it,
-      // all quality available must be read in the HLS manifest. So we can consider at this
-      // time that the video is initialized.
-      if (video.is_live) {
-        initialize();
-      }
-      return;
-    }
-    let quality: string | number | undefined;
-
-    if (qualityLevels) {
-      quality = qualityLevels[qualityLevels.selectedIndex]?.height;
-    } else {
-      quality = player.currentSource().size;
-    }
-
-    const contextExtensions: InteractedContextExtensions = {
-      ccSubtitleEnabled: currentTrack !== null,
-      fullScreen: player.isFullscreen(),
-      quality,
-      speed: `${player.playbackRate()}x`,
-      volume: player.volume(),
-    };
-
-    if (currentTrack !== null) {
-      contextExtensions.ccSubtitleLanguage = currentTrack.language;
-    }
-    xapiStatement.interacted({ time: player.currentTime() }, contextExtensions);
-  };
-
-  player.on('fullscreenchange', () => interacted());
-  player.on('languagechange', () => interacted());
-  player.on('ratechange', () => interacted());
-  player.on('volumechange', () => interacted());
-  tracks.addEventListener('change', () => {
-    currentTrack = getCurrentTrack();
-    interacted();
-  });
-  /**************** End interacted event *************************/
-
-  window.addEventListener('unload', () => {
-    if (!isInitialized) {
-      return;
-    }
-
-    xapiStatement.terminated({ time: player.currentTime() });
-
-    if (interval) {
-      player.clearInterval(interval);
-    }
   });
 
   return player;

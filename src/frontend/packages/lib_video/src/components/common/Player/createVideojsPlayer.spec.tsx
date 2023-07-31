@@ -2,8 +2,6 @@
 /* eslint-disable testing-library/no-container */
 import { waitFor } from '@testing-library/react';
 import {
-  VideoXAPIStatementInterface,
-  XAPIStatement,
   liveMockFactory,
   liveState,
   timedTextMode,
@@ -15,26 +13,13 @@ import { render } from 'lib-tests';
 import React from 'react';
 import videojs from 'video.js';
 
-import { pushAttendance } from '@lib-video/api/pushAttendance';
 import { useTranscriptTimeSelector } from '@lib-video/hooks/useTranscriptTimeSelector';
-import { getOrInitAnonymousId } from '@lib-video/utils/getOrInitAnonymousId';
 import { isMSESupported } from '@lib-video/utils/isMSESupported';
 
 import { VideoPlayer } from '../VideoPlayer';
 
 import { createPlayer } from './createPlayer';
 import { createVideojsPlayer } from './createVideojsPlayer';
-
-const mockXAPIStatementInterface: VideoXAPIStatementInterface = {
-  initialized: jest.fn(),
-  completed: jest.fn(),
-  downloaded: jest.fn(),
-  interacted: jest.fn(),
-  paused: jest.fn(),
-  played: jest.fn(),
-  seeked: jest.fn(),
-  terminated: jest.fn(),
-};
 
 jest.mock('./createPlayer', () => ({
   createPlayer: jest.fn(),
@@ -49,10 +34,6 @@ jest.mock('lib-components', () => ({
   decodeJwt: () => ({}),
   XAPIStatement: jest.fn(),
 }));
-const mockXAPIStatement = XAPIStatement as jest.MockedFunction<
-  typeof XAPIStatement
->;
-mockXAPIStatement.mockReturnValue(mockXAPIStatementInterface);
 
 jest.mock('api/pushAttendance', () => ({
   pushAttendance: jest.fn(),
@@ -68,10 +49,6 @@ const mockIsMSESupported = isMSESupported as jest.MockedFunction<
 
 const mockCreatePlayer = createPlayer as jest.MockedFunction<
   typeof createPlayer
->;
-
-const mockPushAttendance = pushAttendance as jest.MockedFunction<
-  typeof pushAttendance
 >;
 
 // It prevents console to display error when it tries to play a non existing media
@@ -288,65 +265,6 @@ describe('createVideoJsPlayer', () => {
     expect(player.options_.playbackRates).toEqual([]);
   });
 
-  it('sends xapi events', async () => {
-    const { container } = render(
-      <VideoPlayer
-        video={mockVideo}
-        playerType="videojs"
-        timedTextTracks={[]}
-      />,
-    );
-
-    await waitFor(() =>
-      // The player is created
-      expect(mockCreatePlayer).toHaveBeenCalled(),
-    );
-
-    const videoElement = container.querySelector('video');
-    const dispatchPlayerTimeUpdate = jest.fn();
-
-    const player = createVideojsPlayer(
-      videoElement!,
-      dispatchPlayerTimeUpdate,
-      mockVideo,
-      'en',
-    );
-
-    expect(mockXAPIStatement).toHaveBeenCalled();
-
-    player.trigger('canplaythrough');
-    expect(mockXAPIStatementInterface.initialized).toHaveBeenCalled();
-
-    player.trigger('play');
-    expect(mockXAPIStatementInterface.played).toHaveBeenCalled();
-
-    player.trigger('pause');
-    expect(mockXAPIStatementInterface.paused).toHaveBeenCalled();
-
-    player.trigger('timeupdate');
-    expect(dispatchPlayerTimeUpdate).toHaveBeenCalled();
-
-    // calling seeked without seeking before should not
-    // send xapi statement
-    player.trigger('seeked');
-    expect(mockXAPIStatementInterface.seeked).not.toHaveBeenCalled();
-
-    player.trigger('seeking');
-    player.trigger('seeked');
-    expect(mockXAPIStatementInterface.seeked).toHaveBeenCalled();
-
-    player.trigger('fullscreenchange');
-    player.trigger('languagechange');
-    player.trigger('ratechange');
-    player.trigger('volumechange');
-    player.qualityLevels().trigger('change');
-    player.remoteTextTracks().dispatchEvent(new Event('change'));
-    expect(mockXAPIStatementInterface.interacted).toHaveBeenCalledTimes(6);
-
-    window.dispatchEvent(new Event('unload'));
-    expect(mockXAPIStatementInterface.terminated).toHaveBeenCalled();
-  });
-
   it('changes current time when useTranscriptTimeSelector is modified', async () => {
     const video = liveMockFactory();
 
@@ -374,127 +292,5 @@ describe('createVideoJsPlayer', () => {
     useTranscriptTimeSelector.getState().setTime(10);
 
     expect(player.cache_.initTime).toEqual(10);
-  });
-
-  it('sends attendance for a student watching a live', async () => {
-    mockIsMSESupported.mockReturnValue(true);
-    const video = liveMockFactory({
-      urls: {
-        manifests: {
-          hls: 'https://example.com/hls',
-        },
-        mp4: {},
-        thumbnails: {},
-      },
-      live_state: liveState.RUNNING,
-      can_edit: false,
-    });
-    const { container } = render(
-      <VideoPlayer video={video} playerType="videojs" timedTextTracks={[]} />,
-    );
-
-    await waitFor(() =>
-      // The player is created
-      expect(mockCreatePlayer).toHaveBeenCalled(),
-    );
-
-    const videoElement = container.querySelector('video');
-
-    const player = createVideojsPlayer(videoElement!, jest.fn(), video, 'en');
-
-    expect(player.options_.liveui).toBe(true);
-
-    expect(mockPushAttendance).not.toHaveBeenCalled();
-    // to initialize the video for a live
-    player.qualityLevels().trigger('change');
-    Date.now = jest.fn(() => 1651732370000);
-    jest.runOnlyPendingTimers();
-    expect(mockPushAttendance).toHaveBeenCalledWith(
-      video.id,
-      {
-        1651732370: {
-          fullScreen: false,
-          muted: false,
-          player_timer: 0,
-          playing: false,
-          timestamp: 1651732370000,
-          volume: 1,
-        },
-      },
-      'en',
-      getOrInitAnonymousId(),
-    );
-    jest.runOnlyPendingTimers();
-    expect(mockPushAttendance).toHaveBeenCalledTimes(2);
-
-    window.dispatchEvent(new Event('unload'));
-
-    jest.runOnlyPendingTimers();
-
-    // it didn't get called a new time
-    expect(mockPushAttendance).toHaveBeenCalledTimes(2);
-  });
-
-  it("doesn't send attendance for an admin or instructor watching a live", async () => {
-    mockIsMSESupported.mockReturnValue(true);
-    const video = liveMockFactory({
-      urls: {
-        manifests: {
-          hls: 'https://example.com/hls',
-        },
-        mp4: {},
-        thumbnails: {},
-      },
-      live_state: liveState.RUNNING,
-    });
-    const { container } = render(
-      <VideoPlayer video={video} playerType="videojs" timedTextTracks={[]} />,
-    );
-
-    await waitFor(() =>
-      // The player is created
-      expect(mockCreatePlayer).toHaveBeenCalled(),
-    );
-
-    const videoElement = container.querySelector('video');
-
-    const player = createVideojsPlayer(videoElement!, jest.fn(), video, 'en');
-
-    expect(player.currentSources()).toEqual([
-      { type: 'application/x-mpegURL', src: 'https://example.com/hls' },
-    ]);
-    expect(player.options_.liveui).toBe(true);
-
-    // to initialize the video for a live
-    player.qualityLevels().trigger('change');
-    expect(mockPushAttendance).not.toHaveBeenCalled();
-  });
-
-  it("doesn't send attendance when it's not a live", async () => {
-    mockIsMSESupported.mockReturnValue(true);
-    const { container } = render(
-      <VideoPlayer
-        video={mockVideo}
-        playerType="videojs"
-        timedTextTracks={[]}
-      />,
-    );
-
-    await waitFor(() =>
-      // The player is created
-      expect(mockCreatePlayer).toHaveBeenCalled(),
-    );
-
-    const videoElement = container.querySelector('video');
-
-    const player = createVideojsPlayer(
-      videoElement!,
-      jest.fn(),
-      mockVideo,
-      'en',
-    );
-
-    player.trigger('canplaythrough');
-    expect(mockPushAttendance).not.toHaveBeenCalled();
   });
 });
