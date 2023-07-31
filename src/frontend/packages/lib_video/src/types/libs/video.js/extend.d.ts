@@ -28,6 +28,7 @@ declare module 'video.js' {
     media: { currentTime: number };
     downloadVideoPlugin: (options: DownloadVideoPluginOptions) => void;
     p2pHlsPlugin: () => void;
+    id3Plugin: () => void;
     // videojs-http-source-selector
     httpSourceSelector: () => void;
     qualitySelector: () => {
