@@ -1,7 +1,8 @@
 # Application default configuration
 
 # -- ingress
-marsha_host: "marsha.{{ namespace_name }}.{{ domain_name }}"
+marsha_hosts: 
+  - "marsha.{{ namespace_name }}.{{ domain_name }}"
 marsha_ingress_class_name: "{{ default_ingress_class_name }}"
 
 # -- nginx

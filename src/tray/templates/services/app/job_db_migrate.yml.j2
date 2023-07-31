@@ -41,7 +41,7 @@ spec:
             - name: POSTGRES_PORT
               value: "{{ marsha_postgresql_port }}"
             - name: DJANGO_ALLOWED_HOSTS
-              value: "{{ marsha_host }}"
+              value: "{{ marsha_hosts[0] }}"
           envFrom:
             - secretRef:
                 name: "{{ marsha_secret_name }}"

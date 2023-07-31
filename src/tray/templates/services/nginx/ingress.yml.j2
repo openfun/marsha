@@ -17,6 +17,7 @@ metadata:
 spec:
   ingressClassName: "{{ marsha_ingress_class_name }}"
   rules:
+{% for marsha_host in marsha_hosts %}
   - host: "{{ marsha_host | blue_green_host(prefix) }}"
     http:
       paths:
@@ -27,7 +28,10 @@ spec:
               number: {{ marsha_nginx_port }}
         path: /
         pathType: Prefix
+{% endfor %}
   tls:
+{% for marsha_host in marsha_hosts %}
   - hosts:
     - "{{ marsha_host | blue_green_host(prefix) }}"
-    secretName: "marsha-app-tls-{{ prefix }}-{{ acme_env }}"
+    secretName: "marsha-app-tls-{{ prefix }}-{{ marsha_host }}-{{ acme_env }}"
+{% endfor %}

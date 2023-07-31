@@ -56,7 +56,7 @@ spec:
               port: {{ marsha_django_port }}
               httpHeaders:
                 - name: Host
-                  value: "{{ marsha_host }}"
+                  value: "{{ marsha_hosts[0] }}"
             initialDelaySeconds: 60
             periodSeconds: 30
           readinessProbe:
@@ -65,7 +65,7 @@ spec:
               port: {{ marsha_django_port }}
               httpHeaders:
                 - name: Host
-                  value: "{{ marsha_host }}"
+                  value: "{{ marsha_hosts[0] }}"
             initialDelaySeconds: 10
             periodSeconds: 5
           env:
@@ -80,9 +80,9 @@ spec:
             - name: POSTGRES_PORT
               value: "{{ marsha_postgresql_port }}"
             - name: DJANGO_ALLOWED_HOSTS
-              value: "{{ marsha_host | blue_green_hosts }}"
+              value: "{{ marsha_hosts | map('blue_green_hosts') | join(',') }}"
             - name: DJANGO_CSRF_TRUSTED_ORIGINS
-              value: "{{ marsha_host | blue_green_hosts | split(',') | map('regex_replace', '^(.*)$', 'https://\\1') | join(',') }}"
+              value: "{{ marsha_hosts | map('blue_green_hosts') | join(',') | split(',') | map('regex_replace', '^(.*)$', 'https://\\1') | join(',') }}"
             - name: DJANGO_CLOUDFRONT_PRIVATE_KEY_PATH
               value: "{{ marsha_cloudfront_private_key_path }}"
           envFrom:
