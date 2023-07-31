@@ -23,6 +23,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add a download-video widget directly in the video player
 - Configure sentry in the webtorrent application
 - Add custom frontend site management
+- Manage multiple ingresses
 
 ### Changed
 
