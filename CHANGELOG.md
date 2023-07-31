@@ -35,6 +35,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add compatibility with docker compose 2
 - tslint is replaced by eslint in lti app (#2321)
 - refactor videojs id3 tags handling as videojs plugin
+- refactor videojs xapi handling as videojs plugin
 
 ### Fixed
 
