@@ -5,9 +5,10 @@ import 'videojs-http-source-selector';
 import './videojs/qualitySelectorPlugin';
 import './videojs/p2pHlsPlugin';
 import './videojs/downloadVideoPlugin';
+import './videojs/id3Plugin';
+
 import { Maybe, Nullable } from 'lib-common';
 import {
-  Id3VideoType,
   InitializedContextExtensions,
   InteractedContextExtensions,
   Video,
@@ -18,7 +19,6 @@ import {
   useCurrentSession,
   useJwt,
   useP2PConfig,
-  useVideo,
   videoSize,
 } from 'lib-components';
 import videojs, {
@@ -39,10 +39,6 @@ import { isMSESupported } from '@lib-video/utils/isMSESupported';
 
 import { Events } from './videojs/qualitySelectorPlugin/types';
 
-type Id3MessageType = {
-  video: Id3VideoType;
-};
-
 export const createVideojsPlayer = (
   videoNode: HTMLVideoElement,
   dispatchPlayerTimeUpdate: (time: number) => void,
@@ -51,8 +47,6 @@ export const createVideojsPlayer = (
   onReady: Maybe<(player: VideoJsPlayer) => void> = undefined,
 ): VideoJsPlayer => {
   const { jwt } = useJwt.getState();
-  const videoState = useVideo.getState();
-  let lastReceivedVideo: Id3VideoType;
   const { isP2PEnabled } = useP2PConfig.getState();
   // This property should be deleted once the feature has been
   // deployed, tested and approved in a production environment
@@ -126,41 +120,9 @@ export const createVideojsPlayer = (
 
   const player = videojs(videoNode, options, function () {
     if (video.is_live) {
-      videoState.setIsWatchingVideo(true);
       this.play();
     }
     onReady?.(this);
-  });
-
-  player.on('loadedmetadata', () => {
-    const tracks = player.textTracks();
-    for (let index = 0; index < tracks.length; index++) {
-      const track = tracks[index];
-      if (track.label === 'Timed Metadata') {
-        track.addEventListener('cuechange', () => {
-          // VTTCue normally doesn't have value property
-          // Nonetheless, value is set when cue comes from id3 tags
-          // and has a property key: "TXXX" in it
-          const cue = track.activeCues?.[0] as
-            | { value: { key: string } | undefined; text: string }
-            | undefined;
-          if (cue) {
-            if (cue.value?.key !== 'PRIV') {
-              // cue.text should be a video object
-              const data = JSON.parse(cue.text) as Id3MessageType;
-              if (
-                data &&
-                useVideo.getState().isWatchingVideo &&
-                JSON.stringify(data.video) !== JSON.stringify(lastReceivedVideo)
-              ) {
-                lastReceivedVideo = data.video;
-                videoState.setId3Video(data.video);
-              }
-            }
-          }
-        });
-      }
-    }
   });
 
   if (isMSESupported()) {
@@ -176,6 +138,7 @@ export const createVideojsPlayer = (
   } else {
     player.on(Events.PLAYER_SOURCES_CHANGED, () => interacted());
   }
+  player.id3Plugin();
 
   const tracks = player.remoteTextTracks();
 
@@ -184,15 +147,8 @@ export const createVideojsPlayer = (
     (time) => player.currentTime(time),
   );
 
-  player.on('ended', () => {
-    videoState.setId3Video(null);
-    videoState.setIsWatchingVideo(false);
-  });
-
   // When the player is dispose, unsubscribe to the useTranscriptTimeSelector store.
   player.on('dispose', () => {
-    videoState.setId3Video(null);
-    videoState.setIsWatchingVideo(false);
     unsubscribeTranscriptTimeSelector();
   });
 

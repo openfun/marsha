@@ -2,7 +2,6 @@
 /* eslint-disable testing-library/no-container */
 import { waitFor } from '@testing-library/react';
 import {
-  Id3VideoType,
   VideoXAPIStatementInterface,
   XAPIStatement,
   liveMockFactory,
@@ -10,7 +9,6 @@ import {
   timedTextMode,
   uploadState,
   useJwt,
-  useVideo,
   videoMockFactory,
 } from 'lib-components';
 import { render } from 'lib-tests';
@@ -347,117 +345,6 @@ describe('createVideoJsPlayer', () => {
 
     window.dispatchEvent(new Event('unload'));
     expect(mockXAPIStatementInterface.terminated).toHaveBeenCalled();
-  });
-
-  it('start and end id3 listening', async () => {
-    expect(useVideo.getState().isWatchingVideo).toBe(false);
-    mockIsMSESupported.mockReturnValue(false);
-
-    const video = liveMockFactory({
-      live_state: liveState.RUNNING,
-      urls: {
-        manifests: {
-          hls: 'https://google.com',
-        },
-        mp4: {},
-        thumbnails: {},
-      },
-    });
-    const { container } = render(
-      <VideoPlayer video={video} playerType="videojs" timedTextTracks={[]} />,
-    );
-
-    await waitFor(() =>
-      // The player is created
-      expect(mockCreatePlayer).toHaveBeenCalled(),
-    );
-
-    const videoElement = container.querySelector('video');
-    const dispatchPlayerTimeUpdate = jest.fn();
-
-    const player = createVideojsPlayer(
-      videoElement!,
-      dispatchPlayerTimeUpdate,
-      video,
-      'en',
-    );
-
-    await waitFor(() => {
-      expect(useVideo.getState().isWatchingVideo).toBe(true);
-    });
-
-    player.trigger('dispose');
-    expect(useVideo.getState().isWatchingVideo).toBe(false);
-  });
-
-  it('load id3 tags', async () => {
-    mockIsMSESupported.mockReturnValue(false);
-
-    const video = liveMockFactory({
-      live_state: liveState.RUNNING,
-      urls: {
-        manifests: {
-          hls: 'https://google.com',
-        },
-        mp4: {},
-        thumbnails: {},
-      },
-    });
-
-    const { container } = render(
-      <VideoPlayer video={video} playerType="videojs" timedTextTracks={[]} />,
-    );
-
-    await waitFor(() =>
-      // The player is created
-      expect(mockCreatePlayer).toHaveBeenCalled(),
-    );
-
-    const videoElement = container.querySelector('video');
-    const dispatchPlayerTimeUpdate = jest.fn();
-
-    const player = createVideojsPlayer(
-      videoElement!,
-      dispatchPlayerTimeUpdate,
-      video,
-      'en',
-    );
-
-    await waitFor(() => {
-      expect(useVideo.getState().isWatchingVideo).toBe(true);
-    });
-
-    // Create listened track
-    player.addTextTrack('metadata', 'Timed Metadata', 'en');
-    const id3Video: Id3VideoType = {
-      live_state: liveState.RUNNING,
-      active_shared_live_media: {
-        id: '1234',
-      },
-      active_shared_live_media_page: null,
-    } as any;
-    const tracks = player.textTracks();
-    const track = tracks[0];
-    player.trigger('loadedmetadata');
-
-    // Add cue that should come from id3 tags
-    const newCue = new VTTCue(0, 2, JSON.stringify({ video: id3Video }));
-    track.addCue(newCue);
-
-    // track should contain trigger function but is not typescritped
-    const trackTrigger = track as any as {
-      trigger: (eventName: string) => void;
-    };
-    if (trackTrigger && trackTrigger.trigger) {
-      trackTrigger.trigger('cuechange');
-    }
-
-    await waitFor(() => {
-      expect(useVideo.getState().id3Video).toStrictEqual(id3Video);
-    });
-
-    player.trigger('dispose');
-    expect(useVideo.getState().id3Video).toBe(null);
   });
 
   it('changes current time when useTranscriptTimeSelector is modified', async () => {
