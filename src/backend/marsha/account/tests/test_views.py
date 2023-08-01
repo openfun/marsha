@@ -2,10 +2,10 @@
 from urllib.parse import parse_qs, urlparse
 
 from django.contrib.auth import get_user as auth_get_user
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 
-from marsha.core.factories import UserFactory
+from marsha.core.factories import SiteConfigFactory, UserFactory
 from marsha.core.simple_jwt.tokens import ChallengeToken
 
 
@@ -51,6 +51,58 @@ class RedirectToFrontendViewTestCase(BaseAuthenticationTestCase):
         self._login_user()
 
         response = self.client.get(reverse("account:login_complete_redirect"))
+
+        self.assertEqual(response.status_code, 302)
+
+        # Assert frontend redirection
+        parsed_response_url = urlparse(response.url)
+        self.assertEqual(parsed_response_url.netloc, "localhost:3000")
+        self.assertEqual(parsed_response_url.path, "/")
+
+        # Assert token presence
+        challenge_token_str = parse_qs(parsed_response_url.query)["token"][0]
+        challenge_token = ChallengeToken(challenge_token_str)
+        self.assertEqual(challenge_token["user_id"], str(self.existing_user.pk))
+
+    @override_settings(ALLOWED_HOSTS=["marsha.education"])
+    def test_redirects_to_existing_site_config(self):
+        """
+        Assert user is redirected to an existing site config
+        """
+
+        SiteConfigFactory(
+            site__domain="marsha.education",
+        )
+
+        self._login_user()
+
+        response = self.client.get(
+            reverse("account:login_complete_redirect"), HTTP_HOST="marsha.education"
+        )
+
+        self.assertEqual(response.status_code, 302)
+
+        # Assert frontend redirection
+        parsed_response_url = urlparse(response.url)
+        self.assertEqual(parsed_response_url.netloc, "marsha.education")
+        self.assertEqual(parsed_response_url.path, "/")
+
+        # Assert token presence
+        challenge_token_str = parse_qs(parsed_response_url.query)["token"][0]
+        challenge_token = ChallengeToken(challenge_token_str)
+        self.assertEqual(challenge_token["user_id"], str(self.existing_user.pk))
+
+    @override_settings(ALLOWED_HOSTS=["marsha.education"])
+    def test_redirects_to_not_existing_site_config(self):
+        """
+        Assert user is redirected to default FRONTEND_HOME_URL is site config does not exists
+        """
+
+        self._login_user()
+
+        response = self.client.get(
+            reverse("account:login_complete_redirect"), HTTP_HOST="marsha.education"
+        )
 
         self.assertEqual(response.status_code, 302)
 
