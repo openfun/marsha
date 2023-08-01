@@ -16,15 +16,20 @@ export class DownloadVideoQualityItem extends MenuItem {
     options.multiSelectable = false;
 
     super(player, options);
+    this.setAttribute('title', options.label);
     this.source = options.src;
   }
 
   handleClick() {
     if (this.source) {
-      const link = document.createElement('a');
-      link.href = this.source;
-      link.click();
+      this.downloadVideoQuality(this.source);
     }
+  }
+
+  downloadVideoQuality(source: string) {
+    const link = document.createElement('a');
+    link.href = source;
+    link.click();
   }
 }
 

@@ -47,6 +47,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Video player reset when attributes update (#2300)
 - Fix panel closing and resizing on live video player chat (#2310)
+- Fix download video button when video is not downloadable
 
 ## [4.2.1] - 2023-06-20
 
