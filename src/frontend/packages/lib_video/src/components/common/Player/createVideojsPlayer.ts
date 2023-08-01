@@ -110,7 +110,7 @@ export const createVideojsPlayer = (
     if (isP2pQueryEnabled && isP2PEnabled) {
       player.p2pHlsPlugin();
     }
-    if (!video.is_live && video.urls.mp4) {
+    if (!video.is_live && video.show_download) {
       player.downloadVideoPlugin({ urls: video.urls.mp4 });
     }
     if (video.shared_live_medias && video.shared_live_medias.length) {

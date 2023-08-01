@@ -1,4 +1,6 @@
 import { videoSize } from '@lib-components/types';
+import { getIntl } from 'lib-common';
+import { defineMessages } from 'react-intl';
 import videojs from 'video.js';
 
 import { DownloadVideoPluginOptions } from '../types';
@@ -6,11 +8,20 @@ import { DownloadVideoPluginOptions } from '../types';
 import { DownloadVideoQualityItem } from './DownloadVideoQualityItem';
 
 const MenuButton = videojs.getComponent('MenuButton');
-
+const messages = defineMessages({
+  downloadVideoButton: {
+    defaultMessage: 'Download Video',
+    description: 'Title of the download video button inside the video player.',
+    id: 'videojs.menu.downloadVideoButton',
+  },
+});
 export class DownloadVideoButton extends MenuButton {
   constructor(player: videojs.Player, options?: videojs.MenuItemOptions) {
     super(player, options);
-    this.menuButton_.setAttribute('aria-label', 'Download Video');
+    this.menuButton_.setAttribute(
+      'title',
+      getIntl().formatMessage(messages.downloadVideoButton),
+    );
   }
 
   createEl() {
