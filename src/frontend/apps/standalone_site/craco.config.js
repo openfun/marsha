@@ -43,6 +43,7 @@ module.exports = {
       moduleNameMapper: {
         ...appModuleNameMapper['website'],
         'react-markdown': '<rootDir>/src/__mock__/react-markdown.tsx',
+        '@tanstack/react-query-devtools': '<rootDir>/src/__mock__/@tanstack/react-query-devtools.tsx',
       },
       setupFilesAfterEnv: ['<rootDir>/testSetup.js'],
     },

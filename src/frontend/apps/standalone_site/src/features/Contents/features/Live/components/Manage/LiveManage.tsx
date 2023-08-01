@@ -88,21 +88,21 @@ const LiveManage = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 
   const deleteLives = useDeleteVideos({
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       toast.success(
         intl.formatMessage(messages.webinarsDeleteSuccess, {
-          item_count: selectedItems.length,
+          item_count: variables.ids.length,
         }),
         {
           position: 'bottom-center',
         },
       );
     },
-    onError: (err: unknown) => {
+    onError: (err, variables) => {
       report(err);
       toast.error(
         intl.formatMessage(messages.webinarsDeleteError, {
-          item_count: selectedItems.length,
+          item_count: variables.ids.length,
         }),
         {
           position: 'bottom-center',

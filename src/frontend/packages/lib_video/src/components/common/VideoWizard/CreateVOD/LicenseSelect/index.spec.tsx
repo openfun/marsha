@@ -33,6 +33,7 @@ describe('<LicenseSelect />', () => {
   });
 
   afterEach(() => {
+    jest.resetAllMocks();
     fetchMock.restore();
   });
 

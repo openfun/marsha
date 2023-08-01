@@ -1,7 +1,7 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { Live, Loader } from 'lib-components';
 import React, { useMemo } from 'react';
 import { useIntl } from 'react-intl';
-import { useQueryClient } from '@tanstack/react-query';
 
 import { pushAttendance } from '@lib-video/api/pushAttendance';
 import { useLiveSessionsQuery } from '@lib-video/api/useLiveSessions';
@@ -38,7 +38,7 @@ export const Dashboard = ({ live, playerType, socketUrl }: DasboardProps) => {
               await pushAttendance(live.id, {}, intl.locale, anonymousId),
             );
             queryClient.invalidateQueries(['livesessions'], {
-              refetchActive: false,
+              refetchType: 'inactive',
             });
           }
         };

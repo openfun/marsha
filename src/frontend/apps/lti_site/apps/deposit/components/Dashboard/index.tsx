@@ -69,38 +69,35 @@ const Dashboard = () => {
   const [context] = useCurrentResourceContext();
   const canUpdate = context.permissions.can_update;
 
-  const { data: fileDepository, status: useFileDepositoryStatus } =
-    useFileDepository(depositAppData.fileDepository?.id || '', {
-      refetchInterval: 0,
-      refetchOnWindowFocus: false,
-    });
+  const {
+    data: fileDepository,
+    status: useFileDepositoryStatus,
+    fetchStatus: useFileDepositoryFetchStatus,
+  } = useFileDepository(depositAppData.fileDepository?.id || '', {
+    refetchInterval: 0,
+    refetchOnWindowFocus: false,
+  });
 
   let content: JSX.Element = <Fragment />;
-  switch (useFileDepositoryStatus) {
-    case 'idle':
-    case 'loading':
-      content = (
-        <Spinner size="large">
-          <FormattedMessage {...messages.loadingFileDepository} />
-        </Spinner>
-      );
-      break;
-
-    case 'error':
-      content = <FormattedMessage {...messages.loadFileDepositoryError} />;
-      break;
-
-    case 'success':
-      if (!canUpdate) {
-        // Student dashboard
-        content = <DashboardStudent fileDepository={fileDepository} />;
-      } else {
-        // Instructor dashboard
-        content = <DashboardInstructor fileDepository={fileDepository} />;
-      }
-      break;
-    default:
-      break;
+  if (useFileDepositoryStatus === 'error') {
+    content = <FormattedMessage {...messages.loadFileDepositoryError} />;
+  } else if (useFileDepositoryStatus === 'success') {
+    if (!canUpdate) {
+      // Student dashboard
+      content = <DashboardStudent fileDepository={fileDepository} />;
+    } else {
+      // Instructor dashboard
+      content = <DashboardInstructor fileDepository={fileDepository} />;
+    }
+  } else if (
+    useFileDepositoryFetchStatus === 'idle' ||
+    useFileDepositoryStatus === 'loading'
+  ) {
+    content = (
+      <Spinner size="large">
+        <FormattedMessage {...messages.loadingFileDepository} />
+      </Spinner>
+    );
   }
 
   return (

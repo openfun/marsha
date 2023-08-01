@@ -43,7 +43,6 @@ const Internal = ({ live_state, video_id }: InternalProps) => {
   });
 
   switch (status) {
-    case 'idle':
     case 'loading':
       return (
         <Box width="full">

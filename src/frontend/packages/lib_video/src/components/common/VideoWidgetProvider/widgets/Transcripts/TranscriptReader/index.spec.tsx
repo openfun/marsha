@@ -85,7 +85,7 @@ describe('<TranscriptReader />', () => {
       expect(fetchMock.calls(transcript.url).length).toEqual(1),
     );
     // Both cues are inactive
-    screen.getByText('-Bonjour. Bonjour à tous.');
+    await screen.findByText('-Bonjour. Bonjour à tous.');
     screen.getByText(
       (content) =>
         content.startsWith('Bienvenue dans ce nouveau MOOC') &&
