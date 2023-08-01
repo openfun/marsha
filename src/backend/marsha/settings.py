@@ -177,7 +177,7 @@ class Base(Configuration):
     AUTH_USER_MODEL = "core.User"
 
     AUTHENTICATION_BACKENDS = [
-        "social_edu_federation.backends.saml_fer.FERSAMLAuth",
+        "marsha.account.backends.saml_fer.MarshaFERSAMLAuth",
         "django.contrib.auth.backends.ModelBackend",
     ]
 
