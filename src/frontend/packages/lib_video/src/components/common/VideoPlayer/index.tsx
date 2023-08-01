@@ -18,6 +18,10 @@ import { MissingVideoUrlsException } from '@lib-video/errors';
 import { useVideoProgress } from '@lib-video/hooks/useVideoProgress';
 import { VideoPlayerInterface } from '@lib-video/types/VideoPlayer';
 
+import DownloadIcon from './assets/DownloadIcon.svg';
+import SharedMediaIcon from './assets/SharedMediaIcon.svg';
+import TranscriptIcon from './assets/TranscriptIcon.svg';
+
 interface BaseVideoPlayerProps {
   video: Video;
   playerType: string;
@@ -35,51 +39,19 @@ export const StyledBox = styled(Box)`
   }
 
   .vjs-icon-download {
-    background-image: url('data:image/svg+xml; utf8, 
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="white" d="M16.59,10 L15,10 L15,5 C15,4.45 14.55,4 14,4 L10,4 C9.45,4 9,4.45 9,5 L9,10 L7.41,10 C6.52,10 6.07,11.08 6.7,11.71 L11.29,16.3 C11.68,16.69 12.31,16.69 12.7,16.3 L17.29,11.71 C17.92,11.08 17.48,10 16.59,10 Z M5,20 C5,20.55 5.45,21 6,21 L18,21 C18.55,21 19,20.55 19,20 C19,19.45 18.55,19 18,19 L6,19 C5.45,19 5,19.45 5,20 Z" /></svg>
-    ');
+    background-image: url(${DownloadIcon});
     background-repeat: no-repeat;
     background-position: center;
   }
 
   .vjs-icon-transcript {
-    background-image: url('data:image/svg+xml; utf8,
-      <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="white">
-        <path d="M240-350h360v-60H240v60Zm420 0h60v-60h-60v60ZM240-470h60v-60h-60v60Zm120 0h360v-60H360v60ZM140-160q-24 0-42-18t-18-42v-520q0-24 18-42t42-18h680q24 0 42 18t18 42v520q0 24-18 42t-42 18H140Zm0-60h680v-520H140v520Zm0 0v-520 520Z"/>
-      </svg>
-    ');
+    background-image: url(${TranscriptIcon});
     background-repeat: no-repeat;
     background-position: center;
   }
 
   .vjs-icon-shared-media {
-    background-image: url('data:image/svg+xml; utf8,
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="white" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
-        <g transform="matrix(1,0,0,1,-0.000751991,0.192179)">
-            <g transform="matrix(1.04348,0,0,1.24599,-1.04273,-0.718417)">
-                <path d="M24,1.803L24,3.197C24,3.64 23.57,4 23.041,4L1.959,4C1.43,4 1,3.64 1,3.197L1,1.803C1,1.36 1.43,1 1.959,1L23.041,1C23.57,1 24,1.36 24,1.803ZM2.198,2.003L2.198,2.997L22.802,2.997L22.802,2.003L2.198,2.003Z"/>
-            </g>
-            <g transform="matrix(0.915598,0,0,4.95896,0.555022,-1.95118)">
-                <path d="M24,1.121L24,3.879C24,3.946 23.706,4 23.345,4L1.655,4C1.294,4 1,3.946 1,3.879L1,1.121C1,1.054 1.294,1 1.655,1L23.345,1C23.706,1 24,1.054 24,1.121ZM2.365,1.252L2.365,3.748L22.635,3.748L22.635,1.252L2.365,1.252Z"/>
-            </g>
-            <g transform="matrix(1,0,0,1,3.55271e-15,-0.536933)">
-                <path d="M10,23.625C9.655,23.625 9.375,23.345 9.375,23C9.375,22.655 9.655,22.375 10,22.375L14,22.375C14.345,22.375 14.625,22.655 14.625,23C14.625,23.345 14.345,23.625 14,23.625L10,23.625Z"/>
-            </g>
-            <g transform="matrix(3.68716,0,0,1,-32.2422,-16.1143)">
-                <path d="M10,23.625C9.906,23.625 9.83,23.345 9.83,23C9.83,22.655 9.906,22.375 10,22.375L14,22.375C14.094,22.375 14.17,22.655 14.17,23C14.17,23.345 14.094,23.625 14,23.625L10,23.625Z"/>
-            </g>
-            <g transform="matrix(3.68716,0,0,1,-32.2422,-13.1367)">
-                <path d="M10,23.625C9.906,23.625 9.83,23.345 9.83,23C9.83,22.655 9.906,22.375 10,22.375L14,22.375C14.094,22.375 14.17,22.655 14.17,23C14.17,23.345 14.094,23.625 14,23.625L10,23.625Z"/>
-            </g>
-            <g transform="matrix(2.1725,0,0,1,-17.0956,-10.1591)">
-                <path d="M10,23.625C9.841,23.625 9.712,23.345 9.712,23C9.712,22.655 9.841,22.375 10,22.375L14,22.375C14.159,22.375 14.288,22.655 14.288,23C14.288,23.345 14.159,23.625 14,23.625L10,23.625Z"/>
-            </g>
-            <g transform="matrix(7.39088e-17,1.45702,-1,7.90757e-17,35,2.06476)">
-                <rect x="10" y="22.375" width="4" height="1.25"/>
-            </g>
-        </g>
-      </svg>
-    ');
+    background-image: url(${SharedMediaIcon});
     background-repeat: no-repeat;
     background-position: center;
   }
@@ -102,7 +74,6 @@ export const VideoPlayer = ({
     defaultVolume,
     timedTextTracks,
   });
-
   const { data } = useTimedTextMetadata(video.id);
   const choices = useMemo(
     () =>
