@@ -25,6 +25,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Configure sentry in the webtorrent application
 - Add custom frontend site management
 - Manage multiple ingresses
+- Manage shibboleth config per site config
 
 ### Changed
 
