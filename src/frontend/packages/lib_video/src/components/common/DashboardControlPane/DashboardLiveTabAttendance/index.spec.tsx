@@ -152,7 +152,7 @@ describe('<DashboardLiveTabAttendance />', () => {
       `/api/videos/${mockedVideo.id}/livesessions/list_attendances/?limit=999`,
     );
     // 3 results are displayed
-    expect(screen.getAllByTestId('live-attendance').length).toEqual(3);
+    expect(await screen.findAllByTestId('live-attendance')).toHaveLength(3);
 
     screen.getByLabelText('Very diligent');
     screen.getByText('qbrooks');

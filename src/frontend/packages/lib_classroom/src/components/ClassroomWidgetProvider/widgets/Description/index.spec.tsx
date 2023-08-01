@@ -81,14 +81,12 @@ describe('<Description />', () => {
     });
     fireEvent.blur(inputWelcomeText);
 
-    jest.runAllTimers();
-
     deferredPatch.resolve({ message: 'Classroom scheduled.' });
 
-    await waitFor(() => expect(fetchMock.calls()).toHaveLength(2));
+    await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
 
-    expect(fetchMock.calls()[1]![0]).toEqual('/api/classrooms/1/');
-    expect(fetchMock.calls()[1]![1]).toEqual({
+    expect(fetchMock.calls()[0]![0]).toEqual('/api/classrooms/1/');
+    expect(fetchMock.calls()[0]![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
       },

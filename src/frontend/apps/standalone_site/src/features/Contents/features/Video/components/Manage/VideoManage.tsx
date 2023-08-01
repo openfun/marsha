@@ -94,21 +94,21 @@ const VideoManage = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 
   const deleteVideos = useDeleteVideos({
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       toast.success(
         intl.formatMessage(messages.videosDeleteSuccess, {
-          item_count: selectedItems.length,
+          item_count: variables.ids.length,
         }),
         {
           position: 'bottom-center',
         },
       );
     },
-    onError: (err: unknown) => {
+    onError: (err, variables) => {
       report(err);
       toast.error(
         intl.formatMessage(messages.videosDeleteError, {
-          item_count: selectedItems.length,
+          item_count: variables.ids.length,
         }),
         {
           position: 'bottom-center',

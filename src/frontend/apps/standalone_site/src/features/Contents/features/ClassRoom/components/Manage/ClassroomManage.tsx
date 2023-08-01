@@ -88,21 +88,21 @@ const ClassroomManage = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 
   const deleteClassrooms = useDeleteClassrooms({
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       toast.success(
         intl.formatMessage(messages.classroomsDeleteSuccess, {
-          item_count: selectedItems.length,
+          item_count: variables.ids.length,
         }),
         {
           position: 'bottom-center',
         },
       );
     },
-    onError: (err: unknown) => {
+    onError: (err, variables) => {
       report(err);
       toast.error(
         intl.formatMessage(messages.classroomsDeleteError, {
-          item_count: selectedItems.length,
+          item_count: variables.ids.length,
         }),
         {
           position: 'bottom-center',

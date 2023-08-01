@@ -106,7 +106,7 @@ export const useCreateFileDepository = (
       }),
     ...options,
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries([modelName.FileDepositories]);
+      queryClient.invalidateQueries([[modelName.FileDepositories]]);
       if (options?.onSuccess) {
         options.onSuccess(data, variables, context);
       }
@@ -146,13 +146,13 @@ export const useUpdateFileDepository = (
       }),
     ...options,
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries([modelName.FileDepositories]);
+      queryClient.invalidateQueries([[modelName.FileDepositories]]);
       if (options?.onSuccess) {
         options.onSuccess(data, variables, context);
       }
     },
     onError: (error, variables, context) => {
-      queryClient.invalidateQueries([modelName.FileDepositories]);
+      queryClient.invalidateQueries([[modelName.FileDepositories]]);
       if (options?.onError) {
         options.onError(error, variables, context);
       }
@@ -218,13 +218,13 @@ export const useUpdateDepositedFile = (
       }),
     ...options,
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries([modelName.DepositedFiles]);
+      queryClient.invalidateQueries([[modelName.DepositedFiles]]);
       if (options?.onSuccess) {
         options.onSuccess(data, variables, context);
       }
     },
     onError: (error, variables, context) => {
-      queryClient.invalidateQueries([modelName.DepositedFiles]);
+      queryClient.invalidateQueries([[modelName.DepositedFiles]]);
       if (options?.onError) {
         options.onError(error, variables, context);
       }

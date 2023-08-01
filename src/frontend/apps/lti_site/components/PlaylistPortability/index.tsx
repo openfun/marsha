@@ -159,9 +159,11 @@ export const PlaylistPortability = ({ object }: PlaylistPortabilityProps) => {
   const intl = useIntl();
   const [newPortabilityID, setNewPortabilityID] = useState('');
 
-  const { data: playlist, status: usePlaylistStatus } = usePlaylist(
-    object.playlist.id,
-  );
+  const {
+    data: playlist,
+    status: usePlaylistStatus,
+    fetchStatus: usePlaylistFetchStatus,
+  } = usePlaylist(object.playlist.id);
 
   const mutation = useUpdatePlaylist(object.playlist.id, {
     onSuccess: () => {
@@ -192,99 +194,93 @@ export const PlaylistPortability = ({ object }: PlaylistPortabilityProps) => {
   };
 
   let content: JSX.Element = <Fragment></Fragment>;
-  switch (usePlaylistStatus) {
-    case 'idle':
-    case 'loading':
-      content = (
-        <Spinner size="large">
-          <FormattedMessage {...messages.loadingPlaylist} />
-        </Spinner>
-      );
-      break;
+  if (usePlaylistStatus === 'error') {
+    content = <ErrorMessage code={ErrorComponents.generic} />;
+  } else if (usePlaylistStatus === 'success') {
+    content = (
+      <React.Fragment>
+        <Box align="center" direction="row" pad={{ top: 'small' }}>
+          <Text role="heading" margin="small">
+            <CopyClipboard
+              copyId={`playlist-${playlist?.id}`}
+              text={
+                <FormattedMessage
+                  {...messages.playlistTitle}
+                  values={{ title: playlist?.title, id: playlist?.id }}
+                />
+              }
+              textToCopy={playlist?.id}
+              title={intl.formatMessage(messages.copy, {
+                text: playlist?.id,
+              })}
+              onSuccess={(event) => {
+                toast.success(
+                  intl.formatMessage(messages.copied, { text: event.text }),
+                );
+              }}
+              onError={(event) => {
+                toast.error(event.text);
+              }}
+            />
+          </Text>
+        </Box>
 
-    case 'error':
-      content = <ErrorMessage code={ErrorComponents.generic} />;
-      break;
-
-    case 'success':
-      content = (
-        <React.Fragment>
-          <Box align="center" direction="row" pad={{ top: 'small' }}>
-            <Text role="heading" margin="small">
-              <CopyClipboard
-                copyId={`playlist-${playlist?.id}`}
-                text={
-                  <FormattedMessage
-                    {...messages.playlistTitle}
-                    values={{ title: playlist?.title, id: playlist?.id }}
+        <Box width="large">
+          <PlaylistPortabilityList
+            playlist={playlist}
+            removePlaylistPortability={removePlaylistPortability}
+          />
+          <Box>
+            <Form onSubmit={addPlaylistPortability}>
+              <FormField
+                label={<FormattedMessage {...messages.shareWithPlaylist} />}
+                htmlFor="port-to-playlist-uuid"
+              >
+                <Box direction="row">
+                  <TextInput
+                    placeholder={intl.formatMessage(
+                      messages.shareWithPlaylistPlaceholder,
+                    )}
+                    id="port-to-playlist-uuid"
+                    onChange={(event) =>
+                      setNewPortabilityID(event.target.value)
+                    }
+                    value={newPortabilityID}
+                    plain
                   />
-                }
-                textToCopy={playlist?.id}
-                title={intl.formatMessage(messages.copy, {
-                  text: playlist?.id,
-                })}
-                onSuccess={(event) => {
-                  toast.success(
-                    intl.formatMessage(messages.copied, { text: event.text }),
-                  );
-                }}
-                onError={(event) => {
-                  toast.error(event.text);
-                }}
-              />
+                  <Button
+                    type="submit"
+                    aria-label={intl.formatMessage(messages.addPortability)}
+                    icon={<AddCircle />}
+                  />
+                </Box>
+              </FormField>
+            </Form>
+          </Box>
+
+          <Box
+            align="center"
+            margin={{ top: 'medium' }}
+            pad="small"
+            background="status-warning"
+            width="large"
+          >
+            <Text>
+              <FormattedMessage {...messages.shareWithPlaylistDetails} />
             </Text>
           </Box>
-
-          <Box width="large">
-            <PlaylistPortabilityList
-              playlist={playlist}
-              removePlaylistPortability={removePlaylistPortability}
-            />
-            <Box>
-              <Form onSubmit={addPlaylistPortability}>
-                <FormField
-                  label={<FormattedMessage {...messages.shareWithPlaylist} />}
-                  htmlFor="port-to-playlist-uuid"
-                >
-                  <Box direction="row">
-                    <TextInput
-                      placeholder={intl.formatMessage(
-                        messages.shareWithPlaylistPlaceholder,
-                      )}
-                      id="port-to-playlist-uuid"
-                      onChange={(event) =>
-                        setNewPortabilityID(event.target.value)
-                      }
-                      value={newPortabilityID}
-                      plain
-                    />
-                    <Button
-                      type="submit"
-                      aria-label={intl.formatMessage(messages.addPortability)}
-                      icon={<AddCircle />}
-                    />
-                  </Box>
-                </FormField>
-              </Form>
-            </Box>
-
-            <Box
-              align="center"
-              margin={{ top: 'medium' }}
-              pad="small"
-              background="status-warning"
-              width="large"
-            >
-              <Text>
-                <FormattedMessage {...messages.shareWithPlaylistDetails} />
-              </Text>
-            </Box>
-          </Box>
-        </React.Fragment>
-      );
-      break;
-    default:
-      break;
+        </Box>
+      </React.Fragment>
+    );
+  } else if (
+    usePlaylistFetchStatus === 'idle' ||
+    usePlaylistStatus === 'loading'
+  ) {
+    content = (
+      <Spinner size="large">
+        <FormattedMessage {...messages.loadingPlaylist} />
+      </Spinner>
+    );
   }
 
   return (

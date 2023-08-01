@@ -7,6 +7,7 @@ import {
   useCurrentUser,
 } from 'lib-components';
 import React, {
+  Fragment,
   Suspense,
   lazy,
   useCallback,
@@ -75,10 +76,13 @@ const DashboardClassroom = ({ classroomId }: DashboardClassroomProps) => {
     (user && user !== AnonymousUser.ANONYMOUS && user.full_name) || '',
   );
 
-  const { data: classroom, status: useClassroomStatus } = useClassroom(
-    classroomId,
-    { refetchInterval: classroomRefetchInterval.current },
-  );
+  const {
+    data: classroom,
+    status: useClassroomStatus,
+    fetchStatus: useClassroomFetchStatus,
+  } = useClassroom(classroomId, {
+    refetchInterval: classroomRefetchInterval.current,
+  });
 
   const consumerSiteUserId = `${context.consumer_site || ''}_${
     user && user !== AnonymousUser.ANONYMOUS && user.id ? user.id : ''
@@ -141,76 +145,71 @@ const DashboardClassroom = ({ classroomId }: DashboardClassroomProps) => {
     askUserNameAction(false);
   }, [askUserNameAction]);
 
-  let content: JSX.Element;
-  switch (useClassroomStatus) {
-    case 'idle':
-    case 'loading':
-    default:
-      content = <Spinner />;
-      break;
-
-    case 'error':
-      content = <DashboardClassroomError />;
-      break;
-
-    case 'success':
-      if (askUsername) {
-        // When joining a classroom and user fullname is missing
-        if (canUpdate) {
-          // Instructors can cancel joining a classroom
-          content = (
-            <DashboardClassroomAskUsername
-              userFullname={userFullname}
-              setUserFullname={setUserFullname}
-              onJoin={joinClassroomAction}
-              onCancel={() => askUserNameAction(false)}
-            />
-          );
-        } else {
-          // Students can not cancel joining a classroom
-          content = (
-            <DashboardClassroomAskUsernameStudent
-              userFullname={userFullname}
-              setUserFullname={setUserFullname}
-              onJoin={joinClassroomAction}
-              isRecordingEnabled={classroom.enable_recordings}
-              recordingPurpose={classroom.recording_purpose}
-            />
-          );
-        }
-      } else if (!canUpdate) {
-        // Student dashboard
+  let content: JSX.Element = <Fragment></Fragment>;
+  if (useClassroomStatus === 'error') {
+    content = <DashboardClassroomError />;
+  } else if (useClassroomStatus === 'success') {
+    if (askUsername) {
+      // When joining a classroom and user fullname is missing
+      if (canUpdate) {
+        // Instructors can cancel joining a classroom
         content = (
-          <DashboardClassroomStudent
-            classroom={classroom}
-            joinedAs={classroomJoined && userFullname}
-            joinClassroomAction={joinClassroomAction}
-            classroomEnded={classroomEnded}
+          <DashboardClassroomAskUsername
+            userFullname={userFullname}
+            setUserFullname={setUserFullname}
+            onJoin={joinClassroomAction}
+            onCancel={() => askUserNameAction(false)}
           />
         );
       } else {
-        // Instructor dashboard
+        // Students can not cancel joining a classroom
         content = (
-          <DashboardClassroomInstructor
-            classroom={classroom}
-            joinedAs={classroomJoined && userFullname}
-            joinClassroomAction={joinClassroomAction}
-            classroomEnded={classroomEnded}
+          <DashboardClassroomAskUsernameStudent
+            userFullname={userFullname}
+            setUserFullname={setUserFullname}
+            onJoin={joinClassroomAction}
+            isRecordingEnabled={classroom.enable_recordings}
+            recordingPurpose={classroom.recording_purpose}
           />
         );
       }
+    } else if (!canUpdate) {
+      // Student dashboard
+      content = (
+        <DashboardClassroomStudent
+          classroom={classroom}
+          joinedAs={classroomJoined && userFullname}
+          joinClassroomAction={joinClassroomAction}
+          classroomEnded={classroomEnded}
+        />
+      );
+    } else {
+      // Instructor dashboard
+      content = (
+        <DashboardClassroomInstructor
+          classroom={classroom}
+          joinedAs={classroomJoined && userFullname}
+          joinClassroomAction={joinClassroomAction}
+          classroomEnded={classroomEnded}
+        />
+      );
+    }
 
-      if (!classroomJoined && classroomUrl && classroom?.started) {
-        // When user is not in the classroom,
-        // classroom url is appended to current dashboard
-        content = (
-          <React.Fragment>
-            {content}
-            <DashboardClassroomJoin href={classroomUrl} />
-          </React.Fragment>
-        );
-      }
-      break;
+    if (!classroomJoined && classroomUrl && classroom?.started) {
+      // When user is not in the classroom,
+      // classroom url is appended to current dashboard
+      content = (
+        <React.Fragment>
+          {content}
+          <DashboardClassroomJoin href={classroomUrl} />
+        </React.Fragment>
+      );
+    }
+  } else if (
+    useClassroomFetchStatus === 'idle' ||
+    useClassroomStatus === 'loading'
+  ) {
+    content = <Spinner />;
   }
 
   return (
