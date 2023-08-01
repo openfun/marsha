@@ -72,6 +72,35 @@ class SiteConfig(BaseModel):
         blank=True,
     )
 
+    saml_technical_contact = models.JSONField(
+        blank=True,
+        default=dict,
+        verbose_name=_("SAML technical contact"),
+        help_text=_("Technical contact responsible for your app"),
+    )
+
+    saml_support_contact = models.JSONField(
+        blank=True,
+        default=dict,
+        verbose_name=_("SAML support contact"),
+        help_text=_("Support contact responsible for your app"),
+    )
+
+    saml_organization_info = models.JSONField(
+        blank=True,
+        default=dict,
+        verbose_name=_("SAML organization info"),
+        help_text=_("Organization info for your app"),
+    )
+
+    saml_entity_id = models.CharField(
+        max_length=255,
+        verbose_name=_("saml entity id"),
+        help_text=_("should be a URL that includes a domain name you own"),
+        null=True,
+        blank=True,
+    )
+
     def __str__(self):
         return f"Config associated to: {self.site.name}"
 
