@@ -55,16 +55,6 @@
       "allowedVersions": "<1.27"
     },
     {
-      "enabled": false,
-      "groupName": "ignore python dependencies",
-      "matchManagers": [
-        "setup-cfg"
-      ],
-      "matchPackageNames": [
-        "lxml"
-      ]
-    },
-    {
       "groupName": "allowed docker images",
       "matchDatasources": [
         "docker"
