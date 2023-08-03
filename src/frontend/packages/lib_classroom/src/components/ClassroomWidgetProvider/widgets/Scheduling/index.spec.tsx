@@ -1,8 +1,8 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import userEventInit from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { InfoWidgetModalProvider } from 'lib-components';
-import { Deferred, render } from 'lib-tests';
+import { Deferred, render, userTypeDatePicker } from 'lib-tests';
 import { DateTime, Duration, Settings } from 'luxon';
 
 import { classroomMockFactory } from '@lib-classroom/utils/tests/factories';
@@ -22,6 +22,11 @@ jest.mock('lib-components', () => ({
 
 Settings.defaultLocale = 'en';
 Settings.defaultZone = 'Europe/Paris';
+
+// eslint-disable-next-line testing-library/await-async-events
+const userEvent = userEventInit.setup({
+  advanceTimers: jest.advanceTimersByTime,
+});
 
 describe('<Scheduling />', () => {
   beforeEach(() => {
@@ -73,12 +78,12 @@ describe('<Scheduling />', () => {
       ),
     );
 
-    // using userEvent.type with following input doesn't work
-    const inputStartingAtDate = screen.getByLabelText(/starting date/i);
-    fireEvent.change(inputStartingAtDate, {
-      target: { value: startingAt.toFormat('yyyy/MM/dd') },
-    });
-    fireEvent.blur(inputStartingAtDate);
+    await userTypeDatePicker(
+      startingAt,
+      screen.getByText(/Starting date/i),
+      userEvent,
+    );
+
     deferredPatch.resolve({ message: 'Classroom scheduled.' });
 
     // using userEvent.type with following input doesn't work

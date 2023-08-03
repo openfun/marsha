@@ -1,5 +1,6 @@
-import { fireEvent, screen } from '@testing-library/react';
-import { render } from 'lib-tests';
+import { fireEvent, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { render, userTypeDatePicker } from 'lib-tests';
 import { DateTime, Duration, Settings } from 'luxon';
 import React from 'react';
 
@@ -9,7 +10,7 @@ Settings.defaultLocale = 'en';
 Settings.defaultZone = 'Europe/Paris';
 
 describe('<SchedulingFields />', () => {
-  it('triggers callbacks when updating fields', () => {
+  it('triggers callbacks when updating fields', async () => {
     const onStartingAtChange = jest.fn();
     const onEstimatedDurationChange = jest.fn();
 
@@ -22,13 +23,16 @@ describe('<SchedulingFields />', () => {
       />,
     );
 
+    const inputStartingAtDate = within(
+      screen.getByTestId('starting-at-date-picker'),
+    ).getByRole('presentation');
+    expect(inputStartingAtDate).toHaveTextContent('mm/dd/yyyy');
+
     const startingAt = DateTime.local()
       .plus({ days: 1 })
       .set({ second: 0, millisecond: 0 });
-    const inputStartingAtDate = screen.getByLabelText(/starting date/i);
-    fireEvent.change(inputStartingAtDate, {
-      target: { value: startingAt.toFormat('yyyy/MM/dd') },
-    });
+    await userTypeDatePicker(startingAt, screen.getByText(/Starting date/i));
+    expect(inputStartingAtDate).toHaveTextContent(startingAt.toLocaleString());
 
     const inputStartingAtTime = screen.getByLabelText(/starting time/i);
     fireEvent.change(inputStartingAtTime, {
@@ -58,9 +62,10 @@ describe('<SchedulingFields />', () => {
       />,
     );
 
-    expect(
-      screen.getByDisplayValue(startingAt.toFormat('yyyy/MM/dd')),
-    ).toBeInTheDocument();
+    const inputStartingAtDate = within(
+      screen.getByTestId('starting-at-date-picker'),
+    ).getByRole('presentation');
+    expect(inputStartingAtDate).toHaveTextContent('1/27/2022');
     expect(
       screen.getByDisplayValue(
         startingAt.toLocaleString(DateTime.TIME_24_SIMPLE),
@@ -83,7 +88,7 @@ describe('<SchedulingFields />', () => {
     ).toBeInTheDocument();
   });
 
-  it('clears inputs', () => {
+  it('clears inputs', async () => {
     const startingAt = DateTime.local(2022, 1, 27, 14, 22);
     const estimatedDuration = Duration.fromObject({ minutes: 30 });
     const onStartingAtChange = jest.fn();
@@ -98,8 +103,19 @@ describe('<SchedulingFields />', () => {
       />,
     );
 
-    const inputStartingAtDate = screen.getByLabelText(/starting date/i);
-    fireEvent.change(inputStartingAtDate, { target: { value: null } });
+    const inputStartingAtDate = within(
+      screen.getByTestId('starting-at-date-picker'),
+    ).getByRole('presentation');
+    expect(inputStartingAtDate).toHaveTextContent('1/27/2022');
+
+    await userEvent.click(
+      screen.getByRole('button', {
+        name: /Clear date/i,
+      }),
+    );
+
+    expect(inputStartingAtDate).toHaveTextContent('mm/dd/yyyy');
+
     expect(onStartingAtChange).toHaveBeenCalledWith(null);
 
     const inputStartingAtTime = screen.getByLabelText(/starting time/i);
@@ -111,7 +127,7 @@ describe('<SchedulingFields />', () => {
     expect(onEstimatedDurationChange).toHaveBeenCalledWith(null);
   });
 
-  it('does not allow to set a date outside bounded range', () => {
+  it('does not allow to set a date outside bounded range', async () => {
     const onStartingAtChange = jest.fn();
     const onEstimatedDurationChange = jest.fn();
 
@@ -125,12 +141,18 @@ describe('<SchedulingFields />', () => {
     );
 
     const startingAtPast = DateTime.local().minus({ days: 1 });
-    const inputStartingAtDate = screen.getByLabelText(/starting date/i);
-    expect(inputStartingAtDate).toHaveValue('');
-    fireEvent.change(inputStartingAtDate, {
-      target: { value: startingAtPast.toFormat('yyyy/MM/dd') },
-    });
+    const inputStartingAtDate = within(
+      screen.getByTestId('starting-at-date-picker'),
+    ).getByRole('presentation');
+    expect(inputStartingAtDate).toHaveTextContent('mm/dd/yyyy');
+    await userTypeDatePicker(
+      startingAtPast,
+      screen.getByText(/Starting date/i),
+    );
+    const allSpin = await screen.findAllByRole('spinbutton');
 
-    expect(inputStartingAtDate).toHaveValue('');
+    allSpin.forEach((spin) => {
+      expect(spin).toHaveAttribute('aria-invalid', 'true');
+    });
   });
 });

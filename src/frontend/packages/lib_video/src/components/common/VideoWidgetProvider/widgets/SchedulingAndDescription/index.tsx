@@ -110,7 +110,7 @@ export const SchedulingAndDescription = () => {
       initialOpenValue={true}
       title={intl.formatMessage(messages.title)}
     >
-      <Box direction="column" gap="small">
+      <Box gap="small">
         <SchedulingFields
           estimatedDuration={video.estimated_duration}
           disabled={video.live_state !== liveState.IDLE}
@@ -126,6 +126,7 @@ export const SchedulingAndDescription = () => {
             });
           }}
           startingAt={video.starting_at}
+          vertical
         />
 
         <DashedBoxCustom>

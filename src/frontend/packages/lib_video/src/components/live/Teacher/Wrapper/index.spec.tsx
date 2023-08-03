@@ -303,7 +303,7 @@ describe('components/DashboardLive', () => {
     await userEvent.click(stopButton);
 
     //  modal is open
-    await screen.findByRole('button', { name: /Cancel/i });
+    await screen.findByRole('button', { name: 'Cancel' });
     screen.getByRole('button', { name: 'Stop the live' });
     expect(stopButton).toBeDisabled();
 
@@ -384,7 +384,7 @@ describe('components/DashboardLive', () => {
     expect(await screen.findByText('Display name')).toBeInTheDocument();
   });
 
-  it('configures live state without chat when chat is disabled', () => {
+  it('configures live state without chat when chat is disabled', async () => {
     render(
       wrapInVideo(
         <LiveModaleConfigurationProvider value={null}>
@@ -415,7 +415,9 @@ describe('components/DashboardLive', () => {
 
     expect(screen.queryByText('Join the chat')).not.toBeInTheDocument();
 
-    screen.getByText('No viewers are currently connected to your stream.');
+    await screen.findByText(
+      'No viewers are currently connected to your stream.',
+    );
 
     expect(useLivePanelState.getState().availableItems).toEqual([
       LivePanelItem.VIEWERS_LIST,
@@ -457,7 +459,7 @@ describe('components/DashboardLive', () => {
     );
   });
 
-  it('does not accept participants asking to join if join mode is approval', () => {
+  it('does not accept participants asking to join if join mode is approval', async () => {
     render(
       wrapInVideo(
         <LiveModaleConfigurationProvider value={null}>
@@ -484,9 +486,10 @@ describe('components/DashboardLive', () => {
     );
 
     expect(mockAcceptParticipantToJoin).not.toHaveBeenCalled();
+    expect(await screen.findByText('live raw')).toBeInTheDocument();
   });
 
-  it('check display title and starting date on the title bar', () => {
+  it('check display title and starting date on the title bar', async () => {
     render(
       wrapInVideo(
         <LiveModaleConfigurationProvider value={null}>
@@ -510,7 +513,7 @@ describe('components/DashboardLive', () => {
     );
 
     expect(
-      screen.getByDisplayValue("Hello world, it's me"),
+      await screen.findByDisplayValue("Hello world, it's me"),
     ).toBeInTheDocument();
     expect(
       screen.getByText('10/1/2020  ·  8:00:00 AM', {

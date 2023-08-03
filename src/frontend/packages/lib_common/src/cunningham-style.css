@@ -49,3 +49,24 @@
     gap: 1rem;
   }
 }
+/**
+ * Date picker
+*/
+.c__popover.c__popover--borderless {
+  z-index: 3;
+}
+.c__date-picker__wrapper {
+  transition: all var(--c--theme--transitions--duration)
+    var(--c--theme--transitions--ease-out);
+}
+.c__date-picker:not(.c__date-picker--disabled):hover .c__date-picker__wrapper {
+  box-shadow: var(--c--theme--colors--primary-500) 0px 0px 0px 2px;
+}
+.c__date-picker.c__date-picker--invalid:not(.c__date-picker--disabled):hover
+  .c__date-picker__wrapper {
+  box-shadow: var(--c--theme--colors--danger-300) 0px 0px 0px 2px;
+}
+.c__date-picker__wrapper button[aria-label='Clear date'],
+.c__date-picker.c__date-picker--invalid .c__date-picker__wrapper * {
+  color: var(--c--theme--colors--danger-300);
+}

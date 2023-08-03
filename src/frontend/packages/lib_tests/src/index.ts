@@ -1,4 +1,5 @@
 export * from './Deferred';
+export * from './cunningham';
 export * from './imageSnapshot';
 export * from './intl';
 export * from './render';

@@ -1,4 +1,4 @@
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
@@ -6,11 +6,15 @@ import {
   useJwt,
   videoMockFactory,
 } from 'lib-components';
-import { render } from 'lib-tests';
+import { render, userTypeDatePicker } from 'lib-tests';
+import { DateTime, Settings } from 'luxon';
 
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
 import { RetentionDate } from '.';
+
+Settings.defaultLocale = 'en';
+Settings.defaultZone = 'Europe/Paris';
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
@@ -43,27 +47,41 @@ describe('Video <RetentionDate />', () => {
       ),
     );
 
-    expect(screen.getByText('Retention date')).toBeInTheDocument();
-    const datePickerInput = screen.getByRole('textbox');
+    expect(screen.getAllByText('Retention date')).toBeTruthy();
 
-    fireEvent.change(datePickerInput, {
-      target: { value: '2020/01/01' },
-    });
+    const inputRetentionDate = within(
+      screen.getByTestId('retention-date-picker'),
+    ).getByRole('presentation');
 
-    expect((datePickerInput as HTMLInputElement).value).toBe('2020/01/01');
+    expect(inputRetentionDate).toHaveTextContent('mm/dd/yyyy');
+
+    const retentionDate = DateTime.local()
+      .plus({ days: 1 })
+      .set({ second: 0, millisecond: 0 });
+
+    await userTypeDatePicker(
+      retentionDate,
+      screen.getAllByText(/Retention date/i)[1],
+    );
+
+    expect(inputRetentionDate).toHaveTextContent(
+      retentionDate.toLocaleString(),
+    );
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
 
     const lastCall = fetchMock.lastCall();
     expect(lastCall).not.toBe(undefined);
     expect(lastCall?.[0]).toBe(`/api/videos/${mockedVideo.id}/`);
-    expect(lastCall?.[1]?.body).toEqual('{"retention_date":"2020-01-01"}');
+    expect(lastCall?.[1]?.body).toEqual(
+      `{"retention_date":"${retentionDate.toISODate()!}"}`,
+    );
     expect(lastCall?.[1]?.method).toBe('PATCH');
   });
 
   it('renders the component with a default date and deletes it', async () => {
     const mockedVideo = videoMockFactory({
-      retention_date: '2020-01-01',
+      retention_date: '2020-03-01',
     });
 
     fetchMock.mock(`/api/videos/${mockedVideo.id}/`, 200, { method: 'PATCH' });
@@ -77,10 +95,12 @@ describe('Video <RetentionDate />', () => {
       ),
     );
 
-    expect(screen.getByText('Retention date')).toBeInTheDocument();
-    const datePickerInput = await screen.findByRole('textbox');
+    expect(screen.getAllByText('Retention date')).toBeTruthy();
 
-    expect((datePickerInput as HTMLInputElement).value).toBe('2020/01/01');
+    const inputRetentionDate = within(
+      screen.getByTestId('retention-date-picker'),
+    ).getByRole('presentation');
+    expect(inputRetentionDate).toHaveTextContent('3/1/2020');
 
     const deleteButton = await screen.findByRole('button', {
       name: 'Delete retention date',
@@ -113,7 +133,7 @@ describe('Video <RetentionDate />', () => {
       ),
     );
 
-    expect(screen.getByText('Retention date')).toBeInTheDocument();
+    expect(screen.getAllByText('Retention date')).toBeTruthy();
 
     const deleteButton = await screen.findByRole('button', {
       name: 'Delete retention date',

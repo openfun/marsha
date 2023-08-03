@@ -1,4 +1,5 @@
-import { Box, Button, DateInput } from 'grommet';
+import { CunninghamProvider, DatePicker } from '@openfun/cunningham-react';
+import { Box, Button } from 'grommet';
 import { Nullable } from 'lib-common';
 import { FoldableItem, Video, debounce } from 'lib-components';
 import { DateTime } from 'luxon';
@@ -73,15 +74,33 @@ export const RetentionDate = () => {
     },
   );
 
-  function onChange(new_retention_date: string | string[]) {
-    let new_retention_date_formatted = null;
-    if (new_retention_date && typeof new_retention_date === 'string') {
-      const utcDateTime = DateTime.fromISO(new_retention_date, { zone: 'utc' });
-      const localDateTime = utcDateTime.toLocal();
-      new_retention_date_formatted = localDateTime.toFormat('yyyy-MM-dd');
+  /**
+   * @param new_retention_date in the format YYYY-MM-DD HH:MM:SS (ISO 8601) UTC
+   * @returns
+   */
+  function onChange(new_retention_date: string | null) {
+    /**
+     * The date is in UTC format so not as the client has chosen.
+     * We need to convert it to local date, then reconvert to YYYY-MM-DD
+     * locale `en-CA` is used to convert the date in the format YYYY-MM-DD
+     */
+    const local_new_retention_date = new_retention_date
+      ? new Date(new_retention_date).toLocaleDateString('en-CA')
+      : null;
+
+    setSelectedRetentionDate(local_new_retention_date || null);
+
+    if (
+      new_retention_date &&
+      new Date(new_retention_date).getTime() <=
+        new Date(DateTime.local().toISODate() || '').getTime()
+    ) {
+      return;
     }
-    debouncedUpdatedVideo({ retention_date: new_retention_date_formatted });
-    setSelectedRetentionDate(new_retention_date_formatted);
+
+    debouncedUpdatedVideo({
+      retention_date: local_new_retention_date,
+    });
   }
 
   return (
@@ -90,13 +109,35 @@ export const RetentionDate = () => {
       initialOpenValue
       title={intl.formatMessage(messages.title)}
     >
-      <Box direction="column" gap="small" style={{ marginTop: '0.75rem' }}>
-        <DateInput
-          name="Retention_date_picker"
-          format={intl.locale === 'fr' ? 'dd/mm/yyyy' : 'yyyy/mm/dd'}
-          value={selectedRetentionDate || ''}
-          onChange={({ value }) => onChange(value)}
-        />
+      <Box
+        direction="column"
+        gap="small"
+        style={{ marginTop: '0.75rem' }}
+        data-testid="retention-date-picker"
+      >
+        <CunninghamProvider>
+          <DatePicker
+            fullWidth
+            label={intl.formatMessage(messages.title)}
+            locale={intl.locale}
+            minValue={
+              DateTime.local()
+                .plus({ days: 1 })
+                .set({
+                  hour: 0,
+                  minute: 0,
+                  second: 0,
+                })
+                .toISO() as string
+            }
+            onChange={onChange}
+            value={
+              selectedRetentionDate
+                ? new Date(selectedRetentionDate).toISOString()
+                : null
+            }
+          />
+        </CunninghamProvider>
         <StyledAnchorButton
           disabled={!selectedRetentionDate}
           a11yTitle={intl.formatMessage(

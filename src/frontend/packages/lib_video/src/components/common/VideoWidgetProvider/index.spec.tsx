@@ -152,8 +152,12 @@ describe('<VideoWidgetProvider />', () => {
       render(wrapInVideo(<VideoWidgetProvider isLive isTeacher />, mockVideo));
 
       await screen.findByText('Description');
-      const inputStartingAtDate = screen.getByLabelText(/starting date/i);
-      expect(inputStartingAtDate).toHaveValue('2022/01/13');
+
+      const inputStartingAtDate = within(
+        screen.getByTestId('starting-at-date-picker'),
+      ).getByRole('presentation');
+      expect(inputStartingAtDate).toHaveTextContent('1/13/2022');
+
       const inputStartingAtTime = screen.getByLabelText(/starting time/i);
       expect(inputStartingAtTime).toHaveValue('12:00');
       const inputEstimatedDuration =
