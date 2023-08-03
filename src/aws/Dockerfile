@@ -16,23 +16,6 @@ ARG PIXMAN_VERSION
 # COPY mediainfo in core stage
 COPY --from=mediainfo /tmp/mediainfo/bin/mediainfo /opt/bin/mediainfo
 
-# Copy sources
-# LAMBDA_TASK_ROOT is defined in base image and its value is /var/task
-COPY lambda-complete ${LAMBDA_TASK_ROOT}/lambda-complete/
-COPY lambda-configure ${LAMBDA_TASK_ROOT}/lambda-configure/
-COPY lambda-elemental-routing ${LAMBDA_TASK_ROOT}/lambda-elemental-routing/
-COPY lambda-convert ${LAMBDA_TASK_ROOT}/lambda-convert/
-COPY lambda-medialive ${LAMBDA_TASK_ROOT}/lambda-medialive/
-COPY lambda-mediapackage ${LAMBDA_TASK_ROOT}/lambda-mediapackage/
-COPY lambda-migrate ${LAMBDA_TASK_ROOT}/lambda-migrate/
-COPY utils ${LAMBDA_TASK_ROOT}/utils/
-
-# Install yarn and yarn-recursive
-RUN npm install -g yarn
-
-# configure volume for lambda mediapackge
-VOLUME /mnt/transcoded_video
-
 WORKDIR /root
 
 ## Install packages needed to compile poppler
@@ -123,6 +106,23 @@ RUN yum -y install clamav && \
     freshclam
 
 WORKDIR /var/task
+
+# Copy sources
+# LAMBDA_TASK_ROOT is defined in base image and its value is /var/task
+COPY lambda-complete ${LAMBDA_TASK_ROOT}/lambda-complete/
+COPY lambda-configure ${LAMBDA_TASK_ROOT}/lambda-configure/
+COPY lambda-elemental-routing ${LAMBDA_TASK_ROOT}/lambda-elemental-routing/
+COPY lambda-convert ${LAMBDA_TASK_ROOT}/lambda-convert/
+COPY lambda-medialive ${LAMBDA_TASK_ROOT}/lambda-medialive/
+COPY lambda-mediapackage ${LAMBDA_TASK_ROOT}/lambda-mediapackage/
+COPY lambda-migrate ${LAMBDA_TASK_ROOT}/lambda-migrate/
+COPY utils ${LAMBDA_TASK_ROOT}/utils/
+
+# Install yarn and yarn-recursive
+RUN npm install -g yarn
+
+# configure volume for lambda mediapackge
+VOLUME /mnt/transcoded_video
 
 # Image used in developement with development dependencies
 FROM core as development

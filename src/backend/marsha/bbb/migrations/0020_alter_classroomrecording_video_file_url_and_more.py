@@ -5,7 +5,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("bbb", "0018_classroom_instructor_token_classroom_public_token"),
+        ("bbb", "0019_add_retention_date_to_classroom"),
     ]
 
     operations = [
