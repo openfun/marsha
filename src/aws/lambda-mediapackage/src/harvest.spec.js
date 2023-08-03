@@ -127,7 +127,13 @@ describe('harvest', () => {
 
     mockSetRecordingSliceManifestKey.mockReturnValue({ success: true });
     mockRecordSlicesState.mockReturnValue({ status: 'pending' });
-
+    mockDescribeOriginEndpoint.mockReturnValue({
+      promise: () =>
+        Promise.resolve({
+          Id: 'test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271_hls',
+          ChannelId: 'mediapackage_channel_id',
+        }),
+    });
     await harvest(event, 'test-lambda-mediapackage');
 
     expect(mockSetRecordingSliceManifestKey).toHaveBeenCalledWith(
@@ -140,44 +146,15 @@ describe('harvest', () => {
       'a3e213a7-9c56-4bd3-b71c-fe567b0cfe22',
     );
 
-    expect(mockDescribeOriginEndpoint).not.toHaveBeenCalled();
+    expect(mockDescribeOriginEndpoint).toHaveBeenCalledWith({
+      Id: 'test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271_hls',
+    });
     expect(mockDeleteOriginEndpoint).not.toHaveBeenCalled();
     expect(mockDeleteChannel).not.toHaveBeenCalled();
     expect(mockRunTask).not.toHaveBeenCalled();
   });
 
-  it('receives an event, checks harvesting status, run FARGATE tasks and upload expected files on destination bucket', async () => {
-    const event = {
-      id: '8f9b8e72-0b31-e883-f19c-aec84742f3ce_2',
-      'detail-type': 'MediaPackage HarvestJob Notification',
-      source: 'aws.mediapackage',
-      account: 'aws_account_id',
-      time: '2019-07-16T17:29:36Z',
-      region: 'eu-west-1',
-      resources: [
-        'arn:aws:mediapackage:eu-west-1:aws_account_id:harvest_jobs/test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271',
-      ],
-      detail: {
-        harvest_job: {
-          id: 'test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271_2',
-          arn: 'arn:aws:mediapackage-vod:eu-west-1:aws_account_id:harvest_jobs/test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271',
-          status: 'SUCCEEDED',
-          origin_endpoint_id:
-            'test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271_hls',
-          start_time: '2019-06-26T20:30:00-08:00',
-          end_time: '2019-06-26T21:00:00-08:00',
-          s3_destination: {
-            bucket_name: 'test-marsha-destination',
-            manifest_key:
-              'a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/cmaf/slice_2/1610546271_2.m3u8',
-            role_arn: 'arn:aws:iam::aws_account_id:role/S3Access_role',
-          },
-          created_at:
-            'arn:aws:iam::aws_account_id:role/test-marsha-mediapackage-harvest-job-s3-role',
-        },
-      },
-    };
-
+  async function testCompleteHarvestProcess(event) {
     mockSetRecordingSliceManifestKey.mockReturnValue({ success: true });
     mockRecordSlicesState.mockReturnValue({
       status: 'harvested',
@@ -230,13 +207,6 @@ describe('harvest', () => {
       test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271_hls_2.m3u8`,
     );
 
-    mockDescribeOriginEndpoint.mockReturnValue({
-      promise: () =>
-        Promise.resolve({
-          Id: 'mediapackage_endpoint_origin_id',
-          ChannelId: 'mediapackage_channel_id',
-        }),
-    });
     mockDeleteOriginEndpoint.mockReturnValue({
       promise: () => Promise.resolve(),
     });
@@ -253,11 +223,6 @@ describe('harvest', () => {
 
     await harvest(event, 'test-lambda-mediapackage');
 
-    expect(mockSetRecordingSliceManifestKey).toHaveBeenCalledWith(
-      'a3e213a7-9c56-4bd3-b71c-fe567b0cfe22',
-      'test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271_2',
-      'a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/cmaf/slice_2/1610546271_2.m3u8',
-    );
     expect(mockRecordSlicesState).toHaveBeenCalledWith(
       'a3e213a7-9c56-4bd3-b71c-fe567b0cfe22',
     );
@@ -421,5 +386,106 @@ describe('harvest', () => {
       }),
       ContentType: 'application/json',
     });
+  }
+
+  it('receives an event, checks harvesting status, run FARGATE tasks and upload expected files on destination bucket with stamp in Id', async () => {
+    const event = {
+      id: '8f9b8e72-0b31-e883-f19c-aec84742f3ce_2',
+      'detail-type': 'MediaPackage HarvestJob Notification',
+      source: 'aws.mediapackage',
+      account: 'aws_account_id',
+      time: '2019-07-16T17:29:36Z',
+      region: 'eu-west-1',
+      resources: [
+        'arn:aws:mediapackage:eu-west-1:aws_account_id:harvest_jobs/test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271',
+      ],
+      detail: {
+        harvest_job: {
+          id: 'test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271_2',
+          arn: 'arn:aws:mediapackage-vod:eu-west-1:aws_account_id:harvest_jobs/test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271',
+          status: 'SUCCEEDED',
+          origin_endpoint_id:
+            'test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271_hls',
+          start_time: '2019-06-26T20:30:00-08:00',
+          end_time: '2019-06-26T21:00:00-08:00',
+          s3_destination: {
+            bucket_name: 'test-marsha-destination',
+            manifest_key:
+              'a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/cmaf/slice_2/1610546271_2.m3u8',
+            role_arn: 'arn:aws:iam::aws_account_id:role/S3Access_role',
+          },
+          created_at:
+            'arn:aws:iam::aws_account_id:role/test-marsha-mediapackage-harvest-job-s3-role',
+        },
+      },
+    };
+
+    mockDescribeOriginEndpoint.mockReturnValue({
+      promise: () =>
+        Promise.resolve({
+          Id: 'mediapackage_endpoint_origin_id',
+          ChannelId: 'mediapackage_channel_id',
+        }),
+    });
+
+    await testCompleteHarvestProcess(event);
+
+    expect(mockSetRecordingSliceManifestKey).toHaveBeenCalledWith(
+      'a3e213a7-9c56-4bd3-b71c-fe567b0cfe22',
+      'test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271_2',
+      'a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/cmaf/slice_2/1610546271_2.m3u8',
+    );
+  });
+
+  it('receives an event, checks harvesting status, run FARGATE tasks and upload expected files on destination bucket with stamp in tags', async () => {
+    const event = {
+      id: '8f9b8e72-0b31-e883-f19c-aec84742f3ce_2',
+      'detail-type': 'MediaPackage HarvestJob Notification',
+      source: 'aws.mediapackage',
+      account: 'aws_account_id',
+      time: '2019-07-16T17:29:36Z',
+      region: 'eu-west-1',
+      resources: [
+        'arn:aws:mediapackage:eu-west-1:aws_account_id:harvest_jobs/test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271',
+      ],
+      detail: {
+        harvest_job: {
+          id: 'test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22',
+          arn: 'arn:aws:mediapackage-vod:eu-west-1:aws_account_id:harvest_jobs/test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271',
+          status: 'SUCCEEDED',
+          origin_endpoint_id:
+            'test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271_hls',
+          start_time: '2019-06-26T20:30:00-08:00',
+          end_time: '2019-06-26T21:00:00-08:00',
+          s3_destination: {
+            bucket_name: 'test-marsha-destination',
+            manifest_key:
+              'a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/cmaf/slice_2/1610546271_2.m3u8',
+            role_arn: 'arn:aws:iam::aws_account_id:role/S3Access_role',
+          },
+          created_at:
+            'arn:aws:iam::aws_account_id:role/test-marsha-mediapackage-harvest-job-s3-role',
+        },
+      },
+    };
+
+    mockDescribeOriginEndpoint.mockReturnValue({
+      promise: () =>
+        Promise.resolve({
+          Id: 'mediapackage_endpoint_origin_id',
+          ChannelId: 'mediapackage_channel_id',
+          Tags: {
+            stamp: '1610546271',
+          },
+        }),
+    });
+
+    await testCompleteHarvestProcess(event);
+
+    expect(mockSetRecordingSliceManifestKey).toHaveBeenCalledWith(
+      'a3e213a7-9c56-4bd3-b71c-fe567b0cfe22',
+      'test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22',
+      'a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/cmaf/slice_2/1610546271_2.m3u8',
+    );
   });
 });

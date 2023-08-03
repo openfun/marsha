@@ -479,9 +479,7 @@ class VideoViewSet(
 
         try:
             if video.live_info is None or original_live_state == defaults.HARVESTED:
-                now = timezone.now()
-                stamp = to_timestamp(now)
-                key = f"{video.pk}_{stamp}"
+                key = f"{video.pk}"
                 video.live_info = create_live_stream(key)
                 wait_medialive_channel_is_created(
                     video.get_medialive_channel().get("id")

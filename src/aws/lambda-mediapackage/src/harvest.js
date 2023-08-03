@@ -36,9 +36,23 @@ module.exports = async (event, lambdaFunctionName) => {
     );
   }
 
+  let stamp = undefined;
   // The harvest id has this pattern : {environment}_{pk}_{stamp}
   // splitting it give us the information we need
-  const [environment, pk, stamp] = harvestJob.id.split('_');
+  const [environment, pk, idStamp] = harvestJob.id.split('_');
+
+  // first fetch origin endpoint to retrieve channel id
+  const endpoint = await mediapackage
+    .describeOriginEndpoint({
+      Id: harvestJob.origin_endpoint_id,
+    })
+    .promise();
+
+  if (idStamp) {
+    stamp = idStamp;
+  } else {
+    stamp = endpoint.Tags.stamp;
+  }
 
   await setRecordingSliceManifestKey(
     pk,
@@ -52,13 +66,6 @@ module.exports = async (event, lambdaFunctionName) => {
   }
 
   // delete mediapackage endpoint and channel
-  // first fetch origin endpoint to retrieve channel id
-  const endpoint = await mediapackage
-    .describeOriginEndpoint({
-      Id: harvestJob.origin_endpoint_id,
-    })
-    .promise();
-
   // delete origin endpoint
   await mediapackage
     .deleteOriginEndpoint({

@@ -3,10 +3,12 @@ import json
 import os
 
 from django.conf import settings
+from django.utils import timezone
 
 import requests
 
 from marsha.core.defaults import PROCESSING
+from marsha.core.utils.time_utils import to_timestamp
 
 from .medialive_client_utils import medialive_client, mediapackage_client, ssm_client
 
@@ -32,10 +34,14 @@ def create_mediapackage_channel(key):
         Dictrionnary returned by the AWS API once a channel created
 
     """
+
+    now = timezone.now()
+    stamp = to_timestamp(now)
+
     # Create mediapackage channel
     channel = mediapackage_client.create_channel(
         Id=f"{settings.AWS_BASE_NAME}_{key}",
-        Tags={"environment": settings.AWS_BASE_NAME, "app": "marsha"},
+        Tags={"environment": settings.AWS_BASE_NAME, "app": "marsha", "stamp": stamp},
     )
 
     # Add primary U/P to SSM parameter store
@@ -47,6 +53,7 @@ def create_mediapackage_channel(key):
         Tags=[
             {"Key": "environment", "Value": settings.AWS_BASE_NAME},
             {"Key": "app", "Value": "marsha"},
+            {"Key": "stamp", "Value": stamp},
         ],
     )
 
@@ -59,6 +66,7 @@ def create_mediapackage_channel(key):
         Tags=[
             {"Key": "environment", "Value": settings.AWS_BASE_NAME},
             {"Key": "app", "Value": "marsha"},
+            {"Key": "stamp", "Value": stamp},
         ],
     )
 
@@ -77,7 +85,7 @@ def create_mediapackage_channel(key):
             "ProgramDateTimeIntervalSeconds": 0,
             "SegmentDurationSeconds": settings.LIVE_SEGMENT_DURATION_SECONDS,
         },
-        Tags={"environment": settings.AWS_BASE_NAME, "app": "marsha"},
+        Tags={"environment": settings.AWS_BASE_NAME, "app": "marsha", "stamp": stamp},
     )
 
     return [channel, hls_endpoint]
@@ -295,7 +303,14 @@ def create_mediapackage_harvest_job(video):
     channel_id = video.get_mediapackage_channel().get("id")
 
     # split channel id to take the stamp in it {env}_{pk}_{stamp}
+    # the stamp can also be in the channel tags and not in the id
     elements = channel_id.split("_")
+    if len(elements) < 3:
+        channel_id = video.get_mediapackage_channel().get("id")
+        response = mediapackage_client.describe_channel(Id=channel_id)
+        stamp = response.get("Tags").get("stamp")
+    else:
+        stamp = elements[2]
 
     processing_slices = []
     for num, recording_slice in enumerate(video.recording_slices, start=1):
@@ -306,7 +321,7 @@ def create_mediapackage_harvest_job(video):
             OriginEndpointId=hls_endpoint,
             S3Destination={
                 "BucketName": settings.AWS_DESTINATION_BUCKET_NAME,
-                "ManifestKey": f"{video.pk}/cmaf/slice_{num}/{elements[2]}_{num}.m3u8",
+                "ManifestKey": f"{video.pk}/cmaf/slice_{num}/{stamp}_{num}.m3u8",
                 "RoleArn": settings.AWS_MEDIAPACKAGE_HARVEST_JOB_ARN,
             },
         )
