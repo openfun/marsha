@@ -19,6 +19,7 @@ from marsha.bbb.utils.bbb_utils import (
     create,
     delete_recording,
     end,
+    get_recording_url,
     get_recordings,
     join,
     process_recordings,
@@ -753,8 +754,9 @@ class ClassroomRecordingViewSet(
         now = timezone.now()
         stamp = to_timestamp(now)
 
+        # we need an used url to convert the record in VOD
         invoke_lambda_convert(
-            serializer.data["video_file_url"],
+            get_recording_url(record_id=classroom_recording.record_id),
             classroom_recording.vod.get_source_s3_key(stamp=stamp),
         )
 

@@ -12,6 +12,7 @@
     "clamscan": "2.1.2",
     "he": "1.2.0",
     "jimp": "0.22.10",
+    "jsdom": "22.1.0",
     "node-poppler": "6.2.7",
     "update-state": "file:../utils/update-state"
   },

@@ -217,6 +217,21 @@ def get_recordings(meeting_id: str = None, record_id: str = None):
     return api_response
 
 
+def get_recording_url(meeting_id: str = None, record_id: str = None):
+    """Look for the video url in the get_recordings response"""
+    recordings = get_recordings(meeting_id=meeting_id, record_id=record_id).get(
+        "recordings"
+    )
+
+    if recordings is not None and recordings[0].get("published"):
+        recording = recordings[0]
+        for recording_format in recording.get("playback").get("format"):
+            if recording_format.get("type") == "video":
+                return recording_format.get("url")
+
+    return None
+
+
 def process_recording(classroom, recording_data):
     """Creates or update a recording from BBB API."""
     if recording_data.get("published"):

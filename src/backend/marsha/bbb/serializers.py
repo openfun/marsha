@@ -18,7 +18,7 @@ from marsha.bbb.models import Classroom, ClassroomDocument, ClassroomRecording
 from marsha.bbb.utils.bbb_utils import (
     ApiMeetingException,
     get_meeting_infos,
-    get_recordings,
+    get_recording_url,
     get_url as get_document_url,
 )
 from marsha.core.defaults import CLASSROOM_RECORDINGS_KEY_CACHE, VOD_CONVERT

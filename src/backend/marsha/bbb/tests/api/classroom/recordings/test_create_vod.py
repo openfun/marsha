@@ -1,7 +1,6 @@
 """Tests for the ClassroomRecording create vod API."""
 from unittest import mock
 
-from django.core.cache import cache
 from django.test import TestCase, override_settings
 from django.utils import timezone
 
@@ -28,17 +27,8 @@ from marsha.core.utils.time_utils import to_timestamp
 @override_settings(BBB_API_SECRET="SuperSecret")
 @override_settings(BBB_API_CALLBACK_SECRET="OtherSuperSecret")
 @override_settings(BBB_ENABLED=True)
-@override_settings(
-    BBB_ENABLED=True,
-    AWS_S3_REGION_NAME="us-east-1",
-    AWS_SOURCE_BUCKET_NAME="test-source-bucket",
-    CACHES={
-        "default": {
-            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-        },
-        "memory_cache": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"},
-    },
-)
+@override_settings(AWS_S3_REGION_NAME="us-east-1")
+@override_settings(AWS_SOURCE_BUCKET_NAME="test-source-bucket")
 class ClassroomRecordingCreateVodAPITest(TestCase):
     """Test for the ClassroomRecording create vod API."""
 
@@ -50,63 +40,6 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
 
         # Force URLs reload to use BBB_ENABLED
         reload_urlconf()
-
-        # Clear cache
-        cache.clear()
-
-        # An additional call is made since we added the url retrieval from the cache to the
-        # serializer
-        responses.add(
-            responses.GET,
-            "https://10.7.7.1/bigbluebutton/api/getRecordings",
-            match=[
-                responses.matchers.query_param_matcher(
-                    {
-                        "recordID": "67df5782-c17b-46d8-9dcb-a404e0b31251",
-                        "checksum": "5b9680a8fcca9e43f41f494b0503a41c14a86be9",
-                    }
-                )
-            ],
-            body="""
-            <response>
-                <returncode>SUCCESS</returncode>
-                <recordings>
-                    <recording>
-                        <recordID>c62c9c205d37815befe1b75ae6ef5878d8da5bb6-1673282694493</recordID>
-                        <meetingID>7e1c8b28-cd7a-4abe-93b2-3121366cb049</meetingID>
-                        <internalMeetingID>c62c9c205d37815befe1b75ae6ef5878d8da5bb6-1673282694493</internalMeetingID>
-                        <name>test ncl</name>
-                        <published>true</published>
-                        <state>published</state>
-                        <startTime>1673282694493</startTime>
-                        <endTime>1673282727208</endTime>
-                        <participants>1</participants>
-                        <metadata>
-                            <analytics-callback-url>https://10.7.7.2/bbb-analytics/api/v1/post_events?tag=bbb-dev
-                            </analytics-callback-url>
-                        </metadata>
-                        <playback>
-                            <format>
-                                <type>presentation</type>
-                                <url>
-                                    https://10.7.7.1/playback/presentation/2.3/c62c9c205d37815befe1b75ae6ef5878d8da5bb6-1673282694493
-                                </url>
-                                <length>0</length>
-                            </format>
-                            <format>
-                                <type>video</type>
-                                <url>
-                                    https://10.7.7.1/presentation/c62c9c205d37815befe1b75ae6ef5878d8da5bb6-1673282694493/meeting.mp4
-                                </url>
-                                <length>0</length>
-                            </format>
-                        </playback>
-                    </recording>
-                </recordings>
-            </response>
-            """,
-            status=200,
-        )
 
     def test_api_classroom_recording_create_anonymous(self):
         """An anonymous should not be able to convert a recording to a VOD."""
@@ -176,6 +109,58 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
         self.assertEqual(Video.objects.count(), 0)
 
         now = timezone.now()
+
+        responses.add(
+            responses.GET,
+            "https://10.7.7.1/bigbluebutton/api/getRecordings",
+            match=[
+                responses.matchers.query_param_matcher(
+                    {
+                        "recordID": "67df5782-c17b-46d8-9dcb-a404e0b31251",
+                        "checksum": "5b9680a8fcca9e43f41f494b0503a41c14a86be9",
+                    }
+                )
+            ],
+            body="""
+            <response>
+                <returncode>SUCCESS</returncode>
+                <recordings>
+                    <recording>
+                        <recordID>c62c9c205d37815befe1b75ae6ef5878d8da5bb6-1673282694493</recordID>
+                        <meetingID>7e1c8b28-cd7a-4abe-93b2-3121366cb049</meetingID>
+                        <internalMeetingID>c62c9c205d37815befe1b75ae6ef5878d8da5bb6-1673282694493</internalMeetingID>
+                        <name>test ncl</name>
+                        <published>true</published>
+                        <state>published</state>
+                        <startTime>1673282694493</startTime>
+                        <endTime>1673282727208</endTime>
+                        <participants>1</participants>
+                        <metadata>
+                            <analytics-callback-url>https://10.7.7.2/bbb-analytics/api/v1/post_events?tag=bbb-dev
+                            </analytics-callback-url>
+                        </metadata>
+                        <playback>
+                            <format>
+                                <type>presentation</type>
+                                <url>
+                                    https://10.7.7.1/playback/presentation/2.3/c62c9c205d37815befe1b75ae6ef5878d8da5bb6-1673282694493
+                                </url>
+                                <length>0</length>
+                            </format>
+                            <format>
+                                <type>video</type>
+                                <url>
+                                    https://10.7.7.1/presentation/c62c9c205d37815befe1b75ae6ef5878d8da5bb6-1673282694493/meeting.mp4
+                                </url>
+                                <length>0</length>
+                            </format>
+                        </playback>
+                    </recording>
+                </recordings>
+            </response>
+            """,
+            status=200,
+        )
 
         with mock.patch(
             "marsha.bbb.api.invoke_lambda_convert"
@@ -284,6 +269,58 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
         )
         jwt_token = UserAccessTokenFactory(user=organization_access.user)
 
+        responses.add(
+            responses.GET,
+            "https://10.7.7.1/bigbluebutton/api/getRecordings",
+            match=[
+                responses.matchers.query_param_matcher(
+                    {
+                        "recordID": "67df5782-c17b-46d8-9dcb-a404e0b31251",
+                        "checksum": "5b9680a8fcca9e43f41f494b0503a41c14a86be9",
+                    }
+                )
+            ],
+            body="""
+            <response>
+                <returncode>SUCCESS</returncode>
+                <recordings>
+                    <recording>
+                        <recordID>c62c9c205d37815befe1b75ae6ef5878d8da5bb6-1673282694493</recordID>
+                        <meetingID>7e1c8b28-cd7a-4abe-93b2-3121366cb049</meetingID>
+                        <internalMeetingID>c62c9c205d37815befe1b75ae6ef5878d8da5bb6-1673282694493</internalMeetingID>
+                        <name>test ncl</name>
+                        <published>true</published>
+                        <state>published</state>
+                        <startTime>1673282694493</startTime>
+                        <endTime>1673282727208</endTime>
+                        <participants>1</participants>
+                        <metadata>
+                            <analytics-callback-url>https://10.7.7.2/bbb-analytics/api/v1/post_events?tag=bbb-dev
+                            </analytics-callback-url>
+                        </metadata>
+                        <playback>
+                            <format>
+                                <type>presentation</type>
+                                <url>
+                                    https://10.7.7.1/playback/presentation/2.3/c62c9c205d37815befe1b75ae6ef5878d8da5bb6-1673282694493
+                                </url>
+                                <length>0</length>
+                            </format>
+                            <format>
+                                <type>video</type>
+                                <url>
+                                    https://10.7.7.1/presentation/c62c9c205d37815befe1b75ae6ef5878d8da5bb6-1673282694493/meeting.mp4
+                                </url>
+                                <length>0</length>
+                            </format>
+                        </playback>
+                    </recording>
+                </recordings>
+            </response>
+            """,
+            status=200,
+        )
+
         with mock.patch("marsha.bbb.api.invoke_lambda_convert"):
             response = self.client.post(
                 f"/api/classrooms/{recording.classroom.id}/recordings/{recording.id}/create-vod/",
@@ -308,6 +345,58 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
             record_id="67df5782-c17b-46d8-9dcb-a404e0b31251",
         )
         jwt_token = UserAccessTokenFactory(user=organization_access.user)
+
+        responses.add(
+            responses.GET,
+            "https://10.7.7.1/bigbluebutton/api/getRecordings",
+            match=[
+                responses.matchers.query_param_matcher(
+                    {
+                        "recordID": "67df5782-c17b-46d8-9dcb-a404e0b31251",
+                        "checksum": "5b9680a8fcca9e43f41f494b0503a41c14a86be9",
+                    }
+                )
+            ],
+            body="""
+            <response>
+                <returncode>SUCCESS</returncode>
+                <recordings>
+                    <recording>
+                        <recordID>c62c9c205d37815befe1b75ae6ef5878d8da5bb6-1673282694493</recordID>
+                        <meetingID>7e1c8b28-cd7a-4abe-93b2-3121366cb049</meetingID>
+                        <internalMeetingID>c62c9c205d37815befe1b75ae6ef5878d8da5bb6-1673282694493</internalMeetingID>
+                        <name>test ncl</name>
+                        <published>true</published>
+                        <state>published</state>
+                        <startTime>1673282694493</startTime>
+                        <endTime>1673282727208</endTime>
+                        <participants>1</participants>
+                        <metadata>
+                            <analytics-callback-url>https://10.7.7.2/bbb-analytics/api/v1/post_events?tag=bbb-dev
+                            </analytics-callback-url>
+                        </metadata>
+                        <playback>
+                            <format>
+                                <type>presentation</type>
+                                <url>
+                                    https://10.7.7.1/playback/presentation/2.3/c62c9c205d37815befe1b75ae6ef5878d8da5bb6-1673282694493
+                                </url>
+                                <length>0</length>
+                            </format>
+                            <format>
+                                <type>video</type>
+                                <url>
+                                    https://10.7.7.1/presentation/c62c9c205d37815befe1b75ae6ef5878d8da5bb6-1673282694493/meeting.mp4
+                                </url>
+                                <length>0</length>
+                            </format>
+                        </playback>
+                    </recording>
+                </recordings>
+            </response>
+            """,
+            status=200,
+        )
 
         with mock.patch("marsha.bbb.api.invoke_lambda_convert"):
             response = self.client.post(
@@ -355,6 +444,58 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
         )
         jwt_token = UserAccessTokenFactory(user=playlist_access.user)
 
+        responses.add(
+            responses.GET,
+            "https://10.7.7.1/bigbluebutton/api/getRecordings",
+            match=[
+                responses.matchers.query_param_matcher(
+                    {
+                        "recordID": "67df5782-c17b-46d8-9dcb-a404e0b31251",
+                        "checksum": "5b9680a8fcca9e43f41f494b0503a41c14a86be9",
+                    }
+                )
+            ],
+            body="""
+            <response>
+                <returncode>SUCCESS</returncode>
+                <recordings>
+                    <recording>
+                        <recordID>c62c9c205d37815befe1b75ae6ef5878d8da5bb6-1673282694493</recordID>
+                        <meetingID>7e1c8b28-cd7a-4abe-93b2-3121366cb049</meetingID>
+                        <internalMeetingID>c62c9c205d37815befe1b75ae6ef5878d8da5bb6-1673282694493</internalMeetingID>
+                        <name>test ncl</name>
+                        <published>true</published>
+                        <state>published</state>
+                        <startTime>1673282694493</startTime>
+                        <endTime>1673282727208</endTime>
+                        <participants>1</participants>
+                        <metadata>
+                            <analytics-callback-url>https://10.7.7.2/bbb-analytics/api/v1/post_events?tag=bbb-dev
+                            </analytics-callback-url>
+                        </metadata>
+                        <playback>
+                            <format>
+                                <type>presentation</type>
+                                <url>
+                                    https://10.7.7.1/playback/presentation/2.3/c62c9c205d37815befe1b75ae6ef5878d8da5bb6-1673282694493
+                                </url>
+                                <length>0</length>
+                            </format>
+                            <format>
+                                <type>video</type>
+                                <url>
+                                    https://10.7.7.1/presentation/c62c9c205d37815befe1b75ae6ef5878d8da5bb6-1673282694493/meeting.mp4
+                                </url>
+                                <length>0</length>
+                            </format>
+                        </playback>
+                    </recording>
+                </recordings>
+            </response>
+            """,
+            status=200,
+        )
+
         with mock.patch("marsha.bbb.api.invoke_lambda_convert"):
             response = self.client.post(
                 f"/api/classrooms/{recording.classroom.id}/recordings/{recording.id}/create-vod/",
@@ -374,6 +515,58 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
             record_id="67df5782-c17b-46d8-9dcb-a404e0b31251",
         )
         jwt_token = UserAccessTokenFactory(user=playlist_access.user)
+
+        responses.add(
+            responses.GET,
+            "https://10.7.7.1/bigbluebutton/api/getRecordings",
+            match=[
+                responses.matchers.query_param_matcher(
+                    {
+                        "recordID": "67df5782-c17b-46d8-9dcb-a404e0b31251",
+                        "checksum": "5b9680a8fcca9e43f41f494b0503a41c14a86be9",
+                    }
+                )
+            ],
+            body="""
+            <response>
+                <returncode>SUCCESS</returncode>
+                <recordings>
+                    <recording>
+                        <recordID>c62c9c205d37815befe1b75ae6ef5878d8da5bb6-1673282694493</recordID>
+                        <meetingID>7e1c8b28-cd7a-4abe-93b2-3121366cb049</meetingID>
+                        <internalMeetingID>c62c9c205d37815befe1b75ae6ef5878d8da5bb6-1673282694493</internalMeetingID>
+                        <name>test ncl</name>
+                        <published>true</published>
+                        <state>published</state>
+                        <startTime>1673282694493</startTime>
+                        <endTime>1673282727208</endTime>
+                        <participants>1</participants>
+                        <metadata>
+                            <analytics-callback-url>https://10.7.7.2/bbb-analytics/api/v1/post_events?tag=bbb-dev
+                            </analytics-callback-url>
+                        </metadata>
+                        <playback>
+                            <format>
+                                <type>presentation</type>
+                                <url>
+                                    https://10.7.7.1/playback/presentation/2.3/c62c9c205d37815befe1b75ae6ef5878d8da5bb6-1673282694493
+                                </url>
+                                <length>0</length>
+                            </format>
+                            <format>
+                                <type>video</type>
+                                <url>
+                                    https://10.7.7.1/presentation/c62c9c205d37815befe1b75ae6ef5878d8da5bb6-1673282694493/meeting.mp4
+                                </url>
+                                <length>0</length>
+                            </format>
+                        </playback>
+                    </recording>
+                </recordings>
+            </response>
+            """,
+            status=200,
+        )
 
         with mock.patch("marsha.bbb.api.invoke_lambda_convert"):
             response = self.client.post(
