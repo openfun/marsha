@@ -58,6 +58,7 @@
     "jest-matchmedia-mock": "1.1.0",
     "jest-styled-components": "7.1.1",
     "jsdom-screenshot": "4.0.0",
+    "luxon": "3.3.0",
     "prettier": "*",
     "react": "*",
     "react-dom": "*",

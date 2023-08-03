@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import faker from 'faker';
 import fetchMock from 'fetch-mock';
 import { useCurrentResourceContext, useJwt } from 'lib-components';
@@ -33,7 +33,7 @@ describe('<ClassroomWidgetProvider />', () => {
 
   afterEach(() => fetchMock.restore());
 
-  it('renders widgets', () => {
+  it('renders widgets', async () => {
     mockedUseCurrentResourceContext.mockReturnValue([
       {
         permissions: {
@@ -55,12 +55,16 @@ describe('<ClassroomWidgetProvider />', () => {
 
     // Description
     expect(
-      screen.getByRole('textbox', { name: 'Description' }),
+      await screen.findByRole('textbox', { name: 'Description' }),
     ).toBeInTheDocument();
 
     // Scheduling
-    const inputStartingAtDate = screen.getByLabelText(/starting date/i);
-    expect(inputStartingAtDate).toHaveValue('2022/01/13');
+    const inputStartingAtDate = within(
+      screen.getByTestId('starting-at-date-picker'),
+    ).getByRole('presentation');
+
+    expect(inputStartingAtDate).toHaveTextContent('1/13/2022');
+
     const inputStartingAtTime = screen.getByLabelText(/starting time/i);
     expect(inputStartingAtTime).toHaveValue('12:00');
     const inputEstimatedDuration = screen.getByLabelText(/estimated duration/i);

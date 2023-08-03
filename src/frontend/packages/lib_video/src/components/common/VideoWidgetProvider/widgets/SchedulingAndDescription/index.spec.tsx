@@ -1,13 +1,14 @@
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import userEventInit from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
   InfoWidgetModalProvider,
+  liveState,
   report,
   useJwt,
   videoMockFactory,
 } from 'lib-components';
-import { render } from 'lib-tests';
+import { render, userTypeDatePicker } from 'lib-tests';
 import { DateTime, Duration } from 'luxon';
 
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
@@ -65,8 +66,10 @@ describe('<SchedulingAndDescription />', () => {
 
     screen.getByText('Description');
 
-    const inputStartingAtDate = screen.getByLabelText(/starting date/i);
-    expect(inputStartingAtDate).toHaveValue('2022/01/03');
+    const inputStartingAtDate = within(
+      screen.getByTestId('starting-at-date-picker'),
+    ).getByRole('presentation');
+    expect(inputStartingAtDate).toHaveTextContent('1/3/2022');
     const inputStartingAtTime = screen.getByLabelText(/starting time/i);
     expect(inputStartingAtTime).toHaveValue('14:00');
     const inputEstimatedDuration = screen.getByLabelText(/estimated duration/i);
@@ -87,6 +90,7 @@ describe('<SchedulingAndDescription />', () => {
 
     const mockedVideo = videoMockFactory({
       id: 'video_id',
+      live_state: liveState.IDLE,
     });
 
     fetchMock.patch('/api/videos/video_id/', {
@@ -104,11 +108,18 @@ describe('<SchedulingAndDescription />', () => {
     );
 
     screen.getByText('Your live is not scheduled');
-    const inputStartingAtDate = screen.getByLabelText(/starting date/i);
-    fireEvent.change(inputStartingAtDate, {
-      target: { value: startingAt.toFormat('yyyy/MM/dd') },
-    });
-    expect(inputStartingAtDate).toHaveValue('2022/01/03');
+
+    await userTypeDatePicker(
+      startingAt,
+      screen.getByText(/Starting date/i),
+      userEvent,
+    );
+
+    const inputStartingAtDate = within(
+      screen.getByTestId('starting-at-date-picker'),
+    ).getByRole('presentation');
+
+    expect(inputStartingAtDate).toHaveTextContent('1/3/2022');
     expect(fetchMock.calls()).toHaveLength(0);
 
     const inputStartingAtTime = screen.getByLabelText(/starting time/i);
@@ -203,6 +214,7 @@ describe('<SchedulingAndDescription />', () => {
 
     const mockedVideo = videoMockFactory({
       id: 'video_id',
+      live_state: liveState.IDLE,
     });
 
     fetchMock.patch('/api/videos/video_id/', 500);
@@ -215,10 +227,13 @@ describe('<SchedulingAndDescription />', () => {
         mockedVideo,
       ),
     );
-    const inputStartingAtDate = screen.getByLabelText(/starting date/i);
-    fireEvent.change(inputStartingAtDate, {
-      target: { value: startingAt.toFormat('yyyy/MM/dd') },
-    });
+
+    await userTypeDatePicker(
+      startingAt,
+      screen.getByText(/Starting date/i),
+      userEvent,
+    );
+
     expect(fetchMock.calls()).toHaveLength(0);
 
     const inputStartingAtTime = screen.getByLabelText(/starting time/i);
@@ -248,7 +263,7 @@ describe('<SchedulingAndDescription />', () => {
     // It prevents console to display error when french translations doen't exist
     jest.spyOn(console, 'error').mockImplementation(() => jest.fn());
 
-    const date = DateTime.fromISO('2022-01-01T12:00');
+    const date = DateTime.fromISO('2022-03-21T12:00');
     const estimatedDuration = Duration.fromObject({ minutes: 30 });
 
     const mockedVideo = videoMockFactory({
@@ -270,15 +285,17 @@ describe('<SchedulingAndDescription />', () => {
       { intlOptions: { locale: 'fr' } },
     );
 
-    const inputStartingAtDate = screen.getByLabelText(/starting date/i);
-    expect(inputStartingAtDate).toHaveValue('01/01/2022');
+    const inputStartingAtDate = within(
+      screen.getByTestId('starting-at-date-picker'),
+    ).getByRole('presentation');
+    expect(inputStartingAtDate).toHaveTextContent('21/03/2022');
     const inputStartingAtTime = screen.getByLabelText(/starting time/i);
     expect(inputStartingAtTime).toHaveValue('12:00');
     const inputEstimatedDuration = screen.getByLabelText(/estimated duration/i);
     expect(inputEstimatedDuration).toHaveValue('0:30');
 
     screen.getByText("Webinar's end");
-    screen.getByText('01/01/2022, 12:30');
+    screen.getByText('21/03/2022, 12:30');
   });
 
   it('types some text in an empty text area', async () => {

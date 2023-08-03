@@ -1,4 +1,5 @@
-import { Box, DateInput, FormField, Text, TextInput } from 'grommet';
+import { CunninghamProvider, DatePicker } from '@openfun/cunningham-react';
+import { Box, FormField, Text, TextInput } from 'grommet';
 import { MarginType } from 'grommet/utils';
 import { Nullable } from 'lib-common';
 import { DateTime, Duration, Settings } from 'luxon';
@@ -107,17 +108,8 @@ export const SchedulingFields = ({
     );
   const [startingAtError, setStartingAtError] = useState<Nullable<string>>();
 
-  const onStartingAtDateInputChange = (event: { value: string | string[] }) => {
-    let value: string;
-    if (Array.isArray(event.value)) {
-      value = '';
-      if (event.value.length > 0) {
-        value = event.value[0];
-      }
-    } else {
-      value = event.value;
-    }
-    onStartingAtChangeTrigger(value, currentStartingAtTime);
+  const onStartingAtDateInputChange = (value: string | null) => {
+    onStartingAtChangeTrigger(value || '', currentStartingAtTime);
   };
 
   const onStartingAtChangeTrigger = (
@@ -219,43 +211,32 @@ export const SchedulingFields = ({
         margin={margin}
         gap="small"
       >
-        <Box>
-          <FormField
-            label={intl.formatMessage(messages.startingAtDateTextLabel)}
-            htmlFor="starting_at_date"
-            margin="none"
-            background={startingAtError ? 'status-error-off' : 'white'}
-            // Fix of the calendar icon still clickable when component disabled (see below)
-            style={{ pointerEvents: disabled ? 'none' : undefined }}
-            height="80%"
-            disabled={disabled}
-          >
-            <DateInput
-              dropProps={{
-                align: { top: 'bottom', left: 'left' },
-                style: {
-                  borderRadius: '4px',
-                  boxShadow: 'rgb(0 0 0 / 23%) 4px 5px 17px',
-                },
-              }}
-              id="starting_at_date"
-              format={intl.locale === 'fr' ? 'dd/mm/yyyy' : 'yyyy/mm/dd'}
-              value={currentStartingAtDate || undefined}
-              onChange={onStartingAtDateInputChange}
-              calendarProps={{
-                bounds: [
-                  DateTime.local().toISO() as string,
-                  DateTime.local().plus({ years: 1 }).toISO() as string,
-                ],
-              }}
-              // TODO : calendar icon still clickable even when component is disabled
-              // need to open an issue on grommet's github
+        <Box data-testid="starting-at-date-picker">
+          <CunninghamProvider>
+            <DatePicker
               disabled={disabled}
+              fullWidth
+              label={intl.formatMessage(messages.startingAtDateTextLabel)}
+              locale={intl.locale}
+              minValue={
+                DateTime.local()
+                  .set({
+                    hour: 0,
+                    minute: 0,
+                    second: 0,
+                    millisecond: 0,
+                  })
+                  .toISO() as string
+              }
+              onChange={onStartingAtDateInputChange}
+              state={startingAtError ? 'error' : 'default'}
+              value={
+                currentStartingAtDate
+                  ? new Date(currentStartingAtDate).toISOString()
+                  : null
+              }
             />
-          </FormField>
-          <FormHelpText>
-            {intl.locale === 'fr' ? 'dd/mm/yyyy' : 'yyyy/mm/dd'}
-          </FormHelpText>
+          </CunninghamProvider>
         </Box>
         <Box>
           <FormField
