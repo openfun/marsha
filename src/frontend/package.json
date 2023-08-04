@@ -23,7 +23,7 @@
     "compile-lti_site-translations": "node compile-translations.js packages/i18n/* apps/lti_site/i18n/* --outDir=apps/lti_site/translations",
     "compile-standalone_site-translations": "node compile-translations.js packages/i18n/* apps/standalone_site/i18n/* --outDir=apps/standalone_site/src/translations",
     "compile-translations": "yarn compile-lti_site-translations && yarn compile-standalone_site-translations",
-    "lint": "yarn workspace lib-components run lint && yarn workspace lib-classroom run lint && yarn workspace lib-common run lint && yarn workspace lib-markdown run lint && yarn workspace lib-tests run lint && yarn workspace lib-video run lint",
+    "lint": "yarn workspace marsha run lint && yarn workspace standalone_site run lint && yarn workspace lib-components run lint && yarn workspace lib-classroom run lint && yarn workspace lib-common run lint && yarn workspace lib-markdown run lint && yarn workspace lib-tests run lint && yarn workspace lib-video run lint",
     "lint:fix": "yarn workspace marsha run lint --fix && yarn workspace standalone_site run lint --fix && yarn workspace lib-components run lint --fix && yarn workspace lib-classroom run lint --fix && yarn workspace lib-common run lint --fix && yarn workspace lib-markdown run lint --fix && yarn workspace lib-tests run lint --fix && yarn workspace lib-video run lint --fix",
     "test-libs": "yarn workspace lib-components run test",
     "test-lib-classroom": "yarn workspace lib-classroom run test",
