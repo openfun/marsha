@@ -95,11 +95,11 @@ export const usePlaylistIsClaimed = (
   >,
 ) => {
   const key = ['playlists', playlistId, 'is-claimed'];
-  return useQuery<usePlaylistIsClaimedResponse, 'playlists'>(
-    key,
-    fetchOne,
-    queryConfig,
-  );
+  return useQuery<usePlaylistIsClaimedResponse, 'playlists'>({
+    queryKey: key,
+    queryFn: fetchOne,
+    ...queryConfig,
+  });
 };
 
 type PlaylistsResponse = APIList<Playlist>;

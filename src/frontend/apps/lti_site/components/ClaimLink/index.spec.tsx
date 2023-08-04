@@ -1,10 +1,10 @@
-import fetchMock from 'fetch-mock';
 import { screen } from '@testing-library/react';
+import fetchMock from 'fetch-mock';
 import {
   AppConfigProvider,
+  DecodedJwtLTI,
   appNames,
   appState,
-  DecodedJwtLTI,
   modelName,
   playlistMockFactory,
   videoMockFactory,
@@ -88,7 +88,7 @@ describe('<ClaimLink />', () => {
     expect(link.getAttribute('rel')).toEqual('noopener noreferrer');
   });
 
-  it('does not show claim link if resource is claimed', async () => {
+  it('does not show claim link if resource is claimed', () => {
     const playlist = playlistMockFactory({ id: '488db2d0' });
     const video = videoMockFactory({ playlist });
 
@@ -153,10 +153,8 @@ describe('<ClaimLink />', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('does not show claim link if resource is undefined', async () => {
-    const playlist = playlistMockFactory({ id: '488db2d0' });
-
-    fetchMock.get('/api/playlists/488db2d0/is-claimed/', {
+  it('does not show claim link if resource is undefined', () => {
+    fetchMock.get('', {
       status: 200,
       body: {
         is_claimed: true,
