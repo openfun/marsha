@@ -450,7 +450,7 @@ describe('harvest', () => {
       ],
       detail: {
         harvest_job: {
-          id: 'test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22',
+          id: 'test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_2',
           arn: 'arn:aws:mediapackage-vod:eu-west-1:aws_account_id:harvest_jobs/test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271',
           status: 'SUCCEEDED',
           origin_endpoint_id:
@@ -484,7 +484,7 @@ describe('harvest', () => {
 
     expect(mockSetRecordingSliceManifestKey).toHaveBeenCalledWith(
       'a3e213a7-9c56-4bd3-b71c-fe567b0cfe22',
-      'test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22',
+      'test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_2',
       'a3e213a7-9c56-4bd3-b71c-fe567b0cfe22/cmaf/slice_2/1610546271_2.m3u8',
     );
   });

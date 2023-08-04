@@ -37,9 +37,9 @@ module.exports = async (event, lambdaFunctionName) => {
   }
 
   let stamp = undefined;
-  // The harvest id has this pattern : {environment}_{pk}_{stamp}
+  // The harvest id has this pattern : {environment}_{pk}_{stamp}_{jobCount}
   // splitting it give us the information we need
-  const [environment, pk, idStamp] = harvestJob.id.split('_');
+  const [environment, pk, idStamp, jobCount] = harvestJob.id.split('_');
 
   // first fetch origin endpoint to retrieve channel id
   const endpoint = await mediapackage
@@ -48,7 +48,7 @@ module.exports = async (event, lambdaFunctionName) => {
     })
     .promise();
 
-  if (idStamp) {
+  if (jobCount) {
     stamp = idStamp;
   } else {
     stamp = endpoint.Tags.stamp;
