@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react';
 import { Anchor, Box } from 'grommet';
 import {
   AppDataRessource,
@@ -6,8 +5,10 @@ import {
   DepositedFile,
   useAppConfig,
 } from 'lib-components';
-import { usePlaylistIsClaimed } from 'data/queries';
+import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
+
+import { usePlaylistIsClaimed } from 'data/queries';
 
 const messages = defineMessages({
   claimResource: {
@@ -30,15 +31,11 @@ export const ClaimLink = ({ decodedJwt }: ClaimLinkProps) => {
     appConfig.video ||
     appConfig.document) as Exclude<AppDataRessource, DepositedFile>;
 
-  if (!resource) {
-    return null;
-  }
-
   const [showClaimLink, setShowClaimLink] = useState(
     ['videos', 'classrooms'].includes(appConfig.modelName) && !!decodedJwt.user,
   );
-  const { data } = usePlaylistIsClaimed(resource.playlist.id, {
-    enabled: showClaimLink,
+  const { data } = usePlaylistIsClaimed(resource?.playlist.id, {
+    enabled: showClaimLink && !!resource?.playlist.id,
   });
 
   useEffect(() => {
@@ -48,6 +45,15 @@ export const ClaimLink = ({ decodedJwt }: ClaimLinkProps) => {
       return;
     }
   }, [data?.is_claimed]);
+
+  if (
+    !resource ||
+    !appConfig.frontend_home_url ||
+    !decodedJwt.consumer_site ||
+    !decodedJwt.user?.id
+  ) {
+    return null;
+  }
 
   let claimUrl = `${appConfig.frontend_home_url}/claim-resource`;
   if (showClaimLink) {

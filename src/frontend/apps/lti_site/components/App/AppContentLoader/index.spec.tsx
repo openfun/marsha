@@ -1,5 +1,5 @@
-import fetchMock from 'fetch-mock';
 import { screen, waitFor } from '@testing-library/react';
+import fetchMock from 'fetch-mock';
 import { Maybe } from 'lib-common';
 import {
   AppConfigProvider,
