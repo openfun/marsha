@@ -11,6 +11,7 @@ import { fetchOneMarkdownImage } from '@lib-markdown/data/queries';
 import { MarkdownImageCache } from './types';
 
 const remarkLocallyHostedImagePlugin = (
+  markdownDocumentId: string,
   localImagesUrlCache: MarkdownImageCache,
 ) => {
   // `markdownDocumentId` is mandatory to allow API calls
@@ -41,7 +42,10 @@ const remarkLocallyHostedImagePlugin = (
             }
 
             if (image.url.startsWith('/uploaded/image/')) {
-              const response = await fetchOneMarkdownImage(imageId);
+              const response = await fetchOneMarkdownImage(
+                markdownDocumentId,
+                imageId,
+              );
               if (response.url) {
                 localImagesUrlCache[imageId] = {
                   url: response.url,

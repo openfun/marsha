@@ -90,7 +90,10 @@ export const MdxRenderer = ({
           remarkLatexPlugin(markdownDocumentId),
           remarkMermaidPlugin,
           remarkMath,
-          remarkLocallyHostedImagePlugin(localImagesUrlCache.current),
+          remarkLocallyHostedImagePlugin(
+            markdownDocumentId,
+            localImagesUrlCache.current,
+          ),
         ];
         const rehypePlugins: PluggableList = [
           options?.useMathjax ? rehypeMathjax : rehypeKatex,

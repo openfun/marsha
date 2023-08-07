@@ -2,15 +2,18 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   API_ENDPOINT,
+  MarkdownDocument,
   MarkdownImage,
   fetchWrapper,
   MarkdownDocumentModelName as modelName,
   useJwt,
 } from 'lib-components';
 
-export const createMarkdownImage = async () => {
+export const createMarkdownImage = async (
+  markdownDocumentId: MarkdownDocument['id'],
+) => {
   const response = await fetchWrapper(
-    `${API_ENDPOINT}/${modelName.MARKDOWN_IMAGES}/`,
+    `${API_ENDPOINT}/${modelName.MARKDOWN_DOCUMENTS}/${markdownDocumentId}/${modelName.MARKDOWN_IMAGES}/`,
     {
       headers: {
         Authorization: `Bearer ${useJwt.getState().getJwt()}`,

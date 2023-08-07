@@ -1,4 +1,5 @@
 import {
+  MarkdownDocument,
   UploadManagerStatus,
   MarkdownDocumentModelName as modelName,
   useUploadManager,
@@ -33,6 +34,7 @@ const toasterStyle = {
 };
 
 export const useImageUploadManager = (
+  markdownDocumentId: MarkdownDocument['id'],
   onImageUploadFinished: (imageId: string, imageFileName: string) => void,
 ) => {
   const intl = useIntl();
@@ -55,7 +57,7 @@ export const useImageUploadManager = (
         // Once the update is done, the file will be processed, we have to wait for the processing
         // to be done too, hence the polling.
         await toast.promise(
-          pollForMarkdownImage(imageId),
+          pollForMarkdownImage(markdownDocumentId, imageId),
           {
             loading: intl.formatMessage(messages.processing, {
               imageName: uploadingObject.file.name,
@@ -83,16 +85,27 @@ export const useImageUploadManager = (
         resetUpload(imageId);
       }
     });
-  }, [intl, onImageUploadFinished, resetUpload, uploadManagerState]);
+  }, [
+    intl,
+    markdownDocumentId,
+    onImageUploadFinished,
+    resetUpload,
+    uploadManagerState,
+  ]);
 
   const addImageUpload = useCallback(
     async (file: File) => {
-      const response = await createMarkdownImage();
+      const response = await createMarkdownImage(markdownDocumentId);
       const markdownImageId = response.id;
-      addUpload(modelName.MARKDOWN_IMAGES, markdownImageId, file);
+      addUpload(
+        modelName.MARKDOWN_IMAGES,
+        markdownImageId,
+        file,
+        markdownDocumentId,
+      );
       return markdownImageId;
     },
-    [addUpload],
+    [addUpload, markdownDocumentId],
   );
 
   return { addImageUpload };
