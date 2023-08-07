@@ -109,6 +109,99 @@ describe('<UploadManager />', () => {
     }
   });
 
+  it('uploads the file with a parent path', async () => {
+    const objectType = modelName.THUMBNAILS;
+    const objectId = uuidv4();
+    const parentType = modelName.VIDEOS;
+    const parentId = uuidv4();
+    const file = new File(['(⌐□_□)'], 'course.jpg', { type: 'image/jpeg' });
+
+    const initiateUploadDeferred = new Deferred();
+    const mockInitiateUpload = fetchMock.mock(
+      `/api/videos/${parentId}/thumbnails/${objectId}/initiate-upload/`,
+      initiateUploadDeferred.promise,
+      { method: 'POST' },
+    );
+
+    const fileUploadDeferred = new Deferred<MockResponse>();
+    xhrMock.post(
+      'https://s3.aws.example.com/',
+      () => fileUploadDeferred.promise,
+    );
+
+    render(
+      <UploadManager>
+        <TestComponent />
+      </UploadManager>,
+    );
+
+    {
+      const { addUpload, uploadManagerState } = getLatestHookValues();
+      expect(uploadManagerState).toEqual({});
+      act(() => addUpload(objectType, objectId, file, parentType, parentId));
+    }
+    {
+      const { uploadManagerState } = getLatestHookValues();
+      expect(uploadManagerState).toEqual({
+        [objectId]: {
+          objectId,
+          objectType,
+          file,
+          progress: 0,
+          status: UploadManagerStatus.INIT,
+          parentType,
+          parentId,
+        },
+      });
+      expect(mockInitiateUpload.calls()).toHaveLength(1);
+    }
+    {
+      await act(async () => {
+        initiateUploadDeferred.resolve({
+          fields: {
+            key: 'foo',
+          },
+          url: 'https://s3.aws.example.com/',
+        });
+        // We need to wait for the upload to complete before we can check the state
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      });
+      const { uploadManagerState } = getLatestHookValues();
+      expect(uploadManagerState).toEqual({
+        [objectId]: {
+          objectId,
+          objectType,
+          file,
+          progress: 0,
+          status: UploadManagerStatus.UPLOADING,
+          parentType,
+          parentId,
+        },
+      });
+    }
+    {
+      await act(async () => {
+        fileUploadDeferred.resolve(
+          new MockResponse().body('form data body').status(204),
+        );
+        // We need to wait for the upload to complete before we can check the state
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      });
+      const { uploadManagerState } = getLatestHookValues();
+      expect(uploadManagerState).toEqual({
+        [objectId]: {
+          objectId,
+          objectType,
+          file,
+          progress: 0,
+          status: UploadManagerStatus.SUCCESS,
+          parentType,
+          parentId,
+        },
+      });
+    }
+  });
+
   it('reports the error and does not upload to AWS when it fails to get the policy', async () => {
     const objectType = modelName.VIDEOS;
     const objectId = uuidv4();

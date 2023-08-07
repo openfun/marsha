@@ -1,3 +1,6 @@
+import { Maybe } from '@lib-common/types';
+
+import { UploadingObject } from '@lib-components/common';
 import { fetchWrapper } from '@lib-components/common/queries/fetchWrapper';
 import { useJwt } from '@lib-components/hooks/stores';
 import { API_ENDPOINT } from '@lib-components/settings';
@@ -10,6 +13,11 @@ import { UploadableObject } from '@lib-components/types/tracks';
  * policy to authenticate this upload with S3.
  * @param objectType The kind of object for which we're uploading a file (model name).
  * @param objectId The ID of the object for which we're uploading a file.
+ * @param filename The name of the file we're uploading.
+ * @param mimetype The mimetype of the file we're uploading.
+ * @param size The size of the file we're uploading.
+ * @param parentType The kind of parent object for which we're uploading a file (nullable model name).
+ * @param parentId The ID of the parent object for which we're uploading a file (nullable).
  */
 export const initiateUpload = async (
   objectType: uploadableModelName,
@@ -17,22 +25,25 @@ export const initiateUpload = async (
   filename: string,
   mimetype: string,
   size: number,
+  parentType?: Maybe<UploadingObject['parentType']>,
+  parentId?: Maybe<string>,
 ) => {
-  const response = await fetchWrapper(
-    `${API_ENDPOINT}/${objectType}/${objectId}/initiate-upload/`,
-    {
-      body: JSON.stringify({
-        filename,
-        mimetype,
-        size,
-      }),
-      headers: {
-        Authorization: `Bearer ${useJwt.getState().getJwt() ?? ''}`,
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
+  let input = `${API_ENDPOINT}/${objectType}/${objectId}/initiate-upload/`;
+  if (parentId && parentType) {
+    input = `${API_ENDPOINT}/${parentType}/${parentId}/${objectType}/${objectId}/initiate-upload/`;
+  }
+  const response = await fetchWrapper(input, {
+    body: JSON.stringify({
+      filename,
+      mimetype,
+      size,
+    }),
+    headers: {
+      Authorization: `Bearer ${useJwt.getState().getJwt() ?? ''}`,
+      'Content-Type': 'application/json',
     },
-  );
+    method: 'POST',
+  });
 
   if (!response.ok) {
     const contentType = response.headers.get('content-type');
