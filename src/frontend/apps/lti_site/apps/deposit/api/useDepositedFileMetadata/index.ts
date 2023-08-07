@@ -5,6 +5,7 @@ import { DepositedFileMetadata } from 'apps/deposit/types/metadata';
 
 export const useDepositedFileMetadata = (
   locale: string,
+  fileDepositoryId: string,
   queryConfig?: UseQueryOptions<
     DepositedFileMetadata,
     'depositedfiles',
@@ -12,7 +13,7 @@ export const useDepositedFileMetadata = (
     string[]
   >,
 ) => {
-  const key = ['depositedfiles', locale];
+  const key = [`filedepositories/${fileDepositoryId}/depositedfiles`, locale];
   return useQuery<
     DepositedFileMetadata,
     'depositedfiles',
