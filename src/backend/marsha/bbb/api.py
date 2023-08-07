@@ -56,7 +56,7 @@ class ObjectClassroomRelatedMixin:
         classroom_id = (
             self.kwargs.get("classroom_id")
             # Backward compatibility with old routes
-            or self.request.data.get("classroom")
+            or self.request.data.get("classroom_id")
             or self.request.query_params.get("classroom")
         )
 

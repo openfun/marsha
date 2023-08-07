@@ -49,7 +49,7 @@ describe('<DeleteClassroomRecordingButton />', () => {
       started_at: DateTime.fromJSDate(
         new Date(2022, 1, 29, 11, 0, 0),
       ).toISO() as string,
-      classroom: classroom.id,
+      classroom_id: classroom.id,
     });
     render(<DeleteClassroomRecordingButton recording={classroomRecording} />);
 
@@ -77,7 +77,7 @@ describe('<DeleteClassroomRecordingButton />', () => {
       started_at: DateTime.fromJSDate(
         new Date(2022, 1, 29, 11, 0, 0),
       ).toISO() as string,
-      classroom: classroom.id,
+      classroom_id: classroom.id,
     });
     fetchMock.delete(
       `/api/classrooms/${classroom.id}/recordings/${classroomRecording.id}/`,
@@ -114,7 +114,7 @@ describe('<DeleteClassroomRecordingButton />', () => {
       started_at: DateTime.fromJSDate(
         new Date(2022, 1, 29, 11, 0, 0),
       ).toISO() as string,
-      classroom: classroom.id,
+      classroom_id: classroom.id,
     });
     fetchMock.delete(
       `/api/classrooms/${classroom.id}/recordings/${classroomRecording.id}/`,

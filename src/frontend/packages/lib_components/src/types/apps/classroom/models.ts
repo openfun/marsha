@@ -128,7 +128,7 @@ export interface EndClassroomActionResponse {
 }
 
 export interface ClassroomDocument extends Resource {
-  classroom: Classroom;
+  classroom_id: Classroom['id'];
   filename: string;
   is_default: boolean;
   upload_state: uploadState;
@@ -142,7 +142,7 @@ export type ClassroomRecordingVod = Pick<
 >;
 
 export interface ClassroomRecording extends Resource {
-  classroom: string;
+  classroom_id: Classroom['id'];
   video_file_url: string;
   started_at: string;
   vod: Nullable<ClassroomRecordingVod>;

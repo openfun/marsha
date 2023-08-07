@@ -47,7 +47,7 @@ describe('<DocumentRow />', () => {
     const classroom = classroomMockFactory({ id: '1', started: false });
     const document = classroomDocumentMockFactory({
       filename: 'my_document.pdf',
-      classroom: classroom,
+      classroom_id: classroom.id,
     });
     render(
       wrapInIntlProvider(
@@ -77,7 +77,7 @@ describe('<DocumentRow />', () => {
     const classroom = classroomMockFactory({ id: '1', started: false });
     const document = classroomDocumentMockFactory({
       filename: 'my_document.pdf',
-      classroom: classroom,
+      classroom_id: classroom.id,
       upload_state: uploadState.PROCESSING,
     });
     render(
@@ -109,7 +109,7 @@ describe('<DocumentRow />', () => {
     const classroom = classroomMockFactory({ id: '1', started: false });
     const document = classroomDocumentMockFactory({
       filename: 'my_document.pdf',
-      classroom: classroom,
+      classroom_id: classroom.id,
       upload_state: uploadState.ERROR,
     });
     render(
