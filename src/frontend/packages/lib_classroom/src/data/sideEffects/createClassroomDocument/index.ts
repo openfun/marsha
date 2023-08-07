@@ -10,15 +10,17 @@ import {
 export const createClassroomDocument = async (file: {
   filename: string;
   size: number;
-  classroom: Classroom['id'];
+  classroom_id: Classroom['id'];
 }) => {
   const jwt = useJwt.getState().getJwt();
   if (!jwt) {
     throw new Error('No JWT found');
   }
+  const classroomModelName = ClassroomModelName.CLASSROOMS;
+  const classroomDocumentsModelName = ClassroomModelName.CLASSROOM_DOCUMENTS;
 
   const response = await fetchWrapper(
-    `${API_ENDPOINT}/${String(ClassroomModelName.CLASSROOM_DOCUMENTS)}/`,
+    `${API_ENDPOINT}/${classroomModelName}/${file.classroom_id}/${classroomDocumentsModelName}/`,
     {
       headers: {
         Authorization: `Bearer ${jwt}`,

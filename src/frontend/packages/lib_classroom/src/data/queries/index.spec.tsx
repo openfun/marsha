@@ -538,12 +538,16 @@ describe('queries', () => {
     it('updates the resource', async () => {
       const classroomDocument = classroomDocumentMockFactory();
       fetchMock.patch(
-        `/api/classroomdocuments/${classroomDocument.id}/`,
+        `/api/classrooms/${classroomDocument.classroom_id}/classroomdocuments/${classroomDocument.id}/`,
         classroomDocument,
       );
 
       const { result } = renderHook(
-        () => useUpdateClassroomDocument(classroomDocument.id),
+        () =>
+          useUpdateClassroomDocument(
+            classroomDocument.classroom_id,
+            classroomDocument.id,
+          ),
         {
           wrapper: WrapperReactQuery,
         },
@@ -556,7 +560,7 @@ describe('queries', () => {
       });
 
       expect(fetchMock.lastCall()![0]).toEqual(
-        `/api/classroomdocuments/${classroomDocument.id}/`,
+        `/api/classrooms/${classroomDocument.classroom_id}/classroomdocuments/${classroomDocument.id}/`,
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
@@ -574,10 +578,17 @@ describe('queries', () => {
 
     it('fails to update the resource', async () => {
       const classroomDocument = classroomDocumentMockFactory();
-      fetchMock.patch(`/api/classroomdocuments/${classroomDocument.id}/`, 400);
+      fetchMock.patch(
+        `/api/classrooms/${classroomDocument.classroom_id}/classroomdocuments/${classroomDocument.id}/`,
+        400,
+      );
 
       const { result } = renderHook(
-        () => useUpdateClassroomDocument(classroomDocument.id),
+        () =>
+          useUpdateClassroomDocument(
+            classroomDocument.classroom_id,
+            classroomDocument.id,
+          ),
         {
           wrapper: WrapperReactQuery,
         },
@@ -590,7 +601,7 @@ describe('queries', () => {
       });
 
       expect(fetchMock.lastCall()![0]).toEqual(
-        `/api/classroomdocuments/${classroomDocument.id}/`,
+        `/api/classrooms/${classroomDocument.classroom_id}/classroomdocuments/${classroomDocument.id}/`,
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {

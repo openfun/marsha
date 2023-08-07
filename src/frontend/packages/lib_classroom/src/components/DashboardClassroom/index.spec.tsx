@@ -90,7 +90,7 @@ describe('<DashboardClassroom />', () => {
       results: [],
     });
     fetchMock.mock(
-      '/api/classroomdocuments/',
+      `/api/classrooms/${classroom.id}/classroomdocuments/`,
       {
         upload_max_size_bytes: Math.pow(10, 9),
       },
@@ -126,7 +126,7 @@ describe('<DashboardClassroom />', () => {
       results: [],
     });
     fetchMock.mock(
-      '/api/classroomdocuments/',
+      `/api/classrooms/${classroom.id}/classroomdocuments/`,
       {
         upload_max_size_bytes: Math.pow(10, 9),
       },
@@ -293,7 +293,7 @@ describe('<DashboardClassroom />', () => {
       results: [],
     });
     fetchMock.mock(
-      '/api/classroomdocuments/',
+      `/api/classrooms/${classroom.id}/classroomdocuments/`,
       {
         upload_max_size_bytes: Math.pow(10, 9),
       },
