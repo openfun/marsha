@@ -103,6 +103,7 @@ export const LocalizedTimedTextTrackUpload = ({
             modelName.TIMEDTEXTTRACKS,
             timedTextTrackId,
             event.target.files[0],
+            video.id,
           );
         } catch (error) {
           if ((error as object).hasOwnProperty('size') && metadata.data) {

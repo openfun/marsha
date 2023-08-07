@@ -149,6 +149,7 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
       modelName.THUMBNAILS,
       mockedThumbnail.id,
       file,
+      mockedVideo.id,
     );
   });
 
