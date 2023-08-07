@@ -71,7 +71,7 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
                 "results": [
                     {
                         "author_name": owned_deposited_file.author_name,
-                        "file_depository": str(file_depository.id),
+                        "file_depository_id": str(file_depository.id),
                         "filename": owned_deposited_file.filename,
                         "id": str(owned_deposited_file.id),
                         "read": False,
@@ -107,7 +107,7 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
                 "results": [
                     {
                         "author_name": deposited_files[2].author_name,
-                        "file_depository": str(file_depository.id),
+                        "file_depository_id": str(file_depository.id),
                         "filename": deposited_files[2].filename,
                         "id": str(deposited_files[2].id),
                         "read": False,
@@ -118,7 +118,7 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
                     },
                     {
                         "author_name": deposited_files[1].author_name,
-                        "file_depository": str(file_depository.id),
+                        "file_depository_id": str(file_depository.id),
                         "filename": deposited_files[1].filename,
                         "id": str(deposited_files[1].id),
                         "read": False,
@@ -156,7 +156,7 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
                 "results": [
                     {
                         "author_name": deposited_files_new[1].author_name,
-                        "file_depository": str(file_depository.id),
+                        "file_depository_id": str(file_depository.id),
                         "filename": deposited_files_new[1].filename,
                         "id": str(deposited_files_new[1].id),
                         "read": False,
@@ -167,7 +167,7 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
                     },
                     {
                         "author_name": deposited_files_new[0].author_name,
-                        "file_depository": str(file_depository.id),
+                        "file_depository_id": str(file_depository.id),
                         "filename": deposited_files_new[0].filename,
                         "id": str(deposited_files_new[0].id),
                         "read": False,
@@ -178,7 +178,7 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
                     },
                     {
                         "author_name": deposited_files_read[1].author_name,
-                        "file_depository": str(file_depository.id),
+                        "file_depository_id": str(file_depository.id),
                         "filename": deposited_files_read[1].filename,
                         "id": str(deposited_files_read[1].id),
                         "read": True,
@@ -189,7 +189,7 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
                     },
                     {
                         "author_name": deposited_files_read[0].author_name,
-                        "file_depository": str(file_depository.id),
+                        "file_depository_id": str(file_depository.id),
                         "filename": deposited_files_read[0].filename,
                         "id": str(deposited_files_read[0].id),
                         "read": True,
@@ -216,7 +216,7 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
                 "results": [
                     {
                         "author_name": deposited_files_read[1].author_name,
-                        "file_depository": str(file_depository.id),
+                        "file_depository_id": str(file_depository.id),
                         "filename": deposited_files_read[1].filename,
                         "id": str(deposited_files_read[1].id),
                         "read": True,
@@ -227,7 +227,7 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
                     },
                     {
                         "author_name": deposited_files_read[0].author_name,
-                        "file_depository": str(file_depository.id),
+                        "file_depository_id": str(file_depository.id),
                         "filename": deposited_files_read[0].filename,
                         "id": str(deposited_files_read[0].id),
                         "read": True,
@@ -254,7 +254,7 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
                 "results": [
                     {
                         "author_name": deposited_files_new[1].author_name,
-                        "file_depository": str(file_depository.id),
+                        "file_depository_id": str(file_depository.id),
                         "filename": deposited_files_new[1].filename,
                         "id": str(deposited_files_new[1].id),
                         "read": False,
@@ -265,7 +265,7 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
                     },
                     {
                         "author_name": deposited_files_new[0].author_name,
-                        "file_depository": str(file_depository.id),
+                        "file_depository_id": str(file_depository.id),
                         "filename": deposited_files_new[0].filename,
                         "id": str(deposited_files_new[0].id),
                         "read": False,
@@ -323,7 +323,7 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
                 "results": [
                     {
                         "author_name": deposited_files[2].author_name,
-                        "file_depository": str(file_depository.id),
+                        "file_depository_id": str(file_depository.id),
                         "filename": deposited_files[2].filename,
                         "id": str(deposited_files[2].id),
                         "read": False,
@@ -339,7 +339,7 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
                     },
                     {
                         "author_name": deposited_files[1].author_name,
-                        "file_depository": str(file_depository.id),
+                        "file_depository_id": str(file_depository.id),
                         "filename": deposited_files[1].filename,
                         "id": str(deposited_files[1].id),
                         "read": False,
@@ -355,7 +355,7 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
                     },
                     {
                         "author_name": deposited_files[0].author_name,
-                        "file_depository": str(file_depository.id),
+                        "file_depository_id": str(file_depository.id),
                         "filename": deposited_files[0].filename,
                         "id": str(deposited_files[0].id),
                         "read": False,
@@ -415,7 +415,7 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
                 "results": [
                     {
                         "author_name": deposited_files[2].author_name,
-                        "file_depository": str(file_depository.id),
+                        "file_depository_id": str(file_depository.id),
                         "filename": deposited_files[2].filename,
                         "id": str(deposited_files[2].id),
                         "read": False,
@@ -426,7 +426,7 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
                     },
                     {
                         "author_name": deposited_files[1].author_name,
-                        "file_depository": str(file_depository.id),
+                        "file_depository_id": str(file_depository.id),
                         "filename": deposited_files[1].filename,
                         "id": str(deposited_files[1].id),
                         "read": False,
@@ -466,7 +466,7 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
                 "results": [
                     {
                         "author_name": deposited_files[2].author_name,
-                        "file_depository": str(file_depository.id),
+                        "file_depository_id": str(file_depository.id),
                         "filename": deposited_files[2].filename,
                         "id": str(deposited_files[2].id),
                         "read": False,
@@ -477,7 +477,7 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
                     },
                     {
                         "author_name": deposited_files[1].author_name,
-                        "file_depository": str(file_depository.id),
+                        "file_depository_id": str(file_depository.id),
                         "filename": deposited_files[1].filename,
                         "id": str(deposited_files[1].id),
                         "read": False,
