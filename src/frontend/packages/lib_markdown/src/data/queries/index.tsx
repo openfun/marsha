@@ -212,10 +212,16 @@ export const markdownRenderLatex = (
 };
 
 // It has to be called outside hook context
-export const fetchOneMarkdownImage = (markdownImageId: string): any => {
+export const fetchOneMarkdownImage = (
+  markdownDocumentId: string,
+  markdownImageId: string,
+): any => {
   return fetchOne({
     meta: undefined,
     pageParam: undefined,
-    queryKey: ['markdown-images', markdownImageId],
+    queryKey: [
+      `markdown-documents/${markdownDocumentId}/markdown-images`,
+      markdownImageId,
+    ],
   });
 };
