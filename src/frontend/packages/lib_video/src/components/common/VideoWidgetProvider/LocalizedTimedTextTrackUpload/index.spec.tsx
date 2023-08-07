@@ -174,6 +174,7 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
         modelName.TIMEDTEXTTRACKS,
         mockTimedTextTrack.id,
         file,
+        mockedVideo.id,
       ),
     );
   });

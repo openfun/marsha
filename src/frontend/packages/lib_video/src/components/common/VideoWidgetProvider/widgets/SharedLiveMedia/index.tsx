@@ -107,6 +107,7 @@ export const SharedLiveMedia = ({ isLive, isTeacher }: SharedMediaProps) => {
         modelName.SHAREDLIVEMEDIAS,
         sharedLiveMediaId,
         event.target.files[0],
+        video.id,
       );
     }
   };

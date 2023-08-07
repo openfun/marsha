@@ -93,7 +93,12 @@ export const WidgetThumbnail = ({ isLive = true }: WidgetThumbnailProps) => {
           } else {
             thumbnailId = thumbnail.id;
           }
-          addUpload(modelName.THUMBNAILS, thumbnailId, event.target.files[0]);
+          addUpload(
+            modelName.THUMBNAILS,
+            thumbnailId,
+            event.target.files[0],
+            video.id,
+          );
         } catch (error) {
           if (
             (error as object).hasOwnProperty('size') &&
