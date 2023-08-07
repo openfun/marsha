@@ -65,7 +65,10 @@ export const DocumentRow = ({
   uploadingObject,
 }: DocumentRowProps) => {
   const intl = useIntl();
-  const updateClassroomMutation = useUpdateClassroomDocument(document.id);
+  const updateClassroomMutation = useUpdateClassroomDocument(
+    document.classroom_id,
+    document.id,
+  );
   const deleteDocumentMutation = useDeleteClassroomDocument();
   const [isUploadInProgress, setIsUploadInProgress] = useState<boolean>(false);
 
@@ -88,12 +91,18 @@ export const DocumentRow = ({
   }, [updateClassroomMutation]);
 
   const setDeleteDocument = useCallback(() => {
-    deleteDocumentMutation.mutate(document.id, {
-      onSuccess: () => {
-        window.dispatchEvent(new CustomEvent('classroomDocumentUpdated'));
+    deleteDocumentMutation.mutate(
+      {
+        classroomId: document.classroom_id,
+        classroomDocumentId: document.id,
       },
-    });
-  }, [deleteDocumentMutation, document.id]);
+      {
+        onSuccess: () => {
+          window.dispatchEvent(new CustomEvent('classroomDocumentUpdated'));
+        },
+      },
+    );
+  }, [deleteDocumentMutation, document.classroom_id, document.id]);
 
   useEffect(() => {
     (document.upload_state === uploadState.PENDING && uploadingObject) ||
