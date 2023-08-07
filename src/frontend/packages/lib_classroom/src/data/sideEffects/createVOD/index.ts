@@ -18,7 +18,7 @@ export const createVOD = async (
   }
 
   const response = await fetchWrapper(
-    `${API_ENDPOINT}/${ClassroomModelName.CLASSROOMS}/${recording.classroom}/${ClassroomModelName.CLASSROOM_RECORDINGS}/${recording.id}/create-vod/`,
+    `${API_ENDPOINT}/${ClassroomModelName.CLASSROOMS}/${recording.classroom_id}/${ClassroomModelName.CLASSROOM_RECORDINGS}/${recording.id}/create-vod/`,
     {
       headers: {
         Authorization: `Bearer ${jwt}`,

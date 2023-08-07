@@ -297,7 +297,7 @@ class ClassroomDocumentSerializer(
 
         """
         resource = self.context["request"].resource
-        classroom_id = self.context["request"].data.get("classroom")
+        classroom_id = self.context["request"].data.get("classroom_id")
         if not validated_data.get("classroom_id"):
             if resource:
                 validated_data["classroom_id"] = resource.id

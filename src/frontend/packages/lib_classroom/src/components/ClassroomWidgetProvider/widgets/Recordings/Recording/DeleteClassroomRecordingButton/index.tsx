@@ -91,7 +91,7 @@ export const DeleteClassroomRecordingButton = ({
           onClickSubmit={() => {
             setIsModalOpen(false);
             deleteClassroomRecording.mutate({
-              classroomId: recording.classroom,
+              classroomId: recording.classroom_id,
               classroomRecordingId: recording.id,
             });
           }}

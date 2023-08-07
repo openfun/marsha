@@ -100,7 +100,7 @@ const VodNotReady = ({
   conversionEnabled,
 }: RecordingProps) => {
   const intl = useIntl();
-  const { refetch: refetchClassroom } = useClassroom(recording.classroom);
+  const { refetch: refetchClassroom } = useClassroom(recording.classroom_id);
 
   const convertVOD = useCallback(
     (recording: ClassroomRecording) => {
