@@ -83,7 +83,7 @@ class DepositedFileSerializer(
         """
         resource = self.context["request"].resource
         user = self.context["request"].user
-        file_depository_id = self.context["request"].data.get("file_depository")
+        file_depository_id = self.context["request"].data.get("file_depository_id")
 
         if not validated_data.get("file_depository_id"):
             if resource:

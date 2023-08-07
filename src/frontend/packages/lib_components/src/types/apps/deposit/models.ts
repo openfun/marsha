@@ -17,7 +17,7 @@ export interface FileDepository extends Resource {
 
 export interface DepositedFile extends Resource {
   author_name: string;
-  file_depository: FileDepository;
+  file_depository_id: string;
   filename: string;
   size: string;
   read: boolean;
