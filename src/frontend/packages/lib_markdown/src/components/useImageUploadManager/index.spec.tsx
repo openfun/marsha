@@ -23,13 +23,17 @@ jest.mock('lib-components', () => ({
 describe('useImageUploadManager', () => {
   let getLatestUseImageUploadManagerHookValues: () => any = () => {};
   let getLatestUseUploadManagerHookValues: () => any = () => {};
+  const markdownDocumentId = 'truc';
   const onImageUploadFinished = jest.fn();
 
   const TestComponent = () => {
     const uploadManager = useUploadManager();
     getLatestUseUploadManagerHookValues = () => uploadManager;
 
-    const imageUploadManager = useImageUploadManager(onImageUploadFinished);
+    const imageUploadManager = useImageUploadManager(
+      markdownDocumentId,
+      onImageUploadFinished,
+    );
     getLatestUseImageUploadManagerHookValues = () => imageUploadManager;
     return null;
   };
@@ -49,8 +53,8 @@ describe('useImageUploadManager', () => {
 
     const initiateUploadDeferred = new Deferred();
 
-    const mockcreateMarkdownImage = fetchMock.postOnce(
-      `/api/markdown-images/`,
+    const mockCreateMarkdownImage = fetchMock.postOnce(
+      `/api/markdown-documents/${markdownDocumentId}/markdown-images/`,
       markdownImageMockFactory({
         id: objectId,
         active_stamp: null,
@@ -62,7 +66,7 @@ describe('useImageUploadManager', () => {
     );
 
     const mockInitiateUpload = fetchMock.postOnce(
-      `/api/markdown-images/${objectId}/initiate-upload/`,
+      `/api/markdown-documents/${markdownDocumentId}/markdown-images/${objectId}/initiate-upload/`,
       initiateUploadDeferred.promise,
     );
 
@@ -93,15 +97,19 @@ describe('useImageUploadManager', () => {
           file,
           progress: 0,
           status: UploadManagerStatus.INIT,
+          parentType: modelName.MARKDOWN_DOCUMENTS,
+          parentId: markdownDocumentId,
         },
       });
       expect(
         mockInitiateUpload.calls(
-          `/api/markdown-images/${objectId}/initiate-upload/`,
+          `/api/markdown-documents/${markdownDocumentId}/markdown-images/${objectId}/initiate-upload/`,
         ),
       ).toHaveLength(1);
       expect(
-        mockcreateMarkdownImage.calls(`/api/markdown-images/`),
+        mockCreateMarkdownImage.calls(
+          `/api/markdown-documents/${markdownDocumentId}/markdown-images/`,
+        ),
       ).toHaveLength(1);
     }
     {
@@ -122,6 +130,8 @@ describe('useImageUploadManager', () => {
           file,
           progress: 0,
           status: UploadManagerStatus.UPLOADING,
+          parentType: modelName.MARKDOWN_DOCUMENTS,
+          parentId: markdownDocumentId,
         },
       });
       expect(screen.getByRole('status')).toHaveTextContent('course.gif0%');
@@ -129,7 +139,7 @@ describe('useImageUploadManager', () => {
 
     // When status will turn to SUCCESS the image polling will start
     fetchMock.get(
-      `/api/markdown-images/${objectId}/`,
+      `/api/markdown-documents/${markdownDocumentId}/markdown-images/${objectId}/`,
       markdownImageMockFactory({
         id: objectId,
         is_ready_to_show: false,
@@ -152,6 +162,8 @@ describe('useImageUploadManager', () => {
           file,
           progress: 0,
           status: UploadManagerStatus.SUCCESS,
+          parentType: modelName.MARKDOWN_DOCUMENTS,
+          parentId: markdownDocumentId,
         },
       });
       expect(screen.getByRole('status')).toHaveTextContent(
@@ -162,7 +174,7 @@ describe('useImageUploadManager', () => {
     {
       act(() => {
         fetchMock.get(
-          `/api/markdown-images/${objectId}/`,
+          `/api/markdown-documents/${markdownDocumentId}/markdown-images/${objectId}/`,
           markdownImageMockFactory({
             id: objectId,
             is_ready_to_show: true,

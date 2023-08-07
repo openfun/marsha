@@ -8,9 +8,9 @@ import {
   useJwt,
 } from 'lib-components';
 
-export const createMarkdownImage = async () => {
+export const createMarkdownImage = async (markdownDocumentId: string) => {
   const response = await fetchWrapper(
-    `${API_ENDPOINT}/${modelName.MARKDOWN_IMAGES}/`,
+    `${API_ENDPOINT}/${modelName.MARKDOWN_DOCUMENTS}/${markdownDocumentId}/${modelName.MARKDOWN_IMAGES}/`,
     {
       headers: {
         Authorization: `Bearer ${useJwt.getState().getJwt()}`,

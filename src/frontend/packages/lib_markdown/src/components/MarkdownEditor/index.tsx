@@ -125,7 +125,10 @@ export const MarkdownEditor = ({ markdownDocumentId }: MarkdownEditorProps) => {
     );
   };
 
-  const { addImageUpload } = useImageUploadManager(onImageUploadFinished);
+  const { addImageUpload } = useImageUploadManager(
+    markdownDocumentId,
+    onImageUploadFinished,
+  );
 
   // note: we don't want to fetch the markdown document regularly to prevent
   // any editor update while the user has not saved her document.

@@ -381,7 +381,7 @@ describe('<MdxRenderer />', () => {
     const markdownText = fs.readFileSync(file, { encoding: 'utf8' });
 
     fetchMock.getOnce(
-      '/api/markdown-images/981a52a2-7caf-49a5-bb36-1d8512152214/',
+      `/api/markdown-documents/${markdownDocumentId}/markdown-images/981a52a2-7caf-49a5-bb36-1d8512152214/`,
       markdownImageMockFactory({
         id: '981a52a2-7caf-49a5-bb36-1d8512152214',
         url: 'https://s3.link/easy-to-find.png',
@@ -389,7 +389,7 @@ describe('<MdxRenderer />', () => {
     );
 
     fetchMock.getOnce(
-      '/api/markdown-images/066036cc-2dde-11ed-89f4-afcf72a20b4c/',
+      `/api/markdown-documents/${markdownDocumentId}/markdown-images/066036cc-2dde-11ed-89f4-afcf72a20b4c/`,
       markdownImageMockFactory({
         id: '066036cc-2dde-11ed-89f4-afcf72a20b4c',
         url: null,
