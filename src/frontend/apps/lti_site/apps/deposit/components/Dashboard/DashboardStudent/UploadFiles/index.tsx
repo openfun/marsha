@@ -65,7 +65,10 @@ export const UploadFiles = () => {
   const { addUpload, uploadManagerState } = useUploadManager();
   const [filesToUpload, setFilesToUpload] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
-  const metadata = useDepositedFileMetadata(intl.locale);
+  const metadata = useDepositedFileMetadata(
+    intl.locale,
+    depositAppData.fileDepository?.id || '',
+  );
 
   const uploadsInProgress = Object.values(uploadManagerState).filter((state) =>
     [UploadManagerStatus.INIT, UploadManagerStatus.UPLOADING].includes(
@@ -87,11 +90,19 @@ export const UploadFiles = () => {
 
     setUploading(true);
     try {
-      const depositedFile = await createDepositedFile({
-        size: file.size,
-        filename: file.name,
-      });
-      addUpload(modelName.DepositedFiles, depositedFile.id, file);
+      const depositedFile = await createDepositedFile(
+        {
+          size: file.size,
+          filename: file.name,
+        },
+        depositAppData.fileDepository?.id || '',
+      );
+      addUpload(
+        modelName.DepositedFiles,
+        depositedFile.id,
+        file,
+        depositedFile.file_depository_id,
+      );
       refreshDepositedFiles();
     } catch (error) {
       if ((error as object).hasOwnProperty('size') && metadata.data) {
