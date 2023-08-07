@@ -45,7 +45,7 @@ class DepositedFileCreateAPITest(TestCase):
         jwt_token = StudentLtiTokenFactory(resource=file_depository)
 
         response = self.client.post(
-            "/api/depositedfiles/",
+            f"/api/filedepositories/{file_depository.id}/depositedfiles/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
             data=json.dumps(
@@ -93,7 +93,7 @@ class DepositedFileCreateAPITest(TestCase):
         )
 
         response = self.client.post(
-            "/api/depositedfiles/",
+            f"/api/filedepositories/{file_depository.id}/depositedfiles/",
             data=json.dumps(
                 {
                     "size": 123,
@@ -125,7 +125,7 @@ class DepositedFileCreateAPITest(TestCase):
         )
 
         response = self.client.post(
-            "/api/depositedfiles/",
+            f"/api/filedepositories/{file_depository.id}/depositedfiles/",
             data=json.dumps(
                 {
                     "size": 123,
@@ -153,7 +153,7 @@ class DepositedFileCreateAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=organization_access.user)
 
         response = self.client.post(
-            "/api/depositedfiles/",
+            f"/api/filedepositories/{file_depository.id}/depositedfiles/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
             data=json.dumps(
@@ -197,7 +197,7 @@ class DepositedFileCreateAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=organization_access.user)
 
         response = self.client.post(
-            "/api/depositedfiles/",
+            f"/api/filedepositories/{file_depository.id}/depositedfiles/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
             data=json.dumps(
@@ -240,7 +240,7 @@ class DepositedFileCreateAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=playlist_access.user)
 
         response = self.client.post(
-            "/api/depositedfiles/",
+            f"/api/filedepositories/{file_depository.id}/depositedfiles/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
             data=json.dumps(

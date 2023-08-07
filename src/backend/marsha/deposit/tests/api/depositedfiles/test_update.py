@@ -42,7 +42,8 @@ class DepositedFileUpdateAPITest(TestCase):
         data = {"read": True}
 
         response = self.client.patch(
-            f"/api/depositedfiles/{deposited_file.id}/",
+            f"/api/filedepositories/{deposited_file.file_depository.id}"
+            f"/depositedfiles/{deposited_file.id}/",
             json.dumps(data),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
@@ -58,7 +59,8 @@ class DepositedFileUpdateAPITest(TestCase):
         data = {"read": True}
 
         response = self.client.patch(
-            f"/api/depositedfiles/{deposited_file.id!s}/",
+            f"/api/filedepositories/{deposited_file.file_depository.id}"
+            f"/depositedfiles/{deposited_file.id!s}/",
             data,
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
@@ -91,7 +93,8 @@ class DepositedFileUpdateAPITest(TestCase):
         data = {"read": True}
 
         response = self.client.patch(
-            f"/api/depositedfiles/{deposited_file.id}/",
+            f"/api/filedepositories/{deposited_file.file_depository.id}"
+            f"/depositedfiles/{deposited_file.id}/",
             json.dumps(data),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
@@ -107,7 +110,8 @@ class DepositedFileUpdateAPITest(TestCase):
         data = {"read": True}
 
         response = self.client.patch(
-            f"/api/depositedfiles/{deposited_file.id!s}/",
+            f"/api/filedepositories/{deposited_file.file_depository.id}"
+            f"/depositedfiles/{deposited_file.id!s}/",
             data,
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
@@ -141,7 +145,8 @@ class DepositedFileUpdateAPITest(TestCase):
         data = {"read": True}
 
         response = self.client.patch(
-            f"/api/depositedfiles/{deposited_file.id!s}/",
+            f"/api/filedepositories/{deposited_file.file_depository.id}"
+            f"/depositedfiles/{deposited_file.id!s}/",
             data,
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
