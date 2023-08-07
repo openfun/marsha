@@ -62,7 +62,7 @@ class DepositedFileCreateAPITest(TestCase):
             response.json(),
             {
                 "author_name": jwt_token.get("user").get("user_fullname"),
-                "file_depository": str(file_depository.id),
+                "file_depository_id": str(file_depository.id),
                 "filename": "test.pdf",
                 "id": str(DepositedFile.objects.first().id),
                 "read": False,
@@ -98,7 +98,7 @@ class DepositedFileCreateAPITest(TestCase):
                 {
                     "size": 123,
                     "filename": "test.pdf",
-                    "file_depository": str(file_depository.id),
+                    "file_depository_id": str(file_depository.id),
                 }
             ),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -130,7 +130,7 @@ class DepositedFileCreateAPITest(TestCase):
                 {
                     "size": 123,
                     "filename": "test.pdf",
-                    "file_depository": str(file_depository.id),
+                    "file_depository_id": str(file_depository.id),
                 }
             ),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -160,7 +160,7 @@ class DepositedFileCreateAPITest(TestCase):
                 {
                     "size": 123,
                     "filename": "test.pdf",
-                    "file_depository": str(file_depository.id),
+                    "file_depository_id": str(file_depository.id),
                 }
             ),
         )
@@ -171,7 +171,7 @@ class DepositedFileCreateAPITest(TestCase):
             response.json(),
             {
                 "author_name": organization_access.user.username,
-                "file_depository": str(file_depository.id),
+                "file_depository_id": str(file_depository.id),
                 "filename": "test.pdf",
                 "id": str(DepositedFile.objects.first().id),
                 "read": False,
@@ -204,7 +204,7 @@ class DepositedFileCreateAPITest(TestCase):
                 {
                     "size": 123,
                     "filename": "test.pdf",
-                    "file_depository": str(file_depository.id),
+                    "file_depository_id": str(file_depository.id),
                 }
             ),
         )
@@ -215,7 +215,7 @@ class DepositedFileCreateAPITest(TestCase):
             response.json(),
             {
                 "author_name": organization_access.user.username,
-                "file_depository": str(file_depository.id),
+                "file_depository_id": str(file_depository.id),
                 "filename": "test.pdf",
                 "id": str(DepositedFile.objects.first().id),
                 "read": False,
@@ -247,7 +247,7 @@ class DepositedFileCreateAPITest(TestCase):
                 {
                     "size": 123,
                     "filename": "test.pdf",
-                    "file_depository": str(file_depository.id),
+                    "file_depository_id": str(file_depository.id),
                 }
             ),
         )
@@ -258,7 +258,7 @@ class DepositedFileCreateAPITest(TestCase):
             response.json(),
             {
                 "author_name": playlist_access.user.username,
-                "file_depository": str(file_depository.id),
+                "file_depository_id": str(file_depository.id),
                 "filename": "test.pdf",
                 "id": str(DepositedFile.objects.first().id),
                 "read": False,
