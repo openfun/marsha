@@ -153,6 +153,8 @@ describe('<SharedLiveMedia />', () => {
       modelName.SHAREDLIVEMEDIAS,
       mockedSharedLiveMedia.id,
       file,
+      modelName.VIDEOS,
+      mockedVideo.id,
     );
   });
 
@@ -386,6 +388,8 @@ describe('<SharedLiveMedia />', () => {
       modelName.SHAREDLIVEMEDIAS,
       mockedSharedLiveMedia.id,
       file,
+      modelName.VIDEOS,
+      mockedVideo.id,
     );
   });
 

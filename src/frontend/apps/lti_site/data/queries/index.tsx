@@ -124,9 +124,10 @@ export const usePlaylists = (
 
 export const useThumbnail = (
   thumbnailId: string,
+  videoId: string,
   queryConfig?: UseQueryOptions<Thumbnail, 'thumbnails', Thumbnail>,
 ) => {
-  const key = ['thumbnails', thumbnailId];
+  const key = [`videos/${videoId}/thumbnails`, thumbnailId];
   return useQuery<Thumbnail, 'thumbnails'>({
     queryKey: key,
     queryFn: fetchOne,

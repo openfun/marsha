@@ -255,18 +255,24 @@ describe('queries', () => {
   describe('useThumbnail', () => {
     it('requests the resource', async () => {
       const thumbnail = thumbnailMockFactory();
-      fetchMock.mock(`/api/thumbnails/${thumbnail.id}/`, thumbnail);
+      fetchMock.mock(
+        `/api/videos/${thumbnail.video}/thumbnails/${thumbnail.id}/`,
+        thumbnail,
+      );
 
-      const { result } = renderHook(() => useThumbnail(thumbnail.id), {
-        wrapper: WrapperReactQuery,
-      });
+      const { result } = renderHook(
+        () => useThumbnail(thumbnail.id, thumbnail.video),
+        {
+          wrapper: WrapperReactQuery,
+        },
+      );
       await waitFor(() => {
         expect(result.current.isSuccess).toBeTruthy();
       });
 
       expect(fetchMock.calls().length).toEqual(1);
       expect(fetchMock.lastCall()![0]).toEqual(
-        `/api/thumbnails/${thumbnail.id}/`,
+        `/api/videos/${thumbnail.video}/thumbnails/${thumbnail.id}/`,
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
@@ -280,18 +286,24 @@ describe('queries', () => {
 
     it('fails to get the resource', async () => {
       const thumbnail = thumbnailMockFactory();
-      fetchMock.mock(`/api/thumbnails/${thumbnail.id}/`, 404);
+      fetchMock.mock(
+        `/api/videos/${thumbnail.video}/thumbnails/${thumbnail.id}/`,
+        404,
+      );
 
-      const { result } = renderHook(() => useThumbnail(thumbnail.id), {
-        wrapper: WrapperReactQuery,
-      });
+      const { result } = renderHook(
+        () => useThumbnail(thumbnail.id, thumbnail.video),
+        {
+          wrapper: WrapperReactQuery,
+        },
+      );
 
       await waitFor(() => {
         expect(result.current.isError).toBeTruthy();
       });
 
       expect(fetchMock.lastCall()![0]).toEqual(
-        `/api/thumbnails/${thumbnail.id}/`,
+        `/api/videos/${thumbnail.video}/thumbnails/${thumbnail.id}/`,
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
