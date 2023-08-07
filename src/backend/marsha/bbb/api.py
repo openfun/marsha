@@ -27,7 +27,6 @@ from marsha.core import defaults, permissions as core_permissions
 from marsha.core.api import APIViewMixin, BulkDestroyModelMixin, ObjectPkMixin
 
 from . import permissions, serializers
-from ..core.api.base import ResourceDoesNotMatchParametersException
 from ..core.defaults import VOD_CONVERT
 from ..core.models import ADMINISTRATOR, INSTRUCTOR, Video
 from ..core.utils.convert_lambda_utils import invoke_lambda_convert
@@ -52,22 +51,8 @@ class ObjectClassroomRelatedMixin:
     def get_related_classroom_id(self):
         """Get the related classroom ID from the request."""
 
-        # The video ID in the URL will be mandatory when old routes are deleted.
-        classroom_id = (
-            self.kwargs.get("classroom_id")
-            # Backward compatibility with old routes
-            or self.request.data.get("classroom_id")
-            or self.request.query_params.get("classroom")
-        )
-
-        # Backward compatibility with old routes for LTI context
-        resource = self.request.resource
-        if resource is not None:
-            if resource.id and classroom_id and str(classroom_id) != str(resource.id):
-                raise ResourceDoesNotMatchParametersException()
-            return self.request.resource.id
-
-        return classroom_id
+        # The video ID in the URL is mandatory.
+        return self.kwargs.get("classroom_id")
 
 
 class InviteTokenThrottle(AnonRateThrottle):
@@ -290,51 +275,6 @@ class ClassroomViewSet(
         )
 
     @action(
-        methods=["get"],
-        detail=True,
-        url_path="classroomdocuments",
-        permission_classes=[
-            core_permissions.IsTokenInstructor
-            | core_permissions.IsTokenAdmin
-            | (
-                core_permissions.UserIsAuthenticated  # asserts request.resource is None
-                & (
-                    core_permissions.IsObjectPlaylistAdminOrInstructor
-                    | core_permissions.IsObjectPlaylistOrganizationAdmin
-                )
-            )
-        ],
-    )
-    # pylint: disable=unused-argument
-    def classroomdocuments(self, request, pk=None):
-        """Get documents from a classroom.
-
-        Calling the endpoint returns a list of classroom documents.
-
-        Parameters
-        ----------
-        request : Type[django.http.request.HttpRequest]
-            The request on the API endpoint
-        pk : int
-            The primary key of the classroom
-
-        Returns
-        -------
-        Type[rest_framework.response.Response]
-            HttpResponse carrying deposited files as a JSON object.
-
-        """
-        classroom = self.get_object()
-        queryset = classroom.classroom_documents.all().order_by("-created_on")
-        page = self.paginate_queryset(queryset)
-        serializer = serializers.ClassroomDocumentSerializer(
-            page,
-            many=True,
-            context={"request": self.request},
-        )
-        return self.get_paginated_response(serializer.data)
-
-    @action(
         methods=["patch"],
         detail=True,
         url_path="create",
@@ -546,6 +486,7 @@ class ClassroomDocumentViewSet(
     APIViewMixin,
     ObjectPkMixin,
     ObjectClassroomRelatedMixin,
+    mixins.ListModelMixin,
     mixins.CreateModelMixin,
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,
@@ -627,7 +568,7 @@ class ClassroomDocumentViewSet(
 
     @action(methods=["post"], detail=True, url_path="initiate-upload")
     # pylint: disable=unused-argument
-    def initiate_upload(self, request, pk=None):
+    def initiate_upload(self, request, pk=None, classroom_id=None):
         """Get an upload policy for a classroom document.
 
         Calling the endpoint resets the upload state to `pending` and returns an upload policy to
