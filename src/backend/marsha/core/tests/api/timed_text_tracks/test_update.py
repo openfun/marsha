@@ -149,7 +149,7 @@ class TimedTextTrackUpdateAPITest(TestCase):
         jwt_token = UserAccessTokenFactory()
 
         response = self.client.get(
-            f"/api/timedtexttracks/{track.id}/",
+            f"/api/videos/{track.video.id}/timedtexttracks/{track.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         data = json.loads(response.content)
@@ -184,7 +184,7 @@ class TimedTextTrackUpdateAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
-            f"/api/timedtexttracks/{track.id}/",
+            f"/api/videos/{track.video.id}/timedtexttracks/{track.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         data = response.json()
@@ -219,7 +219,7 @@ class TimedTextTrackUpdateAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
-            f"/api/timedtexttracks/{track.id}/",
+            f"/api/videos/{track.video.id}/timedtexttracks/{track.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         data = response.json()
@@ -255,7 +255,7 @@ class TimedTextTrackUpdateAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
-            f"/api/timedtexttracks/{track.id}/",
+            f"/api/videos/{track.video.id}/timedtexttracks/{track.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         data = json.loads(response.content)
@@ -298,7 +298,7 @@ class TimedTextTrackUpdateAPITest(TestCase):
         data["language"] = "en"
 
         response = self.client.put(
-            f"/api/timedtexttracks/{track.id}/",
+            f"/api/videos/{track.video.id}/timedtexttracks/{track.id}/",
             json.dumps(data),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
@@ -338,7 +338,7 @@ class TimedTextTrackUpdateAPITest(TestCase):
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=timed_text_track.video)
 
         response = self.client.get(
-            f"/api/timedtexttracks/{timed_text_track.id}/",
+            f"/api/videos/{timed_text_track.video.id}/timedtexttracks/{timed_text_track.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         data = json.loads(response.content)
@@ -361,7 +361,7 @@ class TimedTextTrackUpdateAPITest(TestCase):
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=timed_text_track.video)
 
         response = self.client.get(
-            f"/api/timedtexttracks/{timed_text_track.id}/",
+            f"/api/videos/{timed_text_track.video.id}/timedtexttracks/{timed_text_track.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         data = json.loads(response.content)
@@ -393,34 +393,3 @@ class TimedTextTrackUpdateAPITest(TestCase):
         self.assertEqual(response.status_code, 403)
         timed_text_track_update.refresh_from_db()
         self.assertEqual(timed_text_track_update.language, "en")
-
-
-class TimedTextTrackUpdateAPIOldTest(TimedTextTrackUpdateAPITest):
-    """Test the update API of the liveSession object with old URLs."""
-
-    def _update_url(self, video, track):
-        """Return the url to update a timed text track."""
-        return f"/api/timedtexttracks/{track.id}/"
-
-    def test_api_timed_text_track_update_detail_token_video(self):
-        """Token users trying to update the video of a timed text return an error."""
-        timed_text_track = TimedTextTrackFactory()
-        original_video = timed_text_track.video
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=timed_text_track.video)
-
-        response = self.client.get(
-            f"/api/timedtexttracks/{timed_text_track.id}/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        data = json.loads(response.content)
-        data["video"] = str(VideoFactory().id)
-
-        response = self.client.put(
-            self._update_url(timed_text_track.video, timed_text_track),
-            json.dumps(data),
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-            content_type="application/json",
-        )
-        self.assertEqual(response.status_code, 400)
-        timed_text_track.refresh_from_db()
-        self.assertEqual(timed_text_track.video, original_video)

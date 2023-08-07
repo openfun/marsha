@@ -566,11 +566,3 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
 
         shared_live_media.refresh_from_db()
         self.assertEqual(shared_live_media.upload_state, defaults.PENDING)
-
-
-class SharedLiveMediaInitiateUploadAPIOldTest(SharedLiveMediaInitiateUploadAPITest):
-    """Test the update API of the shared live media object."""
-
-    def _post_url(self, video, shared_live_media):
-        """Return the url to use in tests."""
-        return f"/api/sharedlivemedias/{shared_live_media.id}/initiate-upload/"

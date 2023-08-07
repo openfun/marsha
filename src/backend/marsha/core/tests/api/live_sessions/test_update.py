@@ -45,10 +45,10 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
 
     def assert_response_resource_not_accessible(self, response):
         """Assert response resource not the same as video_id"""
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 403)
         self.assertEqual(
             response.json(),
-            {"detail": "Resource from token does not match given parameters."},
+            {"detail": "You do not have permission to perform this action."},
         )
 
     def assert_user_cannot_patch(self, user, video):
@@ -880,41 +880,3 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
                 "video": str(video.id),
             },
         )
-
-
-# Old routes to remove
-class LiveSessionUpdateApiOldTest(LiveSessionUpdateApiTest):
-    """Test the update API of the liveSession object with old URLs."""
-
-    def _update_url(self, video, live_session):
-        """Return the url to use in tests."""
-        return f"/api/livesessions/{live_session.pk}/"
-
-    def test_api_livesession_update_with_token_patch_not_allowed(self):
-        """Patch update is not allowed."""
-        video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        AnonymousLiveSessionFactory(video=video)
-        jwt_token = ResourceAccessTokenFactory(resource=video)
-
-        # This is not clear why this is tested as this is not an expected URL
-        # still we keep the test for old URLs
-        response = self.client.patch(
-            "/api/livesessions/",
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": False},
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(response.status_code, 405)
-        self.assertEqual(response.json(), {"detail": 'Method "PATCH" not allowed.'})
-
-    def assert_user_can_patch(self, user, video):
-        """Defuse original assertion for old URLs"""
-        self.assert_user_cannot_patch(user, video)
-
-    def assert_response_resource_not_accessible(self, response):
-        """Assert response resource not accessible"""
-        self.assertEqual(response.status_code, 403)

@@ -265,11 +265,3 @@ class SharedLiveMediaDeleteAPITest(TestCase):
         video.refresh_from_db()
         self.assertIsNone(video.active_shared_live_media)
         self.assertIsNone(video.active_shared_live_media_page)
-
-
-class SharedLiveMediaDeleteAPIOldTest(SharedLiveMediaDeleteAPITest):
-    """Test the delete API of the shared live media object."""
-
-    def _delete_url(self, video, shared_live_media):
-        """Return the url to use in tests."""
-        return f"/api/sharedlivemedias/{shared_live_media.id}/"

@@ -288,12 +288,3 @@ class TimedTextTrackCreateAPITest(TestCase):
                 "video": str(video.id),
             },
         )
-
-
-# Old routes to remove
-class TimedTextTrackCreateAPIOldTest(TimedTextTrackCreateAPITest):
-    """Test the create API of the timed text track object with old URLs."""
-
-    def _post_url(self, video):
-        """Return the url to use to create a timed text track."""
-        return "/api/timedtexttracks/"

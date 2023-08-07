@@ -64,22 +64,8 @@ class ObjectVideoRelatedMixin:
     def get_related_video_id(self):
         """Get the related video ID from the request."""
 
-        # The video ID in the URL will be mandatory when old routes are deleted.
-        video_id = (
-            self.kwargs.get("video_id")
-            # Backward compatibility with old routes
-            or self.request.data.get("video")
-            or self.request.query_params.get("video")
-        )
-
-        # Backward compatibility with old routes for LTI context
-        resource = self.request.resource
-        if resource is not None:
-            if resource.id and video_id and str(video_id) != str(resource.id):
-                raise ResourceDoesNotMatchParametersException()
-            return self.request.resource.id
-
-        return video_id
+        # The video ID in the URL is mandatory
+        return self.kwargs.get("video_id")
 
     def get_serializer_context(self):
         """Extra context provided to the serializer class."""

@@ -648,16 +648,3 @@ class LiveSessionListApiTest(LiveSessionApiTestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["count"], 0)
-
-
-# Old routes to remove
-class LiveSessionListApiOldTest(LiveSessionListApiTest):
-    """Test the list API of the liveSession object with old URLs."""
-
-    def _get_url(self, video):
-        """Return the url to use in tests."""
-        return "/api/livesessions/"
-
-    def assert_user_can_list(self, user, video, awaited_results=1):
-        """Defuse original assertion for old URLs"""
-        self.assert_user_cannot_list(user, video)

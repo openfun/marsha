@@ -1518,30 +1518,3 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
             f"{key_access}]",
             email_content,
         )
-
-
-# Old routes to remove
-class LiveSessionCreateApiOldTest(LiveSessionCreateApiTest):
-    """Test the create API of the liveSession object with old URLs."""
-
-    def _post_url(self, video):
-        """Return the url to use to create a live session."""
-        return "/api/livesessions/"
-
-    def assert_user_can_create(self, user, video):
-        """Defuse original assertion for old URLs"""
-        self.assert_user_cannot_create(user, video)
-
-    def test_api_livesession_create_with_unknown_video(self):
-        """Token with wrong resource_id should render a 404."""
-        video = VideoFactory()
-
-        # token with no user information
-        jwt_token = ResourceAccessTokenFactory()
-        response = self.client.post(
-            self._post_url(video),
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(response.status_code, 404)

@@ -488,10 +488,3 @@ class TimedTextTrackInitiateUploadAPITest(TestCase):
             response.json(),
             {"size": ["file too large, max size allowed is 10 Bytes"]},
         )
-
-
-class TimedTextTrackInitiateUploadAPIOldTest(TimedTextTrackInitiateUploadAPITest):
-    """Test the create API of the liveSession object with old URLs."""
-
-    def _post_url(self, video, track):
-        return f"/api/timedtexttracks/{track.id}/initiate-upload/"

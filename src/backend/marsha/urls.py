@@ -69,24 +69,6 @@ router.register(
     "lti-user-associations", LtiUserAssociationViewSet, basename="lti_user_associations"
 )
 
-# Old routes to remove
-router.register(
-    models.LiveSession.RESOURCE_NAME,
-    LiveSessionViewSet,
-    basename="live_sessions",
-)
-router.register(
-    models.SharedLiveMedia.RESOURCE_NAME,
-    SharedLiveMediaViewSet,
-    basename="sharedlivemedias",
-)
-router.register(
-    models.TimedTextTrack.RESOURCE_NAME,
-    TimedTextTrackViewSet,
-    basename="timed_text_tracks",
-)
-router.register(models.Thumbnail.RESOURCE_NAME, ThumbnailViewSet, basename="thumbnails")
-
 # Video related resources (for nested routes)
 video_related_router = DefaultRouter()
 video_related_router.register(

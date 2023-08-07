@@ -84,11 +84,3 @@ class ThumbnailOptionsApiTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["upload_max_size_bytes"], 10)
-
-
-class ThumbnailOptionsApiOldTest(ThumbnailOptionsApiTest):
-    """Test the options API of the thumbnail object."""
-
-    def _options_url(self, video):
-        """Return the url to use to create a live session."""
-        return "/api/thumbnails/"

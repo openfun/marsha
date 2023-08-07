@@ -108,11 +108,3 @@ class TimedTextTrackOptionsAPITest(TestCase):
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=timed_text_track.video)
 
         self.assert_jwt_can_query_options(jwt_token, timed_text_track)
-
-
-class TimedTextTrackOptionsAPIOldTest(TimedTextTrackOptionsAPITest):
-    """Test the create API of the timed text track object with old URLs."""
-
-    def _options_url(self, video):
-        """Return the url to use options on a timed text track."""
-        return "/api/timedtexttracks/"
