@@ -1,4 +1,4 @@
-import { getLanguage, getLocaleCode, toLocale } from './lang';
+import { getLanguage, getLocaleCode, toLocale } from './utils';
 
 describe('toLocale', () => {
   it('Turns a language name (en-us) into a locale name (en_US)', () => {

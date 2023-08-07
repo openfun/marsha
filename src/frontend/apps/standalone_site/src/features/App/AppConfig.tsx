@@ -1,21 +1,14 @@
-import { getIntl } from 'lib-common';
 import { useP2PConfig, useSentry, useSiteConfig } from 'lib-components';
 import { PropsWithChildren, useEffect, useState } from 'react';
-import { IntlShape, RawIntlProvider } from 'react-intl';
+import { RawIntlProvider } from 'react-intl';
 
 import { useConfig } from 'api/useConfig';
 import { ContentSpinner } from 'components/Spinner';
-import { DEFAULT_LANGUAGE } from 'conf/global';
 import { featureContentLoader, useContentFeatures } from 'features/Contents';
-import { getCurrentTranslation, getLanguage, getLocaleCode } from 'utils/lang';
+import { useLanguage } from 'features/Language';
 
 const AppConfig = ({ children }: PropsWithChildren<unknown>) => {
-  const [currentTranslation, setCurrentTranslation] =
-    useState<Record<string, string>>();
-  const [language, setLanguage] = useState<string>();
-  const [localCode, setLocalCode] = useState<string>();
-  const [intl, setIntl] = useState<IntlShape>();
-
+  const intl = useLanguage();
   const [isDomReady, setIsDomReady] = useState(false);
   const setSentry = useSentry((state) => state.setSentry);
   const setP2PConfig = useP2PConfig((state) => state.setP2PConfig);
@@ -26,23 +19,6 @@ const AppConfig = ({ children }: PropsWithChildren<unknown>) => {
   });
   const isFeatureLoaded = useContentFeatures((state) => state.isFeatureLoaded);
   const isConfigReady = isFeatureLoaded && isDomReady && intl;
-
-  useEffect(() => {
-    const language = getLanguage();
-    setLanguage(language);
-    setLocalCode(getLocaleCode(language));
-  }, []);
-
-  /**
-   * Load the current language and translation
-   */
-  useEffect(() => {
-    if (language) {
-      getCurrentTranslation(language).then((translation) => {
-        setCurrentTranslation(translation);
-      });
-    }
-  }, [language]);
 
   useEffect(() => {
     const handleCDNLoaded = () => {
@@ -85,15 +61,6 @@ const AppConfig = ({ children }: PropsWithChildren<unknown>) => {
       vod_conversion_enabled: config.vod_conversion_enabled,
     });
   }, [setSentry, setP2PConfig, config, setSiteConfig]);
-
-  useEffect(() => {
-    setIntl(
-      getIntl({
-        locale: localCode || getLocaleCode(DEFAULT_LANGUAGE),
-        messages: currentTranslation,
-      }),
-    );
-  }, [currentTranslation, localCode]);
 
   if (!isConfigReady) {
     return <ContentSpinner boxProps={{ height: '100vh' }} />;
