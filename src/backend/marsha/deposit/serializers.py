@@ -33,7 +33,7 @@ class DepositedFileSerializer(
             "filename",
             "author_name",
             "id",
-            "file_depository",
+            "file_depository_id",
             "read",
             "url",
             "uploaded_on",
@@ -42,7 +42,7 @@ class DepositedFileSerializer(
         )
         read_only_fields = (
             "id",
-            "file_depository",
+            "file_depository_id",
             "url",
             "uploaded_on",
             "upload_state",
@@ -52,7 +52,7 @@ class DepositedFileSerializer(
     # filename = serializers.SerializerMethodField()
     url = serializers.SerializerMethodField()
     # Make sure file depository UUID is converted to a string during serialization
-    file_depository = serializers.PrimaryKeyRelatedField(
+    file_depository_id = serializers.PrimaryKeyRelatedField(
         read_only=True, pk_field=serializers.CharField()
     )
 

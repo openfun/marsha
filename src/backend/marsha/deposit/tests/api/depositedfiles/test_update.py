@@ -70,7 +70,7 @@ class DepositedFileUpdateAPITest(TestCase):
             response.json(),
             {
                 "author_name": deposited_file.author_name,
-                "file_depository": str(deposited_file.file_depository.id),
+                "file_depository_id": str(deposited_file.file_depository.id),
                 "filename": deposited_file.filename,
                 "id": str(deposited_file.id),
                 "read": True,
@@ -121,7 +121,7 @@ class DepositedFileUpdateAPITest(TestCase):
             response.json(),
             {
                 "author_name": deposited_file.author_name,
-                "file_depository": str(deposited_file.file_depository.id),
+                "file_depository_id": str(deposited_file.file_depository.id),
                 "filename": deposited_file.filename,
                 "id": str(deposited_file.id),
                 "read": True,
@@ -156,7 +156,7 @@ class DepositedFileUpdateAPITest(TestCase):
             response.json(),
             {
                 "author_name": deposited_file.author_name,
-                "file_depository": str(deposited_file.file_depository.id),
+                "file_depository_id": str(deposited_file.file_depository.id),
                 "filename": deposited_file.filename,
                 "id": str(deposited_file.id),
                 "read": True,
