@@ -1,4 +1,4 @@
-import { DEFAULT_LANGUAGE, REACT_LOCALES } from './conf';
+import { DEFAULT_LOCALE, LANGUAGE_LOCAL_STORAGE, REACT_LOCALES } from './conf';
 
 // Turn a language name (en-us) into a locale name (en_US).
 export const toLocale = (language: string) => {
@@ -11,7 +11,10 @@ export const toLocale = (language: string) => {
 };
 
 export const getLanguage = () => {
-  const value_locale = toLocale(navigator?.language || DEFAULT_LANGUAGE);
+  const language = localStorage.getItem(LANGUAGE_LOCAL_STORAGE);
+  const value_locale = toLocale(
+    language || navigator?.language || DEFAULT_LOCALE.locale,
+  );
 
   if (REACT_LOCALES.includes(value_locale)) {
     return value_locale;
@@ -23,7 +26,7 @@ export const getLanguage = () => {
     }
   }
 
-  return DEFAULT_LANGUAGE;
+  return DEFAULT_LOCALE.locale;
 };
 
 export const getLocaleCode = (language: string) => {
@@ -32,6 +35,29 @@ export const getLocaleCode = (language: string) => {
   }
 
   return language;
+};
+
+export const splitLocaleCode = (
+  language: string,
+): {
+  language: string;
+  region?: string;
+} => {
+  const locale = language.split(/[-_]/);
+  return {
+    language: locale[0],
+    region: locale[1],
+  };
+};
+
+export const getLanguageFromLocale = (locale: string) => {
+  const language = new Intl.DisplayNames([locale], {
+    type: 'language',
+  }).of(splitLocaleCode(locale).language);
+
+  return !language
+    ? DEFAULT_LOCALE.language_str
+    : language.charAt(0).toUpperCase() + language.slice(1);
 };
 
 export const getCurrentTranslation = async (language: string) => {

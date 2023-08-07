@@ -29,6 +29,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add a shared media widget directly in the video player
 - Add a transcript plugin to the video player
 - Add a link to LTI resources to retrieve them in the standalone website
+- Add Language Picker in the standalone website (#2366)
 
 ### Changed
 

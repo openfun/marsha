@@ -1,6 +1,6 @@
 import { Box, Button, DropButton, Text } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
-import { Nullable, theme } from 'lib-common';
+import { Breakpoints, Nullable, theme } from 'lib-common';
 import {
   AnonymousUser,
   useCurrentUser,
@@ -17,6 +17,7 @@ import { ReactComponent as MarshaLogoIcon } from 'assets/svg/logo_marsha.svg';
 import { ReactComponent as LogoutIcon } from 'assets/svg/logout.svg';
 import { ReactComponent as SettingsIcon } from 'assets/svg/settings.svg';
 import { logout } from 'features/Authentication';
+import { LanguagePicker } from 'features/Language/';
 import { Burger } from 'features/Menu';
 import { routes } from 'routes/routes';
 
@@ -97,7 +98,7 @@ const messages = defineMessages({
 const Header = forwardRef<Nullable<HTMLDivElement>>((_props, ref) => {
   const intl = useIntl();
   const [isScrollTop, setIsScrollTop] = useState(true);
-  const { isDesktop } = useResponsive();
+  const { isDesktop, breakpoint, isSmallerBreakpoint } = useResponsive();
   const { currentUser } = useCurrentUser((state) => ({
     currentUser: state.currentUser,
   }));
@@ -138,12 +139,25 @@ const Header = forwardRef<Nullable<HTMLDivElement>>((_props, ref) => {
         justify="between"
         margin={{ bottom: 'small' }}
         pad={{ right: 'medium' }}
-        gap="medium"
+        gap={
+          isSmallerBreakpoint(breakpoint, Breakpoints.small) ? 'none' : 'medium'
+        }
       >
-        <Burger width={60} height={60} aria-controls="menu" />
+        <Burger
+          width={60}
+          height={60}
+          aria-controls="menu"
+          style={{ flex: 'none' }}
+        />
         <Link to={routes.HOMEPAGE.path} style={{ color: 'currentColor' }}>
           {siteConfig.is_default_site || !siteConfig.logo_url ? (
-            <MarshaLogoIcon width={117} height={80} />
+            <MarshaLogoIcon
+              height={
+                isSmallerBreakpoint(breakpoint, Breakpoints.small)
+                  ? '100%'
+                  : '80px'
+              }
+            />
           ) : (
             <Box margin={{ top: 'small' }}>
               <img src={siteConfig.logo_url} alt="Home" />
@@ -152,69 +166,86 @@ const Header = forwardRef<Nullable<HTMLDivElement>>((_props, ref) => {
         </Link>
       </Box>
 
-      <DropButton
-        open={isDropOpen}
-        onOpen={() => {
-          setIsDropOpen(true);
-        }}
-        onClose={() => {
-          setIsDropOpen(false);
-        }}
-        plain
-        label={
-          <Box direction="row" align="center" gap="small" justify="end">
-            <Text>{fullName}</Text>
-            <AvatarIcon
-              title={intl.formatMessage(messages.iconTitle)}
-              width={42}
-              height={42}
-            />
-          </Box>
-        }
-        dropAlign={{ top: 'bottom', right: 'right' }}
-        dropContent={
-          <Box direction="column" margin="small" gap="small">
-            <NavLinkStyled
-              to={routes.PROFILE.path}
-              onClick={() => {
-                setIsDropOpen(false);
-              }}
-            >
-              <AvatarIcon />
-              {intl.formatMessage(messages.profile)}
-            </NavLinkStyled>
+      <Box direction="row" align="center" gap="small" justify="end">
+        <LanguagePicker />
+        <DropButton
+          open={isDropOpen}
+          onOpen={() => {
+            setIsDropOpen(true);
+          }}
+          onClose={() => {
+            setIsDropOpen(false);
+          }}
+          plain
+          label={
+            <Box direction="row" align="center" gap="small" justify="end">
+              {!isSmallerBreakpoint(breakpoint, Breakpoints.xsmall) && (
+                <Text
+                  truncate
+                  style={{
+                    WebkitBoxOrient: 'vertical',
+                    WebkitLineClamp: 2,
+                    display: '-webkit-box',
+                    maxWidth: '90px',
+                    whiteSpace: 'normal',
+                  }}
+                >
+                  {fullName}
+                </Text>
+              )}
+              <AvatarIcon
+                style={{ flex: 'none' }}
+                title={intl.formatMessage(messages.iconTitle)}
+                width={42}
+                height={42}
+              />
+            </Box>
+          }
+          dropAlign={{ top: 'bottom', right: 'right' }}
+          dropContent={
+            <Box direction="column" margin="small" gap="small">
+              <NavLinkStyled
+                to={routes.PROFILE.path}
+                onClick={() => {
+                  setIsDropOpen(false);
+                }}
+              >
+                <AvatarIcon />
+                {intl.formatMessage(messages.profile)}
+              </NavLinkStyled>
 
-            <NavLinkStyled
-              to={routes.PROFILE.subRoutes.PROFILE_SETTINGS.path}
-              onClick={() => {
-                setIsDropOpen(false);
-              }}
-            >
-              <SettingsIcon /> {intl.formatMessage(messages.settings)}
-            </NavLinkStyled>
+              <NavLinkStyled
+                to={routes.PROFILE.subRoutes.PROFILE_SETTINGS.path}
+                onClick={() => {
+                  setIsDropOpen(false);
+                }}
+              >
+                <SettingsIcon /> {intl.formatMessage(messages.settings)}
+              </NavLinkStyled>
 
-            <ButtonStyled
-              plain
-              onClick={() => {
-                logout();
-              }}
-            >
-              <LogoutIcon />
-              {intl.formatMessage(messages.logout)}
-            </ButtonStyled>
-          </Box>
-        }
-        dropProps={{
-          round: 'xsmall',
-          border: {
-            color: 'blue-active',
-            size: '2px',
-          },
-          style: {
-            zIndex: 991,
-          },
-        }}
-      />
+              <ButtonStyled
+                plain
+                onClick={() => {
+                  logout();
+                }}
+              >
+                <LogoutIcon />
+                {intl.formatMessage(messages.logout)}
+              </ButtonStyled>
+            </Box>
+          }
+          dropProps={{
+            round: 'xsmall',
+            border: {
+              color: 'blue-active',
+              size: '2px',
+            },
+            style: {
+              zIndex: 991,
+            },
+          }}
+        />
+      </Box>
     </HeaderBox>
   );
 });

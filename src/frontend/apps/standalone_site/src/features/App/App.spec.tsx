@@ -1,5 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
+import { Grommet, ResponsiveContext } from 'grommet';
 import {
   playlistMockFactory,
   useCurrentUser,
@@ -17,6 +19,13 @@ fetchMockAuth();
 const consoleWarn = jest
   .spyOn(console, 'warn')
   .mockImplementation(() => jest.fn());
+
+jest.mock('grommet', () => ({
+  ...jest.requireActual('grommet'),
+  Grommet: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
+}));
 
 window.scrollTo = jest.fn();
 window.isCDNLoaded = true;
@@ -81,7 +90,13 @@ describe('<App />', () => {
         full_name: 'John Doe',
       }),
     });
-    render(<App />);
+    render(
+      <Grommet>
+        <ResponsiveContext.Provider value="large">
+          <App />
+        </ResponsiveContext.Provider>
+      </Grommet>,
+    );
 
     expect(await screen.findByText(/John Doe/i)).toBeInTheDocument();
     expect(
@@ -111,17 +126,17 @@ describe('<App />', () => {
       }),
       { virtual: true },
     );
-    const languageGetter = jest.spyOn(window.navigator, 'language', 'get');
-    languageGetter.mockReturnValue('fr');
 
     render(<App />);
 
-    expect(await screen.findByText(/John Doe/i)).toBeInTheDocument();
+    await userEvent.click(
+      await screen.findByLabelText(/Language Picker; Selected: en/i),
+    );
+
+    await userEvent.click(screen.getByText(/Français/i));
+
     expect(
       await screen.findByRole('menuitem', { name: /Mon Tableau de bord/i }),
-    ).toBeInTheDocument();
-    expect(
-      await screen.findByText(/some welcome classroom/i),
     ).toBeInTheDocument();
   });
 

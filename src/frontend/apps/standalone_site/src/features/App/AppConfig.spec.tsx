@@ -6,6 +6,7 @@ import { defineMessages, useIntl } from 'react-intl';
 
 import { ConfigResponse } from 'api/useConfig';
 import { useContentFeatures } from 'features/Contents';
+import { useLanguageStore } from 'features/Language/store/languageStore';
 
 import AppConfig from './AppConfig';
 
@@ -244,8 +245,6 @@ describe('AppConfig', () => {
       }),
       { virtual: true },
     );
-    const languageGetter = jest.spyOn(window.navigator, 'language', 'get');
-    languageGetter.mockReturnValue('fr');
 
     deferredConfig.resolve(config);
 
@@ -255,6 +254,9 @@ describe('AppConfig', () => {
       </AppConfig>,
     );
 
+    expect(await screen.findByText(/My test/i)).toBeInTheDocument();
+
+    useLanguageStore.getState().setLanguage('fr');
     expect(await screen.findByText(/Mon test/i)).toBeInTheDocument();
   });
 
