@@ -80,7 +80,7 @@ export const classroomDocumentMockFactory = (
   classroomDocument: Partial<ClassroomDocument> = {},
 ): ClassroomDocument => {
   return {
-    classroom: classroomMockFactory(),
+    classroom_id: faker.datatype.uuid(),
     filename: faker.system.fileName(),
     id: faker.datatype.uuid(),
     is_default: false,
@@ -95,7 +95,7 @@ export const classroomRecordingMockFactory = (
   classroomRecording: Partial<ClassroomRecording> = {},
 ): ClassroomRecording => {
   return {
-    classroom: faker.datatype.uuid(),
+    classroom_id: faker.datatype.uuid(),
     id: faker.datatype.uuid(),
     started_at: faker.date.recent().toISOString(),
     video_file_url: faker.internet.url(),

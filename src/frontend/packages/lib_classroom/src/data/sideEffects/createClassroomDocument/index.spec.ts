@@ -24,7 +24,7 @@ describe('sideEffects/createClassroomDocument', () => {
     const createdClassroomDocument = await createClassroomDocument({
       filename: file.name,
       size: file.size,
-      classroom: classroomDocument.classroom.id,
+      classroom: classroomDocument.classroom_id,
     });
 
     const fetchArgs = fetchMock.lastCall()![1]!;
@@ -48,7 +48,7 @@ describe('sideEffects/createClassroomDocument', () => {
       createClassroomDocument({
         filename: file.name,
         size: file.size,
-        classroom: classroomDocument.classroom.id,
+        classroom: classroomDocument.classroom_id,
       }),
     ).rejects.toThrow('Failed to perform the request');
   });
@@ -61,7 +61,7 @@ describe('sideEffects/createClassroomDocument', () => {
       createClassroomDocument({
         filename: file.name,
         size: file.size,
-        classroom: classroomDocument.classroom.id,
+        classroom: classroomDocument.classroom_id,
       }),
     ).rejects.toThrow();
   });

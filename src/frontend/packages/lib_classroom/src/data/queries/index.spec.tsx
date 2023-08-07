@@ -469,7 +469,7 @@ describe('queries', () => {
     it('requests the resource list', async () => {
       const classroom = classroomMockFactory();
       const classroomDocuments = Array(4).fill(
-        classroomDocumentMockFactory({ classroom }),
+        classroomDocumentMockFactory({ classroom_id: classroom.id }),
       );
       fetchMock.mock(
         `/api/classrooms/${classroom.id}/classroomdocuments/?limit=999`,
@@ -501,7 +501,9 @@ describe('queries', () => {
 
     it('fails to get the resource list', async () => {
       const classroom = classroomMockFactory();
-      Array(4).fill(classroomDocumentMockFactory({ classroom }));
+      Array(4).fill(
+        classroomDocumentMockFactory({ classroom_id: classroom.id }),
+      );
       fetchMock.mock(
         `/api/classrooms/${classroom.id}/classroomdocuments/?limit=999`,
         404,

@@ -17,7 +17,7 @@ describe('sideEffects/createVOD', () => {
   it('calls create-vod for a classroom recording', async () => {
     const classroomRecording = classroomRecordingMockFactory();
     fetchMock.mock(
-      `/api/classrooms/${classroomRecording.classroom}/recordings/${classroomRecording.id}/create-vod/`,
+      `/api/classrooms/${classroomRecording.classroom_id}/recordings/${classroomRecording.id}/create-vod/`,
       {
         key: 'value',
       },
@@ -38,7 +38,7 @@ describe('sideEffects/createVOD', () => {
   it('throws when it fails to call create-vod (request failure)', async () => {
     const classroomRecording = classroomRecordingMockFactory();
     fetchMock.mock(
-      `/api/classrooms/${classroomRecording.classroom}/recordings/${classroomRecording.id}/create-vod/`,
+      `/api/classrooms/${classroomRecording.classroom_id}/recordings/${classroomRecording.id}/create-vod/`,
       Promise.reject(new Error('Failed to perform the request')),
     );
     await expect(createVOD(classroomRecording, 'my title')).rejects.toThrow(
@@ -49,7 +49,7 @@ describe('sideEffects/createVOD', () => {
   it('throws when it fails to call create-vod (API error)', async () => {
     const classroomRecording = classroomRecordingMockFactory();
     fetchMock.mock(
-      `/api/classrooms/${classroomRecording.classroom}/recordings/${classroomRecording.id}/create-vod/`,
+      `/api/classrooms/${classroomRecording.classroom_id}/recordings/${classroomRecording.id}/create-vod/`,
       400,
     );
     await expect(createVOD(classroomRecording, 'my title')).rejects.toThrow();
