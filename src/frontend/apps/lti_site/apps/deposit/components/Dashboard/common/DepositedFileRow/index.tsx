@@ -29,7 +29,7 @@ export const DepositedFileRow = ({ file }: DepositedFileProps) => {
   const uploadedOnDate = uploadedOn ? uploadedOn.toFormat('dd/MM/yyyy') : null;
   const uploadedOnTime = uploadedOn ? uploadedOn.toFormat('HH:mm') : null;
 
-  const { mutate } = useUpdateDepositedFile(file.id);
+  const { mutate } = useUpdateDepositedFile(file.id, file.file_depository_id);
   const markFileAsRead = () => {
     const callback = () => {
       mutate(

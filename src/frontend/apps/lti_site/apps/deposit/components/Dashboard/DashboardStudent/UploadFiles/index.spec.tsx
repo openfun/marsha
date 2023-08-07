@@ -96,6 +96,7 @@ describe('<UploadFiles />', () => {
       modelName.DepositedFiles,
       depositedFile.id,
       file,
+      depositedFile.file_depository_id,
     );
   });
 
@@ -112,7 +113,7 @@ describe('<UploadFiles />', () => {
     });
 
     fetchMock.mock(
-      '/api/depositedfiles/',
+      '/api/filedepositories/1/depositedfiles/',
       {
         upload_max_size_bytes: Math.pow(10, 9),
       },

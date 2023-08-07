@@ -202,6 +202,7 @@ type UseUpdateDepositedFileOptions = UseMutationOptions<
 >;
 export const useUpdateDepositedFile = (
   id: string,
+  parentId: string,
   options?: UseUpdateDepositedFileOptions,
 ) => {
   const queryClient = useQueryClient();
@@ -212,7 +213,7 @@ export const useUpdateDepositedFile = (
   >({
     mutationFn: (updatedDepositedFile) =>
       updateOne({
-        name: modelName.DepositedFiles,
+        name: `${modelName.FileDepositories}/${parentId}/${modelName.DepositedFiles}`,
         id,
         object: updatedDepositedFile,
       }),

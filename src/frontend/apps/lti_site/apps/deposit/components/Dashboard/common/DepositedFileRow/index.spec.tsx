@@ -36,17 +36,20 @@ describe('<DepositedFileRow />', () => {
       'https://example.com/file.txt',
     );
 
-    fetchMock.patch(`/api/depositedfiles/${depositedFile.id}/`, {
-      ...depositedFile,
-      read: true,
-    });
+    fetchMock.patch(
+      `/api/filedepositories/${depositedFile.file_depository_id}/depositedfiles/${depositedFile.id}/`,
+      {
+        ...depositedFile,
+        read: true,
+      },
+    );
 
     fireEvent.click(downloadButton);
     fireEvent.blur(window);
 
     await waitFor(() =>
       expect(fetchMock.lastCall()![0]).toEqual(
-        `/api/depositedfiles/${depositedFile.id}/`,
+        `/api/filedepositories/${depositedFile.file_depository_id}/depositedfiles/${depositedFile.id}/`,
       ),
     );
     expect(fetchMock.lastCall()![1]).toEqual({
