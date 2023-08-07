@@ -525,16 +525,3 @@ class LiveSessionDisplayNameApiTest(LiveSessionApiTestCase):
             response.json(),
             {"display_name": "User with that display_name already exists!"},
         )
-
-
-# Old routes to remove
-class LiveSessionDisplayNameApiOldTest(LiveSessionDisplayNameApiTest):
-    """Test the display_name API of the liveSession object with old URLs."""
-
-    def _put_url(self, video):
-        """Return the url to use in tests."""
-        return "/api/livesessions/display_name/"
-
-    def assert_user_can_set_display_name(self, user, video):
-        """Defuse original assertion for old URLs"""
-        self.assert_user_cannot_set_display_name(user, video)

@@ -306,11 +306,3 @@ class SharedLiveMediaUpdateAPITest(TestCase):
                 "video": str(video.id),
             },
         )
-
-
-class SharedLiveMediaUpdateAPIOldTest(SharedLiveMediaUpdateAPITest):
-    """Test the update API of the shared live media object."""
-
-    def _update_url(self, video, shared_live_media):
-        """Return the url to use in tests."""
-        return f"/api/sharedlivemedias/{shared_live_media.id}/"

@@ -101,7 +101,8 @@ class TimedTextTrackRetrieveAPITest(TestCase):
         # Try getting another timed_text_track
         other_timed_text_track = TimedTextTrackFactory()
         response = self.client.get(
-            f"/api/timedtexttracks/{other_timed_text_track.id}/",
+            f"/api/videos/{other_timed_text_track.video.id}/"
+            f"timedtexttracks/{other_timed_text_track.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
@@ -153,7 +154,8 @@ class TimedTextTrackRetrieveAPITest(TestCase):
         # Try getting another timed_text_track
         other_timed_text_track = TimedTextTrackFactory()
         response = self.client.get(
-            f"/api/timedtexttracks/{other_timed_text_track.id}/",
+            f"/api/videos/{other_timed_text_track.video.id}/"
+            f"timedtexttracks/{other_timed_text_track.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
@@ -213,7 +215,8 @@ class TimedTextTrackRetrieveAPITest(TestCase):
         # Try getting another timed_text_track
         other_timed_text_track = TimedTextTrackFactory()
         response = self.client.get(
-            f"/api/timedtexttracks/{other_timed_text_track.id}/",
+            f"/api/videos/{other_timed_text_track.video.id}/"
+            f"timedtexttracks/{other_timed_text_track.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
@@ -508,11 +511,3 @@ class TimedTextTrackRetrieveAPITest(TestCase):
                 "video": str(video.id),
             },
         )
-
-
-class TimedTextTrackRetrieveAPIOldTest(TimedTextTrackRetrieveAPITest):
-    """Test the retrieve API of the timed text track object with old URLs."""
-
-    def _get_url(self, video, track):
-        """Return the url to retrieve a timed text track."""
-        return f"/api/timedtexttracks/{track.id}/"

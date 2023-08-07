@@ -140,10 +140,3 @@ class ThumbnailInitiateUploadApiTest(TestCase):
             response.json(),
             {"size": ["File too large, max size allowed is 10 Bytes"]},
         )
-
-
-class ThumbnailInitiateUploadApiOldTest(ThumbnailInitiateUploadApiTest):
-    """Test the initiate-upload API of the thumbnail object."""
-
-    def _post_url(self, video, thumbnail):
-        return f"/api/thumbnails/{thumbnail.id}/initiate-upload/"

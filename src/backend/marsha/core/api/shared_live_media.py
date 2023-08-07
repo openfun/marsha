@@ -102,7 +102,13 @@ class SharedLiveMediaViewSet(
         queryset = super().get_queryset()
         if self.action in ["list"]:
             video_id = self.get_related_video_id()
-            return queryset.filter(video__id=video_id)
+            queryset = queryset.filter(
+                video__id=video_id,
+            )
+            if self.request.resource:
+                queryset = queryset.filter(
+                    video__id=self.request.resource.id,
+                )
 
         return queryset
 

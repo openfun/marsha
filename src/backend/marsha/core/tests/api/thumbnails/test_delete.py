@@ -187,7 +187,9 @@ class ThumbnailDeleteApiTest(TestCase):
 
         # Creating a new thumbnail should be allowed.
         response = self.client.post(
-            "/api/thumbnails/", {"size": 10}, HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+            f"/api/videos/{self.some_video.pk}/thumbnails/",
+            {"size": 10},
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
         self.assertEqual(response.status_code, 201)
@@ -221,11 +223,3 @@ class ThumbnailDeleteApiTest(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
-
-
-class ThumbnailDeleteApiOldTest(ThumbnailDeleteApiTest):
-    """Test the delete API of the thumbnail object."""
-
-    def _delete_url(self, video, thumbnail):
-        """Return the url to use to delete a thumbnail."""
-        return f"/api/thumbnails/{thumbnail.id}/"

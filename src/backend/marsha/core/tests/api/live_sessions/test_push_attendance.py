@@ -346,7 +346,7 @@ class LiveSessionPushAttendanceApiTest(LiveSessionApiTestCase):
         self.assertEqual(LiveSession.objects.count(), 0)
         jwt_token = ResourceAccessTokenFactory()
         response = self.client.post(
-            f"/api/livesessions/push_attendance/?anonymous_id={anonymous_id}",
+            f"/api/videos/unexisting/livesessions/push_attendance/?anonymous_id={anonymous_id}",
             {"live_attendance": {}},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -361,7 +361,7 @@ class LiveSessionPushAttendanceApiTest(LiveSessionApiTestCase):
         self.assertEqual(LiveSession.objects.count(), 0)
         jwt_token = ResourceAccessTokenFactory(resource=video)
         response = self.client.post(
-            f"/api/livesessions/push_attendance/?anonymous_id={anonymous_id}",
+            f"/api/videos/{video.id}/livesessions/push_attendance/?anonymous_id={anonymous_id}",
             {"language": "fr", "live_attendance": {}},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -397,7 +397,8 @@ class LiveSessionPushAttendanceApiTest(LiveSessionApiTestCase):
 
         jwt_token = ResourceAccessTokenFactory(resource=livesession.video)
         response = self.client.post(
-            f"/api/livesessions/push_attendance/?anonymous_id={livesession.anonymous_id}",
+            f"/api/videos/{livesession.video_id}/livesessions/push_attendance/"
+            f"?anonymous_id={livesession.anonymous_id}",
             {
                 "live_attendance": {
                     timestamp: {"sound": "ON", "tabs": "OFF"},
@@ -856,39 +857,3 @@ class LiveSessionPushAttendanceApiTest(LiveSessionApiTestCase):
             },
         )
         self.assertEqual(livesession.consumer_site, video.playlist.consumer_site)
-
-
-# Old routes to remove
-class LiveSessionPushAttendanceApiOldTest(LiveSessionPushAttendanceApiTest):
-    """Test the push_attendance API of the liveSession object with old URLs."""
-
-    def _post_url(self, video):
-        """Return the url to use in tests."""
-        return "/api/livesessions/push_attendance/"
-
-    def assert_user_can_push_attendance(self, user, video):
-        """Defuse original assertion for old URLs"""
-        self.assert_user_cannot_push_attendance(user, video)
-
-    def test_api_livesession_post_attendance_token_lti_video_not_existing(
-        self,
-    ):
-        """Pushing an attendance on a non existing video should fail."""
-        video = VideoFactory()
-        jwt_token = LTIResourceAccessTokenFactory(
-            context_id=str(video.playlist.lti_id),
-            consumer_site=str(video.playlist.consumer_site.id),
-            user__email=None,
-        )
-        response = self.client.post(
-            self._post_url(video),
-            {
-                "live_attendance": {
-                    to_timestamp(timezone.now()): {"sound": "ON", "tabs": "OFF"}
-                }
-            },
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 404)
