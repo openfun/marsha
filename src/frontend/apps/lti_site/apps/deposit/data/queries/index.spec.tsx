@@ -294,7 +294,7 @@ describe('queries', () => {
     it('requests the first page of the resource list', async () => {
       const fileDepository = fileDepositoryMockFactory();
       const depositedFiles = Array(4).fill(
-        depositedFileMockFactory({ file_depository: fileDepository }),
+        depositedFileMockFactory({ file_depository_id: fileDepository.id }),
       );
       fetchMock.mock(
         `/api/filedepositories/${fileDepository.id}/depositedfiles/?limit=3`,
@@ -328,7 +328,7 @@ describe('queries', () => {
     it('requests the second page of the resource list', async () => {
       const fileDepository = fileDepositoryMockFactory();
       const depositedFiles = Array(4).fill(
-        depositedFileMockFactory({ file_depository: fileDepository }),
+        depositedFileMockFactory({ file_depository_id: fileDepository.id }),
       );
       fetchMock.mock(
         `/api/filedepositories/${fileDepository.id}/depositedfiles/?limit=3&offset=3`,
@@ -362,7 +362,7 @@ describe('queries', () => {
     it('fails to get the resource list', async () => {
       const fileDepository = fileDepositoryMockFactory();
       Array(4).fill(
-        depositedFileMockFactory({ file_depository: fileDepository }),
+        depositedFileMockFactory({ file_depository_id: fileDepository.id }),
       );
       fetchMock.mock(
         `/api/filedepositories/${fileDepository.id}/depositedfiles/?limit=3`,
@@ -398,12 +398,16 @@ describe('queries', () => {
     it('updates the resource', async () => {
       const depositedFile = depositedFileMockFactory();
       fetchMock.patch(
-        `/api/depositedfiles/${depositedFile.id}/`,
+        `/api/filedepositories/${depositedFile.file_depository_id}/depositedfiles/${depositedFile.id}/`,
         depositedFile,
       );
 
       const { result } = renderHook(
-        () => useUpdateDepositedFile(depositedFile.id),
+        () =>
+          useUpdateDepositedFile(
+            depositedFile.id,
+            depositedFile.file_depository_id,
+          ),
         {
           wrapper: WrapperReactQuery,
         },
@@ -416,7 +420,7 @@ describe('queries', () => {
       });
 
       expect(fetchMock.lastCall()![0]).toEqual(
-        `/api/depositedfiles/${depositedFile.id}/`,
+        `/api/filedepositories/${depositedFile.file_depository_id}/depositedfiles/${depositedFile.id}/`,
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
@@ -434,10 +438,17 @@ describe('queries', () => {
 
     it('fails to update the resource', async () => {
       const depositedFile = depositedFileMockFactory();
-      fetchMock.patch(`/api/depositedfiles/${depositedFile.id}/`, 400);
+      fetchMock.patch(
+        `/api/filedepositories/${depositedFile.file_depository_id}/depositedfiles/${depositedFile.id}/`,
+        400,
+      );
 
       const { result } = renderHook(
-        () => useUpdateDepositedFile(depositedFile.id),
+        () =>
+          useUpdateDepositedFile(
+            depositedFile.id,
+            depositedFile.file_depository_id,
+          ),
         {
           wrapper: WrapperReactQuery,
         },
@@ -450,7 +461,7 @@ describe('queries', () => {
       });
 
       expect(fetchMock.lastCall()![0]).toEqual(
-        `/api/depositedfiles/${depositedFile.id}/`,
+        `/api/filedepositories/${depositedFile.file_depository_id}/depositedfiles/${depositedFile.id}/`,
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {

@@ -27,7 +27,7 @@ export const depositedFileMockFactory = (
 ): DepositedFile => {
   return {
     author_name: faker.name.firstName() + ' ' + faker.name.lastName(),
-    file_depository: fileDepositoryMockFactory(),
+    file_depository_id: faker.datatype.uuid(),
     filename: faker.system.fileName(),
     size: faker.datatype.number().toString(),
     id: faker.datatype.uuid(),

@@ -21,6 +21,7 @@ describe('useDepositedFileMetadata', () => {
   });
 
   it('requests the deposited file metadata', async () => {
+    const fileDepositoryId = '1';
     const depositedFileMetadata = {
       name: 'Deposited files List',
       description: 'Viewset for the API of the deposited file object.',
@@ -32,16 +33,24 @@ describe('useDepositedFileMetadata', () => {
       ],
       upload_max_size_bytes: 100,
     };
-    fetchMock.mock(`/api/depositedfiles/`, depositedFileMetadata);
+    fetchMock.mock(
+      `/api/filedepositories/${fileDepositoryId}/depositedfiles/`,
+      depositedFileMetadata,
+    );
 
-    const { result } = renderHook(() => useDepositedFileMetadata('fr'), {
-      wrapper: WrapperReactQuery,
-    });
+    const { result } = renderHook(
+      () => useDepositedFileMetadata('fr', fileDepositoryId),
+      {
+        wrapper: WrapperReactQuery,
+      },
+    );
     await waitFor(() => {
       expect(result.current.isSuccess).toBeTruthy();
     });
 
-    expect(fetchMock.lastCall()![0]).toEqual(`/api/depositedfiles/`);
+    expect(fetchMock.lastCall()![0]).toEqual(
+      `/api/filedepositories/${fileDepositoryId}/depositedfiles/`,
+    );
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',
@@ -55,17 +64,26 @@ describe('useDepositedFileMetadata', () => {
   });
 
   it('fails to get the deposited file metadata', async () => {
-    fetchMock.mock(`/api/depositedfiles/`, 404);
+    const fileDepositoryId = '1';
+    fetchMock.mock(
+      `/api/filedepositories/${fileDepositoryId}/depositedfiles/`,
+      404,
+    );
 
-    const { result } = renderHook(() => useDepositedFileMetadata('en'), {
-      wrapper: WrapperReactQuery,
-    });
+    const { result } = renderHook(
+      () => useDepositedFileMetadata('en', fileDepositoryId),
+      {
+        wrapper: WrapperReactQuery,
+      },
+    );
 
     await waitFor(() => {
       expect(result.current.isError).toBeTruthy();
     });
 
-    expect(fetchMock.lastCall()![0]).toEqual(`/api/depositedfiles/`);
+    expect(fetchMock.lastCall()![0]).toEqual(
+      `/api/filedepositories/${fileDepositoryId}/depositedfiles/`,
+    );
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',

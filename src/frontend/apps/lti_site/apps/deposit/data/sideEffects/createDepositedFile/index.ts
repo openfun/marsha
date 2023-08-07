@@ -7,10 +7,13 @@ import {
   useJwt,
 } from 'lib-components';
 
-export const createDepositedFile = async (file: {
-  size: number;
-  filename: string;
-}): Promise<DepositedFile> => {
+export const createDepositedFile = async (
+  file: {
+    size: number;
+    filename: string;
+  },
+  fileDepositoryId: string,
+): Promise<DepositedFile> => {
   const jwt = useJwt.getState().getJwt();
 
   if (!jwt) {
@@ -18,7 +21,7 @@ export const createDepositedFile = async (file: {
   }
 
   const response = await fetchWrapper(
-    `${API_ENDPOINT}/${modelName.DepositedFiles}/`,
+    `${API_ENDPOINT}/${modelName.FileDepositories}/${fileDepositoryId}/${modelName.DepositedFiles}/`,
     {
       headers: {
         Authorization: `Bearer ${jwt}`,
