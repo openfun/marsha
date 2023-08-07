@@ -1,4 +1,4 @@
-import { DEFAULT_LANGUAGE, REACT_LOCALES } from 'conf/global';
+import { DEFAULT_LANGUAGE, REACT_LOCALES } from './conf';
 
 // Turn a language name (en-us) into a locale name (en_US).
 export const toLocale = (language: string) => {
