@@ -6,12 +6,13 @@ import { MarkdownImage, report } from 'lib-components';
 import { fetchOneMarkdownImage } from '@lib-markdown/data/queries';
 
 export async function pollForMarkdownImage(
-  resourceId: string,
+  documentId: string,
+  imageId: string,
   timer = 15,
   counter = 1,
 ): Promise<MarkdownImage> {
   try {
-    const image = await fetchOneMarkdownImage(resourceId);
+    const image = await fetchOneMarkdownImage(documentId, imageId);
 
     if (image.is_ready_to_show) {
       return image;
@@ -19,7 +20,7 @@ export async function pollForMarkdownImage(
       counter++;
       timer = timer * counter;
       await new Promise((resolve) => window.setTimeout(resolve, 100 * timer));
-      return await pollForMarkdownImage(resourceId, timer, counter);
+      return await pollForMarkdownImage(documentId, imageId, timer, counter);
     }
   } catch (error) {
     report(error);

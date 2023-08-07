@@ -2,6 +2,7 @@ import { waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { markdownImageMockFactory } from 'index';
 import { report } from 'lib-components';
+import { v4 as uuidv4 } from 'uuid';
 
 import { pollForMarkdownImage } from './index';
 
@@ -9,6 +10,9 @@ jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
   report: jest.fn(),
 }));
+
+const markdownDocumentId = uuidv4();
+const markdownImageId = uuidv4();
 
 describe('pollForMarkdownImage', () => {
   beforeEach(() => {
@@ -22,10 +26,10 @@ describe('pollForMarkdownImage', () => {
 
   it('polls the image, backing off until it is ready and resolves with a success', async () => {
     fetchMock.mock(
-      '/api/markdown-images/c43f0c8f-4d3b-4219-86c3-86367b2b88cc/',
+      `/api/markdown-documents/${markdownDocumentId}/markdown-images/${markdownImageId}/`,
       JSON.stringify(
         markdownImageMockFactory({
-          id: 'c43f0c8f-4d3b-4219-86c3-86367b2b88cc',
+          id: markdownImageId,
           is_ready_to_show: false,
         }),
       ),
@@ -33,14 +37,15 @@ describe('pollForMarkdownImage', () => {
     );
 
     const promise = pollForMarkdownImage(
-      'c43f0c8f-4d3b-4219-86c3-86367b2b88cc',
+      markdownDocumentId,
+      markdownImageId,
       1,
     );
 
     await waitFor(() => {
       expect(
         fetchMock.calls(
-          '/api/markdown-images/c43f0c8f-4d3b-4219-86c3-86367b2b88cc/',
+          `/api/markdown-documents/${markdownDocumentId}/markdown-images/${markdownImageId}/`,
           {
             method: 'GET',
           },
@@ -49,11 +54,11 @@ describe('pollForMarkdownImage', () => {
     });
 
     const markdownImage = markdownImageMockFactory({
-      id: 'c43f0c8f-4d3b-4219-86c3-86367b2b88cc',
+      id: markdownImageId,
       is_ready_to_show: true,
     });
     fetchMock.mock(
-      '/api/markdown-images/c43f0c8f-4d3b-4219-86c3-86367b2b88cc/',
+      `/api/markdown-documents/${markdownDocumentId}/markdown-images/${markdownImageId}/`,
       JSON.stringify(markdownImage),
       {
         method: 'GET',
@@ -64,7 +69,7 @@ describe('pollForMarkdownImage', () => {
     await waitFor(() => {
       expect(
         fetchMock.calls(
-          '/api/markdown-images/c43f0c8f-4d3b-4219-86c3-86367b2b88cc/',
+          `/api/markdown-documents/${markdownDocumentId}/markdown-images/${markdownImageId}/`,
           {
             method: 'GET',
           },
@@ -77,26 +82,26 @@ describe('pollForMarkdownImage', () => {
 
   it('polls non-existing image', async () => {
     fetchMock.mock(
-      '/api/markdown-images/c43f0c8f-4d3b-4219-86c3-86367b2b88cc/',
+      `/api/markdown-documents/${markdownDocumentId}/markdown-images/${markdownImageId}/`,
       404,
       { method: 'GET' },
     );
 
     await expect(async () => {
-      await pollForMarkdownImage('c43f0c8f-4d3b-4219-86c3-86367b2b88cc');
+      await pollForMarkdownImage(markdownDocumentId, markdownImageId);
     }).rejects.toThrow(
-      'Failed to get /api/markdown-images/c43f0c8f-4d3b-4219-86c3-86367b2b88cc/.',
+      `Failed to get /api/markdown-documents/${markdownDocumentId}/markdown-images/${markdownImageId}/.`,
     );
     expect(report).toHaveBeenCalledWith(
       Error(
-        'Failed to get /api/markdown-images/c43f0c8f-4d3b-4219-86c3-86367b2b88cc/.',
+        `Failed to get /api/markdown-documents/${markdownDocumentId}/markdown-images/${markdownImageId}/.`,
       ),
     );
   });
 
   it('resolves with a failure and reports it when it fails to poll the image', async () => {
     fetchMock.mock(
-      '/api/markdown-images/15cf570a-5dc6-421a-9856-59e1b008a6fb/',
+      `/api/markdown-documents/${markdownDocumentId}/markdown-images/${markdownImageId}/`,
       Promise.reject(new Error('Failed to get the image')),
       {
         method: 'GET',
@@ -105,7 +110,7 @@ describe('pollForMarkdownImage', () => {
     );
 
     await expect(async () => {
-      await pollForMarkdownImage('15cf570a-5dc6-421a-9856-59e1b008a6fb');
+      await pollForMarkdownImage(markdownDocumentId, markdownImageId);
     }).rejects.toThrow('Failed to get the image');
 
     expect(report).toHaveBeenCalledWith(Error('Failed to get the image'));

@@ -8,6 +8,7 @@ import {
 } from '@tanstack/react-query';
 import {
   MarkdownDocument,
+  MarkdownImage,
   MarkdownSaveTranslationsRequest,
   MarkdownSaveTranslationsResponse,
   actionOne,
@@ -212,10 +213,16 @@ export const markdownRenderLatex = (
 };
 
 // It has to be called outside hook context
-export const fetchOneMarkdownImage = (markdownImageId: string): any => {
+export const fetchOneMarkdownImage = (
+  markdownDocumentId: MarkdownDocument['id'],
+  markdownImageId: MarkdownImage['id'],
+): any => {
   return fetchOne({
     meta: undefined,
     pageParam: undefined,
-    queryKey: ['markdown-images', markdownImageId],
+    queryKey: [
+      `markdown-documents/${markdownDocumentId}/markdown-images`,
+      markdownImageId,
+    ],
   });
 };

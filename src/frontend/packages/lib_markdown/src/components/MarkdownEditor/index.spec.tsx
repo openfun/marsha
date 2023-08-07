@@ -555,7 +555,7 @@ describe('<MarkdownEditor />', () => {
     // Drop an image
     const markdownImageId = '5459a5b2-2f81-11ed-ab8f-47c92ec0ac16';
     fetchMock.postOnce(
-      `/api/markdown-images/`,
+      `/api/markdown-documents/1/markdown-images/`,
       markdownImageMockFactory({
         id: markdownImageId,
         active_stamp: null,
@@ -566,7 +566,7 @@ describe('<MarkdownEditor />', () => {
       }),
     );
     fetchMock.postOnce(
-      `/api/markdown-images/${markdownImageId}/initiate-upload/`,
+      `/api/markdown-documents/1/markdown-images/${markdownImageId}/initiate-upload/`,
       {
         fields: {
           key: 'foo',
@@ -593,7 +593,7 @@ describe('<MarkdownEditor />', () => {
 
     // Image is uploaded
     fetchMock.get(
-      `/api/markdown-images/${markdownImageId}/`,
+      `/api/markdown-documents/1/markdown-images/${markdownImageId}/`,
       markdownImageMockFactory({
         id: markdownImageId,
         is_ready_to_show: true,
