@@ -43,7 +43,8 @@ class ClassroomDocumentUpdateAPITest(TestCase):
         data = {"filename": "updated_name.pdf", "size": 100}
 
         response = self.client.patch(
-            f"/api/classroomdocuments/{classroom_document.id}/",
+            f"/api/classrooms/{classroom_document.classroom.id}"
+            f"/classroomdocuments/{classroom_document.id}/",
             json.dumps(data),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
@@ -59,7 +60,8 @@ class ClassroomDocumentUpdateAPITest(TestCase):
         data = {"filename": "updated_name.pdf", "size": 100}
 
         response = self.client.patch(
-            f"/api/classroomdocuments/{classroom_document.id!s}/",
+            f"/api/classrooms/{classroom_document.classroom.id}"
+            f"/classroomdocuments/{classroom_document.id!s}/",
             data,
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
@@ -90,7 +92,7 @@ class ClassroomDocumentUpdateAPITest(TestCase):
         data = {"is_default": True}
 
         response = self.client.patch(
-            f"/api/classroomdocuments/{second_document.id!s}/",
+            f"/api/classrooms/{classroom.id}/classroomdocuments/{second_document.id!s}/",
             data,
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
@@ -122,7 +124,8 @@ class ClassroomDocumentUpdateAPITest(TestCase):
         data = {"filename": "updated_name.pdf"}
 
         response = self.client.patch(
-            f"/api/classroomdocuments/{classroom_document.id}/",
+            f"/api/classrooms/{classroom_document.classroom.id}"
+            f"/classroomdocuments/{classroom_document.id}/",
             json.dumps(data),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
@@ -138,7 +141,8 @@ class ClassroomDocumentUpdateAPITest(TestCase):
         data = {"filename": "updated_name.pdf", "size": 100}
 
         response = self.client.patch(
-            f"/api/classroomdocuments/{classroom_document.id!s}/",
+            f"/api/classrooms/{classroom_document.classroom.id}"
+            f"/classroomdocuments/{classroom_document.id!s}/",
             data,
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
@@ -167,7 +171,8 @@ class ClassroomDocumentUpdateAPITest(TestCase):
         data = {"filename": "updated_name.pdf", "size": 100}
 
         response = self.client.patch(
-            f"/api/classroomdocuments/{classroom_document.id!s}/",
+            f"/api/classrooms/{classroom_document.classroom.id}"
+            f"/classroomdocuments/{classroom_document.id!s}/",
             data,
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
@@ -196,7 +201,8 @@ class ClassroomDocumentUpdateAPITest(TestCase):
         data = {"filename": "updated_name.pdf", "size": 100}
 
         response = self.client.patch(
-            f"/api/classroomdocuments/{classroom_document.id!s}/",
+            f"/api/classrooms/{classroom_document.classroom.id}"
+            f"/classroomdocuments/{classroom_document.id!s}/",
             data,
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
@@ -225,7 +231,8 @@ class ClassroomDocumentUpdateAPITest(TestCase):
         data = {"filename": "updated_name.pdf", "size": 100}
 
         response = self.client.patch(
-            f"/api/classroomdocuments/{classroom_document.id!s}/",
+            f"/api/classrooms/{classroom_document.classroom.id}"
+            f"/classroomdocuments/{classroom_document.id!s}/",
             data,
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",

@@ -13,11 +13,11 @@ app_name = "classroom"
 router = MarshaDefaultRouter()
 
 router.register("classrooms", ClassroomViewSet, basename="classrooms")
-router.register(
-    "classroomdocuments", ClassroomDocumentViewSet, basename="classroom_documents"
-)
 
 classroom_related_router = MarshaDefaultRouter()
+classroom_related_router.register(
+    "classroomdocuments", ClassroomDocumentViewSet, basename="classroom_documents"
+)
 classroom_related_router.register(
     "recordings", ClassroomRecordingViewSet, basename="recordings"
 )
