@@ -294,7 +294,7 @@ describe('queries', () => {
     it('requests the first page of the resource list', async () => {
       const fileDepository = fileDepositoryMockFactory();
       const depositedFiles = Array(4).fill(
-        depositedFileMockFactory({ file_depository: fileDepository }),
+        depositedFileMockFactory({ file_depository_id: fileDepository.id }),
       );
       fetchMock.mock(
         `/api/filedepositories/${fileDepository.id}/depositedfiles/?limit=3`,
@@ -328,7 +328,7 @@ describe('queries', () => {
     it('requests the second page of the resource list', async () => {
       const fileDepository = fileDepositoryMockFactory();
       const depositedFiles = Array(4).fill(
-        depositedFileMockFactory({ file_depository: fileDepository }),
+        depositedFileMockFactory({ file_depository_id: fileDepository.id }),
       );
       fetchMock.mock(
         `/api/filedepositories/${fileDepository.id}/depositedfiles/?limit=3&offset=3`,
@@ -362,7 +362,7 @@ describe('queries', () => {
     it('fails to get the resource list', async () => {
       const fileDepository = fileDepositoryMockFactory();
       Array(4).fill(
-        depositedFileMockFactory({ file_depository: fileDepository }),
+        depositedFileMockFactory({ file_depository_id: fileDepository.id }),
       );
       fetchMock.mock(
         `/api/filedepositories/${fileDepository.id}/depositedfiles/?limit=3`,

@@ -99,7 +99,7 @@ describe('<DashboardInstructor />', () => {
     const depositedFiles: DepositedFile[] = [];
     for (let i = 0; i < 40; i++) {
       depositedFiles.push(
-        depositedFileMockFactory({ file_depository: fileDepository }),
+        depositedFileMockFactory({ file_depository_id: fileDepository.id }),
       );
     }
     const queryClient = new QueryClient();
@@ -170,7 +170,7 @@ describe('<DashboardInstructor />', () => {
       const readStatus = read ? 'read' : 'new';
       depositedFiles.push(
         depositedFileMockFactory({
-          file_depository: fileDepository,
+          file_depository_id: fileDepository.id,
           filename: `file${i}_${readStatus}.txt`,
           read,
         }),
