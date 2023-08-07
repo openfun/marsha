@@ -1,3 +1,4 @@
+import { Maybe } from '@lib-common/types';
 import React, {
   createContext,
   useCallback,
@@ -31,6 +32,12 @@ export interface UploadingObject {
   progress: number;
   status: UploadManagerStatus;
   message?: string;
+  parentType?:
+    | modelName.VIDEOS
+    | MarkdownDocumentModelName.MARKDOWN_DOCUMENTS
+    | ClassroomModelName.CLASSROOMS
+    | FileDepositoryModelName.FileDepositories;
+  parentId?: string;
 }
 
 export interface UploadManagerState {
@@ -82,7 +89,7 @@ export const UploadManager = ({
 
     Object.values(uploadManagerState)
       .filter(({ status }) => status === UploadManagerStatus.INIT)
-      .forEach(({ file, objectId, objectType }) => {
+      .forEach(({ file, objectId, objectType, parentId, parentType }) => {
         (async () => {
           let presignedPost: AWSPresignedPost;
           try {
@@ -92,6 +99,8 @@ export const UploadManager = ({
               file.name,
               file.type,
               file.size,
+              parentType,
+              parentId,
             );
           } catch (error) {
             if ((error as ApiException).type === 'SizeError') {
@@ -196,7 +205,13 @@ export const useUploadManager = () => {
     useContext(UploadManagerContext);
 
   const addUpload = useCallback(
-    (objectType: uploadableModelName, objectId: string, file: File) => {
+    (
+      objectType: uploadableModelName,
+      objectId: string,
+      file: File,
+      parentType?: Maybe<UploadingObject['parentType']>,
+      parentId?: Maybe<string>,
+    ) => {
       setUploadState((state) => ({
         ...state,
         [objectId]: {
@@ -205,6 +220,8 @@ export const useUploadManager = () => {
           file,
           progress: 0,
           status: UploadManagerStatus.INIT,
+          parentType,
+          parentId,
         },
       }));
     },

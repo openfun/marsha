@@ -8,6 +8,7 @@ import {
   UploadForm,
   UploadHandlers,
   UploadManager,
+  UploadingObject,
   WithParams,
   builderFullScreenErrorRoute,
   modelName,
@@ -130,11 +131,13 @@ export const LTIInnerRoutes = () => {
               path={UPLOAD_FORM_ROUTE.default}
               element={
                 <WithParams>
-                  {({ objectId, objectType }) =>
+                  {({ objectId, objectType, parentType, parentId }) =>
                     objectId && objectType ? (
                       <UploadForm
                         objectId={objectId}
                         objectType={objectType as modelName}
+                        parentType={parentType as UploadingObject['parentType']}
+                        parentId={parentId}
                       />
                     ) : (
                       <Navigate

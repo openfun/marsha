@@ -4,7 +4,10 @@ import Dropzone from 'react-dropzone';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
-import { useUploadManager } from '@lib-components/common/UploadManager';
+import {
+  UploadingObject,
+  useUploadManager,
+} from '@lib-components/common/UploadManager';
 import { uploadableModelName } from '@lib-components/types/models';
 
 import { DropzonePlaceholder } from './DropzonePlaceholder';
@@ -25,16 +28,23 @@ const DropzoneStyled = styled.div`
 export interface UploadFieldProps {
   objectType: uploadableModelName;
   objectId: string;
+  parentType?: Maybe<UploadingObject['parentType']>;
+  parentId?: Maybe<string>;
 }
 
-export const UploadField = ({ objectType, objectId }: UploadFieldProps) => {
+export const UploadField = ({
+  objectType,
+  objectId,
+  parentType,
+  parentId,
+}: UploadFieldProps) => {
   const { addUpload } = useUploadManager();
   const [file, setFile] = useState<Maybe<File>>(undefined);
   const intl = useIntl();
 
   const onDrop = (files: File[]) => {
     setFile(files[0]);
-    addUpload(objectType, objectId, files[0]);
+    addUpload(objectType, objectId, files[0], parentType, parentId);
   };
 
   return (

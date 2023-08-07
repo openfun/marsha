@@ -1,3 +1,6 @@
+import { Maybe } from '@lib-common/types';
+
+import { UploadingObject } from '@lib-components/common';
 import { fetchWrapper } from '@lib-components/common/queries/fetchWrapper';
 import { addResource } from '@lib-components/data/stores/generics';
 import { useJwt } from '@lib-components/hooks/stores/useJwt';
@@ -16,8 +19,13 @@ import { report } from '@lib-components/utils/errors/report';
 export async function getResource(
   resourceName: uploadableModelName,
   resourceId: string,
+  parentType?: Maybe<UploadingObject['parentType']>,
+  parentId?: Maybe<string>,
 ): Promise<UploadableObject | requestStatus.FAILURE> {
-  const endpoint = `${API_ENDPOINT}/${resourceName}/${resourceId}/`;
+  let endpoint = `${API_ENDPOINT}/${resourceName}/${resourceId}/`;
+  if (parentId && parentType) {
+    endpoint = `${API_ENDPOINT}/${parentType}/${parentId}/${resourceName}/${resourceId}/`;
+  }
 
   try {
     const response = await fetchWrapper(endpoint, {
