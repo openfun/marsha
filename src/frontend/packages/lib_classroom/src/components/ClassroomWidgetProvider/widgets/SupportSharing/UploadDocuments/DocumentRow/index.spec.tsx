@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { uploadState, useJwt } from 'lib-components';
 import { wrapInIntlProvider } from 'lib-tests';
@@ -47,7 +48,7 @@ describe('<DocumentRow />', () => {
     const classroom = classroomMockFactory({ id: '1', started: false });
     const document = classroomDocumentMockFactory({
       filename: 'my_document.pdf',
-      classroom: classroom,
+      classroom_id: classroom.id,
     });
     render(
       wrapInIntlProvider(
@@ -73,11 +74,44 @@ describe('<DocumentRow />', () => {
     ).toBeEnabled();
   });
 
+  it('sets a document as default', async () => {
+    const classroom = classroomMockFactory({ started: false });
+    const document = classroomDocumentMockFactory({
+      filename: 'my_document.pdf',
+      classroom_id: classroom.id,
+    });
+    fetchMock.patch(
+      `/api/classrooms/${classroom.id}/classroomdocuments/${document.id}/`,
+      {
+        ...document,
+        is_default: true,
+      },
+    );
+    render(
+      wrapInIntlProvider(
+        wrapInClassroom(
+          <QueryClientProvider client={queryClient}>
+            <DocumentRow
+              onRetryFailedUpload={mockedOnRetryFailedUpload}
+              document={document}
+            />
+          </QueryClientProvider>,
+          classroom,
+        ),
+      ),
+    );
+
+    userEvent.click(
+      screen.getByRole('button', { name: 'Click to set as default document' }),
+    );
+    await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
+  });
+
   it('renders a row in UPLOAD_IN_PROGRESS state', () => {
     const classroom = classroomMockFactory({ id: '1', started: false });
     const document = classroomDocumentMockFactory({
       filename: 'my_document.pdf',
-      classroom: classroom,
+      classroom_id: classroom.id,
       upload_state: uploadState.PROCESSING,
     });
     render(
@@ -109,7 +143,7 @@ describe('<DocumentRow />', () => {
     const classroom = classroomMockFactory({ id: '1', started: false });
     const document = classroomDocumentMockFactory({
       filename: 'my_document.pdf',
-      classroom: classroom,
+      classroom_id: classroom.id,
       upload_state: uploadState.ERROR,
     });
     render(

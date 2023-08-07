@@ -275,10 +275,12 @@ type UseUpdateClassroomDocumentOptions = UseMutationOptions<
   UseUpdateClassroomDocumentData
 >;
 export const useUpdateClassroomDocument = (
+  classroomId: string,
   id: string,
   options?: UseUpdateClassroomDocumentOptions,
 ) => {
   const queryClient = useQueryClient();
+  const urlPath = `${ClassroomModelName.CLASSROOMS}/${classroomId}/${ClassroomModelName.CLASSROOM_DOCUMENTS}`;
   return useMutation<
     ClassroomDocument,
     UseUpdateClassroomDocumentError,
@@ -286,19 +288,19 @@ export const useUpdateClassroomDocument = (
   >({
     mutationFn: (updatedClassroomDocument) =>
       updateOne({
-        name: 'classroomdocuments',
+        name: urlPath,
         id,
         object: updatedClassroomDocument,
       }),
     ...options,
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries(['classroomdocuments']);
+      queryClient.invalidateQueries([urlPath]);
       if (options?.onSuccess) {
         options.onSuccess(data, variables, context);
       }
     },
     onError: (error, variables, context) => {
-      queryClient.invalidateQueries(['classroomdocuments']);
+      queryClient.invalidateQueries([urlPath]);
       if (options?.onError) {
         options.onError(error, variables, context);
       }
@@ -306,7 +308,10 @@ export const useUpdateClassroomDocument = (
   });
 };
 
-type UseDeleteClassroomDocumentData = string;
+type UseDeleteClassroomDocumentData = {
+  classroomId: string;
+  classroomDocumentId: string;
+};
 type UseDeleteClassroomDocumentError =
   | { code: 'exception' }
   | {
@@ -327,20 +332,24 @@ export const useDeleteClassroomDocument = (
     UseDeleteClassroomDocumentError,
     UseDeleteClassroomDocumentData
   >({
-    mutationFn: (classroomDocumentId) =>
+    mutationFn: ({ classroomId, classroomDocumentId }) =>
       deleteOne({
-        name: 'classroomdocuments',
+        name: `${ClassroomModelName.CLASSROOMS}/${classroomId}/${ClassroomModelName.CLASSROOM_DOCUMENTS}`,
         id: classroomDocumentId,
       }),
     ...options,
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries(['classroomdocuments']);
+      queryClient.invalidateQueries([
+        `${ClassroomModelName.CLASSROOMS}/${variables.classroomId}/${ClassroomModelName.CLASSROOM_DOCUMENTS}`,
+      ]);
       if (options?.onSuccess) {
         options.onSuccess(data, variables, context);
       }
     },
     onError: (error, variables, context) => {
-      queryClient.invalidateQueries(['classroomdocuments']);
+      queryClient.invalidateQueries([
+        `${ClassroomModelName.CLASSROOMS}/${variables.classroomId}/${ClassroomModelName.CLASSROOM_DOCUMENTS}`,
+      ]);
       if (options?.onError) {
         options.onError(error, variables, context);
       }
@@ -417,6 +426,7 @@ export const useEndClassroomAction = classroomActionMutation<
 >(MutationClassroomAction.END);
 
 export const useClassroomDocumentMetadata = (
+  classroomId: string,
   locale: string,
   queryConfig?: UseQueryOptions<
     ClassroomDocumentMetadata,
@@ -425,7 +435,10 @@ export const useClassroomDocumentMetadata = (
     string[]
   >,
 ) => {
-  const key = ['classroomdocuments', locale];
+  const key = [
+    `${ClassroomModelName.CLASSROOMS}/${classroomId}/${ClassroomModelName.CLASSROOM_DOCUMENTS}`,
+    locale,
+  ];
   return useQuery<
     ClassroomDocumentMetadata,
     'classroomdocuments',

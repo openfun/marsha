@@ -49,7 +49,7 @@ describe('<Recordings />', () => {
       started_at: DateTime.fromJSDate(
         new Date(2022, 1, 29, 11, 0, 0),
       ).toISO() as string,
-      classroom: classroom.id,
+      classroom_id: classroom.id,
     });
 
     render(
@@ -74,7 +74,7 @@ describe('<Recordings />', () => {
     ] as any);
     const classroom = classroomMockFactory();
     const classroomRecording = classroomRecordingMockFactory({
-      classroom: classroom.id,
+      classroom_id: classroom.id,
       vod: classroomRecordingVodMockFactory({
         upload_state: READY,
       }),
@@ -104,7 +104,7 @@ describe('<Recordings />', () => {
       started_at: DateTime.fromJSDate(
         new Date(2022, 1, 29, 11, 0, 0),
       ).toISO() as string,
-      classroom: classroom.id,
+      classroom_id: classroom.id,
     });
 
     fetchMock.mock(
@@ -152,7 +152,7 @@ describe('<Recordings />', () => {
     ] as any);
     const classroom = classroomMockFactory();
     const classroomRecording = classroomRecordingMockFactory({
-      classroom: classroom.id,
+      classroom_id: classroom.id,
       vod: classroomRecordingVodMockFactory({
         upload_state: READY,
       }),
@@ -186,7 +186,7 @@ describe('<Recordings />', () => {
     ] as any);
     const classroom = classroomMockFactory();
     const classroomRecording = classroomRecordingMockFactory({
-      classroom: classroom.id,
+      classroom_id: classroom.id,
       started_at: DateTime.fromJSDate(
         new Date(2022, 1, 29, 11, 0, 0),
       ).toISO() as string,
@@ -219,7 +219,7 @@ describe('<Recordings />', () => {
     ] as any);
     const classroom = classroomMockFactory();
     const classroomRecording = classroomRecordingMockFactory({
-      classroom: classroom.id,
+      classroom_id: classroom.id,
       started_at: DateTime.fromJSDate(
         new Date(2022, 1, 29, 11, 0, 0),
       ).toISO() as string,
@@ -264,7 +264,7 @@ describe('<Recordings />', () => {
     ] as any);
     const classroom = classroomMockFactory();
     const classroomRecording = classroomRecordingMockFactory({
-      classroom: classroom.id,
+      classroom_id: classroom.id,
       started_at: DateTime.fromJSDate(
         new Date(2022, 1, 29, 11, 0, 0),
       ).toISO() as string,
@@ -299,7 +299,7 @@ describe('<Recordings />', () => {
       vod_conversion_enabled: false,
     });
     const classroomRecording = classroomRecordingMockFactory({
-      classroom: classroom.id,
+      classroom_id: classroom.id,
     });
 
     fetchMock.mock(`/api/classrooms/${classroom.id}/`, { classroom });
