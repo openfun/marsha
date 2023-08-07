@@ -25,7 +25,10 @@ class MarkdownImageDeleteApiTest(TestCase):
         """Anonymous users should not be able to delete a Markdown image."""
         markdown_image = MarkdownImageFactory()
 
-        response = self.client.delete(f"/api/markdown-images/{markdown_image.id}/")
+        response = self.client.delete(
+            f"/api/markdown-documents/{markdown_image.markdown_document.id}"
+            f"/markdown-images/{markdown_image.id}/"
+        )
         self.assertEqual(response.status_code, 401)
 
     def test_api_markdown_image_delete_student(self):
@@ -35,7 +38,8 @@ class MarkdownImageDeleteApiTest(TestCase):
         jwt_token = StudentLtiTokenFactory(resource=markdown_image.markdown_document)
 
         response = self.client.delete(
-            f"/api/markdown-images/{markdown_image.id}/",
+            f"/api/markdown-documents/{markdown_image.markdown_document.id}"
+            f"/markdown-images/{markdown_image.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
@@ -51,7 +55,8 @@ class MarkdownImageDeleteApiTest(TestCase):
         self.assertEqual(MarkdownImage.objects.count(), 1)
 
         response = self.client.delete(
-            f"/api/markdown-images/{markdown_image.id}/",
+            f"/api/markdown-documents/{markdown_image.markdown_document.id}"
+            f"/markdown-images/{markdown_image.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 204)
@@ -68,7 +73,8 @@ class MarkdownImageDeleteApiTest(TestCase):
 
         # Creating a new Markdown image should be allowed.
         response = self.client.post(
-            "/api/markdown-images/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+            f"/api/markdown-documents/{markdown_image.markdown_document.id}/markdown-images/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
         self.assertEqual(response.status_code, 201)
@@ -83,7 +89,8 @@ class MarkdownImageDeleteApiTest(TestCase):
         )
 
         response = self.client.delete(
-            f"/api/markdown-images/{markdown_image.id}/",
+            f"/api/markdown-documents/{markdown_image.markdown_document.id}"
+            f"/markdown-images/{markdown_image.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -101,7 +108,8 @@ class MarkdownImageDeleteApiTest(TestCase):
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=markdown_document_token)
 
         response = self.client.delete(
-            f"/api/markdown-images/{markdown_image.id}/",
+            f"/api/markdown-documents/{markdown_image.markdown_document.id}"
+            f"/markdown-images/{markdown_image.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
@@ -115,7 +123,8 @@ class MarkdownImageDeleteApiTest(TestCase):
         jwt_token = UserAccessTokenFactory(user=organization_access.user)
 
         response = self.client.delete(
-            f"/api/markdown-images/{markdown_image.id}/",
+            f"/api/markdown-documents/{markdown_image.markdown_document.id}"
+            f"/markdown-images/{markdown_image.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
@@ -134,7 +143,8 @@ class MarkdownImageDeleteApiTest(TestCase):
         self.assertEqual(MarkdownImage.objects.count(), 1)
 
         response = self.client.delete(
-            f"/api/markdown-images/{markdown_image.id}/",
+            f"/api/markdown-documents/{markdown_image.markdown_document.id}"
+            f"/markdown-images/{markdown_image.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 204)
@@ -151,7 +161,7 @@ class MarkdownImageDeleteApiTest(TestCase):
 
         # Creating a new Markdown image should be allowed.
         response = self.client.post(
-            "/api/markdown-images/",
+            f"/api/markdown-documents/{markdown_image.markdown_document.id}/markdown-images/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             data={"markdown_document": str(markdown_image.markdown_document.id)},
         )
@@ -173,7 +183,8 @@ class MarkdownImageDeleteApiTest(TestCase):
         self.assertEqual(MarkdownImage.objects.count(), 1)
 
         response = self.client.delete(
-            f"/api/markdown-images/{markdown_image.id}/",
+            f"/api/markdown-documents/{markdown_image.markdown_document.id}"
+            f"/markdown-images/{markdown_image.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 204)
@@ -190,7 +201,7 @@ class MarkdownImageDeleteApiTest(TestCase):
 
         # Creating a new Markdown image should be allowed.
         response = self.client.post(
-            "/api/markdown-images/",
+            f"/api/markdown-documents/{markdown_image.markdown_document.id}/markdown-images/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             data={"markdown_document": str(markdown_image.markdown_document.id)},
         )
