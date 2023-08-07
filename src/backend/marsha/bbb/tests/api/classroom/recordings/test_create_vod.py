@@ -125,7 +125,7 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
         self.assertDictEqual(
             response.json(),
             {
-                "classroom": str(recording.classroom.id),
+                "classroom_id": str(recording.classroom.id),
                 "id": str(recording.id),
                 "record_id": str(recording.record_id),
                 "started_at": "2019-08-21T15:00:02Z",
