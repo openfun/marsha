@@ -33,7 +33,8 @@ class DepositedFileDeleteAPITest(TestCase):
 
         self.assertEqual(DepositedFile.objects.count(), 1)
         response = self.client.delete(
-            f"/api/depositedfiles/{deposited_file.id}/",
+            f"/api/filedepositories/{deposited_file.file_depository.id}"
+            f"/depositedfiles/{deposited_file.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
@@ -49,7 +50,8 @@ class DepositedFileDeleteAPITest(TestCase):
 
         self.assertEqual(DepositedFile.objects.count(), 1)
         response = self.client.delete(
-            f"/api/depositedfiles/{deposited_file.id!s}/",
+            f"/api/filedepositories/{deposited_file.file_depository.id}"
+            f"/depositedfiles/{deposited_file.id!s}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
@@ -66,7 +68,8 @@ class DepositedFileDeleteAPITest(TestCase):
 
         self.assertEqual(DepositedFile.objects.count(), 1)
         response = self.client.delete(
-            f"/api/depositedfiles/{deposited_file.id}/",
+            f"/api/filedepositories/{deposited_file.file_depository.id}"
+            f"/depositedfiles/{deposited_file.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
@@ -82,7 +85,8 @@ class DepositedFileDeleteAPITest(TestCase):
 
         self.assertEqual(DepositedFile.objects.count(), 1)
         response = self.client.delete(
-            f"/api/depositedfiles/{deposited_file.id!s}/",
+            f"/api/filedepositories/{deposited_file.file_depository.id}"
+            f"/depositedfiles/{deposited_file.id!s}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
@@ -100,7 +104,8 @@ class DepositedFileDeleteAPITest(TestCase):
 
         self.assertEqual(DepositedFile.objects.count(), 1)
         response = self.client.delete(
-            f"/api/depositedfiles/{deposited_file.id!s}/",
+            f"/api/filedepositories/{deposited_file.file_depository.id}"
+            f"/depositedfiles/{deposited_file.id!s}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )

@@ -17,7 +17,10 @@ class DepositedFiletCreateAPITest(TestCase):
     def test_api_deposited_files_options_anonymous(self):
         """Anonymous user can't fetch the deposited files options endpoint"""
 
-        response = self.client.options("/api/depositedfiles/")
+        file_depository = FileDepositoryFactory()
+        response = self.client.options(
+            f"/api/filedepositories/{file_depository.id}/depositedfiles/"
+        )
 
         self.assertEqual(response.status_code, 401)
 
@@ -25,10 +28,11 @@ class DepositedFiletCreateAPITest(TestCase):
     def test_api_deposited_files_options_as_student(self):
         """A student can fetch the deposited files options endpoint"""
 
-        deposited_file = FileDepositoryFactory()
-        jwt_token = StudentLtiTokenFactory(resource=deposited_file)
+        file_depository = FileDepositoryFactory()
+        jwt_token = StudentLtiTokenFactory(resource=file_depository)
         response = self.client.options(
-            "/api/depositedfiles/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+            f"/api/filedepositories/{file_depository.id}/depositedfiles/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["upload_max_size_bytes"], 10)
@@ -37,11 +41,12 @@ class DepositedFiletCreateAPITest(TestCase):
     def test_api_deposited_files_options_instructor(self):
         """An instructor can fetch the deposited files options endpoint"""
 
-        classroom = FileDepositoryFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
+        file_depository = FileDepositoryFactory()
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=file_depository)
 
         response = self.client.options(
-            "/api/depositedfiles/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+            f"/api/filedepositories/{file_depository.id}/depositedfiles/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
         self.assertEqual(response.status_code, 200)

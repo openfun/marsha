@@ -12,7 +12,11 @@ app_name = "deposit"
 
 router = DefaultRouter()
 router.register("filedepositories", FileDepositoryViewSet, basename="file_depository")
-router.register("depositedfiles", DepositedFileViewSet, basename="deposited_file")
+
+filedepository_related_router = DefaultRouter()
+filedepository_related_router.register(
+    "depositedfiles", DepositedFileViewSet, basename="deposited_file"
+)
 
 urlpatterns = [
     path(
@@ -28,4 +32,8 @@ urlpatterns = [
         name="file_depository_lti_view",
     ),
     path("api/", include(router.urls)),
+    path(
+        "api/filedepositories/<uuid:filedepository_id>/",
+        include(filedepository_related_router.urls),
+    ),
 ]

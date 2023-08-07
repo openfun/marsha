@@ -108,10 +108,7 @@ class IsRelatedFileDepositoryPlaylistOrOrganizationAdmin(permissions.BasePermiss
         which exists, and if the current user is an admin for the playlist this file depository
         is a part of or admin of the linked organization.
         """
-        try:
-            file_depository_id = view.get_related_object().file_depository.id
-        except (AttributeError, ObjectDoesNotExist):
-            file_depository_id = request.data.get("file_depository")
+        file_depository_id = view.get_related_filedepository_id()
 
         if not file_depository_id:
             return False
