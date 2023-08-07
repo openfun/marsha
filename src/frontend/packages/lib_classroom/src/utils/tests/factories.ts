@@ -80,7 +80,7 @@ export const classroomDocumentMockFactory = (
   classroomDocument: Partial<ClassroomDocument> = {},
 ): ClassroomDocument => {
   return {
-    classroom_id: faker.datatype.uuid(),
+    classroom_id: faker.datatype.uuid().toString(),
     filename: faker.system.fileName(),
     id: faker.datatype.uuid(),
     is_default: false,

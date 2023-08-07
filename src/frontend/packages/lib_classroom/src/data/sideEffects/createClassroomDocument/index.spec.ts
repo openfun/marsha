@@ -19,12 +19,15 @@ describe('sideEffects/createClassroomDocument', () => {
     const classroomDocument = classroomDocumentMockFactory({
       filename: file.name,
     });
-    fetchMock.mock('/api/classroomdocuments/', classroomDocument);
+    fetchMock.mock(
+      `/api/classrooms/${classroomDocument.classroom_id}/classroomdocuments/`,
+      classroomDocument,
+    );
 
     const createdClassroomDocument = await createClassroomDocument({
       filename: file.name,
       size: file.size,
-      classroom: classroomDocument.classroom_id,
+      classroom_id: classroomDocument.classroom_id,
     });
 
     const fetchArgs = fetchMock.lastCall()![1]!;
@@ -38,30 +41,33 @@ describe('sideEffects/createClassroomDocument', () => {
   });
 
   it('throws when it fails to create the deposited file (request failure)', async () => {
-    fetchMock.mock(
-      '/api/classroomdocuments/',
-      Promise.reject(new Error('Failed to perform the request')),
-    );
     const file = new File(['anrusitanrsui tnarsuit narsuit'], 'TestFile.txt');
     const classroomDocument = classroomDocumentMockFactory();
+    fetchMock.mock(
+      `/api/classrooms/${classroomDocument.classroom_id}/classroomdocuments/`,
+      Promise.reject(new Error('Failed to perform the request')),
+    );
     await expect(
       createClassroomDocument({
         filename: file.name,
         size: file.size,
-        classroom: classroomDocument.classroom_id,
+        classroom_id: classroomDocument.classroom_id,
       }),
     ).rejects.toThrow('Failed to perform the request');
   });
 
   it('throws when it fails to create the deposited file (API error)', async () => {
-    fetchMock.mock('/api/classroomdocuments/', 400);
     const file = new File(['anrusitanrsui tnarsuit narsuit'], 'TestFile.txt');
     const classroomDocument = classroomDocumentMockFactory();
+    fetchMock.mock(
+      `/api/classrooms/${classroomDocument.classroom_id}/classroomdocuments/`,
+      400,
+    );
     await expect(
       createClassroomDocument({
         filename: file.name,
         size: file.size,
-        classroom: classroomDocument.classroom_id,
+        classroom_id: classroomDocument.classroom_id,
       }),
     ).rejects.toThrow();
   });

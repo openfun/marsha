@@ -12,7 +12,10 @@ import { Deferred, render } from 'lib-tests';
 import React, { PropsWithChildren } from 'react';
 
 import { createClassroomDocument } from '@lib-classroom/data/sideEffects/createClassroomDocument';
-import { classroomDocumentMockFactory } from '@lib-classroom/utils/tests/factories';
+import {
+  classroomDocumentMockFactory,
+  classroomMockFactory,
+} from '@lib-classroom/utils/tests/factories';
 
 import { UploadDocuments } from '.';
 
@@ -55,7 +58,7 @@ describe('<UploadDocuments />', () => {
 
   it('renders a Dropzone with the relevant messages', () => {
     fetchMock.mock(
-      '/api/classroomdocuments/',
+      '/api/classrooms/1/classroomdocuments/',
       {
         upload_max_size_bytes: Math.pow(10, 9),
       },
@@ -93,7 +96,7 @@ describe('<UploadDocuments />', () => {
     });
 
     fetchMock.mock(
-      '/api/classroomdocuments/',
+      '/api/classrooms/1/classroomdocuments/',
       {
         upload_max_size_bytes: Math.pow(10, 9),
       },
@@ -128,6 +131,7 @@ describe('<UploadDocuments />', () => {
       modelName.CLASSROOM_DOCUMENTS,
       classroomDocument.id,
       file,
+      '1',
     );
   });
 
@@ -143,7 +147,7 @@ describe('<UploadDocuments />', () => {
     });
 
     fetchMock.mock(
-      '/api/classroomdocuments/',
+      '/api/classrooms/1/classroomdocuments/',
       {
         upload_max_size_bytes: Math.pow(10, 9),
       },
@@ -191,7 +195,7 @@ describe('<UploadDocuments />', () => {
     });
 
     fetchMock.mock(
-      '/api/classroomdocuments/',
+      '/api/classrooms/1/classroomdocuments/',
       {
         upload_max_size_bytes: Math.pow(10, 9),
       },
@@ -236,7 +240,7 @@ describe('<UploadDocuments />', () => {
     });
 
     fetchMock.mock(
-      '/api/classroomdocuments/',
+      '/api/classrooms/1/classroomdocuments/',
       {
         upload_max_size_bytes: Math.pow(10, 9),
       },
@@ -274,7 +278,9 @@ describe('<UploadDocuments />', () => {
   });
 
   it('updates classroom documents defaults', async () => {
+    const classroom = classroomMockFactory();
     const classroomDocument = classroomDocumentMockFactory({
+      classroom_id: classroom.id,
       filename: 'file.txt',
       is_default: false,
       upload_state: READY,
@@ -282,32 +288,39 @@ describe('<UploadDocuments />', () => {
       url: 'https://example.com/file.txt',
     });
     const classroomDocument2 = classroomDocumentMockFactory({
+      classroom_id: classroom.id,
       filename: 'file2.txt',
       is_default: true,
       upload_state: READY,
       uploaded_on: '2020-01-01T00:00:00Z',
       url: 'https://example.com/file2.txt',
     });
-    fetchMock.get('/api/classrooms/1/classroomdocuments/?limit=999', {
-      count: 2,
-      next: null,
-      previous: null,
-      results: [classroomDocument, classroomDocument2],
-    });
+    fetchMock.get(
+      `/api/classrooms/${classroom.id}/classroomdocuments/?limit=999`,
+      {
+        count: 2,
+        next: null,
+        previous: null,
+        results: [classroomDocument, classroomDocument2],
+      },
+    );
 
     fetchMock.mock(
-      '/api/classroomdocuments/',
+      `/api/classrooms/${classroom.id}/classroomdocuments/`,
       {
         upload_max_size_bytes: Math.pow(10, 9),
       },
       { method: 'OPTIONS' },
     );
 
-    fetchMock.patch(`/api/classroomdocuments/${classroomDocument.id}/`, {
-      status: 200,
-    });
+    fetchMock.patch(
+      `/api/classrooms/${classroom.id}/classroomdocuments/${classroomDocument.id}/`,
+      {
+        status: 200,
+      },
+    );
 
-    render(<UploadDocuments classroomId="1" />);
+    render(<UploadDocuments classroomId={classroom.id} />);
 
     await screen.findByText('file.txt');
     const setDefaultButton = screen.getByRole('button', {
@@ -331,14 +344,18 @@ describe('<UploadDocuments />', () => {
       uploaded_on: '2020-01-01T00:00:00Z',
       url: 'https://example.com/file.txt',
     });
-    fetchMock.get('/api/classrooms/1/classroomdocuments/?limit=999', {
-      count: 1,
-      next: null,
-      previous: null,
-      results: [classroomDocument],
-    });
+    const classroomId = classroomDocument.classroom_id;
+    fetchMock.get(
+      `/api/classrooms/${classroomId}/classroomdocuments/?limit=999`,
+      {
+        count: 1,
+        next: null,
+        previous: null,
+        results: [classroomDocument],
+      },
+    );
     fetchMock.mock(
-      '/api/classroomdocuments/',
+      `/api/classrooms/${classroomId}/classroomdocuments/`,
       {
         upload_max_size_bytes: Math.pow(10, 9),
       },
@@ -351,9 +368,12 @@ describe('<UploadDocuments />', () => {
       uploadManagerState: {},
     });
 
-    fetchMock.delete(`/api/classroomdocuments/${classroomDocument.id}/`, 204);
+    fetchMock.delete(
+      `/api/classrooms/${classroomId}/classroomdocuments/${classroomDocument.id}/`,
+      204,
+    );
 
-    render(<UploadDocuments classroomId="1" />);
+    render(<UploadDocuments classroomId={classroomId} />);
 
     await screen.findByRole('link', { name: 'file.txt' });
 
@@ -362,12 +382,12 @@ describe('<UploadDocuments />', () => {
     });
     await userEvent.click(deleteButton);
 
-    await waitFor(() => expect(fetchMock.calls()).toHaveLength(5));
+    await waitFor(() => expect(fetchMock.calls()).toHaveLength(6));
     const deleteCall = fetchMock.calls(
-      `/api/classroomdocuments/${classroomDocument.id}/`,
+      `/api/classrooms/${classroomId}/classroomdocuments/${classroomDocument.id}/`,
     );
     expect(deleteCall[0][0]).toEqual(
-      `/api/classroomdocuments/${classroomDocument.id}/`,
+      `/api/classrooms/${classroomId}/classroomdocuments/${classroomDocument.id}/`,
     );
     expect(deleteCall[0][1]).toEqual({
       headers: {
@@ -393,7 +413,7 @@ describe('<UploadDocuments />', () => {
       results: [classroomDocument],
     });
     fetchMock.mock(
-      '/api/classroomdocuments/',
+      '/api/classrooms/1/classroomdocuments/',
       {
         upload_max_size_bytes: Math.pow(10, 9),
       },

@@ -80,7 +80,7 @@ export const UploadDocuments = ({ classroomId }: UploadDocumentsProps) => {
   const intl = useIntl();
   const { data: classroomDocuments, refetch: refreshClassroomDocuments } =
     useClassroomDocuments(classroomId, {});
-  const metadata = useClassroomDocumentMetadata(intl.locale);
+  const metadata = useClassroomDocumentMetadata(classroomId, intl.locale);
 
   const { addUpload, uploadManagerState } = useUploadManager();
   const [filesToUpload, setFilesToUpload] = useState<File[]>([]);
@@ -125,9 +125,9 @@ export const UploadDocuments = ({ classroomId }: UploadDocumentsProps) => {
       const document = await createClassroomDocument({
         filename: file.name,
         size: file.size,
-        classroom: classroomId,
+        classroom_id: classroomId,
       });
-      addUpload(modelName.CLASSROOM_DOCUMENTS, document.id, file);
+      addUpload(modelName.CLASSROOM_DOCUMENTS, document.id, file, classroomId);
       refreshClassroomDocuments();
     } catch (error) {
       if ((error as object).hasOwnProperty('size') && metadata.data) {
