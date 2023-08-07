@@ -57,7 +57,8 @@ class DepositedFileInitiateUploadAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                f"/api/depositedfiles/{deposited_file.id}/initiate-upload/",
+                f"/api/filedepositories/{deposited_file.file_depository.id}"
+                f"/depositedfiles/{deposited_file.id}/initiate-upload/",
                 {"filename": "foo.pdf", "mimetype": "application/pdf", "size": 10},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",
@@ -113,7 +114,8 @@ class DepositedFileInitiateUploadAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                f"/api/depositedfiles/{deposited_file.id}/initiate-upload/",
+                f"/api/filedepositories/{deposited_file.file_depository.id}"
+                f"/depositedfiles/{deposited_file.id}/initiate-upload/",
                 {"filename": "foo.pdf", "mimetype": "application/pdf"},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",
@@ -140,7 +142,8 @@ class DepositedFileInitiateUploadAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                f"/api/depositedfiles/{deposited_file.id}/initiate-upload/",
+                f"/api/filedepositories/{deposited_file.file_depository.id}"
+                f"/depositedfiles/{deposited_file.id}/initiate-upload/",
                 {"filename": "foo.pdf", "mimetype": "application/pdf", "size": 100},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",
@@ -174,7 +177,8 @@ class DepositedFileInitiateUploadAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                f"/api/depositedfiles/{deposited_file.id}/initiate-upload/",
+                f"/api/filedepositories/{deposited_file.file_depository.id}"
+                f"/depositedfiles/{deposited_file.id}/initiate-upload/",
                 {"filename": "foo.pdf", "mimetype": "application/pdf", "size": 10},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",
@@ -239,7 +243,8 @@ class DepositedFileInitiateUploadAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                f"/api/depositedfiles/{deposited_file.id}/initiate-upload/",
+                f"/api/filedepositories/{deposited_file.file_depository.id}"
+                f"/depositedfiles/{deposited_file.id}/initiate-upload/",
                 {"filename": "foo.pdf", "mimetype": "application/pdf", "size": 10},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",
@@ -301,7 +306,8 @@ class DepositedFileInitiateUploadAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                f"/api/depositedfiles/{deposited_file.id}/initiate-upload/",
+                f"/api/filedepositories/{deposited_file.file_depository.id}"
+                f"/depositedfiles/{deposited_file.id}/initiate-upload/",
                 {"filename": "foo.pdf", "mimetype": "application/pdf", "size": 10},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",
