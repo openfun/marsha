@@ -36,7 +36,7 @@ const mockGetResource = getStoreResource as jest.MockedFunction<
 const mockUpdateResource = updateResource as jest.MockedFunction<
   typeof updateResource
 >;
-const mockFetResource = fetchResource as jest.MockedFunction<
+const mockFetchResource = fetchResource as jest.MockedFunction<
   typeof fetchResource
 >;
 
@@ -99,6 +99,7 @@ describe('<LTIUploadHandlers />', () => {
         title: file.name,
       },
       modelName.VIDEOS,
+      undefined,
     );
   });
 
@@ -143,7 +144,7 @@ describe('<LTIUploadHandlers />', () => {
   });
 
   it('fetch the resource when the upload manager status is UPLOADING', async () => {
-    mockFetResource.mockResolvedValue(object);
+    mockFetchResource.mockResolvedValue(object);
 
     const { rerender } = render(
       <UploadManagerContext.Provider
@@ -161,7 +162,7 @@ describe('<LTIUploadHandlers />', () => {
       </UploadManagerContext.Provider>,
     );
 
-    expect(mockFetResource).not.toHaveBeenCalled();
+    expect(mockFetchResource).not.toHaveBeenCalled();
 
     rerender(
       <UploadManagerContext.Provider
@@ -180,7 +181,67 @@ describe('<LTIUploadHandlers />', () => {
     );
 
     await waitFor(() => {
-      expect(mockFetResource).toHaveBeenCalledWith(modelName.VIDEOS, object.id);
+      expect(mockFetchResource).toHaveBeenCalledWith(
+        modelName.VIDEOS,
+        object.id,
+        undefined,
+      );
+    });
+  });
+
+  it('fetch the resource with parent resource', async () => {
+    const image = new File(['(⌐□_□)'], 'course.jpg', { type: 'image/jpeg' });
+    const thumbnailState = {
+      file: image,
+      objectId: uuidv4(),
+      objectType: modelName.THUMBNAILS,
+      progress: 0,
+      status: UploadManagerStatus.UPLOADING,
+      parentId: uuidv4(),
+    };
+    const thumbnail = { id: thumbnailState.objectId } as Thumbnail;
+    mockFetchResource.mockResolvedValue(thumbnail);
+
+    const { rerender } = render(
+      <UploadManagerContext.Provider
+        value={{
+          setUploadState: () => {},
+          uploadManagerState: {
+            [thumbnailState.objectId]: {
+              ...thumbnailState,
+              status: UploadManagerStatus.INIT,
+            },
+          },
+        }}
+      >
+        <UploadHandlers />
+      </UploadManagerContext.Provider>,
+    );
+
+    expect(mockFetchResource).not.toHaveBeenCalled();
+
+    rerender(
+      <UploadManagerContext.Provider
+        value={{
+          setUploadState: () => {},
+          uploadManagerState: {
+            [thumbnailState.objectId]: {
+              ...thumbnailState,
+              status: UploadManagerStatus.UPLOADING,
+            },
+          },
+        }}
+      >
+        <UploadHandlers />
+      </UploadManagerContext.Provider>,
+    );
+
+    await waitFor(() => {
+      expect(mockFetchResource).toHaveBeenCalledWith(
+        modelName.THUMBNAILS,
+        thumbnail.id,
+        thumbnailState.parentId,
+      );
     });
   });
 

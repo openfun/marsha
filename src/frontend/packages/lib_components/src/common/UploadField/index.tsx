@@ -25,16 +25,21 @@ const DropzoneStyled = styled.div`
 export interface UploadFieldProps {
   objectType: uploadableModelName;
   objectId: string;
+  parentId?: Maybe<string>;
 }
 
-export const UploadField = ({ objectType, objectId }: UploadFieldProps) => {
+export const UploadField = ({
+  objectType,
+  objectId,
+  parentId,
+}: UploadFieldProps) => {
   const { addUpload } = useUploadManager();
   const [file, setFile] = useState<Maybe<File>>(undefined);
   const intl = useIntl();
 
   const onDrop = (files: File[]) => {
     setFile(files[0]);
-    addUpload(objectType, objectId, files[0]);
+    addUpload(objectType, objectId, files[0], parentId);
   };
 
   return (

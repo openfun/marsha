@@ -113,9 +113,14 @@ const UploadFormBack = styled.div`
 export interface UploadFormProps {
   objectId: UploadableObject['id'];
   objectType: uploadableModelName;
+  parentId?: Maybe<string>;
 }
 
-export const UploadForm = ({ objectId, objectType }: UploadFormProps) => {
+export const UploadForm = ({
+  objectId,
+  objectType,
+  parentId,
+}: UploadFormProps) => {
   const appData = useAppConfig();
   const { uploadManagerState, resetUpload } = useUploadManager();
   const objectStatus = uploadManagerState[objectId]?.status;
@@ -199,7 +204,7 @@ export const UploadForm = ({ objectId, objectType }: UploadFormProps) => {
               />
             </IframeHeadingWithLayout>
             <UploadFieldContainer>
-              <UploadField {...{ objectType, objectId }} />
+              <UploadField {...{ objectType, objectId, parentId }} />
             </UploadFieldContainer>
           </UploadFormContainer>
           <UploadFormBack>

@@ -130,11 +130,12 @@ export const LTIInnerRoutes = () => {
               path={UPLOAD_FORM_ROUTE.default}
               element={
                 <WithParams>
-                  {({ objectId, objectType }) =>
+                  {({ objectId, objectType, parentId }) =>
                     objectId && objectType ? (
                       <UploadForm
                         objectId={objectId}
                         objectType={objectType as modelName}
+                        parentId={parentId}
                       />
                     ) : (
                       <Navigate
