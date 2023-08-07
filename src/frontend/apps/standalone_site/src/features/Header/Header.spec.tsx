@@ -21,6 +21,10 @@ describe('<Header />', () => {
     render(<Header />);
     expect(screen.getByRole('menubar')).toBeInTheDocument();
     expect(screen.getByText(/John Doe/i)).toBeInTheDocument();
+    expect(screen.getByText(/language/i)).toBeInTheDocument();
+    expect(
+      screen.getByLabelText(/Language Picker; Selected: en/i),
+    ).toBeInTheDocument();
   });
 
   test('scroll and update background', () => {
