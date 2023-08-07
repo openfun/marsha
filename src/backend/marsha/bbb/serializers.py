@@ -35,7 +35,7 @@ class ClassroomRecordingSerializer(ReadOnlyModelSerializer):
         model = ClassroomRecording
         fields = (
             "id",
-            "classroom",
+            "classroom_id",
             "record_id",
             "started_at",
             "video_file_url",
@@ -43,7 +43,7 @@ class ClassroomRecordingSerializer(ReadOnlyModelSerializer):
         )
         read_only_fields = (
             "id",
-            "classroom",
+            "classroom_id",
             "record_id",
             "started_at",
             "video_file_url",
@@ -51,7 +51,7 @@ class ClassroomRecordingSerializer(ReadOnlyModelSerializer):
         )
 
     # Make sure classroom and vod UUIDs are converted to a string during serialization
-    classroom = serializers.PrimaryKeyRelatedField(
+    classroom_id = serializers.PrimaryKeyRelatedField(
         read_only=True, pk_field=serializers.CharField()
     )
     vod = VideoFromRecordingSerializer(read_only=True)
@@ -249,7 +249,7 @@ class ClassroomDocumentSerializer(
     class Meta:  # noqa
         model = ClassroomDocument
         fields = (
-            "classroom",
+            "classroom_id",
             "filename",
             "id",
             "is_default",
@@ -258,7 +258,7 @@ class ClassroomDocumentSerializer(
             "url",
         )
         read_only_fields = (
-            "classroom",
+            "classroom_id",
             "id",
             "upload_state",
             "uploaded_on",
@@ -267,7 +267,7 @@ class ClassroomDocumentSerializer(
 
     url = serializers.SerializerMethodField()
     # Make sure classroom UUID is converted to a string during serialization
-    classroom = serializers.PrimaryKeyRelatedField(
+    classroom_id = serializers.PrimaryKeyRelatedField(
         read_only=True, pk_field=serializers.CharField()
     )
 

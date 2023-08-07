@@ -88,7 +88,7 @@ class ClassroomDocumentCreateAPITest(TestCase):
         self.assertEqual(
             response.json(),
             {
-                "classroom": str(classroom.id),
+                "classroom_id": str(classroom.id),
                 "filename": "test.pdf",
                 "id": str(ClassroomDocument.objects.first().id),
                 "is_default": True,
@@ -128,7 +128,7 @@ class ClassroomDocumentCreateAPITest(TestCase):
         self.assertEqual(
             response.json(),
             {
-                "classroom": str(classroom.id),
+                "classroom_id": str(classroom.id),
                 "filename": "test2.pdf",
                 "id": str(ClassroomDocument.objects.latest("created_on").id),
                 "is_default": False,
@@ -159,7 +159,7 @@ class ClassroomDocumentCreateAPITest(TestCase):
                 {
                     "filename": "test.pdf",
                     "size": 100,
-                    "classroom": str(classroom.id),
+                    "classroom_id": str(classroom.id),
                 }
             ),
         )
@@ -188,7 +188,7 @@ class ClassroomDocumentCreateAPITest(TestCase):
                 {
                     "filename": "test.pdf",
                     "size": 100,
-                    "classroom": str(classroom.id),
+                    "classroom_id": str(classroom.id),
                 }
             ),
         )
@@ -198,7 +198,7 @@ class ClassroomDocumentCreateAPITest(TestCase):
         self.assertEqual(
             response.json(),
             {
-                "classroom": str(classroom.id),
+                "classroom_id": str(classroom.id),
                 "filename": "test.pdf",
                 "id": str(ClassroomDocument.objects.first().id),
                 "is_default": True,
@@ -227,7 +227,7 @@ class ClassroomDocumentCreateAPITest(TestCase):
                 {
                     "filename": "test.pdf",
                     "size": 100,
-                    "classroom": str(classroom.id),
+                    "classroom_id": str(classroom.id),
                 }
             ),
         )
@@ -237,7 +237,7 @@ class ClassroomDocumentCreateAPITest(TestCase):
         self.assertEqual(
             response.json(),
             {
-                "classroom": str(classroom.id),
+                "classroom_id": str(classroom.id),
                 "filename": "test.pdf",
                 "id": str(ClassroomDocument.objects.first().id),
                 "is_default": True,
@@ -266,7 +266,7 @@ class ClassroomDocumentCreateAPITest(TestCase):
                 {
                     "filename": "test.pdf",
                     "size": 100,
-                    "classroom": str(classroom.id),
+                    "classroom_id": str(classroom.id),
                 }
             ),
         )
@@ -276,7 +276,7 @@ class ClassroomDocumentCreateAPITest(TestCase):
         self.assertEqual(
             response.json(),
             {
-                "classroom": str(classroom.id),
+                "classroom_id": str(classroom.id),
                 "filename": "test.pdf",
                 "id": str(ClassroomDocument.objects.first().id),
                 "is_default": True,
@@ -303,7 +303,7 @@ class ClassroomDocumentCreateAPITest(TestCase):
                 {
                     "filename": "test.pdf",
                     "size": 100,
-                    "classroom": str(classroom.id),
+                    "classroom_id": str(classroom.id),
                 }
             ),
         )
@@ -333,7 +333,7 @@ class ClassroomDocumentCreateAPITest(TestCase):
                 {
                     "filename": "test.pdf",
                     "size": 100,
-                    "classroom": str(classroom.id),
+                    "classroom_id": str(classroom.id),
                 }
             ),
         )

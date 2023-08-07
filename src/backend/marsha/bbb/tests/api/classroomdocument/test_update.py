@@ -72,7 +72,7 @@ class ClassroomDocumentUpdateAPITest(TestCase):
         self.assertEqual(
             response.json(),
             {
-                "classroom": str(classroom_document.classroom.id),
+                "classroom_id": str(classroom_document.classroom.id),
                 "filename": "updated_name.pdf",
                 "id": str(classroom_document.id),
                 "is_default": False,
@@ -103,7 +103,7 @@ class ClassroomDocumentUpdateAPITest(TestCase):
         self.assertEqual(
             response.json(),
             {
-                "classroom": str(second_document.classroom.id),
+                "classroom_id": str(second_document.classroom.id),
                 "filename": second_document.filename,
                 "id": str(second_document.id),
                 "is_default": True,
@@ -153,7 +153,7 @@ class ClassroomDocumentUpdateAPITest(TestCase):
         self.assertEqual(
             response.json(),
             {
-                "classroom": str(classroom_document.classroom.id),
+                "classroom_id": str(classroom_document.classroom.id),
                 "filename": "updated_name.pdf",
                 "id": str(classroom_document.id),
                 "is_default": False,
@@ -183,7 +183,7 @@ class ClassroomDocumentUpdateAPITest(TestCase):
         self.assertEqual(
             response.json(),
             {
-                "classroom": str(classroom_document.classroom.id),
+                "classroom_id": str(classroom_document.classroom.id),
                 "filename": "updated_name.pdf",
                 "id": str(classroom_document.id),
                 "is_default": False,
@@ -213,7 +213,7 @@ class ClassroomDocumentUpdateAPITest(TestCase):
         self.assertEqual(
             response.json(),
             {
-                "classroom": str(classroom_document.classroom.id),
+                "classroom_id": str(classroom_document.classroom.id),
                 "filename": "updated_name.pdf",
                 "id": str(classroom_document.id),
                 "is_default": False,

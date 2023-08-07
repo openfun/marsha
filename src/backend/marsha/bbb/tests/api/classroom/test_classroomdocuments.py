@@ -79,7 +79,7 @@ class ClassroomClassroomdocumentsAPITest(TestCase):
                 "previous": None,
                 "results": [
                     {
-                        "classroom": str(classroom.id),
+                        "classroom_id": str(classroom.id),
                         "filename": classroom_documents[2].filename,
                         "id": str(classroom_documents[2].id),
                         "is_default": False,
@@ -88,7 +88,7 @@ class ClassroomClassroomdocumentsAPITest(TestCase):
                         "url": None,
                     },
                     {
-                        "classroom": str(classroom.id),
+                        "classroom_id": str(classroom.id),
                         "filename": classroom_documents[1].filename,
                         "id": str(classroom_documents[1].id),
                         "is_default": False,
@@ -134,7 +134,7 @@ class ClassroomClassroomdocumentsAPITest(TestCase):
                 "previous": None,
                 "results": [
                     {
-                        "classroom": str(classroom.id),
+                        "classroom_id": str(classroom.id),
                         "filename": classroom_documents[3].filename,
                         "id": str(classroom_documents[3].id),
                         "is_default": False,
@@ -148,7 +148,7 @@ class ClassroomClassroomdocumentsAPITest(TestCase):
                         ),
                     },
                     {
-                        "classroom": str(classroom.id),
+                        "classroom_id": str(classroom.id),
                         "filename": classroom_documents[2].filename,
                         "id": str(classroom_documents[2].id),
                         "is_default": False,
@@ -163,7 +163,7 @@ class ClassroomClassroomdocumentsAPITest(TestCase):
                         ),
                     },
                     {
-                        "classroom": str(classroom.id),
+                        "classroom_id": str(classroom.id),
                         "filename": classroom_documents[1].filename,
                         "id": str(classroom_documents[1].id),
                         "is_default": False,
@@ -178,7 +178,7 @@ class ClassroomClassroomdocumentsAPITest(TestCase):
                         ),
                     },
                     {
-                        "classroom": str(classroom.id),
+                        "classroom_id": str(classroom.id),
                         "filename": classroom_documents[0].filename,
                         "id": str(classroom_documents[0].id),
                         "is_default": False,
@@ -236,7 +236,7 @@ class ClassroomClassroomdocumentsAPITest(TestCase):
                 "previous": None,
                 "results": [
                     {
-                        "classroom": str(classroom.id),
+                        "classroom_id": str(classroom.id),
                         "filename": classroom_documents[2].filename,
                         "id": str(classroom_documents[2].id),
                         "is_default": False,
@@ -245,7 +245,7 @@ class ClassroomClassroomdocumentsAPITest(TestCase):
                         "url": None,
                     },
                     {
-                        "classroom": str(classroom.id),
+                        "classroom_id": str(classroom.id),
                         "filename": classroom_documents[1].filename,
                         "id": str(classroom_documents[1].id),
                         "is_default": False,
@@ -281,7 +281,7 @@ class ClassroomClassroomdocumentsAPITest(TestCase):
                 "previous": None,
                 "results": [
                     {
-                        "classroom": str(classroom.id),
+                        "classroom_id": str(classroom.id),
                         "filename": classroom_documents[2].filename,
                         "id": str(classroom_documents[2].id),
                         "is_default": False,
@@ -290,7 +290,7 @@ class ClassroomClassroomdocumentsAPITest(TestCase):
                         "url": None,
                     },
                     {
-                        "classroom": str(classroom.id),
+                        "classroom_id": str(classroom.id),
                         "filename": classroom_documents[1].filename,
                         "id": str(classroom_documents[1].id),
                         "is_default": False,

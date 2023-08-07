@@ -503,7 +503,7 @@ class ClassroomRetrieveAPITest(TestCase):
                 "estimated_duration": None,
                 "recordings": [
                     {
-                        "classroom": str(classroom.id),
+                        "classroom_id": str(classroom.id),
                         "id": str(classroom_recording_2.id),
                         "record_id": str(classroom_recording_2.record_id),
                         "started_at": "2019-08-21T11:00:02Z",
@@ -511,7 +511,7 @@ class ClassroomRetrieveAPITest(TestCase):
                         "vod": None,
                     },
                     {
-                        "classroom": str(classroom.id),
+                        "classroom_id": str(classroom.id),
                         "id": str(classroom_recording_1.id),
                         "record_id": str(classroom_recording_1.record_id),
                         "started_at": "2019-08-21T15:00:02Z",
