@@ -162,7 +162,7 @@ class ThumbnailCreateApiTest(TestCase):
         jwt_token = StudentLtiTokenFactory(resource=video)
 
         response = self.client.post(
-            "/api/thumbnails/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+            self._post_url(video), HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
 
         self.assertEqual(response.status_code, 403)
@@ -257,15 +257,7 @@ class ThumbnailCreateApiTest(TestCase):
         )
 
         response = self.client.post(
-            "/api/thumbnails/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+            self._post_url(thumbnail.video), HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
 
         self.assertEqual(response.status_code, 403)
-
-
-class ThumbnailCreateApiOldTest(ThumbnailCreateApiTest):
-    """Test the create API of the thumbnail object."""
-
-    def _post_url(self, video):
-        """Return the url to use to create a thumbnail."""
-        return "/api/thumbnails/"

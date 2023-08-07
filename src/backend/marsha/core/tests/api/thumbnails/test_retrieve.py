@@ -321,11 +321,3 @@ class ThumbnailRetrieveApiTest(TestCase):
                 "video": str(video.id),
             },
         )
-
-
-class ThumbnailRetrieveApiOldTest(ThumbnailRetrieveApiTest):
-    """Test the retrieve API of the thumbnail object."""
-
-    def _get_url(self, video, thumbnail):
-        """Return the url to use to create a live session."""
-        return f"/api/thumbnails/{thumbnail.id}/"

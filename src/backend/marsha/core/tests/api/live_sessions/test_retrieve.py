@@ -43,10 +43,10 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
 
     def assert_response_resource_not_accessible(self, response):
         """Assert response resource not the same as video_id"""
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 403)
         self.assertEqual(
             response.json(),
-            {"detail": "Resource from token does not match given parameters."},
+            {"detail": "You do not have permission to perform this action."},
         )
 
     def assert_user_cannot_read(self, user, video):
@@ -807,7 +807,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         self.assert_response_resource_not_accessible(response)
 
     def test_api_livesession_read_detail_unknown_video(self):
-        """Token with wrong resource_id should render a 404."""
+        """Token with wrong resource_id should render a 403."""
         starting_at = timezone.now() + timedelta(days=5)
         video = VideoFactory(live_state=IDLE, live_type=RAW, starting_at=starting_at)
         livesession = AnonymousLiveSessionFactory(video=video)
@@ -819,20 +819,3 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assert_response_resource_not_accessible(response)
-
-
-# Old routes to remove
-class LiveSessionRetrieveApiOldTest(LiveSessionRetrieveApiTest):
-    """Test the retrieve API of the liveSession object using old URLs."""
-
-    def _get_url(self, video, live_session):
-        """Return the url to use in tests."""
-        return f"/api/livesessions/{live_session.pk}/"
-
-    def assert_user_can_read(self, user, video):
-        """Defuse original assertion for old URLs"""
-        self.assert_user_cannot_read(user, video)
-
-    def assert_response_resource_not_accessible(self, response):
-        """Assert response resource not accessible"""
-        self.assertEqual(response.status_code, 403)

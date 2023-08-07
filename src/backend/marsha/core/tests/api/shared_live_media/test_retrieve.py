@@ -513,7 +513,10 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
         shared_live_media = SharedLiveMediaFactory()
         for user in [UserFactory(), UserFactory(is_staff=True)]:
             self.client.login(username=user.username, password="test")
-            response = self.client.get(f"/api/sharedlivemedias/{shared_live_media.id}/")
+            response = self.client.get(
+                f"/api/videos/{shared_live_media.video.id}/"
+                f"sharedlivemedias/{shared_live_media.id}/"
+            )
             self.assertEqual(response.status_code, 401)
 
     def test_api_shared_live_media_read_detail_by_user_with_no_access(self):
@@ -675,11 +678,3 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
                 "video": str(video.id),
             },
         )
-
-
-class SharedLiveMediaRetrieveAPIOldTest(SharedLiveMediaRetrieveAPITest):
-    """Test the retrieve API of the shared live media object."""
-
-    def _get_url(self, video, shared_live_media):
-        """Return the url to use in tests."""
-        return f"/api/sharedlivemedias/{shared_live_media.id}/"

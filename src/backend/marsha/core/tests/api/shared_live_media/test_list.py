@@ -188,7 +188,11 @@ class SharedLiveMediaListAPITest(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {"count": 0, "next": None, "previous": None, "results": []},
+        )
 
     @override_settings(
         CLOUDFRONT_SIGNED_URLS_ACTIVE=True,
@@ -625,11 +629,3 @@ class SharedLiveMediaListAPITest(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
-
-
-class SharedLiveMediaListAPIOldTest(SharedLiveMediaListAPITest):
-    """Test the list API of the shared live media object."""
-
-    def _get_url(self, video):
-        """Return the url to use in tests."""
-        return f"/api/sharedlivemedias/?video={video.id}"

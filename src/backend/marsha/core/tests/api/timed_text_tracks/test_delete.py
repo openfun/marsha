@@ -256,11 +256,3 @@ class TimedTextTrackDeleteAPITest(TestCase):
 
         self.assertEqual(response.status_code, 204)
         self.assertEqual(TimedTextTrack.objects.count(), 0)
-
-
-class TimedTextTrackDeleteAPIOldTest(TimedTextTrackDeleteAPITest):
-    """Test the delete API of the timed text track object with old URLs."""
-
-    def _delete_url(self, video, track):
-        """Return the url to delete a timed text track."""
-        return f"/api/timedtexttracks/{track.id}/"

@@ -276,11 +276,3 @@ class SharedLiveMediaCreateAPITest(TestCase):
                 "video": str(video.id),
             },
         )
-
-
-class SharedLiveMediaCreateAPIOldTest(SharedLiveMediaCreateAPITest):
-    """Test the create API of the shared live media object."""
-
-    def _post_url(self, video):
-        """Return the url to use in tests."""
-        return "/api/sharedlivemedias/"
