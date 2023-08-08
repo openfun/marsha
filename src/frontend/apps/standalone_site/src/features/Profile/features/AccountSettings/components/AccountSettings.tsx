@@ -133,7 +133,7 @@ export const AccountSettings = () => {
 
   return (
     <Box>
-      <Heading>{intl.formatMessage(messages.header)}</Heading>
+      <Heading level="2">{intl.formatMessage(messages.header)}</Heading>
       <Box width="large" margin={{ horizontal: 'auto' }}>
         <Box
           background="white"

@@ -43,7 +43,7 @@ export const ProfilePage = () => {
 
   return (
     <Box>
-      <Heading>{intl.formatMessage(messages.header)}</Heading>
+      <Heading level="2">{intl.formatMessage(messages.header)}</Heading>
       <Box
         background="#daeeff"
         margin={{ vertical: 'small' }}
