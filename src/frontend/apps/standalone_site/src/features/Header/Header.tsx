@@ -203,7 +203,7 @@ const Header = forwardRef<Nullable<HTMLDivElement>>((_props, ref) => {
           }
           dropAlign={{ top: 'bottom', right: 'right' }}
           dropContent={
-            <Box direction="column" margin="small" gap="small">
+            <Box direction="column" margin="small" gap="xsmall">
               <NavLinkStyled
                 to={routes.PROFILE.path}
                 onClick={() => {
@@ -211,7 +211,7 @@ const Header = forwardRef<Nullable<HTMLDivElement>>((_props, ref) => {
                 }}
               >
                 <AvatarIcon />
-                {intl.formatMessage(messages.profile)}
+                <Text>{intl.formatMessage(messages.profile)}</Text>
               </NavLinkStyled>
 
               <NavLinkStyled
@@ -220,7 +220,8 @@ const Header = forwardRef<Nullable<HTMLDivElement>>((_props, ref) => {
                   setIsDropOpen(false);
                 }}
               >
-                <SettingsIcon /> {intl.formatMessage(messages.settings)}
+                <SettingsIcon />{' '}
+                <Text>{intl.formatMessage(messages.settings)}</Text>
               </NavLinkStyled>
 
               <ButtonStyled
@@ -230,7 +231,7 @@ const Header = forwardRef<Nullable<HTMLDivElement>>((_props, ref) => {
                 }}
               >
                 <LogoutIcon />
-                {intl.formatMessage(messages.logout)}
+                <Text>{intl.formatMessage(messages.logout)}</Text>
               </ButtonStyled>
             </Box>
           }

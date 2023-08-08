@@ -1,4 +1,4 @@
-import { Box, Text } from 'grommet';
+import { Box, Heading, Text } from 'grommet';
 import { StyledLink } from 'lib-components';
 import { Fragment } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -38,7 +38,9 @@ const Contents = ({ playlistId }: ContentsProps) => {
             justify="between"
             margin={{ bottom: 'small' }}
           >
-            <Text weight="bolder">{intl.formatMessage(sample.title)}</Text>
+            <Heading weight="bolder" level="4" margin="none">
+              {intl.formatMessage(sample.title)}
+            </Heading>
             <Text weight="bolder">
               <StyledLink
                 to={{

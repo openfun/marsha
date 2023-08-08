@@ -21,6 +21,14 @@ export const themeExtend = {
       },
     },
   },
+  text: {
+    medium: {
+      size: '0.938rem',
+    },
+    xlmedium: {
+      size: '1.125rem',
+    },
+  },
 };
 
 export const themeBase = theme;
