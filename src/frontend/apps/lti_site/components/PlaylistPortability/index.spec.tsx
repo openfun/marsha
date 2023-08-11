@@ -77,7 +77,7 @@ describe('<PlaylistPortability />', () => {
     );
 
     const input = await screen.findByRole('textbox', {
-      name: /share with another playlist/i,
+      name: /Paste playlist id/i,
     });
     fireEvent.change(input, { target: { value: otherPlaylist.id } });
     fireEvent.click(screen.getByRole('button', { name: 'add share' }));

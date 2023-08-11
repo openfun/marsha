@@ -1,4 +1,5 @@
-import { Box, Button, Text, TextInput } from 'grommet';
+import { Input } from '@openfun/cunningham-react';
+import { Box, Button, Text } from 'grommet';
 import { Breakpoints } from 'lib-common';
 import { WhiteCard, WizardLayout, useResponsive } from 'lib-components';
 import {
@@ -93,13 +94,12 @@ export const MarkdownWizard = ({ markdownDocumentId }: MarkdownWizardProps) => {
           </Text>
 
           <Box direction="row" width="100%" pad={{ bottom: 'xsmall' }}>
-            <TextInput
-              a11yTitle={intl.formatMessage(messages.placeholderTitleInput)}
-              placeholder={intl.formatMessage(messages.placeholderTitleInput)}
-              value={localTitle}
-              onChange={(event) => setLocalTitle(event.target.value)}
-              // This is enforced by backend, but simpler to not allow user for too long title
+            <Input
+              aria-label={intl.formatMessage(messages.placeholderTitleInput)}
+              label={intl.formatMessage(messages.placeholderTitleInput)}
               maxLength={255}
+              onChange={(event) => setLocalTitle(event.target.value)}
+              value={localTitle}
             />
           </Box>
           <LanguageSelector

@@ -683,7 +683,7 @@ def test_lti_video_upload(page: Page, live_server: LiveServer):
     page, _ = _preview_video(live_server, page)
 
     page.click("text=Create a video")
-    page.fill("input[placeholder='Enter title of your video here']", "My video")
+    page.get_by_label("Enter title of your video here").fill("My video")
 
     page.set_input_files(
         "input[type='file']", f"{settings.MEDIA_ROOT}/e2e/big_buck_bunny_480p.mp4"
