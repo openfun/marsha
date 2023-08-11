@@ -41,7 +41,7 @@ export const RenaterAuthenticator = () => {
   const ERRORTOKEN = 'social-auth';
 
   const renderOption = (option: RenaterSamlFerIdp) => (
-    <Box align="center" direction="row">
+    <Box align="center" direction="row" pad="small">
       <Image
         src={
           option.logo ||
