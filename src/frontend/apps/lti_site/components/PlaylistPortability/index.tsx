@@ -1,12 +1,5 @@
-import {
-  Box,
-  Button,
-  Form,
-  FormField,
-  Spinner,
-  Text,
-  TextInput,
-} from 'grommet';
+import { Input } from '@openfun/cunningham-react';
+import { Box, Button, Spinner, Text } from 'grommet';
 import { AddCircle, Trash } from 'grommet-icons';
 import {
   CopyClipboard,
@@ -231,31 +224,25 @@ export const PlaylistPortability = ({ object }: PlaylistPortabilityProps) => {
             removePlaylistPortability={removePlaylistPortability}
           />
           <Box>
-            <Form onSubmit={addPlaylistPortability}>
-              <FormField
-                label={<FormattedMessage {...messages.shareWithPlaylist} />}
-                htmlFor="port-to-playlist-uuid"
-              >
-                <Box direction="row">
-                  <TextInput
-                    placeholder={intl.formatMessage(
-                      messages.shareWithPlaylistPlaceholder,
-                    )}
-                    id="port-to-playlist-uuid"
-                    onChange={(event) =>
-                      setNewPortabilityID(event.target.value)
-                    }
-                    value={newPortabilityID}
-                    plain
-                  />
-                  <Button
-                    type="submit"
-                    aria-label={intl.formatMessage(messages.addPortability)}
-                    icon={<AddCircle />}
-                  />
-                </Box>
-              </FormField>
-            </Form>
+            <Input
+              aria-label={intl.formatMessage(
+                messages.shareWithPlaylistPlaceholder,
+              )}
+              label={intl.formatMessage(messages.shareWithPlaylist)}
+              id="port-to-playlist-uuid"
+              fullWidth
+              onChange={(event) => setNewPortabilityID(event.target.value)}
+              value={newPortabilityID}
+              rightIcon={
+                <AddCircle
+                  aria-label={intl.formatMessage(messages.addPortability)}
+                  onClick={addPlaylistPortability}
+                  color="blue-active"
+                  style={{ cursor: 'pointer' }}
+                  role="button"
+                />
+              }
+            />
           </Box>
 
           <Box

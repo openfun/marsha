@@ -1,4 +1,5 @@
-import { Button, Form, FormField, Text, TextInput } from 'grommet';
+import { Input } from '@openfun/cunningham-react';
+import { Button, Form, Text } from 'grommet';
 import { Maybe } from 'lib-common';
 import {
   Document,
@@ -6,7 +7,7 @@ import {
   updateResource,
   useDocument,
 } from 'lib-components';
-import React, { Fragment, useState } from 'react';
+import { Fragment, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
@@ -69,23 +70,24 @@ export const DashboardDocumentTitleForm = ({
           updateTitle();
         }}
       >
-        <FormField
+        <Input
+          aria-label="Title"
           label={intl.formatMessage(messages.updateTitle)}
-          htmlFor="title"
-          error={error}
-          component={TextInput}
-        >
-          <TextInput
-            id="title"
-            maxLength={255}
-            onChange={(event) => setTitle(event.target.value)}
-            placeholder="Title"
-            required={true}
-            size="medium"
-            value={title}
-          />
-        </FormField>
-        <Button type="submit" primary label="Submit" />
+          id="title"
+          maxLength={255}
+          fullWidth
+          onChange={(event) => setTitle(event.target.value)}
+          value={title}
+          required={true}
+          state={error ? 'error' : undefined}
+          text={error}
+        />
+        <Button
+          type="submit"
+          primary
+          label="Submit"
+          margin={{ top: 'small' }}
+        />
         {udpated && (
           <Text margin="small" color="status-ok">
             {intl.formatMessage(messages.updateSuccessful)}
