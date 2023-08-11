@@ -2,6 +2,9 @@
 @import '@openfun/cunningham-react/style';
 @import './cunningham-tokens.css';
 
+.c__input, .c__field, .c__select, .c__datagrid {
+  font-family: var(--c--theme--font--families--base);
+}
 .c__field {
   line-height: initial;
 }
@@ -14,6 +17,25 @@
 .labelled-box label.placeholder {
   top: 50%;
   transform: translateY(-50%);
+}
+/**
+ * Input
+*/
+.c__input__wrapper {
+  transition: all var(--c--theme--transitions--duration)
+    var(--c--theme--transitions--ease-out);
+}
+.c__input__wrapper .labelled-box__label.placeholder {
+  cursor: inherit;
+}
+.c__input__wrapper .c__input {
+  color: var(--c--components--forms-input--color);
+}
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+  transition:
+    background-color 0s 600000s,
+    color 0s 600000s;
 }
 /**
  * DataGrid

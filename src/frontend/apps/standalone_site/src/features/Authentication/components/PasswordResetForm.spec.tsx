@@ -30,8 +30,6 @@ describe('<PasswordResetForm />', () => {
     await userEvent.click(
       screen.getByRole('button', { name: /Reset my password/i }),
     );
-
-    expect(screen.getByText('This field is required.')).toBeInTheDocument();
   });
 
   it('attempts to send reset password mail and fails', async () => {

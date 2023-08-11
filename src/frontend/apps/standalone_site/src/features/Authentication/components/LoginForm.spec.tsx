@@ -30,17 +30,17 @@ describe('<LoginFrom />', () => {
     expect(
       screen.getByRole('textbox', { name: /username/i }),
     ).toBeInTheDocument();
-    expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
+    expect(screen.getByLabelText('Password')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /OK/i })).toBeInTheDocument();
 
-    const buttonHide = screen.getByRole('button', { name: /Hide/i });
-    expect(buttonHide).toBeInTheDocument();
+    const buttonShow = screen.getByRole('button', { name: /Show/i });
+    expect(buttonShow).toBeInTheDocument();
 
-    await userEvent.click(buttonHide);
+    await userEvent.click(buttonShow);
 
-    expect(screen.getByRole('button', { name: /View/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Hide/i })).toBeInTheDocument();
     expect(
-      screen.queryByRole('button', { name: /Hide/i }),
+      screen.queryByRole('button', { name: /Show/i }),
     ).not.toBeInTheDocument();
     expect(
       screen.getByRole('textbox', { name: /password/i }),
@@ -58,15 +58,11 @@ describe('<LoginFrom />', () => {
 
     await userEvent.click(screen.getByRole('button', { name: /OK/i }));
 
-    expect(
-      screen.getAllByText(/This field is required to login./i),
-    ).toHaveLength(2);
-
     await userEvent.type(
       screen.getByRole('textbox', { name: /username/i }),
       'my_user',
     );
-    await userEvent.type(screen.getByLabelText(/password/i), 'my_pass');
+    await userEvent.type(screen.getByLabelText('Password'), 'my_pass');
     await userEvent.click(screen.getByRole('button', { name: /OK/i }));
 
     expect(
@@ -104,7 +100,7 @@ describe('<LoginFrom />', () => {
       screen.getByRole('textbox', { name: /username/i }),
       'my_user',
     );
-    await userEvent.type(screen.getByLabelText(/password/i), 'my_pass');
+    await userEvent.type(screen.getByLabelText('Password'), 'my_pass');
     await userEvent.click(screen.getByRole('button', { name: /OK/i }));
 
     await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/login'));
@@ -132,7 +128,7 @@ describe('<LoginFrom />', () => {
       screen.getByRole('textbox', { name: /username/i }),
       'my_user',
     );
-    await userEvent.type(screen.getByLabelText(/password/i), 'my_pass');
+    await userEvent.type(screen.getByLabelText('Password'), 'my_pass');
     await userEvent.click(screen.getByRole('button', { name: /OK/i }));
 
     await waitFor(() =>

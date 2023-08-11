@@ -41,7 +41,14 @@ describe('<AccountSettings />', () => {
     expect(screen.getAllByDisplayValue('newPassword').length).toEqual(2);
 
     //  submit the form
-    fetchMock.mock('/account/api/password/change/', 200, { method: 'POST' });
+    fetchMock.mock(
+      '/account/api/password/change/',
+      {
+        status: 200,
+        ok: true,
+      },
+      { method: 'POST' },
+    );
 
     await userEvent.click(submitButton);
 
@@ -61,7 +68,8 @@ describe('<AccountSettings />', () => {
     fetchMock.mock(
       '/account/api/password/change/',
       {
-        throws: {
+        status: 401,
+        body: {
           old_password: ['old password error 1'],
           new_password1: ['new password error 1', 'new password error 2'],
         },
@@ -73,7 +81,7 @@ describe('<AccountSettings />', () => {
 
     expect(await screen.findByText('old password error 1')).toBeInTheDocument();
     expect(
-      await screen.findByText('new password error 1, new password error 2'),
+      await screen.findByText('new password error 1 new password error 2'),
     ).toBeInTheDocument();
   });
 });

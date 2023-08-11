@@ -1,3 +1,5 @@
+import { ResetPasswordError } from './api/resetPassword';
+
 const isStringArray = (value: unknown): value is string[] => {
   if (value === undefined || value === null || !Array.isArray(value)) {
     return false;
@@ -13,13 +15,7 @@ const isStringArray = (value: unknown): value is string[] => {
   return isStringArray;
 };
 
-export const isError = (
-  errors: unknown,
-): errors is {
-  old_password?: string[];
-  new_password1?: string[];
-  new_password2?: string[];
-} => {
+export const isError = (errors: unknown): errors is ResetPasswordError => {
   if (!errors || typeof errors !== 'object') {
     return false;
   }

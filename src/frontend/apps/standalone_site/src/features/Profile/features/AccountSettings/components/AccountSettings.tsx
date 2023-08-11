@@ -1,14 +1,14 @@
 import { useMutation } from '@tanstack/react-query';
 import { Box, Button, Heading } from 'grommet';
-import { Form } from 'lib-components';
+import { FetchResponseError } from 'lib-components';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { resetPassword } from '../api/resetPassword';
-import { isError } from '../utils';
+import { PrivateTextInputField } from 'components/Text/PrivateTextInputField';
 
-import { PrivateTextInputField } from './PrivateTextInputField';
+import { ResetPasswordError, resetPassword } from '../api/resetPassword';
+import { isError } from '../utils';
 
 const messages = defineMessages({
   header: {
@@ -32,45 +32,45 @@ const messages = defineMessages({
     description: 'Label for current password text input.',
     id: 'features.Profile.AccountSettings.currentPassword',
   },
-  showCurrentPassword: {
-    defaultMessage: 'Show the current password.',
-    description: 'A18n label for the show current password button.',
-    id: 'features.Profile.AccountSettings.showCurrentPassword',
+  revealCurrentPassword: {
+    defaultMessage: 'Reveal the current password.',
+    description: 'A18n label for the revealed current password button.',
+    id: 'features.Profile.AccountSettings.revealCurrentPassword',
   },
-  hiddeCurrentPassword: {
-    defaultMessage: 'Hidde the current password.',
+  hideCurrentPassword: {
+    defaultMessage: 'Hide the current password.',
     description: 'A18n label for the hidden current password button.',
-    id: 'features.Profile.AccountSettings.hiddeCurrentPassword',
+    id: 'features.Profile.AccountSettings.hideCurrentPassword',
   },
   newPassword: {
     defaultMessage: 'New password',
     description: 'Label for new password text input.',
     id: 'features.Profile.AccountSettings.newPassword',
   },
-  showNewPassword: {
-    defaultMessage: 'Show new password',
-    description: 'A18n label for the show new password button.',
-    id: 'features.Profile.AccountSettings.showNewPassword',
+  revealNewPassword: {
+    defaultMessage: 'Reveal new password',
+    description: 'A18n label for the revealed new password button.',
+    id: 'features.Profile.AccountSettings.revealNewPassword',
   },
-  hiddeNewPassword: {
-    defaultMessage: 'Hidde new password',
-    description: 'A18n label for the hidde new password button.',
-    id: 'features.Profile.AccountSettings.hiddeNewPassword',
+  hideNewPassword: {
+    defaultMessage: 'Hide new password',
+    description: 'A18n label for the hidden new password button.',
+    id: 'features.Profile.AccountSettings.hideNewPassword',
   },
   passwordValidation: {
     defaultMessage: 'Repeat new password',
     description: 'Label for password confirmation text input.',
     id: 'features.Profile.AccountSettings.passwordValidation',
   },
-  showPasswordValidation: {
-    defaultMessage: 'Show password confirmation',
-    description: 'A18n label for the show password confirmation button.',
-    id: 'features.Profile.AccountSettings.showPasswordValidation',
+  revealPasswordValidation: {
+    defaultMessage: 'Reveal password confirmation',
+    description: 'A18n label for the reveal password confirmation button.',
+    id: 'features.Profile.AccountSettings.revealPasswordValidation',
   },
-  hiddePasswordValidation: {
-    defaultMessage: 'Hidde password confirmation',
-    description: 'A18n label for the hidde password confirmation button.',
-    id: 'features.Profile.AccountSettings.hiddePasswordValidation',
+  hidePasswordValidation: {
+    defaultMessage: 'Hide password confirmation',
+    description: 'A18n label for the hidden password confirmation button.',
+    id: 'features.Profile.AccountSettings.hidePasswordValidation',
   },
   defaultError: {
     defaultMessage: 'An error occurred, please try again later.',
@@ -100,8 +100,12 @@ type FormValue = {
 
 export const AccountSettings = () => {
   const intl = useIntl();
-
-  const { mutateAsync } = useMutation<void, unknown, FormValue>({
+  const [error, setError] = useState<ResetPasswordError>();
+  const { mutate: updatePassword } = useMutation<
+    void,
+    FetchResponseError<ResetPasswordError>,
+    FormValue
+  >({
     mutationFn: (value) =>
       resetPassword(
         value.currentPassword,
@@ -118,11 +122,9 @@ export const AccountSettings = () => {
       });
     },
     onError: (backError) => {
-      if (isError(backError)) {
-        return;
+      if (isError(backError.error)) {
+        setError(backError.error);
       }
-
-      toast.error(intl.formatMessage(messages.onErrorMessage));
     },
   });
   const [values, setValues] = useState<FormValue>({
@@ -142,61 +144,62 @@ export const AccountSettings = () => {
         >
           <Heading level={4}>{intl.formatMessage(messages.title)}</Heading>
           <Box margin={{ left: '30%' }}>
-            <Form
-              value={values}
-              onChange={(newValues) => {
-                setValues(newValues);
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                updatePassword(values);
               }}
-              onSubmit={async ({ value }) => {
-                await mutateAsync(value);
-              }}
-              onSubmitError={(_, e) => {
-                if (isError(e)) {
-                  return {
-                    currentPassword: e.old_password?.join(', '),
-                    newPassword: e.new_password1?.join(', '),
-                    passwordValidation: e.new_password2?.join(', '),
-                  };
-                }
-
-                return {
-                  newPassword: intl.formatMessage(messages.defaultError),
-                };
+              onChange={(e) => {
+                const { name, value } = e.target as HTMLInputElement;
+                setValues((_value) => ({ ..._value, [name]: value }));
+                setError(undefined);
               }}
             >
               <Box gap="small">
                 <PrivateTextInputField
+                  autoComplete="current-password"
                   id="currentPassword"
                   name="currentPassword"
                   label={intl.formatMessage(messages.currentPassword)}
-                  showButtonLabel={intl.formatMessage(
-                    messages.showCurrentPassword,
+                  revealButtonLabel={intl.formatMessage(
+                    messages.revealCurrentPassword,
                   )}
-                  hiddeButtonLabel={intl.formatMessage(
-                    messages.hiddeCurrentPassword,
+                  hideButtonLabel={intl.formatMessage(
+                    messages.hideCurrentPassword,
                   )}
+                  state={error?.old_password ? 'error' : undefined}
+                  text={error?.old_password?.join(' ')}
+                  value={values.currentPassword}
                 />
 
                 <PrivateTextInputField
+                  autoComplete="new-password"
                   id="newPassword"
                   name="newPassword"
                   label={intl.formatMessage(messages.newPassword)}
-                  showButtonLabel={intl.formatMessage(messages.showNewPassword)}
-                  hiddeButtonLabel={intl.formatMessage(
-                    messages.hiddeNewPassword,
+                  revealButtonLabel={intl.formatMessage(
+                    messages.revealNewPassword,
                   )}
+                  hideButtonLabel={intl.formatMessage(messages.hideNewPassword)}
+                  state={error?.new_password1 ? 'error' : undefined}
+                  text={error?.new_password1?.join(' ')}
+                  value={values.newPassword}
                 />
 
                 <PrivateTextInputField
+                  autoComplete="new-password"
                   id="passwordValidation"
                   name="passwordValidation"
                   label={intl.formatMessage(messages.passwordValidation)}
-                  showButtonLabel={intl.formatMessage(
-                    messages.showPasswordValidation,
+                  revealButtonLabel={intl.formatMessage(
+                    messages.revealPasswordValidation,
                   )}
-                  hiddeButtonLabel={intl.formatMessage(
-                    messages.hiddePasswordValidation,
+                  hideButtonLabel={intl.formatMessage(
+                    messages.hidePasswordValidation,
                   )}
+                  state={error?.new_password2 ? 'error' : undefined}
+                  text={error?.new_password2?.join(' ')}
+                  value={values.passwordValidation}
                 />
               </Box>
 
@@ -210,7 +213,7 @@ export const AccountSettings = () => {
                   label={intl.formatMessage(messages.submit)}
                 />
               </Box>
-            </Form>
+            </form>
           </Box>
         </Box>
       </Box>

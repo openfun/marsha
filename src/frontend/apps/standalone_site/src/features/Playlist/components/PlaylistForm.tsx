@@ -1,12 +1,5 @@
-import {
-  Box,
-  Button,
-  Heading,
-  Select,
-  Text,
-  TextInput,
-  ThemeContext,
-} from 'grommet';
+import { Input } from '@openfun/cunningham-react';
+import { Box, Button, Heading, Select, Text, ThemeContext } from 'grommet';
 import { Nullable } from 'lib-common';
 import {
   ButtonLoaderStyle,
@@ -405,25 +398,23 @@ export const PlaylistForm = ({
             </FormHelpText>
           </Box>
 
-          <Box>
-            <FormField
-              required
-              disabled={!isEditable}
-              label={intl.formatMessage(messages.playlistNameFieldLabel)}
-              htmlFor="textinput-name-id"
-              name="name"
-              margin="0"
-            >
-              <TextInput
-                disabled={!isEditable}
-                name="name"
-                id="textinput-name-id"
-              />
-            </FormField>
-            <FormHelpText>
-              {intl.formatMessage(messages.playlistNameHelper)}
-            </FormHelpText>
-          </Box>
+          <Input
+            aria-label={intl.formatMessage(messages.playlistNameFieldLabel)}
+            value={formValues.name}
+            disabled={!isEditable}
+            fullWidth
+            label={intl.formatMessage(messages.playlistNameFieldLabel)}
+            name="name"
+            onChange={(e) => {
+              setFormValues((value) => ({
+                ...value,
+                name: e.target.value,
+              }));
+            }}
+            required
+            text={intl.formatMessage(messages.playlistNameHelper)}
+          />
+
           <Box>
             <FormField
               disabled={!isEditable}

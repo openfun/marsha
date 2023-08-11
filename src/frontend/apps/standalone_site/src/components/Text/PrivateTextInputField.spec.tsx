@@ -16,7 +16,7 @@ describe('<PrivateTextInputField />', () => {
     expect(screen.getByLabelText('label')).toBeInTheDocument();
 
     await userEvent.click(
-      screen.getByRole('button', { name: 'show-content.svg' }),
+      screen.getByRole('button', { name: 'Show the password.' }),
     );
 
     await userEvent.type(
@@ -28,7 +28,7 @@ describe('<PrivateTextInputField />', () => {
     expect(input).toBeInTheDocument();
 
     await userEvent.click(
-      screen.getByRole('button', { name: 'hide-content.svg' }),
+      screen.getByRole('button', { name: 'Hide the password.' }),
     );
 
     await waitFor(() =>

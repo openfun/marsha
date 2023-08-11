@@ -13,6 +13,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add playlist is_claimable attribute
 - Add the Accept-Language header to most of the http request (#2394)
 
+### Changed
+
+- Replace grommet TextInput by Cunningham Input (#2374)
+
 ## [4.3.1] - 2023-08-31
 
 ### Fixed

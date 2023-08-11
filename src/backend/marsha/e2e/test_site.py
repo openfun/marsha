@@ -48,8 +48,8 @@ def user_logged_in(context: BrowserContext, live_server: LiveServer):
 
     page = context.new_page()
     page.goto(live_server.url)
-    page.fill("input[name=username]", "jane")
-    page.fill("input[name=password]", "password")
+    page.fill("input[name=username]", "jane", force=True)
+    page.fill("input[name=password]", "password", force=True)
     page.click("text=OK")
     page.wait_for_timeout(500)
     page.wait_for_load_state("networkidle")
@@ -62,8 +62,8 @@ def test_site_login(page: Page, live_server: LiveServer):
     user.set_password("password")
 
     page.goto(live_server.url)
-    page.fill("input[name=username]", "john")
-    page.fill("input[name=password]", "password")
+    page.fill("input[name=username]", "john", force=True)
+    page.fill("input[name=password]", "password", force=True)
     page.click("text=OK")
 
     expect(page.get_by_role("menuitem", name="Dashboard")).to_be_visible()
@@ -299,8 +299,8 @@ def test_playlist_update(context: BrowserContext, live_server: LiveServer):
     page = context.pages[0]
     page.get_by_role("menuitem", name="My Playlists").click()
     page.get_by_role("button", name="Update playlist Playlist test").click()
-    page.get_by_label("Name*required").click()
-    page.get_by_label("Name*required").fill("Playlist test updated")
+    page.get_by_label("Name").click()
+    page.get_by_label("Name").fill("Playlist test updated")
     page.get_by_role("button", name="Save").click()
 
     expect(

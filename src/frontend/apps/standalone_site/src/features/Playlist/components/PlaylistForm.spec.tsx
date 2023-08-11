@@ -57,7 +57,7 @@ describe('<PlaylistForm />', () => {
 
     await waitForElementToBeRemoved(loader);
     expect(screen.getByLabelText('Organization*required')).toBeInTheDocument();
-    expect(screen.getByLabelText('Name*required')).toBeInTheDocument();
+    expect(screen.getByLabelText('Name')).toBeInTheDocument();
 
     const submitButton = screen.getByRole('button', { name: 'Save' });
     expect(submitButton).toBeInTheDocument();
@@ -93,7 +93,7 @@ describe('<PlaylistForm />', () => {
         name: 'Open Drop; Selected: first id',
       }),
     ).toBeInTheDocument();
-    expect(screen.getByLabelText('Name*required')).toBeInTheDocument();
+    expect(screen.getByLabelText('Name')).toBeInTheDocument();
 
     expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Edit' })).toBeInTheDocument();
@@ -365,7 +365,7 @@ describe('<PlaylistForm />', () => {
         name: 'Open Drop; Selected: first id',
       }),
     ).toBeInTheDocument();
-    expect(screen.getByLabelText('Name*required')).toBeInTheDocument();
+    expect(screen.getByLabelText('Name')).toBeInTheDocument();
     expect(screen.getByDisplayValue('some initial name')).toBeInTheDocument();
 
     expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument();
@@ -383,10 +383,10 @@ describe('<PlaylistForm />', () => {
       await screen.findByRole('option', { name: 'second organization' }),
     );
 
-    await userEvent.clear(screen.getByLabelText('Name*required'));
+    await userEvent.clear(screen.getByLabelText('Name'));
     await userEvent.type(
-      screen.getByLabelText('Name*required'),
-      'an other awsome name',
+      screen.getByLabelText('Name'),
+      'an other awesome name',
     );
 
     expect(
@@ -395,7 +395,7 @@ describe('<PlaylistForm />', () => {
       }),
     ).toBeInTheDocument();
     expect(
-      await screen.findByDisplayValue('an other awsome name'),
+      await screen.findByDisplayValue('an other awesome name'),
     ).toBeInTheDocument();
 
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }));
@@ -410,7 +410,7 @@ describe('<PlaylistForm />', () => {
         name: 'Open Drop; Selected: first id',
       }),
     ).toBeInTheDocument();
-    expect(screen.getByLabelText('Name*required')).toBeInTheDocument();
+    expect(screen.getByLabelText('Name')).toBeInTheDocument();
     expect(screen.getByDisplayValue('some initial name')).toBeInTheDocument();
   });
 
@@ -440,7 +440,7 @@ describe('<PlaylistForm />', () => {
         name: 'Open Drop; Selected: first id',
       }),
     ).toBeInTheDocument();
-    expect(screen.getByLabelText('Name*required')).toBeInTheDocument();
+    expect(screen.getByLabelText('Name')).toBeInTheDocument();
 
     expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Edit' })).toBeInTheDocument();
@@ -477,7 +477,7 @@ describe('<PlaylistForm />', () => {
         name: 'Open Drop; Selected: first id',
       }),
     ).toBeInTheDocument();
-    expect(screen.getByLabelText('Name*required')).toBeInTheDocument();
+    expect(screen.getByLabelText('Name')).toBeInTheDocument();
 
     const deleteButton = screen.getByRole('button', {
       name: 'Delete playlist',
@@ -524,7 +524,7 @@ describe('<PlaylistForm />', () => {
         name: 'Open Drop; Selected: first id',
       }),
     ).toBeInTheDocument();
-    expect(screen.getByLabelText('Name*required')).toBeInTheDocument();
+    expect(screen.getByLabelText('Name')).toBeInTheDocument();
 
     const deleteButton = screen.getByRole('button', {
       name: 'Delete playlist',
@@ -568,7 +568,7 @@ describe('<PlaylistForm />', () => {
         name: 'Open Drop; Selected: first id',
       }),
     ).toBeInTheDocument();
-    expect(screen.getByLabelText('Name*required')).toBeInTheDocument();
+    expect(screen.getByLabelText('Name')).toBeInTheDocument();
 
     const deleteButton = screen.getByRole('button', {
       name: 'Delete playlist',

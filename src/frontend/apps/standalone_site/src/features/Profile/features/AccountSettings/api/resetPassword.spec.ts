@@ -20,7 +20,10 @@ describe('resetPassword()', () => {
   });
 
   it('clear jwt store on success', async () => {
-    fetchMock.post('/account/api/password/change/', 200);
+    fetchMock.post('/account/api/password/change/', {
+      status: 200,
+      ok: true,
+    });
 
     await expect(
       resetPassword('some password', 'an other password', 'an other password'),

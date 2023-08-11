@@ -1,11 +1,24 @@
 import { UseMutationOptions, useMutation } from '@tanstack/react-query';
-import { TokenResponse, fetchWrapper, useJwt } from 'lib-components';
+import {
+  FetchResponseError,
+  TokenResponse,
+  fetchResponseHandler,
+  fetchWrapper,
+  useJwt,
+} from 'lib-components';
 
 type UseBasicLoginData = {
   username: string;
   password: string;
 };
-export type UseBasicLoginError = { code: 'exception'; detail?: string };
+
+export interface UseBasicLoginErrorBody {
+  username?: string[];
+  password?: string[];
+  detail?: string;
+}
+
+export type UseBasicLoginError = FetchResponseError<UseBasicLoginErrorBody>;
 
 type UseBasicLoginOptions = UseMutationOptions<
   TokenResponse,
@@ -26,14 +39,9 @@ const actionLogin = async ({
     body: JSON.stringify(object),
   });
 
-  if (!response.ok) {
-    if (response.status === 400 || response.status === 401) {
-      throw { code: 'invalid', ...(await response.json()) };
-    }
-    throw { code: 'exception' };
-  }
-
-  return (await response.json()) as TokenResponse;
+  return await fetchResponseHandler(response, {
+    invalidStatus: [400, 401],
+  });
 };
 
 export const useBasicLogin = (options?: UseBasicLoginOptions) => {

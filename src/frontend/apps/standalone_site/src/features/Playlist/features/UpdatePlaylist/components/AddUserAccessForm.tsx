@@ -1,6 +1,7 @@
+import { Input } from '@openfun/cunningham-react';
 import { Box, Heading, Paragraph, Select } from 'grommet';
 import { Nullable } from 'lib-common';
-import { ModalButton, TextInput } from 'lib-components';
+import { ModalButton } from 'lib-components';
 import { debounce } from 'lodash';
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -63,7 +64,6 @@ export const AddUserAccessForm = ({
   const intl = useIntl();
 
   const options = useMemo(() => userRoleOptions(intl), [intl]);
-  const [typedStr, setTypedStr] = useState('');
   const [searchedUser, setSearchedUser] = useState('');
   const [selectedUser, setSelectedUser] = useState<Nullable<UserLite>>(null);
   const [roleValue, setRoleValue] = useState(
@@ -135,19 +135,16 @@ export const AddUserAccessForm = ({
       {!selectedUser && (
         <Fragment>
           <Paragraph>{intl.formatMessage(messages.searchInfos)}</Paragraph>
-
-          <TextInput
-            value={typedStr}
-            setValue={(newValue) => {
-              const trimmed = newValue.trim();
-              setTypedStr(trimmed);
+          <Input
+            aria-label={intl.formatMessage(messages.placeHolder)}
+            icon={<SearchPeopleIcon />}
+            fullWidth
+            label={intl.formatMessage(messages.placeHolder)}
+            onChange={(e) => {
+              const trimmed = e.target.value.trim();
               debouncedSetSearchedStr(trimmed);
             }}
-            placeholder={intl.formatMessage(messages.placeHolder)}
-            a11yTitle={intl.formatMessage(messages.placeHolder)}
-            icon={<SearchPeopleIcon />}
           />
-
           {searchedUser !== '' && (
             <SearchUserList
               searchedStr={searchedUser}

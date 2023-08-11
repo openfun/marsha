@@ -1,5 +1,6 @@
+import { Field, Input } from '@openfun/cunningham-react';
 import { useQueryClient } from '@tanstack/react-query';
-import { Box, Text, TextArea, TextInput } from 'grommet';
+import { Box, Text, TextArea } from 'grommet';
 import { Alert } from 'grommet-icons';
 import { Nullable } from 'lib-common';
 import {
@@ -130,14 +131,21 @@ const LiveCreateForm = () => {
             display: 'block',
           }}
         >
-          <FormField
-            label={intl.formatMessage(messages.titleLabel)}
-            htmlFor="title-id"
-            name="title"
-            required
-          >
-            <TextInput size="1rem" name="title" id="title-id" />
-          </FormField>
+          <Field className="mb-s" fullWidth>
+            <Input
+              aria-label={intl.formatMessage(messages.titleLabel)}
+              fullWidth
+              label={intl.formatMessage(messages.titleLabel)}
+              name="title"
+              required
+              onChange={(e) => {
+                setLive((value) => ({
+                  ...value,
+                  title: e.target.value,
+                }));
+              }}
+            />
+          </Field>
 
           {selectPlaylist}
 
