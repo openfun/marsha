@@ -1,9 +1,12 @@
-import { Box, Button, Form, FormField, Text, TextInput } from 'grommet';
-import { Alert, FormView, Hide } from 'grommet-icons';
+import { Field } from '@openfun/cunningham-react';
+import { Box, Button, Text } from 'grommet';
+import { Alert } from 'grommet-icons';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
+
+import { PrivateTextInputField } from 'components/Text/PrivateTextInputField';
 
 import {
   UsePasswordResetConfirmError,
@@ -12,12 +15,12 @@ import {
 
 const messages = defineMessages({
   passwordLabel: {
-    defaultMessage: 'Password',
+    defaultMessage: 'New password',
     description: 'Label for password field',
     id: 'features.Authentication.components.PasswordResetConfirmForm.passwordLabel',
   },
   passwordConfirmLabel: {
-    defaultMessage: 'Password confirm',
+    defaultMessage: 'Confirm new password',
     description: 'Aria label for password confirmation field',
     id: 'features.Authentication.components.PasswordResetConfirmForm.passwordConfirmLabel',
   },
@@ -60,8 +63,6 @@ export const PasswordResetConfirmForm = ({
 }: PasswordResetConfirmFormProps) => {
   const intl = useIntl();
   const [value, setValue] = useState({ new_password1: '', new_password2: '' });
-  const [revealPassword1, setRevealPassword1] = useState(false);
-  const [revealPassword2, setRevealPassword2] = useState(false);
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
   const { mutate: passwordReset } = usePasswordResetConfirm({
@@ -75,14 +76,14 @@ export const PasswordResetConfirmForm = ({
   });
 
   return (
-    <Form
-      value={value}
-      onChange={(updateValue) => setValue(updateValue)}
-      onSubmit={({ value: submitValue }) =>
-        passwordReset({ uid, token, ...submitValue })
-      }
-      messages={{
-        required: intl.formatMessage(messages.requiredField),
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        passwordReset({ uid, token, ...value });
+      }}
+      onChange={(e) => {
+        const { name, value } = e.target as HTMLInputElement;
+        setValue((_value) => ({ ..._value, [name]: value }));
       }}
     >
       <Box
@@ -96,60 +97,17 @@ export const PasswordResetConfirmForm = ({
           {intl.formatMessage(messages.explainingText)}
         </Text>
       </Box>
-      <FormField
-        label={intl.formatMessage(messages.passwordLabel)}
+      <PrivateTextInputField
+        autoComplete="new-password"
         name="new_password1"
-        margin={{ bottom: 'xsmall' }}
-        required
-      >
-        <Box direction="row" fill>
-          <TextInput
-            aria-label={intl.formatMessage(messages.passwordLabel)}
-            name="new_password1"
-            plain
-            type={revealPassword1 ? 'text' : 'password'}
-          />
-          <Button
-            plain
-            style={{ margin: '0 1rem' }}
-            icon={
-              revealPassword1 ? (
-                <FormView size="medium" />
-              ) : (
-                <Hide size="medium" />
-              )
-            }
-            onClick={() => setRevealPassword1(!revealPassword1)}
-          />
-        </Box>
-      </FormField>
-      <FormField
         label={intl.formatMessage(messages.passwordLabel)}
-        name="new_password2"
-        margin={{ bottom: 'xsmall' }}
-        required
-      >
-        <Box direction="row" fill>
-          <TextInput
-            aria-label={intl.formatMessage(messages.passwordConfirmLabel)}
-            name="new_password2"
-            plain
-            type={revealPassword2 ? 'text' : 'password'}
-          />
-          <Button
-            plain
-            style={{ margin: '0 1rem' }}
-            icon={
-              revealPassword2 ? (
-                <FormView size="medium" />
-              ) : (
-                <Hide size="medium" />
-              )
-            }
-            onClick={() => setRevealPassword2(!revealPassword2)}
-          />
-        </Box>
-      </FormField>
+      />
+      <Field className="mt-s" fullWidth>
+        <PrivateTextInputField
+          name="new_password2"
+          label={intl.formatMessage(messages.passwordConfirmLabel)}
+        />
+      </Field>
       {message && (
         <Box
           direction="row"
@@ -172,6 +130,6 @@ export const PasswordResetConfirmForm = ({
           fill
         />
       </Box>
-    </Form>
+    </form>
   );
 };

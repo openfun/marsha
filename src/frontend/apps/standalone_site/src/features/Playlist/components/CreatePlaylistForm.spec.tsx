@@ -108,7 +108,7 @@ describe('<CreatePlaylistForm />', () => {
     expect(screen.queryByDisplayValue('org')).not.toBeInTheDocument();
 
     await userEvent.type(
-      screen.getByRole('textbox', { name: 'Name required' }),
+      screen.getByRole('textbox', { name: 'Name' }),
       'some name',
     );
 

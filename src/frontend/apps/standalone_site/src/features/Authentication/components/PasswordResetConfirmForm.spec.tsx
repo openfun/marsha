@@ -29,24 +29,24 @@ describe('<PasswordResetConfirmForm />', () => {
     ).toBeInTheDocument();
 
     const [hidePassword, hidePasswordConfirm] = screen.getAllByRole('button', {
-      name: /Hide/i,
+      name: /Show/i,
     });
     expect(hidePassword).toBeInTheDocument();
     expect(hidePasswordConfirm).toBeInTheDocument();
 
     await userEvent.click(hidePassword);
 
-    expect(screen.getByRole('button', { name: /View/i })).toBeInTheDocument(); // One password displayed
-    expect(screen.getByRole('button', { name: /Hide/i })).toBeInTheDocument(); // The other password hidden
+    expect(screen.getByRole('button', { name: /Hide/i })).toBeInTheDocument(); // One password displayed
+    expect(screen.getByRole('button', { name: /Show/i })).toBeInTheDocument(); // The other password hidden
     expect(
       screen.getByRole('textbox', { name: /password/i }),
     ).toBeInTheDocument();
 
-    await userEvent.click(screen.getByRole('button', { name: /Hide/i }));
+    await userEvent.click(screen.getByRole('button', { name: /Show/i }));
 
-    expect(screen.getAllByRole('button', { name: /View/i }).length).toEqual(2); // Both passwords displayed
+    expect(screen.getAllByRole('button', { name: /Hide/i }).length).toEqual(2); // Both passwords displayed
     expect(
-      screen.getByRole('textbox', { name: /password confirm/i }),
+      screen.getByRole('textbox', { name: /Confirm new password/i }),
     ).toBeInTheDocument();
   });
 
@@ -59,8 +59,6 @@ describe('<PasswordResetConfirmForm />', () => {
     await userEvent.click(
       screen.getByRole('button', { name: /Reset my password/i }),
     );
-
-    expect(screen.getAllByText(/This field is required./i)).toHaveLength(2);
 
     const [newPassword, newPasswordConfirm] =
       screen.getAllByLabelText(/Password/i);

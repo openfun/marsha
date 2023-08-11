@@ -1,10 +1,12 @@
-import { Box, Button, Form, FormField, Text, TextInput } from 'grommet';
-import { Alert, FormView, Hide } from 'grommet-icons';
+import { Field, Input } from '@openfun/cunningham-react';
+import { Box, Text } from 'grommet';
+import { Alert } from 'grommet-icons';
 import { ButtonLoader } from 'lib-components';
 import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
+import { PrivateTextInputField } from 'components/Text/PrivateTextInputField';
 import { routes } from 'routes/routes';
 import { getLocalStorage } from 'utils/browser';
 
@@ -50,11 +52,10 @@ export const LoginForm = () => {
   const navigate = useNavigate();
   const { pathname, search } = useLocation();
   const [value, setValue] = useState({ username: '', password: '' });
-  const [reveal, setReveal] = useState(false);
-  const [message, setMessage] = useState('');
+  const [error, setError] = useState<UseBasicLoginError['body']>();
   const { mutate: basicLogin, isLoading } = useBasicLogin({
-    onError: (error: UseBasicLoginError) => {
-      setMessage(error.detail || intl.formatMessage(messages.error));
+    onError: (backError) => {
+      setError(backError.body);
     },
     onSuccess: () => {
       const targetUri = getLocalStorage()?.getItem(TARGET_URL_STORAGE_KEY);
@@ -77,46 +78,38 @@ export const LoginForm = () => {
   }, [navigate, pathname, search]);
 
   return (
-    <Form
-      value={value}
-      onChange={(updateValue) => setValue(updateValue)}
-      onSubmit={({ value: submitValue }) => basicLogin(submitValue)}
-      messages={{
-        required: intl.formatMessage(messages.requiredField),
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        basicLogin(value);
+      }}
+      onChange={(e) => {
+        const { name, value } = e.target as HTMLInputElement;
+        setValue((_value) => ({ ..._value, [name]: value }));
+        setError(undefined);
       }}
     >
-      <FormField
+      <Input
+        aria-label={intl.formatMessage(messages.usernameLabel)}
         label={intl.formatMessage(messages.usernameLabel)}
         name="username"
+        type="username"
+        fullWidth
         required
-      >
-        <TextInput
-          aria-label={intl.formatMessage(messages.usernameLabel)}
-          name="username"
-          type="username"
+        readOnly
+        onFocus={(e) => e.currentTarget.removeAttribute('readonly')}
+        state={error?.username ? 'error' : undefined}
+        text={error?.username?.join(' ')}
+      />
+      <Field className="mt-s" fullWidth>
+        <PrivateTextInputField
+          autoComplete="current-password"
+          name="password"
+          label={intl.formatMessage(messages.passwordLabel)}
+          state={error?.password ? 'error' : undefined}
+          text={error?.password?.join(' ')}
         />
-      </FormField>
-      <FormField
-        label={intl.formatMessage(messages.passwordLabel)}
-        name="password"
-        margin={{ bottom: 'xsmall' }}
-        required
-      >
-        <Box direction="row" fill>
-          <TextInput
-            aria-label={intl.formatMessage(messages.passwordLabel)}
-            name="password"
-            plain
-            type={reveal ? 'text' : 'password'}
-          />
-          <Button
-            plain
-            style={{ margin: '0 1rem' }}
-            icon={reveal ? <FormView size="medium" /> : <Hide size="medium" />}
-            onClick={() => setReveal(!reveal)}
-          />
-        </Box>
-      </FormField>
+      </Field>
       <Link to={routes.PASSWORD_RESET.path}>
         <Text
           color="blue-active"
@@ -127,7 +120,7 @@ export const LoginForm = () => {
           {intl.formatMessage(messages.passwordLost)}
         </Text>
       </Link>
-      {message && (
+      {error?.detail && (
         <Box
           direction="row"
           align="center"
@@ -137,7 +130,7 @@ export const LoginForm = () => {
         >
           <Alert size="medium" color="#df8c00" />
           <Text weight="bold" size="small">
-            {message}
+            {error?.detail}
           </Text>
         </Box>
       )}
@@ -147,6 +140,6 @@ export const LoginForm = () => {
           isSubmitting={isLoading}
         />
       </Box>
-    </Form>
+    </form>
   );
 };

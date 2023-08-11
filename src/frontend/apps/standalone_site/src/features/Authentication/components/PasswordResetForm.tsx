@@ -1,4 +1,5 @@
-import { Box, Button, Form, FormField, Text, TextInput } from 'grommet';
+import { Input } from '@openfun/cunningham-react';
+import { Box, Button, Text } from 'grommet';
 import { Alert } from 'grommet-icons';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
@@ -28,11 +29,6 @@ const messages = defineMessages({
     description: 'Error when trying to send request',
     id: 'features.Authentication.components.PasswordResetForm.error',
   },
-  requiredField: {
-    defaultMessage: 'This field is required.',
-    description: 'Message when required field is missing.',
-    id: 'features.Authentication.components.PasswordResetForm.requiredField',
-  },
   explainingText: {
     defaultMessage:
       'Forgotten your password? Enter your email address below, and we’ll email instructions for setting a new one.',
@@ -48,7 +44,6 @@ const messages = defineMessages({
 
 export const PasswordResetForm = () => {
   const intl = useIntl();
-  const [value, setValue] = useState({ email: '' });
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
   const { mutate: passwordReset } = usePasswordReset({
@@ -67,14 +62,17 @@ export const PasswordResetForm = () => {
   }${routes.PASSWORD_RESET.subRoutes.CONFIRM.path.replace(':uid/:token', '')}`;
 
   return (
-    <Form
-      value={value}
-      onChange={(updateValue) => setValue(updateValue)}
-      onSubmit={({ value: submitValue }) =>
-        passwordReset({ confirm_url, ...submitValue })
-      }
-      messages={{
-        required: intl.formatMessage(messages.requiredField),
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+
+        const { value: email } = e.currentTarget.elements.namedItem(
+          'email',
+        ) as RadioNodeList;
+
+        if (email) {
+          passwordReset({ confirm_url, email });
+        }
       }}
     >
       <Box
@@ -88,17 +86,14 @@ export const PasswordResetForm = () => {
           {intl.formatMessage(messages.explainingText)}
         </Text>
       </Box>
-      <FormField
+      <Input
+        aria-label={intl.formatMessage(messages.labelFieldEmail)}
         label={intl.formatMessage(messages.labelFieldEmail)}
         name="email"
+        type="email"
+        fullWidth
         required
-      >
-        <TextInput
-          aria-label={intl.formatMessage(messages.labelFieldEmail)}
-          name="email"
-          type="email"
-        />
-      </FormField>
+      />
       {message && (
         <Box
           direction="row"
@@ -121,6 +116,6 @@ export const PasswordResetForm = () => {
           fill
         />
       </Box>
-    </Form>
+    </form>
   );
 };

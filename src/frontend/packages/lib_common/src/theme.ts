@@ -372,6 +372,9 @@ export const theme: ThemeType = {
         color: white;
         font-size: 1rem;
       }
+      & button {
+        border-width: 0;
+      }
     `,
   },
   textArea: {
