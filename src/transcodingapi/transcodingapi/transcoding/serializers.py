@@ -1,0 +1,86 @@
+from rest_framework import serializers
+
+from .models import Runner, RunnerJob, RunnerJobState, RunnerRegistrationToken
+
+
+class RunnerRegistrationTokenSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RunnerRegistrationToken
+        fields = "__all__"
+        read_only_fields = (
+            "createdAt",
+            "updatedAt",
+        )
+
+
+class RunnerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Runner
+        fields = (
+            "id",
+            "name",
+            "description",
+        )
+        read_only_fields = (
+            "runnerRegistrationToken",
+            "runnerToken",
+            "lastContact",
+            "ip",
+        )
+
+
+class SimpleRunnerJobSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RunnerJob
+        fields = (
+            "uuid",
+            "type",
+            "payload",
+        )
+
+
+class BaseRunnerJobSerializer(serializers.ModelSerializer):
+    state = serializers.SerializerMethodField(read_only=True)
+
+    def get_state(self, obj):
+        return {
+            "id": obj.state,
+            "label": RunnerJobState(obj.state).label,
+        }
+
+
+class ParentRunnerJobSerializer(BaseRunnerJobSerializer):
+    class Meta:
+        model = RunnerJob
+        fields = (
+            "id",
+            "uuid",
+            "type",
+            "state",
+        )
+
+
+class RunnerJobSerializer(BaseRunnerJobSerializer):
+    jobToken = serializers.CharField(source="processingJobToken", read_only=True)
+    runner = RunnerSerializer()
+    parent = ParentRunnerJobSerializer(source="dependsOnRunnerJob")
+
+    class Meta:
+        model = RunnerJob
+        fields = (
+            "uuid",
+            "type",
+            "state",
+            "progress",
+            "priority",
+            "failures",
+            "error",
+            "payload",
+            "startedAt",
+            "finishedAt",
+            "createdAt",
+            "updatedAt",
+            "jobToken",
+            "runner",
+            "parent",
+        )
