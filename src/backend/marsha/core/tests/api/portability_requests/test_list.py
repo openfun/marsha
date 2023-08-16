@@ -14,7 +14,7 @@ from marsha.core.factories import (
 )
 from marsha.core.models import ADMINISTRATOR, PortabilityRequestState
 from marsha.core.simple_jwt.factories import (
-    PlaylistLtiTokenFactory,
+    InstructorOrAdminLtiTokenFactory,
     UserAccessTokenFactory,
 )
 
@@ -60,9 +60,9 @@ class PortabilityRequestListAPITest(TestCase):
         portability_request = PortabilityRequestFactory()
 
         # Event the portability request "asker" cannot delete it from LTI
-        jwt_token = PlaylistLtiTokenFactory(
+        jwt_token = InstructorOrAdminLtiTokenFactory(
             consumer_site=str(portability_request.from_lti_consumer_site.pk),
-            playlist_id=str(portability_request.from_lti_consumer_site.pk),
+            port_to_playlist_id=str(portability_request.from_lti_consumer_site.pk),
             resource=None,
             user__id=str(portability_request.from_lti_user_id),
         )

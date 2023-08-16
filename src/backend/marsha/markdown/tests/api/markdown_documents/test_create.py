@@ -10,7 +10,6 @@ from marsha.core.factories import (
 from marsha.core.models import ADMINISTRATOR
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
-    PlaylistLtiTokenFactory,
     StudentLtiTokenFactory,
     UserAccessTokenFactory,
 )
@@ -47,43 +46,11 @@ class MarkdownCreateAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 403)
 
-    def test_api_document_create_student_with_playlist_token(self):
-        """A student with a playlist token should not be able to create a Markdown document."""
-        jwt_token = PlaylistLtiTokenFactory(roles=["student"])
-
-        response = self.client.post(
-            "/api/markdown-documents/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
-        )
-        self.assertEqual(response.status_code, 403)
-
     def test_api_document_create_instructor(self):
         """An instructor should not be able to create a Markdown document."""
-        markdown_document = MarkdownDocumentFactory()
-
-        jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=markdown_document.playlist
-        )
-
-        response = self.client.post(
-            "/api/markdown-documents/",
-            {
-                "lti_id": "document_one",
-                "playlist": str(markdown_document.playlist.id),
-                "title": "Some document",
-            },
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(response.status_code, 403)
-
-    def test_api_document_create_instructor_with_playlist_token(self):
-        """
-        Create document with playlist token.
-
-        Used in the context of a lti select request (deep linking).
-        """
         playlist = core_factories.PlaylistFactory()
 
-        jwt_token = PlaylistLtiTokenFactory(playlist=playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=playlist)
 
         self.assertEqual(MarkdownDocument.objects.count(), 0)
 
@@ -124,15 +91,11 @@ class MarkdownCreateAPITest(TestCase):
             },
         )
 
-    def test_api_document_create_instructor_with_playlist_token_no_title(self):
-        """
-        Create document with playlist token.
-
-        Used in the context of a lti select request (deep linking) without title.
-        """
+    def test_api_document_create_instructor_no_title(self):
+        """An instructor should not be able to create a Markdown document without title."""
         playlist = core_factories.PlaylistFactory()
 
-        jwt_token = PlaylistLtiTokenFactory(playlist=playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=playlist)
 
         self.assertEqual(MarkdownDocument.objects.count(), 0)
 

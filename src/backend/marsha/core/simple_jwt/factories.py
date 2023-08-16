@@ -232,17 +232,16 @@ class InstructorOrAdminLtiTokenFactory(LTIResourceAccessTokenFactory):
     )
 
 
-class PlaylistLtiTokenFactory(InstructorOrAdminLtiTokenFactory):
-    """
-    LTI resource forged token for instructor or administrators with a playlist access.
-    See `marsha.core.views.LTISelectView`.
-    """
-
-    playlist_id = factory.LazyAttribute(lambda o: str(o.playlist.id))
-    permissions = factory.SubFactory(ResourcePermissionsFactory, can_update=True)
-
-    class Params:  # pylint:disable=missing-class-docstring
-        playlist = factory.SubFactory(PlaylistFactory)
+# class PlaylistLtiTokenFactory(InstructorOrAdminLtiTokenFactory):
+#     """
+#     LTI resource forged token for instructor or administrators with a playlist access.
+#     See `marsha.core.views.LTISelectView`.
+#     """
+#
+#     permissions = factory.SubFactory(ResourcePermissionsFactory, can_update=True)
+#
+#     class Params:  # pylint:disable=missing-class-docstring
+#         playlist = factory.SubFactory(PlaylistFactory)
 
 
 class LiveSessionResourceAccessTokenFactory(BaseTokenFactory):

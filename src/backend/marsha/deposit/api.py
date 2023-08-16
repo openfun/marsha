@@ -197,7 +197,7 @@ class FileDepositoryViewSet(
         new_url = self.request.build_absolute_uri(LTI_ROUTE)
 
         file_depositories = serializers.FileDepositorySelectLTISerializer(
-            FileDepository.objects.filter(playlist__id=request.resource.playlist_id),
+            FileDepository.objects.filter(playlist__id=request.resource.id),
             many=True,
             context={"request": self.request},
         ).data

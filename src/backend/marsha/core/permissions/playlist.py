@@ -345,25 +345,6 @@ class IsRelatedVideoPlaylistAdminOrInstructor(
     """
 
 
-class HasPlaylistToken(permissions.BasePermission):
-    """
-    Allow a request to proceed. Permission class.
-
-    Only if the user has a playlist token payload.
-    """
-
-    def has_permission(self, request, view):
-        """
-        Allow the request.
-
-        Only if the playlist exists.
-        """
-        if request.resource:
-            playlist_id = request.resource.playlist_id
-            return models.Playlist.objects.filter(id=playlist_id).exists()
-        return False
-
-
 class BaseObjectPermission(permissions.BasePermission):
     """Base permission to be used for detail views"""
 

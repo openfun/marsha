@@ -15,7 +15,6 @@ from marsha.core.factories import (
 from marsha.core.models import ADMINISTRATOR, INSTRUCTOR
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
-    PlaylistLtiTokenFactory,
     StudentLtiTokenFactory,
     UserAccessTokenFactory,
 )
@@ -60,39 +59,9 @@ class ClassroomCreateAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 403)
 
-    def test_api_classroom_create_student_with_playlist_token(self):
-        """A student with a playlist token should not be able to create a classroom."""
-        jwt_token = PlaylistLtiTokenFactory(
-            roles=["student"],
-            permissions__can_update=True,
-        )
-
-        response = self.client.post(
-            "/api/classrooms/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
-        )
-        self.assertEqual(response.status_code, 403)
-        self.assertEqual(Classroom.objects.count(), 0)
-
-    def test_api_classroom_create_instructor(self):
-        """An instructor without playlist token should not be able to create a classroom."""
-        classroom = ClassroomFactory()
-
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom.playlist)
-
-        response = self.client.post(
-            "/api/classrooms/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
-        )
-        self.assertEqual(response.status_code, 403)
-
     @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_classroom_create_instructor_with_playlist_token(
-        self, mock_get_meeting_infos
-    ):
-        """
-        Create classroom with playlist token.
-
-        Used in the context of a lti select request (deep linking).
-        """
+    def test_api_classroom_create_instructor(self, mock_get_meeting_infos):
+        """An instructor should be able to create a classroom."""
         playlist = core_factories.PlaylistFactory()
 
         mock_get_meeting_infos.return_value = {
@@ -100,7 +69,7 @@ class ClassroomCreateAPITest(TestCase):
             "running": "true",
         }
 
-        jwt_token = PlaylistLtiTokenFactory(playlist=playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=playlist)
 
         self.assertEqual(Classroom.objects.count(), 0)
 

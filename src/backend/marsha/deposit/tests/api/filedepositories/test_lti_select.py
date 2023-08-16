@@ -2,7 +2,7 @@
 from django.test import TestCase, override_settings
 
 from marsha.core import factories as core_factories
-from marsha.core.simple_jwt.factories import PlaylistLtiTokenFactory
+from marsha.core.simple_jwt.factories import InstructorOrAdminLtiTokenFactory
 from marsha.core.tests.testing_utils import reload_urlconf
 from marsha.deposit.factories import FileDepositoryFactory
 
@@ -27,7 +27,7 @@ class FileDepositoryLTISelectAPITest(TestCase):
     def test_api_select_instructor_no_file_depository(self):
         """An instructor should be able to fetch a file_depository lti select."""
         playlist = core_factories.PlaylistFactory()
-        jwt_token = PlaylistLtiTokenFactory(playlist=playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=playlist)
 
         response = self.client.get(
             "/api/filedepositories/lti-select/",
@@ -45,7 +45,7 @@ class FileDepositoryLTISelectAPITest(TestCase):
     def test_api_select_instructor(self):
         """An instructor should be able to fetch a file_depository lti select."""
         file_depository = FileDepositoryFactory()
-        jwt_token = PlaylistLtiTokenFactory(playlist=file_depository.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=file_depository.playlist)
 
         response = self.client.get(
             "/api/filedepositories/lti-select/",

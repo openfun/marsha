@@ -10,7 +10,6 @@ from marsha.core.factories import (
 from marsha.core.models import ADMINISTRATOR
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
-    PlaylistLtiTokenFactory,
     StudentLtiTokenFactory,
     UserAccessTokenFactory,
 )
@@ -50,37 +49,10 @@ class FileDepositoryCreateAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 403)
 
-    def test_api_file_depository_create_student_with_playlist_token(self):
-        """A student with a playlist token should not be able to create a file_depository."""
-        jwt_token = PlaylistLtiTokenFactory(
-            roles=["student"],
-            permissions__can_update=True,
-        )
-
-        response = self.client.post(
-            "/api/filedepositories/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
-        )
-        self.assertEqual(response.status_code, 403)
-        self.assertEqual(FileDepository.objects.count(), 0)
-
     def test_api_file_depository_create_instructor(self):
-        """An instructor without playlist token should not be able to create a file_depository."""
-        file_depository = FileDepositoryFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=file_depository.playlist)
-
-        response = self.client.post(
-            "/api/filedepositories/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
-        )
-        self.assertEqual(response.status_code, 403)
-
-    def test_api_file_depository_create_instructor_with_playlist_token(self):
-        """
-        Create file_depository with playlist token.
-
-        Used in the context of a lti select request (deep linking).
-        """
+        """An instructor should be able to create a file_depository."""
         playlist = core_factories.PlaylistFactory()
-        jwt_token = PlaylistLtiTokenFactory(playlist=playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=playlist)
 
         self.assertEqual(FileDepository.objects.count(), 0)
 

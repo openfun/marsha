@@ -17,7 +17,6 @@ from marsha.core.factories import (
 from marsha.core.models import ADMINISTRATOR
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
-    PlaylistLtiTokenFactory,
     StudentLtiTokenFactory,
     UserAccessTokenFactory,
 )
@@ -55,19 +54,6 @@ class ClassroomDeleteAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 403)
 
-    def test_api_classroom_delete_student_with_playlist_token(self):
-        """A student with a playlist token should not be able to delete a classroom."""
-        classroom = ClassroomFactory()
-        jwt_token = PlaylistLtiTokenFactory(
-            roles=["student"],
-            permissions__can_update=True,
-        )
-
-        response = self.client.delete(
-            f"/api/classrooms/{classroom.id}/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
-        )
-        self.assertEqual(response.status_code, 403)
-
     def test_api_classroom_delete_instructor(self):
         """An instructor without playlist token should not be able to delete a classroom."""
         classroom = ClassroomFactory()
@@ -77,24 +63,6 @@ class ClassroomDeleteAPITest(TestCase):
         response = self.client.delete(
             f"/api/classrooms/{classroom.id}/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
-        self.assertEqual(response.status_code, 403)
-
-    def test_api_classroom_delete_instructor_with_playlist_token(self):
-        """
-        Delete classroom with playlist token should not be permitted in LTI.
-        """
-        playlist = PlaylistFactory()
-        classroom = ClassroomFactory(playlist=playlist)
-
-        jwt_token = PlaylistLtiTokenFactory(resource=classroom.playlist)
-
-        self.assertEqual(Classroom.objects.count(), 1)
-
-        response = self.client.delete(
-            f"/api/classrooms/{classroom.id}/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
         self.assertEqual(response.status_code, 403)
 
     def test_api_classroom_delete_user_access_token(self):

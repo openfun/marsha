@@ -84,7 +84,7 @@ class PortabilityRequestSerializer(serializers.ModelSerializer):
 
         # We allow to pass arguments for request creation, because on the "site" part
         # the provided information won't comme from the resource JWT token.
-        if str(validated_data["from_playlist"].id) != resource.playlist_id:
+        if str(validated_data["from_playlist"].id) != resource.port_to_playlist_id:
             raise serializers.ValidationError("Unexpected playlist")
         if str(validated_data["from_lti_consumer_site"].id) != resource.consumer_site:
             raise serializers.ValidationError("Unexpected consumer site")

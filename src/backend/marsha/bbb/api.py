@@ -263,7 +263,7 @@ class ClassroomViewSet(
         new_url = self.request.build_absolute_uri(LTI_ROUTE)
 
         classrooms = serializers.ClassroomSelectLTISerializer(
-            Classroom.objects.filter(playlist__id=request.resource.playlist_id),
+            Classroom.objects.filter(playlist__id=request.resource.id),
             many=True,
             context={"request": self.request},
         ).data
