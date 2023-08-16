@@ -507,7 +507,7 @@ class BaseLTIView(BaseModelResourceView, ABC):
                 refresh_token = ResourceRefreshToken.for_lti_portability_request(
                     lti=self.lti,
                     session_id=session_id,
-                    playlist_id=str(destination_playlist.pk),
+                    port_to_playlist_id=str(destination_playlist.pk),
                 )
                 jwt_token = refresh_token.access_token
                 app_data["jwt"] = str(jwt_token)
@@ -539,7 +539,7 @@ class BaseLTIView(BaseModelResourceView, ABC):
                 lti=self.lti,
                 permissions=permissions,
                 session_id=session_id,
-                playlist_id=str(app_data["resource"]["playlist"]["id"]),
+                port_to_playlist_id=str(app_data["resource"]["playlist"]["id"]),
             )
             jwt_token = refresh_token.access_token
             app_data["jwt"] = str(jwt_token)
@@ -942,7 +942,7 @@ class LTISelectView(BaseResourceView):
             lti=self.lti,
             permissions={"can_access_dashboard": False, "can_update": True},
             session_id=str(uuid.uuid4()),
-            playlist_id=str(playlist.id),
+            port_to_playlist_id=str(playlist.id),
         )
 
         app_data.update(

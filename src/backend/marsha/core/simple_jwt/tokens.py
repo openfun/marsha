@@ -127,7 +127,7 @@ class ResourceAccessMixin:
         lti,
         permissions,
         session_id,
-        playlist_id,
+        port_to_playlist_id,
     ):
         """
         Returns an authorization token for the resource in the LTI request that will be provided
@@ -144,7 +144,7 @@ class ResourceAccessMixin:
         session_id: Type[str]
             session id to add to the token.
 
-        playlist_id: Type[str]
+        port_to_playlist_id: Type[str]
             optional, playlist id to give access to in addition to the resource.
 
         Returns
@@ -167,7 +167,7 @@ class ResourceAccessMixin:
                 - user_fullname
         """
         token = cls.for_resource_id(
-            str(playlist_id),
+            str(port_to_playlist_id),
             session_id,
             permissions=permissions,
             roles=lti.roles,
@@ -180,7 +180,7 @@ class ResourceAccessMixin:
             }
         )
 
-        token.payload["playlist_id"] = playlist_id
+        token.payload["port_to_playlist_id"] = port_to_playlist_id
 
         user_id = getattr(lti, "user_id", None)
         if user_id:
@@ -198,7 +198,7 @@ class ResourceAccessMixin:
         cls,
         lti,
         session_id,
-        playlist_id,
+        port_to_playlist_id,
     ):
         """
         Returns an authorization token without resource
@@ -212,7 +212,7 @@ class ResourceAccessMixin:
         session_id: Type[str]
             session id to add to the token.
 
-        playlist_id: Type[str]
+        port_to_playlist_id: Type[str]
             playlist id to give access to in addition to the resource.
 
         Returns
@@ -250,7 +250,7 @@ class ResourceAccessMixin:
             lti,
             None,  # not any permission provided
             session_id,  # not mandatory
-            playlist_id=playlist_id,
+            port_to_playlist_id=port_to_playlist_id,
         )
         # Important: this token must not provide any access to the resource
         token.payload["resource_id"] = ""

@@ -143,7 +143,7 @@ class BaseLTIViewForPortabilityTestCase(TestCase):
         jwt_token = ResourceAccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], "")  # important
         self.assertEqual(
-            jwt_token.payload["playlist_id"], str(newly_create_playlist.id)
+            jwt_token.payload["port_to_playlist_id"], str(newly_create_playlist.id)
         )
 
         # Test common JWT attributes
@@ -189,7 +189,7 @@ class BaseLTIViewForPortabilityTestCase(TestCase):
         jwt_token = ResourceAccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], "")  # important
         self.assertEqual(
-            jwt_token.payload["playlist_id"], str(newly_create_playlist.id)
+            jwt_token.payload["port_to_playlist_id"], str(newly_create_playlist.id)
         )
 
         # Test common JWT attributes

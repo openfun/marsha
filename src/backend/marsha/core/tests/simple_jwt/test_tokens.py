@@ -147,7 +147,7 @@ class ResourceAccessTokenTestCase(TestCase):
             lti,
             permissions,
             session_id,
-            playlist_id=playlist_id,
+            port_to_playlist_id=playlist_id,
         )
         token = refresh_token.access_token
 
@@ -186,7 +186,7 @@ class ResourceAccessTokenTestCase(TestCase):
             lti,
             permissions,
             session_id,
-            playlist_id=playlist_id,
+            port_to_playlist_id=playlist_id,
         )
         token = refresh_token.access_token
 
@@ -212,7 +212,7 @@ class ResourceAccessTokenTestCase(TestCase):
                 "username": "jane_doe",
             },
         )
-        self.assertEqual(token.payload["playlist_id"], playlist_id)
+        self.assertEqual(token.payload["port_to_playlist_id"], playlist_id)
 
     def test_for_live_session_anonymous(self):
         """Test JWT initialization from `for_live_session` method with public session."""
