@@ -4,9 +4,7 @@ from django.test import TestCase, override_settings
 
 from marsha.bbb.factories import ClassroomFactory
 from marsha.core import factories as core_factories
-from marsha.core.simple_jwt.factories import (
-    InstructorOrAdminLtiTokenFactory,
-)
+from marsha.core.simple_jwt.factories import InstructorOrAdminLtiTokenFactory
 from marsha.core.tests.testing_utils import reload_urlconf
 
 

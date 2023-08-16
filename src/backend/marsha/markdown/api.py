@@ -73,7 +73,7 @@ class MarkdownDocumentViewSet(
 
     permission_classes = [
         (
-            core_permissions.IsPlaylistToken
+            core_permissions.IsPlaylistTokenMatchingRouteObject
             & (core_permissions.IsTokenInstructor | core_permissions.IsTokenAdmin)
         )
         | markdown_permissions.IsMarkdownDocumentPlaylistOrOrganizationAdmin
@@ -88,7 +88,7 @@ class MarkdownDocumentViewSet(
         if self.action in ["create"]:
             permission_classes = [
                 (
-                    core_permissions.HasPlaylistToken
+                    core_permissions.IsPlaylistToken
                     & (
                         core_permissions.IsTokenInstructor
                         | core_permissions.IsTokenAdmin
@@ -163,7 +163,7 @@ class MarkdownDocumentViewSet(
         methods=["get"],
         detail=False,
         url_path="lti-select",
-        permission_classes=[core_permissions.HasPlaylistToken],
+        permission_classes=[core_permissions.IsPlaylistToken],
     )
     def lti_select(self, request):
         """Get selectable content for LTI.

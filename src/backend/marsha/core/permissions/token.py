@@ -154,7 +154,7 @@ class IsTokenResourceRouteObjectRelatedVideo(permissions.BasePermission):
             return False
 
 
-class IsPlaylistToken(permissions.BasePermission):
+class IsPlaylistTokenMatchingRouteObject(permissions.BasePermission):
     """
     Allow a request to proceed. Permission class.
 
@@ -186,7 +186,7 @@ class IsPlaylistToken(permissions.BasePermission):
         return False
 
 
-class HasPlaylistToken(permissions.BasePermission):
+class IsPlaylistToken(permissions.BasePermission):
     """
     Allow a request to proceed. Permission class.
 

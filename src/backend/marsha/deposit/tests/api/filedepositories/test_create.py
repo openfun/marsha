@@ -14,7 +14,6 @@ from marsha.core.simple_jwt.factories import (
     UserAccessTokenFactory,
 )
 from marsha.core.tests.testing_utils import reload_urlconf
-from marsha.deposit.factories import FileDepositoryFactory
 from marsha.deposit.models import FileDepository
 
 
