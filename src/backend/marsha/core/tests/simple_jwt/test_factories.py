@@ -46,7 +46,9 @@ class LTIResourceAccessTokenFactoryTestCase(TestCase):
         session_id = uuid.uuid4()
         jwt = ResourceAccessToken.for_lti(lti, {}, session_id, playlist_id)
 
-        jwt_from_factory = LTIResourceAccessTokenFactory(playlist_id=playlist_id)
+        jwt_from_factory = LTIResourceAccessTokenFactory(
+            port_to_playlist_id=playlist_id
+        )
 
         self.assertSetEqual(
             set(jwt.payload.keys()),
@@ -66,7 +68,6 @@ class LiveSessionLtiTokenFactoryTestCase(TestCase):
         )
 
         jwt_from_factory = LiveSessionLtiTokenFactory()
-
         self.assertSetEqual(
             set(jwt.payload.keys()),
             set(jwt_from_factory.payload.keys()),
