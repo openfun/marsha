@@ -8,12 +8,7 @@ import factory
 from faker.utils.text import slugify
 from rest_framework_simplejwt.exceptions import TokenError
 
-from marsha.core.factories import (
-    ConsumerSiteFactory,
-    LiveSessionFactory,
-    PlaylistFactory,
-    UserFactory,
-)
+from marsha.core.factories import ConsumerSiteFactory, LiveSessionFactory, UserFactory
 from marsha.core.models import (
     ADMINISTRATOR,
     INSTRUCTOR,

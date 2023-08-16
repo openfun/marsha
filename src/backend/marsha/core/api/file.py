@@ -26,7 +26,7 @@ class DocumentViewSet(
     queryset = Document.objects.all()
     serializer_class = serializers.DocumentSerializer
     permission_classes = [
-        permissions.IsPlaylistToken
+        permissions.IsPlaylistTokenMatchingRouteObject
         & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
     ]
 
@@ -38,7 +38,7 @@ class DocumentViewSet(
         """
         if self.action in ["create"]:
             permission_classes = [
-                permissions.HasPlaylistToken
+                permissions.IsPlaylistToken
                 & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
             ]
         else:

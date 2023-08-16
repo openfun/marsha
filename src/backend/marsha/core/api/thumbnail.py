@@ -69,7 +69,7 @@ class ThumbnailViewSet(
             ]
         elif self.action in ["retrieve", "destroy", "initiate_upload"]:
             permission_classes = [
-                permissions.IsPlaylistToken
+                permissions.IsPlaylistTokenMatchingRouteObject
                 & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
                 | permissions.IsRelatedVideoPlaylistAdminOrInstructor
                 | permissions.IsRelatedVideoOrganizationAdmin
