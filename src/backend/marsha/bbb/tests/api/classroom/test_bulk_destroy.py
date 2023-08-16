@@ -13,7 +13,6 @@ from marsha.core.factories import (
 from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, STUDENT
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
-    PlaylistLtiTokenFactory,
     StudentLtiTokenFactory,
     UserAccessTokenFactory,
 )
@@ -68,27 +67,6 @@ class ClassroomBulkDestroyAPITest(TestCase):
             content, {"detail": "You do not have permission to perform this action."}
         )
 
-    def test_api_classroom_bulk_delete_student_with_playlist_token(self):
-        """LTI Token can't delete a list of classroom."""
-        classroom1 = ClassroomFactory()
-        classroom2 = ClassroomFactory()
-        jwt_token = PlaylistLtiTokenFactory(
-            roles=["student"],
-            permissions__can_update=True,
-        )
-
-        response = self.client.delete(
-            self._api_url(),
-            {"ids": [str(classroom1.pk), str(classroom2.pk)]},
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-            content_type="application/json",
-        )
-        self.assertEqual(response.status_code, 403)
-        content = json.loads(response.content)
-        self.assertEqual(
-            content, {"detail": "You do not have permission to perform this action."}
-        )
-
     def test_api_classroom_bulk_delete_instructor(self):
         """LTI Token can't delete a list of classroom."""
         classroom = ClassroomFactory()
@@ -102,30 +80,6 @@ class ClassroomBulkDestroyAPITest(TestCase):
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 403)
-        content = json.loads(response.content)
-        self.assertEqual(
-            content, {"detail": "You do not have permission to perform this action."}
-        )
-
-    def test_api_classroom_bulk_delete_instructor_with_playlist_token(self):
-        """LTI Token can't delete a list of classroom."""
-
-        playlist = PlaylistFactory()
-        classroom = ClassroomFactory(playlist=playlist)
-
-        jwt_token = PlaylistLtiTokenFactory(resource=classroom.playlist)
-
-        self.assertEqual(Classroom.objects.count(), 1)
-
-        response = self.client.delete(
-            self._api_url(),
-            {"ids": [str(classroom.pk)]},
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-            content_type="application/json",
-        )
-
-        self.assertEqual(response.status_code, 403)
-        self.assertEqual(Classroom.objects.count(), 1)
         content = json.loads(response.content)
         self.assertEqual(
             content, {"detail": "You do not have permission to perform this action."}

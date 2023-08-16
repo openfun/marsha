@@ -1,7 +1,8 @@
 """Tests for the Markdown application lti-select API."""
 from django.test import TestCase, override_settings
 
-from marsha.core.simple_jwt.factories import PlaylistLtiTokenFactory
+from marsha.core.factories import PlaylistFactory
+from marsha.core.simple_jwt.factories import InstructorOrAdminLtiTokenFactory
 from marsha.markdown.factories import MarkdownDocumentFactory
 
 
@@ -17,7 +18,8 @@ class MarkdownLtiSelectAPITest(TestCase):
 
     def test_api_select_instructor_no_document(self):
         """An instructor should be able to fetch a Markdown document lti select."""
-        jwt_token = PlaylistLtiTokenFactory()
+        playlist = PlaylistFactory()
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=playlist)
 
         response = self.client.get(
             "/api/markdown-documents/lti-select/",
@@ -40,7 +42,9 @@ class MarkdownLtiSelectAPITest(TestCase):
             translations__rendered_content="<h1>Heading1</h1>\n<p>Some content</p>",
         )
 
-        jwt_token = PlaylistLtiTokenFactory(playlist=markdown_document.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=markdown_document.playlist
+        )
 
         response = self.client.get(
             "/api/markdown-documents/lti-select/",

@@ -9,7 +9,7 @@ from marsha.core import factories, models
 from marsha.core.api import timezone
 from marsha.core.defaults import INITIALIZED, STATE_CHOICES
 from marsha.core.simple_jwt.factories import (
-    PlaylistLtiTokenFactory,
+    InstructorOrAdminLtiTokenFactory,
     StudentLtiTokenFactory,
     UserAccessTokenFactory,
 )
@@ -46,18 +46,6 @@ class VideoCreateAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 403)
         self.assertEqual(models.Video.objects.count(), 1)
-
-    def test_api_video_create_student_with_playlist_token(self):
-        """A student with a playlist token should not be able to create a video."""
-        jwt_token = PlaylistLtiTokenFactory(roles=["student"])
-
-        response = self.client.post(
-            "/api/videos/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 403)
-        self.assertEqual(models.Video.objects.count(), 0)
 
     def test_api_video_create_staff_or_user(self):
         """Users authenticated via a session should not be able to create videos."""
@@ -546,7 +534,7 @@ class VideoCreateAPITest(TestCase):
         """
         playlist = factories.PlaylistFactory()
 
-        jwt_token = PlaylistLtiTokenFactory(playlist=playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=playlist)
 
         self.assertEqual(models.Video.objects.count(), 0)
 

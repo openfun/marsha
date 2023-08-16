@@ -4,7 +4,9 @@ from django.test import TestCase, override_settings
 
 from marsha.bbb.factories import ClassroomFactory
 from marsha.core import factories as core_factories
-from marsha.core.simple_jwt.factories import PlaylistLtiTokenFactory
+from marsha.core.simple_jwt.factories import (
+    InstructorOrAdminLtiTokenFactory,
+)
 from marsha.core.tests.testing_utils import reload_urlconf
 
 
@@ -31,7 +33,7 @@ class ClassroomListAPITest(TestCase):
         """An instructor should be able to fetch a classroom lti select."""
         playlist = core_factories.PlaylistFactory()
 
-        jwt_token = PlaylistLtiTokenFactory(playlist=playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=playlist)
 
         response = self.client.get(
             "/api/classrooms/lti-select/",
@@ -50,7 +52,7 @@ class ClassroomListAPITest(TestCase):
         """An instructor should be able to fetch a classroom lti select."""
         playlist = core_factories.PlaylistFactory()
 
-        jwt_token = PlaylistLtiTokenFactory(playlist=playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=playlist)
 
         response = self.client.get(
             "/api/classrooms/lti-select/",
@@ -69,7 +71,7 @@ class ClassroomListAPITest(TestCase):
         """An instructor should be able to fetch a classroom lti select."""
         classroom = ClassroomFactory()
 
-        jwt_token = PlaylistLtiTokenFactory(playlist=classroom.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom.playlist)
 
         response = self.client.get(
             "/api/classrooms/lti-select/",

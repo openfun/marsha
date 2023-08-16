@@ -200,6 +200,25 @@ class HasPlaylistToken(permissions.BasePermission):
         Only if the playlist exists.
         """
         if request.resource:
-            playlist_id = request.resource.playlist_id
+            playlist_id = request.resource.id
+            return models.Playlist.objects.filter(id=playlist_id).exists()
+        return False
+
+
+class PortToPlaylistExists(permissions.BasePermission):
+    """
+    Allow a request to proceed. Permission class.
+
+    Only if the playlist is ported to exist.
+    """
+
+    def has_permission(self, request, view):
+        """
+        Allow the request.
+
+        Only if the playlist exists.
+        """
+        if request.resource:
+            playlist_id = request.resource.port_to_playlist_id
             return models.Playlist.objects.filter(id=playlist_id).exists()
         return False

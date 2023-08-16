@@ -8,7 +8,6 @@ from django.test import TestCase, override_settings
 
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
-    PlaylistLtiTokenFactory,
     StudentLtiTokenFactory,
 )
 
@@ -167,38 +166,11 @@ class DocumentAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 403)
 
-    def test_api_document_create_student_with_playlist_token(self):
-        """A student with a playlist token should not be able to create a document."""
-        jwt_token = PlaylistLtiTokenFactory(
-            roles=["student"],
-            permissions__can_update=True,
-        )
-
-        response = self.client.post(
-            "/api/documents/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
-        )
-        self.assertEqual(response.status_code, 403)
-
     def test_api_document_create_instructor(self):
-        """An instrustor should not be able to create a document."""
-        document = DocumentFactory()
-
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=document.playlist)
-
-        response = self.client.post(
-            "/api/documents/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
-        )
-        self.assertEqual(response.status_code, 403)
-
-    def test_api_document_create_instructor_with_playlist_token(self):
-        """
-        Create document with playlist token.
-
-        Used in the context of a lti select request (deep linking).
-        """
+        """An instructor should be able to create a document."""
         playlist = PlaylistFactory(title="Playlist")
 
-        jwt_token = PlaylistLtiTokenFactory(playlist=playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=playlist)
 
         self.assertEqual(Document.objects.count(), 0)
 

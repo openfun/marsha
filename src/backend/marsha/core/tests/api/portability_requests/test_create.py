@@ -14,7 +14,6 @@ from marsha.core.factories import (
 from marsha.core.models import PortabilityRequest
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
-    PlaylistLtiTokenFactory,
     StudentLtiTokenFactory,
     UserAccessTokenFactory,
 )
@@ -148,9 +147,9 @@ class PortabilityRequestCreateAPITest(TestCase):
         consumer_site = ConsumerSiteFactory()
         destination_playlist = PlaylistFactory()
         lti_user_id = uuid4()
-        jwt_token = PlaylistLtiTokenFactory(
+        jwt_token = InstructorOrAdminLtiTokenFactory(
             consumer_site=str(consumer_site.pk),
-            playlist_id=str(destination_playlist.pk),
+            port_to_playlist_id=str(destination_playlist.pk),
             resource=video.playlist,
             user__id=str(lti_user_id),
         )
@@ -224,9 +223,9 @@ class PortabilityRequestCreateAPITest(TestCase):
         consumer_site = ConsumerSiteFactory()
         destination_playlist = PlaylistFactory()
         lti_user_id = uuid4()
-        jwt_token = PlaylistLtiTokenFactory(
+        jwt_token = InstructorOrAdminLtiTokenFactory(
             consumer_site=str(consumer_site.pk),
-            playlist_id=str(destination_playlist.pk),
+            port_to_playlist_id=str(destination_playlist.pk),
             resource=video.playlist,
             user__id=str(lti_user_id),
         )
@@ -302,9 +301,9 @@ class PortabilityRequestCreateAPITest(TestCase):
         consumer_site = ConsumerSiteFactory()
         destination_playlist = PlaylistFactory()
         lti_user_id = uuid4()
-        jwt_token = PlaylistLtiTokenFactory(
+        jwt_token = InstructorOrAdminLtiTokenFactory(
             consumer_site=str(consumer_site.pk),
-            playlist_id=str(destination_playlist.pk),
+            port_to_playlist_id=str(destination_playlist.pk),
             resource=video.playlist,
             user__id=str(lti_user_id),
         )

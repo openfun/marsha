@@ -186,7 +186,7 @@ class MarkdownDocumentViewSet(
 
         markdown_documents = serializers.MarkdownDocumentSelectLTISerializer(
             MarkdownDocument.objects.filter(
-                playlist__id=request.resource.playlist_id,
+                playlist__id=request.resource.id,
             ),
             many=True,
             context={"request": self.request},

@@ -20,10 +20,10 @@ from ..permissions import (
     HasPlaylistAdministratorAccess,
     HasPlaylistConsumerSiteAdministratorAccess,
     HasPlaylistOrganizationAdministratorAccess,
-    HasPlaylistToken,
     IsPlaylistOwner,
     IsPortabilityRequestOwner,
     NotAllowed,
+    PortToPlaylistExists,
     UserIsAuthenticated,
 )
 from ..serializers import PortabilityRequestSerializer
@@ -64,7 +64,7 @@ class PortabilityResourceViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelView
         Only the `create` view is available from LTI.
         """
         if self.action in ["create"]:
-            permission_classes = [HasPlaylistToken]
+            permission_classes = [PortToPlaylistExists]
         elif self.action in ["destroy"]:
             permission_classes = [UserIsAuthenticated & IsPortabilityRequestOwner]
         elif self.action in ["retrieve"]:
