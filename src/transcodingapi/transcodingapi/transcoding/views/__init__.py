@@ -3,3 +3,4 @@
 from .runner import *  # noqa isort:skip
 from .runner_job import *  # noqa isort:skip
 from .runner_registration_token import *  # noqa isort:skip
+from .video import *  # noqa isort:skip

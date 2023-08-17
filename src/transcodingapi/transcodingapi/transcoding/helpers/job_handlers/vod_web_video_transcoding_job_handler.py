@@ -13,45 +13,45 @@ logger = logging.getLogger(__name__)
 
 
 class VODWebVideoTranscodingJobHandler(AbstractVODTranscodingJobHandler):
-    async def create(self, video, resolution, fps, depends_on_runner_job, priority):
-        jobUUID = uuid.uuid4()
+    def create(self, video, resolution, fps, depends_on_runner_job, priority):
+        job_uuid = uuid.uuid4()
         payload = {
             "input": {
                 "videoFileUrl": generate_runner_transcoding_video_input_file_url(
-                    jobUUID, video.uuid
+                    str(job_uuid), str(video.uuid)
                 )
             },
             "output": {"resolution": resolution, "fps": fps},
         }
 
-        privatePayload = {
+        private_payload = {
             "isNewVideo": True,
-            "videoUUID": video.uuid,
+            "videoUUID": str(video.uuid),
         }
 
-        job = await self.create_runner_job(
+        job = self.create_runner_job(
             type="vod-web-video-transcoding",
-            jobUUID=jobUUID,
+            job_uuid=job_uuid,
             payload=payload,
-            privatePayload=privatePayload,
+            private_payload=private_payload,
             depends_on_runner_job=depends_on_runner_job,
             priority=priority,
         )
 
-        await VideoJobInfo.increase_or_create(video.uuid, "pendingTranscode")
+        VideoJobInfo.increase_or_create(video.uuid, "pendingTranscode")
 
         return job
 
-    async def specificComplete(self, runner_job, result_payload):
+    def specific_complete(self, runner_job, result_payload):
         private_payload = runner_job.privatePayload
 
-        video = await load_transcoding_runner_video(runner_job)
+        video = load_transcoding_runner_video(runner_job)
         if not video:
             return
 
         video_file_path = private_payload.videoFile
 
-        await on_vod_web_video_or_audio_merge_transcoding_job(
+        on_vod_web_video_or_audio_merge_transcoding_job(
             video=video,
             video_file_path=video_file_path,
             private_payload=private_payload,

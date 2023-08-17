@@ -4,11 +4,8 @@ import logging
 import uuid
 from os.path import dirname, join
 from shutil import move
-from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from models import RunnerJob, RunnerJobType, Video, VideoJobInfo
-
+from ...models import RunnerJob, RunnerJobType, Video, VideoJobInfo
 from ..files import build_new_file
 from ..paths import get_hls_resolution_playlist_filename
 from ..transcoding.hls import rename_video_file_in_playlist
@@ -24,15 +21,13 @@ logger = logging.getLogger(__name__)
 
 
 class VODHLSTranscodingJobHandler(AbstractVODTranscodingJobHandler):
-    async def create(
-        self, video: Video, resolution, fps, depends_on_runner_job, priority
-    ):
+    def create(self, video: Video, resolution, fps, depends_on_runner_job, priority):
         job_uuid = uuid.uuid4()
 
         payload = {
             "input": {
                 "videoFileUrl": generate_runner_transcoding_video_input_file_url(
-                    job_uuid, video.uuid
+                    str(job_uuid), str(video.uuid)
                 ),
             },
             "output": {
@@ -44,10 +39,10 @@ class VODHLSTranscodingJobHandler(AbstractVODTranscodingJobHandler):
         private_payload = {
             "isNewVideo": False,
             "deleteWebVideoFiles": False,
-            "videoUUID": video.uuid,
+            "videoUUID": str(video.uuid),
         }
 
-        job = await self.create_runner_job(
+        job = self.create_runner_job(
             type=RunnerJobType.VOD_HLS_TRANSCODING,
             job_uuid=job_uuid,
             payload=payload,
@@ -56,21 +51,21 @@ class VODHLSTranscodingJobHandler(AbstractVODTranscodingJobHandler):
             depends_on_runner_job=depends_on_runner_job,
         )
 
-        await VideoJobInfo.increase_or_create(video.uuid, "pendingTranscode")
+        VideoJobInfo.increase_or_create(video.uuid, "pendingTranscode")
 
         return job
 
-    async def specific_complete(self, runner_job: RunnerJob, result_payload):
+    def specific_complete(self, runner_job: RunnerJob, result_payload):
         private_payload = runner_job.privatePayload
 
-        video = await load_transcoding_runner_video(runner_job)
+        video = load_transcoding_runner_video(runner_job)
         if not video:
             return
 
         video_file_path = result_payload.videoFile
         resolution_playlist_file_path = result_payload.resolutionPlaylistFile
 
-        video_file = await build_new_file(path=video_file_path, mode="hls")
+        video_file = build_new_file(path=video_file_path, mode="hls")
         new_video_file_path = join(dirname(video_file_path), video_file.filename)
         move(video_file_path, new_video_file_path)
 
@@ -82,20 +77,20 @@ class VODHLSTranscodingJobHandler(AbstractVODTranscodingJobHandler):
         )
         move(resolution_playlist_file_path, new_resolution_playlist_file_path)
 
-        await rename_video_file_in_playlist(
+        rename_video_file_in_playlist(
             new_resolution_playlist_file_path, video_file.filename
         )
 
-        await on_web_video_file_transcoding(
+        on_web_video_file_transcoding(
             video=video,
             video_file=video_file,
             m3u8_output_path=new_resolution_playlist_file_path,
             video_output_path=new_video_file_path,
         )
 
-        await on_transcoding_ended(
-            isNewVideo=private_payload.isNewVideo,
-            moveVideoToNextState=True,
+        on_transcoding_ended(
+            is_new_video=private_payload.isNewVideo,
+            move_video_to_next_state=True,
             video=video,
         )
 
@@ -106,7 +101,7 @@ class VODHLSTranscodingJobHandler(AbstractVODTranscodingJobHandler):
                 self.lTags(video.uuid),
             )
 
-            await video.remove_all_web_video_files()
+            video.remove_all_web_video_files()
 
         logger.info(
             "Runner VOD HLS job %s for %s ended.",

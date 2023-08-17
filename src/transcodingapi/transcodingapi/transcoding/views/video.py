@@ -3,40 +3,41 @@ from os.path import basename
 from shutil import move
 
 import shortuuid
-from helpers.files import build_new_file
-from helpers.job_handlers.utils import get_local_video_activity_pub_url
-from helpers.paths import get_fs_video_file_output_path
-from helpers.transcoding.create_jobs import (
-    create_optimize_or_merge_audio_jobs,
-)
-from helpers.video_state import build_next_video_state
-from models import Video
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from serializers import (
+
+from ..helpers.ffprobe import get_video_stream_duration
+from ..helpers.files import build_new_file
+from ..helpers.job_handlers.utils import get_local_video_activity_pub_url
+from ..helpers.paths import get_fs_video_file_output_path
+from ..helpers.transcoding.create_jobs import (
+    create_optimize_or_merge_audio_jobs,
+)
+from ..helpers.video_state import build_next_video_state
+from ..models import Video
+from ..serializers import (
     RunnerJobSerializer,
 )
-
 from .mixins import ListMixin
 
 logger = logging.getLogger(__name__)
 
 
-class RunnerJobViewSet(mixins.DestroyModelMixin, ListMixin, viewsets.GenericViewSet):
+class VideoViewSet(mixins.DestroyModelMixin, ListMixin, viewsets.GenericViewSet):
     queryset = Video.objects.all()
     serializer_class = RunnerJobSerializer
 
     @action(detail=False, methods=["post"], url_path="upload")
     def upload(self, request, pk=None):
         # get video file from request
-        video_file = request.FILES("videofile")
-        videoPhysicalFile = video_file[0]
+        uploaded_video_file = request.FILES["videoFile"]
+        video_path_file = uploaded_video_file.temporary_file_path()
 
         video = Video.objects.create(
             name=request.data.get("name"),
             state=build_next_video_state(),
-            duration=video_file.duration,
+            duration=get_video_stream_duration(video_path_file),
         )
 
         video.url = get_local_video_activity_pub_url(
@@ -45,18 +46,15 @@ class RunnerJobViewSet(mixins.DestroyModelMixin, ListMixin, viewsets.GenericView
 
         video.save()
 
-        videoFile = build_new_file(
-            video=video, path=videoPhysicalFile.path, mode="web-video"
-        )
+        video_file = build_new_file(video=video, path=video_path_file, mode="web-video")
 
         # Move physical file
-        destination = get_fs_video_file_output_path(videoFile)
-
-        move(videoPhysicalFile.path, destination)
+        destination = get_fs_video_file_output_path(video_file)
+        move(video_path_file, destination)
 
         # This is important in case if there is another attempt in the retry process
-        videoPhysicalFile.filename = basename(destination)
-        videoPhysicalFile.path = destination
+        uploaded_video_file.filename = basename(destination)
+        uploaded_video_file.path = destination
 
         # TODO: handle thumbnails and preview
         # thumbnailModel, previewModel = await buildVideoThumbnailsFromReq(
@@ -80,7 +78,7 @@ class RunnerJobViewSet(mixins.DestroyModelMixin, ListMixin, viewsets.GenericView
         )
 
         try:
-            create_optimize_or_merge_audio_jobs()
+            create_optimize_or_merge_audio_jobs(video=video, video_file=video_file)
         except Exception as e:
             logger.error(
                 "Cannot build new video jobs of %s.",
@@ -93,7 +91,7 @@ class RunnerJobViewSet(mixins.DestroyModelMixin, ListMixin, viewsets.GenericView
             {
                 "video": {
                     "id": video.id,
-                    "shortUUID": shortuuid.uuid(video.uuid),
+                    "shortUUID": shortuuid.uuid(str(video.uuid)),
                     "uuid": video.uuid,
                 }
             }

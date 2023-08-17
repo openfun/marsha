@@ -2,12 +2,10 @@ from __future__ import annotations
 
 import os
 from shutil import move
-from typing import TYPE_CHECKING
 
 import ffmpeg
 
-if TYPE_CHECKING:
-    from ...models import Video, VideoFile
+from ...models import Video, VideoFile
 from ..ffprobe import get_video_stream_fps
 from ..paths import build_file_metadata, get_fs_video_file_output_path
 
@@ -33,13 +31,13 @@ async def on_web_video_file_transcoding(
 
     # await create_torrent_and_set_info_hash(video, video_file)
 
-    old_file = await VideoFile.load_web_video_file(
+    old_file = await VideoFile.objects.first(
         video_id=video.id, fps=video_file.fps, resolution=video_file.resolution
-    )  # TODO: implement models
+    )
     if old_file:
-        await old_file.remove_web_video_file()  # TODO: implement models
+        await old_file.remove_web_video_file()
 
-    await VideoFile.custom_upsert(video_file, "video", None)  # TODO: implement models
+    video_file.save()
 
     # if was_audio_file:
     #     await JobQueue.Instance.create_job(

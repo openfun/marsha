@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import logging
 import os
-from typing import TYPE_CHECKING
 
 import ffmpeg
 
+from ..models import Video, VideoFile, VideoResolution
 from .ffprobe import (
     get_video_stream_dimensions_info,
     get_video_stream_fps,
@@ -16,9 +16,6 @@ from .paths import (
     generate_hls_video_filename,
     generate_web_video_filename,
 )
-
-if TYPE_CHECKING:
-    from ..models import Video, VideoFile, VideoResolution
 
 logger = logging.getLogger(__name__)
 
@@ -31,23 +28,26 @@ def build_new_file(video: Video, path, mode):
     probe = ffmpeg.probe(path)
     size = os.path.getsize(path)
 
-    videoFile = VideoFile.objects.create(
+    if is_audio_file(probe):
+        fps = -1
+        resolution = VideoResolution.H_NOVIDEO
+    else:
+        fps = get_video_stream_fps(probe)
+        resolution = get_video_stream_dimensions_info(probe)["resolution"]
+
+    video_file = VideoFile.objects.create(
         extname=get_lower_case_extension(path),
         size=size,
-        metadata={build_file_metadata(probe=probe)},
+        metadata=build_file_metadata(probe=probe),
+        resolution=resolution,
+        fps=fps,
         video=video,
     )
 
-    if is_audio_file(probe):
-        videoFile.resolution = VideoResolution.H_NOVIDEO
-    else:
-        videoFile.fps = get_video_stream_fps(probe)
-        videoFile.resolution = get_video_stream_dimensions_info(probe).resolution
-
-    videoFile.filename = (
-        generate_web_video_filename(videoFile.resolution, videoFile.extname)
+    video_file.filename = (
+        generate_web_video_filename(video_file.resolution, video_file.extname)
         if mode == "web-video"
-        else generate_hls_video_filename(videoFile.resolution)
+        else generate_hls_video_filename(video_file.resolution)
     )
 
-    return videoFile
+    return video_file

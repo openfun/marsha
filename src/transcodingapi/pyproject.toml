@@ -7,3 +7,6 @@ select = [
   "UP",  # pyupgrade,
   "I",   # isort
 ]
+
+[build-system]
+requires = ["django", "djangorestframework", "ruff", "ffmpeg-python", "python-socketio"]

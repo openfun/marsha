@@ -1,11 +1,8 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from ..models import Video, VideoState
-
+from ..models import Video, VideoState
 
 logger = logging.getLogger(__name__)
 OBJECT_STORAGE_ENABLED = True  # TODO: Settings
@@ -16,7 +13,7 @@ def video_is_published(video: Video):
     return True
 
 
-def build_next_video_state(current_state: VideoState | None) -> VideoState:
+def build_next_video_state(current_state: VideoState = None) -> VideoState:
     if current_state == VideoState.PUBLISHED:
         raise ValueError("Video is already in its final state")
 

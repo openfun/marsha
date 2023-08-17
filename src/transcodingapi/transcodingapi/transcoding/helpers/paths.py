@@ -1,14 +1,55 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from ..models import Video, VideoFile
+
 import re
-from os.path import join
+from os.path import basename, dirname, isabs, join, realpath
 from uuid import uuid4
 
-CONFIG_STORAGE_TORRENTS_DIR = ""  # TODO: use settings
+root_path = "/home/henri/Git/marsha/src/transcodingapi/"
+
+
+def root() -> str:
+    global root_path
+
+    if root_path:
+        return root_path
+
+    root_path = dirname(realpath(__file__))
+
+    if basename(root_path) == "tools":
+        root_path = join(root_path, "..")
+    if basename(root_path) == "scripts":
+        root_path = join(root_path, "..")
+    if basename(root_path) == "common":
+        root_path = join(root_path, "..")
+    if basename(root_path) == "core-utils":
+        root_path = join(root_path, "..")
+    if basename(root_path) == "shared":
+        root_path = join(root_path, "..")
+    if basename(root_path) == "server":
+        root_path = join(root_path, "..")
+    if basename(root_path) == "dist":
+        root_path = join(root_path, "..")
+
+    return root_path
+
+
+def build_path(path: str) -> str:
+    if isabs(path):
+        return path
+
+    return join(root(), path)
+
+
+CONFIG_STORAGE_TORRENTS_DIR = build_path("storage/torrents/")  # TODO: use settings
 VIDEO_LIVE_REPLAY_DIRECTORY = ""
-DIRECTORIES_HLS_STREAMING_PLAYLIST_PUBLIC = ""
-DIRECTORIES_HLS_REDUNDANCY = ""
-DIRECTORIES_VIDEO_PUBLIC = ""
+DIRECTORIES_HLS_STREAMING_PLAYLIST_PUBLIC = build_path("storage/streaming-playlists")
+DIRECTORIES_HLS_REDUNDANCY = build_path("storage/redundancy/")
+DIRECTORIES_VIDEO_PUBLIC = build_path("storage/web-videos/")
 
 
 def generate_web_video_filename(resolution: int, extname: str):
@@ -75,9 +116,9 @@ def get_fs_video_file_output_path(video_file: VideoFile) -> str:
 
 def build_file_metadata(probe):
     return {
-        "chapter": probe["chapter"],
-        "format": probe["format"],
-        "streams": probe["streams"],
+        "chapter": probe.get("chapter", ""),
+        "format": probe.get("format", ""),
+        "streams": probe.get("streams", ""),
     }
 
 

@@ -3,11 +3,8 @@ from __future__ import annotations
 import logging
 from os.path import dirname, join
 from shutil import move
-from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from ...models import RunnerJob, Video, VideoJobInfo
-
+from ...models import RunnerJob, Video, VideoJobInfo
 from ..files import build_new_file
 from ..transcoding.web_transcoding import on_web_video_file_transcoding
 from ..video_state import move_to_next_state
@@ -15,7 +12,7 @@ from ..video_state import move_to_next_state
 logger = logging.getLogger(__name__)
 
 
-WEBSERVER_URL = "http://localhost:8080"  # TODO: use settings
+WEBSERVER_URL = "http://127.0.0.1:8000"  # TODO: use settings
 
 
 # TODO: Implement theses apis ?
@@ -27,7 +24,7 @@ def generate_runner_transcoding_video_input_file_url(job_uuid, video_uuid):
 
 
 def get_local_video_activity_pub_url(video: Video) -> str:
-    return WEBSERVER_URL + "/videos/watch/" + video.uuid
+    return WEBSERVER_URL + "/videos/watch/" + str(video.uuid)
 
 
 def generate_runner_transcoding_video_preview_file_url(job_uuid, video_uuid):

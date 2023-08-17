@@ -81,9 +81,9 @@ class VODAudioMergeTranscodingJobHandler(AbstractVODTranscodingJobHandler):
         await video.save()
 
         # We can remove the old audio file
-        old_audio_file = video.VideoFiles[0]
-        await video.remove_web_video_file(old_audio_file)  # TODO: implement model
-        await old_audio_file.destroy()
+        old_audio_file = video.files[0]
+        await old_audio_file.remove_web_video_file()
+        await old_audio_file.delete()
 
         await on_vod_web_video_or_audio_merge_transcoding_job(
             video=video,

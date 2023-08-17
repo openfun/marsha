@@ -1,9 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from ..models import VideoResolution
+from ..models import VideoResolution
 
 CONFIG_TRANSCODING_RESOLUTIONS = {
     "360p": True,
@@ -77,7 +74,7 @@ def compute_resolutions_to_transcode(
     ]
 
     for resolution in available_resolutions:
-        if not config_resolutions[f"{resolution.value}p"]:
+        if not config_resolutions.get(f"{resolution.value}p", None):
             continue
         if input_resolution < resolution.value:
             continue

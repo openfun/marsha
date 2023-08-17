@@ -25,7 +25,7 @@ class RunnerSocket(Namespace):
 
     def on_connect(self, sid, environ, auth):
         print(auth)
-        runner_token = auth["runnerToken"]
+        runner_token = auth["accessToken"]
         if runner_token:
             try:
                 Runner.objects.get(runnerToken=runner_token)
@@ -44,12 +44,12 @@ class RunnerSocket(Namespace):
     @debounce(0.5)
     def send_available_jobs_ping_to_runners(self):
         logger.debug(
-            f"Sending available-jobs notification to {len(self.runner_sockets)} runner sockets"
+            f"Sending available-jobs notification to {len(self.runner_socket_sids)} runner sockets"
         )
 
         for runner_socket_sid in self.runner_socket_sids:
             sio.emit("available-jobs", room=runner_socket_sid)
 
 
-runner_socket = RunnerSocket("/runner")
+runner_socket = RunnerSocket("/runners")
 sio.register_namespace(runner_socket)

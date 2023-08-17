@@ -4,9 +4,9 @@
 import logging
 from datetime import timedelta
 from typing import Optional
+from uuid import uuid4
 
 from django.db import models
-from django.db.models import F
 from django.utils import timezone
 
 from transcodingapi.transcoding.helpers.paths import get_fs_video_file_output_path
@@ -68,7 +68,7 @@ class RunnerJobQuerySet(models.QuerySet):
 class RunnerJob(models.Model):
     objects = RunnerJobQuerySet.as_manager()
 
-    uuid = models.UUIDField()
+    uuid = models.UUIDField(unique=True, default=uuid4)
     type = models.CharField(max_length=255, choices=RunnerJobType.choices)
     payload = models.JSONField()
     privatePayload = models.JSONField()
@@ -103,6 +103,11 @@ class RunnerJob(models.Model):
         self.finishedAt = None
         self.startedAt = None
 
+    def update_dependant_jobs(self):
+        children = self.list_children()
+        num_updated = children.update(state=RunnerJobState.PENDING)
+        return num_updated
+
 
 class VideoState(models.IntegerChoices):
     PUBLISHED = 1, "Published"
@@ -117,15 +122,15 @@ class VideoState(models.IntegerChoices):
 
 
 class Video(models.Model):
-    uuid = models.UUIDField()
+    uuid = models.UUIDField(unique=True, default=uuid4)
     state = models.IntegerField(choices=VideoState.choices)
     duration = models.IntegerField(null=True, blank=True)
     name = models.CharField(max_length=255)
 
-    async def remove_all_web_video_files(self):
+    def remove_all_web_video_files(self):
         for file in self.files.all():
-            await file.remove_web_video_file()
-            await file.delete()
+            file.remove_web_video_file()
+            file.delete()
 
 
 class VideoJobInfoColumnType(models.TextChoices):
@@ -142,42 +147,41 @@ class VideoJobInfo(models.Model):
         "Video", on_delete=models.CASCADE, related_name="jobInfo"
     )
 
-    @classmethod
-    def load(cls, video_id: int) -> Optional["VideoJobInfo"]:
+    @staticmethod
+    def load(video_id: int) -> Optional["VideoJobInfo"]:
         try:
-            return cls.objects.get(video_id=video_id)
-        except cls.DoesNotExist:
+            return VideoJobInfo.objects.get(video_id=video_id)
+        except VideoJobInfo.DoesNotExist:
             return None
 
-    @classmethod
-    def increase_or_create(
-        cls, video_uuid: str, column: VideoJobInfoColumnType, amount: int = 1
-    ) -> int:
+    @staticmethod
+    def increase_or_create(video_uuid: str, column: str, amount: int = 1) -> int:
         video = Video.objects.get(uuid=video_uuid)
-        return cls.objects.update_or_create(
-            video=video,
-            defaults={
-                column: F(column) + amount,
-            },
-        )[0].__dict__[column]
+        job_info, created = VideoJobInfo.objects.get_or_create(video=video)
+        setattr(job_info, column, getattr(job_info, column) + amount)
+        job_info.save()
+        return getattr(job_info, column)
 
-    @classmethod
-    def decrease(cls, video_uuid: str, column: VideoJobInfoColumnType) -> int | None:
+    @staticmethod
+    def decrease(video_uuid: str, column: str) -> int | None:
         try:
             video = Video.objects.get(uuid=video_uuid)
-            obj = cls.objects.select_for_update().get(video=video)
-            setattr(obj, column, F(column) - 1)
-            obj.save()
-            return obj.__dict__[column]
-        except cls.DoesNotExist:
+            job_info = VideoJobInfo.objects.get(video=video)
+            setattr(job_info, column, getattr(job_info, column) - 1)
+            job_info.save()
+            return getattr(job_info, column)
+        except (Video.DoesNotExist, VideoJobInfo.DoesNotExist):
             return None
 
-    @classmethod
-    def abort_all_tasks(cls, video_uuid: str, column: VideoJobInfoColumnType) -> None:
-        video = Video.objects.get(uuid=video_uuid)
-        cls.objects.filter(video=video).update(
-            **{column: 0},
-        )
+    @staticmethod
+    def abort_all_tasks(video_uuid: str, column: str) -> None:
+        try:
+            video = Video.objects.get(uuid=video_uuid)
+            job_info = VideoJobInfo.objects.get(video=video)
+            setattr(job_info, column, 0)
+            job_info.save()
+        except (Video.DoesNotExist, VideoJobInfo.DoesNotExist):
+            pass
 
 
 class VideoStorage(models.TextChoices):
@@ -224,7 +228,7 @@ class VideoFile(models.Model):
             models.Index(fields=["video"]),
         ]
 
-    async def remove_web_video_file(self):
+    def remove_web_video_file(self):
         file_path = get_fs_video_file_output_path(self)
         logger.warn("Should remove web video file %s using s3 for example", file_path)
 

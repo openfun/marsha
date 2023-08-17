@@ -11,18 +11,18 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-async def get_video_stream_duration(path: str, existingProbe):
-    metadata = existingProbe or await ffmpeg.probe(path)
+def get_video_stream_duration(path: str, existingProbe=None):
+    metadata = existingProbe or ffmpeg.probe(path)
 
-    return round(metadata.format.duration)
+    return round(float(metadata["format"]["duration"]))
 
 
-async def get_video_stream(probe):
+def get_video_stream(probe):
     return next((s for s in probe["streams"] if s["codec_type"] == "video"), None)
 
 
-async def get_video_stream_dimensions_info(probe):
-    videoStream = await get_video_stream(probe)
+def get_video_stream_dimensions_info(probe):
+    videoStream = get_video_stream(probe)
     if not videoStream:
         return {
             "width": 0,
@@ -42,7 +42,7 @@ async def get_video_stream_dimensions_info(probe):
     }
 
 
-async def get_video_stream_fps(probe):
+def get_video_stream_fps(probe):
     videoStream = get_video_stream(probe)
     if not videoStream:
         return 0
@@ -108,8 +108,8 @@ IMAGE_CODECS = set(
 )
 
 
-async def is_audio_file(probe):
-    video_stream = await get_video_stream(probe)
+def is_audio_file(probe):
+    video_stream = get_video_stream(probe)
     if not video_stream:
         return True
 
@@ -119,13 +119,13 @@ async def is_audio_file(probe):
     return False
 
 
-async def has_audio_stream(probe) -> bool:
-    audio_stream = await get_audio_stream(probe)
+def has_audio_stream(probe) -> bool:
+    audio_stream = get_audio_stream(probe)
 
     return bool(audio_stream.get("audio_stream", None))
 
 
-async def get_audio_stream(probe):
+def get_audio_stream(probe):
     if isinstance(probe.get("streams"), list):
         audio_stream = next(
             (

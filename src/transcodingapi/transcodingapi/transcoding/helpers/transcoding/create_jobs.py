@@ -1,11 +1,10 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from models import Video, VideoFile, VideoResolution
+import ffmpeg
 
+from ...models import Video, VideoFile, VideoResolution
 from ..ffprobe import (
     get_video_stream_dimensions_info,
     get_video_stream_fps,
@@ -21,6 +20,7 @@ from ..job_handlers.vod_hls_transcoding_job_handler import (
 from ..job_handlers.vod_web_video_transcoding_job_handler import (
     VODWebVideoTranscodingJobHandler,
 )
+from ..paths import get_fs_video_file_output_path
 from ..resolutions import (
     compute_resolutions_to_transcode,
 )
@@ -44,10 +44,7 @@ VIDEO_TRANSCODING_FPS = {
 DEFAULT_AUDIO_RESOLUTION = VideoResolution.H_480P
 
 
-def compute_output_fps(options):
-    resolution = options["resolution"]
-    fps = options["inputFPS"]
-
+def compute_output_fps(resolution, fps):
     if (
         resolution is not None
         and resolution < VIDEO_TRANSCODING_FPS["KEEP_ORIGIN_FPS_RESOLUTION_MIN"]
@@ -71,17 +68,15 @@ def get_closest_framerate_standard(fps, type):
     return sorted(VIDEO_TRANSCODING_FPS[type], key=lambda x: fps % x)[0]
 
 
-async def build_lower_resolution_job_payloads(
-    video: Video, inputVideoResolution, inputVideoFPS, hasAudio, mainRunnerJob
+def build_lower_resolution_job_payloads(
+    video: Video, input_video_resolution, input_video_fps, has_audio, main_runner_job
 ):
-    resolutions_enabled = (
-        compute_resolutions_to_transcode(
-            input=inputVideoResolution,
-            type="vod",
-            includeInput=False,
-            strictLower=True,
-            hasAudio=hasAudio,
-        ),
+    resolutions_enabled = compute_resolutions_to_transcode(
+        input_resolution=input_video_resolution,
+        type="vod",
+        include_input=False,
+        strict_lower=True,
+        has_audio=has_audio,
     )
     logger.debug(
         "Lower resolutions build for %s.",
@@ -89,73 +84,72 @@ async def build_lower_resolution_job_payloads(
     )
 
     for resolution in resolutions_enabled:
-        fps = compute_output_fps(inputFPS=inputVideoFPS, resolution=resolution)
+        print(resolution)
+        fps = compute_output_fps(fps=input_video_fps, resolution=resolution)
 
-        await VODWebVideoTranscodingJobHandler().create(
+        VODWebVideoTranscodingJobHandler().create(
             video=video,
             resolution=resolution,
             fps=fps,
-            dependsOnRunnerJob=mainRunnerJob,
+            depends_on_runner_job=main_runner_job,
             priority=0,
         )
 
-        await VODHLSTranscodingJobHandler().create(
+        VODHLSTranscodingJobHandler().create(
             video=video,
             resolution=resolution,
             fps=fps,
-            deleteWebVideoFiles=False,
-            dependsOnRunnerJob=mainRunnerJob,
+            depends_on_runner_job=main_runner_job,
             priority=0,
         )
 
 
-async def create_optimize_or_merge_audio_jobs(
-    video: Video, videoFile: VideoFile, probe
-):
-    dimensionsInfo = await get_video_stream_dimensions_info(probe)
+def create_optimize_or_merge_audio_jobs(video: Video, video_file: VideoFile):
+    video_file_path = get_fs_video_file_output_path(video_file)
+    probe = ffmpeg.probe(video_file_path)
+    dimensionsInfo = get_video_stream_dimensions_info(probe)
     resolution = dimensionsInfo["resolution"]
-    hasAudio = await has_audio_stream(probe)
+    hasAudio = has_audio_stream(probe)
     inputFPS = (
         VIDEO_TRANSCODING_FPS.AUDIO_MERGE
-        if videoFile.is_audio()
-        else await get_video_stream_fps(probe)
+        if video_file.is_audio()
+        else get_video_stream_fps(probe)
     )
 
-    maxResolution = (
-        DEFAULT_AUDIO_RESOLUTION if await is_audio_file(probe) else resolution
-    )
+    maxResolution = DEFAULT_AUDIO_RESOLUTION if is_audio_file(probe) else resolution
 
     fps = compute_output_fps(inputFPS, maxResolution)
     priority = 0
 
-    if videoFile.is_audio():
-        mainRunnerJob = await VODAudioMergeTranscodingJobHandler().create(
+    if video_file.is_audio():
+        mainRunnerJob = VODAudioMergeTranscodingJobHandler().create(
             video=video,
             resolution=maxResolution,
+            depends_on_runner_job=None,
             fps=fps,
             priority=priority,
         )
     else:
-        mainRunnerJob = await VODWebVideoTranscodingJobHandler().create(
+        mainRunnerJob = VODWebVideoTranscodingJobHandler().create(
             video=video,
             resolution=maxResolution,
+            depends_on_runner_job=None,
             fps=fps,
             priority=priority,
         )
 
-    await VODHLSTranscodingJobHandler().create(
+    VODHLSTranscodingJobHandler().create(
         video=video,
-        deleteWebVideoFiles=False,
         resolution=maxResolution,
         fps=fps,
         depends_on_runner_job=mainRunnerJob,
         priority=priority,
     )
 
-    await build_lower_resolution_job_payloads(
+    build_lower_resolution_job_payloads(
         video=video,
-        inputVideoResolution=maxResolution,
-        inputVideoFPS=inputFPS,
-        hasAudio=hasAudio,
-        mainRunnerJob=mainRunnerJob,
+        input_video_resolution=maxResolution,
+        input_video_fps=inputFPS,
+        has_audio=hasAudio,
+        main_runner_job=mainRunnerJob,
     )
