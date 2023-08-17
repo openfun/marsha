@@ -4,7 +4,7 @@ import json
 from django.test import TestCase
 
 from marsha.core.factories import UserFactory
-from marsha.core.simple_jwt.factories import LTIResourceAccessTokenFactory
+from marsha.core.simple_jwt.factories import LTIPlaylistAccessTokenFactory
 from marsha.core.simple_jwt.tokens import UserAccessToken
 
 
@@ -54,7 +54,7 @@ class PasswordChangeAPIViewTest(TestCase):
                     "new_password2": "new_password",
                 }
             ),
-            HTTP_AUTHORIZATION=f"Bearer {str(LTIResourceAccessTokenFactory())}",
+            HTTP_AUTHORIZATION=f"Bearer {str(LTIPlaylistAccessTokenFactory())}",
         )
 
         self.assertEqual(response.status_code, 401)  # Unauthorized

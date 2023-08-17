@@ -5,7 +5,7 @@ from django.test import TestCase, override_settings
 
 from marsha.bbb.factories import ClassroomFactory
 from marsha.core.models import INSTRUCTOR, NONE
-from marsha.core.simple_jwt.tokens import ResourceAccessToken
+from marsha.core.simple_jwt.tokens import PlaylistAccessToken
 from marsha.core.tests.testing_utils import reload_urlconf
 
 
@@ -52,7 +52,7 @@ class ClassroomInviteTokenAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         public_token = response.json().get("access_token")
 
-        decoded_public_token = ResourceAccessToken(public_token)
+        decoded_public_token = PlaylistAccessToken(public_token)
         self.assertEqual(decoded_public_token.payload["resource_id"], str(classroom.id))
         self.assertEqual(decoded_public_token.payload["roles"], [NONE])
         self.assertEqual(
@@ -71,7 +71,7 @@ class ClassroomInviteTokenAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         instructor_token = response.json().get("access_token")
 
-        decoded_instructor_token = ResourceAccessToken(instructor_token)
+        decoded_instructor_token = PlaylistAccessToken(instructor_token)
         self.assertEqual(
             decoded_instructor_token.payload["resource_id"], str(classroom.id)
         )

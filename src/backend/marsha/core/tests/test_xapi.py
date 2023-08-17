@@ -3,7 +3,7 @@ from unittest import mock
 
 from django.test import TestCase, override_settings
 
-from marsha.core.simple_jwt.factories import LTIResourceAccessTokenFactory
+from marsha.core.simple_jwt.factories import LTIPlaylistAccessTokenFactory
 
 from ..defaults import ENDED, RAW, READY, RUNNING
 from ..factories import DocumentFactory, VideoFactory
@@ -27,7 +27,7 @@ class XAPIVideoStatmentTest(TestCase):
             title="test video xapi",
         )
 
-        jwt_token = LTIResourceAccessTokenFactory(
+        jwt_token = LTIPlaylistAccessTokenFactory(
             session_id="326c0689-48c1-493e-8d2d-9fb0c289de7f",
             context_id="course-v1:ufr+mathematics+0001",
         )
@@ -115,7 +115,7 @@ class XAPIVideoStatmentTest(TestCase):
             title="test video xapi",
         )
 
-        jwt_token = LTIResourceAccessTokenFactory(
+        jwt_token = LTIPlaylistAccessTokenFactory(
             session_id="326c0689-48c1-493e-8d2d-9fb0c289de7f",
             context_id="course-v1:ufr+mathematics+0001",
             user__id="b2584aa405540758db2a6278521b6478",
@@ -204,7 +204,7 @@ class XAPIVideoStatmentTest(TestCase):
             live_type=RAW,
         )
 
-        jwt_token = LTIResourceAccessTokenFactory(
+        jwt_token = LTIPlaylistAccessTokenFactory(
             session_id="326c0689-48c1-493e-8d2d-9fb0c289de7f",
             context_id="course-v1:ufr+mathematics+0001",
             user__id="b2584aa405540758db2a6278521b6478",
@@ -294,7 +294,7 @@ class XAPIVideoStatmentTest(TestCase):
             upload_state=READY,
         )
 
-        jwt_token = LTIResourceAccessTokenFactory(
+        jwt_token = LTIPlaylistAccessTokenFactory(
             session_id="326c0689-48c1-493e-8d2d-9fb0c289de7f",
             context_id="course-v1:ufr+mathematics+0001",
             user__id="b2584aa405540758db2a6278521b6478",
@@ -381,7 +381,7 @@ class XAPIVideoStatmentTest(TestCase):
             title="test video xapi",
         )
 
-        jwt_token = LTIResourceAccessTokenFactory(
+        jwt_token = LTIPlaylistAccessTokenFactory(
             session_id="326c0689-48c1-493e-8d2d-9fb0c289de7f",
         )
         del jwt_token.payload["user"]
@@ -464,7 +464,7 @@ class XAPIDocumentStatementTest(TestCase):
             title="test document xapi",
         )
 
-        jwt_token = LTIResourceAccessTokenFactory(
+        jwt_token = LTIPlaylistAccessTokenFactory(
             session_id="326c0689-48c1-493e-8d2d-9fb0c289de7f",
             context_id="course-v1:ufr+mathematics+0001",
             user__id="b2584aa405540758db2a6278521b6478",
@@ -541,7 +541,7 @@ class XAPIDocumentStatementTest(TestCase):
             title="test document xapi",
         )
 
-        jwt_token = LTIResourceAccessTokenFactory(
+        jwt_token = LTIPlaylistAccessTokenFactory(
             session_id="326c0689-48c1-493e-8d2d-9fb0c289de7f",
             user__id="b2584aa405540758db2a6278521b6478",
         )
@@ -607,7 +607,7 @@ class XAPIDocumentStatementTest(TestCase):
             title="test document xapi",
         )
 
-        jwt_token = LTIResourceAccessTokenFactory(
+        jwt_token = LTIPlaylistAccessTokenFactory(
             session_id="326c0689-48c1-493e-8d2d-9fb0c289de7f",
             context_id="course-v1:ufr+mathematics+0001",
         )

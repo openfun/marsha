@@ -12,7 +12,7 @@ from .. import defaults, serializers
 from ..defaults import SENTRY, VOD_CONVERT
 from ..models import SiteConfig, Video
 from ..signals import signal_object_uploaded
-from ..simple_jwt.tokens import ResourceAccessToken
+from ..simple_jwt.tokens import PlaylistAccessToken
 from ..utils.api_utils import get_uploadable_models_s3_mapping, validate_signature
 
 
@@ -278,7 +278,7 @@ class APIViewMixin:
         we keep it as a TokenResource...
         """
         request.resource = None
-        if isinstance(request.auth, ResourceAccessToken):  # otherwise, nothing to do
+        if isinstance(request.auth, PlaylistAccessToken):  # otherwise, nothing to do
             request.resource = request.user
 
         super().check_permissions(request)

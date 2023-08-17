@@ -7,7 +7,7 @@ from django.utils import timezone
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.testing import WebsocketCommunicator
 
-from marsha.core.simple_jwt.factories import ResourceAccessTokenFactory
+from marsha.core.simple_jwt.factories import PlaylistAccessTokenFactory
 from marsha.websocket.middlewares import JWTMiddleware
 
 
@@ -28,7 +28,7 @@ class JWTMiddlewareTest(TestCase):
 
     async def test_invalid_token(self):
         """With an invalid token the connection is refused."""
-        token = ResourceAccessTokenFactory()
+        token = PlaylistAccessTokenFactory()
         token.set_exp(
             from_time=timezone.now() - timedelta(minutes=30),
             lifetime=timedelta(minutes=1),
@@ -48,7 +48,7 @@ class JWTMiddlewareTest(TestCase):
 
     async def test_valid_token(self):
         """With a valid token the connection is accepted."""
-        token = ResourceAccessTokenFactory()
+        token = PlaylistAccessTokenFactory()
         token.set_exp(lifetime=timedelta(minutes=20))
 
         application = JWTMiddleware(AsyncWebsocketConsumer())

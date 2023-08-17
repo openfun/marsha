@@ -5,7 +5,7 @@ from django.conf import settings
 from django.utils import timezone
 
 from marsha.core.models import INSTRUCTOR, NONE
-from marsha.core.simple_jwt.tokens import ResourceAccessToken
+from marsha.core.simple_jwt.tokens import PlaylistAccessToken
 
 
 def create_classroom_stable_invite_jwt(classroom, role=NONE, permissions=None):
@@ -24,11 +24,11 @@ def create_classroom_stable_invite_jwt(classroom, role=NONE, permissions=None):
 
     Returns
     -------
-    ResourceAccessToken
+    PlaylistAccessToken
         The JWT.
 
     """
-    resource_jwt = ResourceAccessToken.for_resource_id(
+    resource_jwt = PlaylistAccessToken.for_resource_id(
         resource_id=str(classroom.id),
         session_id=f"{classroom.id}-invite",
         roles=[role],

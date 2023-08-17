@@ -208,7 +208,7 @@ class Base(Configuration):
 
     REST_FRAMEWORK = {
         "DEFAULT_AUTHENTICATION_CLASSES": (
-            "marsha.core.simple_jwt.authentication.JWTStatelessUserOrResourceAuthentication",
+            "marsha.core.simple_jwt.authentication.JWTStatelessUserOrPlaylistAuthentication",
         ),
         "EXCEPTION_HANDLER": "marsha.core.views.exception_handler",
         "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
@@ -760,11 +760,11 @@ class Base(Configuration):
             "AUTH_TOKEN_CLASSES": (
                 "rest_framework_simplejwt.tokens.AccessToken",
                 "marsha.core.simple_jwt.tokens.ChallengeToken",
-                # For now ResourceAccessToken & UserAccessToken are also AccessToken
+                # For now PlaylistAccessToken & UserAccessToken are also AccessToken
                 # but this will allow migration when types will differ.
                 # Note: AccessToken must remain enabled during the migration and removed
                 # only after (version N changes token types, N+1 removes AccessToken).
-                "marsha.core.simple_jwt.tokens.ResourceAccessToken",
+                "marsha.core.simple_jwt.tokens.PlaylistAccessToken",
                 "marsha.core.simple_jwt.tokens.UserAccessToken",
             ),
             # Settings for authentication API

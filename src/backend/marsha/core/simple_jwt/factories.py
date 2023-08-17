@@ -17,11 +17,11 @@ from marsha.core.models import (
     STUDENT,
     Playlist,
 )
-from marsha.core.simple_jwt.permissions import ResourceAccessPermissions
+from marsha.core.simple_jwt.permissions import PlaylistAccessPermissions
 from marsha.core.simple_jwt.tokens import (
     ChallengeToken,
     LTIUserToken,
-    ResourceAccessToken,
+    PlaylistAccessToken,
     UserAccessToken,
 )
 
@@ -112,14 +112,14 @@ class ChallengeTokenFactory(BaseTokenFactory):
         model = ChallengeToken.for_user
 
 
-class ResourcePermissionsFactory(factory.DictFactory):
-    """Factory for resource access permissions."""
+class PlaylistPermissionsFactory(factory.DictFactory):
+    """Factory for playlist access permissions."""
 
     can_access_dashboard = False
     can_update = False
 
     class Meta:  # pylint:disable=missing-class-docstring
-        model = ResourceAccessPermissions
+        model = PlaylistAccessPermissions
 
     @classmethod
     def _build(cls, model_class, *args, **kwargs):
@@ -128,9 +128,9 @@ class ResourcePermissionsFactory(factory.DictFactory):
         return permissions.as_dict()
 
 
-class BaseResourceTokenFactory(BaseTokenFactory):
+class BasePlaylistTokenFactory(BaseTokenFactory):
     """
-    Base class for all resource token factories.
+    Base class for all playlist token factories.
     This forces to provide a playlist to forge the JWT,
     or nothing to use a random UUID.
     """
@@ -157,18 +157,18 @@ class BaseResourceTokenFactory(BaseTokenFactory):
         resource = None
 
 
-class ResourceAccessTokenFactory(BaseResourceTokenFactory):
-    """Simple resource token. Looks like a public resource token."""
+class PlaylistAccessTokenFactory(BasePlaylistTokenFactory):
+    """Simple playlist token. Looks like a public playlist token."""
 
     session_id = factory.Faker("uuid4")
 
     class Meta:  # pylint:disable=missing-class-docstring
-        model = ResourceAccessToken.for_resource_id
+        model = PlaylistAccessToken.for_resource_id
 
 
-class LTIResourceAccessTokenFactory(BaseResourceTokenFactory):
+class LTIPlaylistAccessTokenFactory(BasePlaylistTokenFactory):
     """
-    LTI resource forged token.
+    LTI playlist forged token.
 
     This token's payload is forged to remove a heavy call to
     `generate_passport_and_signed_lti_parameters` each time
@@ -177,7 +177,7 @@ class LTIResourceAccessTokenFactory(BaseResourceTokenFactory):
 
     # for_resource_id payload
     session_id = factory.Faker("uuid4")
-    permissions = factory.SubFactory(ResourcePermissionsFactory)
+    permissions = factory.SubFactory(PlaylistPermissionsFactory)
     roles = factory.fuzzy.FuzzyChoice(
         [ADMINISTRATOR, INSTRUCTOR, STUDENT, NONE],
         getter=lambda x: [x],
@@ -200,58 +200,46 @@ class LTIResourceAccessTokenFactory(BaseResourceTokenFactory):
     )
 
     class Meta:  # pylint:disable=missing-class-docstring
-        model = ResourceAccessToken
+        model = PlaylistAccessToken
 
 
-class StudentLtiTokenFactory(LTIResourceAccessTokenFactory):
-    """LTI resource forged token for student."""
+class StudentLtiTokenFactory(LTIPlaylistAccessTokenFactory):
+    """LTI playlist forged token for student."""
 
     roles = factory.fuzzy.FuzzyChoice(LTI_ROLES.get(STUDENT), getter=lambda x: [x])
 
 
-class InstructorOrAdminLtiTokenFactory(LTIResourceAccessTokenFactory):
+class InstructorOrAdminLtiTokenFactory(LTIPlaylistAccessTokenFactory):
     """
-    LTI resource forged token for instructor or administrators.
+    LTI playlist forged token for instructor or administrators.
     See `marsha.core.views.BaseLTIView`.
 
     Note: the `can_update` permission is set to True
-    to mean "the LTI request context ID is the resource playlist LTI ID".
+    to mean "the LTI request context ID is the playlist playlist LTI ID".
     When this is not the case, the test must explicitly add `permissions__can_update=False`.
     """
 
     roles = factory.fuzzy.FuzzyChoice([ADMINISTRATOR, INSTRUCTOR], getter=lambda x: [x])
     permissions = factory.SubFactory(
-        ResourcePermissionsFactory,
+        PlaylistPermissionsFactory,
         can_access_dashboard=True,
         can_update=True,
     )
 
 
-# class PlaylistLtiTokenFactory(InstructorOrAdminLtiTokenFactory):
-#     """
-#     LTI resource forged token for instructor or administrators with a playlist access.
-#     See `marsha.core.views.LTISelectView`.
-#     """
-#
-#     permissions = factory.SubFactory(ResourcePermissionsFactory, can_update=True)
-#
-#     class Params:  # pylint:disable=missing-class-docstring
-#         playlist = factory.SubFactory(PlaylistFactory)
-
-
-class LiveSessionResourceAccessTokenFactory(BaseTokenFactory):
-    """Generates a resource access token from a live session."""
+class LiveSessionPlaylistAccessTokenFactory(BaseTokenFactory):
+    """Generates a playlist access token from a live session."""
 
     live_session = factory.SubFactory(LiveSessionFactory)
     session_id = factory.Faker("uuid4")
 
     class Meta:  # pylint:disable=missing-class-docstring
-        model = ResourceAccessToken.for_live_session
+        model = PlaylistAccessToken.for_live_session
 
 
-class LiveSessionLtiTokenFactory(LTIResourceAccessTokenFactory):
+class LiveSessionLtiTokenFactory(LTIPlaylistAccessTokenFactory):
     """
-    Prefer the use of LiveSessionResourceAccessTokenFactory,
+    Prefer the use of LiveSessionPlaylistAccessTokenFactory,
     but this one allows to deeply customize the final JWT.
     """
 
@@ -272,7 +260,7 @@ class LiveSessionLtiTokenFactory(LTIResourceAccessTokenFactory):
     )
 
     class Meta:  # pylint:disable=missing-class-docstring
-        model = ResourceAccessToken
+        model = PlaylistAccessToken
 
     class Params:  # pylint:disable=missing-class-docstring
         live_session = factory.SubFactory(

@@ -18,7 +18,7 @@ from marsha.core.factories import (
 )
 from marsha.core.lti import LTI
 from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, STUDENT, Playlist
-from marsha.core.simple_jwt.tokens import LTIUserToken, ResourceAccessToken
+from marsha.core.simple_jwt.tokens import LTIUserToken, PlaylistAccessToken
 
 
 @override_settings(SENTRY_DSN="https://sentry.dsn")
@@ -140,7 +140,7 @@ class BaseLTIViewForPortabilityTestCase(TestCase):
 
         newly_create_playlist = Playlist.objects.get(lti_id="other:lti:context")
 
-        jwt_token = ResourceAccessToken(context.get("jwt"))
+        jwt_token = PlaylistAccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], "")  # important
         self.assertEqual(
             jwt_token.payload["port_to_playlist_id"], str(newly_create_playlist.id)
@@ -186,7 +186,7 @@ class BaseLTIViewForPortabilityTestCase(TestCase):
 
         newly_create_playlist = Playlist.objects.get(lti_id="other:lti:context")
 
-        jwt_token = ResourceAccessToken(context.get("jwt"))
+        jwt_token = PlaylistAccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], "")  # important
         self.assertEqual(
             jwt_token.payload["port_to_playlist_id"], str(newly_create_playlist.id)

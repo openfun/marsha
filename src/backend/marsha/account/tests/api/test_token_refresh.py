@@ -8,8 +8,8 @@ from rest_framework_simplejwt.exceptions import TokenError
 
 from marsha.core.factories import UserFactory
 from marsha.core.simple_jwt.tokens import (
-    ResourceAccessToken,
-    ResourceRefreshToken,
+    PlaylistAccessToken,
+    PlaylistRefreshToken,
     UserAccessToken,
     UserRefreshToken,
 )
@@ -92,7 +92,7 @@ class TokenObtainPairViewTest(TestCase):
         """
         session_id = str(uuid.uuid4())
         resource_id = str(uuid.uuid4())
-        refresh_token = ResourceRefreshToken.for_resource_id(resource_id, session_id)
+        refresh_token = PlaylistRefreshToken.for_resource_id(resource_id, session_id)
 
         response = self.client.post(
             "/account/api/token/refresh/",
@@ -110,8 +110,8 @@ class TokenObtainPairViewTest(TestCase):
         self.assertIn("refresh", response_data)
 
         # Verify tokens
-        new_token = ResourceAccessToken(response_data["access"])
-        new_refresh_token = ResourceRefreshToken(response_data["refresh"])
+        new_token = PlaylistAccessToken(response_data["access"])
+        new_refresh_token = PlaylistRefreshToken(response_data["refresh"])
 
         self.assertEqual(new_token.payload["token_type"], "resource_access")
         self.assertEqual(

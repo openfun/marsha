@@ -18,7 +18,7 @@ from marsha.core.factories import (
 )
 from marsha.core.lti import LTI
 from marsha.core.models import ADMINISTRATOR
-from marsha.core.simple_jwt.tokens import ResourceAccessToken
+from marsha.core.simple_jwt.tokens import PlaylistAccessToken
 from marsha.core.tests.views.test_lti_base import BaseLTIViewForPortabilityTestCase
 from marsha.markdown.factories import MarkdownDocumentFactory
 
@@ -66,7 +66,7 @@ class MarkdownLTIViewTestCase(TestCase):
         )
 
         context = json.loads(html.unescape(match.group(1)))
-        jwt_token = ResourceAccessToken(context.get("jwt"))
+        jwt_token = PlaylistAccessToken(context.get("jwt"))
         self.assertEqual(context.get("state"), "success")
         self.assertIsNotNone(context.get("resource"))
         self.assertEqual(context.get("modelName"), "markdown-documents")
@@ -156,7 +156,7 @@ class MarkdownLTIViewTestCase(TestCase):
         )
 
         context = json.loads(html.unescape(match.group(1)))
-        jwt_token = ResourceAccessToken(context.get("jwt"))
+        jwt_token = PlaylistAccessToken(context.get("jwt"))
         self.assertEqual(
             jwt_token.payload["resource_id"], str(markdown_document.playlist.id)
         )

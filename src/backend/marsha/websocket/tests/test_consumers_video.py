@@ -29,8 +29,8 @@ from marsha.core.serializers import (
 )
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
-    LiveSessionResourceAccessTokenFactory,
-    ResourceAccessTokenFactory,
+    LiveSessionPlaylistAccessTokenFactory,
+    PlaylistAccessTokenFactory,
     StudentLtiTokenFactory,
     UserAccessTokenFactory,
 )
@@ -270,7 +270,7 @@ class VideoConsumerTest(TransactionTestCase):
 
         self.assertIsNone(live_session.channel_name)
 
-        jwt_token = LiveSessionResourceAccessTokenFactory(live_session=live_session)
+        jwt_token = LiveSessionPlaylistAccessTokenFactory(live_session=live_session)
 
         communicator = WebsocketCommunicator(
             base_application,
@@ -300,7 +300,7 @@ class VideoConsumerTest(TransactionTestCase):
 
         self.assertIsNone(live_session.channel_name)
 
-        jwt_token = ResourceAccessTokenFactory(resource=video.playlist)
+        jwt_token = PlaylistAccessTokenFactory(resource=video.playlist)
 
         communicator = WebsocketCommunicator(
             base_application,

@@ -18,7 +18,7 @@ from rest_framework_simplejwt.serializers import (
     TokenRefreshSerializer as BaseTokenRefreshSerializer,
 )
 
-from marsha.core.simple_jwt.authentication import TokenResource
+from marsha.core.simple_jwt.authentication import TokenPlaylist
 from marsha.core.simple_jwt.tokens import MarshaRefreshToken, UserRefreshToken
 
 
@@ -79,7 +79,7 @@ class PasswordChangeSerializer(DjRestAuthPasswordChangeSerializer):
         """Instantiate the serializer and make the `TokenUser` to `User` conversion."""
         super().__init__(*args, **kwargs)
         if isinstance(self.user, TokenUser) and not isinstance(
-            self.user, TokenResource
+            self.user, TokenPlaylist
         ):
             # May raise 500 here but this is not expected so let it raise
             self.user = get_user_model().objects.get(pk=self.user.pk)

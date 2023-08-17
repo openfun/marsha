@@ -12,7 +12,7 @@ from marsha.core.models import NONE, STUDENT
 from marsha.core.simple_jwt.utils import define_locales
 from marsha.core.utils.react_locales_utils import react_locale
 
-from .permissions import ResourceAccessPermissions
+from .permissions import PlaylistAccessPermissions
 
 
 class MarshaRefreshToken(RefreshToken):
@@ -106,10 +106,10 @@ class LTISelectFormAccessToken(AccessToken):
             raise TokenError(_("Malformed LTI form token"))
 
 
-class ResourceAccessMixin:
+class PlaylistAccessMixin:
     """
-    Methods dedicated to access JWT. They are both used by the ResourceAccessToken
-    and the ResourceRefreshToken classes.
+    Methods dedicated to access JWT. They are both used by the PlaylistAccessToken
+    and the PlaylistRefreshToken classes.
     """
 
     def verify(self):
@@ -117,9 +117,9 @@ class ResourceAccessMixin:
         super().verify()
 
         try:
-            ResourceAccessPermissions(**self.payload["permissions"])
+            PlaylistAccessPermissions(**self.payload["permissions"])
         except TypeError as exc:
-            raise TokenError(_("Malformed resource access token")) from exc
+            raise TokenError(_("Malformed playlist access token")) from exc
 
     @classmethod
     def for_lti(
@@ -130,7 +130,7 @@ class ResourceAccessMixin:
         port_to_playlist_id,
     ):
         """
-        Returns an authorization token for the resource in the LTI request that will be provided
+        Returns an authorization token for the playlist in the LTI request that will be provided
         after authenticating the credentials.
 
         Parameters
@@ -149,7 +149,7 @@ class ResourceAccessMixin:
 
         Returns
         -------
-        ResourceAccessToken
+        PlaylistAccessToken
             JWT containing:
             - session_id
             - resource_id
@@ -201,7 +201,7 @@ class ResourceAccessMixin:
         port_to_playlist_id,
     ):
         """
-        Returns an authorization token without resource
+        Returns an authorization token without playlist
         to allow only portability requests creation.
 
         Parameters
@@ -217,7 +217,7 @@ class ResourceAccessMixin:
 
         Returns
         -------
-        ResourceAccessToken
+        PlaylistAccessToken
             JWT containing:
             - session_id
             - resource_id
@@ -290,7 +290,7 @@ class ResourceAccessMixin:
 
         Returns
         -------
-        ResourceAccessToken
+        PlaylistAccessToken
             JWT containing:
             - session_id
             - resource_id
@@ -299,9 +299,9 @@ class ResourceAccessMixin:
             - permissions
             - maintenance
         """
-        permissions = ResourceAccessPermissions(**(permissions or {}))
+        permissions = PlaylistAccessPermissions(**(permissions or {}))
 
-        # Create a short-lived JWT token for the resource selection
+        # Create a short-lived JWT token for the playlist selection
         token = cls()
         token.payload.update(
             {
@@ -318,8 +318,8 @@ class ResourceAccessMixin:
     @classmethod
     def for_live_session(cls, live_session, session_id):
         """
-        Returns an authorization token for the resource liked to the live session
-        that will be provided after authenticating the resource's credentials.
+        Returns an authorization token for the playlist liked to the live session
+        that will be provided after authenticating the playlist's credentials.
 
         Parameters
         ----------
@@ -331,7 +331,7 @@ class ResourceAccessMixin:
 
         Returns
         -------
-        ResourceAccessToken
+        PlaylistAccessToken
             JWT containing:
             - resource_id
             - consumer_site (if from LTI connection)
@@ -375,9 +375,9 @@ class ResourceAccessMixin:
         return token
 
 
-class ResourceAccessToken(ResourceAccessMixin, AccessToken):
+class PlaylistAccessToken(PlaylistAccessMixin, AccessToken):
     """
-    Resource dedicated access JWT.
+    Playlist dedicated access JWT.
 
     This token has the same lifetime as the default AccessToken (see `ACCESS_TOKEN_LIFETIME`
     setting).
@@ -400,11 +400,11 @@ class ResourceAccessToken(ResourceAccessMixin, AccessToken):
             self.payload[api_settings.JTI_CLAIM] = jti
 
 
-class ResourceRefreshToken(ResourceAccessMixin, MarshaRefreshToken):
-    """Refresh token for resource access which relies on `ResourceAccessToken`"""
+class PlaylistRefreshToken(PlaylistAccessMixin, MarshaRefreshToken):
+    """Refresh token for playlist access which relies on `PlaylistAccessToken`"""
 
-    access_token_class = ResourceAccessToken
-    access_token_type = ResourceAccessToken.token_type
+    access_token_class = PlaylistAccessToken
+    access_token_type = PlaylistAccessToken.token_type
 
 
 class LTIUserToken(AccessToken):

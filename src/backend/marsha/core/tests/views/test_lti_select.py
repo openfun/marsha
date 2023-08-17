@@ -13,7 +13,7 @@ from django.utils import timezone
 from marsha.core.defaults import ENDED, IDLE, JITSI
 from marsha.core.factories import DocumentFactory, PlaylistFactory, VideoFactory
 from marsha.core.models import Playlist
-from marsha.core.simple_jwt.tokens import LTISelectFormAccessToken, ResourceAccessToken
+from marsha.core.simple_jwt.tokens import LTISelectFormAccessToken, PlaylistAccessToken
 from marsha.core.tests.testing_utils import generate_passport_and_signed_lti_parameters
 
 
@@ -142,7 +142,7 @@ class SelectLTIViewTestCase(TestCase):
         lti_parameters.update({"lti_message_type": "ContentItemSelection"})
         self.assertEqual(initial_jwt_token.get("lti_select_form_data"), lti_parameters)
 
-        jwt_token = ResourceAccessToken(context.get("jwt"))
+        jwt_token = PlaylistAccessToken(context.get("jwt"))
         self.assertEqual(
             jwt_token.get("permissions"),
             {"can_access_dashboard": False, "can_update": True},
@@ -235,7 +235,7 @@ class SelectLTIViewTestCase(TestCase):
         lti_parameters.update({"lti_message_type": "ContentItemSelection"})
         self.assertEqual(initial_jwt_token.get("lti_select_form_data"), lti_parameters)
 
-        jwt_token = ResourceAccessToken(context.get("jwt"))
+        jwt_token = PlaylistAccessToken(context.get("jwt"))
         self.assertEqual(
             jwt_token.get("permissions"),
             {"can_access_dashboard": False, "can_update": True},
