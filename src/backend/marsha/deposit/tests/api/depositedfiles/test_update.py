@@ -39,7 +39,7 @@ class DepositedFileUpdateAPITest(TestCase):
         """A student user should not be able to update a deposited_file."""
         deposited_file = DepositedFileFactory()
         jwt_token = StudentLtiTokenFactory(
-            resource=deposited_file.file_depository.playlist
+            playlist=deposited_file.file_depository.playlist
         )
         data = {"read": True}
 
@@ -56,7 +56,7 @@ class DepositedFileUpdateAPITest(TestCase):
         """An instructor should be able to update a deposited_file."""
         deposited_file = DepositedFileFactory()
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=deposited_file.file_depository.playlist
+            playlist=deposited_file.file_depository.playlist
         )
         data = {"read": True}
 

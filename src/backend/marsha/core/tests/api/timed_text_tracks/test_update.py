@@ -37,7 +37,7 @@ class TimedTextTrackUpdateAPITest(TestCase):
         """Token users should be able to update the language of their timed_text_track."""
         timed_text_track = TimedTextTrackFactory(language="fr")
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=timed_text_track.video.playlist
+            playlist=timed_text_track.video.playlist
         )
 
         response = self.client.get(
@@ -60,7 +60,7 @@ class TimedTextTrackUpdateAPITest(TestCase):
         """Token users should be able to update the mode flag through the API."""
         timed_text_track = TimedTextTrackFactory(mode="cc")
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=timed_text_track.video.playlist
+            playlist=timed_text_track.video.playlist
         )
 
         response = self.client.get(
@@ -84,7 +84,7 @@ class TimedTextTrackUpdateAPITest(TestCase):
         """Token users trying to update "active_stamp" through the API should be ignored."""
         timed_text_track = TimedTextTrackFactory()
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=timed_text_track.video.playlist
+            playlist=timed_text_track.video.playlist
         )
 
         response = self.client.get(
@@ -109,7 +109,7 @@ class TimedTextTrackUpdateAPITest(TestCase):
         """Token users trying to update "upload_state" through the API should be ignored."""
         timed_text_track = TimedTextTrackFactory()
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=timed_text_track.video.playlist
+            playlist=timed_text_track.video.playlist
         )
 
         response = self.client.get(
@@ -135,7 +135,7 @@ class TimedTextTrackUpdateAPITest(TestCase):
         timed_text_track = TimedTextTrackFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=timed_text_track.video.playlist,
+            playlist=timed_text_track.video.playlist,
             permissions__can_update=False,
         )
 
@@ -322,7 +322,7 @@ class TimedTextTrackUpdateAPITest(TestCase):
         """
         timed_text_track = TimedTextTrackFactory()
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=timed_text_track.video.playlist
+            playlist=timed_text_track.video.playlist
         )
         self.assertEqual(timed_text_track.upload_state, "pending")
         self.assertIsNone(timed_text_track.uploaded_on)
@@ -346,7 +346,7 @@ class TimedTextTrackUpdateAPITest(TestCase):
         timed_text_track = TimedTextTrackFactory()
         original_id = timed_text_track.id
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=timed_text_track.video.playlist
+            playlist=timed_text_track.video.playlist
         )
 
         response = self.client.get(
@@ -371,7 +371,7 @@ class TimedTextTrackUpdateAPITest(TestCase):
         timed_text_track = TimedTextTrackFactory()
         original_video = timed_text_track.video
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=timed_text_track.video.playlist
+            playlist=timed_text_track.video.playlist
         )
 
         response = self.client.get(
@@ -395,7 +395,7 @@ class TimedTextTrackUpdateAPITest(TestCase):
         """Token users are not allowed to update a timed text track related to another video."""
         other_video = VideoFactory()
         timed_text_track_update = TimedTextTrackFactory(language="en")
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=other_video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=other_video.playlist)
 
         data = {"language": "fr", "size": 10}
         response = self.client.put(

@@ -77,7 +77,7 @@ class FileDepositoryViewSet(
     filterset_class = FileDepositoryFilter
 
     permission_classes = [
-        core_permissions.IsTokenResourceRouteObject
+        core_permissions.IsTokenPlaylistRouteObject
         & (core_permissions.IsTokenInstructor | core_permissions.IsTokenAdmin)
     ]
 

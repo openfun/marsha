@@ -56,7 +56,7 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
 
         shared_live_media = SharedLiveMediaFactory()
 
-        jwt_token = StudentLtiTokenFactory(resource=shared_live_media.video.playlist)
+        jwt_token = StudentLtiTokenFactory(playlist=shared_live_media.video.playlist)
 
         response = self.client.post(
             self._post_url(shared_live_media.video, shared_live_media),
@@ -80,7 +80,7 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=shared_live_media.video.playlist
+            playlist=shared_live_media.video.playlist
         )
 
         now = datetime(2021, 12, 2, tzinfo=baseTimezone.utc)
@@ -144,7 +144,7 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=shared_live_media.video.playlist
+            playlist=shared_live_media.video.playlist
         )
 
         now = datetime(2021, 12, 2, tzinfo=baseTimezone.utc)
@@ -208,7 +208,7 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=shared_live_media.video.playlist
+            playlist=shared_live_media.video.playlist
         )
 
         now = datetime(2021, 12, 2, tzinfo=baseTimezone.utc)
@@ -239,7 +239,7 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=shared_live_media.video.playlist
+            playlist=shared_live_media.video.playlist
         )
 
         now = datetime(2021, 12, 2, tzinfo=baseTimezone.utc)

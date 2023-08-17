@@ -41,7 +41,7 @@ class DocumentAPITest(TestCase):
         document = DocumentFactory()
 
         jwt_token = StudentLtiTokenFactory(
-            resource=document.playlist,
+            playlist=document.playlist,
             permissions__can_update=True,
         )
 
@@ -68,7 +68,7 @@ class DocumentAPITest(TestCase):
             title="bar baz",
         )
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=document.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=document.playlist)
 
         response = self.client.get(
             f"/api/documents/{document.id}/",
@@ -103,7 +103,7 @@ class DocumentAPITest(TestCase):
         document = DocumentFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=document.playlist,
+            playlist=document.playlist,
             permissions__can_update=False,
         )
 
@@ -127,7 +127,7 @@ class DocumentAPITest(TestCase):
         document = DocumentFactory()
 
         jwt_token = StudentLtiTokenFactory(
-            resource=document.playlist,
+            playlist=document.playlist,
             permissions__can_update=True,
         )
 
@@ -140,7 +140,7 @@ class DocumentAPITest(TestCase):
         """An instrustor should not be able to fetch a document list."""
         document = DocumentFactory()
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=document.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=document.playlist)
 
         response = self.client.get(
             "/api/documents/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -157,7 +157,7 @@ class DocumentAPITest(TestCase):
         document = DocumentFactory()
 
         jwt_token = StudentLtiTokenFactory(
-            resource=document.playlist,
+            playlist=document.playlist,
             permissions__can_update=True,
         )
 
@@ -170,7 +170,7 @@ class DocumentAPITest(TestCase):
         """An instructor should be able to create a document."""
         playlist = PlaylistFactory(title="Playlist")
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=playlist)
 
         self.assertEqual(Document.objects.count(), 0)
 
@@ -220,7 +220,7 @@ class DocumentAPITest(TestCase):
         document = DocumentFactory()
 
         jwt_token = StudentLtiTokenFactory(
-            resource=document.playlist,
+            playlist=document.playlist,
             permissions__can_update=True,
         )
 
@@ -234,7 +234,7 @@ class DocumentAPITest(TestCase):
         """An instructor should be able to delete a document."""
         document = DocumentFactory()
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=document.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=document.playlist)
 
         response = self.client.delete(
             f"/api/documents/{document.id}/",
@@ -253,7 +253,7 @@ class DocumentAPITest(TestCase):
         document = DocumentFactory()
 
         jwt_token = StudentLtiTokenFactory(
-            resource=document.playlist,
+            playlist=document.playlist,
             permissions__can_update=True,
         )
         data = {"title": "new title"}
@@ -271,7 +271,7 @@ class DocumentAPITest(TestCase):
         document = DocumentFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=document.playlist,
+            playlist=document.playlist,
             permissions__can_update=False,
         )
         data = {"title": "new title"}
@@ -288,7 +288,7 @@ class DocumentAPITest(TestCase):
         """An instructor should be able to update a document."""
         document = DocumentFactory()
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=document.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=document.playlist)
         data = {"title": "new title"}
 
         response = self.client.put(
@@ -306,7 +306,7 @@ class DocumentAPITest(TestCase):
         """Serializer should remove the extension from the document title (if any)."""
         document = DocumentFactory()
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=document.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=document.playlist)
         data = {"title": "new title.pdf"}
 
         response = self.client.put(
@@ -331,7 +331,7 @@ class DocumentAPITest(TestCase):
         document = DocumentFactory()
 
         jwt_token = StudentLtiTokenFactory(
-            resource=document.playlist,
+            playlist=document.playlist,
             permissions__can_update=True,
         )
 
@@ -346,7 +346,7 @@ class DocumentAPITest(TestCase):
         document = DocumentFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=document.playlist,
+            playlist=document.playlist,
             permissions__can_update=False,
         )
 
@@ -363,7 +363,7 @@ class DocumentAPITest(TestCase):
             upload_state=random.choice(["ready", "error"]),
         )
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=document.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=document.playlist)
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
@@ -415,7 +415,7 @@ class DocumentAPITest(TestCase):
             upload_state=random.choice(["ready", "error"]),
         )
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=document.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=document.playlist)
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
@@ -467,7 +467,7 @@ class DocumentAPITest(TestCase):
             upload_state=random.choice(["ready", "error"]),
         )
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=document.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=document.playlist)
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(

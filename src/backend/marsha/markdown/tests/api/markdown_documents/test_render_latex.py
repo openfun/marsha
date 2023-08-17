@@ -32,7 +32,7 @@ class MarkdownRenderLatexAPITest(TestCase):
         markdown_document = MarkdownDocumentFactory()
 
         jwt_token = StudentLtiTokenFactory(
-            resource=markdown_document.playlist,
+            playlist=markdown_document.playlist,
             permissions__can_update=True,
         )
 
@@ -49,7 +49,7 @@ class MarkdownRenderLatexAPITest(TestCase):
         markdown_document = MarkdownDocumentFactory(is_draft=True)
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=markdown_document.playlist
+            playlist=markdown_document.playlist
         )
 
         response = self.client.post(

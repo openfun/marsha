@@ -89,10 +89,10 @@ class LiveSessionViewSet(
     def get_permissions(self):
         """Instantiate and return the list of permissions that this view requires."""
         if self.action in ["list"]:
-            permission_classes = [permissions.UserOrResourceIsAuthenticated]
+            permission_classes = [permissions.UserOrPlaylistIsAuthenticated]
         elif self.action in ["create", "set_display_name", "push_attendance"]:
             permission_classes = [
-                permissions.ResourceIsAuthenticated
+                permissions.PlaylistIsAuthenticated
                 | permissions.IsParamsVideoAdminThroughOrganization
                 | permissions.BaseIsParamsVideoRoleThroughPlaylist
             ]
@@ -101,7 +101,7 @@ class LiveSessionViewSet(
             "retrieve",
         ]:
             permission_classes = [
-                permissions.IsTokenResourceRouteObjectRelatedVideo
+                permissions.IsTokenPlaylistRouteObjectRelatedVideo
                 | permissions.IsParamsVideoAdminThroughOrganization
                 | permissions.BaseIsParamsVideoRoleThroughPlaylist
             ]

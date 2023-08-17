@@ -42,7 +42,7 @@ class DepositedFileCreateAPITest(TestCase):
         """
 
         file_depository = FileDepositoryFactory()
-        jwt_token = StudentLtiTokenFactory(resource=file_depository.playlist)
+        jwt_token = StudentLtiTokenFactory(playlist=file_depository.playlist)
 
         response = self.client.post(
             f"/api/filedepositories/{file_depository.id}/depositedfiles/",
@@ -89,7 +89,7 @@ class DepositedFileCreateAPITest(TestCase):
 
         file_depository = FileDepositoryFactory()
         jwt_token = StudentLtiTokenFactory(
-            resource=file_depository.playlist,
+            playlist=file_depository.playlist,
             user__user_fullname=None,
             user__username="student",
         )
@@ -123,7 +123,7 @@ class DepositedFileCreateAPITest(TestCase):
 
         file_depository = FileDepositoryFactory()
         jwt_token = StudentLtiTokenFactory(
-            resource=file_depository.playlist,
+            playlist=file_depository.playlist,
             user__user_fullname=None,
             user__username=None,
         )

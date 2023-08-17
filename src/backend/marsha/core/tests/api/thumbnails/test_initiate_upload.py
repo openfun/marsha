@@ -31,7 +31,7 @@ class ThumbnailInitiateUploadApiTest(TestCase):
     def test_api_thumbnail_initiate_upload_student(self):
         """Student users should not be allowed to initiate an upload."""
         thumbnail = ThumbnailFactory()
-        jwt_token = StudentLtiTokenFactory(resource=thumbnail.video.playlist)
+        jwt_token = StudentLtiTokenFactory(playlist=thumbnail.video.playlist)
 
         response = self.client.post(
             self._post_url(thumbnail.video, thumbnail),
@@ -47,7 +47,7 @@ class ThumbnailInitiateUploadApiTest(TestCase):
         thumbnail = ThumbnailFactory(
             id="4ab8079e-ff4d-4d06-9922-4929e4f7a6eb", video=video, upload_state="ready"
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         # Get the upload policy for this thumbnail
         # It should generate a key file with the Unix timestamp of the present time
@@ -101,7 +101,7 @@ class ThumbnailInitiateUploadApiTest(TestCase):
         thumbnail = ThumbnailFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=thumbnail.video.playlist,
+            playlist=thumbnail.video.playlist,
             permissions__can_update=False,
         )
 
@@ -117,7 +117,7 @@ class ThumbnailInitiateUploadApiTest(TestCase):
         """It should not be possible to upload a thumbnail if its size is too large."""
         video = VideoFactory(upload_state="ready")
         thumbnail = ThumbnailFactory(video=video, upload_state="ready")
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         # Get the upload policy for this thumbnail
         # It should generate a key file with the Unix timestamp of the present time

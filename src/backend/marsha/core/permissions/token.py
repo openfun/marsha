@@ -11,7 +11,7 @@ class BaseTokenRolePermission(permissions.BasePermission):
     """Base permission class for JWT Tokens based on token roles.
 
     These permissions grants access to users authenticated with a JWT token built from a
-    resource ie related to a TokenResource.
+    playlist ie related to a TokenPlaylist.
     """
 
     role = None
@@ -62,7 +62,7 @@ class IsTokenStudent(BaseTokenRolePermission):
         return bool(LTI_ROLES[STUDENT] & set(token.payload.get("roles", [])))
 
 
-class IsTokenResourceRouteObject(permissions.BasePermission):
+class IsTokenPlaylistRouteObject(permissions.BasePermission):
     """
     Base permission class for JWT Tokens related to a resource object.
 
@@ -89,7 +89,7 @@ class IsTokenResourceRouteObject(permissions.BasePermission):
         return request.resource and view.get_object_pk() == request.resource.id
 
 
-class IsTokenResourceRouteObjectRelatedPlaylist(permissions.BasePermission):
+class IsTokenPlaylistRouteObjectRelatedPlaylist(permissions.BasePermission):
     """
     Base permission class for JWT Tokens related to a playlist linked to a video.
 
@@ -120,7 +120,7 @@ class IsTokenResourceRouteObjectRelatedPlaylist(permissions.BasePermission):
         )
 
 
-class IsTokenResourceRouteObjectRelatedVideo(permissions.BasePermission):
+class IsTokenPlaylistRouteObjectRelatedVideo(permissions.BasePermission):
     """
     Base permission class for JWT Tokens related to a resource object linked to a video.
 

@@ -27,7 +27,7 @@ class {{cookiecutter.model}}ViewSet(
     queryset = {{cookiecutter.model}}.objects.all()
     serializer_class = serializers.{{cookiecutter.model}}Serializer
     permission_classes = [
-        core_permissions.IsTokenResourceRouteObject
+        core_permissions.IsTokenPlaylistRouteObject
         & (core_permissions.IsTokenInstructor | core_permissions.IsTokenAdmin)
     ]
 
@@ -44,7 +44,7 @@ class {{cookiecutter.model}}ViewSet(
                 & (core_permissions.IsTokenInstructor | core_permissions.IsTokenAdmin)
             ]
         elif self.action in ["retrieve"]:
-            permission_classes = [core_permissions.IsTokenResourceRouteObject]
+            permission_classes = [core_permissions.IsTokenPlaylistRouteObject]
         else:
             permission_classes = self.permission_classes
         return [permission() for permission in permission_classes]

@@ -30,7 +30,7 @@ class VideoDestroyAPITest(TestCase):
     def test_api_video_delete_detail_token_user(self):
         """A token user associated to a video should not be able to delete it or any other."""
         videos = factories.VideoFactory.create_batch(2)
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=videos[0].playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=videos[0].playlist)
 
         # Try deleting the video linked to the JWT token and the other one
         for video in videos:
@@ -44,7 +44,7 @@ class VideoDestroyAPITest(TestCase):
     def test_api_video_delete_detail_student(self):
         """Student users should not be able to delete a video."""
         video = factories.VideoFactory()
-        jwt_token = StudentLtiTokenFactory(resource=video.playlist)
+        jwt_token = StudentLtiTokenFactory(playlist=video.playlist)
 
         response = self.client.delete(
             f"/api/videos/{video.id}/",
@@ -180,7 +180,7 @@ class VideoDestroyAPITest(TestCase):
         """An instructor with read_only set to true should not be able to delete the video."""
         video = factories.VideoFactory()
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video.playlist,
+            playlist=video.playlist,
             permissions__can_update=False,
         )
 

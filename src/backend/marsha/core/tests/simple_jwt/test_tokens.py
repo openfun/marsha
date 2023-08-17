@@ -86,20 +86,20 @@ class ResourceAccessTokenTestCase(TestCase):
 
         return lti, passport
 
-    def test_for_resource_id(self):
-        """Test JWT initialization from `for_resource_id` method without LTI"""
+    def test_for_playlist_id(self):
+        """Test JWT initialization from `for_playlist_id` method without LTI"""
         session_id = str(uuid.uuid4())
-        resource_id = str(uuid.uuid4())
+        playlist_id = str(uuid.uuid4())
 
-        refresh_token = PlaylistRefreshToken.for_resource_id(resource_id, session_id)
+        refresh_token = PlaylistRefreshToken.for_playlist_id(playlist_id, session_id)
         token = refresh_token.access_token
 
         refresh_token.verify()  # Must not raise
         token.verify()  # Must not raise
-        self.assertEqual(refresh_token.payload["access_token_type"], "resource_access")
-        self.assertEqual(token.payload["token_type"], "resource_access")
+        self.assertEqual(refresh_token.payload["access_token_type"], "playlist_access")
+        self.assertEqual(token.payload["token_type"], "playlist_access")
         self.assertEqual(token.payload["session_id"], session_id)
-        self.assertEqual(token.payload["resource_id"], resource_id)
+        self.assertEqual(token.payload["playlist_id"], playlist_id)
         self.assertListEqual(token.payload["roles"], [NONE])
         self.assertEqual(token.payload["locale"], "en_US")  # settings.REACT_LOCALES[0]
         self.assertDictEqual(
@@ -108,24 +108,24 @@ class ResourceAccessTokenTestCase(TestCase):
         )
         self.assertFalse(token.payload["maintenance"])  # settings.MAINTENANCE_MODE
 
-        token = PlaylistAccessToken.for_resource_id(
-            resource_id,
+        token = PlaylistAccessToken.for_playlist_id(
+            playlist_id,
             session_id,
             roles=[STUDENT],
         )
         token.verify()  # Must not raise
         self.assertEqual(token.payload["roles"], [STUDENT])
 
-        token = PlaylistAccessToken.for_resource_id(
-            resource_id,
+        token = PlaylistAccessToken.for_playlist_id(
+            playlist_id,
             session_id,
             locale="fr_FR",
         )
         token.verify()  # Must not raise
         self.assertEqual(token.payload["locale"], "fr_FR")
 
-        token = PlaylistAccessToken.for_resource_id(
-            resource_id,
+        token = PlaylistAccessToken.for_playlist_id(
+            playlist_id,
             session_id,
             permissions={"can_access_dashboard": True},
         )
@@ -153,10 +153,10 @@ class ResourceAccessTokenTestCase(TestCase):
 
         refresh_token.verify()  # Must not raise
         token.verify()  # Must not raise
-        self.assertEqual(refresh_token.payload["access_token_type"], "resource_access")
-        self.assertEqual(token.payload["token_type"], "resource_access")
+        self.assertEqual(refresh_token.payload["access_token_type"], "playlist_access")
+        self.assertEqual(token.payload["token_type"], "playlist_access")
         self.assertEqual(token.payload["session_id"], session_id)
-        self.assertEqual(token.payload["resource_id"], playlist_id)
+        self.assertEqual(token.payload["playlist_id"], playlist_id)
         self.assertEqual(token.payload["roles"], [INSTRUCTOR])
         self.assertEqual(token.payload["locale"], "en_US")
         self.assertDictEqual(token.payload["permissions"], permissions)
@@ -192,10 +192,10 @@ class ResourceAccessTokenTestCase(TestCase):
 
         refresh_token.verify()  # Must not raise
         token.verify()  # Must not raise
-        self.assertEqual(refresh_token.payload["access_token_type"], "resource_access")
-        self.assertEqual(token.payload["token_type"], "resource_access")
+        self.assertEqual(refresh_token.payload["access_token_type"], "playlist_access")
+        self.assertEqual(token.payload["token_type"], "playlist_access")
         self.assertEqual(token.payload["session_id"], session_id)
-        self.assertEqual(token.payload["resource_id"], playlist_id)
+        self.assertEqual(token.payload["playlist_id"], playlist_id)
         self.assertEqual(token.payload["roles"], [INSTRUCTOR])
         self.assertEqual(token.payload["locale"], "en_US")
         self.assertDictEqual(token.payload["permissions"], permissions)
@@ -229,15 +229,15 @@ class ResourceAccessTokenTestCase(TestCase):
 
         refresh_token.verify()  # Must not raise
         token.verify()  # Must not raise
-        self.assertEqual(refresh_token.payload["access_token_type"], "resource_access")
-        self.assertEqual(token.payload["token_type"], "resource_access")
+        self.assertEqual(refresh_token.payload["access_token_type"], "playlist_access")
+        self.assertEqual(token.payload["token_type"], "playlist_access")
         self.assertEqual(token.payload["session_id"], session_id)
         self.assertEqual(token.payload["locale"], "en_US")  # settings.REACT_LOCALES[0]
         self.assertDictEqual(token.payload["permissions"], permissions)
         self.assertFalse(token.payload["maintenance"])  # settings.MAINTENANCE_MODE
 
         self.assertEqual(
-            token.payload["resource_id"], str(live_session.video.playlist.pk)
+            token.payload["playlist_id"], str(live_session.video.playlist.pk)
         )
         self.assertDictEqual(
             token.payload["user"],
@@ -269,8 +269,8 @@ class ResourceAccessTokenTestCase(TestCase):
 
         refresh_token.verify()  # Must not raise
         token.verify()  # Must not raise
-        self.assertEqual(refresh_token.payload["access_token_type"], "resource_access")
-        self.assertEqual(token.payload["token_type"], "resource_access")
+        self.assertEqual(refresh_token.payload["access_token_type"], "playlist_access")
+        self.assertEqual(token.payload["token_type"], "playlist_access")
         self.assertEqual(token.payload["session_id"], session_id)
         self.assertEqual(token.payload["locale"], "en_US")  # settings.REACT_LOCALES[0]
         self.assertDictEqual(token.payload["permissions"], permissions)
@@ -280,7 +280,7 @@ class ResourceAccessTokenTestCase(TestCase):
             token.payload["consumer_site"], str(video.playlist.consumer_site.pk)
         )
         self.assertEqual(token.payload["context_id"], str(video.playlist.lti_id))
-        self.assertEqual(token.payload["resource_id"], str(video.playlist.pk))
+        self.assertEqual(token.payload["playlist_id"], str(video.playlist.pk))
         self.assertDictEqual(
             token.payload["user"],
             {
@@ -294,10 +294,10 @@ class ResourceAccessTokenTestCase(TestCase):
     def test_verify_fails(self):
         """Test JWT when `verify` method fails."""
         session_id = str(uuid.uuid4())
-        resource_id = str(uuid.uuid4())
+        playlist_id = str(uuid.uuid4())
 
         # Build a proper token
-        token = PlaylistAccessToken.for_resource_id(resource_id, session_id)
+        token = PlaylistAccessToken.for_playlist_id(playlist_id, session_id)
 
         # Mess with the permissions
         token.payload["permissions"] = {"can_break_everything": True}

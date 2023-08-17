@@ -78,7 +78,7 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
     def test_api_classroom_recording_create_vod_student(self):
         """Students should not be able to convert a recording to a VOD."""
         recording = ClassroomRecordingFactory()
-        jwt_token = StudentLtiTokenFactory(resource=recording.classroom.playlist)
+        jwt_token = StudentLtiTokenFactory(playlist=recording.classroom.playlist)
 
         with mock.patch("marsha.bbb.api.invoke_lambda_convert"):
             response = self.client.post(
@@ -100,7 +100,7 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
             started_at="2019-08-21T15:00:02Z",
         )
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=recording.classroom.playlist
+            playlist=recording.classroom.playlist
         )
 
         self.assertEqual(Video.objects.count(), 0)
@@ -155,7 +155,7 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
             started_at="2019-08-21T15:00:02Z",
         )
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=recording.classroom.playlist
+            playlist=recording.classroom.playlist
         )
 
         self.assertEqual(Video.objects.count(), 0)
@@ -372,7 +372,7 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
             classroom__playlist__consumer_site__inactive_features=["vod_convert"],
         )
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=recording.classroom.playlist
+            playlist=recording.classroom.playlist
         )
 
         self.assertEqual(Video.objects.count(), 0)

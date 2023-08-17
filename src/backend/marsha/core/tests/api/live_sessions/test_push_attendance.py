@@ -184,7 +184,7 @@ class LiveSessionPushAttendanceApiTest(LiveSessionApiTestCase):
         """Request without attendance should raise an error."""
         video = VideoFactory()
         jwt_token = LTIPlaylistAccessTokenFactory(
-            resource=video.playlist,
+            playlist=video.playlist,
             context_id=str(video.playlist.lti_id),
             consumer_site=str(video.playlist.consumer_site.id),
         )
@@ -205,7 +205,7 @@ class LiveSessionPushAttendanceApiTest(LiveSessionApiTestCase):
         """Pushing an attendance on a not existing video should fail."""
         video = VideoFactory()
         jwt_token = LTIPlaylistAccessTokenFactory(
-            resource=video.playlist,
+            playlist=video.playlist,
             context_id=str(video.playlist.lti_id),
             user__email=None,
         )
@@ -227,7 +227,7 @@ class LiveSessionPushAttendanceApiTest(LiveSessionApiTestCase):
         """Endpoint push_attendance works with no email and no previous record."""
         video = VideoFactory()
         jwt_token = LTIPlaylistAccessTokenFactory(
-            resource=video.playlist,
+            playlist=video.playlist,
             context_id=str(video.playlist.lti_id),
             consumer_site=str(video.playlist.consumer_site.id),
             user__email=None,
@@ -287,7 +287,7 @@ class LiveSessionPushAttendanceApiTest(LiveSessionApiTestCase):
         )
         self.assertEqual(LiveSession.objects.count(), 1)
         jwt_token = LTIPlaylistAccessTokenFactory(
-            resource=video.playlist,
+            playlist=video.playlist,
             context_id=str(livesession.lti_id),
             consumer_site=str(video.playlist.consumer_site.id),
             user__email="chantal@aol.com",
@@ -359,7 +359,7 @@ class LiveSessionPushAttendanceApiTest(LiveSessionApiTestCase):
         video = VideoFactory()
         anonymous_id = uuid.uuid4()
         self.assertEqual(LiveSession.objects.count(), 0)
-        jwt_token = PlaylistAccessTokenFactory(resource=video.playlist)
+        jwt_token = PlaylistAccessTokenFactory(playlist=video.playlist)
         response = self.client.post(
             f"/api/videos/{video.id}/livesessions/push_attendance/?anonymous_id={anonymous_id}",
             {"language": "fr", "live_attendance": {}},
@@ -395,7 +395,7 @@ class LiveSessionPushAttendanceApiTest(LiveSessionApiTestCase):
         self.assertEqual(LiveSession.objects.count(), 1)
         timestamp = to_timestamp(timezone.now())
 
-        jwt_token = PlaylistAccessTokenFactory(resource=livesession.video.playlist)
+        jwt_token = PlaylistAccessTokenFactory(playlist=livesession.video.playlist)
         response = self.client.post(
             f"/api/videos/{livesession.video_id}/livesessions/push_attendance/"
             f"?anonymous_id={livesession.anonymous_id}",
@@ -447,7 +447,7 @@ class LiveSessionPushAttendanceApiTest(LiveSessionApiTestCase):
         self.assertEqual(LiveSession.objects.count(), 0)
         timestamp = to_timestamp(timezone.now())
 
-        jwt_token = PlaylistAccessTokenFactory(resource=video.playlist)
+        jwt_token = PlaylistAccessTokenFactory(playlist=video.playlist)
         response = self.client.post(
             self._post_url(video),
             {
@@ -800,7 +800,7 @@ class LiveSessionPushAttendanceApiTest(LiveSessionApiTestCase):
         self.assertEqual(LiveSession.objects.count(), nb_created)
         # token with same email
         jwt_token = LTIPlaylistAccessTokenFactory(
-            resource=video.playlist,
+            playlist=video.playlist,
             consumer_site=str(video.playlist.consumer_site.id),
             context_id="Maths",
             user__id="55555",

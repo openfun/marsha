@@ -76,13 +76,13 @@ class SharedLiveMediaViewSet(
             ]
         elif self.action in ["retrieve"]:
             permission_classes = [
-                permissions.IsTokenResourceRouteObjectRelatedVideo
+                permissions.IsTokenPlaylistRouteObjectRelatedVideo
                 | permissions.IsRelatedVideoPlaylistAdminOrInstructor
                 | permissions.IsRelatedVideoOrganizationAdmin
             ]
         elif self.action in ["destroy", "initiate_upload", "update", "partial_update"]:
             permission_classes = [
-                permissions.IsTokenResourceRouteObjectRelatedVideo
+                permissions.IsTokenPlaylistRouteObjectRelatedVideo
                 & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
                 | permissions.IsRelatedVideoPlaylistAdminOrInstructor
                 | permissions.IsRelatedVideoOrganizationAdmin

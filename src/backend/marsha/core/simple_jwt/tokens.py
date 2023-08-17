@@ -145,14 +145,14 @@ class PlaylistAccessMixin:
             session id to add to the token.
 
         port_to_playlist_id: Type[str]
-            optional, playlist id to give access to in addition to the resource.
+            optional, playlist id to give access to in addition to the playlist.
 
         Returns
         -------
         PlaylistAccessToken
             JWT containing:
             - session_id
-            - resource_id
+            - playlist_id
             - roles
             - locale
             - permissions
@@ -166,7 +166,7 @@ class PlaylistAccessMixin:
                 - username
                 - user_fullname
         """
-        token = cls.for_resource_id(
+        token = cls.for_playlist_id(
             str(port_to_playlist_id),
             session_id,
             permissions=permissions,
@@ -213,14 +213,14 @@ class PlaylistAccessMixin:
             session id to add to the token.
 
         port_to_playlist_id: Type[str]
-            playlist id to give access to in addition to the resource.
+            playlist id to give access to in addition to the playlist.
 
         Returns
         -------
         PlaylistAccessToken
             JWT containing:
             - session_id
-            - resource_id
+            - playlist_id
             - roles
             - locale
             - permissions
@@ -252,28 +252,28 @@ class PlaylistAccessMixin:
             session_id,  # not mandatory
             port_to_playlist_id=port_to_playlist_id,
         )
-        # Important: this token must not provide any access to the resource
-        token.payload["resource_id"] = ""
+        # Important: this token must not provide any access to the playlist
+        token.payload["playlist_id"] = ""
 
         return token
 
     @classmethod
-    def for_resource_id(  # pylint: disable=too-many-arguments
+    def for_playlist_id(  # pylint: disable=too-many-arguments
         cls,
-        resource_id,
+        playlist_id,
         session_id,
         permissions=None,
         roles=None,
         locale=None,
     ):
         """
-        Returns an authorization token for the given resource that will be provided
-        after authenticating the resource's credentials.
+        Returns an authorization token for the given playlist that will be provided
+        after authenticating the playlist's credentials.
 
         Parameters
         ----------
-        resource_id: Type[str]
-            resource id to add to the token.
+        playlist_id: Type[str]
+            playlist id to add to the token.
 
         session_id: Type[str]
             session id to add to the token.
@@ -293,7 +293,7 @@ class PlaylistAccessMixin:
         PlaylistAccessToken
             JWT containing:
             - session_id
-            - resource_id
+            - playlist_id
             - roles
             - locale
             - permissions
@@ -306,7 +306,7 @@ class PlaylistAccessMixin:
         token.payload.update(
             {
                 "session_id": session_id,
-                "resource_id": resource_id,
+                "playlist_id": playlist_id,
                 "roles": roles or [NONE],
                 "locale": locale or settings.REACT_LOCALES[0],
                 "permissions": asdict(permissions),
@@ -333,7 +333,7 @@ class PlaylistAccessMixin:
         -------
         PlaylistAccessToken
             JWT containing:
-            - resource_id
+            - playlist_id
             - consumer_site (if from LTI connection)
             - context_id (if from LTI connection)
             - roles
@@ -347,7 +347,7 @@ class PlaylistAccessMixin:
                 - username (if from LTI connection)
                 - anonymous_id (if not from LTI connection)
         """
-        token = cls.for_resource_id(
+        token = cls.for_playlist_id(
             str(live_session.video.playlist.id),
             session_id,
             locale=react_locale(live_session.language),
@@ -383,7 +383,7 @@ class PlaylistAccessToken(PlaylistAccessMixin, AccessToken):
     setting).
     """
 
-    token_type = "resource_access"  # nosec
+    token_type = "playlist_access"  # nosec
 
     def set_jti(self, jti=None):
         """

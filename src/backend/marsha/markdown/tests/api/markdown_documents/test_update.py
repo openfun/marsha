@@ -48,7 +48,7 @@ class MarkdownUpdateAPITest(TestCase):
         markdown_document = MarkdownDocumentFactory()
 
         jwt_token = StudentLtiTokenFactory(
-            resource=markdown_document.playlist,
+            playlist=markdown_document.playlist,
             permissions__can_update=True,
         )
         data = {"title": "new title"}
@@ -66,7 +66,7 @@ class MarkdownUpdateAPITest(TestCase):
         markdown_document = MarkdownDocumentFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=markdown_document.playlist,
+            playlist=markdown_document.playlist,
             permissions__can_update=False,
         )
         data = {"title": "new title"}
@@ -100,7 +100,7 @@ class MarkdownUpdateAPITest(TestCase):
         markdown_document = MarkdownDocumentFactory(is_draft=True)
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=markdown_document.playlist
+            playlist=markdown_document.playlist
         )
 
         data = {"is_draft": False}

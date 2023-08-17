@@ -63,7 +63,7 @@ class PortabilityRequestListAPITest(TestCase):
         jwt_token = InstructorOrAdminLtiTokenFactory(
             consumer_site=str(portability_request.from_lti_consumer_site.pk),
             port_to_playlist_id=str(portability_request.from_lti_consumer_site.pk),
-            resource=None,
+            playlist=None,
             user__id=str(portability_request.from_lti_user_id),
         )
 

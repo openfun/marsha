@@ -2,7 +2,6 @@
 import uuid
 
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
-from django.db.models import Q
 
 from rest_framework import permissions
 
@@ -16,17 +15,17 @@ from .base import (
 )
 
 
-class IsTokenResourceRouteObjectRelatedPlaylist(permissions.BasePermission):
+class IsTokenPlaylistRouteObjectRelatedPlaylist(permissions.BasePermission):
     """
     Base permission class for JWT Tokens related to a playlist linked to a video.
 
     These permissions grants access to users authenticated with a JWT token built from a
-    resource ie related to a TokenResource.
+    playlist ie related to a TokenPlaylist.
     """
 
     def has_permission(self, request, view):
         """
-        Add a check to allow the request if the JWT resource matches the playlist in the url path.
+        Add a check to allow the request if the JWT playlist matches the playlist in the url path.
 
         Parameters
         ----------
@@ -41,28 +40,23 @@ class IsTokenResourceRouteObjectRelatedPlaylist(permissions.BasePermission):
             True if the request is authorized, False otherwise
         """
         return (
-            request.resource
-            and models.Playlist.objects.filter(
-                Q(pk=view.get_object_pk())
-                & (
-                    Q(videos__id=request.resource.id)
-                    | Q(documents__id=request.resource.id)
-                ),
-            ).exists()
+            request.playlist
+            and request.playlist.id == view.get_object_pk()
+            and models.Playlist.objects.filter(pk=request.playlist.id).exists()
         )
 
 
-class IsTokenResourceRouteObjectRelatedVideo(permissions.BasePermission):
+class IsTokenPlaylistRouteObjectRelatedVideo(permissions.BasePermission):
     """
-    Base permission class for JWT Tokens related to a resource object linked to a video.
+    Base permission class for JWT Tokens related to a playlist object linked to a video.
 
     These permissions grants access to users authenticated with a JWT token built from a
-    resource ie related to a TokenResource.
+    playlist ie related to a TokenPlaylist.
     """
 
     def has_permission(self, request, view):
         """
-        Allow the request if the JWT resource matches the video related to the object in the url.
+        Allow the request if the JWT playlist matches the video related to the object in the url.
 
         Parameters
         ----------
@@ -78,8 +72,9 @@ class IsTokenResourceRouteObjectRelatedVideo(permissions.BasePermission):
         """
         try:
             return (
-                request.resource
-                and str(view.get_related_object().video.id) == request.resource.id
+                request.playlist
+                and str(view.get_related_object().video.playlist.id)
+                == request.playlist.id
             )
         except ObjectDoesNotExist:
             return False

@@ -137,24 +137,24 @@ class BasePlaylistTokenFactory(BaseTokenFactory):
 
     @staticmethod
     def get_playlist_id(params):
-        """Ensure the resource is a playlist."""
-        resource_id = uuid.uuid4()
-        if not params.resource:
+        """Ensure the playlist in params is a Playlist instance."""
+        playlist_id = uuid.uuid4()
+        if not params.playlist:
             pass
-        elif isinstance(params.resource, Playlist):
-            resource_id = params.resource.id
+        elif isinstance(params.playlist, Playlist):
+            playlist_id = params.playlist.id
         else:
-            raise TokenError("resource is not a playlist")
+            raise TokenError("playlist is not a Playlist instance")
 
-        return str(resource_id)
+        return str(playlist_id)
 
-    resource_id = factory.LazyAttribute(get_playlist_id)
+    playlist_id = factory.LazyAttribute(get_playlist_id)
 
     class Meta:  # pylint:disable=missing-class-docstring
         abstract = True
 
     class Params:  # pylint:disable=missing-class-docstring
-        resource = None
+        playlist = None
 
 
 class PlaylistAccessTokenFactory(BasePlaylistTokenFactory):
@@ -163,7 +163,7 @@ class PlaylistAccessTokenFactory(BasePlaylistTokenFactory):
     session_id = factory.Faker("uuid4")
 
     class Meta:  # pylint:disable=missing-class-docstring
-        model = PlaylistAccessToken.for_resource_id
+        model = PlaylistAccessToken.for_playlist_id
 
 
 class LTIPlaylistAccessTokenFactory(BasePlaylistTokenFactory):
@@ -175,7 +175,7 @@ class LTIPlaylistAccessTokenFactory(BasePlaylistTokenFactory):
     we want to have an LTI token.
     """
 
-    # for_resource_id payload
+    # for_playlist_id payload
     session_id = factory.Faker("uuid4")
     permissions = factory.SubFactory(PlaylistPermissionsFactory)
     roles = factory.fuzzy.FuzzyChoice(
@@ -243,7 +243,7 @@ class LiveSessionLtiTokenFactory(LTIPlaylistAccessTokenFactory):
     but this one allows to deeply customize the final JWT.
     """
 
-    resource_id = factory.LazyAttribute(lambda o: str(o.live_session.video.playlist.id))
+    playlist_id = factory.LazyAttribute(lambda o: str(o.live_session.video.playlist.id))
     roles = factory.fuzzy.FuzzyChoice([STUDENT, NONE], getter=lambda x: [x])
 
     consumer_site = factory.LazyAttribute(

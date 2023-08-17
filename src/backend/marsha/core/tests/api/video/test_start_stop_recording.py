@@ -319,7 +319,7 @@ class TestApiVideoRecording(TestCase):
         video = VideoFactory()
 
         jwt_token = StudentLtiTokenFactory(
-            resource=video.playlist,
+            playlist=video.playlist,
             context_id=str(video.playlist.lti_id),
             consumer_site=str(video.playlist.consumer_site.id),
         )
@@ -341,7 +341,7 @@ class TestApiVideoRecording(TestCase):
         video = VideoFactory()
 
         jwt_token = StudentLtiTokenFactory(
-            resource=video.playlist,
+            playlist=video.playlist,
             context_id=str(video.playlist.lti_id),
             consumer_site=str(video.playlist.consumer_site.id),
         )
@@ -419,7 +419,7 @@ class TestApiVideoRecording(TestCase):
         self.assertEqual(video.recording_slices, [])
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video.playlist,
+            playlist=video.playlist,
             user__id="56255f3807599c377bf0e5bf072359fd",
         )
 
@@ -553,7 +553,7 @@ class TestApiVideoRecording(TestCase):
         self.assertEqual(video.recording_slices, [])
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video.playlist,
+            playlist=video.playlist,
             user__id="56255f3807599c377bf0e5bf072359fd",
         )
 
@@ -618,7 +618,7 @@ class TestApiVideoRecording(TestCase):
         self.assertEqual(video.recording_slices, [])
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video.playlist,
+            playlist=video.playlist,
             user__id="56255f3807599c377bf0e5bf072359fd",
         )
 
@@ -685,7 +685,7 @@ class TestApiVideoRecording(TestCase):
         self.assertEqual(video.recording_slices, [{"start": to_timestamp(start)}])
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video.playlist,
+            playlist=video.playlist,
             user__id="56255f3807599c377bf0e5bf072359fd",
         )
 

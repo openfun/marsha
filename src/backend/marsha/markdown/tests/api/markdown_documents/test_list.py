@@ -36,7 +36,7 @@ class MarkdownListAPITest(TestCase):
         markdown_document = MarkdownDocumentFactory()
 
         jwt_token = StudentLtiTokenFactory(
-            resource=markdown_document.playlist,
+            playlist=markdown_document.playlist,
             permissions__can_update=True,
         )
 
@@ -50,7 +50,7 @@ class MarkdownListAPITest(TestCase):
         markdown_document = MarkdownDocumentFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=markdown_document.playlist
+            playlist=markdown_document.playlist
         )
 
         response = self.client.get(

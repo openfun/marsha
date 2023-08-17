@@ -39,7 +39,7 @@ class MarkdownImageInitiateUploadApiTest(TestCase):
         """Student users should not be allowed to initiate an upload."""
         markdown_image = MarkdownImageFactory()
         jwt_token = StudentLtiTokenFactory(
-            resource=markdown_image.markdown_document.playlist
+            playlist=markdown_image.markdown_document.playlist
         )
 
         response = self.client.post(
@@ -60,7 +60,7 @@ class MarkdownImageInitiateUploadApiTest(TestCase):
             upload_state="ready",
         )
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=markdown_document.playlist
+            playlist=markdown_document.playlist
         )
 
         # Get the upload policy for this Markdown image
@@ -118,7 +118,7 @@ class MarkdownImageInitiateUploadApiTest(TestCase):
         markdown_image = MarkdownImageFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=markdown_image.markdown_document.playlist,
+            playlist=markdown_image.markdown_document.playlist,
             permissions__can_update=False,
         )
 

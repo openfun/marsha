@@ -50,7 +50,7 @@ class ClassroomCreateAPITest(TestCase):
         classroom = ClassroomFactory()
 
         jwt_token = StudentLtiTokenFactory(
-            resource=classroom.playlist,
+            playlist=classroom.playlist,
             permissions__can_update=True,
         )
 
@@ -69,7 +69,7 @@ class ClassroomCreateAPITest(TestCase):
             "running": "true",
         }
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=playlist)
 
         self.assertEqual(Classroom.objects.count(), 0)
 

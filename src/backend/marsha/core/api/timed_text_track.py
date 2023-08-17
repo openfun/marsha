@@ -55,7 +55,7 @@ class TimedTextTrackViewSet(
     def get_permissions(self):
         """Instantiate and return the list of permissions that this view requires."""
         if self.action == "metadata":
-            permission_classes = [permissions.UserOrResourceIsAuthenticated]
+            permission_classes = [permissions.UserOrPlaylistIsAuthenticated]
         elif self.action in ["create", "list"]:
             permission_classes = [
                 permissions.IsTokenInstructor
@@ -71,7 +71,7 @@ class TimedTextTrackViewSet(
             "partial_update",
         ]:
             permission_classes = [
-                permissions.IsTokenResourceRouteObjectRelatedVideo
+                permissions.IsTokenPlaylistRouteObjectRelatedVideo
                 & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
                 | permissions.IsRelatedVideoPlaylistAdminOrInstructor
                 | permissions.IsRelatedVideoOrganizationAdmin

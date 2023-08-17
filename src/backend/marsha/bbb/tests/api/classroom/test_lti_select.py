@@ -31,7 +31,7 @@ class ClassroomListAPITest(TestCase):
         """An instructor should be able to fetch a classroom lti select."""
         playlist = core_factories.PlaylistFactory()
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=playlist)
 
         response = self.client.get(
             "/api/classrooms/lti-select/",
@@ -50,7 +50,7 @@ class ClassroomListAPITest(TestCase):
         """An instructor should be able to fetch a classroom lti select."""
         playlist = core_factories.PlaylistFactory()
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=playlist)
 
         response = self.client.get(
             "/api/classrooms/lti-select/",
@@ -69,7 +69,7 @@ class ClassroomListAPITest(TestCase):
         """An instructor should be able to fetch a classroom lti select."""
         classroom = ClassroomFactory()
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=classroom.playlist)
 
         response = self.client.get(
             "/api/classrooms/lti-select/",

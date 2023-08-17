@@ -47,7 +47,7 @@ class SharedLiveMediaUpdateAPITest(TestCase):
         """A student can not update a shared live media."""
         shared_live_media = SharedLiveMediaFactory()
 
-        jwt_token = StudentLtiTokenFactory(resource=shared_live_media.video.playlist)
+        jwt_token = StudentLtiTokenFactory(playlist=shared_live_media.video.playlist)
 
         response = self.client.put(
             self._update_url(shared_live_media.video, shared_live_media),
@@ -63,7 +63,7 @@ class SharedLiveMediaUpdateAPITest(TestCase):
         shared_live_media = SharedLiveMediaFactory(title="update me!")
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=shared_live_media.video.playlist
+            playlist=shared_live_media.video.playlist
         )
 
         with mock.patch(

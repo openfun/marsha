@@ -64,7 +64,7 @@ class ClassroomUpdateAPITest(TestCase):
         """A student user should not be able to update a classroom."""
         classroom = ClassroomFactory()
 
-        jwt_token = StudentLtiTokenFactory(resource=classroom.playlist)
+        jwt_token = StudentLtiTokenFactory(playlist=classroom.playlist)
 
         data = {"title": "new title"}
 
@@ -81,7 +81,7 @@ class ClassroomUpdateAPITest(TestCase):
         classroom = ClassroomFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=classroom.playlist,
+            playlist=classroom.playlist,
             permissions__can_update=False,
         )
         data = {"title": "new title"}
@@ -104,7 +104,7 @@ class ClassroomUpdateAPITest(TestCase):
             "running": "true",
         }
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=classroom.playlist)
         data = {"title": "new title", "welcome_text": "Hello"}
 
         response = self.client.patch(
@@ -129,7 +129,7 @@ class ClassroomUpdateAPITest(TestCase):
             "running": "true",
         }
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=classroom.playlist)
 
         now = datetime(2018, 8, 8, tzinfo=zoneinfo.ZoneInfo("Europe/Paris"))
         # set microseconds to 0 to compare date surely as serializer truncate them
@@ -203,7 +203,7 @@ class ClassroomUpdateAPITest(TestCase):
             "running": "true",
         }
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=classroom.playlist)
 
         now = datetime(2018, 8, 8, tzinfo=zoneinfo.ZoneInfo("Europe/Paris"))
         # set microseconds to 0 to compare date surely as serializer truncate them
@@ -250,7 +250,7 @@ class ClassroomUpdateAPITest(TestCase):
             "running": "true",
         }
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=classroom.playlist)
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         # set microseconds to 0 to compare date surely as serializer truncate them
         starting_at = (now + timedelta(hours=1)).replace(microsecond=0)
@@ -321,7 +321,7 @@ class ClassroomUpdateAPITest(TestCase):
             "running": "true",
         }
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=classroom.playlist)
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         # set microseconds to 0 to compare date surely as serializer truncate them
         starting_at = (now + timedelta(hours=1)).replace(microsecond=0)
@@ -350,7 +350,7 @@ class ClassroomUpdateAPITest(TestCase):
             "running": "true",
         }
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=classroom.playlist)
 
         estimated_duration = timedelta(seconds=60)
         data = {"estimated_duration": estimated_duration}

@@ -50,7 +50,7 @@ class DepositedFileInitiateUploadAPITest(TestCase):
             file_depository__id="ed08da34-7447-4141-96ff-5740315d7b99",
         )
         jwt_token = StudentLtiTokenFactory(
-            resource=deposited_file.file_depository.playlist
+            playlist=deposited_file.file_depository.playlist
         )
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
@@ -109,7 +109,7 @@ class DepositedFileInitiateUploadAPITest(TestCase):
             file_depository__id="ed08da34-7447-4141-96ff-5740315d7b99",
         )
         jwt_token = StudentLtiTokenFactory(
-            resource=deposited_file.file_depository.playlist
+            playlist=deposited_file.file_depository.playlist
         )
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
@@ -139,7 +139,7 @@ class DepositedFileInitiateUploadAPITest(TestCase):
             file_depository__id="ed08da34-7447-4141-96ff-5740315d7b99",
         )
         jwt_token = StudentLtiTokenFactory(
-            resource=deposited_file.file_depository.playlist
+            playlist=deposited_file.file_depository.playlist
         )
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)

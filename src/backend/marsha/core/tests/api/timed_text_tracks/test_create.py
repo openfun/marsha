@@ -31,7 +31,7 @@ class TimedTextTrackCreateAPITest(TestCase):
     def test_api_timed_text_track_create_token_user(self):
         """A token user should be able to create a timed text track for an existing video."""
         video = VideoFactory(id="f8c30d0d-2bb4-440d-9e8d-f4b231511f1f")
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         data = {"language": "fr", "size": 10}
         response = self.client.post(
@@ -60,7 +60,7 @@ class TimedTextTrackCreateAPITest(TestCase):
     def test_api_timed_text_create_token_user_track_no_size(self):
         """A token user shouldn't be able to create a track if size param is not specified"""
         video = VideoFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         data = {"language": "fr"}
         response = self.client.post(
@@ -80,7 +80,7 @@ class TimedTextTrackCreateAPITest(TestCase):
     def test_api_timed_text_track_create_token_user_file_too_large(self):
         """A token user shouldn't be able to create a timed text track with a too large size"""
         video = VideoFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         data = {"language": "fr", "video": str(video.pk), "size": 100}
         response = self.client.post(
@@ -101,7 +101,7 @@ class TimedTextTrackCreateAPITest(TestCase):
         timed_text_track = TimedTextTrackFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=timed_text_track.video.playlist,
+            playlist=timed_text_track.video.playlist,
             permissions__can_update=False,
         )
 

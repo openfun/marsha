@@ -139,7 +139,7 @@ class PlaylistUpdateAPITest(TestCase):
         """Playlist instructors or admins can update playlists through video token."""
         video = factories.VideoFactory()
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         response = self.client.get(
             f"/api/playlists/{video.playlist.id}/",
@@ -163,7 +163,7 @@ class PlaylistUpdateAPITest(TestCase):
         """Playlist instructors or admins can update playlists with document token."""
         document = factories.DocumentFactory()
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=document.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=document.playlist)
 
         response = self.client.get(
             f"/api/playlists/{document.playlist.id}/",
@@ -187,7 +187,7 @@ class PlaylistUpdateAPITest(TestCase):
         """Playlist instructors or admins can partially update playlists."""
         video = factories.VideoFactory()
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         response = self.client.patch(
             f"/api/playlists/{video.playlist.id}/",

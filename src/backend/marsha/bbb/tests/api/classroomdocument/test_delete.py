@@ -42,7 +42,7 @@ class ClassroomDocumentDeleteAPITest(TestCase):
 
         classroom_document = ClassroomDocumentFactory()
         jwt_token = StudentLtiTokenFactory(
-            resource=classroom_document.classroom.playlist
+            playlist=classroom_document.classroom.playlist
         )
 
         self.assertEqual(ClassroomDocument.objects.count(), 1)
@@ -63,7 +63,7 @@ class ClassroomDocumentDeleteAPITest(TestCase):
         """
         classroom_document = ClassroomDocumentFactory()
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=classroom_document.classroom.playlist
+            playlist=classroom_document.classroom.playlist
         )
 
         self.assertEqual(ClassroomDocument.objects.count(), 1)
@@ -97,7 +97,7 @@ class ClassroomDocumentDeleteAPITest(TestCase):
             classroom=classroom,
             is_default=False,
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=classroom.playlist)
 
         self.assertEqual(ClassroomDocument.objects.count(), 3)
         response = self.client.delete(
@@ -127,7 +127,7 @@ class ClassroomDocumentDeleteAPITest(TestCase):
             classroom=classroom,
             is_default=False,
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=classroom.playlist)
 
         self.assertEqual(ClassroomDocument.objects.count(), 2)
         response = self.client.delete(

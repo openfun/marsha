@@ -53,7 +53,9 @@ class ClassroomInviteTokenAPITest(TestCase):
         public_token = response.json().get("access_token")
 
         decoded_public_token = PlaylistAccessToken(public_token)
-        self.assertEqual(decoded_public_token.payload["resource_id"], str(classroom.id))
+        self.assertEqual(
+            decoded_public_token.payload["playlist_id"], str(classroom.playlist_id)
+        )
         self.assertEqual(decoded_public_token.payload["roles"], [NONE])
         self.assertEqual(
             decoded_public_token.payload["permissions"],
@@ -73,7 +75,7 @@ class ClassroomInviteTokenAPITest(TestCase):
 
         decoded_instructor_token = PlaylistAccessToken(instructor_token)
         self.assertEqual(
-            decoded_instructor_token.payload["resource_id"], str(classroom.id)
+            decoded_instructor_token.payload["playlist_id"], str(classroom.playlist_id)
         )
         self.assertEqual(decoded_instructor_token.payload["roles"], [INSTRUCTOR])
         self.assertEqual(

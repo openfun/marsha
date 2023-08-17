@@ -405,7 +405,7 @@ class VideoPublicViewTestCase(TestCase):
                 "username": livesession.username,
             },
         )
-        self.assertEqual(jwt_token.payload["resource_id"], str(video.playlist.id))
+        self.assertEqual(jwt_token.payload["playlist_id"], str(video.playlist.id))
         self.assertEqual(jwt_token.payload["locale"], "fr_FR")
         self.assertEqual(jwt_token.payload["context_id"], video.playlist.lti_id)
         self.assertEqual(
@@ -455,7 +455,7 @@ class VideoPublicViewTestCase(TestCase):
             },
         )
         self.assertEqual(jwt_token.payload["roles"], ["none"])
-        self.assertEqual(jwt_token.payload["resource_id"], str(video.playlist.id))
+        self.assertEqual(jwt_token.payload["playlist_id"], str(video.playlist.id))
         self.assertEqual(jwt_token.payload["locale"], "en_US")
         self.assertIsNone(jwt_token.payload.get("context_id"))
         self.assertIsNone(jwt_token.payload.get("consumer_site"))

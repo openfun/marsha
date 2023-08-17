@@ -620,8 +620,8 @@ class BaseView(BaseModelResourceView, ABC):
                 )
 
         if app_data["resource"] is not None:
-            refresh_token = PlaylistRefreshToken.for_resource_id(
-                resource_id=app_data["resource"]["id"],
+            refresh_token = PlaylistRefreshToken.for_playlist_id(
+                playlist_id=app_data["resource"]["playlist"]["id"],
                 session_id=session_id,
             )
             jwt_token = refresh_token.access_token

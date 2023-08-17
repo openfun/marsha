@@ -1201,7 +1201,7 @@ class SendRemindersTest(TestCase):
         video = VideoFactory(
             title="my title", live_state=IDLE, live_type=JITSI, starting_at=None
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
         self.assertFalse(video.is_scheduled)
         livesession = LiveSessionFactory(
             anonymous_id=uuid.uuid4(),
