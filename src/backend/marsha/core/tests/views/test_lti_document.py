@@ -24,7 +24,7 @@ from marsha.core.factories import (
 )
 from marsha.core.lti import LTI
 from marsha.core.models import ADMINISTRATOR
-from marsha.core.simple_jwt.tokens import ResourceAccessToken, ResourceRefreshToken
+from marsha.core.simple_jwt.tokens import PlaylistAccessToken, PlaylistRefreshToken
 
 from .test_lti_base import BaseLTIViewForPortabilityTestCase
 
@@ -70,8 +70,8 @@ class DocumentLTIViewTestCase(TestCase):
         )
 
         context = json.loads(html.unescape(match.group(1)))
-        jwt_token = ResourceAccessToken(context.get("jwt"))
-        ResourceRefreshToken(context.get("refresh_token"))  # Must not raise
+        jwt_token = PlaylistAccessToken(context.get("jwt"))
+        PlaylistRefreshToken(context.get("refresh_token"))  # Must not raise
         self.assertEqual(jwt_token.payload["resource_id"], str(document.playlist.id))
         self.assertEqual(
             jwt_token.payload["user"],
@@ -135,8 +135,8 @@ class DocumentLTIViewTestCase(TestCase):
         )
 
         context = json.loads(html.unescape(match.group(1)))
-        jwt_token = ResourceAccessToken(context.get("jwt"))
-        ResourceRefreshToken(context.get("refresh_token"))  # Must not raise
+        jwt_token = PlaylistAccessToken(context.get("jwt"))
+        PlaylistRefreshToken(context.get("refresh_token"))  # Must not raise
         self.assertEqual(jwt_token.payload["resource_id"], str(document.playlist.id))
         self.assertEqual(
             jwt_token.payload["user"],
@@ -196,8 +196,8 @@ class DocumentLTIViewTestCase(TestCase):
         )
 
         context = json.loads(html.unescape(match.group(1)))
-        jwt_token = ResourceAccessToken(context.get("jwt"))
-        ResourceRefreshToken(context.get("refresh_token"))  # Must not raise
+        jwt_token = PlaylistAccessToken(context.get("jwt"))
+        PlaylistRefreshToken(context.get("refresh_token"))  # Must not raise
         self.assertEqual(jwt_token.payload["resource_id"], str(document.playlist.id))
         self.assertEqual(
             jwt_token.payload["user"],

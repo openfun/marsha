@@ -19,9 +19,9 @@ from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, NONE, STUDENT
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     LiveSessionLtiTokenFactory,
-    LiveSessionResourceAccessTokenFactory,
-    LTIResourceAccessTokenFactory,
-    ResourceAccessTokenFactory,
+    LiveSessionPlaylistAccessTokenFactory,
+    LTIPlaylistAccessTokenFactory,
+    PlaylistAccessTokenFactory,
     UserAccessTokenFactory,
 )
 
@@ -181,7 +181,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         video = VideoFactory()
         livesession = AnonymousLiveSessionFactory(video=video)
         # token has no consumer_site, no context_id and no user's info
-        jwt_token = ResourceAccessTokenFactory(resource=video.playlist)
+        jwt_token = PlaylistAccessTokenFactory(resource=video.playlist)
 
         response = self.client.get(
             self._get_url(livesession.video, livesession),
@@ -200,7 +200,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         """
         livesession = AnonymousLiveSessionFactory()
         # token has no consumer_site, no context_id and no user's info
-        jwt_token = ResourceAccessTokenFactory(resource=livesession.video.playlist)
+        jwt_token = PlaylistAccessTokenFactory(resource=livesession.video.playlist)
 
         response = self.client.get(
             f"{self._get_url(livesession.video, livesession)}"
@@ -241,7 +241,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
         )
         # token from LTI has context_id, consumer_site and user.id
-        jwt_token = LiveSessionResourceAccessTokenFactory(live_session=livesession)
+        jwt_token = LiveSessionPlaylistAccessTokenFactory(live_session=livesession)
         response = self.client.get(
             self._get_url(livesession.video, livesession),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -281,7 +281,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         )
 
         # token with right context_id and lti_user_id
-        jwt_token = LiveSessionResourceAccessTokenFactory(live_session=livesession)
+        jwt_token = LiveSessionPlaylistAccessTokenFactory(live_session=livesession)
 
         response = self.client.get(
             self._get_url(livesession.video, livesession),
@@ -365,7 +365,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         livesession = AnonymousLiveSessionFactory()
 
         # token has context_id so different consumer_site
-        jwt_token = LTIResourceAccessTokenFactory(
+        jwt_token = LTIPlaylistAccessTokenFactory(
             resource=livesession.video.playlist,  # as usual
             roles=[random.choice([STUDENT, NONE])],
             user__email=livesession.email,  # as usual
@@ -749,7 +749,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         livesession = AnonymousLiveSessionFactory()
 
         # token with no context_id leading to the same undefined consumer_site
-        jwt_token = ResourceAccessTokenFactory()
+        jwt_token = PlaylistAccessTokenFactory()
 
         response = self.client.get(
             self._get_url(livesession.video, livesession),
@@ -762,7 +762,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         # livesession with consumer_site
         livesession = LiveSessionFactory(is_from_lti_connection=True)
         # token with unexisting consumer_site
-        jwt_token = LTIResourceAccessTokenFactory(
+        jwt_token = LTIPlaylistAccessTokenFactory(
             context_id=str(livesession.video.playlist.lti_id),
             consumer_site=str(livesession.video.playlist.consumer_site.id),
             user__email=None,
@@ -779,7 +779,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         livesession = AnonymousLiveSessionFactory()
 
         # token with no context_id leading to the same undefined consumer_site
-        jwt_token = ResourceAccessTokenFactory(resource=VideoFactory().playlist)
+        jwt_token = PlaylistAccessTokenFactory(resource=VideoFactory().playlist)
 
         response = self.client.get(
             self._get_url(livesession.video, livesession),
@@ -792,7 +792,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         # livesession with no consumer_site
         livesession = LiveSessionFactory(is_from_lti_connection=True)
 
-        jwt_token = LTIResourceAccessTokenFactory(
+        jwt_token = LTIPlaylistAccessTokenFactory(
             resource=VideoFactory().playlist,  # other video
             context_id=str(livesession.video.playlist.lti_id),
             consumer_site=str(livesession.video.playlist.consumer_site.id),
@@ -812,7 +812,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         video = VideoFactory(live_state=IDLE, live_type=RAW, starting_at=starting_at)
         livesession = AnonymousLiveSessionFactory(video=video)
         # token with no user information
-        jwt_token = ResourceAccessTokenFactory()
+        jwt_token = PlaylistAccessTokenFactory()
         response = self.client.get(
             self._get_url(livesession.video, livesession),
             content_type="application/json",

@@ -16,7 +16,7 @@ from marsha.core.models import (
 )
 from marsha.core.permissions import IsTokenAdmin, IsTokenInstructor
 from marsha.core.services import live_session as LiveSessionServices
-from marsha.core.simple_jwt.tokens import ResourceAccessToken, UserAccessToken
+from marsha.core.simple_jwt.tokens import PlaylistAccessToken, UserAccessToken
 from marsha.websocket import defaults
 
 
@@ -43,7 +43,7 @@ class VideoConsumer(AsyncJsonWebsocketConsumer):
         # Check permissions, MUST be the same as in the `retrieve` method
         # of the Video API view set.
 
-        if isinstance(token, ResourceAccessToken):
+        if isinstance(token, PlaylistAccessToken):
             # With LTI: anyone with a valid token for the video can access
             if not await self._has_access_to_video(token):
                 raise ConnectionRefusedError()
@@ -155,7 +155,7 @@ class VideoConsumer(AsyncJsonWebsocketConsumer):
         if not token:
             return False
 
-        if isinstance(token, ResourceAccessToken):
+        if isinstance(token, PlaylistAccessToken):
             return IsTokenInstructor().check_role(token) or IsTokenAdmin().check_role(
                 token
             )

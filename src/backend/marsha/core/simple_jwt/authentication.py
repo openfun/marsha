@@ -7,8 +7,8 @@ from rest_framework_simplejwt.exceptions import InvalidToken
 from rest_framework_simplejwt.models import TokenUser
 
 
-class TokenResource(TokenUser):
-    """Same as TokenUser but for resource access JWT, with helpers for payload."""
+class TokenPlaylist(TokenUser):
+    """Same as TokenUser but for playlist access JWT, with helpers for payload."""
 
     @cached_property
     def id(self):
@@ -26,7 +26,7 @@ class TokenResource(TokenUser):
         return self.token.get("user", {})
 
 
-class JWTStatelessUserOrResourceAuthentication(JWTStatelessUserAuthentication):
+class JWTStatelessUserOrPlaylistAuthentication(JWTStatelessUserAuthentication):
     """
     An authentication plugin that authenticates requests through a JSON web
     token provided in a request header without performing a database lookup
@@ -41,15 +41,15 @@ class JWTStatelessUserOrResourceAuthentication(JWTStatelessUserAuthentication):
         We keep an actual user-like object to go through Django logic but this
         method can return:
          - TokenUser for user authentication
-         - TokenResource for resource authentication
+         - TokenPlaylist for playlist authentication
         """
         try:
             user = super().get_user(validated_token)
         except InvalidToken as exc:
             if "resource_id" not in validated_token:
                 raise InvalidToken(
-                    _("Token contained no recognizable resource identification")
+                    _("Token contained no recognizable playlist identification")
                 ) from exc
-            return TokenResource(validated_token)
+            return TokenPlaylist(validated_token)
 
         return user

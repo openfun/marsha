@@ -18,7 +18,7 @@ from marsha.core.factories import (
 )
 from marsha.core.lti import LTI
 from marsha.core.models import ADMINISTRATOR
-from marsha.core.simple_jwt.tokens import ResourceAccessToken
+from marsha.core.simple_jwt.tokens import PlaylistAccessToken
 from marsha.core.tests.test_views_lti_base import BaseLTIViewForPortabilityTestCase
 
 from ..factories import {{cookiecutter.model}}Factory
@@ -65,7 +65,7 @@ class {{cookiecutter.model}}LTIViewTestCase(TestCase):
         )
 
         context = json.loads(html.unescape(match.group(1)))
-        jwt_token = ResourceAccessToken(context.get("jwt"))
+        jwt_token = PlaylistAccessToken(context.get("jwt"))
         self.assertEqual(context.get("state"), "success")
         self.assertIsNotNone(context.get("resource"))
         self.assertEqual(context.get("modelName"), "{{cookiecutter.model_plural_lower}}")
@@ -153,7 +153,7 @@ class {{cookiecutter.model}}LTIViewTestCase(TestCase):
         )
 
         context = json.loads(html.unescape(match.group(1)))
-        jwt_token = ResourceAccessToken(context.get("jwt"))
+        jwt_token = PlaylistAccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], str({{cookiecutter.model_lower}}.id))
         self.assertEqual(
             jwt_token.payload["user"],

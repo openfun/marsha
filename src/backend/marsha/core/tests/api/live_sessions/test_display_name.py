@@ -15,8 +15,8 @@ from marsha.core.factories import (
 from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, STUDENT, LiveSession
 from marsha.core.simple_jwt.factories import (
     LiveSessionLtiTokenFactory,
-    LTIResourceAccessTokenFactory,
-    ResourceAccessTokenFactory,
+    LTIPlaylistAccessTokenFactory,
+    PlaylistAccessTokenFactory,
     UserAccessTokenFactory,
 )
 
@@ -152,7 +152,7 @@ class LiveSessionDisplayNameApiTest(LiveSessionApiTestCase):
     ):
         """Field anonymous_id is mandatory when the JWT token is a public one."""
         video = VideoFactory()
-        jwt_token = ResourceAccessTokenFactory(resource=video.playlist)
+        jwt_token = PlaylistAccessTokenFactory(resource=video.playlist)
         response = self.client.put(
             self._put_url(video),
             {"display_name": "Antoine"},
@@ -167,7 +167,7 @@ class LiveSessionDisplayNameApiTest(LiveSessionApiTestCase):
     ):
         """Field display_name is mandatory."""
         video = VideoFactory()
-        jwt_token = ResourceAccessTokenFactory(resource=video.playlist)
+        jwt_token = PlaylistAccessTokenFactory(resource=video.playlist)
         response = self.client.put(
             self._put_url(video),
             {"anonymous_id": uuid.uuid4()},
@@ -188,7 +188,7 @@ class LiveSessionDisplayNameApiTest(LiveSessionApiTestCase):
         )
 
         self.assertEqual(LiveSession.objects.count(), 1)
-        jwt_token = ResourceAccessTokenFactory(resource=video.playlist)
+        jwt_token = PlaylistAccessTokenFactory(resource=video.playlist)
         response = self.client.put(
             self._put_url(video),
             {"anonymous_id": anonymous_id, "display_name": "Antoine"},
@@ -232,7 +232,7 @@ class LiveSessionDisplayNameApiTest(LiveSessionApiTestCase):
         live_session = AnonymousLiveSessionFactory(display_name="Samuel", video=video2)
 
         self.assertEqual(LiveSession.objects.count(), 1)
-        jwt_token = ResourceAccessTokenFactory(resource=video.playlist)
+        jwt_token = PlaylistAccessTokenFactory(resource=video.playlist)
         response = self.client.put(
             self._put_url(video),
             {"anonymous_id": live_session.anonymous_id, "display_name": "Antoine"},
@@ -274,7 +274,7 @@ class LiveSessionDisplayNameApiTest(LiveSessionApiTestCase):
         anonymous_id = uuid.uuid4()
 
         self.assertEqual(LiveSession.objects.count(), 0)
-        jwt_token = ResourceAccessTokenFactory(resource=video.playlist)
+        jwt_token = PlaylistAccessTokenFactory(resource=video.playlist)
         response = self.client.put(
             self._put_url(video),
             {"anonymous_id": anonymous_id, "display_name": "Antoine"},
@@ -315,7 +315,7 @@ class LiveSessionDisplayNameApiTest(LiveSessionApiTestCase):
         video = VideoFactory()
         AnonymousLiveSessionFactory(display_name="Samuel", video=video)
         self.assertEqual(LiveSession.objects.count(), 1)
-        jwt_token = ResourceAccessTokenFactory(resource=video.playlist)
+        jwt_token = PlaylistAccessTokenFactory(resource=video.playlist)
         response = self.client.put(
             self._put_url(video),
             {"anonymous_id": uuid.uuid4(), "display_name": "Samuel"},
@@ -331,7 +331,7 @@ class LiveSessionDisplayNameApiTest(LiveSessionApiTestCase):
     def test_api_livesession_put_username_lti_no_displayname(self):
         """Field display_name is mandatory."""
         video = VideoFactory()
-        jwt_token = LTIResourceAccessTokenFactory(
+        jwt_token = LTIPlaylistAccessTokenFactory(
             resource=video.playlist,
             consumer_site=str(video.playlist.consumer_site.id),
         )
@@ -417,7 +417,7 @@ class LiveSessionDisplayNameApiTest(LiveSessionApiTestCase):
         )
 
         self.assertEqual(LiveSession.objects.count(), 1)
-        jwt_token = LTIResourceAccessTokenFactory(
+        jwt_token = LTIPlaylistAccessTokenFactory(
             resource=video.playlist,
             consumer_site=str(live_session.consumer_site.id),
             context_id=live_session.lti_id,
@@ -462,7 +462,7 @@ class LiveSessionDisplayNameApiTest(LiveSessionApiTestCase):
         video = VideoFactory()
 
         self.assertEqual(LiveSession.objects.count(), 0)
-        jwt_token = LTIResourceAccessTokenFactory(
+        jwt_token = LTIPlaylistAccessTokenFactory(
             resource=video.playlist,
             consumer_site=str(video.playlist.consumer_site.id),
             context_id="Maths",
@@ -510,7 +510,7 @@ class LiveSessionDisplayNameApiTest(LiveSessionApiTestCase):
         video = VideoFactory()
         AnonymousLiveSessionFactory(display_name="Samuel", video=video)
 
-        jwt_token = LTIResourceAccessTokenFactory(
+        jwt_token = LTIPlaylistAccessTokenFactory(
             resource=video.playlist,
             consumer_site=str(video.playlist.consumer_site.id),
         )

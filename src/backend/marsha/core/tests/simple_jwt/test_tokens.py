@@ -10,8 +10,8 @@ from marsha.core.lti import LTI
 from marsha.core.models import INSTRUCTOR, NONE, STUDENT
 from marsha.core.simple_jwt.tokens import (
     LTISelectFormAccessToken,
-    ResourceAccessToken,
-    ResourceRefreshToken,
+    PlaylistAccessToken,
+    PlaylistRefreshToken,
     UserAccessToken,
 )
 from marsha.core.tests.testing_utils import generate_passport_and_signed_lti_parameters
@@ -91,7 +91,7 @@ class ResourceAccessTokenTestCase(TestCase):
         session_id = str(uuid.uuid4())
         resource_id = str(uuid.uuid4())
 
-        refresh_token = ResourceRefreshToken.for_resource_id(resource_id, session_id)
+        refresh_token = PlaylistRefreshToken.for_resource_id(resource_id, session_id)
         token = refresh_token.access_token
 
         refresh_token.verify()  # Must not raise
@@ -108,7 +108,7 @@ class ResourceAccessTokenTestCase(TestCase):
         )
         self.assertFalse(token.payload["maintenance"])  # settings.MAINTENANCE_MODE
 
-        token = ResourceAccessToken.for_resource_id(
+        token = PlaylistAccessToken.for_resource_id(
             resource_id,
             session_id,
             roles=[STUDENT],
@@ -116,7 +116,7 @@ class ResourceAccessTokenTestCase(TestCase):
         token.verify()  # Must not raise
         self.assertEqual(token.payload["roles"], [STUDENT])
 
-        token = ResourceAccessToken.for_resource_id(
+        token = PlaylistAccessToken.for_resource_id(
             resource_id,
             session_id,
             locale="fr_FR",
@@ -124,7 +124,7 @@ class ResourceAccessTokenTestCase(TestCase):
         token.verify()  # Must not raise
         self.assertEqual(token.payload["locale"], "fr_FR")
 
-        token = ResourceAccessToken.for_resource_id(
+        token = PlaylistAccessToken.for_resource_id(
             resource_id,
             session_id,
             permissions={"can_access_dashboard": True},
@@ -143,7 +143,7 @@ class ResourceAccessTokenTestCase(TestCase):
         lti, passport = self.make_lti_instance(resource_id=resource_id)
         playlist_id = str(uuid.uuid4())
 
-        refresh_token = ResourceRefreshToken.for_lti(
+        refresh_token = PlaylistRefreshToken.for_lti(
             lti,
             permissions,
             session_id,
@@ -182,7 +182,7 @@ class ResourceAccessTokenTestCase(TestCase):
         lti, passport = self.make_lti_instance(resource_id=resource_id)
 
         playlist_id = str(uuid.uuid4())
-        refresh_token = ResourceRefreshToken.for_lti(
+        refresh_token = PlaylistRefreshToken.for_lti(
             lti,
             permissions,
             session_id,
@@ -224,7 +224,7 @@ class ResourceAccessTokenTestCase(TestCase):
             email="chantal@test-fun-mooc.fr",
         )
 
-        refresh_token = ResourceRefreshToken.for_live_session(live_session, session_id)
+        refresh_token = PlaylistRefreshToken.for_live_session(live_session, session_id)
         token = refresh_token.access_token
 
         refresh_token.verify()  # Must not raise
@@ -264,7 +264,7 @@ class ResourceAccessTokenTestCase(TestCase):
 
         self.assertTrue(live_session.is_from_lti_connection)
 
-        refresh_token = ResourceRefreshToken.for_live_session(live_session, session_id)
+        refresh_token = PlaylistRefreshToken.for_live_session(live_session, session_id)
         token = refresh_token.access_token
 
         refresh_token.verify()  # Must not raise
@@ -297,7 +297,7 @@ class ResourceAccessTokenTestCase(TestCase):
         resource_id = str(uuid.uuid4())
 
         # Build a proper token
-        token = ResourceAccessToken.for_resource_id(resource_id, session_id)
+        token = PlaylistAccessToken.for_resource_id(resource_id, session_id)
 
         # Mess with the permissions
         token.payload["permissions"] = {"can_break_everything": True}

@@ -22,8 +22,8 @@ from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, STUDENT
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     LiveSessionLtiTokenFactory,
-    LiveSessionResourceAccessTokenFactory,
-    ResourceAccessTokenFactory,
+    LiveSessionPlaylistAccessTokenFactory,
+    PlaylistAccessTokenFactory,
     UserAccessTokenFactory,
 )
 
@@ -231,7 +231,7 @@ class LiveSessionListApiTest(LiveSessionApiTestCase):
         AnonymousLiveSessionFactory(email=user.email, video=video2)
 
         # public token
-        jwt_token = ResourceAccessTokenFactory(resource=video.playlist)
+        jwt_token = PlaylistAccessTokenFactory(resource=video.playlist)
         response = self.client.get(
             self._get_url(video),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -245,7 +245,7 @@ class LiveSessionListApiTest(LiveSessionApiTestCase):
         # first 3 requests shouldn't be throttled
         for _i in range(3):
             video = VideoFactory()
-            jwt_token = ResourceAccessTokenFactory(resource=video.playlist)
+            jwt_token = PlaylistAccessTokenFactory(resource=video.playlist)
 
             response = self.client.get(
                 f"{self._get_url(video)}?anonymous_id={uuid.uuid4()}",
@@ -293,7 +293,7 @@ class LiveSessionListApiTest(LiveSessionApiTestCase):
         # first 3 requests shouldn't be throttled
         for _i in range(3):
             video = VideoFactory()
-            jwt_token = ResourceAccessTokenFactory(resource=video.playlist)
+            jwt_token = PlaylistAccessTokenFactory(resource=video.playlist)
 
             response = self.client.get(
                 self._get_url(video),
@@ -346,7 +346,7 @@ class LiveSessionListApiTest(LiveSessionApiTestCase):
         )
 
         # public token
-        jwt_token = ResourceAccessTokenFactory(resource=video.playlist)
+        jwt_token = PlaylistAccessTokenFactory(resource=video.playlist)
         response = self.client.get(
             f"{self._get_url(video)}?anonymous_id={livesession.anonymous_id}",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -640,7 +640,7 @@ class LiveSessionListApiTest(LiveSessionApiTestCase):
         )
 
         # token has context_id and no email
-        jwt_token = LiveSessionResourceAccessTokenFactory(live_session=live_session)
+        jwt_token = LiveSessionPlaylistAccessTokenFactory(live_session=live_session)
         response = self.client.get(
             f"{self._get_url(video)}?is_registered=True",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",

@@ -8,9 +8,9 @@ from marsha.core.lti import LTI
 from marsha.core.models import INSTRUCTOR
 from marsha.core.simple_jwt.factories import (
     LiveSessionLtiTokenFactory,
-    LTIResourceAccessTokenFactory,
+    LTIPlaylistAccessTokenFactory,
 )
-from marsha.core.simple_jwt.tokens import ResourceAccessToken
+from marsha.core.simple_jwt.tokens import PlaylistAccessToken
 from marsha.core.tests.testing_utils import generate_passport_and_signed_lti_parameters
 
 
@@ -44,9 +44,9 @@ class LTIResourceAccessTokenFactoryTestCase(TestCase):
         self.assertTrue(lti.verify())
 
         session_id = uuid.uuid4()
-        jwt = ResourceAccessToken.for_lti(lti, {}, session_id, playlist_id)
+        jwt = PlaylistAccessToken.for_lti(lti, {}, session_id, playlist_id)
 
-        jwt_from_factory = LTIResourceAccessTokenFactory(
+        jwt_from_factory = LTIPlaylistAccessTokenFactory(
             port_to_playlist_id=playlist_id
         )
 
@@ -62,7 +62,7 @@ class LiveSessionLtiTokenFactoryTestCase(TestCase):
     def test_payload_keys(self):
         """Tests the factory generates a payload with the same keys as the original method."""
         session_id = uuid.uuid4()
-        jwt = ResourceAccessToken.for_live_session(
+        jwt = PlaylistAccessToken.for_live_session(
             LiveSessionFactory(is_from_lti_connection=True),
             session_id,
         )

@@ -3,8 +3,8 @@ from dataclasses import asdict, dataclass
 
 
 @dataclass
-class ResourceAccessPermissions:
-    """Permissions which can be provided in ResourceAccessToken"""
+class PlaylistAccessPermissions:
+    """Permissions which can be provided in PlaylistAccessToken"""
 
     can_access_dashboard: bool = False
     can_update: bool = False

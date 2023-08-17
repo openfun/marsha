@@ -25,8 +25,8 @@ from marsha.core.models.account import NONE
 from marsha.core.serializers.live_session import timezone as LiveSessionTimezone
 from marsha.core.simple_jwt.factories import (
     LiveSessionLtiTokenFactory,
-    LTIResourceAccessTokenFactory,
-    ResourceAccessTokenFactory,
+    LTIPlaylistAccessTokenFactory,
+    PlaylistAccessTokenFactory,
     UserAccessTokenFactory,
 )
 
@@ -166,7 +166,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         )
         self.assertTrue(video.is_scheduled)
         # token with no context_id and no user information
-        jwt_token = ResourceAccessTokenFactory(resource=video.playlist)
+        jwt_token = PlaylistAccessTokenFactory(resource=video.playlist)
 
         anonymous_id = uuid.uuid4()
         response = self.client.post(
@@ -214,7 +214,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         )
         self.assertTrue(video.is_scheduled)
         # token with no context_id and no user information
-        jwt_token = ResourceAccessTokenFactory(resource=video.playlist)
+        jwt_token = PlaylistAccessTokenFactory(resource=video.playlist)
         anonymous_id = uuid.uuid4()
         response = self.client.post(
             self._post_url(video),
@@ -260,7 +260,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         )
         self.assertTrue(video.is_scheduled)
         # token with no context_id and no user information
-        jwt_token = ResourceAccessTokenFactory(resource=video.playlist)
+        jwt_token = PlaylistAccessTokenFactory(resource=video.playlist)
         anonymous_id = uuid.uuid4()
         now = datetime(2022, 4, 7, tzinfo=baseTimezone.utc)
         with mock.patch.object(LiveSessionTimezone, "now", return_value=now):
@@ -310,7 +310,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         )
         self.assertTrue(video.is_scheduled)
         # token with no context_id and no user information
-        jwt_token = ResourceAccessTokenFactory(resource=video.playlist)
+        jwt_token = PlaylistAccessTokenFactory(resource=video.playlist)
         response = self.client.post(
             self._post_url(video),
             {
@@ -339,7 +339,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
             starting_at=timezone.now() + timedelta(days=100),
         )
         self.assertTrue(video.is_scheduled)
-        jwt_token = LTIResourceAccessTokenFactory(resource=video.playlist, user={})
+        jwt_token = LTIPlaylistAccessTokenFactory(resource=video.playlist, user={})
 
         response = self.client.post(
             self._post_url(video),
@@ -372,7 +372,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
             starting_at=timezone.now() + timedelta(days=100),
         )
         self.assertTrue(video.is_scheduled)
-        jwt_token = LTIResourceAccessTokenFactory(
+        jwt_token = LTIPlaylistAccessTokenFactory(
             resource=video.playlist,
             context_id=None,
         )
@@ -408,7 +408,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
             starting_at=timezone.now() + timedelta(days=100),
         )
         self.assertTrue(video.is_scheduled)
-        jwt_token = LTIResourceAccessTokenFactory(
+        jwt_token = LTIPlaylistAccessTokenFactory(
             resource=video.playlist,
             consumer_site=None,
         )
@@ -441,7 +441,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         )
         self.assertTrue(video.is_scheduled)
         # token has same consumer_site than the video
-        jwt_token = LTIResourceAccessTokenFactory(
+        jwt_token = LTIPlaylistAccessTokenFactory(
             resource=video.playlist,
             context_id="Maths",  # explicit to be found in response
             consumer_site=str(video.playlist.consumer_site.id),
@@ -492,7 +492,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         )
         self.assertTrue(video.is_scheduled)
         # token has same consumer_site than the video
-        jwt_token = LTIResourceAccessTokenFactory(
+        jwt_token = LTIPlaylistAccessTokenFactory(
             resource=video.playlist,
             context_id="Maths",  # explicit to be found in response
             consumer_site=str(video.playlist.consumer_site.id),
@@ -544,7 +544,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         self.assertTrue(video.is_scheduled)
         other_playlist = PlaylistFactory()
         # token has different context_id than the video
-        jwt_token = LTIResourceAccessTokenFactory(
+        jwt_token = LTIPlaylistAccessTokenFactory(
             resource=video.playlist,
             context_id=str(other_playlist.lti_id),
             consumer_site=str(video.playlist.consumer_site.id),
@@ -600,7 +600,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         )
         self.assertEqual(LiveSession.objects.count(), 1)
         self.assertTrue(video.is_scheduled)
-        jwt_token = ResourceAccessTokenFactory(resource=video.playlist)
+        jwt_token = PlaylistAccessTokenFactory(resource=video.playlist)
         anonymous_id = uuid.uuid4()
         response = self.client.post(
             self._post_url(video),
@@ -659,7 +659,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         )
         self.assertEqual(LiveSession.objects.count(), 1)
         self.assertTrue(video.is_scheduled)
-        jwt_token = LTIResourceAccessTokenFactory(
+        jwt_token = LTIPlaylistAccessTokenFactory(
             resource=video.playlist,
             consumer_site=str(other_consumer_site.id),
             context_id=live_session.lti_id,
@@ -720,7 +720,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         self.assertTrue(video.is_scheduled)
 
         other_context_id = f"{live_session.lti_id}_diff"
-        jwt_token = LTIResourceAccessTokenFactory(
+        jwt_token = LTIPlaylistAccessTokenFactory(
             resource=video.playlist,
             consumer_site=str(video.playlist.consumer_site.id),
             context_id=other_context_id,
@@ -778,7 +778,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         )
         self.assertEqual(LiveSession.objects.count(), 1)
         self.assertTrue(video.is_scheduled)
-        jwt_token = LTIResourceAccessTokenFactory(
+        jwt_token = LTIPlaylistAccessTokenFactory(
             resource=video.playlist,
             consumer_site=str(live_session.consumer_site.id),
             context_id=live_session.lti_id,
@@ -832,7 +832,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         )
         self.assertTrue(video.is_scheduled)
         # token with different context_id
-        jwt_token = LTIResourceAccessTokenFactory(
+        jwt_token = LTIPlaylistAccessTokenFactory(
             resource=video.playlist,
             consumer_site=str(video.playlist.consumer_site.id),
         )
@@ -864,7 +864,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         """Can't register if video is not scheduled."""
         video = VideoFactory()
         self.assertFalse(video.is_scheduled)
-        jwt_token = ResourceAccessTokenFactory(resource=video.playlist)
+        jwt_token = PlaylistAccessTokenFactory(resource=video.playlist)
 
         response = self.client.post(
             self._post_url(video),
@@ -891,7 +891,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         """LTI token can't register if video is not scheduled."""
         video = VideoFactory()
         self.assertFalse(video.is_scheduled)
-        jwt_token = LTIResourceAccessTokenFactory(
+        jwt_token = LTIPlaylistAccessTokenFactory(
             resource=video.playlist,
             context_id=str(video.playlist.lti_id),
             consumer_site=str(video.playlist.consumer_site.id),
@@ -1064,7 +1064,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         AnonymousLiveSessionFactory(email="salome@test-fun-mooc.fr", video=video)
         self.assertTrue(video.is_scheduled)
         # token with no context_id leading to an undefined consumer_site
-        jwt_token = ResourceAccessTokenFactory(resource=video.playlist)
+        jwt_token = PlaylistAccessTokenFactory(resource=video.playlist)
         response = self.client.post(
             self._post_url(video),
             {
@@ -1141,7 +1141,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         # livesession with no consumer_site
         AnonymousLiveSessionFactory(email="chantal@test-fun-mooc.fr", video=video)
         # token with no context_id leading to no consumer_site
-        jwt_token = ResourceAccessTokenFactory(resource=video2.playlist)
+        jwt_token = PlaylistAccessTokenFactory(resource=video2.playlist)
 
         anonymous_id = uuid.uuid4()
         # With the same email but other video, livesession is possible
@@ -1205,7 +1205,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
             lti_id="Maths",
             lti_user_id="56255f3807599c377bf0e5bf072359fd",
         )
-        jwt_token = LTIResourceAccessTokenFactory(
+        jwt_token = LTIPlaylistAccessTokenFactory(
             resource=video2.playlist,
             context_id=live_session.lti_id,
             consumer_site=str(video.playlist.consumer_site.id),
@@ -1259,7 +1259,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
             starting_at=timezone.now() + timedelta(days=100),
         )
         self.assertTrue(video.is_scheduled)
-        jwt_token = LTIResourceAccessTokenFactory(
+        jwt_token = LTIPlaylistAccessTokenFactory(
             resource=video.playlist,
             context_id="Maths",
             consumer_site=str(video.playlist.consumer_site.id),
@@ -1389,7 +1389,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         )
         self.assertTrue(video.is_scheduled)
         # token with context_id
-        jwt_token = LTIResourceAccessTokenFactory(
+        jwt_token = LTIPlaylistAccessTokenFactory(
             resource=video.playlist,
             context_id=str(video.playlist.lti_id),
             consumer_site=str(video.playlist.consumer_site.id),
@@ -1438,7 +1438,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         self.assertTrue(video.is_scheduled)
         other_playlist = PlaylistFactory()
         # token has different context_id than the video
-        jwt_token = LTIResourceAccessTokenFactory(
+        jwt_token = LTIPlaylistAccessTokenFactory(
             resource=video.playlist,
             consumer_site=str(video.playlist.consumer_site.id),
             context_id=str(other_playlist.lti_id),

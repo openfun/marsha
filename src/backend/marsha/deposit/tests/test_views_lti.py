@@ -17,7 +17,7 @@ from marsha.core.factories import (
     UserFactory,
 )
 from marsha.core.lti import LTI
-from marsha.core.simple_jwt.tokens import ResourceAccessToken
+from marsha.core.simple_jwt.tokens import PlaylistAccessToken
 from marsha.core.tests.testing_utils import reload_urlconf
 from marsha.core.tests.views.test_lti_base import BaseLTIViewForPortabilityTestCase
 from marsha.core.utils.lti_select_utils import get_lti_select_resources
@@ -77,7 +77,7 @@ class FileDepositoryLTIViewTestCase(TestCase):
         )
 
         context = json.loads(html.unescape(match.group(1)))
-        jwt_token = ResourceAccessToken(context.get("jwt"))
+        jwt_token = PlaylistAccessToken(context.get("jwt"))
         self.assertEqual(context.get("state"), "success")
         self.assertIsNotNone(context.get("resource"))
         self.assertEqual(context.get("modelName"), "filedepositories")
@@ -130,7 +130,7 @@ class FileDepositoryLTIViewTestCase(TestCase):
         )
 
         context = json.loads(html.unescape(match.group(1)))
-        jwt_token = ResourceAccessToken(context.get("jwt"))
+        jwt_token = PlaylistAccessToken(context.get("jwt"))
         self.assertEqual(context.get("state"), "success")
         self.assertIsNotNone(context.get("resource"))
         self.assertEqual(context.get("modelName"), "filedepositories")
@@ -218,7 +218,7 @@ class FileDepositoryLTIViewTestCase(TestCase):
         )
 
         context = json.loads(html.unescape(match.group(1)))
-        jwt_token = ResourceAccessToken(context.get("jwt"))
+        jwt_token = PlaylistAccessToken(context.get("jwt"))
         self.assertEqual(
             jwt_token.payload["resource_id"], str(file_depository.playlist.id)
         )

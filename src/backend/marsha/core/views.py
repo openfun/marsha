@@ -38,7 +38,7 @@ from marsha.core.lti.user_association import get_user_from_lti
 from marsha.core.simple_jwt.tokens import (
     LTISelectFormAccessToken,
     LTIUserToken,
-    ResourceRefreshToken,
+    PlaylistRefreshToken,
 )
 from marsha.core.utils.lti_select_utils import get_lti_select_resources
 
@@ -504,7 +504,7 @@ class BaseLTIView(BaseModelResourceView, ABC):
                     "redirect_to": redirect_to,
                     "portability_request_exists": portability_request_exists,
                 }
-                refresh_token = ResourceRefreshToken.for_lti_portability_request(
+                refresh_token = PlaylistRefreshToken.for_lti_portability_request(
                     lti=self.lti,
                     session_id=session_id,
                     port_to_playlist_id=str(destination_playlist.pk),
@@ -535,7 +535,7 @@ class BaseLTIView(BaseModelResourceView, ABC):
                 cache.set(self.cache_key, app_data, settings.APP_DATA_CACHE_DURATION)
 
         if app_data["resource"] is not None:
-            refresh_token = ResourceRefreshToken.for_lti(
+            refresh_token = PlaylistRefreshToken.for_lti(
                 lti=self.lti,
                 permissions=permissions,
                 session_id=session_id,
@@ -620,7 +620,7 @@ class BaseView(BaseModelResourceView, ABC):
                 )
 
         if app_data["resource"] is not None:
-            refresh_token = ResourceRefreshToken.for_resource_id(
+            refresh_token = PlaylistRefreshToken.for_resource_id(
                 resource_id=app_data["resource"]["id"],
                 session_id=session_id,
             )
@@ -745,7 +745,7 @@ class VideoView(BaseView):
             )
             cache.set(cache_key, app_data, settings.APP_DATA_CACHE_DURATION)
 
-        refresh_token = ResourceRefreshToken.for_live_session(livesession, session_id)
+        refresh_token = PlaylistRefreshToken.for_live_session(livesession, session_id)
         jwt_token = refresh_token.access_token
         app_data["jwt"] = str(jwt_token)
         app_data["refresh_token"] = str(refresh_token)
@@ -938,7 +938,7 @@ class LTISelectView(BaseResourceView):
         if self.request.POST.get("title") != settings.LTI_CONFIG_TITLE:
             activity_title = self.request.POST.get("title")
 
-        refresh_token = ResourceRefreshToken.for_lti(
+        refresh_token = PlaylistRefreshToken.for_lti(
             lti=self.lti,
             permissions={"can_access_dashboard": False, "can_update": True},
             session_id=str(uuid.uuid4()),

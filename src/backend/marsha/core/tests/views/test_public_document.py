@@ -10,7 +10,7 @@ from django.test import TestCase
 
 from marsha.core.defaults import STATE_CHOICES
 from marsha.core.factories import DocumentFactory, OrganizationFactory, PlaylistFactory
-from marsha.core.simple_jwt.tokens import ResourceAccessToken, ResourceRefreshToken
+from marsha.core.simple_jwt.tokens import PlaylistAccessToken, PlaylistRefreshToken
 
 
 # We don't enforce arguments documentation in tests
@@ -58,8 +58,8 @@ class DocumentPublicViewTestCase(TestCase):
         )
 
         context = json.loads(unescape(match.group(1)))
-        jwt_token = ResourceAccessToken(context.get("jwt"))
-        ResourceRefreshToken(context.get("refresh_token"))  # Must not raise
+        jwt_token = PlaylistAccessToken(context.get("jwt"))
+        PlaylistRefreshToken(context.get("refresh_token"))  # Must not raise
 
         self.assertEqual(
             jwt_token.payload["permissions"],
@@ -138,8 +138,8 @@ class DocumentPublicViewTestCase(TestCase):
         )
 
         context = json.loads(unescape(match.group(1)))
-        jwt_token = ResourceAccessToken(context.get("jwt"))
-        ResourceRefreshToken(context.get("refresh_token"))  # Must not raise
+        jwt_token = PlaylistAccessToken(context.get("jwt"))
+        PlaylistRefreshToken(context.get("refresh_token"))  # Must not raise
 
         self.assertEqual(
             jwt_token.payload["permissions"],
