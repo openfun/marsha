@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 class XAPIStatementView(APIViewMixin, APIView):
     """Viewset managing xAPI requests."""
 
-    permission_classes = [permissions.UserOrResourceIsAuthenticated]
+    permission_classes = [permissions.UserOrPlaylistIsAuthenticated]
     http_method_names = ["post"]
 
     def _statement_from_lti(
@@ -107,7 +107,7 @@ class XAPIStatementView(APIViewMixin, APIView):
             return Response(partial_xapi_statement.errors, status=400)
 
         if request.resource:
-            if request.resource.resource_id != str(object_instance.playlist.id):
+            if request.resource.playlist_id != str(object_instance.playlist.id):
                 return HttpResponseNotFound()
             (
                 statement,

@@ -48,7 +48,7 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
             classroom__id="ed08da34-7447-4141-96ff-5740315d7b99",
         )
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=classroom_document.classroom.playlist
+            playlist=classroom_document.classroom.playlist
         )
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
@@ -107,7 +107,7 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
             classroom__id="ed08da34-7447-4141-96ff-5740315d7b99",
         )
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=classroom_document.classroom.playlist
+            playlist=classroom_document.classroom.playlist
         )
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
@@ -166,7 +166,7 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
             classroom__id="ed08da34-7447-4141-96ff-5740315d7b99",
         )
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=classroom_document.classroom.playlist
+            playlist=classroom_document.classroom.playlist
         )
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
@@ -197,7 +197,7 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
             classroom__id="ed08da34-7447-4141-96ff-5740315d7b99",
         )
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=classroom_document.classroom.playlist
+            playlist=classroom_document.classroom.playlist
         )
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
@@ -476,7 +476,7 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
             classroom__id="ed08da34-7447-4141-96ff-5740315d7b99",
         )
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=classroom_document.classroom.playlist
+            playlist=classroom_document.classroom.playlist
         )
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)

@@ -38,7 +38,7 @@ class TimedTextTrackListAPITest(TestCase):
         TimedTextTrackFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=timed_text_track_one.video.playlist
+            playlist=timed_text_track_one.video.playlist
         )
 
         response = self.client.get(

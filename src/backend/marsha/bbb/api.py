@@ -143,7 +143,7 @@ class ClassroomViewSet(
         elif self.action in ["retrieve", "service_join"]:
             permission_classes = [
                 core_permissions.IsPlaylistTokenMatchingRouteObject
-                | core_permissions.IsTokenResourceRouteObject  # needed for invite links
+                | core_permissions.IsTokenPlaylistRouteObject  # needed for invite links
                 | (
                     core_permissions.UserIsAuthenticated  # asserts request.resource is None
                     & (
@@ -188,7 +188,7 @@ class ClassroomViewSet(
                 )
                 # For LTI
                 | (
-                    core_permissions.ResourceIsAuthenticated
+                    core_permissions.PlaylistIsAuthenticated
                     & core_permissions.IsPlaylistTokenMatchingRouteObject
                     & (
                         core_permissions.IsTokenInstructor
@@ -539,7 +539,7 @@ class ClassroomDocumentViewSet(
                 )
             ]
         elif self.action in ["metadata"]:
-            permission_classes = [core_permissions.UserOrResourceIsAuthenticated]
+            permission_classes = [core_permissions.UserOrPlaylistIsAuthenticated]
         else:
             permission_classes = self.permission_classes
         return [permission() for permission in permission_classes]

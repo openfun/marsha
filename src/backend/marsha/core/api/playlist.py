@@ -77,7 +77,7 @@ class PlaylistViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
                     # requests made with a JWT token granting instructor or administrator
                     (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
                     # and to an object related to the playlist
-                    & permissions.IsTokenResourceRouteObjectRelatedPlaylist
+                    & permissions.IsTokenPlaylistRouteObjectRelatedPlaylist
                 )
             ]
         elif self.action in ["claim"]:
@@ -99,7 +99,7 @@ class PlaylistViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
                     # requests made with a JWT token granting instructor or administrator
                     (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
                     # and to an object related to the playlist
-                    & permissions.IsTokenResourceRouteObjectRelatedPlaylist
+                    & permissions.IsTokenPlaylistRouteObjectRelatedPlaylist
                 )
             ]
         elif self.action in ["destroy"]:

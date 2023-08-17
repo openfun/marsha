@@ -35,7 +35,7 @@ class VideoInitiateLiveAPITest(TestCase):
         """An instructor with read_only set to true should not be able to initiate a live."""
         video = factories.VideoFactory()
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video.playlist,
+            playlist=video.playlist,
             permissions__can_update=False,
         )
 
@@ -48,7 +48,7 @@ class VideoInitiateLiveAPITest(TestCase):
     def test_api_video_student_initiate_live(self):
         """A student should not be able to initiate a live."""
         video = factories.VideoFactory()
-        jwt_token = StudentLtiTokenFactory(resource=video.playlist)
+        jwt_token = StudentLtiTokenFactory(playlist=video.playlist)
 
         response = self.client.post(
             f"/api/videos/{video.id}/initiate-live/",
@@ -81,7 +81,7 @@ class VideoInitiateLiveAPITest(TestCase):
             playlist__title="foo bar",
             playlist__lti_id="course-v1:ufr+mathematics+00001",
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
         with mock.patch(
             "marsha.websocket.utils.channel_layers_utils.dispatch_video"
         ) as mock_dispatch_video:
@@ -150,7 +150,7 @@ class VideoInitiateLiveAPITest(TestCase):
             playlist__title="foo bar",
             playlist__lti_id="course-v1:ufr+mathematics+00001",
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         with mock.patch(
             "marsha.websocket.utils.channel_layers_utils.dispatch_video"
@@ -231,7 +231,7 @@ class VideoInitiateLiveAPITest(TestCase):
             playlist__title="foo bar",
             playlist__lti_id="course-v1:ufr+mathematics+00001",
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         now = datetime(2022, 5, 4, tzinfo=baseTimezone.utc)
         with mock.patch(

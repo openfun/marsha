@@ -62,7 +62,7 @@ class VideoConsumer(AsyncJsonWebsocketConsumer):
     def _has_access_to_video(self, token):
         """Return if the user has access to the video."""
         return Video.objects.filter(
-            pk=self.__get_video_id(), playlist_id=token.payload.get("resource_id")
+            pk=self.__get_video_id(), playlist_id=token.payload.get("playlist_id")
         ).exists()
 
     async def connect(self):

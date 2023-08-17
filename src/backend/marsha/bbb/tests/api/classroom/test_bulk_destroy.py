@@ -51,7 +51,7 @@ class ClassroomBulkDestroyAPITest(TestCase):
         classroom2 = ClassroomFactory()
 
         jwt_token = StudentLtiTokenFactory(
-            resource=classroom1.playlist,
+            playlist=classroom1.playlist,
             permissions__can_update=True,
         )
 
@@ -71,7 +71,7 @@ class ClassroomBulkDestroyAPITest(TestCase):
         """LTI Token can't delete a list of classroom."""
         classroom = ClassroomFactory()
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=classroom.playlist)
 
         response = self.client.delete(
             self._api_url(),

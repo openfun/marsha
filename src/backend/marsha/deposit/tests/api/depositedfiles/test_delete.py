@@ -30,7 +30,7 @@ class DepositedFileDeleteAPITest(TestCase):
         """A student user should not be able to delete a deposited_file."""
         deposited_file = DepositedFileFactory()
         jwt_token = StudentLtiTokenFactory(
-            resource=deposited_file.file_depository.playlist
+            playlist=deposited_file.file_depository.playlist
         )
 
         self.assertEqual(DepositedFile.objects.count(), 1)
@@ -47,7 +47,7 @@ class DepositedFileDeleteAPITest(TestCase):
         """An instructor should be able to delete a deposited_file."""
         deposited_file = DepositedFileFactory()
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=deposited_file.file_depository.playlist
+            playlist=deposited_file.file_depository.playlist
         )
 
         self.assertEqual(DepositedFile.objects.count(), 1)

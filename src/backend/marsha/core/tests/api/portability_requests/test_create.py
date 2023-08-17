@@ -93,7 +93,7 @@ class PortabilityRequestCreateAPITest(TestCase):
         """
 
         video = UploadedVideoFactory()
-        jwt_token = StudentLtiTokenFactory(resource=video.playlist)
+        jwt_token = StudentLtiTokenFactory(playlist=video.playlist)
 
         response = self.client.post(
             "/api/portability-requests/",
@@ -109,6 +109,7 @@ class PortabilityRequestCreateAPITest(TestCase):
             ),
         )
 
+        # something is wrong here
         self.assertEqual(response.status_code, 403)  # Forbidden
         self.assertEqual(PortabilityRequest.objects.count(), 0)
 
@@ -118,7 +119,12 @@ class PortabilityRequestCreateAPITest(TestCase):
         when he has no access to the requesting playlist.
         """
         video = UploadedVideoFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        consumer_site = ConsumerSiteFactory()
+        destination_playlist = PlaylistFactory()
+        lti_user_id = uuid4()
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            playlist=video.playlist, port_to_playlist=str(destination_playlist.pk)
+        )
 
         response = self.client.post(
             "/api/portability-requests/",
@@ -127,13 +133,18 @@ class PortabilityRequestCreateAPITest(TestCase):
             data=json.dumps(
                 {
                     "for_playlist": str(video.playlist_id),
-                    "from_playlist": None,  # not mandatory for 403 test
-                    "from_lti_consumer_site": None,  # not mandatory for 403 test
-                    "from_lti_user_id": None,  # not mandatory for 403 test
+                    "from_playlist": str(
+                        destination_playlist.pk
+                    ),  # not mandatory for 403 test
+                    "from_lti_consumer_site": str(
+                        consumer_site.pk
+                    ),  # not mandatory for 403 test
+                    "from_lti_user_id": str(lti_user_id),  # not mandatory for 403 test
                 }
             ),
         )
 
+        # something is wrong here
         self.assertEqual(response.status_code, 403)  # Forbidden
         self.assertEqual(PortabilityRequest.objects.count(), 0)
 
@@ -150,7 +161,7 @@ class PortabilityRequestCreateAPITest(TestCase):
         jwt_token = InstructorOrAdminLtiTokenFactory(
             consumer_site=str(consumer_site.pk),
             port_to_playlist_id=str(destination_playlist.pk),
-            resource=video.playlist,
+            playlist=video.playlist,
             user__id=str(lti_user_id),
         )
 
@@ -226,7 +237,7 @@ class PortabilityRequestCreateAPITest(TestCase):
         jwt_token = InstructorOrAdminLtiTokenFactory(
             consumer_site=str(consumer_site.pk),
             port_to_playlist_id=str(destination_playlist.pk),
-            resource=video.playlist,
+            playlist=destination_playlist,
             user__id=str(lti_user_id),
         )
 
@@ -304,7 +315,7 @@ class PortabilityRequestCreateAPITest(TestCase):
         jwt_token = InstructorOrAdminLtiTokenFactory(
             consumer_site=str(consumer_site.pk),
             port_to_playlist_id=str(destination_playlist.pk),
-            resource=video.playlist,
+            playlist=video.playlist,
             user__id=str(lti_user_id),
         )
 

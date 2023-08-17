@@ -18,24 +18,24 @@ class NotAllowed(permissions.BasePermission):
         return False
 
 
-class UserOrResourceIsAuthenticated(IsAuthenticated):
-    """This allows access for in user or resource context."""
+class UserOrPlaylistIsAuthenticated(IsAuthenticated):
+    """This allows access for in user or playlist context."""
 
 
 class UserIsAuthenticated(IsAuthenticated):
     """This allows access only in user context."""
 
     def has_permission(self, request, view):
-        """Simply checks we are NOT in a resource context."""
+        """Simply checks we are NOT in a playlist context."""
         has_permission = super().has_permission(request, view)
         return has_permission and request.resource is None
 
 
-class ResourceIsAuthenticated(IsAuthenticated):
-    """This allows access only in resource context."""
+class PlaylistIsAuthenticated(IsAuthenticated):
+    """This allows access only in playlist context."""
 
     def has_permission(self, request, view):
-        """Simply checks we are in a resource context."""
+        """Simply checks we are in a playlist context."""
         has_permission = super().has_permission(request, view)
         return has_permission and request.resource is not None
 

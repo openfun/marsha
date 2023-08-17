@@ -39,10 +39,10 @@ class CreateStableInviteJwtTestCase(TestCase):
                 "locale": "en_US",
                 "maintenance": False,
                 "permissions": {"can_access_dashboard": False, "can_update": False},
-                "resource_id": "ad0395fd-3023-45da-8801-93d1ce64acd5",
+                "playlist_id": str(classroom.playlist_id),
                 "roles": ["none"],
                 "session_id": "ad0395fd-3023-45da-8801-93d1ce64acd5-invite",
-                "token_type": "resource_access",
+                "token_type": "playlist_access",
             },
         )
 
@@ -68,10 +68,10 @@ class CreateStableInviteJwtTestCase(TestCase):
                 "locale": "en_US",
                 "maintenance": False,
                 "permissions": {"can_access_dashboard": False, "can_update": False},
-                "resource_id": "ad0395fd-3023-45da-8801-93d1ce64acd5",
+                "playlist_id": str(classroom.playlist_id),
                 "roles": ["none"],
                 "session_id": "ad0395fd-3023-45da-8801-93d1ce64acd5-invite",
-                "token_type": "resource_access",
+                "token_type": "playlist_access",
             },
         )
 
@@ -96,10 +96,10 @@ class CreateStableInviteJwtTestCase(TestCase):
                 "locale": "en_US",
                 "maintenance": False,
                 "permissions": {"can_access_dashboard": False, "can_update": False},
-                "resource_id": "ad0395fd-3023-45da-8801-93d1ce64acd5",
+                "playlist_id": str(classroom.playlist_id),
                 "roles": ["none"],
                 "session_id": "ad0395fd-3023-45da-8801-93d1ce64acd5-invite",
-                "token_type": "resource_access",
+                "token_type": "playlist_access",
             },
         )
 
@@ -127,10 +127,10 @@ class CreateStableInviteJwtTestCase(TestCase):
                 "locale": "en_US",
                 "maintenance": False,
                 "permissions": {"can_access_dashboard": False, "can_update": False},
-                "resource_id": "ad0395fd-3023-45da-8801-93d1ce64acd5",
+                "playlist_id": str(classroom.playlist_id),
                 "roles": ["none"],
                 "session_id": "ad0395fd-3023-45da-8801-93d1ce64acd5-invite",
-                "token_type": "resource_access",
+                "token_type": "playlist_access",
             },
         )
 
@@ -154,10 +154,10 @@ class CreateStableInviteJwtTestCase(TestCase):
                 "locale": "en_US",
                 "maintenance": False,
                 "permissions": {"can_access_dashboard": False, "can_update": False},
-                "resource_id": "ad0395fd-3023-45da-8801-93d1ce64acd5",
+                "playlist_id": str(classroom.playlist_id),
                 "roles": ["none"],
                 "session_id": "ad0395fd-3023-45da-8801-93d1ce64acd5-invite",
-                "token_type": "resource_access",
+                "token_type": "playlist_access",
             },
         )
 
@@ -186,10 +186,10 @@ class CreateStableInviteJwtTestCase(TestCase):
                 "locale": "en_US",
                 "maintenance": False,
                 "permissions": {"can_access_dashboard": False, "can_update": False},
-                "resource_id": "ad0395fd-3023-45da-8801-93d1ce64acd5",
+                "playlist_id": str(classroom.playlist_id),
                 "roles": ["instructor"],
                 "session_id": "ad0395fd-3023-45da-8801-93d1ce64acd5-invite",
-                "token_type": "resource_access",
+                "token_type": "playlist_access",
             },
         )
 
@@ -214,10 +214,10 @@ class CreateStableInviteJwtTestCase(TestCase):
                 "locale": "en_US",
                 "maintenance": False,
                 "permissions": {"can_access_dashboard": False, "can_update": False},
-                "resource_id": "ad0395fd-3023-45da-8801-93d1ce64acd5",
+                "playlist_id": str(classroom.playlist_id),
                 "roles": ["instructor"],
                 "session_id": "ad0395fd-3023-45da-8801-93d1ce64acd5-invite",
-                "token_type": "resource_access",
+                "token_type": "playlist_access",
             },
         )
 
@@ -277,10 +277,10 @@ class CreateStableInviteJwtTestCase(TestCase):
                 "locale": "en_US",
                 "maintenance": False,
                 "permissions": {"can_access_dashboard": False, "can_update": False},
-                "resource_id": "ad0395fd-3023-45da-8801-93d1ce64acd5",
+                "playlist_id": str(classroom.playlist_id),
                 "roles": ["instructor"],
                 "session_id": "ad0395fd-3023-45da-8801-93d1ce64acd5-invite",
-                "token_type": "resource_access",
+                "token_type": "playlist_access",
             },
         )
 

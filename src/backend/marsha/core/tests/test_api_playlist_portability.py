@@ -14,7 +14,7 @@ class PlaylistPortabilityAPITest(TestCase):
 
     def _jwt_token(self, playlist):
         """Build JWT token for a playlist with admin or instructor role."""
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=playlist)
         return jwt_token
 
     def _patch_video(self, video, params):

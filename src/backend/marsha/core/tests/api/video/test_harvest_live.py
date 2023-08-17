@@ -180,7 +180,7 @@ class VideoHarvestLiveAPITest(TestCase):
         """An instructor with read_only set to true should not be able to harvest a live."""
         video = factories.VideoFactory()
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video.playlist,
+            playlist=video.playlist,
             permissions__can_update=False,
         )
 
@@ -193,7 +193,7 @@ class VideoHarvestLiveAPITest(TestCase):
     def test_api_video_student_harvest_live(self):
         """A student should not be able to harvest a live."""
         video = factories.VideoFactory()
-        jwt_token = StudentLtiTokenFactory(resource=video.playlist)
+        jwt_token = StudentLtiTokenFactory(playlist=video.playlist)
 
         response = self.client.post(
             f"/api/videos/{video.id}/harvest-live/",
@@ -227,7 +227,7 @@ class VideoHarvestLiveAPITest(TestCase):
             live_type=JITSI,
         )
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
         response = self.client.post(
             f"/api/videos/{video.id}/harvest-live/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -280,7 +280,7 @@ class VideoHarvestLiveAPITest(TestCase):
             },
         )
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         with mock.patch.object(timezone, "now", return_value=stop), mock.patch.object(
             api.video, "delete_aws_element_stack"
@@ -431,7 +431,7 @@ class VideoHarvestLiveAPITest(TestCase):
             },
         )
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         with mock.patch.object(timezone, "now", return_value=stop), mock.patch.object(
             api.video, "delete_aws_element_stack"
@@ -495,7 +495,7 @@ class VideoHarvestLiveAPITest(TestCase):
             },
         )
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         with mock.patch.object(
             api.video, "delete_aws_element_stack"
@@ -595,7 +595,7 @@ class VideoHarvestLiveAPITest(TestCase):
             ),
             live_type=JITSI,
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         with mock.patch(
             "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"

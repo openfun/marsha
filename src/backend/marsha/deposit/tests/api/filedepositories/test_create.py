@@ -51,7 +51,7 @@ class FileDepositoryCreateAPITest(TestCase):
     def test_api_file_depository_create_instructor(self):
         """An instructor should be able to create a file_depository."""
         playlist = core_factories.PlaylistFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=playlist)
 
         self.assertEqual(FileDepository.objects.count(), 0)
 

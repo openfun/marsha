@@ -70,7 +70,7 @@ class ClassroomServiceEndAPITest(TestCase):
         """A student should not be able to end a classroom."""
         classroom = ClassroomFactory()
 
-        jwt_token = StudentLtiTokenFactory(resource=classroom.playlist)
+        jwt_token = StudentLtiTokenFactory(playlist=classroom.playlist)
 
         response = self.client.patch(
             f"/api/classrooms/{classroom.id}/end/",
@@ -92,7 +92,7 @@ class ClassroomServiceEndAPITest(TestCase):
             "returncode": "SUCCESS",
         }
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=classroom.playlist)
 
         response = self.client.patch(
             f"/api/classrooms/{classroom.id}/end/",

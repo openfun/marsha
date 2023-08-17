@@ -141,7 +141,7 @@ class VideoViewSet(
         elif self.action in ["list", "metadata"]:
             # Anyone authenticated can list videos (results are filtered in action)
             # or access metadata
-            permission_classes = [permissions.UserOrResourceIsAuthenticated]
+            permission_classes = [permissions.UserOrPlaylistIsAuthenticated]
         elif self.action in ["create"]:
             permission_classes = [
                 # With standalone site, only playlist admin or organization admin can access

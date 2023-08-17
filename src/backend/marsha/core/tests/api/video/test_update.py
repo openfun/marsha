@@ -52,7 +52,7 @@ class VideoUpdateAPITest(TestCase):
     def test_api_video_update_detail_student(self):
         """Student users should not be allowed to update a video through the API."""
         video = factories.VideoFactory(title="my title")
-        jwt_token = StudentLtiTokenFactory(resource=video.playlist)
+        jwt_token = StudentLtiTokenFactory(playlist=video.playlist)
 
         data = {"title": "my new title"}
         response = self.client.put(
@@ -72,7 +72,7 @@ class VideoUpdateAPITest(TestCase):
     def test_api_video_update_detail_token_user_title(self):
         """Token users should be able to update the title of their video through the API."""
         video = factories.VideoFactory(title="my title")
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
         data = {"title": "my new title"}
         response = self.client.put(
             f"/api/videos/{video.id}/",
@@ -87,7 +87,7 @@ class VideoUpdateAPITest(TestCase):
     def test_api_video_update_detail_token_user_title_null(self):
         """Token users can not set a null title."""
         video = factories.VideoFactory(title="my title")
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
         data = {"title": None}
         response = self.client.put(
             f"/api/videos/{video.id}/",
@@ -103,7 +103,7 @@ class VideoUpdateAPITest(TestCase):
     def test_api_video_update_detail_token_user_title_empty(self):
         """Token users can not set an empty title."""
         video = factories.VideoFactory(title="my title")
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
         data = {"title": " "}
         response = self.client.put(
             f"/api/videos/{video.id}/",
@@ -128,7 +128,7 @@ class VideoUpdateAPITest(TestCase):
             live_state=IDLE,
             live_type=JITSI,
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
         # set microseconds to 0 to compare date surely as serializer truncate them
         starting_at = (timezone.now() + timedelta(hours=1)).replace(microsecond=0)
         data = {
@@ -220,7 +220,7 @@ class VideoUpdateAPITest(TestCase):
             should_send_reminders=True,
             video=video,
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
         # we only change the title
         response = self.client.put(
             f"/api/videos/{video.id}/",
@@ -292,7 +292,7 @@ class VideoUpdateAPITest(TestCase):
             title="my title",
         )
         self.assertTrue(video.is_scheduled)
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         # try to set a date in the past
         # set microseconds to 0 to compare date surely as serializer truncate them
@@ -330,7 +330,7 @@ class VideoUpdateAPITest(TestCase):
             live_state=IDLE, live_type=JITSI, starting_at=starting_at, title="my title"
         )
         self.assertTrue(video.is_scheduled)
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         data = {"title": "title required", "starting_at": None}
         response = self.client.put(
@@ -352,7 +352,7 @@ class VideoUpdateAPITest(TestCase):
         video = factories.VideoFactory(
             live_state=IDLE, live_type=RAW, starting_at=intial_starting_at
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
         # now is set to after initial starting_at
         now = intial_starting_at + timedelta(days=10)
         with mock.patch.object(timezone, "now", return_value=now):
@@ -382,7 +382,7 @@ class VideoUpdateAPITest(TestCase):
     def test_api_video_update_detail_token_user_description(self):
         """Token users should be able to update the description of their video through the API."""
         video = factories.VideoFactory(description="my description")
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         response = self.client.get(
             f"/api/videos/{video.id}/",
@@ -403,7 +403,7 @@ class VideoUpdateAPITest(TestCase):
     def test_api_video_update_detail_token_user_uploaded_on(self):
         """Token users trying to update "uploaded_on" through the API should be ignored."""
         video = factories.VideoFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         response = self.client.get(
             f"/api/videos/{video.id}/",
@@ -438,7 +438,7 @@ class VideoUpdateAPITest(TestCase):
             uploaded_on="2019-09-24 07:24:40+00",
             resolutions=[240, 480, 720],
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         response = self.client.get(
             f"/api/videos/{video.id}/",
@@ -540,7 +540,7 @@ class VideoUpdateAPITest(TestCase):
             description="my description",
             join_mode=APPROVAL,
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         response = self.client.get(
             f"/api/videos/{video.id}/",
@@ -564,7 +564,7 @@ class VideoUpdateAPITest(TestCase):
         """An instructor with read_only set to true should not be able to update the video."""
         video = factories.VideoFactory()
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video.playlist,
+            playlist=video.playlist,
             permissions__can_update=False,
         )
 
@@ -594,7 +594,7 @@ class VideoUpdateAPITest(TestCase):
     def test_api_video_patch_video_student(self):
         """Student users should not be allowed to patch a video through the API."""
         video = factories.VideoFactory(title="my title")
-        jwt_token = StudentLtiTokenFactory(resource=video.playlist)
+        jwt_token = StudentLtiTokenFactory(playlist=video.playlist)
 
         data = {"title": "my new title"}
         response = self.client.patch(
@@ -615,7 +615,7 @@ class VideoUpdateAPITest(TestCase):
         """An instructor with read_only set to true should not be able to patch the video."""
         video = factories.VideoFactory()
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video.playlist,
+            playlist=video.playlist,
             permissions__can_update=False,
         )
 
@@ -635,7 +635,7 @@ class VideoUpdateAPITest(TestCase):
         this field can only be updated by AWS via the separate update-state API endpoint.
         """
         video = factories.VideoFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
         self.assertIsNone(video.uploaded_on)
 
         data = {"active_stamp": "1533686400"}
@@ -655,7 +655,7 @@ class VideoUpdateAPITest(TestCase):
         """Token users trying to update the ID of a video they own should be ignored."""
         video = factories.VideoFactory()
         original_id = video.id
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         response = self.client.get(
             f"/api/videos/{video.id}/",
@@ -678,7 +678,7 @@ class VideoUpdateAPITest(TestCase):
         """Token users should not be allowed to update another video through the API."""
         video_token = factories.VideoFactory()
         video_update = factories.VideoFactory(title="my title")
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video_token.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video_token.playlist)
 
         data = {"title": "my new title"}
         response = self.client.put(
@@ -695,7 +695,7 @@ class VideoUpdateAPITest(TestCase):
     def test_api_video_patch_detail_token_user_description(self):
         """Token users should be able to patch fields on their video through the API."""
         video = factories.VideoFactory(description="my description")
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         data = {"description": "my new description"}
 
@@ -713,7 +713,7 @@ class VideoUpdateAPITest(TestCase):
         """Instructors and administrators should be able to
         patch the public flag of their video through the API."""
         video = factories.VideoFactory(is_public=False)
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
         data = {"is_public": True}
         response = self.client.patch(
             f"/api/videos/{video.id}/",
@@ -731,7 +731,7 @@ class VideoUpdateAPITest(TestCase):
         video = factories.VideoFactory()
         self.assertTrue(video.allow_recording)
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
         data = {"allow_recording": False}
         response = self.client.patch(
             f"/api/videos/{video.id}/",
@@ -749,7 +749,7 @@ class VideoUpdateAPITest(TestCase):
         video = factories.VideoFactory()
         self.assertEqual(video.tags, [])
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
         data = {"tags": ["foo", "bar"]}
         response = self.client.patch(
             f"/api/videos/{video.id}/",
@@ -767,7 +767,7 @@ class VideoUpdateAPITest(TestCase):
         video = factories.VideoFactory()
         self.assertIsNone(video.license)
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
         data = {"license": CC_BY_SA}
         response = self.client.patch(
             f"/api/videos/{video.id}/",
@@ -785,7 +785,7 @@ class VideoUpdateAPITest(TestCase):
         video = factories.VideoFactory()
         self.assertIsNone(video.estimated_duration)
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
         estimated_duration = timedelta(seconds=2100)
         data = {"estimated_duration": estimated_duration}
         response = self.client.patch(
@@ -804,7 +804,7 @@ class VideoUpdateAPITest(TestCase):
         video = factories.VideoFactory()
         self.assertIsNone(video.estimated_duration)
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
         # from -7 days to -1 second
         estimated_duration = timedelta(seconds=random.randint(-604800, -1))
         data = {"estimated_duration": estimated_duration}
@@ -833,7 +833,7 @@ class VideoUpdateAPITest(TestCase):
         video = factories.VideoFactory()
         self.assertIsNone(video.estimated_duration)
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         estimated_duration = timedelta(seconds=-1)
         data = {"estimated_duration": estimated_duration}
@@ -861,7 +861,7 @@ class VideoUpdateAPITest(TestCase):
         video = factories.VideoFactory()
         self.assertTrue(video.has_chat)
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
         data = {"has_chat": False}
         response = self.client.patch(
             f"/api/videos/{video.id}/",
@@ -879,7 +879,7 @@ class VideoUpdateAPITest(TestCase):
         video = factories.VideoFactory()
         self.assertTrue(video.has_live_media)
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
         data = {"has_live_media": False}
         response = self.client.patch(
             f"/api/videos/{video.id}/",
@@ -928,7 +928,7 @@ class VideoUpdateAPITest(TestCase):
         # starting_at is None there is no event scheduled
         self.assertFalse(video.is_scheduled)
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         # starting_at gets updated to a date in the future
         # set microseconds to 0 to compare date surely as serializer truncate them
@@ -991,7 +991,7 @@ class VideoUpdateAPITest(TestCase):
         video = factories.VideoFactory(
             live_state=IDLE, live_type=RAW, starting_at=intial_starting_at
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
         # now is set after video.starting_at
         now = intial_starting_at + timedelta(days=10)
         with mock.patch.object(timezone, "now", return_value=now):
@@ -1028,7 +1028,7 @@ class VideoUpdateAPITest(TestCase):
                 )
                 self.assertFalse(video.is_scheduled)
 
-                jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+                jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
                 starting_at = timezone.now() + timedelta(days=10)
                 response = self.client.patch(
@@ -1221,7 +1221,7 @@ class VideoUpdateAPITest(TestCase):
                 )
                 self.assertFalse(video.is_scheduled)
 
-                jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+                jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
                 starting_at = timezone.now() + timedelta(hours=1)
                 response = self.client.put(
                     f"/api/videos/{video.id}/",
@@ -1259,7 +1259,7 @@ class VideoUpdateAPITest(TestCase):
         self.assertTrue(video.starting_at > timezone.now())
         self.assertTrue(video.is_scheduled)
         self.assertEqual(video.live_state, IDLE)
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
         # Mock now to the future to check video gets set to not scheduled
         future = timezone.now() + timedelta(hours=1)
         with mock.patch.object(timezone, "now", return_value=future):

@@ -37,7 +37,7 @@ class VideoInitiateUploadAPITest(TestCase):
         """An instructor with read_only set to true should not be able to initiate an upload."""
         video = factories.VideoFactory()
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video.playlist,
+            playlist=video.playlist,
             permissions__can_update=False,
         )
 
@@ -54,7 +54,7 @@ class VideoInitiateUploadAPITest(TestCase):
             id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
             upload_state=random.choice(["ready", "error"]),
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         # Create another video to check that its upload state is unaffected
         other_video = factories.VideoFactory(
@@ -374,7 +374,7 @@ class VideoInitiateUploadAPITest(TestCase):
             id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
             upload_state=random.choice(["ready", "error"]),
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
@@ -399,7 +399,7 @@ class VideoInitiateUploadAPITest(TestCase):
             id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
             upload_state=random.choice(["ready", "error"]),
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(

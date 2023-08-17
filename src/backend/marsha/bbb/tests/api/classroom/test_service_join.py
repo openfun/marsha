@@ -76,7 +76,7 @@ class ClassroomServiceJoinAPITest(TestCase):
         )
 
         jwt_token = StudentLtiTokenFactory(
-            resource=classroom.playlist,
+            playlist=classroom.playlist,
             consumer_site="consumer_site",
             user__id="user_id",
         )
@@ -106,7 +106,7 @@ class ClassroomServiceJoinAPITest(TestCase):
         other_classroom = ClassroomFactory()
 
         jwt_token = StudentLtiTokenFactory(
-            resource=other_classroom.playlist,
+            playlist=other_classroom.playlist,
             consumer_site="consumer_site",
             user__id="user_id",
         )
@@ -127,7 +127,7 @@ class ClassroomServiceJoinAPITest(TestCase):
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=classroom.playlist,
+            playlist=classroom.playlist,
             consumer_site="consumer_site",
             user__id="user_id",
         )
@@ -153,7 +153,7 @@ class ClassroomServiceJoinAPITest(TestCase):
             title="Classroom 1",
         )
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=classroom.playlist)
 
         response = self.client.patch(
             f"/api/classrooms/{classroom.id}/join/",

@@ -165,7 +165,7 @@ class VideoLivetoVodAPITest(TestCase):
             uploaded_on="2019-09-24 07:24:40+00",
             resolutions=[240, 480, 720],
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         with mock.patch(
             "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
@@ -277,7 +277,7 @@ class VideoLivetoVodAPITest(TestCase):
             uploaded_on="2019-09-24 07:24:40+00",
             resolutions=[240, 480, 720],
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         with mock.patch(
             "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"

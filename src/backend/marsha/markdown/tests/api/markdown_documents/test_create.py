@@ -37,7 +37,7 @@ class MarkdownCreateAPITest(TestCase):
         markdown_document = MarkdownDocumentFactory()
 
         jwt_token = StudentLtiTokenFactory(
-            resource=markdown_document.playlist,
+            playlist=markdown_document.playlist,
             permissions__can_update=True,
         )
 
@@ -50,7 +50,7 @@ class MarkdownCreateAPITest(TestCase):
         """An instructor should not be able to create a Markdown document."""
         playlist = core_factories.PlaylistFactory()
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=playlist)
 
         self.assertEqual(MarkdownDocument.objects.count(), 0)
 
@@ -95,7 +95,7 @@ class MarkdownCreateAPITest(TestCase):
         """An instructor should not be able to create a Markdown document without title."""
         playlist = core_factories.PlaylistFactory()
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=playlist)
 
         self.assertEqual(MarkdownDocument.objects.count(), 0)
 

@@ -61,7 +61,7 @@ class ThumbnailOptionsApiTest(TestCase):
         can query the thumbnail options' endpoint.
         """
         video = VideoFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         response = self.client.options(
             self._options_url(video), HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -76,7 +76,7 @@ class ThumbnailOptionsApiTest(TestCase):
         can query the thumbnail options' endpoint.
         """
         video = VideoFactory()
-        jwt_token = StudentLtiTokenFactory(resource=video.playlist)
+        jwt_token = StudentLtiTokenFactory(playlist=video.playlist)
 
         response = self.client.options(
             self._options_url(video), HTTP_AUTHORIZATION=f"Bearer {jwt_token}"

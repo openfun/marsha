@@ -47,7 +47,7 @@ class ClassroomDocumentCreateAPITest(TestCase):
 
         classroom_document = ClassroomDocumentFactory()
         jwt_token = StudentLtiTokenFactory(
-            resource=classroom_document.classroom.playlist
+            playlist=classroom_document.classroom.playlist
         )
         response = self.client.options(
             f"/api/classrooms/{classroom_document.classroom.id}/classroomdocuments/",
@@ -60,7 +60,7 @@ class ClassroomDocumentCreateAPITest(TestCase):
         """An instructor can fetch the classroom document options endpoint"""
 
         classroom = ClassroomFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=classroom.playlist)
 
         response = self.client.options(
             f"/api/classrooms/{classroom.id}/classroomdocuments/",

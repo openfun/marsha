@@ -19,7 +19,7 @@ class MarkdownLtiSelectAPITest(TestCase):
     def test_api_select_instructor_no_document(self):
         """An instructor should be able to fetch a Markdown document lti select."""
         playlist = PlaylistFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=playlist)
 
         response = self.client.get(
             "/api/markdown-documents/lti-select/",
@@ -43,7 +43,7 @@ class MarkdownLtiSelectAPITest(TestCase):
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=markdown_document.playlist
+            playlist=markdown_document.playlist
         )
 
         response = self.client.get(

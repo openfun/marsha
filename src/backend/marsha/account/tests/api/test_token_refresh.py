@@ -86,13 +86,13 @@ class TokenObtainPairViewTest(TestCase):
         # ... and new refresh token is not
         new_refresh_token.verify()
 
-    def test_success_resource_access(self):
+    def test_success_playlist_access(self):
         """
-        A request with a correct resource refresh token should return a 200 with a new token pair.
+        A request with a correct playlist refresh token should return a 200 with a new token pair.
         """
         session_id = str(uuid.uuid4())
-        resource_id = str(uuid.uuid4())
-        refresh_token = PlaylistRefreshToken.for_resource_id(resource_id, session_id)
+        playlist_id = str(uuid.uuid4())
+        refresh_token = PlaylistRefreshToken.for_playlist_id(playlist_id, session_id)
 
         response = self.client.post(
             "/account/api/token/refresh/",
@@ -113,9 +113,9 @@ class TokenObtainPairViewTest(TestCase):
         new_token = PlaylistAccessToken(response_data["access"])
         new_refresh_token = PlaylistRefreshToken(response_data["refresh"])
 
-        self.assertEqual(new_token.payload["token_type"], "resource_access")
+        self.assertEqual(new_token.payload["token_type"], "playlist_access")
         self.assertEqual(
-            new_refresh_token.payload["access_token_type"], "resource_access"
+            new_refresh_token.payload["access_token_type"], "playlist_access"
         )
 
         # Assert old refresh token is blacklisted ...

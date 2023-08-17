@@ -29,7 +29,7 @@ class XAPIStatementApiTest(TestCase):
     def test_xapi_statement_with_no_lrs_configured(self):
         """If no LRS configured a 200 status code should be returned."""
         video = VideoFactory()
-        jwt_token = StudentLtiTokenFactory(resource=video.playlist)
+        jwt_token = StudentLtiTokenFactory(playlist=video.playlist)
 
         data = {
             "verb": {
@@ -56,7 +56,7 @@ class XAPIStatementApiTest(TestCase):
             playlist__consumer_site__lrs_url="http://lrs.com/data/xAPI",
             playlist__consumer_site__lrs_auth_token="Basic ThisIsABasicAuth",
         )
-        jwt_token = StudentLtiTokenFactory(resource=video.playlist)
+        jwt_token = StudentLtiTokenFactory(playlist=video.playlist)
 
         data = {"foo": "bar"}
 
@@ -107,7 +107,7 @@ class XAPIStatementApiTest(TestCase):
             playlist__consumer_site__lrs_url="http://lrs.com/data/xAPI",
             playlist__consumer_site__lrs_auth_token="Basic ThisIsABasicAuth",
         )
-        jwt_token = StudentLtiTokenFactory(resource=video.playlist)
+        jwt_token = StudentLtiTokenFactory(playlist=video.playlist)
 
         data = {
             "verb": {
@@ -144,7 +144,7 @@ class XAPIStatementApiTest(TestCase):
             playlist__consumer_site__lrs_url="http://lrs.com/data/xAPI",
             playlist__consumer_site__lrs_auth_token="Basic ThisIsABasicAuth",
         )
-        jwt_token = StudentLtiTokenFactory(resource=video.playlist)
+        jwt_token = StudentLtiTokenFactory(playlist=video.playlist)
 
         data = {
             "verb": {
@@ -172,7 +172,7 @@ class XAPIStatementApiTest(TestCase):
             playlist__consumer_site__lrs_url="http://lrs.com/data/xAPI",
             playlist__consumer_site__lrs_auth_token="Basic ThisIsABasicAuth",
         )
-        jwt_token = StudentLtiTokenFactory(resource=video.playlist)
+        jwt_token = StudentLtiTokenFactory(playlist=video.playlist)
         del jwt_token.payload["user"]
 
         data = {
@@ -203,7 +203,7 @@ class XAPIStatementApiTest(TestCase):
         )
         session_id = str(uuid.uuid4())
         jwt_token = StudentLtiTokenFactory(
-            resource=document.playlist, session_id=session_id
+            playlist=document.playlist, session_id=session_id
         )
 
         data = {

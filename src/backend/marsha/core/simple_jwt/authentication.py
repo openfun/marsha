@@ -12,8 +12,8 @@ class TokenPlaylist(TokenUser):
 
     @cached_property
     def id(self):
-        """Returns the resource ID."""
-        return self.token["resource_id"]
+        """Returns the playlist ID."""
+        return self.token["playlist_id"]
 
     @cached_property
     def roles(self):
@@ -46,7 +46,7 @@ class JWTStatelessUserOrPlaylistAuthentication(JWTStatelessUserAuthentication):
         try:
             user = super().get_user(validated_token)
         except InvalidToken as exc:
-            if "resource_id" not in validated_token:
+            if "playlist_id" not in validated_token:
                 raise InvalidToken(
                     _("Token contained no recognizable playlist identification")
                 ) from exc

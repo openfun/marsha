@@ -220,7 +220,7 @@ class FileDepositoryLTIViewTestCase(TestCase):
         context = json.loads(html.unescape(match.group(1)))
         jwt_token = PlaylistAccessToken(context.get("jwt"))
         self.assertEqual(
-            jwt_token.payload["resource_id"], str(file_depository.playlist.id)
+            jwt_token.payload["playlist_id"], str(file_depository.playlist.id)
         )
         self.assertEqual(
             jwt_token.payload["user"],

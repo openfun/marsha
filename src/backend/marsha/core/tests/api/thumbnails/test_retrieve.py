@@ -172,7 +172,7 @@ class ThumbnailRetrieveApiTest(TestCase):
         video = VideoFactory()
         thumbnail = ThumbnailFactory(video=video)
 
-        jwt_token = StudentLtiTokenFactory(resource=video.playlist)
+        jwt_token = StudentLtiTokenFactory(playlist=video.playlist)
 
         response = self.client.get(
             self._get_url(video, thumbnail),
@@ -186,7 +186,7 @@ class ThumbnailRetrieveApiTest(TestCase):
         thumbnail = ThumbnailFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=thumbnail.video.playlist,
+            playlist=thumbnail.video.playlist,
             permissions__can_update=False,
         )
 
@@ -205,7 +205,7 @@ class ThumbnailRetrieveApiTest(TestCase):
         )
         thumbnail = ThumbnailFactory(video=video, upload_state="pending")
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         response = self.client.get(
             self._get_url(thumbnail.video, thumbnail),
@@ -232,7 +232,7 @@ class ThumbnailRetrieveApiTest(TestCase):
         thumbnail = ThumbnailFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=thumbnail.video.playlist,
+            playlist=thumbnail.video.playlist,
             permissions__can_update=False,
         )
 
@@ -252,7 +252,7 @@ class ThumbnailRetrieveApiTest(TestCase):
         thumbnail = ThumbnailFactory(video=video, upload_state="pending")
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video.playlist,
+            playlist=video.playlist,
             roles=["administrator"],
         )
 
@@ -289,7 +289,7 @@ class ThumbnailRetrieveApiTest(TestCase):
             upload_state="ready",
         )
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         response = self.client.get(
             self._get_url(video, thumbnail),

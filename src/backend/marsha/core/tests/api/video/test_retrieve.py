@@ -48,7 +48,7 @@ class VideoRetrieveAPITest(TestCase):
     def test_api_video_read_detail_student(self):
         """Student users should be allowed to read a video detail."""
         video = factories.VideoFactory()
-        jwt_token = StudentLtiTokenFactory(resource=video.playlist)
+        jwt_token = StudentLtiTokenFactory(playlist=video.playlist)
         # Get the video linked to the JWT token
         response = self.client.get(
             f"/api/videos/{video.id}/",
@@ -63,7 +63,7 @@ class VideoRetrieveAPITest(TestCase):
             live_state=IDLE, live_type=RAW, starting_at=starting_at
         )
         self.assertTrue(video.is_scheduled)
-        jwt_token = StudentLtiTokenFactory(resource=video.playlist)
+        jwt_token = StudentLtiTokenFactory(playlist=video.playlist)
         # Get the video linked to the JWT token
         response = self.client.get(
             f"/api/videos/{video.id}/",
@@ -83,7 +83,7 @@ class VideoRetrieveAPITest(TestCase):
         with mock.patch.object(timezone, "now", return_value=now):
             self.assertFalse(video.is_scheduled)
             self.assertEqual(video.live_state, IDLE)
-            jwt_token = StudentLtiTokenFactory(resource=video.playlist)
+            jwt_token = StudentLtiTokenFactory(playlist=video.playlist)
             # Get the video linked to the JWT token
             response = self.client.get(
                 f"/api/videos/{video.id}/",
@@ -95,7 +95,7 @@ class VideoRetrieveAPITest(TestCase):
         """Student users should not be allowed to read an other video detail."""
         video = factories.VideoFactory()
         other_video = factories.VideoFactory()
-        jwt_token = StudentLtiTokenFactory(resource=video.playlist)
+        jwt_token = StudentLtiTokenFactory(playlist=video.playlist)
         # Get the video linked to the JWT token
         response = self.client.get(
             f"/api/videos/{other_video.id}/",
@@ -111,7 +111,7 @@ class VideoRetrieveAPITest(TestCase):
             live_state=RUNNING,
             live_type=JITSI,
         )
-        jwt_token = StudentLtiTokenFactory(resource=video.playlist)
+        jwt_token = StudentLtiTokenFactory(playlist=video.playlist)
         # Get the video linked to the JWT token
         response = self.client.get(
             f"/api/videos/{video.id}/",
@@ -126,7 +126,7 @@ class VideoRetrieveAPITest(TestCase):
         video = factories.VideoFactory(upload_state="pending")
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video.playlist,
+            playlist=video.playlist,
             roles=["administrator"],
         )
 
@@ -173,7 +173,7 @@ class VideoRetrieveAPITest(TestCase):
             video=video,
         )
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         # Get the video linked to the JWT token
         response = self.client.get(
@@ -369,7 +369,7 @@ class VideoRetrieveAPITest(TestCase):
             video=video,
         )
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         # fix the time so that the url signature is deterministic and can be checked
         now = datetime(2021, 11, 30, tzinfo=baseTimezone.utc)
@@ -588,7 +588,7 @@ class VideoRetrieveAPITest(TestCase):
             video=video,
         )
 
-        jwt_token = StudentLtiTokenFactory(resource=video.playlist)
+        jwt_token = StudentLtiTokenFactory(playlist=video.playlist)
 
         # fix the time so that the url signature is deterministic and can be checked
         now = datetime(2021, 11, 30, tzinfo=baseTimezone.utc)
@@ -779,7 +779,7 @@ class VideoRetrieveAPITest(TestCase):
         )
 
         jwt_token = StudentLtiTokenFactory(
-            resource=video.playlist,
+            playlist=video.playlist,
             context_id="Maths",
             consumer_site=str(video.playlist.consumer_site.id),
         )
@@ -842,7 +842,7 @@ class VideoRetrieveAPITest(TestCase):
         video = factories.VideoFactory(upload_state="ready")
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video.playlist,
+            playlist=video.playlist,
             permissions__can_update=False,
         )
 
@@ -861,7 +861,7 @@ class VideoRetrieveAPITest(TestCase):
             playlist__title="foo bar",
             playlist__lti_id="course-v1:ufr+mathematics+00001",
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         # Get the video linked to the JWT token
         response = self.client.get(
@@ -929,7 +929,7 @@ class VideoRetrieveAPITest(TestCase):
             playlist__title="foo bar",
             playlist__lti_id="course-v1:ufr+mathematics+00001",
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         # Get the video linked to the JWT token
         response = self.client.get(
@@ -1000,7 +1000,7 @@ class VideoRetrieveAPITest(TestCase):
             resolutions=[144],
             playlist__title="foo",
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         # Get the video linked to the JWT token
         # fix the time so that the url signature is deterministic and can be checked
@@ -1275,7 +1275,7 @@ class VideoRetrieveAPITest(TestCase):
             upload_state="ready",
         )
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         # Get the video linked to the JWT token
         response = self.client.get(

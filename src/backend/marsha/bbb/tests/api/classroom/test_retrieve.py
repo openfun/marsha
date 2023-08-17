@@ -51,7 +51,7 @@ class ClassroomRetrieveAPITest(TestCase):
             "running": "true",
         }
 
-        jwt_token = StudentLtiTokenFactory(resource=classroom.playlist)
+        jwt_token = StudentLtiTokenFactory(playlist=classroom.playlist)
 
         response = self.client.get(
             f"/api/classrooms/{classroom.id!s}/",
@@ -109,7 +109,7 @@ class ClassroomRetrieveAPITest(TestCase):
             "running": "true",
         }
 
-        jwt_token = StudentLtiTokenFactory(resource=classroom.playlist)
+        jwt_token = StudentLtiTokenFactory(playlist=classroom.playlist)
 
         response = self.client.get(
             f"/api/classrooms/{classroom.id!s}/",
@@ -158,7 +158,7 @@ class ClassroomRetrieveAPITest(TestCase):
         classroom = ClassroomFactory()
         other_classroom = ClassroomFactory()
 
-        jwt_token = StudentLtiTokenFactory(resource=other_classroom.playlist)
+        jwt_token = StudentLtiTokenFactory(playlist=other_classroom.playlist)
 
         response = self.client.get(
             f"/api/classrooms/{classroom.id!s}/",
@@ -183,7 +183,7 @@ class ClassroomRetrieveAPITest(TestCase):
             "running": "true",
         }
 
-        jwt_token = StudentLtiTokenFactory(resource=classroom.playlist)
+        jwt_token = StudentLtiTokenFactory(playlist=classroom.playlist)
 
         response = self.client.get(
             f"/api/classrooms/{classroom.id!s}/",
@@ -233,7 +233,7 @@ class ClassroomRetrieveAPITest(TestCase):
             "running": "true",
         }
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=classroom.playlist)
 
         response = self.client.get(
             f"/api/classrooms/{classroom.id!s}/",
@@ -474,7 +474,7 @@ class ClassroomRetrieveAPITest(TestCase):
             "running": "true",
         }
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=classroom.playlist)
 
         response = self.client.get(
             f"/api/classrooms/{classroom.id!s}/",
@@ -546,7 +546,7 @@ class ClassroomRetrieveAPITest(TestCase):
             "running": "true",
         }
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=classroom.playlist)
 
         response = self.client.get(
             f"/api/classrooms/{classroom.id!s}/",
@@ -678,8 +678,8 @@ class ClassroomRetrieveAPITest(TestCase):
                 },
                 "starting_at": None,
                 "estimated_duration": None,
-                "public_token": None,
-                "instructor_token": None,
+                "public_token": classroom.public_token,
+                "instructor_token": classroom.instructor_token,
                 "recordings": [],
                 "retention_date": None,
                 "enable_waiting_room": False,

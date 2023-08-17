@@ -27,7 +27,7 @@ class FileDepositoryLTISelectAPITest(TestCase):
     def test_api_select_instructor_no_file_depository(self):
         """An instructor should be able to fetch a file_depository lti select."""
         playlist = core_factories.PlaylistFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=playlist)
 
         response = self.client.get(
             "/api/filedepositories/lti-select/",
@@ -45,7 +45,7 @@ class FileDepositoryLTISelectAPITest(TestCase):
     def test_api_select_instructor(self):
         """An instructor should be able to fetch a file_depository lti select."""
         file_depository = FileDepositoryFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=file_depository.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=file_depository.playlist)
 
         response = self.client.get(
             "/api/filedepositories/lti-select/",

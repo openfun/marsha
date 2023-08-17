@@ -9,7 +9,7 @@ from marsha.core.simple_jwt.tokens import PlaylistAccessToken
 
 
 def create_classroom_stable_invite_jwt(classroom, role=NONE, permissions=None):
-    """Create a resource JWT to be used in classroom invite links.
+    """Create a playlist JWT to be used in classroom invite links.
 
     Parameters
     ----------
@@ -28,20 +28,20 @@ def create_classroom_stable_invite_jwt(classroom, role=NONE, permissions=None):
         The JWT.
 
     """
-    resource_jwt = PlaylistAccessToken.for_resource_id(
-        resource_id=str(classroom.id),
+    playlist_jwt = PlaylistAccessToken.for_playlist_id(
+        playlist_id=str(classroom.playlist_id),
         session_id=f"{classroom.id}-invite",
         roles=[role],
         permissions=permissions or {},
     )
 
     # Set a fixed JWT ID
-    resource_jwt.set_jti(
+    playlist_jwt.set_jti(
         f"classroom-invite-{classroom.id}-{classroom.created_on.strftime('%Y-%m-%d')}"
     )
 
     # Set a fixed validity beginning: the classroom creation date
-    resource_jwt.set_iat(at_time=classroom.created_on)
+    playlist_jwt.set_iat(at_time=classroom.created_on)
 
     duration = settings.BBB_INVITE_JWT_DEFAULT_DAYS_DURATION
     if role == INSTRUCTOR:
@@ -50,9 +50,9 @@ def create_classroom_stable_invite_jwt(classroom, role=NONE, permissions=None):
         hour=0, minute=0, second=0, microsecond=0
     ) + timedelta(days=duration)
 
-    resource_jwt.set_exp(
+    playlist_jwt.set_exp(
         from_time=classroom.created_on,
         lifetime=validity_end - classroom.created_on,
     )
 
-    return resource_jwt
+    return playlist_jwt

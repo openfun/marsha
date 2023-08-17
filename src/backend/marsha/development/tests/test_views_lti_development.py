@@ -67,7 +67,7 @@ class DevelopmentLTIViewTestCase(TestCase):
 
         context = json.loads(unescape(match.group(1)))
         jwt_token = PlaylistAccessToken(context.get("jwt"))
-        self.assertEqual(jwt_token.payload["resource_id"], str(video.playlist.id))
+        self.assertEqual(jwt_token.payload["playlist_id"], str(video.playlist.id))
         self.assertEqual(
             jwt_token.payload["user"],
             {
@@ -121,7 +121,7 @@ class DevelopmentLTIViewTestCase(TestCase):
 
         context = json.loads(unescape(match.group(1)))
         jwt_token = PlaylistAccessToken(context.get("jwt"))
-        self.assertEqual(jwt_token.payload["resource_id"], str(video.playlist.id))
+        self.assertEqual(jwt_token.payload["playlist_id"], str(video.playlist.id))
         self.assertEqual(
             jwt_token.payload["user"],
             {
@@ -214,7 +214,7 @@ class DevelopmentLTIViewTestCase(TestCase):
         context = json.loads(unescape(match.group(1)))
         jwt_token = PlaylistAccessToken(context.get("jwt"))
         video = Video.objects.get()
-        self.assertEqual(jwt_token.payload["resource_id"], str(video.playlist.id))
+        self.assertEqual(jwt_token.payload["playlist_id"], str(video.playlist.id))
         self.assertEqual(
             jwt_token.payload["user"],
             {

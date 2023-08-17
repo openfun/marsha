@@ -39,7 +39,7 @@ class VideoCreateAPITest(TestCase):
     def test_api_video_create_student(self):
         """Student users should not be able to create videos."""
         video = factories.VideoFactory()
-        jwt_token = StudentLtiTokenFactory(resource=video.playlist)
+        jwt_token = StudentLtiTokenFactory(playlist=video.playlist)
         response = self.client.post(
             "/api/videos/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -534,7 +534,7 @@ class VideoCreateAPITest(TestCase):
         """
         playlist = factories.PlaylistFactory()
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=playlist)
 
         self.assertEqual(models.Video.objects.count(), 0)
 

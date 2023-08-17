@@ -42,7 +42,7 @@ class {{cookiecutter.model}}APITest(TestCase):
         {{cookiecutter.model_lower}} = {{cookiecutter.model}}Factory()
 
         jwt_token = StudentLtiTokenFactory(
-            resource={{cookiecutter.model_lower}},
+            playlist={{cookiecutter.model_lower}}.playlist,
             permissions__can_update=True,
         )
 
@@ -55,7 +55,7 @@ class {{cookiecutter.model}}APITest(TestCase):
         """An instructor should not be able to fetch a {{cookiecutter.model_lower}} list."""
         {{cookiecutter.model_lower}} = {{cookiecutter.model}}Factory()
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource={{cookiecutter.model_lower}})
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist={{cookiecutter.model_lower}}.playlist)
 
         response = self.client.get(
             "/api/{{cookiecutter.model_url_part}}/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -66,7 +66,7 @@ class {{cookiecutter.model}}APITest(TestCase):
         """A student should be allowed to fetch a {{cookiecutter.model_lower}}."""
         {{cookiecutter.model_lower}} = {{cookiecutter.model}}Factory()
 
-        jwt_token = StudentLtiTokenFactory(resource={{cookiecutter.model_lower}})
+        jwt_token = StudentLtiTokenFactory(playlist={{cookiecutter.model_lower}}.playlist)
 
         response = self.client.get(
             f"/api/{{cookiecutter.model_url_part}}/{ {{cookiecutter.model_lower}}.id!s}/",
@@ -95,7 +95,7 @@ class {{cookiecutter.model}}APITest(TestCase):
         other_{{cookiecutter.model_lower}} = {{cookiecutter.model}}Factory()
 
 
-        jwt_token = StudentLtiTokenFactory(resource=other_{{cookiecutter.model_lower}})
+        jwt_token = StudentLtiTokenFactory(playlist=other_{{cookiecutter.model_lower}}.playlist)
 
         response = self.client.get(
             f"/api/{{cookiecutter.model_url_part}}/{ {{cookiecutter.model_lower}}.id!s}/",
@@ -107,7 +107,7 @@ class {{cookiecutter.model}}APITest(TestCase):
         """An instructor should be able to fetch a {{cookiecutter.model_lower}}."""
         {{cookiecutter.model_lower}} = {{cookiecutter.model}}Factory()
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource={{cookiecutter.model_lower}})
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist={{cookiecutter.model_lower}}.playlist)
 
         response = self.client.get(
             f"/api/{{cookiecutter.model_url_part}}/{ {{cookiecutter.model_lower}}.id!s}/",
@@ -140,7 +140,7 @@ class {{cookiecutter.model}}APITest(TestCase):
         {{cookiecutter.model_lower}} = {{cookiecutter.model}}Factory()
 
         jwt_token = StudentLtiTokenFactory(
-            resource={{cookiecutter.model_lower}},
+            playlist={{cookiecutter.model_lower}}.playlist,
             permissions__can_update=True,
         )
 
@@ -163,7 +163,7 @@ class {{cookiecutter.model}}APITest(TestCase):
         """An instructor without playlist token should not be able to create a {{cookiecutter.model_lower}}."""
         {{cookiecutter.model_lower}} = {{cookiecutter.model}}Factory()
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource={{cookiecutter.model_lower}})
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist={{cookiecutter.model_lower}}.playlist)
 
         response = self.client.post(
             "/api/{{cookiecutter.model_url_part}}/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -230,7 +230,7 @@ class {{cookiecutter.model}}APITest(TestCase):
         """A student user should not be able to update a {{cookiecutter.model_lower}}."""
         {{cookiecutter.model_lower}} = {{cookiecutter.model}}Factory()
 
-        jwt_token = StudentLtiTokenFactory(resource={{cookiecutter.model_lower}})
+        jwt_token = StudentLtiTokenFactory(playlist={{cookiecutter.model_lower}}.playlist)
         data = {"title": "new title"}
 
         response = self.client.patch(
@@ -246,7 +246,7 @@ class {{cookiecutter.model}}APITest(TestCase):
         {{cookiecutter.model_lower}} = {{cookiecutter.model}}Factory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource={{cookiecutter.model_lower}},
+            playlist={{cookiecutter.model_lower}}.playlist,
             permissions__can_update=False,
         )
         data = {"title": "new title"}
@@ -263,7 +263,7 @@ class {{cookiecutter.model}}APITest(TestCase):
         """An instructor should be able to update a {{cookiecutter.model_lower}}."""
         {{cookiecutter.model_lower}} = {{cookiecutter.model}}Factory()
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource={{cookiecutter.model_lower}})
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist={{cookiecutter.model_lower}}.playlist)
         data = {"title": "new title", "description": "Hello"}
 
         response = self.client.patch(

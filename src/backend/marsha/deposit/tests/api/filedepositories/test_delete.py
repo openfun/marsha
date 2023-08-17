@@ -54,7 +54,7 @@ class FileDepositoryDeleteAPITest(TestCase):
     def test_api_file_depository_delete_student(self):
         """A student user should not be able to delete a file_depository."""
         file_depository = FileDepositoryFactory()
-        jwt_token = StudentLtiTokenFactory(resource=file_depository.playlist)
+        jwt_token = StudentLtiTokenFactory(playlist=file_depository.playlist)
 
         self.assertEqual(FileDepository.objects.count(), 1)
         response = self.client.delete(
@@ -69,7 +69,7 @@ class FileDepositoryDeleteAPITest(TestCase):
         """An instructor should not be able to delete a file_depository in read_only."""
         file_depository = FileDepositoryFactory()
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=file_depository.playlist,
+            playlist=file_depository.playlist,
             permissions__can_update=False,
         )
 
@@ -85,7 +85,7 @@ class FileDepositoryDeleteAPITest(TestCase):
     def test_api_file_depository_delete_instructor(self):
         """An instructor should be able to delete a file_depository."""
         file_depository = FileDepositoryFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=file_depository.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=file_depository.playlist)
 
         self.assertEqual(FileDepository.objects.count(), 1)
         response = self.client.delete(

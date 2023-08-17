@@ -93,7 +93,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
         jwt_token = PlaylistAccessToken(context.get("jwt"))
         PlaylistRefreshToken(context.get("refresh_token"))  # Must not raise
         self.assertEqual(context.get("frontend_home_url"), "https://marsha.education")
-        self.assertEqual(jwt_token.payload["resource_id"], str(video.playlist.id))
+        self.assertEqual(jwt_token.payload["playlist_id"], str(video.playlist.id))
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(
             jwt_token.payload["consumer_site"], str(passport.consumer_site.id)
@@ -249,7 +249,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
         context = json.loads(unescape(match.group(1)))
         jwt_token = PlaylistAccessToken(context.get("jwt"))
         PlaylistRefreshToken(context.get("refresh_token"))  # Must not raise
-        self.assertEqual(jwt_token.payload["resource_id"], str(video.playlist.id))
+        self.assertEqual(jwt_token.payload["playlist_id"], str(video.playlist.id))
         self.assertEqual(
             jwt_token.payload["user"],
             {
@@ -430,7 +430,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
         context = json.loads(unescape(match.group(1)))
         jwt_token = PlaylistAccessToken(context.get("jwt"))
         PlaylistRefreshToken(context.get("refresh_token"))  # Must not raise
-        self.assertEqual(jwt_token.payload["resource_id"], str(video.playlist.id))
+        self.assertEqual(jwt_token.payload["playlist_id"], str(video.playlist.id))
         self.assertEqual(
             jwt_token.payload["user"],
             {
@@ -651,7 +651,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
         context = json.loads(unescape(match.group(1)))
         jwt_token = PlaylistAccessToken(context.get("jwt"))
         PlaylistRefreshToken(context.get("refresh_token"))  # Must not raise
-        self.assertEqual(jwt_token.payload["resource_id"], str(video.playlist.id))
+        self.assertEqual(jwt_token.payload["playlist_id"], str(video.playlist.id))
         self.assertEqual(
             jwt_token.payload["user"],
             {
@@ -808,7 +808,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
         context = json.loads(unescape(match.group(1)))
         jwt_token = PlaylistAccessToken(context.get("jwt"))
         PlaylistRefreshToken(context.get("refresh_token"))  # Must not raise
-        self.assertEqual(jwt_token.payload["resource_id"], str(video.playlist.id))
+        self.assertEqual(jwt_token.payload["playlist_id"], str(video.playlist.id))
         self.assertEqual(
             jwt_token.payload["user"],
             {
@@ -1056,7 +1056,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
         context = json.loads(unescape(match.group(1)))
         jwt_token = PlaylistAccessToken(context.get("jwt"))
         PlaylistRefreshToken(context.get("refresh_token"))  # Must not raise
-        self.assertEqual(jwt_token.payload["resource_id"], str(video.playlist.id))
+        self.assertEqual(jwt_token.payload["playlist_id"], str(video.playlist.id))
         self.assertEqual(
             jwt_token.payload["user"],
             {
@@ -1196,7 +1196,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
         context = json.loads(unescape(match.group(1)))
         jwt_token = PlaylistAccessToken(context.get("jwt"))
         PlaylistRefreshToken(context.get("refresh_token"))  # Must not raise
-        self.assertEqual(jwt_token.payload["resource_id"], str(video.playlist.id))
+        self.assertEqual(jwt_token.payload["playlist_id"], str(video.playlist.id))
         self.assertEqual(
             jwt_token.payload["user"],
             {
@@ -1310,7 +1310,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
         context = json.loads(unescape(match.group(1)))
         jwt_token = PlaylistAccessToken(context.get("jwt"))
         PlaylistRefreshToken(context.get("refresh_token"))  # Must not raise
-        self.assertEqual(jwt_token.payload["resource_id"], str(video.playlist.id))
+        self.assertEqual(jwt_token.payload["playlist_id"], str(video.playlist.id))
         self.assertEqual(
             jwt_token.payload["user"],
             {
@@ -1452,7 +1452,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
         context = json.loads(unescape(match.group(1)))
         jwt_token = PlaylistAccessToken(context.get("jwt"))
         PlaylistRefreshToken(context.get("refresh_token"))  # Must not raise
-        self.assertEqual(jwt_token.payload["resource_id"], str(video.playlist.id))
+        self.assertEqual(jwt_token.payload["playlist_id"], str(video.playlist.id))
         self.assertEqual(
             jwt_token.payload["user"],
             {
@@ -1596,7 +1596,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
         context = json.loads(unescape(match.group(1)))
         jwt_token = PlaylistAccessToken(context.get("jwt"))
         PlaylistRefreshToken(context.get("refresh_token"))  # Must not raise
-        self.assertEqual(jwt_token.payload["resource_id"], str(video.playlist.id))
+        self.assertEqual(jwt_token.payload["playlist_id"], str(video.playlist.id))
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(
             jwt_token.payload["consumer_site"], str(passport.consumer_site.id)
@@ -1730,7 +1730,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
         context = json.loads(unescape(match.group(1)))
         jwt_token = PlaylistAccessToken(context.get("jwt"))
         PlaylistRefreshToken(context.get("refresh_token"))  # Must not raise
-        self.assertEqual(jwt_token.payload["resource_id"], str(video.playlist.id))
+        self.assertEqual(jwt_token.payload["playlist_id"], str(video.playlist.id))
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(
             jwt_token.payload["consumer_site"], str(passport.consumer_site.id)

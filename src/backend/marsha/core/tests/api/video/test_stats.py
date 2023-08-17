@@ -173,7 +173,7 @@ class TestApiVideoStats(TestCase):
         video = VideoFactory()
 
         jwt_token = StudentLtiTokenFactory(
-            resource=video.playlist,
+            playlist=video.playlist,
             context_id=str(video.playlist.lti_id),
             consumer_site=str(video.playlist.consumer_site.id),
         )
@@ -218,7 +218,7 @@ class TestApiVideoStats(TestCase):
         video = VideoFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video.playlist,
+            playlist=video.playlist,
         )
 
         with mock.patch(

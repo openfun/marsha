@@ -70,7 +70,7 @@ class BaseLTIViewForPortabilityTestCase(TestCase):
             },
         )
 
-    def assertResourceJWTCommonValuesAreWellDefined(self, jwt_token, lti_role):
+    def assertPlaylistJWTCommonValuesAreWellDefined(self, jwt_token, lti_role):
         """Assert common values in the JWT token are properly defined."""
         self.assertEqual(jwt_token.payload["context_id"], "other:lti:context")
         self.assertEqual(
@@ -141,13 +141,13 @@ class BaseLTIViewForPortabilityTestCase(TestCase):
         newly_create_playlist = Playlist.objects.get(lti_id="other:lti:context")
 
         jwt_token = PlaylistAccessToken(context.get("jwt"))
-        self.assertEqual(jwt_token.payload["resource_id"], "")  # important
+        self.assertEqual(jwt_token.payload["playlist_id"], "")  # important
         self.assertEqual(
             jwt_token.payload["port_to_playlist_id"], str(newly_create_playlist.id)
         )
 
         # Test common JWT attributes
-        self.assertResourceJWTCommonValuesAreWellDefined(jwt_token, lti_role)
+        self.assertPlaylistJWTCommonValuesAreWellDefined(jwt_token, lti_role)
 
         # Test context when portability already exists and user is already associated
         PortabilityRequestFactory(
@@ -187,13 +187,13 @@ class BaseLTIViewForPortabilityTestCase(TestCase):
         newly_create_playlist = Playlist.objects.get(lti_id="other:lti:context")
 
         jwt_token = PlaylistAccessToken(context.get("jwt"))
-        self.assertEqual(jwt_token.payload["resource_id"], "")  # important
+        self.assertEqual(jwt_token.payload["playlist_id"], "")  # important
         self.assertEqual(
             jwt_token.payload["port_to_playlist_id"], str(newly_create_playlist.id)
         )
 
         # Test common JWT attributes
-        self.assertResourceJWTCommonValuesAreWellDefined(jwt_token, lti_role)
+        self.assertPlaylistJWTCommonValuesAreWellDefined(jwt_token, lti_role)
 
     def assertLTIViewReturnsNoResourceForStudent(self, resource):
         """Assert the LTI view will never return a resource for a student."""
@@ -201,6 +201,7 @@ class BaseLTIViewForPortabilityTestCase(TestCase):
 
         initial_playlist_count = Playlist.objects.all().count()
         lti_data = self._get_lti_data(resource, lti_role)
+        # breakpoint()
         response = self._client_post_on_resource_lti_view(resource, lti_data)
         context = self._get_context_from_response(response)
 

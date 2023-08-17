@@ -43,7 +43,7 @@ class MarkdownRetrieveAPITest(TestCase):
         markdown_document = MarkdownDocumentFactory()
 
         jwt_token = StudentLtiTokenFactory(
-            resource=markdown_document.playlist,
+            playlist=markdown_document.playlist,
             permissions__can_update=True,
         )
 
@@ -70,7 +70,7 @@ class MarkdownRetrieveAPITest(TestCase):
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=markdown_document.playlist
+            playlist=markdown_document.playlist
         )
 
         response = self.client.get(
@@ -120,7 +120,7 @@ class MarkdownRetrieveAPITest(TestCase):
         other_markdown_document = MarkdownDocumentFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=other_markdown_document.playlist
+            playlist=other_markdown_document.playlist
         )
 
         response = self.client.get(
@@ -134,7 +134,7 @@ class MarkdownRetrieveAPITest(TestCase):
         markdown_document = MarkdownDocumentFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=markdown_document.playlist,
+            playlist=markdown_document.playlist,
             permissions__can_update=False,
         )
 

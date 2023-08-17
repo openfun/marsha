@@ -46,7 +46,7 @@ class ClassroomListAPITest(TestCase):
         classroom = ClassroomFactory()
 
         jwt_token = StudentLtiTokenFactory(
-            resource=classroom.playlist,
+            playlist=classroom.playlist,
             permissions__can_update=True,
         )
 
@@ -59,7 +59,7 @@ class ClassroomListAPITest(TestCase):
         """An instructor should not be able to fetch a classroom list."""
         classroom = ClassroomFactory()
 
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=classroom.playlist)
 
         response = self.client.get(
             "/api/classrooms/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"

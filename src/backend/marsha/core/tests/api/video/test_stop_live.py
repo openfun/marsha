@@ -178,7 +178,7 @@ class VideoAPITest(TestCase):
         """An instructor with read_only set to true should not be able to stop a live."""
         video = factories.VideoFactory()
         jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video.playlist,
+            playlist=video.playlist,
             permissions__can_update=False,
         )
 
@@ -191,7 +191,7 @@ class VideoAPITest(TestCase):
     def test_api_video_student_stop_live(self):
         """A student should not be able to stop a live."""
         video = factories.VideoFactory()
-        jwt_token = StudentLtiTokenFactory(resource=video.playlist)
+        jwt_token = StudentLtiTokenFactory(playlist=video.playlist)
 
         response = self.client.post(
             f"/api/videos/{video.id}/stop-live/",
@@ -249,7 +249,7 @@ class VideoAPITest(TestCase):
             },
             live_type=RAW,
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         # stop a live video,
         now = datetime(2021, 11, 16, tzinfo=baseTimezone.utc)
@@ -334,7 +334,7 @@ class VideoAPITest(TestCase):
             id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
             upload_state=random.choice([s[0] for s in STATE_CHOICES]),
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         # stop a live video,
         with mock.patch.object(
@@ -359,7 +359,7 @@ class VideoAPITest(TestCase):
             live_state=random.choice([s[0] for s in LIVE_CHOICES if s[0] != "running"]),
             live_type=RAW,
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         # stop a live video,
         with mock.patch.object(
@@ -410,7 +410,7 @@ class VideoAPITest(TestCase):
             },
             live_type=RAW,
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video.playlist)
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
         # stop a live video,
         with mock.patch.object(timezone, "now", return_value=stop), mock.patch.object(
