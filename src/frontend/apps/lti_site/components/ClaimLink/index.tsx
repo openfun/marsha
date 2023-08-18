@@ -58,7 +58,7 @@ export const ClaimLink = ({ decodedJwt }: ClaimLinkProps) => {
   let claimUrl = `${appConfig.frontend_home_url}/claim-resource`;
   if (showClaimLink) {
     claimUrl += `?lti_consumer_site_id=${decodedJwt.consumer_site}`;
-    claimUrl += `&resource_id=${decodedJwt.resource_id}`;
+    claimUrl += `&resource_id=${resource.id}`;
     claimUrl += `&modelName=${appConfig.modelName}`;
     claimUrl += `&playlist_id=${resource.playlist.id}`;
     claimUrl += `&lti_user_id=${decodedJwt.user?.id}`;

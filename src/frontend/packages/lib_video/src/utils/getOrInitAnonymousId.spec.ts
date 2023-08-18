@@ -1,4 +1,9 @@
-import { decodeJwt, useCurrentUser, useJwt } from 'lib-components';
+import {
+  DecodedJwtLTI,
+  decodeJwt,
+  useCurrentUser,
+  useJwt,
+} from 'lib-components';
 import { v4 as uuidv4 } from 'uuid';
 
 import { getOrInitAnonymousId } from './getOrInitAnonymousId';
@@ -34,7 +39,7 @@ const webToken = {
   user_id: '1324',
 };
 
-const ltiToken = {
+const ltiToken: DecodedJwtLTI = {
   context_id: 'course-v1:ufr+mathematics+0001',
   consumer_site: '112cf553-b8c3-4b98-9d47-d0793284b9b3',
   locale: 'en_US',
@@ -43,7 +48,7 @@ const ltiToken = {
     can_access_dashboard: false,
     can_update: false,
   },
-  resource_id: '26debfee-8c3b-4c23-b08f-67f223de9832',
+  playlist_id: '26debfee-8c3b-4c23-b08f-67f223de9832',
   roles: ['student'],
   session_id: '6bbb8d1d-442d-4575-a0ad-d1e34f37cae3',
   user: {

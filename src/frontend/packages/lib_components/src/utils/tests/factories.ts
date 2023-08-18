@@ -296,7 +296,7 @@ export const ltiPublicTokenMockFactory = (
       can_update: false,
       ...permission,
     },
-    resource_id: faker.datatype.uuid(),
+    playlist_id: faker.datatype.uuid(),
     roles: ['none'],
     session_id: faker.datatype.uuid(),
     ...token,
