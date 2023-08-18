@@ -28,9 +28,9 @@ describe('decodeJwt', () => {
       //   "sub": "1234567890",
       //   "name": "John Doe",
       //   "iat": 1516239022
-      //   "resource_id": ""
+      //   "playlist_id": ""
       const jwt =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJyZXNvdXJjZV9pZCI6IiJ9.2AAf0eZ75jFyAdREUMXr3CyOt9QPoqSuIZ5lNj3c7CE';
+        'ewogICJhbGciOiAiSFMyNTYiLAogICJ0eXAiOiAiSldUIgp9.ewogICJzdWIiOiAiMTIzNDU2Nzg5MCIsCiAgIm5hbWUiOiAiSm9obiBEb2UiLAogICJpYXQiOiAxNTE2MjM5MDIyLAogICJwbGF5bGlzdF9pZCI6ICIiCn0.2AAf0eZ75jFyAdREUMXr3CyOt9QPoqSuIZ5lNj3c7CE';
 
       expect(() => {
         decodeJwt(jwt);
@@ -41,13 +41,13 @@ describe('decodeJwt', () => {
       //   "sub": "1234567890",
       //   "name": "John Doe",
       //   "iat": 1516239022,
-      //   "resource_id": "2c85dc9e-4ee0-11ed-b9c1-635afde8841a"
+      //   "playlist_id": "2c85dc9e-4ee0-11ed-b9c1-635afde8841a"
       const jwt =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJyZXNvdXJjZV9pZCI6IjJjODVkYzllLTRlZTAtMTFlZC1iOWMxLTYzNWFmZGU4ODQxYSJ9.fQuKBTccQyt9fJGctJsLK5KL5lRisAGDZGFrBRdVPg8';
+        'ewogICJhbGciOiAiSFMyNTYiLAogICJ0eXAiOiAiSldUIgp9.ewogICJzdWIiOiAiMTIzNDU2Nzg5MCIsCiAgIm5hbWUiOiAiSm9obiBEb2UiLAogICJpYXQiOiAxNTE2MjM5MDIyLAogICJwbGF5bGlzdF9pZCI6ICIyYzg1ZGM5ZS00ZWUwLTExZWQtYjljMS02MzVhZmRlODg0MWEiCn0.fQuKBTccQyt9fJGctJsLK5KL5lRisAGDZGFrBRdVPg8';
 
       const decodedJwt = decodeJwt(jwt);
       expect(isDecodedJwtLTI(decodedJwt)).toBeTruthy();
-      expect((decodedJwt as DecodedJwtLTI).resource_id).toEqual(
+      expect((decodedJwt as DecodedJwtLTI).playlist_id).toEqual(
         '2c85dc9e-4ee0-11ed-b9c1-635afde8841a',
       );
     });
@@ -56,16 +56,16 @@ describe('decodeJwt', () => {
       //   "sub": "1234567890",
       //   "name": "John Doe",
       //   "iat": 1516239022,
-      //   "resource_id": "",
-      //   "playlist_id": "8cb4b9fa-4ee0-11ed-a972-87a03ecac56f",
+      //   "playlist_id": "",
+      //   "port_to_playlist_id": "8cb4b9fa-4ee0-11ed-a972-87a03ecac56f",
       //   "user": {"id": "8d6d0ec4-4ee0-11ed-8d9b-97f53b688cde"}
       const jwt =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJyZXNvdXJjZV9pZCI6IiIsInBsYXlsaXN0X2lkIjoiOGNiNGI5ZmEtNGVlMC0xMWVkLWE5NzItODdhMDNlY2FjNTZmIiwidXNlciI6eyJpZCI6IjhkNmQwZWM0LTRlZTAtMTFlZC04ZDliLTk3ZjUzYjY4OGNkZSJ9fQ._ha6x03gxBMYXPpofIAVDB3HBJXg0JRnmPUr2YPdG-A';
+        'ewogICJhbGciOiAiSFMyNTYiLAogICJ0eXAiOiAiSldUIgp9.ewogICJzdWIiOiAiMTIzNDU2Nzg5MCIsCiAgIm5hbWUiOiAiSm9obiBEb2UiLAogICJpYXQiOiAxNTE2MjM5MDIyLAogICJwbGF5bGlzdF9pZCI6ICIiLAogICJwb3J0X3RvX3BsYXlsaXN0X2lkIjogIjhjYjRiOWZhLTRlZTAtMTFlZC1hOTcyLTg3YTAzZWNhYzU2ZiIsCiAgInVzZXIiOiB7CiAgICAiaWQiOiAiOGQ2ZDBlYzQtNGVlMC0xMWVkLThkOWItOTdmNTNiNjg4Y2RlIgogIH0KfQ._ha6x03gxBMYXPpofIAVDB3HBJXg0JRnmPUr2YPdG-A';
 
       const decodedJwt = decodeJwt(jwt);
       expect(isDecodedJwtLTI(decodedJwt)).toBeTruthy();
-      expect((decodedJwt as DecodedJwtLTI).resource_id).toEqual('');
-      expect((decodedJwt as DecodedJwtLTI).playlist_id).toEqual(
+      expect((decodedJwt as DecodedJwtLTI).playlist_id).toEqual('');
+      expect((decodedJwt as DecodedJwtLTI).port_to_playlist_id).toEqual(
         '8cb4b9fa-4ee0-11ed-a972-87a03ecac56f',
       );
       expect((decodedJwt as DecodedJwtLTI).user!.id).toEqual(

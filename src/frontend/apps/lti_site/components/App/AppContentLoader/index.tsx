@@ -115,6 +115,7 @@ const AppContent = () => {
 };
 
 const AppContentLoader = () => {
+  const appData = useAppConfig();
   const [isLoaded, setIsLoaded] = useState(false);
   const queryClient = new QueryClient();
 
@@ -141,10 +142,14 @@ const AppContentLoader = () => {
     };
 
     if (decodedJwt) {
-      return { ...decodedJwt };
+      return {
+        ...decodedJwt,
+        resource_id: appData.resource?.id || '',
+        playlist_id: (decodedJwt.port_to_playlist_id as string) || '',
+      };
     }
     return defaultResourceContext;
-  }, [decodedJwt]);
+  }, [appData.resource?.id, decodedJwt]);
 
   useEffect(() => {
     const loadIntl = async () => {

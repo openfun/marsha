@@ -66,8 +66,8 @@ describe('<ClaimLink />', () => {
         <ClaimLink
           decodedJwt={
             {
-              playlist_id: '488db2d0',
-              resource_id: 'e8c0b8d0',
+              port_to_playlist_id: '488db2d0',
+              playlist_id: 'e8c0b8d0',
               consumer_site: '32a1c2d0',
               user: { id: '6b45a4d6' },
             } as DecodedJwtLTI
@@ -82,7 +82,7 @@ describe('<ClaimLink />', () => {
       'Please login to manage this resource on http://localhost:8000/',
     );
     expect(link.getAttribute('href')).toEqual(
-      'http://localhost:8000//claim-resource?lti_consumer_site_id=32a1c2d0&resource_id=e8c0b8d0&modelName=videos&playlist_id=488db2d0&lti_user_id=6b45a4d6',
+      `http://localhost:8000//claim-resource?lti_consumer_site_id=32a1c2d0&resource_id=${video.id}&modelName=videos&playlist_id=488db2d0&lti_user_id=6b45a4d6`,
     );
     expect(link.getAttribute('target')).toEqual('_blank');
     expect(link.getAttribute('rel')).toEqual('noopener noreferrer');
@@ -135,8 +135,8 @@ describe('<ClaimLink />', () => {
         <ClaimLink
           decodedJwt={
             {
-              playlist_id: '488db2d0',
-              resource_id: 'e8c0b8d0',
+              port_to_playlist_id: '488db2d0',
+              playlist_id: 'e8c0b8d0',
               consumer_site: '32a1c2d0',
               user: { id: '6b45a4d6' },
             } as DecodedJwtLTI
@@ -197,8 +197,8 @@ describe('<ClaimLink />', () => {
         <ClaimLink
           decodedJwt={
             {
-              playlist_id: '488db2d0',
-              resource_id: 'e8c0b8d0',
+              port_to_playlist_id: '488db2d0',
+              playlist_id: 'e8c0b8d0',
               consumer_site: '32a1c2d0',
               user: { id: '6b45a4d6' },
             } as DecodedJwtLTI

@@ -12,9 +12,10 @@ export interface DecodedJwtUser {
 
 export type DecodedJwt = DecodedJwtLTI | DecodedJwtWeb;
 
-export interface DecodedJwtLTI extends ResourceContext {
+export interface DecodedJwtLTI extends Omit<ResourceContext, 'resource_id'> {
   locale: string;
   maintenance: boolean;
+  port_to_playlist_id?: string;
   session_id: string;
   user?: DecodedJwtUser;
 }

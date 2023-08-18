@@ -14,7 +14,7 @@ describe('checkToken', () => {
           can_access_dashboard: false,
           can_update: false,
         },
-        resource_id: '26debfee-8c3b-4c23-b08f-67f223de9832',
+        playlist_id: '26debfee-8c3b-4c23-b08f-67f223de9832',
         roles: ['student'],
         session_id: '6bbb8d1d-442d-4575-a0ad-d1e34f37cae3',
         user: {
@@ -36,7 +36,7 @@ describe('checkToken', () => {
           can_access_dashboard: false,
           can_update: false,
         },
-        resource_id: '26debfee-8c3b-4c23-b08f-67f223de9832',
+        playlist_id: '26debfee-8c3b-4c23-b08f-67f223de9832',
         roles: ['student'],
         session_id: '6bbb8d1d-442d-4575-a0ad-d1e34f37cae3',
         user: {
@@ -59,7 +59,7 @@ describe('checkToken', () => {
           can_access_dashboard: false,
           can_update: false,
         },
-        resource_id: '26debfee-8c3b-4c23-b08f-67f223de9832',
+        playlist_id: '26debfee-8c3b-4c23-b08f-67f223de9832',
         roles: ['student'],
         session_id: '6bbb8d1d-442d-4575-a0ad-d1e34f37cae3',
         user: {
@@ -83,7 +83,7 @@ describe('checkToken', () => {
           can_access_dashboard: false,
           can_update: false,
         },
-        resource_id: '26debfee-8c3b-4c23-b08f-67f223de9832',
+        playlist_id: '26debfee-8c3b-4c23-b08f-67f223de9832',
         roles: ['student'],
         session_id: '6bbb8d1d-442d-4575-a0ad-d1e34f37cae3',
       };

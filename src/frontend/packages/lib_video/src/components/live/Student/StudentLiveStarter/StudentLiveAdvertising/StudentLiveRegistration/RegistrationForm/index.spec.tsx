@@ -51,7 +51,7 @@ describe('<RegistrationForm />', () => {
         can_access_dashboard: false,
         can_update: false,
       },
-      resource_id: 'resource id',
+      playlist_id: 'playlist id',
       roles: ['student'],
       session_id: 'session id',
       user: {
@@ -121,7 +121,7 @@ describe('<RegistrationForm />', () => {
         can_access_dashboard: false,
         can_update: false,
       },
-      resource_id: 'resource id',
+      playlist_id: 'playlist_id',
       roles: ['student'],
       session_id: 'session id',
       user: {

@@ -8,14 +8,14 @@ import {
 
 export const isDecodedJwtLTI = (jwt: unknown): jwt is DecodedJwtLTI => {
   if (jwt && typeof jwt === 'object') {
-    const resourceId = (jwt as DecodedJwtLTI).resource_id;
     const playlistId = (jwt as DecodedJwtLTI).playlist_id;
+    const portToPlaylistId = (jwt as DecodedJwtLTI).port_to_playlist_id;
     const userId = (jwt as DecodedJwtLTI).user?.id;
     return (
       // A resource is defined
       // Or we are in a portability request context and a playlist and user ID are mandatory
-      (!!resourceId && typeof resourceId === 'string') ||
-      (!resourceId && !!playlistId && !!userId)
+      (!!playlistId && typeof playlistId === 'string') ||
+      (!playlistId && !!portToPlaylistId && !!userId)
     );
   }
 

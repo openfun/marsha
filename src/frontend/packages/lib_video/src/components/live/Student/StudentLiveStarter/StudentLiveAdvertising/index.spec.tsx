@@ -40,7 +40,7 @@ jest.mock('lib-components', () => ({
       can_access_dashboard: false,
       can_update: false,
     },
-    resource_id: 'ressource_id',
+    playlist_id: 'playlist_id',
     roles: [],
     session_id: 'session_id',
     user: {
