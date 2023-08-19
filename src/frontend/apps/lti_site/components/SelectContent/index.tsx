@@ -54,7 +54,7 @@ export const SelectContent = ({
         action={lti_select_form_action_url}
         method="POST"
         encType="application/x-www-form-urlencoded"
-        role="form"
+        aria-label="Select content"
       >
         {Object.entries(lti_select_form_data).map(([name, value]) => (
           <input key={name} type="hidden" name={name} value={value} />
