@@ -18,7 +18,11 @@ def get_video_stream_duration(path: str, existingProbe=None):
 
 
 def get_video_stream(probe):
-    return next((s for s in probe["streams"] if s["codec_type"] == "video"), None)
+    steams = probe["streams"]
+    for stream in steams:
+        if stream["codec_type"] == "video":
+            return stream
+    return None
 
 
 def get_video_stream_dimensions_info(probe):
@@ -43,12 +47,12 @@ def get_video_stream_dimensions_info(probe):
 
 
 def get_video_stream_fps(probe):
-    videoStream = get_video_stream(probe)
-    if not videoStream:
+    video_stream = get_video_stream(probe)
+    if not video_stream:
         return 0
 
     for key in ["avg_frame_rate", "r_frame_rate"]:
-        valuesText = videoStream.get(key)
+        valuesText = video_stream.get(key)
         if not valuesText:
             continue
 

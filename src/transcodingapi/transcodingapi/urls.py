@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path
 from rest_framework import routers
 
 from transcodingapi.transcoding.views import (
@@ -9,13 +9,13 @@ from transcodingapi.transcoding.views import (
     VideoViewSet,
 )
 
-router = routers.DefaultRouter()
-router.register(r"registration-tokens", RunnerRegistrationTokenViewSet)
+router = routers.DefaultRouter(trailing_slash=False)
+router.register(r"runners/registration-tokens", RunnerRegistrationTokenViewSet)
 router.register(r"runners", RunnerViewSet)
-router.register(r"jobs", RunnerJobViewSet)
-router.register(r"videos", VideoViewSet)
+router.register(r"runners/jobs", RunnerJobViewSet, basename="jobs")
+router.register(r"videos", VideoViewSet, basename="videos")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", include(router.urls)),
+    re_path(r"api/v1/", include(router.urls)),
 ]

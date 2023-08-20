@@ -19,11 +19,10 @@ class RunnerSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "name",
-            "description",
+            "runnerToken",
         )
         read_only_fields = (
             "runnerRegistrationToken",
-            "runnerToken",
             "lastContact",
             "ip",
         )

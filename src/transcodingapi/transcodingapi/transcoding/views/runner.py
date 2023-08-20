@@ -45,7 +45,7 @@ class RunnerViewSet(mixins.DestroyModelMixin, ListMixin, viewsets.GenericViewSet
         runner.save()
 
         serializer = self.get_serializer(runner)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=["post"], url_path="unregister")
     def unregister(self, request):

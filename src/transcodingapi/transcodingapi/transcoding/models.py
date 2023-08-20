@@ -127,6 +127,9 @@ class Video(models.Model):
     duration = models.IntegerField(null=True, blank=True)
     name = models.CharField(max_length=255)
 
+    def get_max_quality_file(self):
+        return max(self.files.all(), key=lambda f: f.resolution)
+
     def remove_all_web_video_files(self):
         for file in self.files.all():
             file.remove_web_video_file()

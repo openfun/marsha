@@ -4,11 +4,10 @@ import logging
 from abc import ABC, abstractmethod
 from uuid import UUID
 
+from asgiref.sync import async_to_sync
 from django.utils import timezone
 
-from transcodingapi.transcoding.helpers.runner_socket import (
-    runner_socket,
-)
+from djangoio.views import send_available_jobs_ping_to_runners
 
 from ...models import RunnerJob, RunnerJobState
 
@@ -17,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 class AbstractJobHandler(ABC):
     @abstractmethod
-    def create(self, options: dict) -> RunnerJob:
+    async def create(self, options: dict) -> RunnerJob:
         pass
 
     def create_runner_job(
@@ -42,7 +41,7 @@ class AbstractJobHandler(ABC):
         )
 
         if runner_job.state == RunnerJobState.PENDING:
-            runner_socket.send_available_jobs_ping_to_runners()
+            async_to_sync(send_available_jobs_ping_to_runners)()
 
         return runner_job
 
@@ -54,18 +53,18 @@ class AbstractJobHandler(ABC):
     ) -> None:
         pass
 
-    def update(
+    async def update(
         self,
         runner_job: RunnerJob,
         progress: int | None = None,
         update_payload=None,
     ) -> None:
-        self.specific_update(runner_job, update_payload=update_payload)
+        await self.specific_update(runner_job, update_payload=update_payload)
 
         if progress is not None:
             runner_job.progress = progress
 
-        runner_job.save()
+        await runner_job.save()
 
     @abstractmethod
     def specific_complete(self, runner_job: RunnerJob, result_payload) -> None:
@@ -89,7 +88,7 @@ class AbstractJobHandler(ABC):
 
         affected_count = runner_job.update_dependant_jobs()
         if affected_count != 0:
-            runner_socket.send_available_jobs_ping_to_runners()
+            async_to_sync(send_available_jobs_ping_to_runners)()
 
     @abstractmethod
     def specific_cancel(self, runner_job: RunnerJob) -> None:
@@ -126,6 +125,7 @@ class AbstractJobHandler(ABC):
 
     def set_abort_state(self, runner_job: RunnerJob) -> None:
         runner_job.reset_to_pending()
+        runner_job.save()
 
     @abstractmethod
     def specific_abort(self, runner_job: RunnerJob) -> None:
@@ -160,7 +160,7 @@ class AbstractJobHandler(ABC):
                 self.error(child, "Parent error", from_parent=True)
 
     @abstractmethod
-    async def specific_error(
+    def specific_error(
         self, runner_job: RunnerJob, message: str, next_state: RunnerJobState
     ) -> None:
         pass

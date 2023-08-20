@@ -58,7 +58,7 @@ def move_to_next_state(
         return move_to_external_storage_state(video, is_new_video)
 
 
-async def move_to_external_storage_state(video: Video, is_new_video: bool, transaction):
+def move_to_external_storage_state(video: Video, is_new_video: bool, transaction):
     video_job_info = video.jobInfo
     pending_transcode = video_job_info.pendingTranscode or 0
 
@@ -69,7 +69,7 @@ async def move_to_external_storage_state(video: Video, is_new_video: bool, trans
     # previous_video_state = video.state
 
     if video.state != VideoState.TO_MOVE_TO_EXTERNAL_STORAGE:
-        await video.set_new_state(
+        video.set_new_state(
             VideoState.TO_MOVE_TO_EXTERNAL_STORAGE, is_new_video, transaction
         )
 
@@ -94,19 +94,19 @@ def move_to_failed_transcoding_state(video: Video):
     if video.state == VideoState.TRANSCODING_FAILED:
         return
 
-    return video.set_new_state(VideoState.TRANSCODING_FAILED, False, None)
+    video.state = VideoState.TRANSCODING_FAILED
+    video.save()
 
 
 def move_to_failed_move_to_object_storage_state(video: Video):
     if video.state == VideoState.TO_MOVE_TO_EXTERNAL_STORAGE_FAILED:
         return
 
-    return video.set_new_state(
-        VideoState.TO_MOVE_TO_EXTERNAL_STORAGE_FAILED, False, None
-    )
+    video.state = VideoState.TO_MOVE_TO_EXTERNAL_STORAGE_FAILED
+    video.save()
 
 
-async def move_to_published_state(
+def move_to_published_state(
     video: Video,
     is_new_video: bool,
     previous_video_state: VideoState | None = None,
@@ -121,7 +121,8 @@ async def move_to_published_state(
         tags=[video.uuid],
     )
 
-    await video.set_new_state(VideoState.PUBLISHED, is_new_video)
+    video.state = VideoState.PUBLISHED
+    video.save()
     video_is_published(video)
     # if previous_state == VideoState.TO_EDIT:
     #     Notifier.Instance.notify_of_finished_video_studio_edition(video)

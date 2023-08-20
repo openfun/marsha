@@ -3,18 +3,21 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING
 
-from socketio import ASGIApp, Namespace, Server
+from socketio import Namespace, Server
 from socketio.exceptions import ConnectionRefusedError
 
 if TYPE_CHECKING:
     from transcodingapi.transcoding.models import Runner
 
-from .decorator import debounce
+import json
+
+from channels.generic.websocket import WebsocketConsumer
+
+from .helpers.decorator import debounce
 
 logger = logging.getLogger(__name__)
 
 sio = Server(async_mode="threading")
-app = ASGIApp(sio)
 
 
 # This class is managing all the runner sockets
@@ -53,3 +56,22 @@ class RunnerSocket(Namespace):
 
 runner_socket = RunnerSocket("/runners")
 sio.register_namespace(runner_socket)
+
+
+class SocketConsumer(WebsocketConsumer):
+    def connect(self):
+        self.accept()
+
+    def disconnect(self, close_code):
+        pass
+
+    def receive(self, text_data):
+        data = json.loads(text_data)
+        if data["event"] == "my_event":
+            self.handle_my_event(data["data"])
+
+    def handle_my_event(self, data):
+        # Handle the event data
+        self.send(
+            json.dumps({"event": "my_response", "data": {"message": "Event received"}})
+        )

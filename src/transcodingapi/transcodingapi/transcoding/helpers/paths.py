@@ -77,7 +77,9 @@ def get_hls_redundancy_directory(video: Video):
 
 
 def get_hls_resolution_playlist_filename(video_filename: str):
-    return re.sub(r"-fragmented\.mp4$", "", video_filename, flags=re.IGNORECASE)
+    return (
+        re.sub(r"-fragmented\.mp4$", "", video_filename, flags=re.IGNORECASE) + ".m3u8"
+    )
 
 
 def generate_hls_master_playlist_filename(is_live: bool = False):

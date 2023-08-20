@@ -1,5 +1,6 @@
 import logging
 import uuid
+from tempfile import NamedTemporaryFile
 
 from ...models import VideoJobInfo
 from .abstract_vod_transcoding_job_handler import AbstractVODTranscodingJobHandler
@@ -49,7 +50,11 @@ class VODWebVideoTranscodingJobHandler(AbstractVODTranscodingJobHandler):
         if not video:
             return
 
-        video_file_path = private_payload.videoFile
+        video_file = result_payload["video_file"]
+
+        with NamedTemporaryFile(delete=False) as f:
+            f.write(video_file.read())
+            video_file_path = f.name
 
         on_vod_web_video_or_audio_merge_transcoding_job(
             video=video,
@@ -61,5 +66,4 @@ class VODWebVideoTranscodingJobHandler(AbstractVODTranscodingJobHandler):
             "Runner VOD web video transcoding job %s for %s ended.",
             runner_job.uuid,
             video.uuid,
-            self.lTags(video.uuid, runner_job.uuid),
         )

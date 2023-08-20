@@ -11,14 +11,8 @@ from ..ffprobe import (
     has_audio_stream,
     is_audio_file,
 )
-from ..job_handlers.vod_audio_merge_transcoding_job_handler import (
-    VODAudioMergeTranscodingJobHandler,
-)
 from ..job_handlers.vod_hls_transcoding_job_handler import (
     VODHLSTranscodingJobHandler,
-)
-from ..job_handlers.vod_web_video_transcoding_job_handler import (
-    VODWebVideoTranscodingJobHandler,
 )
 from ..paths import get_fs_video_file_output_path
 from ..resolutions import (
@@ -84,16 +78,7 @@ def build_lower_resolution_job_payloads(
     )
 
     for resolution in resolutions_enabled:
-        print(resolution)
         fps = compute_output_fps(fps=input_video_fps, resolution=resolution)
-
-        VODWebVideoTranscodingJobHandler().create(
-            video=video,
-            resolution=resolution,
-            fps=fps,
-            depends_on_runner_job=main_runner_job,
-            priority=0,
-        )
 
         VODHLSTranscodingJobHandler().create(
             video=video,
@@ -121,28 +106,11 @@ def create_optimize_or_merge_audio_jobs(video: Video, video_file: VideoFile):
     fps = compute_output_fps(inputFPS, maxResolution)
     priority = 0
 
-    if video_file.is_audio():
-        mainRunnerJob = VODAudioMergeTranscodingJobHandler().create(
-            video=video,
-            resolution=maxResolution,
-            depends_on_runner_job=None,
-            fps=fps,
-            priority=priority,
-        )
-    else:
-        mainRunnerJob = VODWebVideoTranscodingJobHandler().create(
-            video=video,
-            resolution=maxResolution,
-            depends_on_runner_job=None,
-            fps=fps,
-            priority=priority,
-        )
-
-    VODHLSTranscodingJobHandler().create(
+    mainRunnerJob = VODHLSTranscodingJobHandler().create(
         video=video,
         resolution=maxResolution,
         fps=fps,
-        depends_on_runner_job=mainRunnerJob,
+        depends_on_runner_job=None,
         priority=priority,
     )
 

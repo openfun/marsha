@@ -20,7 +20,7 @@ class AbstractVODTranscodingJobHandler(AbstractJobHandler):
     def specific_abort(self, options):
         pass
 
-    def specific_error(self, runner_job, next_state):
+    def specific_error(self, runner_job, message, next_state):
         if next_state != RunnerJobState.ERRORED:
             return
 
@@ -47,7 +47,6 @@ class AbstractVODTranscodingJobHandler(AbstractJobHandler):
             logger.info(
                 f"All transcoding jobs of {video.uuid} have been "
                 "processed or canceled, moving it to its next state",
-                self.lTags(video.uuid),
             )
 
             private_payload = runner_job.privatePayload

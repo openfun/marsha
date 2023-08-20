@@ -10,20 +10,20 @@ from ..ffprobe import get_video_stream_fps
 from ..paths import build_file_metadata, get_fs_video_file_output_path
 
 
-async def on_web_video_file_transcoding(
+def on_web_video_file_transcoding(
     video: Video, video_file: VideoFile, video_output_path, was_audio_file=False
 ):
-    await video.refresh_from_db()
+    video.refresh_from_db()
 
     output_path = get_fs_video_file_output_path(video_file)
 
-    stats = await os.stat(video_output_path)
+    stats = os.stat(video_output_path)
 
-    probe = await ffmpeg.probe(video_output_path)
-    fps = await get_video_stream_fps(video_output_path, probe)
-    metadata = await build_file_metadata(probe=probe)
+    probe = ffmpeg.probe(video_output_path)
+    fps = get_video_stream_fps(probe)
+    metadata = build_file_metadata(probe=probe)
 
-    await move(video_output_path, output_path, overwrite=True)
+    move(video_output_path, output_path)
 
     video_file.size = stats.st_size
     video_file.fps = fps
@@ -31,11 +31,11 @@ async def on_web_video_file_transcoding(
 
     # await create_torrent_and_set_info_hash(video, video_file)
 
-    old_file = await VideoFile.objects.first(
-        video_id=video.id, fps=video_file.fps, resolution=video_file.resolution
-    )
+    old_file = VideoFile.objects.filter(
+        video=video, fps=video_file.fps, resolution=video_file.resolution
+    ).first()
     if old_file:
-        await old_file.remove_web_video_file()
+        old_file.remove_web_video_file()
 
     video_file.save()
 

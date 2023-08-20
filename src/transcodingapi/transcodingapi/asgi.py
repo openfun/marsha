@@ -11,6 +11,13 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'transcodingapi.settings')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "transcodingapi.settings")
+django_asgi_app = get_asgi_application()
 
-application = get_asgi_application()
+
+# its important to make all other imports below this comment
+import socketio
+
+from djangoio.views import sio
+
+application = socketio.ASGIApp(sio, django_asgi_app)

@@ -50,4 +50,6 @@ def build_new_file(video: Video, path, mode):
         else generate_hls_video_filename(video_file.resolution)
     )
 
+    video_file.save()
+
     return video_file
