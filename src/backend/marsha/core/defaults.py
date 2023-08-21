@@ -100,6 +100,7 @@ APP_DATA_STATE_PORTABILITY = "portability"
 APP_DATA_STATE_SUCCESS = "success"
 
 VIDEO_ATTENDANCE_KEY_CACHE = "attendances:video:"
+XAPI_STATEMENT_ID_CACHE = "xapi:statements:"
 
 # Licenses
 

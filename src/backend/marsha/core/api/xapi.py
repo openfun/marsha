@@ -5,12 +5,15 @@ import logging
 from django.apps import apps
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.cache import cache
 from django.http import HttpResponseNotFound
 from django.shortcuts import get_object_or_404
 
 import requests
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from marsha.core.defaults import XAPI_STATEMENT_ID_CACHE
 
 from . import APIViewMixin
 from .. import permissions, serializers
@@ -78,6 +81,7 @@ class XAPIStatementView(APIViewMixin, APIView):
 
         return xapi_statement
 
+    # pylint: disable=too-many-return-statements
     def post(self, request, resource_kind, resource_id):
         """Send a xAPI statement to a defined LRS.
 
@@ -129,6 +133,10 @@ class XAPIStatementView(APIViewMixin, APIView):
             logger.info("LRS is not configured.")
             return Response(status=200)
 
+        if cache.get(f"{XAPI_STATEMENT_ID_CACHE}{statement['id']}") is not None:
+            logger.info("XAPI statement %s already sent.", statement["id"])
+            return Response(status=200)
+
         xapi = XAPI(
             lrs_url,
             lrs_auth_token,
@@ -145,5 +153,11 @@ class XAPIStatementView(APIViewMixin, APIView):
                 extra={"response": e.response.text, "status": e.response.status_code},
             )
             return Response({"status": message}, status=500)
+
+        cache.set(
+            f"{XAPI_STATEMENT_ID_CACHE}{statement['id']}",
+            statement["id"],
+            settings.XAPI_STATEMENT_ID_CACHE_TIMEOUT,
+        )
 
         return Response(status=204)
