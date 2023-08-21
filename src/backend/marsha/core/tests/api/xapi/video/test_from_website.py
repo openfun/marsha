@@ -5,14 +5,24 @@ import logging
 from unittest import mock
 import uuid
 
+from django.core.cache import cache
 from django.test import TestCase, override_settings
 
 from logging_ldp.formatters import LDPGELFFormatter
 
+from marsha.core.defaults import XAPI_STATEMENT_ID_CACHE
 from marsha.core.factories import VideoFactory
 from marsha.core.simple_jwt.factories import UserAccessTokenFactory
 
 
+@override_settings(
+    CACHES={
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        },
+        "memory_cache": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"},
+    }
+)
 class XAPIVideoFromWebsiteTest(TestCase):
     """Video XAPI test suite sent from a website."""
 
@@ -26,6 +36,9 @@ class XAPIVideoFromWebsiteTest(TestCase):
         handler = logging.StreamHandler(self.log_stream)
         handler.setFormatter(LDPGELFFormatter(token="foo", null_character=False))
         self.logger.addHandler(handler)
+
+        # Clear cache
+        cache.clear()
 
         super().setUp()
 
@@ -170,3 +183,51 @@ class XAPIVideoFromWebsiteTest(TestCase):
             )
 
         self.assertEqual(response.status_code, 204)
+
+    @override_settings(
+        LRS_URL="http://lrs.com/data/xAPI",
+        LRS_AUTH_TOKEN="Basic ThisIsABasicAuth",
+        LRS_XAPI_VERSION="1.0.3",
+    )
+    def test_xapi_statement_with_two_same_event(self):
+        """
+        The first request should be successful and return a 204 status code,
+        it must have set the cache with the given id in the data.
+        The second request should also succeed but return a 200 status code,
+        the cache should have been used to see that the xapi statement has already been sent.
+        """
+        video = VideoFactory()
+        jwt_token = UserAccessTokenFactory()
+
+        data = {
+            "id": "7b18195e-e183-4bbf-b8ef-5145ef64ae19",
+            "verb": {
+                "id": "http://adlnet.gov/expapi/verbs/initialized",
+                "display": {"en-US": "initialized"},
+            },
+            "context": {
+                "extensions": {"https://w3id.org/xapi/video/extensions/volume": 1}
+            },
+        }
+
+        with mock.patch("marsha.core.api.XAPI.send", return_value=None):
+            response1 = self.client.post(
+                f"/xapi/video/{video.id}/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                data=json.dumps(data),
+                content_type="application/json",
+            )
+
+            response2 = self.client.post(
+                f"/xapi/video/{video.id}/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                data=json.dumps(data),
+                content_type="application/json",
+            )
+
+        self.assertEqual(response1.status_code, 204)
+        self.assertEqual(
+            cache.get(f"{XAPI_STATEMENT_ID_CACHE}7b18195e-e183-4bbf-b8ef-5145ef64ae19"),
+            "7b18195e-e183-4bbf-b8ef-5145ef64ae19",
+        )
+        self.assertEqual(response2.status_code, 200)

@@ -32,6 +32,7 @@ class XAPIStatementApiTest(TestCase):
         jwt_token = StudentLtiTokenFactory(playlist=video.playlist)
 
         data = {
+            "id": str(uuid.uuid4()),
             "verb": {
                 "id": "http://adlnet.gov/expapi/verbs/initialized",
                 "display": {"en-US": "initialized"},
@@ -82,6 +83,7 @@ class XAPIStatementApiTest(TestCase):
         jwt_token = StudentLtiTokenFactory()
 
         data = {
+            "id": str(uuid.uuid4()),
             "verb": {
                 "id": "http://adlnet.gov/expapi/verbs/initialized",
                 "display": {"en-US": "initialized"},
@@ -110,6 +112,7 @@ class XAPIStatementApiTest(TestCase):
         jwt_token = StudentLtiTokenFactory(playlist=video.playlist)
 
         data = {
+            "id": str(uuid.uuid4()),
             "verb": {
                 "id": "http://adlnet.gov/expapi/verbs/initialized",
                 "display": {"en-US": "initialized"},
@@ -147,6 +150,7 @@ class XAPIStatementApiTest(TestCase):
         jwt_token = StudentLtiTokenFactory(playlist=video.playlist)
 
         data = {
+            "id": str(uuid.uuid4()),
             "verb": {
                 "id": "http://adlnet.gov/expapi/verbs/initialized",
                 "display": {"en-US": "initialized"},
@@ -176,6 +180,7 @@ class XAPIStatementApiTest(TestCase):
         del jwt_token.payload["user"]
 
         data = {
+            "id": str(uuid.uuid4()),
             "verb": {
                 "id": "http://adlnet.gov/expapi/verbs/initialized",
                 "display": {"en-US": "initialized"},
@@ -207,6 +212,7 @@ class XAPIStatementApiTest(TestCase):
         )
 
         data = {
+            "id": str(uuid.uuid4()),
             "verb": {
                 "id": "http://id.tincanapi.com/verb/downloaded",
                 "display": {"en-US": "downloaded"},
