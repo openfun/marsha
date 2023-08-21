@@ -100,7 +100,7 @@
     "@codemirror/search": "6.5.1",
     "@codemirror/state": "*",
     "@codemirror/view": "*",
-    "@lezer/common": "1.0.3",
+    "@lezer/common": "1.0.4",
     "@mdx-js/mdx2": "npm:@mdx-js/mdx@2.3.0",
     "codemirror": "6.0.1",
     "dompurify": "3.0.5",
