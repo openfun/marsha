@@ -86,6 +86,17 @@ module.exports = {
         '@typescript-eslint/no-unsafe-call': 'off',
         '@typescript-eslint/no-unsafe-member-access': 'off',
         '@typescript-eslint/no-unsafe-return': 'off',
+        'testing-library/no-await-sync-events': [
+          'error',
+          { eventModules: ['fire-event'] },
+        ],
+        'testing-library/await-async-events': [
+          'error',
+          {
+            eventModule: "userEvent"
+          }
+        ],
+        'testing-library/no-manual-cleanup': 'off',
         '@typescript-eslint/no-unused-vars': [
           'error',
           { varsIgnorePattern: '^_', argsIgnorePattern: '^_' },

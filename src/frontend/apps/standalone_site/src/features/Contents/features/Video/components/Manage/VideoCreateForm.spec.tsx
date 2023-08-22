@@ -170,13 +170,13 @@ describe('<VideoCreateForm />', () => {
       target: { value: 'my title' },
     });
 
-    userEvent.click(
+    await userEvent.click(
       await screen.findByRole('button', {
         name: 'Choose the playlist.; Selected: some-playlist-id',
       }),
     );
 
-    userEvent.click(
+    await userEvent.click(
       await screen.findByRole('option', { name: 'an other title' }),
     );
 
@@ -189,7 +189,7 @@ describe('<VideoCreateForm />', () => {
     const file = new File(['(⌐□_□)'], 'course.mp4', { type: 'video/mp4' });
     const hiddenInput = screen.getByTestId('input-video-test-id');
 
-    userEvent.upload(hiddenInput, file);
+    await userEvent.upload(hiddenInput, file);
 
     await waitFor(() =>
       expect(
@@ -237,13 +237,13 @@ describe('<VideoCreateForm />', () => {
       target: { value: 'my description' },
     });
 
-    userEvent.click(
+    await userEvent.click(
       await screen.findByRole('button', {
         name: 'Choose the playlist.; Selected: some-playlist-id',
       }),
     );
 
-    userEvent.click(
+    await userEvent.click(
       await screen.findByRole('option', { name: 'an other title' }),
     );
 
@@ -261,7 +261,7 @@ describe('<VideoCreateForm />', () => {
 
     const hiddenInput = screen.getByTestId('input-video-test-id');
 
-    userEvent.upload(hiddenInput, file);
+    await userEvent.upload(hiddenInput, file);
 
     const submit = screen.getByRole('button', { name: /Add Video/i });
 
@@ -314,13 +314,13 @@ describe('<VideoCreateForm />', () => {
       target: { value: 'my description' },
     });
 
-    userEvent.click(
+    await userEvent.click(
       await screen.findByRole('button', {
         name: 'Choose the playlist.; Selected: some-playlist-id',
       }),
     );
 
-    userEvent.click(
+    await userEvent.click(
       await screen.findByRole('option', { name: 'an other title' }),
     );
 
@@ -338,13 +338,13 @@ describe('<VideoCreateForm />', () => {
 
     const hiddenInput = screen.getByTestId('input-video-test-id');
 
-    userEvent.upload(hiddenInput, file);
+    await userEvent.upload(hiddenInput, file);
 
     const submit = screen.getByRole('button', { name: /Add Video/i });
 
     await waitFor(() => expect(submit).not.toBeDisabled());
 
-    userEvent.click(submit);
+    await userEvent.click(submit);
 
     expect(
       await screen.findByText(

@@ -210,7 +210,7 @@ describe('<UploadDocuments />', () => {
     });
     expect(await screen.findByText('course.pdf')).toBeInTheDocument();
 
-    userEvent.click(screen.getByRole('button', { name: 'Upload' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Upload' }));
 
     await waitFor(() =>
       expect(mockCreateClassroomDocument).toHaveBeenCalledTimes(1),
@@ -255,7 +255,7 @@ describe('<UploadDocuments />', () => {
     });
     expect(await screen.findByText('course.pdf')).toBeInTheDocument();
 
-    userEvent.click(screen.getByRole('button', { name: 'Upload' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Upload' }));
 
     await waitFor(() =>
       expect(mockCreateClassroomDocument).toHaveBeenCalledTimes(1),
@@ -314,7 +314,7 @@ describe('<UploadDocuments />', () => {
       name: 'Click to set as default document',
     });
 
-    userEvent.click(setDefaultButton);
+    await userEvent.click(setDefaultButton);
 
     await waitFor(() =>
       expect(fetchMock.calls()[2]![1]!.body).toEqual(
@@ -360,7 +360,7 @@ describe('<UploadDocuments />', () => {
     const deleteButton = screen.getByRole('button', {
       name: 'Click on this button to delete the media.',
     });
-    userEvent.click(deleteButton);
+    await userEvent.click(deleteButton);
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(5));
     const deleteCall = fetchMock.calls(

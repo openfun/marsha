@@ -115,7 +115,7 @@ describe('SelectContentSection', () => {
 
     const document1 = screen.getByLabelText('Select Document 1');
 
-    userEvent.hover(screen.getByLabelText('Select Document 1'));
+    await userEvent.hover(screen.getByLabelText('Select Document 1'));
 
     await userEvent.click(document1);
     expect(mockSetContentItemsValue).toHaveBeenCalledTimes(1);

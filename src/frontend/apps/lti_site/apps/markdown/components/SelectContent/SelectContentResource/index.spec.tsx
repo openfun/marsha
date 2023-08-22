@@ -107,7 +107,7 @@ describe('<SelectContentResource />', () => {
 
     screen.getByRole('heading', { name: 'Markdown' });
     screen.getByLabelText('Select translated title');
-    userEvent.click(screen.getByText('Add a markdown document'));
+    await userEvent.click(screen.getByText('Add a markdown document'));
 
     await waitFor(() => {
       expect(

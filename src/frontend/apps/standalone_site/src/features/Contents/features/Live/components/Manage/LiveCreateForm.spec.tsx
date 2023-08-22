@@ -104,13 +104,13 @@ describe('<LiveCreateForm />', () => {
 
     expect(button).toBeDisabled();
 
-    userEvent.click(
+    await userEvent.click(
       await screen.findByRole('button', {
         name: 'Choose the playlist.; Selected: some-playlist-id',
       }),
     );
 
-    userEvent.click(
+    await userEvent.click(
       await screen.findByRole('option', { name: 'an other title' }),
     );
 
@@ -157,13 +157,13 @@ describe('<LiveCreateForm />', () => {
       target: { value: 'my description' },
     });
 
-    userEvent.click(
+    await userEvent.click(
       await screen.findByRole('button', {
         name: 'Choose the playlist.; Selected: some-playlist-id',
       }),
     );
 
-    userEvent.click(
+    await userEvent.click(
       await screen.findByRole('option', { name: 'an other title' }),
     );
 
@@ -214,13 +214,13 @@ describe('<LiveCreateForm />', () => {
       target: { value: 'my description' },
     });
 
-    userEvent.click(
+    await userEvent.click(
       await screen.findByRole('button', {
         name: 'Choose the playlist.; Selected: some-playlist-id',
       }),
     );
 
-    userEvent.click(
+    await userEvent.click(
       await screen.findByRole('option', { name: 'an other title' }),
     );
 
@@ -234,7 +234,7 @@ describe('<LiveCreateForm />', () => {
 
     await waitFor(() => expect(submit).not.toBeDisabled());
 
-    userEvent.click(submit);
+    await userEvent.click(submit);
 
     expect(
       await screen.findByText(

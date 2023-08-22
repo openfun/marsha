@@ -44,8 +44,12 @@ describe('<MarkdownViewer />', () => {
     await screen.findByText('English document content.');
 
     // Change language to fr
-    userEvent.click(screen.getByRole('button', { name: /Select language/i }));
-    userEvent.click(await screen.findByRole('option', { name: /French/i }));
+    await userEvent.click(
+      screen.getByRole('button', { name: /Select language/i }),
+    );
+    await userEvent.click(
+      await screen.findByRole('option', { name: /French/i }),
+    );
 
     expect(screen.queryByText('Un titre en français')).not.toBeInTheDocument();
     await screen.findByText('Du contenu écrit en français.');
@@ -70,8 +74,12 @@ describe('<MarkdownViewer />', () => {
     await screen.findByText('Translation not found');
 
     // Change language to fr
-    userEvent.click(screen.getByRole('button', { name: /Select language/i }));
-    userEvent.click(await screen.findByRole('option', { name: /French/i }));
+    await userEvent.click(
+      screen.getByRole('button', { name: /Select language/i }),
+    );
+    await userEvent.click(
+      await screen.findByRole('option', { name: /French/i }),
+    );
 
     await screen.findByText('Contenu en français.');
     expect(screen.queryByText('Un titre en français')).not.toBeInTheDocument();
@@ -118,8 +126,12 @@ describe('<MarkdownViewer />', () => {
     screen.getByText('"Untouched" content.');
 
     // Change language to fr
-    userEvent.click(screen.getByRole('button', { name: /Select language/i }));
-    userEvent.click(await screen.findByRole('option', { name: /French/i }));
+    await userEvent.click(
+      screen.getByRole('button', { name: /Select language/i }),
+    );
+    await userEvent.click(
+      await screen.findByRole('option', { name: /French/i }),
+    );
 
     const markdownImageFr = await screen.findByRole('img');
     expect(markdownImageFr).toHaveAttribute('src', 'http://some-fr-image.png');

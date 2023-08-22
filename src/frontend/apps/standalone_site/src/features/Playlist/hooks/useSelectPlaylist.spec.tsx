@@ -133,13 +133,13 @@ describe('<useSelectPlaylist />', () => {
       screen.getByRole('button', { name: 'Create a new playlist' }),
     ).toBeInTheDocument();
 
-    userEvent.click(
+    await userEvent.click(
       await screen.findByRole('button', {
         name: 'Choose the playlist.',
       }),
     );
 
-    userEvent.click(
+    await userEvent.click(
       await screen.findByRole('option', { name: 'an other title' }),
     );
 

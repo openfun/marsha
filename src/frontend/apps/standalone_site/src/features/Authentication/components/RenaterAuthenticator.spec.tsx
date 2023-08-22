@@ -50,7 +50,7 @@ describe('<RenaterAuthenticator />', () => {
 
     expect(screen.getByText(/OR LOGIN WITH/i)).toBeInTheDocument();
 
-    userEvent.click(screen.getByRole('button', { name: /Open Drop/i }));
+    await userEvent.click(screen.getByRole('button', { name: /Open Drop/i }));
 
     const firstIdp = await screen.findByRole('option', { name: /Fake IdP 1/i });
     const secondIdp = screen.getByRole('option', { name: /Fake IdP 2/i });
@@ -124,7 +124,7 @@ describe('<RenaterAuthenticator />', () => {
       screen.queryByRole('option', { name: /Fake IdP 2/i }),
     ).not.toBeInTheDocument();
 
-    userEvent.clear(screen.getByRole('searchbox'));
+    await userEvent.clear(screen.getByRole('searchbox'));
 
     expect(
       await screen.findByRole('option', { name: /Fake IdP 2/i }),
@@ -138,9 +138,9 @@ describe('<RenaterAuthenticator />', () => {
   it('checks redirect', async () => {
     render(<RenaterAuthenticator />);
 
-    userEvent.click(screen.getByRole('button', { name: /Open Drop/i }));
+    await userEvent.click(screen.getByRole('button', { name: /Open Drop/i }));
 
-    userEvent.click(
+    await userEvent.click(
       await screen.findByRole('option', { name: /Local accepting IdP/i }),
     );
 
@@ -156,7 +156,7 @@ describe('<RenaterAuthenticator />', () => {
       },
     });
 
-    userEvent.click(screen.getByRole('button', { name: /Open Drop/i }));
+    await userEvent.click(screen.getByRole('button', { name: /Open Drop/i }));
 
     expect(
       await screen.findByRole('option', { name: /Fake IdP 1/i }),
@@ -176,7 +176,7 @@ describe('<RenaterAuthenticator />', () => {
       },
     });
 
-    userEvent.click(screen.getByRole('button', { name: /Open Drop/i }));
+    await userEvent.click(screen.getByRole('button', { name: /Open Drop/i }));
 
     expect(
       await screen.findByRole('option', { name: /Fake IdP 1/i }),

@@ -83,7 +83,7 @@ describe('<UserListRow />', () => {
       screen.getByRole('button', { name: 'Delete user.' }),
     ).toBeInTheDocument();
 
-    userEvent.click(screen.getByRole('button', { name: /Open Drop/ }));
+    await userEvent.click(screen.getByRole('button', { name: /Open Drop/ }));
 
     expect(
       await screen.findByRole('option', { name: 'Instructor' }),

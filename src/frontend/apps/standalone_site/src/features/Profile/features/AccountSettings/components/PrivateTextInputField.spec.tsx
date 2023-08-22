@@ -15,9 +15,11 @@ describe('<PrivateTextInputField />', () => {
 
     expect(screen.getByLabelText('label')).toBeInTheDocument();
 
-    userEvent.click(screen.getByRole('button', { name: 'show-content.svg' }));
+    await userEvent.click(
+      screen.getByRole('button', { name: 'show-content.svg' }),
+    );
 
-    userEvent.type(
+    await userEvent.type(
       await screen.findByRole('textbox', { name: 'label' }),
       'some password',
     );
@@ -25,7 +27,9 @@ describe('<PrivateTextInputField />', () => {
     const input = await screen.findByDisplayValue('some password');
     expect(input).toBeInTheDocument();
 
-    userEvent.click(screen.getByRole('button', { name: 'hide-content.svg' }));
+    await userEvent.click(
+      screen.getByRole('button', { name: 'hide-content.svg' }),
+    );
 
     await waitFor(() =>
       expect(screen.queryByText('some password')).not.toBeInTheDocument(),

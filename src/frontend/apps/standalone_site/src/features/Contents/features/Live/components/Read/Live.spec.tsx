@@ -89,9 +89,9 @@ describe('<Live />', () => {
     expect(liveCardCheckBox).not.toBeChecked();
 
     const card = screen.getByRole('contentinfo');
-    userEvent.click(card);
+    await userEvent.click(card);
     await waitFor(() => expect(liveCardCheckBox).toBeChecked());
-    userEvent.click(card);
+    await userEvent.click(card);
     await waitFor(() => expect(liveCardCheckBox).not.toBeChecked());
   });
 });

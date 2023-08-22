@@ -256,7 +256,7 @@ describe('<RegistrationForm />', () => {
       screen.queryByText('You have to submit a valid email to register.'),
     ).not.toBeInTheDocument();
 
-    userEvent.click(screen.getByRole('button', { name: 'Register' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Register' }));
 
     await screen.findByText(
       'Impossible to register your email some.email@openfun.fr for this event. Make sure your email is valid otherwise, please try again later or contact us.',

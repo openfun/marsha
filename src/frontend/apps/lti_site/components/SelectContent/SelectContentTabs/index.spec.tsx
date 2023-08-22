@@ -1,8 +1,4 @@
-import {
-  screen,
-  waitForElementToBeRemoved,
-  within,
-} from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Tab } from 'grommet';
 import {
@@ -237,7 +233,7 @@ describe('SelectContentTabs', () => {
     const otherCustomAppTab = await screen.findByRole('tab', {
       name: 'Other custom app tab',
     });
-    userEvent.click(otherCustomAppTab);
+    await userEvent.click(otherCustomAppTab);
     await screen.findByText('Other select app content');
     expect(screen.queryByText('Select app content')).not.toBeInTheDocument();
 
@@ -245,11 +241,12 @@ describe('SelectContentTabs', () => {
       name: 'Custom app tab',
     });
 
-    userEvent.click(customAppTab);
+    await userEvent.click(customAppTab);
 
-    await waitForElementToBeRemoved(() =>
+    expect(
       screen.queryByText('Other select app content'),
-    );
+    ).not.toBeInTheDocument();
+
     await userEvent.click(screen.getByText('Select app content'));
 
     expect(mockSetContentItemsValue).toHaveBeenCalledWith(

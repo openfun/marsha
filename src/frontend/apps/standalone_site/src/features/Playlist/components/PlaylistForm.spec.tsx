@@ -279,7 +279,7 @@ describe('<PlaylistForm />', () => {
       await screen.findByLabelText('Organization*required'),
     ).toBeInTheDocument();
 
-    userEvent.click(screen.getByRole('button', { name: 'Save' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }));
 
     await waitFor(() => expect(mockedOnSubmit).toHaveBeenCalled());
     expect(mockedOnSubmit).toHaveBeenCalledWith({
@@ -288,7 +288,7 @@ describe('<PlaylistForm />', () => {
       retention_duration: 365,
     });
 
-    userEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Cancel' }));
 
     await waitFor(() => expect(mockedOnCancel).toHaveBeenCalled());
   });
@@ -326,7 +326,7 @@ describe('<PlaylistForm />', () => {
       },
       { overwriteRoutes: true },
     );
-    userEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Retry' }));
     expect(
       await screen.findByLabelText('Organization*required'),
     ).toBeInTheDocument();
@@ -482,12 +482,12 @@ describe('<PlaylistForm />', () => {
     const deleteButton = screen.getByRole('button', {
       name: 'Delete playlist',
     });
-    userEvent.click(deleteButton);
+    await userEvent.click(deleteButton);
 
     const confirmDeleteButton = await screen.findByRole('button', {
       name: 'Confirm delete playlist',
     });
-    userEvent.click(confirmDeleteButton);
+    await userEvent.click(confirmDeleteButton);
 
     expect(
       await screen.findByText(
@@ -529,12 +529,12 @@ describe('<PlaylistForm />', () => {
     const deleteButton = screen.getByRole('button', {
       name: 'Delete playlist',
     });
-    userEvent.click(deleteButton);
+    await userEvent.click(deleteButton);
 
     const confirmDeleteButton = await screen.findByRole('button', {
       name: 'Confirm delete playlist',
     });
-    userEvent.click(confirmDeleteButton);
+    await userEvent.click(confirmDeleteButton);
 
     expect(
       await screen.findByText('An error occurred, please try again later.'),
@@ -573,12 +573,12 @@ describe('<PlaylistForm />', () => {
     const deleteButton = screen.getByRole('button', {
       name: 'Delete playlist',
     });
-    userEvent.click(deleteButton);
+    await userEvent.click(deleteButton);
 
     const confirmDeleteButton = await screen.findByRole('button', {
       name: 'Confirm delete playlist',
     });
-    userEvent.click(confirmDeleteButton);
+    await userEvent.click(confirmDeleteButton);
 
     expect(
       await screen.findByText('Playlist deleted with success.'),
