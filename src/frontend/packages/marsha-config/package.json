@@ -13,6 +13,7 @@
   },
   "devDependencies": {
     "eslint": "*",
-    "eslint-config-marsha": "*"
+    "eslint-config-marsha": "*",
+    "@testing-library/jest-dom": "*"
   }
 }

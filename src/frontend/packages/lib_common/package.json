@@ -20,9 +20,9 @@
   "peerDependencies": {
     "@openfun/cunningham-react": "*",
     "grommet": "*",
-    "styled-components": "*",
     "react": "*",
-    "react-dom": "*"
+    "react-dom": "*",
+    "styled-components": "*"
   },
   "devDependencies": {
     "@babel/core": "7.22.10",
@@ -33,9 +33,10 @@
     "@babel/preset-env": "7.22.10",
     "@babel/preset-typescript": "7.22.5",
     "@formatjs/cli": "6.1.3",
-    "@types/styled-components": "5.1.26",
+    "@types/jest": "29.5.3",
     "@types/react": "*",
     "@types/react-dom": "*",
+    "@types/styled-components": "5.1.26",
     "cross-env": "7.0.3",
     "eslint": "*",
     "eslint-config-marsha": "*",
@@ -45,5 +46,6 @@
     "react-dom": "*",
     "styled-components": "*",
     "typescript": "*"
-  }
+  },
+  "dependencies": {}
 }
