@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Fragment, PropsWithChildren } from 'react';
+import 'jest-styled-components';
 
 import { RenderOptions, appendUtilsElement } from './render';
 
