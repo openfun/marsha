@@ -2,12 +2,15 @@ import path from 'path';
 
 import { cleanup, render } from '@testing-library/react';
 import { Grommet } from 'grommet';
+import { toMatchImageSnapshot } from 'jest-image-snapshot';
 import { GenerateImageOptions, generateImage } from 'jsdom-screenshot';
 import { GlobalStyles, theme } from 'lib-common';
 import React from 'react';
 
 import { wrapInIntlProvider } from './intl';
 import { wrapInRouter } from './router';
+
+expect.extend({ toMatchImageSnapshot });
 
 const checkSnapshot = () => {
   // check if test name contains '[screenshot]'
