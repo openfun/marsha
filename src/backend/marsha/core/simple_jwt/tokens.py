@@ -71,6 +71,9 @@ class LTISelectFormAccessToken(AccessToken):
     LTI select form access JWT.
 
     This token has its own lifetime define with the setting LTI_SELECT_FORM_ACCESS_TOKEN_LIFETIME.
+    It ensures a secure communication within deep-linking content selection scenarios.
+    Before submitting a selected content to the LTI client, the provider verifies the authenticity
+    of the select form, making sure the LTI request has been verified beforehand by a first view.
     """
 
     token_type = "lti_select_form_access"  # nosec

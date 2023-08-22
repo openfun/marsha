@@ -22,6 +22,7 @@
 - [Alfred Pichard](https://github.com/AlfredPichard) <alfred.pichard@polyconseil.fr>
 - [Théo Clement](https://github.com/Kitero) <theoclementtheo@gmail.com>
 - [Henri Baudesson](https://github.com/polyhb) <henri.baudesson@polyconseil.fr>
+- [Antoine Lebaud](https://github.com/lebaudantoine) <lebaud.antoine131@gmail.com>
 
 - [Renovate Bot](https://renovatebot.com) <bot@renovateapp.com>
 - [Renovate Bot](https://renovatebot.com) <29139614+renovate[bot]@users.noreply.github.com>
