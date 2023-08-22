@@ -105,7 +105,7 @@ describe('<SelectContentResource />', () => {
     screen.getByRole('heading', { name: 'File Depositories' });
     screen.getByText('Add a file depository');
     screen.getByLabelText('Select deposit title');
-    userEvent.click(screen.getByText('Add a file depository'));
+    await userEvent.click(screen.getByText('Add a file depository'));
 
     await waitFor(() => {
       expect(

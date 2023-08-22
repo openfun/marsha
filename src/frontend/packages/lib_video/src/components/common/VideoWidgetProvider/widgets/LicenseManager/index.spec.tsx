@@ -112,7 +112,7 @@ describe('<LicenseManager />', () => {
     const CreativeCommonButtonOption = screen.getByRole('option', {
       name: 'Creative Common By Attribution',
     });
-    userEvent.click(CreativeCommonButtonOption);
+    await userEvent.click(CreativeCommonButtonOption);
     await waitFor(() =>
       expect(
         screen.getByRole('textbox', {

@@ -74,13 +74,13 @@ describe('<ClassRoomCreateForm />', () => {
 
     expect(button).toBeDisabled();
 
-    userEvent.click(
+    await userEvent.click(
       await screen.findByRole('button', {
         name: 'Choose the playlist.; Selected: some-playlist-id',
       }),
     );
 
-    userEvent.click(
+    await userEvent.click(
       await screen.findByRole('option', { name: 'an other title' }),
     );
 
@@ -115,13 +115,13 @@ describe('<ClassRoomCreateForm />', () => {
       target: { value: 'my description' },
     });
 
-    userEvent.click(
+    await userEvent.click(
       await screen.findByRole('button', {
         name: 'Choose the playlist.; Selected: some-playlist-id',
       }),
     );
 
-    userEvent.click(
+    await userEvent.click(
       await screen.findByRole('option', { name: 'an other title' }),
     );
 
@@ -131,7 +131,9 @@ describe('<ClassRoomCreateForm />', () => {
       }),
     ).toBeInTheDocument();
 
-    userEvent.click(screen.getByRole('button', { name: /Add classroom/i }));
+    await userEvent.click(
+      screen.getByRole('button', { name: /Add classroom/i }),
+    );
 
     await waitFor(() => {
       expect(fetchMock.lastCall()?.[0]).toEqual(`/api/classrooms/`);

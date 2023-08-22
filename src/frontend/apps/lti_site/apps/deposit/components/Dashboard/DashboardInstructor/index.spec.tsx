@@ -141,7 +141,9 @@ describe('<DashboardInstructor />', () => {
       `/api/filedepositories/${fileDepository.id}/depositedfiles/?limit=10&offset=10`,
       deferred.promise,
     );
-    userEvent.click(screen.getByRole('button', { name: /go to page 2/i }));
+    await userEvent.click(
+      screen.getByRole('button', { name: /go to page 2/i }),
+    );
 
     act(() => {
       deferred.resolve({
@@ -213,8 +215,10 @@ describe('<DashboardInstructor />', () => {
     );
 
     const fileFilter = screen.getByRole('button', { name: /Filter files/i });
-    userEvent.click(fileFilter);
-    userEvent.click(await screen.findByRole('option', { name: 'Unread' }));
+    await userEvent.click(fileFilter);
+    await userEvent.click(
+      await screen.findByRole('option', { name: 'Unread' }),
+    );
 
     await screen.findByText('Showing 1 - 10 of 20');
     for (let i = 0; i < 10; i++) {
@@ -234,8 +238,8 @@ describe('<DashboardInstructor />', () => {
       },
     );
 
-    userEvent.click(fileFilter);
-    userEvent.click(await screen.findByRole('option', { name: 'Read' }));
+    await userEvent.click(fileFilter);
+    await userEvent.click(await screen.findByRole('option', { name: 'Read' }));
 
     await screen.findByText('Showing 1 - 10 of 20');
     for (let i = 0; i < 10; i++) {

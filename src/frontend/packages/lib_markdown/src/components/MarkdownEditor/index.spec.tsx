@@ -127,14 +127,14 @@ describe('<MarkdownEditor />', () => {
       { overwriteRoutes: true },
     );
 
-    userEvent.click(saveButton);
+    await userEvent.click(saveButton);
 
     await waitFor(() => {
       expect(saveButton).toBeDisabled();
     });
     expect(publishButton).not.toBeDisabled();
 
-    userEvent.type(
+    await userEvent.type(
       screen.getByRole('textbox', { name: 'Title' }),
       ' is changed',
     );
@@ -244,14 +244,18 @@ describe('<MarkdownEditor />', () => {
       },
       { overwriteRoutes: true },
     );
-    userEvent.click(screen.getByRole('button', { name: 'Save' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }));
     await waitFor(() =>
       expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled(),
     );
 
     // Change language to fr
-    userEvent.click(screen.getByRole('button', { name: /Select language/i }));
-    userEvent.click(await screen.findByRole('option', { name: /French/i }));
+    await userEvent.click(
+      screen.getByRole('button', { name: /Select language/i }),
+    );
+    await userEvent.click(
+      await screen.findByRole('option', { name: /French/i }),
+    );
 
     await waitFor(() =>
       expect(
@@ -388,7 +392,7 @@ describe('<MarkdownEditor />', () => {
       { overwriteRoutes: true },
     );
 
-    userEvent.click(saveButton);
+    await userEvent.click(saveButton);
 
     await waitFor(() => expect(saveButton).toBeDisabled());
 
@@ -485,7 +489,7 @@ describe('<MarkdownEditor />', () => {
       { overwriteRoutes: true },
     );
 
-    userEvent.click(saveButton);
+    await userEvent.click(saveButton);
 
     await waitFor(() => expect(saveButton).toBeDisabled());
 

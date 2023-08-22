@@ -17,7 +17,9 @@ describe('<LanguageSelector />', () => {
       />,
     );
 
-    userEvent.click(screen.getByRole('button', { name: /Select language/i }));
+    await userEvent.click(
+      screen.getByRole('button', { name: /Select language/i }),
+    );
     await userEvent.click(
       await screen.findByRole('option', { name: /French/i }),
     );
@@ -33,7 +35,9 @@ describe('<LanguageSelector />', () => {
       />,
     );
 
-    userEvent.click(screen.getByRole('button', { name: /Select language/i }));
+    await userEvent.click(
+      screen.getByRole('button', { name: /Select language/i }),
+    );
     await userEvent.click(
       await screen.findByRole('option', { name: /English/i }),
     );
@@ -42,7 +46,7 @@ describe('<LanguageSelector />', () => {
     expect(onLanguageChange).toHaveBeenLastCalledWith('en');
   });
 
-  it('displays available languages', () => {
+  it('displays available languages', async () => {
     const onLanguageChange = jest.fn();
 
     render(
@@ -54,7 +58,9 @@ describe('<LanguageSelector />', () => {
       />,
     );
 
-    userEvent.click(screen.getByRole('button', { name: /Select language/i }));
+    await userEvent.click(
+      screen.getByRole('button', { name: /Select language/i }),
+    );
 
     expect(screen.queryByText('French')).not.toBeInTheDocument();
   });
@@ -71,7 +77,9 @@ describe('<LanguageSelector />', () => {
       />,
     );
 
-    userEvent.click(screen.getByRole('button', { name: /Select language/i }));
+    await userEvent.click(
+      screen.getByRole('button', { name: /Select language/i }),
+    );
     await userEvent.click(
       await screen.findByRole('option', { name: /French/i }),
     );

@@ -56,7 +56,7 @@ describe('useFetchButton', () => {
 
     render(<TestHelper />);
 
-    userEvent.click(screen.getByRole('button', { name: 'my label' }));
+    await userEvent.click(screen.getByRole('button', { name: 'my label' }));
 
     await screen.findByText('button is loading');
     expect(screen.getByRole('button', { name: 'my label' })).toBeDisabled();

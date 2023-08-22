@@ -78,6 +78,6 @@ describe('<DashboardStudent />', () => {
       'href',
       'https://example.com/file.txt',
     );
-    userEvent.click(downloadButton);
+    await userEvent.click(downloadButton);
   });
 });

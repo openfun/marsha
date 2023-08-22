@@ -48,7 +48,7 @@ describe('<CopyClipboard />', () => {
     expect(mockResult).toBe('success');
   });
 
-  it('checks the component inactive', () => {
+  it('checks the component inactive', async () => {
     render(
       <CopyClipboard
         copyId="my-id"
@@ -68,7 +68,7 @@ describe('<CopyClipboard />', () => {
     expect(screen.getByText('my_link.html')).toHaveStyle({
       color: '#b4cff2',
     });
-    userEvent.click(
+    await userEvent.click(
       screen.getByRole('button', {
         name: 'button title',
       }),

@@ -91,7 +91,7 @@ describe('<DeleteClassroomRecordingButton />', () => {
     const confirmDeleteButton = screen.getByRole('button', {
       name: 'Confirm delete classroom recording',
     });
-    userEvent.click(confirmDeleteButton);
+    await userEvent.click(confirmDeleteButton);
 
     const successMessage = await screen.findByText(
       'Classroom recording successfully deleted',
@@ -128,7 +128,7 @@ describe('<DeleteClassroomRecordingButton />', () => {
     const confirmDeleteButton = screen.getByRole('button', {
       name: 'Confirm delete classroom recording',
     });
-    userEvent.click(confirmDeleteButton);
+    await userEvent.click(confirmDeleteButton);
 
     const errorMessage = await screen.findByText(
       'Failed to delete the classroom recording',

@@ -50,7 +50,7 @@ describe('<ToggleInput />', () => {
     expect(onChangeToggleMock).toHaveBeenCalledTimes(1);
   });
 
-  it('renders the toggle input disabled and performs a click on it', () => {
+  it('renders the toggle input disabled and performs a click on it', async () => {
     render(
       <ToggleInput
         checked={true}
@@ -66,7 +66,7 @@ describe('<ToggleInput />', () => {
     });
     expect(toggleInput).toBeChecked();
 
-    userEvent.click(toggleInput);
+    await userEvent.click(toggleInput);
 
     expect(onChangeToggleMock).toHaveBeenCalledTimes(0);
   });

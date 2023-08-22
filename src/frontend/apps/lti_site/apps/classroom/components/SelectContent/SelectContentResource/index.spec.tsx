@@ -104,7 +104,7 @@ describe('<SelectContentResource />', () => {
 
     screen.getByRole('heading', { name: 'Classrooms' });
     screen.getByLabelText('Select classroom title');
-    userEvent.click(screen.getByText('Add a classroom'));
+    await userEvent.click(screen.getByText('Add a classroom'));
 
     await waitFor(() => {
       expect(

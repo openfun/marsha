@@ -38,7 +38,7 @@ describe('<PlaylistUserList />', () => {
       { count: 0, results: [] },
       { overwriteRoutes: true },
     );
-    userEvent.click(retryButton);
+    await userEvent.click(retryButton);
 
     expect(
       await screen.findByText(

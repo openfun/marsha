@@ -68,9 +68,9 @@ describe('<ClassRoom />', () => {
     expect(videoCardCheckBox).not.toBeChecked();
 
     const card = screen.getByRole('contentinfo');
-    userEvent.click(card);
+    await userEvent.click(card);
     await waitFor(() => expect(videoCardCheckBox).toBeChecked());
-    userEvent.click(card);
+    await userEvent.click(card);
     await waitFor(() => expect(videoCardCheckBox).not.toBeChecked());
   });
 });

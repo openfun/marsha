@@ -219,7 +219,7 @@ describe('<ToolsAndApplications />', () => {
     const textAreaRecordPurpose = screen.getByText(recording_purpose);
     expect(textAreaRecordPurpose).toBeInTheDocument();
 
-    userEvent.clear(textAreaRecordPurpose);
+    await userEvent.clear(textAreaRecordPurpose);
     await userEvent.type(textAreaRecordPurpose, recording_purpose_updated);
 
     mockedUseCurrentClassroom.mockReturnValue({
