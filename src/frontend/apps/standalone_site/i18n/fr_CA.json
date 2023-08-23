@@ -43,22 +43,6 @@
     "description": "Organization tab title in settings page, to config organizations.",
     "message": "My organizations"
   },
-  "components.SortableTable.sortByAscendingCreationDate": {
-    "description": "Sort table objects by ascending creation date",
-    "message": "Creation date"
-  },
-  "components.SortableTable.sortByAscendingTitle": {
-    "description": "Sort table objects by ascending title.",
-    "message": "Title"
-  },
-  "components.SortableTable.sortByDescendingCreationDate": {
-    "description": "Sort table objects by descending creation date",
-    "message": "Creation date (reversed)"
-  },
-  "components.SortableTable.sortByDescendingTitle": {
-    "description": "Sort table objects by descending title.",
-    "message": "Title (reversed)"
-  },
   "components.Text.Text404": {
     "description": "Website page 404",
     "message": "Sorry, this page does not exist."
@@ -102,6 +86,30 @@
   "feature.Playlist.PlaylistForm.playlistNameHelper": {
     "description": "Playlist name helper in create playlist form.",
     "message": "This name will be use to search your playlist"
+  },
+  "feature.Playlist.PlaylistForm.playlistRetentionDurationChoice1Year": {
+    "description": "Playlist retention duration choice: \"1 year\", in create playlist form.",
+    "message": "1 year"
+  },
+  "feature.Playlist.PlaylistForm.playlistRetentionDurationChoice30Days": {
+    "description": "Playlist retention duration choice: \"30 days\", in create playlist form.",
+    "message": "30 days"
+  },
+  "feature.Playlist.PlaylistForm.playlistRetentionDurationChoice5years": {
+    "description": "Playlist retention duration choice: \"5 years\", in create playlist form.",
+    "message": "5 years"
+  },
+  "feature.Playlist.PlaylistForm.playlistRetentionDurationChoiceNoDuration": {
+    "description": "Playlist retention duration choice: \"no duration\", in create playlist form.",
+    "message": "No retention duration"
+  },
+  "feature.Playlist.PlaylistForm.playlistRetentionDurationFieldLabel": {
+    "description": "Playlist retention duration field label in create playlist form.",
+    "message": "Retention duration"
+  },
+  "feature.Playlist.PlaylistForm.playlistRetentionDurationHelper": {
+    "description": "Playlist retention duration helper in create playlist form .",
+    "message": "This retention duration is use to know how long related resources will be kept."
   },
   "feature.Playlist.PlaylistForm.requiredField": {
     "description": "Message when playlist field is missing.",
@@ -210,6 +218,26 @@
   "features.Authentication.components.RenaterAuthenticator.textConnectWith": {
     "description": "Text above select box for Renater login",
     "message": "OR LOGIN WITH"
+  },
+  "features.ClaimResource.components.ClaimResource.ltiUserAssociationFailure": {
+    "description": "Displayed message in toast when the LTI user association API call has failed.",
+    "message": "An error occurred when linking your account to the LMS identifiers, please try to refresh the page."
+  },
+  "features.ClaimResource.components.ClaimResource.ltiUserAssociationSuccess": {
+    "description": "Displayed message in toast when the LTI user association API call has been successfully created.",
+    "message": "Your account has been successfully linked to the LMS identifiers."
+  },
+  "features.ClaimResource.components.ClaimResource.resourceClaimedFailure": {
+    "description": "Displayed message in toast when the resource claim API call has failed.",
+    "message": "An error occurred when claiming the resource."
+  },
+  "features.ClaimResource.components.ClaimResource.resourceClaimedSuccess": {
+    "description": "Displayed message in toast when the resource has been claimed with success.",
+    "message": "Resource claimed with success."
+  },
+  "features.ClaimResource.components.ClaimResource.title": {
+    "description": "Title of the claim resource page",
+    "message": "Claiming resource…"
   },
   "features.Contents.ContentsFilter.labelFilter": {
     "description": "Label for filter",
@@ -487,6 +515,10 @@
     "description": "Label to see all the cards",
     "message": "See Everything"
   },
+  "features.Language.components.LanguagePicker.ariaTitleLanguagePicker": {
+    "description": "Aria title for the language picker",
+    "message": "Language Picker"
+  },
   "features.Menu.menuTypeContentLabel": {
     "description": "Label types of content in the menu",
     "message": "TYPES OF CONTENT"
@@ -498,6 +530,18 @@
   "features.Playlist.PlaylistForm.confirmDeleteTitle": {
     "description": "Title of the widget used for confirmation.",
     "message": "Confirm delete playlist"
+  },
+  "features.Playlist.columnNameCreatedOn": {
+    "description": "The column name created on date on the playlist datagrid.",
+    "message": "Created On"
+  },
+  "features.Playlist.columnNameOrganization": {
+    "description": "The column name organization on the playlist datagrid.",
+    "message": "Organization"
+  },
+  "features.Playlist.columnNameTitle": {
+    "description": "The column name title on the playlist datagrid.",
+    "message": "Title"
   },
   "features.Playlist.create": {
     "description": "Create playlist button title",
@@ -555,6 +599,14 @@
     "description": "Add member to playlist modal title.",
     "message": "Add member"
   },
+  "features.Playlist.features.UpdatePlaylist.components.PlaylistUserList.columnNameRoles": {
+    "description": "The column name \"Roles\" on the playlist user datagrid.",
+    "message": "Roles"
+  },
+  "features.Playlist.features.UpdatePlaylist.components.PlaylistUserList.columnNameUsers": {
+    "description": "The column name \"Users\" on the playlist user datagrid.",
+    "message": "Users"
+  },
   "features.Playlist.features.UpdatePlaylist.components.PlaylistUserList.errorLoadingPlaylist": {
     "description": "Message when an error occurred while fetching it.",
     "message": "An error occurred, please try again later."
@@ -609,7 +661,7 @@
   },
   "features.Playlist.features.UpdatePlaylist.components.UserListRow.deleteUserLabel": {
     "description": "Delete playlist access button accessibility title.",
-    "message": "Delete user {username}."
+    "message": "Delete user."
   },
   "features.Playlist.features.UpdatePlaylist.components.UserListRow.updatePlaylistAccessError": {
     "description": "Toast message when a playlist access has been updated with error.",
@@ -647,10 +699,6 @@
     "description": "Retry button title",
     "message": "Retry"
   },
-  "features.Playlist.tableTitle": {
-    "description": "Playlist table title.",
-    "message": "{item_count, plural, =0 {no playlist} one {# playlist} other {# playlists}}"
-  },
   "features.Playlist.title": {
     "description": "Playlist page title",
     "message": "My Playlists"
@@ -661,15 +709,15 @@
   },
   "features.PortabilityRequestStateTag.acceptedState": {
     "description": "Accepted display state",
-    "message": "accepted"
+    "message": "Accepted"
   },
   "features.PortabilityRequestStateTag.pendingState": {
     "description": "Pending display state",
-    "message": "pending"
+    "message": "Pending"
   },
   "features.PortabilityRequestStateTag.rejectedState": {
     "description": "Rejected display state",
-    "message": "rejected"
+    "message": "Rejected"
   },
   "features.PortabilityRequests.ItemTableRow.acceptPortabilityRequest": {
     "description": "Accessibility text for portability request accept button",
@@ -683,13 +731,33 @@
     "description": "Accessibility text for portability request reject button",
     "message": "Reject"
   },
-  "features.PortabilityRequests.ItemTableRow.requestFromLtiUser": {
-    "description": "Value displayed in the table when the request is from an LTI user",
-    "message": "Made by LTI user"
+  "features.PortabilityRequests.columnNameActions": {
+    "description": "The column name \"Actions\" on the portability request datagrid.",
+    "message": "Actions"
   },
-  "features.PortabilityRequests.ItemTableRow.rowPlaylistText": {
-    "description": "Row text displayed in the table to display the playlists involved in the request",
-    "message": "{from_playlist} wants access to {for_playlist}"
+  "features.PortabilityRequests.columnNameConsumerSite": {
+    "description": "The column name \"Consumer Site\" on the portability request datagrid.",
+    "message": "Consumer Site"
+  },
+  "features.PortabilityRequests.columnNameCreatedOn": {
+    "description": "The column name \"Created On\" on the portability request datagrid.",
+    "message": "Created On"
+  },
+  "features.PortabilityRequests.columnNameFromUserEmail": {
+    "description": "The column name \"From user email\" on the portability request datagrid.",
+    "message": "From user email"
+  },
+  "features.PortabilityRequests.columnNamePortabilityRequest": {
+    "description": "The column name \"Portability Request\" on the portability request datagrid.",
+    "message": "Portability Request"
+  },
+  "features.PortabilityRequests.columnNameStatus": {
+    "description": "The column name \"Status\" on the portability request datagrid.",
+    "message": "Status"
+  },
+  "features.PortabilityRequests.columnNameUpdatedUserEmail": {
+    "description": "The column name \"Updated user email\" on the portability request datagrid.",
+    "message": "Updated user email"
   },
   "features.PortabilityRequests.error": {
     "description": "Error message on loading portability requests",
@@ -707,9 +775,17 @@
     "description": "Message displayed when there is no portability request to display",
     "message": "You have no portability request yet."
   },
+  "features.PortabilityRequests.requestFromLtiUser": {
+    "description": "Value displayed in the table when the request is from an LTI user",
+    "message": "Made by LTI user"
+  },
   "features.PortabilityRequests.retry": {
     "description": "Retry button title",
     "message": "Retry"
+  },
+  "features.PortabilityRequests.rowPlaylistText": {
+    "description": "Row text displayed in the table to display the playlists involved in the request",
+    "message": "{from_playlist} wants access to {for_playlist}"
   },
   "features.PortabilityRequests.tableTitle": {
     "description": "Portability requests table title.",
@@ -786,10 +862,6 @@
   "routes.AppRoutes.metaTitle": {
     "description": "Meta title website",
     "message": "Marsha"
-  },
-  "routes.routes.menuFavoritesLabel": {
-    "description": "Label for the favorites link in the main navigation menu",
-    "message": "Favorites"
   },
   "routes.routes.menuHomePageLabel": {
     "description": "Label for the homepage link in the main navigation menu",
