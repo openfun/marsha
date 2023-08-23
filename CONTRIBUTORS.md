@@ -29,3 +29,4 @@
 - [Pyup Bot](https://pyup.io) <github-bot@pyup.io>
 - [Dependabot](https://github.com/dependabot/dependabot-core) <49699333+dependabot[bot]@users.noreply.github.com>
 - [Snyk](https://snyk.io/) <snyk-bot@snyk.io>
+-[Claude Dioudonnat](https://github.com/claudusd) <claude.dioudonnat@fun-mooc.fr>

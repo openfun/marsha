@@ -31,6 +31,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add a link to LTI resources to retrieve them in the standalone website
 - Add Language Picker in the standalone website (#2366)
 - Add xapi statements cache to avoid duplicate statements
+- Add variable to override PVC in arnold deployment
 
 ### Changed
 

@@ -90,10 +90,10 @@ spec:
 {% if env_type in trashable_env_types %}
         - name: marsha-v-media
           persistentVolumeClaim:
-            claimName: marsha-pvc-media
+            claimName: "{{ marsha_pvc_media_name }}"
         - name: marsha-v-static
           persistentVolumeClaim:
-            claimName: marsha-pvc-static
+            claimName: "{{ marsha_pvc_static_name }}"
 {% endif %}
 {% if activate_http_basic_auth or marsha_activate_http_basic_auth %}
         - name: marsha-htpasswd

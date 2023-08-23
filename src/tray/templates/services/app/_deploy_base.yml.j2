@@ -115,10 +115,10 @@ spec:
 {% if env_type in trashable_env_types %}
         - name: marsha-v-media
           persistentVolumeClaim:
-            claimName: marsha-pvc-media
+            claimName: "{{ marsha_pvc_media_name }}"
         - name: marsha-v-static
           persistentVolumeClaim:
-            claimName: marsha-pvc-static
+            claimName: "{{ marsha_pvc_static_name }}"
 {% endif %}
 {% if marsha_should_sign_requests %}
         - name: marsha-cloudfront-private-key-secret
