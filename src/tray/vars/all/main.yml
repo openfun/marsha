@@ -80,6 +80,8 @@ marsha_cronjobs: []
 # -- volumes
 marsha_media_volume_size: 2Gi
 marsha_static_volume_size: 2Gi
+marsha_pvc_media_name: "marsha-pvc-media"
+marsha_pvc_static_name: "marsha-pvc-static"
 
 # -- resource 
 marsha_app_resources:
