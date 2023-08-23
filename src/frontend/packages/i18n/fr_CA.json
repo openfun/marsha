@@ -175,6 +175,18 @@
     "description": "Label for welcome text in classroom creation form.",
     "message": "Welcome text"
   },
+  "component.ClassroomRetentionDate.deleteClassroomRetentionDateButton": {
+    "description": "Button used to delete classroom retention date.",
+    "message": "Delete retention date"
+  },
+  "component.ClassroomRetentionDate.updateVideoFail": {
+    "description": "Message displayed when classroom update has failed.",
+    "message": "Classroom update has failed!"
+  },
+  "component.ClassroomRetentionDate.updateVideoSuccess": {
+    "description": "Message displayed when classroom is successfully updated.",
+    "message": "Classroom updated."
+  },
   "component.ClassroomScheduling.info": {
     "description": "Helptext for the widget.",
     "message": "This widget can be used to schedule a classroom."
@@ -775,6 +787,18 @@
     "description": "Message displayed when video is successfully updated.",
     "message": "Video updated."
   },
+  "component.VideoRetentionDate.deleteVideoRetentionDateButton": {
+    "description": "Button used to delete video retention date.",
+    "message": "Delete retention date"
+  },
+  "component.VideoRetentionDate.updateVideoFail": {
+    "description": "Message displayed when video update has failed.",
+    "message": "Video update has failed!"
+  },
+  "component.VideoRetentionDate.updateVideoSuccess": {
+    "description": "Message displayed when video is successfully updated.",
+    "message": "Video updated."
+  },
   "component.VisibilityAndInteraction.ltiLinkLabel": {
     "description": "Label for LTI video link.",
     "message": "LTI link:"
@@ -818,6 +842,14 @@
   "components.ClassroomInfoBar.updateTitleBlank": {
     "description": "Message displayed when the user tried to enter a blank title.",
     "message": "Title can't be blank!"
+  },
+  "components.ClassroomRetentionDate.info": {
+    "description": "Info of the widget used to change classroom retention date.",
+    "message": "This widget allows you to change the retention date of the classroom. Once this date is reached, the classroom will be deleted."
+  },
+  "components.ClassroomRetentionDate.title": {
+    "description": "Title of the widget used to change classroom retention date.",
+    "message": "Retention date"
   },
   "components.ConfirmationModal.cancelButtonLabel": {
     "description": "Label of the cancelling button",
@@ -1637,15 +1669,11 @@
   },
   "components.Transcripts.download": {
     "description": "Download Transcript",
-    "message": "Download"
+    "message": "Download transcript"
   },
   "components.Transcripts.hideTranscript": {
     "description": "Text to hide a displayed transcript",
     "message": "Hide transcript"
-  },
-  "components.Transcripts.transcriptSelect": {
-    "description": "Placeholder for the transcript select box",
-    "message": "Choose a language"
   },
   "components.UploadClosedCaptions.info": {
     "description": "Info of the widget used for uploading closed captions.",
@@ -1803,6 +1831,14 @@
     "description": "Title of the widget used for live VOD.",
     "message": "VOD"
   },
+  "components.VideoRetentionDate.info": {
+    "description": "Info of the widget used to change video retention date.",
+    "message": "This widget allows you to change the retention date of the video. Once this date is reached, the video will be deleted."
+  },
+  "components.VideoRetentionDate.title": {
+    "description": "Title of the widget used to change video retention date.",
+    "message": "Retention date"
+  },
   "components.ViewersList.acceptButton": {
     "description": "The text displayed in the button in charge of accepting on-stage request, in the viewers list.",
     "message": "Accept"
@@ -1938,5 +1974,17 @@
   "utils.onStageRequestMessage.twoPersonsAsking": {
     "description": "Notification message displayed when two persons want to go on stage.",
     "message": "{name1} and {name2} want to go on stage."
+  },
+  "videojs.menu.downloadVideoButton": {
+    "description": "Title of the download video button inside the video player.",
+    "message": "Download Video"
+  },
+  "videojs.menu.sharedMediaButton": {
+    "description": "Title of the shared media button inside the video player.",
+    "message": "Shared Media"
+  },
+  "videojs.menu.transcriptButton": {
+    "description": "Title of the transcript button inside the video player.",
+    "message": "Transcript"
   }
 }

@@ -79,6 +79,10 @@
     "description": "Title for filter files select.",
     "message": "Filter files"
   },
+  "apps.deposit.components.DashboardStudent.UploadFiles.ariaLabelFileUpload": {
+    "description": "The arial-label for the file upload button.",
+    "message": "File Upload"
+  },
   "apps.deposit.components.DashboardStudent.UploadFiles.dropzonePlaceholder": {
     "description": "Placeholder for dropzone.",
     "message": "Drag 'n' drop some files here, or click to select files"
@@ -226,6 +230,10 @@
   "components.App.AppContentLoader.errorJwtEmpty": {
     "description": "JWT empty, can be from the service worker and the refresh token expired",
     "message": "Please reload your page"
+  },
+  "components.ClaimLink": {
+    "description": "Message displayed to the user for claiming a resource",
+    "message": "Please login to manage this resource on {frontend_home_url}"
   },
   "components.Dashboard.DashboardDocumentPaneButtons.btnPlay": {
     "description": "Dashboard button to display the existing document, if there is one.",
