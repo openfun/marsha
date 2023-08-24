@@ -82,7 +82,7 @@ class PlaylistViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
                 )
             ]
         elif self.action in ["claim"]:
-            permission_classes = [permissions.IsOrganizationInstructor]
+            permission_classes = [permissions.CanClaimPlaylist]
         elif self.action in ["is_claimed"]:
             permission_classes = [
                 permissions.IsTokenInstructor | permissions.IsTokenAdmin
