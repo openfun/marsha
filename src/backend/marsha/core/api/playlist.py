@@ -1,4 +1,5 @@
 """Declare API endpoints for playlist with Django RestFramework viewsets."""
+from django.conf import settings
 from django.db.models import Q
 from django.db.models.deletion import ProtectedError
 
@@ -179,11 +180,16 @@ class PlaylistViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         Only callable in LTI context."""
         playlist = self.get_object()
 
+        lti_user_id = clean_lti_user_id(self.request.user.token.get("user").get("id"))
+
+        if lti_user_id in settings.PLAYLIST_CLAIM_EXCLUDED_LTI_USER_ID:
+            return Response({"is_claimed": True})
+
         try:
             consumer_site = self.request.user.token.get("consumer_site")
-            lti_user_id = self.request.user.token.get("user").get("id")
+
             user_id = LtiUserAssociation.objects.values_list("user_id", flat=True).get(
-                lti_user_id=clean_lti_user_id(lti_user_id),
+                lti_user_id=lti_user_id,
                 consumer_site=consumer_site,
             )
 
