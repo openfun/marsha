@@ -711,6 +711,9 @@ class Base(Configuration):
     LRS_AUTH_TOKEN = values.Value()
     LRS_XAPI_VERSION = values.Value()
 
+    # PLAYLIST CLAIM SETTING
+    PLAYLIST_CLAIM_EXCLUDED_LTI_USER_ID = values.ListValue(["STUDENT"])
+
     # pylint: disable=invalid-name
     @property
     def AWS_SOURCE_BUCKET_NAME(self):
