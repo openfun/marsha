@@ -2,7 +2,7 @@
 import uuid
 
 from django.core.exceptions import ValidationError
-from django.test import RequestFactory, TestCase
+from django.test import RequestFactory, TestCase, override_settings
 
 from marsha.core.factories import (
     ConsumerSiteFactory,
@@ -166,3 +166,17 @@ class LTIUserAssociationTestCase(TestCase):
         self.assertIsNone(untouched_portability_request.from_user)
         updated_portability_request.refresh_from_db()
         self.assertEqual(updated_portability_request.from_user, user)
+
+    @override_settings(PLAYLIST_CLAIM_EXCLUDED_LTI_USER_ID=["STUDENT"])
+    def test_create_user_association_with_invalud_lti_user_id(self):
+        """Creating a user assoication with an invalid lti_user_id should fail."""
+
+        consumer_site = ConsumerSiteFactory()
+        user = UserFactory()
+
+        with self.assertRaises(ValidationError):
+            create_user_association(
+                lti_consumer_site_id=consumer_site.pk,
+                lti_user_id="student",
+                user_id=user.pk,
+            )
