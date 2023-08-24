@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
+# shellcheck source=./bin/docker-compose
+source "$(dirname "${BASH_SOURCE[0]}")/docker-compose"
+
 export ENV_FILE=test
 
-docker-compose run --rm app pytest "$@"
+$dockercompose run --rm app pytest "$@"
 

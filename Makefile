@@ -32,16 +32,10 @@ RESET := \033[0m
 GREEN := \033[1;32m
 
 # -- Docker
-# Test if docker compose exists and its version
-DOCKER_COMPOSE_VERSION = $(shell docker compose version > /dev/null 2>&1 && docker compose version --short | cut -c1-1)
 DOCKER_UID           = $(shell id -u)
 DOCKER_GID           = $(shell id -g)
 DOCKER_USER          = $(DOCKER_UID):$(DOCKER_GID)
-ifeq ($(DOCKER_COMPOSE_VERSION),2)
-	COMPOSE              = DOCKER_USER=$(DOCKER_USER) docker compose
-else
-	COMPOSE              = DOCKER_USER=$(DOCKER_USER) docker-compose
-endif
+COMPOSE              = DOCKER_USER=$(DOCKER_USER) ./bin/docker-compose
 COMPOSE_BUILD        = DOCKER_USER=$(DOCKER_USER) COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 $(COMPOSE) build
 COMPOSE_RUN          = $(COMPOSE) run --rm
 COMPOSE_RUN_APP      = $(COMPOSE_RUN) app

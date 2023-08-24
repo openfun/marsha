@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+# Test if we have docker compose v2, and keep quiet if we don't.
+version=$(docker compose version > /dev/null 2>&1 && docker compose version --short) || true
+if [[ $version =~ ^v?2 ]]; then
+  dockercompose="docker compose"
+else
+  dockercompose="docker-compose"
+fi
+
+if [[ "${BASH_SOURCE[0]}" != "${0}" ]] ; then
+    export dockercompose
+else
+    $dockercompose "$@"
+fi

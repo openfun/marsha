@@ -1,3 +1,6 @@
 #!/usr/bin/env bash
 
-docker-compose run --rm -w /app/src/backend/marsha app cookiecutter .cookiecutter/ "$@"
+# shellcheck source=./bin/docker-compose
+source "$(dirname "${BASH_SOURCE[0]}")/docker-compose"
+
+$dockercompose run --rm -w /app/src/backend/marsha app cookiecutter .cookiecutter/ "$@"

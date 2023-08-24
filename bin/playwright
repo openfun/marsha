@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# shellcheck source=./bin/docker-compose
+source "$(dirname "${BASH_SOURCE[0]}")/docker-compose"
+
 export ENV_FILE=test
 
 # Allow X server connection
@@ -15,7 +18,7 @@ xhost +local:root
 #    -e DEBUG=console \
 
 
-docker-compose run --rm \
+$dockercompose run --rm \
     -e DISPLAY \
     -e QT_X11_NO_MITSHM=1 \
     -e DJANGO_ALLOW_ASYNC_UNSAFE=1 \
