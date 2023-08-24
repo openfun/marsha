@@ -1,6 +1,6 @@
 """Tests for the Playlist is-claimed API of the Marsha project."""
 
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 from marsha.core import factories
 from marsha.core.lti.user_association import clean_lti_user_id
@@ -73,6 +73,24 @@ class PlaylistIsClaimedAPITest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"is_claimed": False})
+
+    @override_settings(PLAYLIST_CLAIM_EXCLUDED_LTI_USER_ID=["STUDENT"])
+    def test_playlist_is_claimed_LTI_instructor_invalid_user_id(self):
+        """LTI instructors with an excluded user_id must have is_claimed True as response."""
+        video = factories.VideoFactory()
+
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            playlist=video.playlist, roles=[INSTRUCTOR], user={"id": "student"}
+        )
+
+        response = self.client.get(
+            f"/api/playlists/{video.playlist.id}/is-claimed/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"is_claimed": True})
 
     def test_playlist_is_claimed_LTI_instructor_claimed(self):
         """LTI instructors can check if a playlist is claimed."""
