@@ -41,7 +41,7 @@ class PlaylistClaimAPITest(TestCase):
         self.assertFalse(PlaylistAccess.objects.filter(playlist=playlist).exists())
 
     def test_claim_playlist_by_orga_administrator(self):
-        """Organization administrators can't claim playlists."""
+        """Organization administrators can claim playlists."""
         organization_access = factories.OrganizationAccessFactory(role=ADMINISTRATOR)
         playlist = factories.PlaylistFactory(
             organization=organization_access.organization,
@@ -55,9 +55,9 @@ class PlaylistClaimAPITest(TestCase):
             content_type="application/json",
         )
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 201)
         playlist.refresh_from_db()
-        self.assertFalse(PlaylistAccess.objects.filter(playlist=playlist).exists())
+        self.assertTrue(PlaylistAccess.objects.filter(playlist=playlist).exists())
 
     def test_claim_playlist_by_orga_instructor_no_other_access(self):
         """Organization instructors can claim playlists.
