@@ -1,4 +1,6 @@
 """Process module to manage association between LTI users and Marsha users."""
+from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db.transaction import atomic
 
 from marsha.core.models import LtiUserAssociation, PortabilityRequest
@@ -78,6 +80,11 @@ def create_user_association(lti_consumer_site_id, lti_user_id, user_id):
     if not all((lti_consumer_site_id, lti_user_id, user_id)):
         # Can't create an association without all information
         raise ValueError("Missing information to create an association")
+
+    if clean_lti_user_id(lti_user_id) in settings.PLAYLIST_CLAIM_EXCLUDED_LTI_USER_ID:
+        raise ValidationError(
+            "This lti_user_id can not be used to create a LTIUserAssociation."
+        )
 
     LtiUserAssociation.objects.create(
         lti_user_id=clean_lti_user_id(lti_user_id),
