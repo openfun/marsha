@@ -260,6 +260,11 @@ class DepositedFileViewSet(
             permission_classes = self.permission_classes
         return [permission() for permission in permission_classes]
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        return queryset.filter(file_depository=self.get_related_filedepository_id())
+
     def list(self, request, *args, **kwargs):
         """Get a list of deposited files.
 

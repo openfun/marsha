@@ -57,6 +57,13 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
             user__full_username=owned_deposited_file.author_name,
         )
 
+        # Same author as an other deposited file on an other file depository. Should not be listed
+        other_file_depository = FileDepositoryFactory()
+        DepositedFileFactory(
+            file_depository=other_file_depository,
+            author_id=owned_deposited_file.author_id,
+        )
+
         response = self.client.get(
             f"/api/filedepositories/{file_depository.id}/depositedfiles/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -91,6 +98,10 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
             3, file_depository=file_depository
         )
         jwt_token = InstructorOrAdminLtiTokenFactory(playlist=file_depository.playlist)
+
+        # Other deposited files should not be listed
+        other_file_depository = FileDepositoryFactory()
+        DepositedFileFactory.create_batch(3, file_depository=other_file_depository)
 
         response = self.client.get(
             f"/api/filedepositories/{file_depository.id}/depositedfiles/?limit=2",
