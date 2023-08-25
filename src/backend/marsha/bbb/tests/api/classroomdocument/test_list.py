@@ -65,6 +65,15 @@ class ClassroomClassroomdocumentsAPITest(TestCase):
         )
         jwt_token = InstructorOrAdminLtiTokenFactory(playlist=classroom.playlist)
 
+        # Create documents in a classroom in the same playlist. They should not be listed
+        same_playlist_classroom = ClassroomFactory(playlist=classroom.playlist)
+        ClassroomDocumentFactory.create_batch(3, classroom=same_playlist_classroom)
+
+        # Create documents on a classroom living in an other playlist. They should not be listed
+        other_playlist = PlaylistFactory()
+        other_classroom = ClassroomFactory(playlist=other_playlist)
+        ClassroomDocumentFactory.create_batch(3, classroom=other_classroom)
+
         response = self.client.get(
             f"/api/classrooms/{classroom.id}/classroomdocuments/?limit=2",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
