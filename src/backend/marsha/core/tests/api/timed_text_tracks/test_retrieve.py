@@ -8,7 +8,7 @@ from django.test import TestCase, override_settings
 
 from marsha.core import factories, models
 from marsha.core.api import timezone
-from marsha.core.factories import TimedTextTrackFactory, UserFactory
+from marsha.core.factories import TimedTextTrackFactory, UserFactory, VideoFactory
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     StudentLtiTokenFactory,
@@ -228,6 +228,15 @@ class TimedTextTrackRetrieveAPITest(TestCase):
         self.assertEqual(
             content, {"detail": "You do not have permission to perform this action."}
         )
+
+        # Try getting the timed_text_track using an other video id
+        other_video = VideoFactory(playlist=timed_text_track.video.playlist)
+
+        response = self.client.get(
+            self._get_url(other_video, timed_text_track),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 404)
 
     def test_api_timed_text_track_read_instructor_in_read_only(self):
         """Instructor should not be able to read a timed text track in read_only mode."""
