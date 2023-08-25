@@ -321,3 +321,18 @@ class ThumbnailRetrieveApiTest(TestCase):
                 "video": str(video.id),
             },
         )
+
+    def test_api_thumbnail_retrieve_from_another_video(self):
+        """Trying to retrieve a thumbnail using an other video in the url should return a 404."""
+
+        thumbnail = ThumbnailFactory()
+        other_video = VideoFactory(playlist=thumbnail.video.playlist)
+
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=thumbnail.video.playlist)
+
+        response = self.client.get(
+            self._get_url(other_video, thumbnail),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 404)

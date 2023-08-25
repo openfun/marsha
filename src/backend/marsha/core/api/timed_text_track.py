@@ -89,11 +89,7 @@ class TimedTextTrackViewSet(
     def get_queryset(self):
         """Redefine the queryset to use based on the current action."""
         queryset = super().get_queryset()
-        if self.action in ["list"]:
-            video_id = self.get_related_video_id()
-            return queryset.filter(video__id=video_id)
-
-        return queryset
+        return queryset.filter(video__id=self.get_related_video_id())
 
     @action(methods=["post"], detail=True, url_path="initiate-upload")
     # pylint: disable=unused-argument

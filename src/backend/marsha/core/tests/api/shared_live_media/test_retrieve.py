@@ -678,3 +678,21 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
                 "video": str(video.id),
             },
         )
+
+    def test_api_shared_live_media_read_from_another_video(self):
+        """Accessing a shared live media using an other video in the url should return a 404."""
+        shared_live_media = SharedLiveMediaFactory(
+            upload_state=defaults.PENDING,
+            uploaded_on=None,
+            nb_pages=None,
+        )
+        other_video = VideoFactory(playlist=shared_live_media.video.playlist)
+
+        jwt_token = StudentLtiTokenFactory(playlist=shared_live_media.video.playlist)
+
+        response = self.client.get(
+            self._get_url(other_video, shared_live_media),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 404)

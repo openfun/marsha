@@ -100,15 +100,13 @@ class SharedLiveMediaViewSet(
     def get_queryset(self):
         """Redefine the queryset to use based on the current action."""
         queryset = super().get_queryset()
-        if self.action in ["list"]:
-            video_id = self.get_related_video_id()
+        queryset = queryset.filter(
+            video__id=self.get_related_video_id(),
+        )
+        if self.action in ["list"] and self.request.resource:
             queryset = queryset.filter(
-                video__id=video_id,
+                video__playlist__id=self.request.resource.id,
             )
-            if self.request.resource:
-                queryset = queryset.filter(
-                    video__playlist__id=self.request.resource.id,
-                )
 
         return queryset
 
