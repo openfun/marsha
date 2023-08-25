@@ -544,6 +544,11 @@ class ClassroomDocumentViewSet(
             permission_classes = self.permission_classes
         return [permission() for permission in permission_classes]
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        return queryset.filter(classroom=self.get_related_classroom_id())
+
     def create(self, request, *args, **kwargs):
         """Create a ClassroomDocument.
 
