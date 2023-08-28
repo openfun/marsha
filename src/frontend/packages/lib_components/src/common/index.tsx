@@ -76,6 +76,7 @@ export * from './UploadForm/route';
 export * from './UploadManager';
 export * from './UploadManager/UploadHandlers';
 export * from './UploadableObjectProgress';
+export * from './Widgets';
 export * from './WidgetsContainer';
 export * from './WizardLayout';
 export * from './queries';
