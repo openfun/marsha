@@ -92,6 +92,10 @@ class XAPIDocumentStatement(XAPIStatementMixin):
             statement, homepage, user=user, user_id=user_id
         )
 
+        statement["context"].update(
+            {"contextActivities": {"category": [{"id": "https://w3id.org/xapi/lms"}]}}
+        )
+
         statement["object"] = {
             "definition": {
                 "type": "http://id.tincanapi.com/activitytype/document",
@@ -146,19 +150,17 @@ class XAPIDocumentStatement(XAPIStatementMixin):
         )
 
         if jwt_token.payload.get("context_id"):
-            statement["context"].update(
+            statement["context"]["contextActivities"].update(
                 {
-                    "contextActivities": {
-                        "parent": [
-                            {
-                                "id": jwt_token.payload["context_id"],
-                                "objectType": "Activity",
-                                "definition": {
-                                    "type": "http://adlnet.gov/expapi/activities/course"
-                                },
-                            }
-                        ]
-                    }
+                    "parent": [
+                        {
+                            "id": jwt_token.payload["context_id"],
+                            "objectType": "Activity",
+                            "definition": {
+                                "type": "http://adlnet.gov/expapi/activities/course"
+                            },
+                        }
+                    ]
                 }
             )
 
@@ -189,8 +191,14 @@ class XAPIVideoStatement(XAPIStatementMixin):
             statement, homepage, user=user, user_id=user_id
         )
 
+        category_id = (
+            "https://w3id.org/xapi/lms"
+            if statement["verb"]["id"] == "http://id.tincanapi.com/verb/downloaded"
+            else "https://w3id.org/xapi/video"
+        )
+
         statement["context"].update(
-            {"contextActivities": {"category": [{"id": "https://w3id.org/xapi/video"}]}}
+            {"contextActivities": {"category": [{"id": category_id}]}}
         )
 
         statement["object"] = {

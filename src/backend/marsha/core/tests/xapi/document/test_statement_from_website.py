@@ -67,6 +67,9 @@ class XAPIStatementFromWebsite(TestCase):
                     "https://w3id.org/xapi/video/extensions/session-id": "a6151456-18b7-"
                     "43b4-8452-2037fed588df"
                 },
+                "contextActivities": {
+                    "category": [{"id": "https://w3id.org/xapi/lms"}]
+                },
             },
         )
         self.assertEqual(statement["verb"], base_statement["verb"])

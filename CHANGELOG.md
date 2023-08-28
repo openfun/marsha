@@ -35,6 +35,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Replace xAPI downloading statements category related activity value
 - Upgrade frontend to React 18 (#2280)
 - Upgrade to django 4.2
 - `DJANGO_STATICFILES_STORAGE` environment variable is replaced by
