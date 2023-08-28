@@ -18,9 +18,9 @@
     "request-promise-native": "1.0.9"
   },
   "devDependencies": {
-    "@types/jest": "29.5.3",
+    "@types/jest": "29.5.4",
     "@types/request-promise-native": "1.0.18",
-    "jest": "29.6.2"
+    "jest": "29.6.4"
   },
   "resolutions": {
     "merge": "^2.0.0",
