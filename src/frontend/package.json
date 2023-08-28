@@ -42,7 +42,7 @@
     "@codemirror/language-data": "6.3.1",
     "@codemirror/state": "6.2.1",
     "@codemirror/view": "6.16.0",
-    "@openfun/cunningham-react": "0.11.1",
+    "@openfun/cunningham-react": "1.0.0",
     "@tanstack/react-query": "4.33.0",
     "@tanstack/react-query-devtools": "4.33.0",
     "@testing-library/jest-dom": "6.0.1",
