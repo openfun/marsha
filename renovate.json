@@ -28,6 +28,7 @@
         "react-router-dom",
         "react-test-renderer",
         "rehype-mathjax",
+        "rehype-raw",
         "styled-components",
         "typescript",
         "video.js",
