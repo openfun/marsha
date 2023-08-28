@@ -1,0 +1,10 @@
+django
+djangorestframework
+ruff
+ffmpeg-python
+python-socketio
+django-storages
+django-configurations
+uvicorn
+boto3
+shortuuid 
