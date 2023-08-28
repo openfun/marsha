@@ -36,7 +36,14 @@ describe('Video <RetentionDate />', () => {
   it('renders the component and set a date with success', async () => {
     const mockedVideo = videoMockFactory();
 
-    fetchMock.mock(`/api/videos/${mockedVideo.id}/`, 200, { method: 'PATCH' });
+    fetchMock.mock(
+      `/api/videos/${mockedVideo.id}/`,
+      {
+        status: 200,
+        body: mockedVideo,
+      },
+      { method: 'PATCH' },
+    );
 
     render(
       wrapInVideo(
@@ -77,14 +84,27 @@ describe('Video <RetentionDate />', () => {
       `{"retention_date":"${retentionDate.toISODate()!}"}`,
     );
     expect(lastCall?.[1]?.method).toBe('PATCH');
+
+    await screen.findByText('Video updated.');
   });
 
   it('renders the component with a default date and deletes it', async () => {
+    const retentionDate = DateTime.utc()
+      .plus({ days: 1 })
+      .set({ second: 0, millisecond: 0 });
+
     const mockedVideo = videoMockFactory({
-      retention_date: '2020-03-01',
+      retention_date: retentionDate.toISODate(),
     });
 
-    fetchMock.mock(`/api/videos/${mockedVideo.id}/`, 200, { method: 'PATCH' });
+    fetchMock.mock(
+      `/api/videos/${mockedVideo.id}/`,
+      {
+        status: 200,
+        body: mockedVideo,
+      },
+      { method: 'PATCH' },
+    );
 
     render(
       wrapInVideo(
@@ -100,7 +120,9 @@ describe('Video <RetentionDate />', () => {
     const inputRetentionDate = within(
       screen.getByTestId('retention-date-picker'),
     ).getByRole('presentation');
-    expect(inputRetentionDate).toHaveTextContent('3/1/2020');
+    expect(inputRetentionDate).toHaveTextContent(
+      retentionDate.toLocaleString(),
+    );
 
     const deleteButton = await screen.findByRole('button', {
       name: 'Delete retention date',
@@ -115,6 +137,8 @@ describe('Video <RetentionDate />', () => {
     expect(lastCall?.[0]).toBe(`/api/videos/${mockedVideo.id}/`);
     expect(lastCall?.[1]?.body).toEqual('{"retention_date":null}');
     expect(lastCall?.[1]?.method).toBe('PATCH');
+
+    await screen.findByText('Video updated.');
   });
 
   it('fails to update the video and displays the right error message', async () => {
@@ -132,8 +156,6 @@ describe('Video <RetentionDate />', () => {
         mockedVideo,
       ),
     );
-
-    expect(screen.getAllByText('Retention date')).toBeTruthy();
 
     const deleteButton = await screen.findByRole('button', {
       name: 'Delete retention date',
