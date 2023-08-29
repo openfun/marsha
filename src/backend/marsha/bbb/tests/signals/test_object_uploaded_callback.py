@@ -19,7 +19,7 @@ class ObjectUploadedCallbackTestCase(TestCase):
     def test_object_uploaded_callback_video_with_recording(self, delete_recording_mock):
         """
         When a video with a recording has been uploaded,
-        BBB API call to delete recordings should called.
+        BBB API call to delete recordings should be called.
         """
         video = VideoFactory()
         ClassroomRecordingFactory(

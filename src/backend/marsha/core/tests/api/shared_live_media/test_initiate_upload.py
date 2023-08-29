@@ -200,7 +200,7 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
         self.assertEqual(shared_live_media.upload_state, "pending")
 
     def test_api_shared_live_media_initiate_upload_file_without_mimetype(self):
-        """With no mimetype the request should fails."""
+        """With no mimetype the request should fail."""
         shared_live_media = SharedLiveMediaFactory(
             id="c5cad053-111a-4e0e-8f78-fe43dec11512",
             upload_state=random.choice(["ready", "error"]),
@@ -231,7 +231,7 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
         )
 
     def test_api_shared_live_media_initiate_upload_file_wrong_mimetype(self):
-        """With a wrong mimetype the request should fails."""
+        """With a wrong mimetype the request should fail."""
         shared_live_media = SharedLiveMediaFactory(
             id="c5cad053-111a-4e0e-8f78-fe43dec11512",
             upload_state=random.choice(["ready", "error"]),

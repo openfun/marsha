@@ -185,7 +185,7 @@ class VideoRecordingServicesTestCase(TestCase):
     @override_settings(LIVE_SEGMENT_DURATION_SECONDS=10)
     def test_services_recording_stop_recording_segment_too_short(self):
         """When start slice is lower than LIVE_SEGMENT_DURATION_SECONDS stop_recording should
-        fails."""
+        fail."""
         start = timezone.now() - timedelta(seconds=1)
         video = VideoFactory(
             recording_slices=[

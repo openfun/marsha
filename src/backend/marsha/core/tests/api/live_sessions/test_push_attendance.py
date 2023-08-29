@@ -735,7 +735,7 @@ class LiveSessionPushAttendanceApiTest(LiveSessionApiTestCase):
     def test_api_livesession_post_attendance_token_with_could_match_other_records(
         self,
     ):
-        """Match the record with the combinaison consumer_site/lti_id/lti_user_id/video."""
+        """Match the record with the combination consumer_site/lti_id/lti_user_id/video."""
         video = VideoFactory()
         video2 = VideoFactory()
         # different email and username than the token

@@ -19,8 +19,8 @@ class MarshaRefreshToken(RefreshToken):
     """
     Refresh token made especially for Marsha. In this token, we also set the access token type.
     We will use later when the access token is generated. Instead of picking the token type from
-    the access token class, we will use the one set in the refresh token payload. This avoid to
-    have a view/serializer for each refresh token type we are managing.
+    the access token class, we will use the one set in the refresh token payload. This avoids
+    having a view/serializer for each refresh token type we are managing.
 
     The token_type property must not be overridden and we must keep the one defined in RefreshToken
     class

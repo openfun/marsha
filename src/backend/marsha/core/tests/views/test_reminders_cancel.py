@@ -127,7 +127,7 @@ class ReminderCanceliewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
         self.assertContains(response, "<html>")
-        # still french is displayed as livesession is french
+        # still french is displayed as live-session is french
         self.assertIn("Rappels désactivés", response.content.decode("utf-8"))
 
         lti_livesession.language = "en"

@@ -19,7 +19,7 @@ class MissingRSAKey(Exception):
 
 
 def rsa_signer(message):
-    """Sign a message with an rsa key pair found on the file system for CloudFront signed urls.
+    """Sign a message with an RSA key pair found on the file system for CloudFront signed urls.
 
     Parameters
     ----------
@@ -67,7 +67,7 @@ def generate_cloudfront_urls_signed_parameters(resource, date_less_than):
 
 def build_signed_url(base_url, extra_params):
     """
-    Build an url by concatening the base url and the parameters needed to sign it.
+    Build an url by concatenating the base url and the parameters needed to sign it.
     Extracted from CloudFrontSigner class
     """
     separator = "&" if "?" in base_url else "?"

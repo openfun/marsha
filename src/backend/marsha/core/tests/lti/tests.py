@@ -25,7 +25,7 @@ class LTITestCase(TestCase):
     """Test the LTI provider."""
 
     def setUp(self):
-        """Override the setUp method to instanciate and serve a request factory."""
+        """Override the setUp method to instantiate and serve a request factory."""
         super().setUp()
         self.factory = RequestFactory()
 
@@ -531,7 +531,7 @@ class LTITestCase(TestCase):
         self.assertEqual(lti.launch_presentation_locale, "fr")
 
     def test_lti_get_consumer_site_not_verified(self):
-        """Calling get_consumer_site without calling verify first should throw an execption."""
+        """Calling get_consumer_site without calling verify first should throw an exception."""
         data = {
             "resource_link_id": "df7",
             "context_id": "course-v1:ufr+mathematics+0001",

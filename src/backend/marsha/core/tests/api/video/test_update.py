@@ -348,13 +348,13 @@ class VideoUpdateAPITest(TestCase):
         self,
     ):
         """starting_at is in the past, it can't be updated anymore."""
-        intial_starting_at = timezone.now() + timedelta(days=10)
+        initial_starting_at = timezone.now() + timedelta(days=10)
         video = factories.VideoFactory(
-            live_state=IDLE, live_type=RAW, starting_at=intial_starting_at
+            live_state=IDLE, live_type=RAW, starting_at=initial_starting_at
         )
         jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
         # now is set to after initial starting_at
-        now = intial_starting_at + timedelta(days=10)
+        now = initial_starting_at + timedelta(days=10)
         with mock.patch.object(timezone, "now", return_value=now):
             # even if we try to update the starting_at in the future date, as previous one is past
             # it can't get updated.
@@ -371,7 +371,7 @@ class VideoUpdateAPITest(TestCase):
                 {
                     "starting_at": [
                         (
-                            f"Field starting_at {intial_starting_at} "
+                            f"Field starting_at {initial_starting_at} "
                             "is already past and can't be updated!"
                         )
                     ]
@@ -800,7 +800,7 @@ class VideoUpdateAPITest(TestCase):
         self.assertEqual(video.estimated_duration, estimated_duration)
 
     def test_api_video_patch_detail_token_user_estimated_duration_negative(self):
-        """Sending a negative integer for estimated_daration should be rejected."""
+        """Sending a negative integer for estimated_duration should be rejected."""
         video = factories.VideoFactory()
         self.assertIsNone(video.estimated_duration)
 
@@ -946,7 +946,7 @@ class VideoUpdateAPITest(TestCase):
         self.assertEqual(video.live_state, IDLE)
         self.assertEqual(video.starting_at, starting_at)
 
-        # we now try to set starting_at to a date in the past and it musn't be allowed
+        # we now try to set starting_at to a date in the past, and it mustn't be allowed
         past_starting_at = (timezone.now() - timedelta(hours=1)).replace(microsecond=0)
         response = self.client.patch(
             f"/api/videos/{video.id}/",
@@ -987,13 +987,13 @@ class VideoUpdateAPITest(TestCase):
 
     def test_api_patch_video_with_previous_starting_at_already_past(self):
         """Date is already set in video and is in the past, it can't be updated anymore."""
-        intial_starting_at = timezone.now() + timedelta(days=10)
+        initial_starting_at = timezone.now() + timedelta(days=10)
         video = factories.VideoFactory(
-            live_state=IDLE, live_type=RAW, starting_at=intial_starting_at
+            live_state=IDLE, live_type=RAW, starting_at=initial_starting_at
         )
         jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
         # now is set after video.starting_at
-        now = intial_starting_at + timedelta(days=10)
+        now = initial_starting_at + timedelta(days=10)
         with mock.patch.object(timezone, "now", return_value=now):
             # even if we try to update the starting_at in the future date, as previous one is past
             # it can't get updated.
@@ -1010,7 +1010,7 @@ class VideoUpdateAPITest(TestCase):
                 {
                     "starting_at": [
                         (
-                            f"Field starting_at {intial_starting_at} "
+                            f"Field starting_at {initial_starting_at} "
                             "is already past and can't be updated!"
                         )
                     ]

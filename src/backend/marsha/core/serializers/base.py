@@ -49,7 +49,7 @@ KEY_REGEX = re.compile(KEY_PATTERN)
 
 def get_resource_cloudfront_url_params(resource_kind, resource_id):
     """
-    Generate the policy and sign it to allow to access to all sub resources
+    Generate the policy and sign it to allow accessing to all sub resources
     for a given resource id.
     Parameters
     ----------
@@ -77,7 +77,7 @@ def get_resource_cloudfront_url_params(resource_kind, resource_id):
 
 def get_video_cloudfront_url_params(video_id):
     """
-    Generate the policy and sign it to allow to access to all resources for a given video id.
+    Generate the policy and sign it to allow accessing to all resources for a given video id.
     """
     return get_resource_cloudfront_url_params("video", video_id)
 
@@ -143,7 +143,7 @@ class TimestampField(serializers.DateTimeField):
 class ReadWritePrimaryKeyRelatedField(serializers.PrimaryKeyRelatedField):
     """
     A serializer field to serialize/deserialize complete related object.
-    It allows to serialize related foreign related object (many to one) for display purpose,
+    It allows serializing related foreign related object (many to one) for display purpose,
     while still allowing to use only its PK when editing (create or update).
     Examples (for the parent object, with this serializer for playlist):
      - GET will return
@@ -181,7 +181,7 @@ class ReadWritePrimaryKeyRelatedField(serializers.PrimaryKeyRelatedField):
 
     def to_internal_value(self, data):
         """
-        Allow to provide only the PK of the related object (nominal case) or extract the PK
+        Allow providing only the PK of the related object (nominal case) or extract the PK
         if the POSTed data are from a previous GET, giving all the object.
 
         This allows to provide input for the parent object like

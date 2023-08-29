@@ -53,7 +53,7 @@ class VerbSerializerTest(TestCase):
         self.assertEqual(error.code, "required")
 
     def test_verb_serializer_with_invalid_display_property(self):
-        """Display property only accept Dictionnary."""
+        """Display property only accept Dictionary."""
         data = {"id": "http://url.tld", "display": "foo"}
 
         serializer = VerbSerializer(data=data)

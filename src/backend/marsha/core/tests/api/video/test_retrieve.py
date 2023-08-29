@@ -92,7 +92,7 @@ class VideoRetrieveAPITest(TestCase):
             self.assertEqual(response.status_code, 200)
 
     def test_api_video_read_detail_student_other_video(self):
-        """Student users should not be allowed to read an other video detail."""
+        """Student users should not be allowed to read another video detail."""
         video = factories.VideoFactory()
         other_video = factories.VideoFactory()
         jwt_token = StudentLtiTokenFactory(playlist=video.playlist)

@@ -13,12 +13,12 @@ import xmpp
 
 
 def _connect():
-    """Connect to a XMPP server and return the connection.
+    """Connect to an XMPP server and return the connection.
 
     Returns
     -------
     xmpp.Client
-        A xmpp client authenticated to a XMPP server.
+        A xmpp client authenticated to an XMPP server.
     """
     jid = xmpp.protocol.JID(settings.XMPP_PRIVATE_ADMIN_JID)
 
@@ -64,7 +64,7 @@ def create_room(room_name):
     )
 
     data = []
-    fileds_to_exclude = [
+    fields_to_exclude = [
         "muc#roomconfig_persistentroom",
         "muc#roomconfig_publicroom",
         "muc#roomconfig_allowpm",
@@ -77,7 +77,7 @@ def create_room(room_name):
     for children in default_config_iq.getQueryPayload()[0].getChildren():
         if (
             children.getName() == "field"
-            and children.getAttr("var") not in fileds_to_exclude
+            and children.getAttr("var") not in fields_to_exclude
         ):
             data.append(children)
 
@@ -147,7 +147,7 @@ def close_room(room_name):
     )
 
     data = []
-    fileds_to_exclude = [
+    fields_to_exclude = [
         "muc#roomconfig_membersonly",
     ]
 
@@ -155,7 +155,7 @@ def close_room(room_name):
     for children in default_config_iq.getQueryPayload()[0].getChildren():
         if (
             children.getName() == "field"
-            and children.getAttr("var") not in fileds_to_exclude
+            and children.getAttr("var") not in fields_to_exclude
         ):
             data.append(children)
 
@@ -218,7 +218,7 @@ def reopen_room_for_vod(room_name):
     )
 
     data = []
-    fileds_to_exclude = [
+    fields_to_exclude = [
         "muc#roomconfig_membersonly",
         "muc#roomconfig_moderatedroom",
     ]
@@ -227,7 +227,7 @@ def reopen_room_for_vod(room_name):
     for children in default_config_iq.getQueryPayload()[0].getChildren():
         if (
             children.getName() == "field"
-            and children.getAttr("var") not in fileds_to_exclude
+            and children.getAttr("var") not in fields_to_exclude
         ):
             data.append(children)
 

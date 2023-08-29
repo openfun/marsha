@@ -43,11 +43,11 @@ class VideoMetadataAPITest(TestCase):
                 },
                 {
                     "value": "CC_BY-ND",
-                    "display_name": "Creative Common By Attribution No Derivates",
+                    "display_name": "Creative Common By Attribution No Derivatives",
                 },
                 {
                     "value": "CC_BY-NC-ND",
-                    "display_name": "Creative Common By Attribution Non Commercial No Derivates",
+                    "display_name": "Creative Common By Attribution Non Commercial No Derivatives",
                 },
                 {"value": "CC0", "display_name": "Public Domain Dedication "},
                 {"value": "NO_CC", "display_name": "All rights reserved"},
@@ -87,11 +87,11 @@ class VideoMetadataAPITest(TestCase):
                 },
                 {
                     "value": "CC_BY-ND",
-                    "display_name": "Creative Common By Attribution No Derivates",
+                    "display_name": "Creative Common By Attribution No Derivatives",
                 },
                 {
                     "value": "CC_BY-NC-ND",
-                    "display_name": "Creative Common By Attribution Non Commercial No Derivates",
+                    "display_name": "Creative Common By Attribution Non Commercial No Derivatives",
                 },
                 {"value": "CC0", "display_name": "Public Domain Dedication "},
                 {"value": "NO_CC", "display_name": "All rights reserved"},

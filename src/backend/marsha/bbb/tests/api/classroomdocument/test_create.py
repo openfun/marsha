@@ -317,13 +317,13 @@ class ClassroomDocumentCreateAPITest(TestCase):
         he is not administrator.
         """
         playlist_access = PlaylistAccessFactory(role=ADMINISTRATOR)
-        ohter_playlist_access = PlaylistAccessFactory(role=ADMINISTRATOR)
+        other_playlist_access = PlaylistAccessFactory(role=ADMINISTRATOR)
 
         classroom = ClassroomFactory(playlist=playlist_access.playlist)
 
         # user from the other_playlist must not be able to access the classroom
         # as it is not administrator.
-        jwt_token = UserAccessTokenFactory(user=ohter_playlist_access.user)
+        jwt_token = UserAccessTokenFactory(user=other_playlist_access.user)
 
         response = self.client.post(
             f"/api/classrooms/{classroom.id}/classroomdocuments/",

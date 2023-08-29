@@ -211,7 +211,7 @@ class ClassroomDocument(UploadableFileMixin, BaseModel):
         to=Classroom,
         related_name="classroom_documents",
         verbose_name=_("classroom document"),
-        help_text=_("clasroom to which this document belongs"),
+        help_text=_("classroom to which this document belongs"),
         # Delete all documents belonging to this classroom
         on_delete=models.CASCADE,
     )

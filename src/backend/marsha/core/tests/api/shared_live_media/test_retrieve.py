@@ -492,7 +492,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
         )
 
     def test_api_shared_live_media_read_detail_other_video(self):
-        """Reading a shared live media from an other video should fail."""
+        """Reading a shared live media from another video should fail."""
         shared_live_media = SharedLiveMediaFactory()
         other_video = VideoFactory()
 

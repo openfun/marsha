@@ -51,7 +51,7 @@ class ClassroomServiceCreateAPITest(TestCase):
 
     @mock.patch.object(api, "create")
     def test_api_bbb_create_user_logged_in(self, mock_create_request):
-        """A logged in user should not be able to create a classroom."""
+        """A logged-in user should not be able to create a classroom."""
         user = core_factories.UserFactory(
             first_name="Jane", last_name="Doe", email="jane.doe@example.com"
         )

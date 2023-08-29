@@ -24,7 +24,7 @@ class ChallengeAuthenticationView(GenericAPIView):
 
     Note: Authentication is done at the Django level.
     We may also remove authentication and leave the token verification to the serializer.
-    This would allow to prevent challenge token use as an access token by removing `ChallengeToken`
+    This would allow preventing challenge token use as an access token by removing `ChallengeToken`
     from `AUTH_TOKEN_CLASSES` setting.
     """
 

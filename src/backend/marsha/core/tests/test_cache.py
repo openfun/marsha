@@ -55,7 +55,7 @@ class RedisCacheWithFallbackTestCase(TestCase):
     def test_get_redis_cache(self, redis_cache_mock, fallback_cache_mock):
         """Test that redis_cache is used by default."""
         client = RedisCacheWithFallback(None, {})
-        client.get("irrelevent")
+        client.get("irrelevant")
 
         redis_cache_mock.assert_called_once()
         fallback_cache_mock.assert_not_called()
@@ -78,13 +78,13 @@ class RedisCacheWithFallbackTestCase(TestCase):
         logger logs the exception then fallback_cache takes over
         """
         client = RedisCacheWithFallback(None, {})
-        client.get("irrelevent")
+        client.get("irrelevant")
 
         redis_cache_mock.assert_called_once()
         fallback_cache_mock.assert_not_called()
 
         redis_cache_mock.side_effect = Exception()
-        client.get("irrelevent")
+        client.get("irrelevant")
 
         logger_mock.warning.assert_called_with(
             "[DEGRADED CACHE MODE] - Switch to fallback cache"

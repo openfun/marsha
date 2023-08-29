@@ -55,7 +55,7 @@ class SharedLiveMediaListAPITest(TestCase):
             nb_pages=5,
             video=video,
         )
-        # This shared_live_media belongs to an other video
+        # This shared_live_media belongs to another video
         SharedLiveMediaFactory(
             upload_state=defaults.READY,
             uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
@@ -86,7 +86,7 @@ class SharedLiveMediaListAPITest(TestCase):
             video=video,
         )
 
-        # This shared_live_media belongs to an other video and should not be in the
+        # This shared_live_media belongs to another video and should not be in the
         # payload response
         SharedLiveMediaFactory(
             upload_state=defaults.READY,
@@ -156,7 +156,7 @@ class SharedLiveMediaListAPITest(TestCase):
 
     def test_api_shared_live_media_list_instructor_other_video(self):
         """
-        An instructor trying to list an other video than the one in the token
+        An instructor trying to list another video than the one in the token
         should have no result.
         """
         video = VideoFactory()
@@ -170,7 +170,7 @@ class SharedLiveMediaListAPITest(TestCase):
             video=video,
         )
 
-        # This shared_live_media belongs to an other video, requesting this video
+        # This shared_live_media belongs to another video, requesting this video
         # in the query parameters should not return result at all
         other_video = VideoFactory()
         SharedLiveMediaFactory(
@@ -216,7 +216,7 @@ class SharedLiveMediaListAPITest(TestCase):
             upload_state=defaults.PENDING, uploaded_on=None, nb_pages=None, video=video
         )
 
-        # This shared_live_media belongs to an other video and should not be in the
+        # This shared_live_media belongs to another video and should not be in the
         # payload response
         SharedLiveMediaFactory(
             upload_state=defaults.READY,
@@ -361,7 +361,7 @@ class SharedLiveMediaListAPITest(TestCase):
             video=video,
         )
 
-        # This shared_live_media belongs to an other video and should not be in the
+        # This shared_live_media belongs to another video and should not be in the
         # payload response
         SharedLiveMediaFactory(
             upload_state=defaults.READY,
@@ -450,7 +450,7 @@ class SharedLiveMediaListAPITest(TestCase):
             video=video,
         )
 
-        # This shared_live_media belongs to an other video and should not be in the
+        # This shared_live_media belongs to another video and should not be in the
         # payload response
         other_video = VideoFactory()
         SharedLiveMediaFactory(
@@ -520,7 +520,7 @@ class SharedLiveMediaListAPITest(TestCase):
             user=user, organization=organization, role=ADMINISTRATOR
         )
 
-        # This shared_live_media belongs to an other video and should not be in the
+        # This shared_live_media belongs to another video and should not be in the
         # payload response
         SharedLiveMediaFactory(
             upload_state=defaults.READY,
@@ -612,7 +612,7 @@ class SharedLiveMediaListAPITest(TestCase):
             user=user, organization=organization, role=ADMINISTRATOR
         )
 
-        # This shared_live_media belongs to an other video and should not be in the
+        # This shared_live_media belongs to another video and should not be in the
         # payload response
         other_video = VideoFactory()
         SharedLiveMediaFactory(

@@ -155,7 +155,7 @@ class VideoLivetoVodAPITest(TestCase):
     @override_settings(XMPP_DOMAIN="conference.xmpp-server.com")
     @override_settings(XMPP_JWT_SHARED_SECRET="xmpp_shared_secret")
     def test_api_video_instructor_harvested_live_to_vod(self):
-        """An instructor can transform an harvested live to a vod."""
+        """An instructor can transform a harvested live to a vod."""
         video = factories.VideoFactory(
             playlist__lti_id="course-v1:ufr+mathematics+00001",
             playlist__title="playlist-002",
@@ -265,7 +265,7 @@ class VideoLivetoVodAPITest(TestCase):
         self.assertEqual(video.upload_state, "ready")
 
     def test_api_video_instructor_non_harvested_live_to_vod(self):
-        """An instructor can transform an harvested live to a vod."""
+        """An instructor can transform a harvested live to a vod."""
         video = factories.VideoFactory(
             playlist__lti_id="course-v1:ufr+mathematics+00001",
             playlist__title="playlist-002",

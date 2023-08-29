@@ -97,7 +97,7 @@ class PortabilityRequestManagerTestCase(TestCase):
         Assert that the manager returns the expected results when called:
          - to retrieve the portability request the user can answer to;
          - to retrieve the portability request the user can answer to
-           and which they are allow to see (`include_owned_requests`).
+           and which they are allowed to see (`include_owned_requests`).
         """
         self.assertListEqual(
             list(PortabilityRequest.objects.regarding_user_id(self.user.id)),
@@ -177,7 +177,7 @@ class PortabilityRequestManagerTestCase(TestCase):
             user=self.user,
             role=ADMINISTRATOR,
         )
-        ConsumerSiteAccessFactory.create_batch(  # other administators
+        ConsumerSiteAccessFactory.create_batch(  # other administrators
             5,
             consumer_site=consumer_site_access.consumer_site,
         )
@@ -185,7 +185,7 @@ class PortabilityRequestManagerTestCase(TestCase):
             user=self.user,
             role=ADMINISTRATOR,
         )
-        OrganizationAccessFactory.create_batch(  # other administators
+        OrganizationAccessFactory.create_batch(  # other administrators
             5,
             organization=organization_access.organization,
         )

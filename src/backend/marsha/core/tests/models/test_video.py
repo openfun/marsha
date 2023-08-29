@@ -34,7 +34,7 @@ class VideoModelsTestCase(TestCase):
 
     def setUp(self):
         """
-        Reset the cache so that no cache key will be actve
+        Reset the cache so that no cache key will be active
         """
         cache.clear()
 
@@ -54,7 +54,7 @@ class VideoModelsTestCase(TestCase):
             )
 
     def test_models_video_fields_lti_id_non_unique(self):
-        """it should be possible to create 2 videos sharing the samme playlists and lti_id."""
+        """it should be possible to create 2 videos sharing the same playlists and lti_id."""
         video = VideoFactory()
 
         # A video with a different lti_id and the same playlist can still be created
@@ -153,7 +153,7 @@ class VideoModelsTestCase(TestCase):
         """
         Testing the switch of is_scheduled with time over now.
 
-        The property is_scheduled is set according to starting_at. It gets automaticaly
+        The property is_scheduled is set according to starting_at. It gets automatically
         updated to not scheduled if date is over.
         """
         # Set to now plus 1 second
@@ -318,7 +318,7 @@ class VideoModelsTestCase(TestCase):
     def test_model_video_set_recording_slice_manifest_key(self):
         """It should set the manifest key of a recording slice.
 
-        Also, status should be set to harvested.
+        Also, status should be set to 'harvested'.
         """
         video = VideoFactory(
             recording_slices=[
@@ -411,7 +411,7 @@ class VideoModelsTestCase(TestCase):
     def test_model_video_duration_and_live_ended_at_finished_running(self):
         """
         When a live has ended, the live_ended_at property corresponds
-        to the current timestamp and the duration doesn't varie with
+        to the current timestamp and the duration doesn't change with
         the time.
         """
         started = 1533686400
@@ -495,7 +495,7 @@ class VideoModelsTestCase(TestCase):
         )
         self.assertEqual(video.live_ended_at, None)
         self.assertEqual(video.live_duration, 0)
-        self.assertEqual(video.get_list_timestamps_attendences(), {})
+        self.assertEqual(video.get_list_timestamps_attendances(), {})
 
     def test_model_video_duration_and_live_ended_at_not_running_no_started_at(self):
         """
@@ -535,25 +535,25 @@ class VideoModelsTestCase(TestCase):
         self.assertEqual(video.live_ended_at, ended)
         # no property started_at so live_duration is 0
         self.assertEqual(video.live_duration, 0)
-        self.assertEqual(video.get_list_timestamps_attendences(), {})
+        self.assertEqual(video.get_list_timestamps_attendances(), {})
 
     def test_model_video_duration_and_live_ended_at_not_running_no_live_info(self):
         """
         When  a live has no live_info, we control the live_duration, the_live_ended_at
-        properties and the get_list_timestamps_attendences method retun the expected
+        properties and the get_list_timestamps_attendances method return the expected
         default values
         """
         video = VideoFactory()
         self.assertEqual(video.live_ended_at, None)
         # no property started_at so live_duration is 0
         self.assertEqual(video.live_duration, 0)
-        self.assertEqual(video.get_list_timestamps_attendences(), {})
+        self.assertEqual(video.get_list_timestamps_attendances(), {})
 
     @override_settings(ATTENDANCE_POINTS=4)
-    def test_model_video_get_list_timestamps_attendences(self):
+    def test_model_video_get_list_timestamps_attendances(self):
         """
-        Check get_list_timestamps_attendences builds an array of timestamp
-        depending of the duration of the video
+        Check get_list_timestamps_attendances builds an array of timestamp
+        depending on the duration of the video
         """
         # video end one hour later
         started = 1600000000
@@ -600,7 +600,7 @@ class VideoModelsTestCase(TestCase):
         self.assertEqual(video.live_ended_at, ended)
         self.assertEqual(video.live_duration, one_hour)
         self.assertEqual(
-            video.get_list_timestamps_attendences(),
+            video.get_list_timestamps_attendances(),
             expected_list_timestamp,
         )
 
@@ -611,16 +611,16 @@ class VideoModelsTestCase(TestCase):
             self.assertEqual(video.live_duration, one_hour)
             self.assertEqual(video.live_ended_at, ended)
             self.assertEqual(
-                video.get_list_timestamps_attendences(), expected_list_timestamp
+                video.get_list_timestamps_attendances(), expected_list_timestamp
             )
 
     @override_settings(ATTENDANCE_POINTS=4)
-    def test_model_video_get_list_timestamps_attendences_still_running(
+    def test_model_video_get_list_timestamps_attendances_still_running(
         self,
     ):
         """
-        Check get_list_timestamps_attendences builds an array of timestamp
-        depending of the duration of the video.
+        Check get_list_timestamps_attendances builds an array of timestamp
+        depending on the duration of the video.
         """
         # video ends one hour later
         started = 1600000000
@@ -667,21 +667,21 @@ class VideoModelsTestCase(TestCase):
             self.assertEqual(video.live_duration, one_hour)
             self.assertEqual(video.live_ended_at, started + one_hour)
             self.assertEqual(
-                video.get_list_timestamps_attendences(), list_timestamp_ori
+                video.get_list_timestamps_attendances(), list_timestamp_ori
             )
 
         # duration and live_ended_at property change as live is still running,
-        # get_list_timestamps_attendences as well
+        # get_list_timestamps_attendances as well
         date_now = datetime.fromtimestamp(started + one_hour + 10)
         with mock.patch.object(timezone, "now", return_value=date_now):
             self.assertEqual(video.live_duration, one_hour + 10)
             self.assertEqual(video.live_ended_at, started + one_hour + 10)
             self.assertNotEqual(
-                video.get_list_timestamps_attendences(), list_timestamp_ori
+                video.get_list_timestamps_attendances(), list_timestamp_ori
             )
 
     @override_settings(ATTENDANCE_POINTS=100)
-    def test_model_video_get_list_timestamps_attendences_less_seconds_than_number_of_points(
+    def test_model_video_get_list_timestamps_attendances_less_seconds_than_number_of_points(
         self,
     ):
         """
@@ -725,4 +725,4 @@ class VideoModelsTestCase(TestCase):
         with mock.patch.object(timezone, "now", return_value=date_now):
             self.assertEqual(video.live_duration, 99)
             self.assertEqual(video.live_ended_at, started + 99)
-            self.assertEqual(video.get_list_timestamps_attendences(), {})
+            self.assertEqual(video.get_list_timestamps_attendances(), {})

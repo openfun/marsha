@@ -215,7 +215,7 @@ class InstructorOrAdminLtiTokenFactory(LTIPlaylistAccessTokenFactory):
     See `marsha.core.views.BaseLTIView`.
 
     Note: the `can_update` permission is set to True
-    to mean "the LTI request context ID is the playlist playlist LTI ID".
+    to mean "the LTI request context ID is the playlist LTI ID".
     When this is not the case, the test must explicitly add `permissions__can_update=False`.
     """
 

@@ -770,7 +770,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
         self.assertEqual(live_session.registered_at, now)
 
     def test_api_livesession_update_email_with_another_anonymous_id(self):
-        """Updating an other live_session using an unknown anonymous_id should fail."""
+        """Updating another live_session using an unknown anonymous_id should fail."""
         video = VideoFactory(
             live_state=IDLE,
             live_type=RAW,

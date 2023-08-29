@@ -10,7 +10,7 @@ from ..models.account import ADMINISTRATOR, INSTRUCTOR, LTI_ROLES, STUDENT
 class BaseTokenRolePermission(permissions.BasePermission):
     """Base permission class for JWT Tokens based on token roles.
 
-    These permissions grants access to users authenticated with a JWT token built from a
+    These permissions grant access to users authenticated with a JWT token built from a
     playlist ie related to a TokenPlaylist.
     """
 
@@ -66,7 +66,7 @@ class IsTokenPlaylistRouteObject(permissions.BasePermission):
     """
     Base permission class for JWT Tokens related to a resource object.
 
-    These permissions grants access to users authenticated with a JWT token built from a
+    These permissions grant access to users authenticated with a JWT token built from a
     resource ie related to a TokenResource.
     """
 
@@ -93,7 +93,7 @@ class IsTokenPlaylistRouteObjectRelatedPlaylist(permissions.BasePermission):
     """
     Base permission class for JWT Tokens related to a playlist linked to a video.
 
-    These permissions grants access to users authenticated with a JWT token built from a
+    These permissions grant access to users authenticated with a JWT token built from a
     resource ie related to a TokenResource.
     """
 
@@ -124,7 +124,7 @@ class IsTokenPlaylistRouteObjectRelatedVideo(permissions.BasePermission):
     """
     Base permission class for JWT Tokens related to a resource object linked to a video.
 
-    These permissions grants access to users authenticated with a JWT token built from a
+    These permissions grant access to users authenticated with a JWT token built from a
     resource ie related to a TokenResource.
     """
 

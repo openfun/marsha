@@ -927,7 +927,7 @@ class TestVideoSharedLiveMedia(TestCase):
 
     def test_api_video_shared_live_media_start_wrong_video_id(self):
         """An instructor can not start a shared live media
-        if related video doesn't match the JWT ressource."""
+        if related video doesn't match the JWT resource."""
         shared_live_media = SharedLiveMediaFactory()
         other_shared_live_media = SharedLiveMediaFactory()
 

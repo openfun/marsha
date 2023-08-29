@@ -305,7 +305,7 @@ class RetentionDateObjectMixin(models.Model):
         If it does, the function sets the `retention_date` of the instance to
         the current time plus the duration.
 
-        If the instance is being updated, nothing should be dnoe.
+        If the instance is being updated, nothing should be done.
 
         If the instance is soft deleted. It calls `s3_utils.update_expiration_date` with an
         expiration date equals to the current time plus settings.AWS_S3_EXPIRATION_DURATION.

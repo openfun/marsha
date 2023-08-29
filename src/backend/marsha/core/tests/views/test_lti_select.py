@@ -43,7 +43,7 @@ class SelectLTIViewTestCase(TestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_views_lti_select(self):
-        """Validate the context passed to the frontend app for a LTI Content selection."""
+        """Validate the context passed to the frontend app for an LTI Content selection."""
         lti_consumer_parameters = {
             "roles": random.choice(["instructor", "administrator"]),
             "content_item_return_url": "https://lti-consumer.site/lti",
@@ -150,7 +150,7 @@ class SelectLTIViewTestCase(TestCase):
 
     def test_views_lti_select_video(self):
         """
-        Validate the context passed to the frontend app for a LTI Content selection targeting
+        Validate the context passed to the frontend app for an LTI Content selection targeting
         video resources."""
         lti_consumer_parameters = {
             "roles": random.choice(["instructor", "administrator"]),
@@ -243,7 +243,7 @@ class SelectLTIViewTestCase(TestCase):
 
     @override_settings(LTI_CONFIG_TITLE="Marsha")
     def test_views_lti_select_default_title(self):
-        """Validate the context passed to the frontend app for a LTI Content selection."""
+        """Validate the context passed to the frontend app for an LTI Content selection."""
         lti_consumer_parameters = {
             "roles": random.choice(["instructor", "administrator"]),
             "content_item_return_url": "https://lti-consumer.site/lti",
@@ -314,7 +314,7 @@ class SelectLTIViewTestCase(TestCase):
 
     @override_settings(SECURE_PROXY_SSL_HEADER=("HTTP_X_FORWARDED_PROTO", "https"))
     def test_views_lti_select_behind_tls_termination_proxy(self):
-        """Validate the context passed to the frontend app for a LTI Content selection."""
+        """Validate the context passed to the frontend app for an LTI Content selection."""
         lti_consumer_parameters = {
             "roles": random.choice(["instructor", "administrator"]),
             "content_item_return_url": "https://lti-consumer.site/lti",

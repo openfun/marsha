@@ -330,7 +330,7 @@ class DeletionTestCase(TestCase):
         )
 
     def test_organization_access_uniqueness(self):
-        """Ensure a organization-user link cannot exist twice as non-deleted."""
+        """Ensure an organization-user link cannot exist twice as non-deleted."""
         self._test_uniqueness_ignores_deleted(
             OrganizationAccessFactory,
             organization=OrganizationFactory(),

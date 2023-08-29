@@ -45,8 +45,8 @@ class UploadableFileMixin(models.Model):
         uploaded_on: Type[DateTime]
             datetime at which the active version of the file was uploaded.
 
-        extra_paramters: Type[Dict]
-            Dictionnary containing arbitrary data sent from AWS lambda.
+        extra_parameters: Type[Dict]
+            Dictionary containing arbitrary data sent from AWS lambda.
         """
         self.upload_state = upload_state
         if uploaded_on:
@@ -56,10 +56,10 @@ class UploadableFileMixin(models.Model):
 
     @property
     def is_ready_to_show(self):
-        """Whether the file is ready to display (ie) has been sucessfully uploaded.
+        """Whether the file is ready to display (ie) has been successfully uploaded.
 
         The value of this field seems to be trivially derived from the value of the
-        `uploaded_on` field but it is necessary for conveniency and clarity in the client.
+        `uploaded_on` field but it is necessary for convenience and clarity in the client.
         """
         return self.uploaded_on is not None
 
@@ -223,8 +223,8 @@ class Document(BaseFile):
         uploaded_on: Type[DateTime]
             datetime at which the active version of the file was uploaded.
 
-        extra_paramters: Type[Dict]
-            Dictionnary containing arbitrary data sent from AWS lambda.
+        extra_parameters: Type[Dict]
+            Dictionary containing arbitrary data sent from AWS lambda.
         """
         self.extension = extra_parameters.get("extension")
         super().update_upload_state(upload_state, uploaded_on, **extra_parameters)

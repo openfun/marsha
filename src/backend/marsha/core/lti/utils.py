@@ -26,7 +26,7 @@ def field_exists_on_model(model, field_name):
 
 
 def get_selectable_resources(model, lti):
-    """Filter resources available to a LTI select request.
+    """Filter resources available to an LTI select request.
 
     This function is generic and will use the `model` argument to filter resources.
 
@@ -62,7 +62,7 @@ def get_selectable_resources(model, lti):
 
 
 def get_or_create_resource(model, lti):
-    """Get or Create a resource targeted by a LTI request.
+    """Get or Create a resource targeted by an LTI request.
 
     This function is generic and will use the `model` argument to create
     the wanted resource.

@@ -35,7 +35,7 @@ class XmppUtilsTestCase(TestCase):
             )
 
     def test_add_jwt_token_to_url(self):
-        """Test adding a token to a XMPP url."""
+        """Test adding a token to an XMPP url."""
         self.assertEqual(
             xmpp_utils.add_jwt_token_to_url("https://xmpp-server.com", "my-token"),
             "https://xmpp-server.com?token=my-token",

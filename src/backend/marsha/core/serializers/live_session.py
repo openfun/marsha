@@ -302,7 +302,7 @@ class LiveAttendanceGraphSerializer(serializers.ModelSerializer):
         Parsing the live_attendance from the live session of the user, we identify if the user
         was or not active.
         """
-        video_timestamps = obj.video.get_list_timestamps_attendences()
+        video_timestamps = obj.video.get_list_timestamps_attendances()
 
         # if there is no list of timestamps
         if video_timestamps == {}:

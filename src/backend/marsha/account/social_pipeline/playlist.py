@@ -94,7 +94,7 @@ def create_playlist_from_saml(
         role in details["roles"] for role in settings.SOCIAL_AUTH_SAML_FER_TEACHER_ROLES
     )
 
-    # If the user has no insrtuctor role we don't create a new playlist.
+    # If the user has no instructor role we don't create a new playlist.
     if not is_instructor:
         return
 

@@ -12,7 +12,7 @@ from marsha.core.simple_jwt.factories import (
 
 
 class VideoBulkDestroyAPITest(TestCase):
-    """Test the destroy API of the video object."""
+    """Test the bulk destroy API of the video object."""
 
     maxDiff = None
 

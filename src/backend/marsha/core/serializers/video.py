@@ -91,7 +91,7 @@ class VideoBaseSerializer(serializers.ModelSerializer):
         to use it several times without having to fetch it again and again
         in the database.
         """
-        # force to initialize to None, otherwise when the serializer is used with a collection,
+        # force initializing to None, otherwise when the serializer is used with a collection,
         # the thumbnail_instance will be use with the next video not having a thumbnail.
         self.thumbnail_instance = None
         try:
@@ -353,7 +353,7 @@ class VideoSerializer(VideoBaseSerializer):
 
         Returns
         -------
-        Dictionnary
+        Dictionary
             A dictionary containing all info needed to manage a connection to a xmpp server.
         """
         if (
@@ -382,7 +382,7 @@ class VideoSerializer(VideoBaseSerializer):
         return None
 
     def get_live_info(self, obj):
-        """Live streaming informations.
+        """Live streaming information.
 
         Parameters
         ----------
@@ -391,9 +391,9 @@ class VideoSerializer(VideoBaseSerializer):
 
         Returns
         -------
-        Dictionnary
-            A dictionnary containing all info needed to manage a live stream for an admin.
-            For other users, an empty dictionnary is returned.
+        Dictionary
+            A dictionary containing all info needed to manage a live stream for an admin.
+            For other users, an empty dictionary is returned.
             The data are filtered to only return RTMP endpoints and jitsi configuration if needed.
             All other data are sensitive, used only by the backend and must never be exposed.
         """

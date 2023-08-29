@@ -51,7 +51,7 @@ class ClassroomUpdateAPITest(TestCase):
         self.assertEqual(response.status_code, 401)
 
     def test_api_classroom_update_user_logged_in(self):
-        """An logged in user should not be able to update a classroom."""
+        """A logged-in user should not be able to update a classroom."""
         user = core_factories.UserFactory(
             first_name="Jane", last_name="Doe", email="jane.doe@example.com"
         )

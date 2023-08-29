@@ -63,7 +63,7 @@ class ClassroomInviteTokenAPITest(TestCase):
         )
 
     def test_invite_instructor_token(self):
-        """Using an instrutor token should return a resource token with permissions."""
+        """Using an instructor token should return a resource token with permissions."""
 
         classroom = ClassroomFactory()
 

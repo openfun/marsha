@@ -79,7 +79,7 @@ class SendRemindersTest(TestCase):
     def test_send_reminders_subscribe_over_five_minutes(self):
         """Command should send reminders 5 minutes before the live if user has subscribed
         at least three hours before. Reminders should only be sent to users that
-        have not unsubscribed to mails, that haven't already received this specific reminder,
+        have not unsubscribed from mails, that haven't already received this specific reminder,
         that are registered to this video."""
 
         video = VideoFactory(
@@ -203,7 +203,7 @@ class SendRemindersTest(TestCase):
 
         # orders of email is not always the same
         list_to = [mail.outbox[0].to[0], mail.outbox[1].to[0]]
-        # check we send it to the the right emails
+        # check we send it to the right emails
         self.assertIn("sarah@test-fun-mooc.fr", list_to)
         self.assertIn("chantal@test-fun-mooc.fr", list_to)
         # check it's the right content
@@ -215,7 +215,7 @@ class SendRemindersTest(TestCase):
             mail.outbox[1].subject,
             "Live starts in less than 5 minutes",
         )
-        # check this kind of template is well formed
+        # check this kind of template is well-formed
         self.assertNotIn("trans", mail.outbox[0].body)
 
         lti_key_access = lti_livesession.get_generate_salted_hmac()
@@ -281,7 +281,7 @@ class SendRemindersTest(TestCase):
     def test_send_reminders_subscribe_over_three_hours(self):
         """Command should send reminders 3 hours before the live if user has subscribed
         at least a day before. Reminders should only be sent to users that
-        have not unsubscribed to mails, that haven't already received this specific reminder,
+        have not unsubscribed from mails, that haven't already received this specific reminder,
         that are registered to this video."""
 
         video = VideoFactory(
@@ -419,7 +419,7 @@ class SendRemindersTest(TestCase):
         self.assertEqual(len(mail.outbox), 2)
         # orders of email is not always the same
         list_to = [mail.outbox[0].to[0], mail.outbox[1].to[0]]
-        # check we send it to the the right emails
+        # check we send it to the right emails
         self.assertIn("sarah@test-fun-mooc.fr", list_to)
         self.assertIn("chantal@test-fun-mooc.fr", list_to)
         # check it's the right content
@@ -431,7 +431,7 @@ class SendRemindersTest(TestCase):
             mail.outbox[1].subject,
             "Live starts in less than 3 hours",
         )
-        # check this kind of template is well formed
+        # check this kind of template is well-formed
         self.assertNotIn("trans", mail.outbox[0].body)
         lti_key_access = lti_livesession.get_generate_salted_hmac()
         public_key_access = public_livesession.get_generate_salted_hmac()
@@ -495,7 +495,7 @@ class SendRemindersTest(TestCase):
     def test_send_reminders_subscribe_over_three_days(self):
         """Command should send reminders three days before the live if user has subscribed
         at least 1 month before. Reminders should only be sent to users that
-        have not unsubscribed to mails, that haven't already received this specific reminder,
+        have not unsubscribed from mails, that haven't already received this specific reminder,
         that are registered to this video."""
 
         video = VideoFactory(
@@ -644,7 +644,7 @@ class SendRemindersTest(TestCase):
 
         # orders of email is not always the same
         list_to = [mail.outbox[0].to[0], mail.outbox[1].to[0]]
-        # check we send it to the the right emails
+        # check we send it to the right emails
         self.assertIn("sarah@test-fun-mooc.fr", list_to)
         self.assertIn("chantal@test-fun-mooc.fr", list_to)
         # check it's the right content
@@ -656,7 +656,7 @@ class SendRemindersTest(TestCase):
             mail.outbox[1].subject,
             "Live starts in less than 3 days",
         )
-        # check this kind of template is well formed
+        # check this kind of template is well-formed
         self.assertNotIn("trans", mail.outbox[0].body)
         lti_key_access = lti_livesession.get_generate_salted_hmac()
         public_key_access = public_livesession.get_generate_salted_hmac()
@@ -759,7 +759,7 @@ class SendRemindersTest(TestCase):
             call_command("send_reminders", stdout=out)
             self.assertEqual(len(mail.outbox), 1)
 
-            # check we send it to the the right email
+            # check we send it to the right email
             self.assertEqual(mail.outbox[0].to[0], "sarah@test-fun-mooc.fr")
             self.assertIn(
                 f"Sending email for livesession {livesession.id} for video "
@@ -772,8 +772,8 @@ class SendRemindersTest(TestCase):
             out.close()
 
             # move time 18 hours before, nothing new happens
-            eigteen_hours = livesession.video.starting_at - timedelta(hours=18)
-            with mock.patch.object(timezone, "now", return_value=eigteen_hours):
+            eighteen_hours = livesession.video.starting_at - timedelta(hours=18)
+            with mock.patch.object(timezone, "now", return_value=eighteen_hours):
                 call_command("send_reminders")
                 # no new mail
                 self.assertEqual(len(mail.outbox), 1)
@@ -934,7 +934,7 @@ class SendRemindersTest(TestCase):
         call_command("send_reminders")
         self.assertEqual(len(mail.outbox), 0)
 
-    def test_send_reminders_simultanously(self):
+    def test_send_reminders_simultaneously(self):
         """We simulate that query to update doesn't have any match results
         and make sure no emails are sent"""
         video = VideoFactory(
@@ -1107,7 +1107,7 @@ class SendRemindersTest(TestCase):
 
         # orders of email is not always the same
         list_to = [mail.outbox[0].to[0], mail.outbox[1].to[0]]
-        # check we send it to the the right emails
+        # check we send it to the right emails
         self.assertIn("sarah@test-fun-mooc.fr", list_to)
         self.assertIn("chantal@test-fun-mooc.fr", list_to)
         # check it's the right content
@@ -1119,7 +1119,7 @@ class SendRemindersTest(TestCase):
             mail.outbox[1].subject,
             "Webinar has been updated.",
         )
-        # check this kind of template is well formed
+        # check this kind of template is well-formed
         self.assertNotIn("trans", mail.outbox[0].body)
         lti_key_access = lti_livesession.get_generate_salted_hmac()
         public_key_access = public_livesession.get_generate_salted_hmac()
@@ -1194,8 +1194,8 @@ class SendRemindersTest(TestCase):
     # pylint: disable=too-many-statements
     def test_scenario_video_date_has_changed(self):
         """
-        Scenario of video updates used in combinaison of the commande send_reminders
-        with livesession created after the update.
+        Scenario of video updates used in combination of the command send_reminders
+        with 'livesession' created after the update.
         """
 
         video = VideoFactory(
@@ -1381,7 +1381,7 @@ class SendRemindersTest(TestCase):
 
         lti_key_access = lti_livesession.get_generate_salted_hmac()
 
-        # check we send it to the the right mail.outbox[0].to[0]
+        # check we send it to the right mail.outbox[0].to[0]
         self.assertEqual("chantal@test-fun-mooc.fr", mail.outbox[0].to[0])
         # check it's the right content
 

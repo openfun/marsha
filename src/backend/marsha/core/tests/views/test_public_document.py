@@ -94,7 +94,7 @@ class DocumentPublicViewTestCase(TestCase):
         self.assertIsNone(context.get("consumer_site"))
 
         # The second response is cached, the header should not have need changed
-        # and should still contains the CSP frame-ancestors
+        # and should still contain the CSP frame-ancestors
         with self.assertNumQueries(0):
             cached_response = self.client.get(f"/documents/{document.pk}")
 
@@ -174,7 +174,7 @@ class DocumentPublicViewTestCase(TestCase):
         self.assertIsNone(context.get("consumer_site"))
 
     def test_document_not_publicly_accessible(self):
-        """Validate it is impossible to access to a non public document."""
+        """Validate it is impossible to access to a non-public document."""
         document = DocumentFactory(
             id="301b5f4f-b9f1-4a5f-897d-f8f1bf22c396",
             playlist__title="playlist-003",
@@ -201,7 +201,7 @@ class DocumentPublicViewTestCase(TestCase):
         self.assertEqual(context.get("modelName"), "documents")
 
     def test_document_not_existing(self):
-        """Accessing a non existing document should return an error state."""
+        """Accessing a non-existing document should return an error state."""
         response = self.client.get(f"/documents/{uuid.uuid4()}")
 
         self.assertEqual(response.status_code, 200)

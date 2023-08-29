@@ -28,8 +28,8 @@ def create_mediapackage_channel(key):
 
     Returns
     -------
-    dictionnary
-        Dictrionnary returned by the AWS API once a channel created
+    dictionary
+        Dictionary returned by the AWS API once a channel created
 
     """
     # Create mediapackage channel

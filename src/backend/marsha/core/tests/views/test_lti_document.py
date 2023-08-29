@@ -112,7 +112,7 @@ class DocumentLTIViewTestCase(TestCase):
         )
         other_playlist = PlaylistFactory(
             consumer_site=passport.consumer_site,
-            lti_id="course-v1:amd+litterature+00003",
+            lti_id="course-v1:amd+literature+00003",
         )
         data = {
             "resource_link_id": document.lti_id,

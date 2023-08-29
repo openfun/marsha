@@ -75,14 +75,14 @@ class PortabilityRequestSerializer(serializers.ModelSerializer):
         resource = self.context["request"].resource
 
         if "from_user" in validated_data:
-            # We allow from_user to be writtable to allow the user to be set in object creation,
+            # We allow from_user to be writable to allow the user to be set in object creation,
             # but it is not expected to be set by the provided data
             raise serializers.ValidationError("Unexpected provided user")
 
         if resource is None:
             raise serializers.ValidationError("Needs to be in an LTI context")
 
-        # We allow to pass arguments for request creation, because on the "site" part
+        # We allow passing arguments for request creation, because on the "site" part
         # the provided information won't comme from the resource JWT token.
         if str(validated_data["from_playlist"].id) != resource.port_to_playlist_id:
             raise serializers.ValidationError("Unexpected playlist")

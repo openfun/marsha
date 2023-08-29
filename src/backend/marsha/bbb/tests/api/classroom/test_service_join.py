@@ -57,7 +57,7 @@ class ClassroomServiceJoinAPITest(TestCase):
 
     @mock.patch.object(api, "join")
     def test_api_bbb_join_classroom_user_logged_in(self, mock_join_request):
-        """A logged in user should not be able to join a classroom."""
+        """A logged-in user should not be able to join a classroom."""
         user = core_factories.UserFactory(
             first_name="Jane", last_name="Doe", email="jane.doe@example.com"
         )
@@ -97,7 +97,7 @@ class ClassroomServiceJoinAPITest(TestCase):
 
     def test_api_bbb_join_from_other_classroom(self):
         """
-        Joining a classroom using a resource token for an other resource should not be allowed.
+        Joining a classroom using a resource token for another resource should not be allowed.
         """
         classroom = ClassroomFactory(
             meeting_id="21e6634f-ab6f-4c77-a665-4229c61b479a",
