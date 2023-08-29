@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: marsha\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-23 09:54+0000\n"
-"PO-Revision-Date: 2023-08-23 10:25\n"
+"POT-Creation-Date: 2023-08-23 15:34+0000\n"
+"PO-Revision-Date: 2023-08-29 15:23\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -1571,27 +1571,27 @@ msgstr "Certaines listes de lecture n'existent pas : {', '.join(ids_diff):s}."
 msgid "Token contained no recognizable playlist identification"
 msgstr "Le token ne contient aucun identifiant de playlist reconnaissable"
 
-#: marsha/core/simple_jwt/tokens.py:106
+#: marsha/core/simple_jwt/tokens.py:109
 msgid "Malformed LTI form token"
 msgstr "Token LTI mal formé"
 
-#: marsha/core/simple_jwt/tokens.py:122
+#: marsha/core/simple_jwt/tokens.py:125
 msgid "Malformed playlist access token"
 msgstr "Token d'accès de playlist mal formé"
 
-#: marsha/core/simple_jwt/tokens.py:239
+#: marsha/core/simple_jwt/tokens.py:242
 msgid "User has not enough rights to make a portability request"
 msgstr "L'utilisateur n'a pas les droits suffisants pour faire une demande de portabilité"
 
-#: marsha/core/simple_jwt/tokens.py:245
+#: marsha/core/simple_jwt/tokens.py:248
 msgid "LTI request does not provide enough data to make a portability request"
 msgstr "La requête LTI ne fournit pas assez de données pour faire une demande de portabilité"
 
-#: marsha/core/simple_jwt/tokens.py:434
+#: marsha/core/simple_jwt/tokens.py:437
 msgid "Malformed LTI user token"
 msgstr "Token utilisateur LTI mal formé"
 
-#: marsha/core/simple_jwt/tokens.py:516
+#: marsha/core/simple_jwt/tokens.py:519
 msgid "Malformed user token"
 msgstr "Token utilisateur mal formé"
 

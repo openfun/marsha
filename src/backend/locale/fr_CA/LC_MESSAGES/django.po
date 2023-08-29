@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: marsha\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-23 09:54+0000\n"
-"PO-Revision-Date: 2023-08-23 10:25\n"
+"POT-Creation-Date: 2023-08-23 15:34+0000\n"
+"PO-Revision-Date: 2023-08-29 15:23\n"
 "Last-Translator: \n"
 "Language-Team: French, Canada\n"
 "Language: fr_CA\n"
@@ -1570,27 +1570,27 @@ msgstr ""
 msgid "Token contained no recognizable playlist identification"
 msgstr ""
 
-#: marsha/core/simple_jwt/tokens.py:106
+#: marsha/core/simple_jwt/tokens.py:109
 msgid "Malformed LTI form token"
 msgstr ""
 
-#: marsha/core/simple_jwt/tokens.py:122
+#: marsha/core/simple_jwt/tokens.py:125
 msgid "Malformed playlist access token"
 msgstr ""
 
-#: marsha/core/simple_jwt/tokens.py:239
+#: marsha/core/simple_jwt/tokens.py:242
 msgid "User has not enough rights to make a portability request"
 msgstr ""
 
-#: marsha/core/simple_jwt/tokens.py:245
+#: marsha/core/simple_jwt/tokens.py:248
 msgid "LTI request does not provide enough data to make a portability request"
 msgstr ""
 
-#: marsha/core/simple_jwt/tokens.py:434
+#: marsha/core/simple_jwt/tokens.py:437
 msgid "Malformed LTI user token"
 msgstr ""
 
-#: marsha/core/simple_jwt/tokens.py:516
+#: marsha/core/simple_jwt/tokens.py:519
 msgid "Malformed user token"
 msgstr ""
 

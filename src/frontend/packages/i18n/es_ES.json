@@ -131,6 +131,18 @@
     "description": "Aria Label Dropzone.",
     "message": "File Upload"
   },
+  "common.Widgets.RetentionDate.deleteRetentionDateButton": {
+    "description": "Button used to delete retention date.",
+    "message": "Delete retention date"
+  },
+  "common.Widgets.RetentionDate.info": {
+    "description": "Info of the widget used to change retention date.",
+    "message": "This widget allows you to change the retention date of the {ressource}. Once this date is reached, the {ressource} will be deleted."
+  },
+  "common.Widgets.RetentionDate.title": {
+    "description": "Title of the widget used to change retention date.",
+    "message": "Retention date"
+  },
   "component.AllowedDownloadButton.buttonLabel": {
     "description": "The label of the button for stopping to allow students to download the media.",
     "message": "Click on this button to stop allowing students to download this media."
@@ -175,9 +187,9 @@
     "description": "Label for welcome text in classroom creation form.",
     "message": "Welcome text"
   },
-  "component.ClassroomRetentionDate.deleteClassroomRetentionDateButton": {
-    "description": "Button used to delete classroom retention date.",
-    "message": "Delete retention date"
+  "component.ClassroomRetentionDate.ressource": {
+    "description": "Type of ressource displayed in the info retention date widget.",
+    "message": "classroom"
   },
   "component.ClassroomRetentionDate.updateVideoFail": {
     "description": "Message displayed when classroom update has failed.",
@@ -787,9 +799,9 @@
     "description": "Message displayed when video is successfully updated.",
     "message": "Video updated."
   },
-  "component.VideoRetentionDate.deleteVideoRetentionDateButton": {
-    "description": "Button used to delete video retention date.",
-    "message": "Delete retention date"
+  "component.VideoRetentionDate.ressource": {
+    "description": "Type of ressource displayed in the info retention date widget.",
+    "message": "video"
   },
   "component.VideoRetentionDate.updateVideoFail": {
     "description": "Message displayed when video update has failed.",
@@ -842,14 +854,6 @@
   "components.ClassroomInfoBar.updateTitleBlank": {
     "description": "Message displayed when the user tried to enter a blank title.",
     "message": "Title can't be blank!"
-  },
-  "components.ClassroomRetentionDate.info": {
-    "description": "Info of the widget used to change classroom retention date.",
-    "message": "This widget allows you to change the retention date of the classroom. Once this date is reached, the classroom will be deleted."
-  },
-  "components.ClassroomRetentionDate.title": {
-    "description": "Title of the widget used to change classroom retention date.",
-    "message": "Retention date"
   },
   "components.ConfirmationModal.cancelButtonLabel": {
     "description": "Label of the cancelling button",
@@ -1830,14 +1834,6 @@
   "components.VODCreation.title": {
     "description": "Title of the widget used for live VOD.",
     "message": "VOD"
-  },
-  "components.VideoRetentionDate.info": {
-    "description": "Info of the widget used to change video retention date.",
-    "message": "This widget allows you to change the retention date of the video. Once this date is reached, the video will be deleted."
-  },
-  "components.VideoRetentionDate.title": {
-    "description": "Title of the widget used to change video retention date.",
-    "message": "Retention date"
   },
   "components.ViewersList.acceptButton": {
     "description": "The text displayed in the button in charge of accepting on-stage request, in the viewers list.",
