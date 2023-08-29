@@ -10,7 +10,7 @@ class IsTokenResourceRouteObjectRelatedClassroom(permissions.BasePermission):
     """
     Base permission class for JWT Tokens related to a resource object linked to a Classroom.
 
-    These permissions grants access to users authenticated with a JWT token built from a
+    These permissions grant access to users authenticated with a JWT token built from a
     resource ie related to a TokenUser as defined in `rest_framework_simplejwt`.
     """
 
@@ -92,7 +92,7 @@ class IsParamsClassroomAdminOrInstructorThroughPlaylist(
     def has_permission(self, request, view):
         """
         Allow the request only if the classroom from the params or body of the request exists and
-        the current logged in user has a specific role of the playlist to which
+        the current logged-in user has a specific role of the playlist to which
         this classroom belongs.
         """
         classroom_id = view.get_related_classroom_id()
@@ -111,7 +111,7 @@ class IsParamsClassroomAdminThroughOrganization(
     Allow a request to proceed. Permission class.
 
     Permission to allow a request to proceed only if the user provides the ID for an existing
-    classroom, and has an access to this classroom's parent organization with an administrator
+    classroom, and has access to this classroom's parent organization with an administrator
     role.
     """
 
@@ -120,7 +120,7 @@ class IsParamsClassroomAdminThroughOrganization(
         Allow the request.
 
         Allow the request only if the classroom from the params or body of the request exists and
-        the current logged in user is one of the administrators of the organization to which
+        the current logged-in user is one of the administrators of the organization to which
         this classroom's playlist belongs.
         """
         classroom_id = view.get_related_classroom_id()

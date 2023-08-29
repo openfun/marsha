@@ -62,7 +62,7 @@ class MediaLiveUtilsTestCase(TestCase):
 
     @override_settings(AWS_MEDIALIVE_INPUT_WAITER_DELAY=0)
     @override_settings(AWS_MEDIALIVE_INPUT_WAITER_MAX_ATTEMPTS=0)
-    def test_delete_aws_elemental_stack_waiter_attemps_exceeded(self):
+    def test_delete_aws_elemental_stack_waiter_attempts_exceeded(self):
         """Medialive channel should be deleted and input waiter raised a WaiterError.
         The function should not fail but sentry should capture the exception."""
         video = VideoFactory(

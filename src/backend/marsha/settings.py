@@ -267,7 +267,7 @@ class Base(Configuration):
             environ_name="CHALLENGE_TOKEN_LIFETIME",
         ),
     )
-    # Specfic access token lifetime
+    # Specific access token lifetime
     LTI_SELECT_FORM_ACCESS_TOKEN_LIFETIME = timedelta(
         seconds=values.IntegerValue(
             default=86400,
@@ -421,7 +421,7 @@ class Base(Configuration):
     BYPASS_LTI_VERIFICATION = values.BooleanValue(False)
 
     # Cache
-    APP_DATA_CACHE_DURATION = values.Value(60)  # 60 secondes
+    APP_DATA_CACHE_DURATION = values.Value(60)  # 60 seconds
     PUBLIC_RESOURCE_DOMAIN_CACHE_DURATION = values.Value(90)  # 90 seconds
     VIDEO_ATTENDANCES_CACHE_DURATION = values.Value(300)  # 5 minutes
     XAPI_STATEMENT_ID_CACHE_TIMEOUT = values.Value(120)  # 2 minutes

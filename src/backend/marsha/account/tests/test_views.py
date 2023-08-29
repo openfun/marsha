@@ -95,7 +95,7 @@ class RedirectToFrontendViewTestCase(BaseAuthenticationTestCase):
     @override_settings(ALLOWED_HOSTS=["marsha.education"])
     def test_redirects_to_not_existing_site_config(self):
         """
-        Assert user is redirected to default FRONTEND_HOME_URL is site config does not exists
+        Assert user is redirected to default FRONTEND_HOME_URL is site config does not exist
         """
 
         self._login_user()

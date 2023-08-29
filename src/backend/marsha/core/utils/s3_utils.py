@@ -22,7 +22,7 @@ def create_presigned_post(conditions, fields, key):
         Conditions that are included may pertain to acl, content-length-range, Cache-Control,
         Content-Type, Content-Disposition, Content-Encoding, Expires, success_action_redirect,
         redirect, success_action_status, and/or x-amz-meta-.
-        Note that if you include a condition, you must specify the a valid value in the fields
+        Note that if you include a condition, you must specify a valid value in the fields'
         dictionary as well.
         A value will not be added automatically to the fields dictionary based on the conditions.
 
@@ -30,7 +30,7 @@ def create_presigned_post(conditions, fields, key):
         A dictionary of prefilled form fields to build on top of. Elements that may be included
         are acl, Cache-Control, Content-Type, Content-Disposition, Content-Encoding, Expires,
         success_action_redirect, redirect, success_action_status, and x-amz-meta-.
-        Note that if a particular element is included in the fields dictionary it will not be
+        Note that if a particular element is included in the fields' dictionary it will not be
         automatically added to the conditions list. You must specify a condition for the element
         as well.
 

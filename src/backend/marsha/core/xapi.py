@@ -108,7 +108,7 @@ class XAPIDocumentStatement(XAPIStatementMixin):
         return statement
 
     def from_website(self, document, statement, current_site, user):
-        """Compute a valid xapi satement in a website context.
+        """Compute a valid xapi statement in a website context.
 
         Parameters
         ----------
@@ -213,7 +213,7 @@ class XAPIVideoStatement(XAPIStatementMixin):
         return statement
 
     def from_website(self, video, statement, current_site, user):
-        """Compute a valid xapi satement in a website context.
+        """Compute a valid xapi statement in a website context.
 
         Parameters
         ----------
@@ -251,7 +251,7 @@ class XAPIVideoStatement(XAPIStatementMixin):
         )
 
     def from_lti(self, video, statement, jwt_token):
-        """Compute a valid xapi satement in a LTI context.
+        """Compute a valid xapi statement in an LTI context.
 
         Parameters
         ----------

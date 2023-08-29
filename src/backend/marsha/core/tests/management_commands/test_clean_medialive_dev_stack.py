@@ -102,7 +102,7 @@ class CleanMedialigeDevStackCommandTest(TestCase):
             )
 
     def test_clean_medialive_dev_stack_multiple_outdated_medialive_channels(self):
-        """Multiple channels are outdates and must be deleted."""
+        """Multiple channels are outdated and must be deleted."""
         with mock.patch(
             "marsha.core.management.commands.clean_medialive_dev_stack.list_medialive_channels"
         ) as list_medialive_channels_mock, mock.patch(

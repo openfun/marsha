@@ -234,7 +234,7 @@ class CreateStableInviteJwtTestCase(TestCase):
     @override_settings(BBB_API_SECRET="SuperSecret")
     @override_settings(BBB_ENABLED=True)
     def test_classroom_stable_invite_jwt_allows_access_to_classroom(self):
-        """Assert the JWT allows to join to the classroom."""
+        """Assert the JWT allows joining to the classroom."""
         # Force URLs reload to use BBB_ENABLED
         reload_urlconf()
 

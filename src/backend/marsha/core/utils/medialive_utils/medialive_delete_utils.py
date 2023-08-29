@@ -35,7 +35,7 @@ def delete_aws_element_stack(video):
 
 
 def delete_mediapackage_channel(channel_id):
-    """Delete a mediapackage channel and related enpoints."""
+    """Delete a mediapackage channel and related endpoints."""
     origin_endpoints = list_mediapackage_channel_origin_endpoints(channel_id=channel_id)
     deleted_endpoints = []
     for origin_endpoint in origin_endpoints:

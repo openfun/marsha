@@ -16,7 +16,7 @@ from ..xapi import (
 )
 
 
-class XAPIVideoStatmentTest(TestCase):
+class XAPIVideoStatementTest(TestCase):
     """Test the XAPIVideoStatement class."""
 
     def test_xapi_statement_missing_user(self):

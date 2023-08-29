@@ -25,7 +25,7 @@ class LTIUserAssociationTestCase(TestCase):
     """Test the LTI user association helper functions."""
 
     def _build_lti_request(self, url, extra_parameters=None):
-        """Build a LTI request with the given parameters."""
+        """Build an LTI request with the given parameters."""
         lti_parameters, _passport = generate_passport_and_signed_lti_parameters(
             url=url,
             lti_parameters={
@@ -168,8 +168,8 @@ class LTIUserAssociationTestCase(TestCase):
         self.assertEqual(updated_portability_request.from_user, user)
 
     @override_settings(PLAYLIST_CLAIM_EXCLUDED_LTI_USER_ID=["STUDENT"])
-    def test_create_user_association_with_invalud_lti_user_id(self):
-        """Creating a user assoication with an invalid lti_user_id should fail."""
+    def test_create_user_association_with_invalid_lti_user_id(self):
+        """Creating a user association with an invalid lti_user_id should fail."""
 
         consumer_site = ConsumerSiteFactory()
         user = UserFactory()

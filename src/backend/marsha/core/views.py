@@ -714,7 +714,7 @@ class VideoView(BaseView):
 
     def get_direct_access_from_livesession(self, video_pk, livesession_pk, key):
         """Reminders mails for a scheduled webinar send direct access to the video.
-        Video can be public or not. It will be accessed out of a LTI connection.
+        Video can be public or not. It will be accessed out of an LTI connection.
         The livesession information is used to build a JWT token.
         """
         livesession = get_object_or_404(
@@ -1000,7 +1000,7 @@ class LTIRespondView(TemplateResponseMixin, View):
     def post(self, request, *args, **kwargs):
         """Respond to POST request.
 
-        Renders a form autosubmitted to a LTI consumer with signed parameters.
+        Renders a form autosubmitted to an LTI consumer with signed parameters.
 
         Parameters
         ----------

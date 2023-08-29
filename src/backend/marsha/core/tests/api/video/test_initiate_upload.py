@@ -105,7 +105,7 @@ class VideoInitiateUploadAPITest(TestCase):
             },
         )
 
-        # The upload state of the timed text track should should have been reset
+        # The upload state of the timed text track should have been reset
         video.refresh_from_db()
         self.assertEqual(video.upload_state, "pending")
 

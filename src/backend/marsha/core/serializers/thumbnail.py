@@ -78,7 +78,7 @@ class ThumbnailSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         """
         Object instance -> Dict of primitive datatypes.
-        Depending if the serializer was instancianted with a Thumbnail
+        Depending on if the serializer was instantiated with a Thumbnail
         model instance or not, we have to fetch it in the database to avoid error
         trying to work with a None instance in all the serializerMethodField
         of this serializer.

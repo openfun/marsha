@@ -25,7 +25,7 @@ from marsha.core.lti.utils import (
 
 
 class PortabilityLTITestCase(TestCase):
-    """Test the portability of uploadable resource beween playlists and consumer sites.
+    """Test the portability of uploadable resource between playlists and consumer sites.
 
     We need to test the portability behavior of uploadable resource in all the following cases:
 
@@ -97,7 +97,7 @@ class PortabilityLTITestCase(TestCase):
     """
 
     def setUp(self):
-        """Override the setUp method to instanciate and serve a request factory."""
+        """Override the setUp method to instantiate and serve a request factory."""
         super().setUp()
         self.factory = RequestFactory()
 
@@ -632,7 +632,7 @@ class PortabilityLTITestCase(TestCase):
         """Above case 1-2-1-2-1.
 
         The resource should be returned if an instructor tries to retrieve a resource that
-        is already existing for a consumer site but not ready and it is portable to another
+        is already existing for a consumer site but not ready, and it is portable to another
         consumer site.
         """
         passport = factories.ConsumerSiteLTIPassportFactory(
@@ -668,7 +668,7 @@ class PortabilityLTITestCase(TestCase):
         """Above case 1-2-1-2-1.
 
         The resource should be returned if an instructor tries to retrieve a resource that
-        is already existing for a consumer site but not ready and it is portable to another
+        is already existing for a consumer site but not ready, and it is portable to another
         consumer site.
         """
         self._test_lti_get_resource_other_site_playlist_portable_not_ready_to_show_instructor(
@@ -688,7 +688,7 @@ class PortabilityLTITestCase(TestCase):
         """Above case 1-2-1-2-1.
 
         The resource should be returned if an instructor tries to retrieve a resource that
-        is already existing for a consumer site but not ready and it is portable to another
+        is already existing for a consumer site but not ready, and it is portable to another
         consumer site.
         """
         self._test_lti_get_resource_other_site_playlist_portable_not_ready_to_show_instructor(
@@ -3593,7 +3593,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    def _test_lti_get_resource_wrong_lti_id_intructor(
+    def _test_lti_get_resource_wrong_lti_id_instructor(
         self, factory, model, factory_parameters
     ):
         """Above case 2-1.
@@ -3631,37 +3631,37 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(models.Playlist.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_video_wrong_lti_id_intructor(self, mock_verify):
+    def test_lti_get_video_wrong_lti_id_instructor(self, mock_verify):
         """Above case 2-1 for Video.
 
         A new video should be created and returned if an instructor tries to access an unknown
         video for an existing playlist.
         """
-        self._test_lti_get_resource_wrong_lti_id_intructor(
+        self._test_lti_get_resource_wrong_lti_id_instructor(
             factories.VideoFactory, models.Video, {"uploaded_on": timezone.now()}
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_video_live_wrong_lti_id_intructor(self, mock_verify):
+    def test_lti_get_video_live_wrong_lti_id_instructor(self, mock_verify):
         """Above case 2-1 for Video.
 
         A new video should be created and returned if an instructor tries to access an unknown
         video for an existing playlist.
         """
-        self._test_lti_get_resource_wrong_lti_id_intructor(
+        self._test_lti_get_resource_wrong_lti_id_instructor(
             factories.VideoFactory,
             models.Video,
             {"live_state": "running", "live_type": RAW},
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_video_scheduled_wrong_lti_id_intructor(self, mock_verify):
+    def test_lti_get_video_scheduled_wrong_lti_id_instructor(self, mock_verify):
         """Above case 2-1 for Video scheduled.
 
         A new video should be created and returned if an instructor tries to access an unknown
         video for an existing playlist.
         """
-        self._test_lti_get_resource_wrong_lti_id_intructor(
+        self._test_lti_get_resource_wrong_lti_id_instructor(
             factories.VideoFactory,
             models.Video,
             {
@@ -3672,7 +3672,7 @@ class PortabilityLTITestCase(TestCase):
         )
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_video_scheduled_past_wrong_lti_id_intructor(self, mock_verify):
+    def test_lti_get_video_scheduled_past_wrong_lti_id_instructor(self, mock_verify):
         """Above case 2-1 for Video scheduled with a date past and live_state to IDLE.
 
         A new video should be created and returned if an instructor tries to access an unknown
@@ -3721,13 +3721,13 @@ class PortabilityLTITestCase(TestCase):
             self.assertEqual(models.Playlist.objects.count(), 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_document_wrong_lti_id_intructor(self, mock_verify):
+    def test_lti_get_document_wrong_lti_id_instructor(self, mock_verify):
         """Above case 2-1 for Document.
 
         A new document should be created and returned if an instructor tries to access an unknown
         document for an existing playlist.
         """
-        self._test_lti_get_resource_wrong_lti_id_intructor(
+        self._test_lti_get_resource_wrong_lti_id_instructor(
             factories.DocumentFactory, models.Document, {"uploaded_on": timezone.now()}
         )
 
@@ -3787,7 +3787,7 @@ class LTISelectTestCase(TestCase):
     """
 
     def setUp(self):
-        """Override the setUp method to instanciate and serve a request factory."""
+        """Override the setUp method to instantiate and serve a request factory."""
         super().setUp()
         self.factory = RequestFactory()
 

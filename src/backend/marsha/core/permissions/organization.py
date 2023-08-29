@@ -28,7 +28,7 @@ class BaseIsOrganizationRole(permissions.BasePermission):
         """
         Allow the request.
 
-        Only if the organization exists and the current logged in user
+        Only if the organization exists and the current logged-in user
         has the proper role.
         """
         if not self.role_filter:
@@ -106,7 +106,7 @@ class IsParamsPlaylistAdminThroughOrganization(permissions.BasePermission):
     Allow a request to proceed. Permission class.
 
     Permission to allow a request to proceed only if the user provides the ID for an existing
-    playlist, and has an access to this playlist's parent organization with an administrator role.
+    playlist, and has access to this playlist's parent organization with an administrator role.
     """
 
     def has_permission(self, request, view):
@@ -114,7 +114,7 @@ class IsParamsPlaylistAdminThroughOrganization(permissions.BasePermission):
         Allow the request.
 
         Allow the request only if the playlist from the params of body of the request exists
-        and the current logged in user is one of the administrators of its parent organization.
+        and the current logged-in user is one of the administrators of its parent organization.
         """
         try:
             uuid.UUID(request.user.id)
@@ -162,7 +162,7 @@ class IsParamsVideoAdminThroughOrganization(permissions.BasePermission):
     Allow a request to proceed. Permission class.
 
     Permission to allow a request to proceed only if the user provides the ID for an existing
-    video, and has an access to this video's parent organization with an administrator role.
+    video, and has access to this video's parent organization with an administrator role.
     """
 
     def has_permission(self, request, view):
@@ -170,7 +170,7 @@ class IsParamsVideoAdminThroughOrganization(permissions.BasePermission):
         Allow the request.
 
         Allow the request only if the video from the params or body of the request exists and
-        the current logged in user is one of the administrators of the organization to which
+        the current logged-in user is one of the administrators of the organization to which
         this video's playlist belongs.
         """
         video_id = view.get_related_video_id()
@@ -206,7 +206,7 @@ class BaseIsPlaylistOrganizationRole(permissions.BasePermission):
         """
         Allow the request.
 
-        Only if the organization exists and the current logged in user
+        Only if the organization exists and the current logged-in user
         has the proper role.
         """
         if not self.role_filter:

@@ -136,7 +136,7 @@ class PlaylistDeleteAPITest(TestCase):
         self.assertEqual(models.Playlist.objects.count(), 1)
 
     def test_delete_playlist_with_markdown_document_by_playlist_admin(self):
-        """Playlist administrators cannot delete playlists with markdown document."""
+        """Playlist administrators cannot delete playlists with Markdown document."""
         user = factories.UserFactory()
         playlist = factories.PlaylistFactory()
         factories.PlaylistAccessFactory(

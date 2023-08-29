@@ -145,7 +145,7 @@ class Command(BaseCommand):
         # step was only used not to update simultaneously the same record
         date_updated = dateformat.format(timezone.now(), "Y-m-d H:i")
         for livesession in livesessions:
-            # For each livesession we reinit this step, so new update can be send
+            # For each livesession we reinit this step, so new update can be sent
             livesession.reminders.remove(settings.REMINDER_DATE_UPDATED)
             # keep the trace of this reminder
             livesession.reminders.append(

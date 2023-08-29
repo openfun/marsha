@@ -84,7 +84,7 @@ class LiveSessionModelsTestCase(TestCase):
             '"livesession_unique_video_display_name"',
             context.exception.args[0],
         )
-        # Trying to create a video with the same duo display_name/video for a LTI
+        # Trying to create a video with the same duo display_name/video for an LTI
         # connection should raise a database error
         with self.assertRaises(IntegrityError) as context:
             with transaction.atomic():
@@ -140,7 +140,7 @@ class LiveSessionModelsTestCase(TestCase):
             '"livesession_unique_video_anonymous_id"',
             context.exception.args[0],
         )
-        # Trying to create a video with the same duo display_name/video for a LTI
+        # Trying to create a video with the same duo display_name/video for an LTI
         # connection should raise a database error
         with self.assertRaises(IntegrityError) as context:
             with transaction.atomic():
@@ -177,7 +177,7 @@ class LiveSessionModelsTestCase(TestCase):
         )
 
     def test_models_livesession_fields_lti_id_unique(self):
-        """Combinaison of lti_user_id/lti_id/consumer_site/video should be unique."""
+        """Combination of lti_user_id/lti_id/consumer_site/video should be unique."""
         video = VideoFactory()
         video2 = VideoFactory()
 

@@ -1,4 +1,4 @@
-"""Tests for the obtain token pair (access/refresh) API."""
+"""Tests for the refresh token API."""
 import json
 import uuid
 
@@ -15,8 +15,8 @@ from marsha.core.simple_jwt.tokens import (
 )
 
 
-class TokenObtainPairViewTest(TestCase):
-    """Testcase for the obtain token pair (access/refresh) API."""
+class TokenRefreshViewTest(TestCase):
+    """Testcase for the refresh token API."""
 
     maxDiff = None
 

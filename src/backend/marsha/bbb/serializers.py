@@ -361,7 +361,7 @@ class ClassroomDocumentInitiateUploadSerializer(BaseInitiateUploadSerializer):
 
     @property
     def max_upload_file_size(self):
-        """return the class room document max file size define in the settings.
+        """return the classroom document max file size define in the settings.
 
         The @property decorator is used to ease the use of @override_settings
         in tests. Otherwise the setting is not changed and we can't easily test

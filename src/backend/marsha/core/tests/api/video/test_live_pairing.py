@@ -184,7 +184,7 @@ class PairingDeviceAPITest(TestCase):
         )
 
     def test_api_video_pairing_secret_staff_or_user(self):
-        """Logged in users should not be able to request a live pairing secret."""
+        """Logged-in users should not be able to request a live pairing secret."""
         for user in [factories.UserFactory(), factories.UserFactory(is_staff=True)]:
             self.client.login(username=user.username, password="test")
             video = factories.VideoFactory()
@@ -410,14 +410,14 @@ class PairingDeviceAPITest(TestCase):
         self.assertEqual(device.id, box_id)
 
     def test_api_video_pairing_challenge_valid_secret_jitsi_multiple_challenges(self):
-        """Multiple successfull pairing should not fail."""
+        """Multiple successfully pairing should not fail."""
         video = factories.VideoFactory(live_state=IDLE, live_type=JITSI)
         live_pairing = LivePairingFactory(video=video)
 
         box_id = uuid.uuid4()
         payload = {"box_id": box_id, "secret": live_pairing.secret}
 
-        # first sucessful pairing
+        # first successful pairing
         response = self.client.post("/api/pairing-challenge", data=payload)
 
         self.assertEqual(response.status_code, 200)
@@ -435,7 +435,7 @@ class PairingDeviceAPITest(TestCase):
 
         payload = {"box_id": box_id, "secret": live_pairing.secret}
 
-        # second sucessful pairing on another video
+        # second successful pairing on another video
         response = self.client.post("/api/pairing-challenge", data=payload)
 
         self.assertEqual(response.status_code, 200)

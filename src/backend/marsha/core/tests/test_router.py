@@ -29,7 +29,7 @@ class MarshBaseRouteTestCase(TestCase):
         router = MarshaDefaultRouter()
         # first route is the "list" route
         list_route = router.routes[0]
-        # seconde route is for dynamically generated list routes with  @action(detail=False).
+        # second route is for dynamically generated list routes with  @action(detail=False).
         dynamic_list_route = router.routes[1]
 
         # list_route must handle delete verb

@@ -310,7 +310,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
 
     def test_api_livesession_read_token_lti_record_email_diff(self):
         """LTI's Token can read the livesession even if they don't have the right email.
-        A LTI user is identified by the combinaison of consumer_site/lti_user_id/lti_id
+        An LTI user is identified by the combination of consumer_site/lti_user_id/lti_id
         """
         video = VideoFactory()
         # livesession has consumer_site
@@ -357,7 +357,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
     def test_api_livesession_read_token_lti_record_consumer_none(self):
         """Control we can only read livesession from the same consumer site.
 
-        The video is portable in an other playlist portable from an other consumer site,
+        The video is portable in another playlist portable from another consumer site,
         the livesession should not be return, if this one has been added with
         a token with no consumer_site.
         """
@@ -384,7 +384,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
     def test_api_livesession_read_token_lti_record_consumer_diff(self):
         """Control we can only read livesession from the same consumer site.
 
-        The video is portable in an other playlist portable from an other consumer site,
+        The video is portable in another playlist portable from another consumer site,
         the livesession should not be return, if this one has been added with
         a token with a different consumer_site.
         """
@@ -412,7 +412,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
     def test_api_livesession_read_token_lti_record_course_diff(self):
         """Control we can only read livesession from the same course.
 
-        The video is portable in an other playlist portable from an other course,
+        The video is portable in another playlist portable from another course,
         the livesession should not be return, if this one has been added with
         a token from a different course.
         """
@@ -464,7 +464,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
     def test_api_livesession_read_token_public_partially_lti(self):
         """Token with no email and no consumer_site can't read the livesession.
 
-        This case is not supposed to happen. A LTI connection has necessary a
+        This case is not supposed to happen. An LTI connection has necessary a
         consumer_site, context_id and a lti_user_id defined in the token.
         """
         # livesession with a consumer_site
@@ -486,7 +486,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
     def test_api_livesession_read_token_public_partially_lti_2(self):
         """Token with consumer_site and no user's info can't read livesession detail.
 
-        This case is not supposed to happen. A JWT token from a LTI connection contains
+        This case is not supposed to happen. A JWT token from an LTI connection contains
         context_id, consumer_site and user's keys.
         """
         livesession = LiveSessionFactory(is_from_lti_connection=True)
@@ -507,7 +507,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         """Token with email can't read the livesession.
 
         This case is not supposed to happen. Public token has no user's information, only
-        lti's connections has the key `user` in the JWT token. A JWT token from a LTI
+        LTI's connections has the key `user` in the JWT token. A JWT token from an LTI
         connection contains context_id and consumer_site keys.
         """
         video = VideoFactory()

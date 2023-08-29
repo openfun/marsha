@@ -4,11 +4,11 @@ from marsha.core.models.account import NONE
 
 
 class NotLtiTokenException(Exception):
-    """Raised when the submitted token is not a LTI one."""
+    """Raised when the submitted token is not an LTI one."""
 
 
 class NotPublicTokenException(Exception):
-    """Raised when the submited token is not a public one."""
+    """Raised when the submitted token is not a public one."""
 
 
 def is_lti_token(token):
@@ -34,7 +34,7 @@ def is_public_token(token):
 
 
 def get_livesession_from_lti(token, video_id=None):
-    """Get or create livesession for a LTI connection."""
+    """Get or create livesession for an LTI connection."""
     if not is_lti_token(token):
         raise NotLtiTokenException()
 

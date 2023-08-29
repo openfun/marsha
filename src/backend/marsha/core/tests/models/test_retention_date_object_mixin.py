@@ -33,7 +33,7 @@ class RetentionDateObjectMixinTextCase(TestCase):
         Test the creation of models that inherit from RetentionDateObjectMixin.
 
         This function tests the behavior of updating the retention date of a `Video`
-        object. It creates a `Video` object with a specified playlist and it asserts
+        object. It creates a `Video` object with a specified playlist, and it asserts
         that the retention date is set correctly to the current time plus its playlist
         retention duration days.
         """
@@ -92,7 +92,7 @@ class RetentionDateObjectMixinTextCase(TestCase):
 
         This function tests the behavior of deleting a `Video`
         object. When deleted, it should call `s3_utils.update_expiration_date` with
-        the an expiration date set to None.
+        an expiration date set to None.
         """
         video = VideoFactory(playlist=self.playlist)
         video.delete()

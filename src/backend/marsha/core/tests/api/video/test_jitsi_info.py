@@ -43,7 +43,7 @@ class VideoJitsiInfoTest(TestCase):
 
     def test_jitsi_info_for_an_admin(self):
         """
-        An instructor or an adminstrator with a resource token should be able to fetch jitsi info.
+        An instructor or an administrator with a resource token should be able to fetch jitsi info.
         """
         video = VideoFactory(live_state=RUNNING, live_type=JITSI)
         jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
@@ -71,7 +71,7 @@ class VideoJitsiInfoTest(TestCase):
     @override_settings(JITSI_JWT_APP_SECRET="secret")
     def test_jitsi_info_for_an_admin_moderator_not_specified(self):
         """
-        An instructor or an adminstrator with a resource token should be able to fetch jitsi info.
+        An instructor or an administrator with a resource token should be able to fetch jitsi info.
         When the moderator query string is not specified, the False value should be used.
         """
         video = VideoFactory(live_state=RUNNING, live_type=JITSI)
@@ -112,7 +112,7 @@ class VideoJitsiInfoTest(TestCase):
     @override_settings(JITSI_JWT_APP_SECRET="secret")
     def test_jitsi_info_admin_user_moderator_false_specified(self):
         """
-        An instructor or an adminstrator with a resource token should be able to fetch jitsi info.
+        An instructor or an administrator with a resource token should be able to fetch jitsi info.
         When the moderator query string is specified and set to False, the token parameter should
         not be in the response.
         """
@@ -154,7 +154,7 @@ class VideoJitsiInfoTest(TestCase):
     @override_settings(JITSI_JWT_APP_SECRET="secret")
     def test_jitsi_info_admin_user_moderator_true_specified(self):
         """
-        An instructor or an adminstrator with a resource token should be able to fetch jitsi info.
+        An instructor or an administrator with a resource token should be able to fetch jitsi info.
         When the moderator query string is specified and set to True, the token parameter should
         be in the response.
         """

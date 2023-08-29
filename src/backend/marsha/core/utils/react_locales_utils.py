@@ -1,4 +1,4 @@
-"""Helper matching a django locale to a react locale."""
+"""Helper matching a django locale to a React locale."""
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import to_locale
@@ -8,7 +8,7 @@ def react_locale(value):
     """
     Convert a language (simple ISO639-1 or full language with regions) to an ISO15897 locale.
 
-    This locale is supported by the react frontend.
+    This locale is supported by the React frontend.
     """
     value_locale = to_locale(value)
     # pylint: disable=unsupported-membership-test

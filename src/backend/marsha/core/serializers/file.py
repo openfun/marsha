@@ -172,7 +172,7 @@ class DocumentSelectLTISerializer(serializers.ModelSerializer):
 
 
 class BaseInitiateUploadSerializer(serializers.Serializer):
-    """A serializer to validate data submitted on the initiate-upload API endoint."""
+    """A serializer to validate data submitted on the initiate-upload API endpoint."""
 
     filename = serializers.CharField()
     mimetype = serializers.CharField(allow_blank=True)

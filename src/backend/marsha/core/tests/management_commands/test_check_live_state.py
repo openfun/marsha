@@ -30,7 +30,7 @@ class CheckLiveStateTest(TestCase):
         out.close()
 
     def test_check_live_state_live_running_not_ended(self):
-        """A live is running and stream is on-going, the command should not stop it."""
+        """A live is running and stream is ongoing, the command should not stop it."""
         VideoFactory(
             id="0b791906-ccb3-4450-97cb-7b66fd9ad419",
             created_on=datetime(2020, 8, 15, 0, 0, 0, tzinfo=timezone.utc),

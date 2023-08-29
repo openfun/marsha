@@ -85,7 +85,7 @@ class PasswordChangeSerializer(DjRestAuthPasswordChangeSerializer):
             self.user = get_user_model().objects.get(pk=self.user.pk)
         else:
             # In this case, either we are using a ResourceToken or we did not
-            # went through the expected authentication backend.
+            # go through the expected authentication backend.
             raise AuthenticationFailed({"detail": "Wrong authentication method."})
 
 

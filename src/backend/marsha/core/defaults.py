@@ -118,8 +118,8 @@ LICENCES_CHOICES = (
     (CC_BY_SA, _("Creative Common By Attribution Share Alike")),
     (CC_BY_NC, _("Creative Common By Attribution Non Commercial")),
     (CC_BY_NC_SA, _("Creative Common By Attribution Non Commercial Share Alike")),
-    (CC_BY_ND, _("Creative Common By Attribution No Derivates")),
-    (CC_BY_NC_ND, _("Creative Common By Attribution Non Commercial No Derivates")),
+    (CC_BY_ND, _("Creative Common By Attribution No Derivatives")),
+    (CC_BY_NC_ND, _("Creative Common By Attribution Non Commercial No Derivatives")),
     (CC0, _("Public Domain Dedication ")),
     (NO_CC, _("All rights reserved")),
 )

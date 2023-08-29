@@ -572,7 +572,7 @@ class VideoListAPITest(TestCase):
 
     def test_api_video_read_list_by_org_user_with_admin_org_access(self):
         """
-        Token user with administrator role on an organization can lists videos.
+        Token user with administrator role on an organization can list videos.
 
         A user with a user token, with an organization access, can list videos for the
         organization, no matter the playlist they belong to.

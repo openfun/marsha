@@ -9,7 +9,7 @@ from .models import Classroom, ClassroomDocument
 
 
 class ClassroomDocumentInline(admin.TabularInline):
-    """Inline to display lassroom documents from a classroom."""
+    """Inline to display classroom documents from a classroom."""
 
     model = ClassroomDocument
     verbose_name = _("classroom document")

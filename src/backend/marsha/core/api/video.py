@@ -488,7 +488,7 @@ class VideoViewSet(
 
             start_live_channel(video.get_medialive_channel().get("id"))
         except Boto3Error as start_live_channel_exception:
-            # If something went wrong with aws, we rollback to the orginal live state
+            # If something went wrong with aws, we rollback to the original live state
             video.live_state = original_live_state
             video.save(update_fields=("live_state",))
             channel_layers_utils.dispatch_video_to_groups(video)
@@ -634,7 +634,7 @@ class VideoViewSet(
     @action(methods=["post"], detail=True, url_path="live-to-vod")
     # pylint: disable=unused-argument
     def live_to_vod(self, request, pk=None):
-        """Transforms an harvested live to a VOD.
+        """Transforms a harvested live to a VOD.
 
         Parameters
         ----------
@@ -1097,7 +1097,7 @@ class VideoViewSet(
     # pylint: disable=unused-argument
     def jitsi_info(self, request, pk=None):
         """
-        Generate a dictionnary containing all info needed to connect to jisti.
+        Generate a dictionary containing all info needed to connect to jisti.
         This endpoint is only fetchable for an admin or instructor
         If the moderator querystring is present, it will be used, otherwise False
         is used in the token for the moderator parameter.

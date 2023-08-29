@@ -153,7 +153,7 @@ class ClassroomRetrieveAPITest(TestCase):
 
     def test_api_classroom_fetch_from_other_classroom(self):
         """
-        Fetching a classroom with a token resource for an other classroom should not be allowed.
+        Fetching a classroom with a token resource for another classroom should not be allowed.
         """
         classroom = ClassroomFactory()
         other_classroom = ClassroomFactory()

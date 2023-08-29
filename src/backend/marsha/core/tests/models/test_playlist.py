@@ -45,7 +45,7 @@ class PlaylistModelsTestCase(TestCase):
         playlist.delete(force_policy=SOFT_DELETE_CASCADE)
         PlaylistFactory(lti_id=playlist.lti_id, consumer_site=playlist.consumer_site)
 
-    def test_modules_playlist_organization_consumer_site_lti_id_check_integrtity(self):
+    def test_modules_playlist_organization_consumer_site_lti_id_check_integrity(self):
         """Playlist consumer_site_or_organization_check_idx constraint."""
         consumer_site = ConsumerSiteFactory()
         organization = OrganizationFactory()

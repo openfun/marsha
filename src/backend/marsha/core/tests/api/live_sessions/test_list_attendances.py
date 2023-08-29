@@ -105,7 +105,7 @@ class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
                         "id": str(livesession.id),
                         "display_name": user.email,
                         "is_registered": True,
-                        "live_attendance": video.get_list_timestamps_attendences(),
+                        "live_attendance": video.get_list_timestamps_attendances(),
                     },
                     {
                         "id": str(livesession_public.id),
@@ -329,7 +329,7 @@ class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
                         "id": str(live_session_email.id),
                         "display_name": "samia@test-fun-mooc.fr",
                         "is_registered": True,
-                        "live_attendance": video.get_list_timestamps_attendences(),
+                        "live_attendance": video.get_list_timestamps_attendances(),
                     },
                     {
                         "id": str(live_session_display_name.id),
@@ -411,7 +411,7 @@ class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
                         "id": str(livesession.id),
                         "display_name": "samia@test-fun-mooc.fr",
                         "is_registered": True,
-                        "live_attendance": video.get_list_timestamps_attendences(),
+                        "live_attendance": video.get_list_timestamps_attendances(),
                     }
                 ],
             },
@@ -532,17 +532,17 @@ class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
             },
         )
 
-        list_timestamps_attendences = video.get_list_timestamps_attendences()
+        list_timestamps_attendances = video.get_list_timestamps_attendances()
         live_attendance_ls1 = response.json()["results"][0]["live_attendance"]
         live_attendance_ls2 = response.json()["results"][1]["live_attendance"]
 
-        self.assertEqual(len(list_timestamps_attendences), len(live_attendance_ls1))
-        self.assertEqual(len(list_timestamps_attendences), len(live_attendance_ls2))
-        self.assertEqual(len(list_timestamps_attendences), settings.ATTENDANCE_POINTS)
+        self.assertEqual(len(list_timestamps_attendances), len(live_attendance_ls1))
+        self.assertEqual(len(list_timestamps_attendances), len(live_attendance_ls2))
+        self.assertEqual(len(list_timestamps_attendances), settings.ATTENDANCE_POINTS)
 
         # key returned are identical for each livesession
-        self.assertEqual(list_timestamps_attendences.keys(), live_attendance_ls1.keys())
-        self.assertEqual(list_timestamps_attendences.keys(), live_attendance_ls2.keys())
+        self.assertEqual(list_timestamps_attendances.keys(), live_attendance_ls1.keys())
+        self.assertEqual(list_timestamps_attendances.keys(), live_attendance_ls2.keys())
 
     @override_settings(ATTENDANCE_PUSH_DELAY=500)
     @override_settings(ATTENDANCE_POINTS=5)
@@ -644,10 +644,10 @@ class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
         )
 
         # keys returned are only the key of the timeline of the video
-        list_timestamps_attendences = video.get_list_timestamps_attendences()
+        list_timestamps_attendances = video.get_list_timestamps_attendances()
         live_attendance_ls1 = response.json()["results"][0]["live_attendance"]
-        self.assertEqual(len(list_timestamps_attendences), len(live_attendance_ls1))
-        self.assertEqual(len(list_timestamps_attendences), settings.ATTENDANCE_POINTS)
+        self.assertEqual(len(list_timestamps_attendances), len(live_attendance_ls1))
+        self.assertEqual(len(list_timestamps_attendances), settings.ATTENDANCE_POINTS)
 
     @override_settings(ATTENDANCE_POINTS=5)
     def test_api_livesession_read_attendances_well_computed_start_and_live_running(
@@ -820,17 +820,17 @@ class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
             },
         )
 
-        list_timestamps_attendences = video.get_list_timestamps_attendences()
+        list_timestamps_attendances = video.get_list_timestamps_attendances()
         live_attendance_ls1 = response.json()["results"][0]["live_attendance"]
         live_attendance_ls2 = response.json()["results"][1]["live_attendance"]
 
-        self.assertEqual(len(list_timestamps_attendences), len(live_attendance_ls1))
-        self.assertEqual(len(list_timestamps_attendences), len(live_attendance_ls2))
-        self.assertEqual(len(list_timestamps_attendences), settings.ATTENDANCE_POINTS)
+        self.assertEqual(len(list_timestamps_attendances), len(live_attendance_ls1))
+        self.assertEqual(len(list_timestamps_attendances), len(live_attendance_ls2))
+        self.assertEqual(len(list_timestamps_attendances), settings.ATTENDANCE_POINTS)
 
         # list of timestamp of the video are identical for each livesession
-        self.assertEqual(list_timestamps_attendences.keys(), live_attendance_ls1.keys())
-        self.assertEqual(list_timestamps_attendences.keys(), live_attendance_ls2.keys())
+        self.assertEqual(list_timestamps_attendances.keys(), live_attendance_ls1.keys())
+        self.assertEqual(list_timestamps_attendances.keys(), live_attendance_ls2.keys())
 
     @override_settings(ATTENDANCE_POINTS=3)
     def test_api_livesession_read_attendances_well_computed_start_and_live_running_cache_is_on(
@@ -896,7 +896,7 @@ class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
             )
 
         self.assertEqual(response.status_code, 200)
-        # we expect 3 attendance points for 30 secondes, so one every 15
+        # we expect 3 attendance points for 30 seconds, so one every 15
         response_json = {
             "count": 2,
             "next": None,
@@ -926,17 +926,17 @@ class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
         }
         self.assertEqual(response.json(), response_json)
 
-        list_timestamps_attendences = video.get_list_timestamps_attendences()
+        list_timestamps_attendances = video.get_list_timestamps_attendances()
         live_attendance_ls1 = response.json()["results"][0]["live_attendance"]
         live_attendance_ls2 = response.json()["results"][1]["live_attendance"]
         # the list of timestamp are identical
-        self.assertEqual(len(list_timestamps_attendences), len(live_attendance_ls1))
-        self.assertEqual(len(list_timestamps_attendences), len(live_attendance_ls2))
-        self.assertEqual(len(list_timestamps_attendences), settings.ATTENDANCE_POINTS)
+        self.assertEqual(len(list_timestamps_attendances), len(live_attendance_ls1))
+        self.assertEqual(len(list_timestamps_attendances), len(live_attendance_ls2))
+        self.assertEqual(len(list_timestamps_attendances), settings.ATTENDANCE_POINTS)
 
         # keys returned are identical for each livesession
-        self.assertEqual(list_timestamps_attendences.keys(), live_attendance_ls1.keys())
-        self.assertEqual(list_timestamps_attendences.keys(), live_attendance_ls2.keys())
+        self.assertEqual(list_timestamps_attendances.keys(), live_attendance_ls1.keys())
+        self.assertEqual(list_timestamps_attendances.keys(), live_attendance_ls2.keys())
 
         # we call again the same request,
         # results are identical as it is cached, no queries are executed
@@ -1093,7 +1093,7 @@ class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response.json(), response_offset_1)
 
-        # we now reset the video, keys must have been reseted
+        # we now reset the video, keys must have been reset
         data = {
             "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
             "requestId": "7954d4d1-9dd3-47f4-9542-e7fd5f937fe6",
@@ -1350,7 +1350,7 @@ class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
-        # we expect 3 attendance points for 30 secondes, so one every 15
+        # we expect 3 attendance points for 30 seconds, so one every 15
         self.assertEqual(
             response.json(),
             {
@@ -1418,7 +1418,7 @@ class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
             )
 
         self.assertEqual(response.status_code, 200)
-        # we expect 3 attendance points for 30 secondes, so one every 15
+        # we expect 3 attendance points for 30 seconds, so one every 15
         response_json = {
             "count": 1,
             "next": None,
@@ -1541,7 +1541,7 @@ class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
                     "id": str(live_session_email.id),
                     "display_name": "samia@test-fun-mooc.fr",
                     "is_registered": True,
-                    "live_attendance": video.get_list_timestamps_attendences(),
+                    "live_attendance": video.get_list_timestamps_attendances(),
                 }
             ],
         }
@@ -1633,7 +1633,7 @@ class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
         )
 
         with mock.patch.object(
-            Video, "get_list_timestamps_attendences", return_value={}
+            Video, "get_list_timestamps_attendances", return_value={}
         ):
             response = self.client.get(
                 self._get_url(video),

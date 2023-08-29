@@ -52,7 +52,7 @@ class ClassroomServiceEndAPITest(TestCase):
 
     @mock.patch.object(api, "end")
     def test_api_bbb_end_classroom_user_logged_in(self, mock_end_request):
-        """A logged in user should not be able to end a classroom."""
+        """A logged-in user should not be able to end a classroom."""
         user = core_factories.UserFactory(
             first_name="Jane", last_name="Doe", email="jane.doe@example.com"
         )

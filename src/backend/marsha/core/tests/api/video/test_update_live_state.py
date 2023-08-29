@@ -390,7 +390,7 @@ class VideoUpdateLiveStateAPITest(TestCase):
 
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
     def test_api_video_update_live_state_invalid_signature(self):
-        """Live state update with an invalid signature should fails."""
+        """Live state update with an invalid signature should fail."""
         video = factories.VideoFactory(
             id="a1a21411-bf2f-4926-b97f-3c48a124d528",
             upload_state=PENDING,
@@ -444,7 +444,7 @@ class VideoUpdateLiveStateAPITest(TestCase):
 
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
     def test_api_video_update_live_state_invalid_state(self):
-        """Live state update with an invalid state should fails."""
+        """Live state update with an invalid state should fail."""
         video = factories.VideoFactory(
             id="a1a21411-bf2f-4926-b97f-3c48a124d528",
             upload_state=PENDING,
@@ -505,7 +505,7 @@ class VideoUpdateLiveStateAPITest(TestCase):
 
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
     def test_api_video_update_live_state_unknown_video(self):
-        """Live state update with an unknown video should fails."""
+        """Live state update with an unknown video should fail."""
         data = {
             "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
             "requestId": "49010b0f-63f5-4d5b-9baa-6fc69bbce3eb",

@@ -330,7 +330,7 @@ class LiveSessionListApiTest(LiveSessionApiTestCase):
         # another anonymous_id for the same video
         AnonymousLiveSessionFactory(email="chantal@test-fun-mooc.fr", video=video)
 
-        # livesession for a LTI connection
+        # livesession for an LTI connection
         LiveSessionFactory(
             email="chantal@test-fun-mooc.fr",
             video=video,

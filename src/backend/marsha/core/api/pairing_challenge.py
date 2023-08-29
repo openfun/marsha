@@ -38,7 +38,7 @@ def pairing_challenge(request):
     Parameters
     ----------
     request : Type[django.http.request.HttpRequest]
-        The request on the API endpoint, it must contains a payload with the following fields:
+        The request on the API endpoint, it must contain a payload with the following fields:
             - box_id: uuid from external device.
             - secret: generated pairing secret.
 

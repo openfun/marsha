@@ -170,7 +170,7 @@ class VideoPublicViewTestCase(TestCase):
         self.assertIsNone(context.get("consumer_site"))
 
         # The second response is cached, the header should not have need changed
-        # and should still contains the CSP frame-ancestors
+        # and should still contain the CSP frame-ancestors
         with self.assertNumQueries(0):
             cached_response = self.client.get(f"/videos/{video.pk}")
 
@@ -184,7 +184,7 @@ class VideoPublicViewTestCase(TestCase):
         )
 
     def test_video_not_publicly_accessible(self):
-        """Validate it is impossible to access to a non public video."""
+        """Validate it is impossible to access to a non-public video."""
         video = VideoFactory(
             id="301b5f4f-b9f1-4a5f-897d-f8f1bf22c396",
             playlist__title="playlist-003",
@@ -212,7 +212,7 @@ class VideoPublicViewTestCase(TestCase):
         self.assertEqual(context.get("modelName"), "videos")
 
     def test_video_not_existing(self):
-        """Accessing a non existing video should return an error state."""
+        """Accessing a non-existing video should return an error state."""
         response = self.client.get(f"/videos/{uuid.uuid4()}")
 
         self.assertEqual(response.status_code, 200)
