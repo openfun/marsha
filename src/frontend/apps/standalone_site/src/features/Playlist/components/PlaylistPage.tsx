@@ -1,6 +1,5 @@
 import {
   Button as ButtonCunningham,
-  CunninghamProvider,
   DataGrid,
   SortModel,
   usePagination,
@@ -218,57 +217,51 @@ export const PlaylistPage = () => {
               </Box>
             )}
             {!shouldDisplayNoPlaylistYetMessage && (
-              <CunninghamProvider>
-                <DataGrid
-                  columns={[
-                    {
-                      field: 'created_on',
-                      headerName: intl.formatMessage(
-                        messages.columnNameCreatedOn,
-                      ),
-                    },
-                    {
-                      field: 'title',
-                      headerName: intl.formatMessage(messages.columnNameTitle),
-                    },
-                    {
-                      enableSorting: false,
-                      field: 'organization',
-                      headerName: intl.formatMessage(
-                        messages.columnNameOrganization,
-                      ),
-                    },
-                    {
-                      id: 'column-actions',
-                      renderCell: ({ row }) => (
-                        <ButtonCunningham
-                          color="tertiary"
-                          aria-label={intl.formatMessage(
-                            messages.updatePlaylist,
-                            {
-                              playlistName: row.title,
-                            },
-                          )}
-                          size="small"
-                          onClick={() => {
-                            navigate(
-                              `${routes.PLAYLIST.path}/${row.id}/update`,
-                            );
-                          }}
-                          icon={
-                            <span className="material-icons">settings</span>
-                          }
-                        />
-                      ),
-                    },
-                  ]}
-                  rows={rows}
-                  pagination={pagination}
-                  sortModel={sortModel}
-                  onSortModelChange={setSortModel}
-                  isLoading={isLoading}
-                />
-              </CunninghamProvider>
+              <DataGrid
+                columns={[
+                  {
+                    field: 'created_on',
+                    headerName: intl.formatMessage(
+                      messages.columnNameCreatedOn,
+                    ),
+                  },
+                  {
+                    field: 'title',
+                    headerName: intl.formatMessage(messages.columnNameTitle),
+                  },
+                  {
+                    enableSorting: false,
+                    field: 'organization',
+                    headerName: intl.formatMessage(
+                      messages.columnNameOrganization,
+                    ),
+                  },
+                  {
+                    id: 'column-actions',
+                    renderCell: ({ row }) => (
+                      <ButtonCunningham
+                        color="tertiary"
+                        aria-label={intl.formatMessage(
+                          messages.updatePlaylist,
+                          {
+                            playlistName: row.title,
+                          },
+                        )}
+                        size="small"
+                        onClick={() => {
+                          navigate(`${routes.PLAYLIST.path}/${row.id}/update`);
+                        }}
+                        icon={<span className="material-icons">settings</span>}
+                      />
+                    ),
+                  },
+                ]}
+                rows={rows}
+                pagination={pagination}
+                sortModel={sortModel}
+                onSortModelChange={setSortModel}
+                isLoading={isLoading}
+              />
             )}
           </Fragment>
         </WhiteCard>

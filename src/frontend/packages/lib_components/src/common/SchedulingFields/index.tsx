@@ -1,4 +1,4 @@
-import { CunninghamProvider, DatePicker } from '@openfun/cunningham-react';
+import { DatePicker } from '@openfun/cunningham-react';
 import { Box, FormField, Text, TextInput } from 'grommet';
 import { MarginType } from 'grommet/utils';
 import { Nullable } from 'lib-common';
@@ -212,31 +212,29 @@ export const SchedulingFields = ({
         gap="small"
       >
         <Box data-testid="starting-at-date-picker">
-          <CunninghamProvider>
-            <DatePicker
-              disabled={disabled}
-              fullWidth
-              label={intl.formatMessage(messages.startingAtDateTextLabel)}
-              locale={intl.locale}
-              minValue={
-                DateTime.local()
-                  .set({
-                    hour: 0,
-                    minute: 0,
-                    second: 0,
-                    millisecond: 0,
-                  })
-                  .toISO() as string
-              }
-              onChange={onStartingAtDateInputChange}
-              state={startingAtError ? 'error' : 'default'}
-              value={
-                currentStartingAtDate
-                  ? new Date(currentStartingAtDate).toISOString()
-                  : null
-              }
-            />
-          </CunninghamProvider>
+          <DatePicker
+            disabled={disabled}
+            fullWidth
+            label={intl.formatMessage(messages.startingAtDateTextLabel)}
+            locale={intl.locale}
+            minValue={
+              DateTime.local()
+                .set({
+                  hour: 0,
+                  minute: 0,
+                  second: 0,
+                  millisecond: 0,
+                })
+                .toISO() as string
+            }
+            onChange={onStartingAtDateInputChange}
+            state={startingAtError ? 'error' : 'default'}
+            value={
+              currentStartingAtDate
+                ? new Date(currentStartingAtDate).toISOString()
+                : null
+            }
+          />
         </Box>
         <Box>
           <FormField

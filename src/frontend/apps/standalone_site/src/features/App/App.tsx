@@ -1,3 +1,4 @@
+import { CunninghamProvider } from '@openfun/cunningham-react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Grommet } from 'grommet';
@@ -24,29 +25,31 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools />
-      <Grommet theme={themeExtended}>
-        <Toaster
-          toastOptions={{
-            duration: 5000,
-            success: {
-              style: {
-                background: colors['status-ok'],
+      <CunninghamProvider>
+        <Grommet theme={themeExtended}>
+          <Toaster
+            toastOptions={{
+              duration: 5000,
+              success: {
+                style: {
+                  background: colors['status-ok'],
+                },
               },
-            },
-            error: {
-              style: {
-                color: colors['white'],
-                background: colors['accent-2'],
+              error: {
+                style: {
+                  color: colors['white'],
+                  background: colors['accent-2'],
+                },
               },
-            },
-          }}
-        />
-        <AppConfig>
-          <BrowserRouter>
-            <AppRoutes />
-          </BrowserRouter>
-        </AppConfig>
-      </Grommet>
+            }}
+          />
+          <AppConfig>
+            <BrowserRouter>
+              <AppRoutes />
+            </BrowserRouter>
+          </AppConfig>
+        </Grommet>
+      </CunninghamProvider>
     </QueryClientProvider>
   );
 };

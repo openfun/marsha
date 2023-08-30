@@ -1,4 +1,4 @@
-import { CunninghamProvider, DatePicker } from '@openfun/cunningham-react';
+import { DatePicker } from '@openfun/cunningham-react';
 import { Box, Button } from 'grommet';
 import { Nullable } from 'lib-common';
 import { DateTime } from 'luxon';
@@ -84,26 +84,24 @@ export const RetentionDate = ({
         style={{ marginTop: '0.75rem' }}
         data-testid="retention-date-picker"
       >
-        <CunninghamProvider>
-          <DatePicker
-            fullWidth
-            label={intl.formatMessage(messages.title)}
-            locale={intl.locale}
-            minValue={
-              DateTime.local()
-                .plus({ days: 1 })
-                .set({
-                  hour: 0,
-                  minute: 0,
-                  second: 0,
-                  millisecond: 0,
-                })
-                .toISO() as string
-            }
-            onChange={onLocalChange}
-            value={selectedRetentionDate}
-          />
-        </CunninghamProvider>
+        <DatePicker
+          fullWidth
+          label={intl.formatMessage(messages.title)}
+          locale={intl.locale}
+          minValue={
+            DateTime.local()
+              .plus({ days: 1 })
+              .set({
+                hour: 0,
+                minute: 0,
+                second: 0,
+                millisecond: 0,
+              })
+              .toISO() as string
+          }
+          onChange={onLocalChange}
+          value={selectedRetentionDate}
+        />
         <StyledAnchorButton
           disabled={!selectedRetentionDate}
           a11yTitle={intl.formatMessage(messages.deleteRetentionDateButton)}

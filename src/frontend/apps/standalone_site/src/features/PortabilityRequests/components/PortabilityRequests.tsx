@@ -1,9 +1,4 @@
-import {
-  CunninghamProvider,
-  DataGrid,
-  SortModel,
-  usePagination,
-} from '@openfun/cunningham-react';
+import { DataGrid, SortModel, usePagination } from '@openfun/cunningham-react';
 import { Box, Button, Heading, Text } from 'grommet';
 import { CenterLoader, PortabilityRequest } from 'lib-components';
 import { useEffect, useMemo, useState } from 'react';
@@ -234,70 +229,64 @@ export const PortabilityRequests = ({
           </Box>
         )}
         {hasResult && (
-          <CunninghamProvider>
-            <DataGrid
-              columns={[
-                {
-                  field: 'created_on',
-                  headerName: intl.formatMessage(messages.columnNameCreatedOn),
-                },
-                {
-                  field: 'portabilityRequest',
-                  enableSorting: false,
-                  headerName: intl.formatMessage(
-                    messages.columnNamePortabilityRequest,
-                  ),
-                },
-                {
-                  field: 'consumerSite',
-                  enableSorting: false,
-                  headerName: intl.formatMessage(
-                    messages.columnNameConsumerSite,
-                  ),
-                },
-                {
-                  field: 'fromUserEmail',
-                  enableSorting: false,
-                  headerName: intl.formatMessage(
-                    messages.columnNameFromUserEmail,
-                  ),
-                },
-                {
-                  field: 'updatedUserEmail',
-                  enableSorting: false,
-                  headerName: intl.formatMessage(
-                    messages.columnNameUpdatedUserEmail,
-                  ),
-                },
-                {
-                  id: 'portability-request-column-state',
-                  headerName: intl.formatMessage(messages.columnNameStatus),
-                  renderCell: ({ row: portabilityRequest }) => (
-                    <PortabilityRequestStateTag
-                      state={portabilityRequest.state}
-                    />
-                  ),
-                },
-                {
-                  id: 'portability-request-column-actions',
-                  headerName: intl.formatMessage(messages.columnNameActions),
-                  renderCell: ({ row: portabilityRequest }) => (
-                    <AcceptRejectButtons
-                      portabilityRequestId={portabilityRequest.id}
-                      canAcceptOrReject={
-                        portabilityRequest.can_accept_or_reject
-                      }
-                    />
-                  ),
-                },
-              ]}
-              rows={rows}
-              pagination={pagination}
-              isLoading={isLoading || isFetching}
-              sortModel={sortModel}
-              onSortModelChange={setSortModel}
-            />
-          </CunninghamProvider>
+          <DataGrid
+            columns={[
+              {
+                field: 'created_on',
+                headerName: intl.formatMessage(messages.columnNameCreatedOn),
+              },
+              {
+                field: 'portabilityRequest',
+                enableSorting: false,
+                headerName: intl.formatMessage(
+                  messages.columnNamePortabilityRequest,
+                ),
+              },
+              {
+                field: 'consumerSite',
+                enableSorting: false,
+                headerName: intl.formatMessage(messages.columnNameConsumerSite),
+              },
+              {
+                field: 'fromUserEmail',
+                enableSorting: false,
+                headerName: intl.formatMessage(
+                  messages.columnNameFromUserEmail,
+                ),
+              },
+              {
+                field: 'updatedUserEmail',
+                enableSorting: false,
+                headerName: intl.formatMessage(
+                  messages.columnNameUpdatedUserEmail,
+                ),
+              },
+              {
+                id: 'portability-request-column-state',
+                headerName: intl.formatMessage(messages.columnNameStatus),
+                renderCell: ({ row: portabilityRequest }) => (
+                  <PortabilityRequestStateTag
+                    state={portabilityRequest.state}
+                  />
+                ),
+              },
+              {
+                id: 'portability-request-column-actions',
+                headerName: intl.formatMessage(messages.columnNameActions),
+                renderCell: ({ row: portabilityRequest }) => (
+                  <AcceptRejectButtons
+                    portabilityRequestId={portabilityRequest.id}
+                    canAcceptOrReject={portabilityRequest.can_accept_or_reject}
+                  />
+                ),
+              },
+            ]}
+            rows={rows}
+            pagination={pagination}
+            isLoading={isLoading || isFetching}
+            sortModel={sortModel}
+            onSortModelChange={setSortModel}
+          />
         )}
       </WhiteCard>
     </Box>
