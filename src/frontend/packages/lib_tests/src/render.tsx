@@ -1,3 +1,4 @@
+import { CunninghamProvider } from '@openfun/cunningham-react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   RenderResult,
@@ -94,32 +95,34 @@ export const appendUtilsElement = (
   options?: Partial<RenderOptions>,
 ) => {
   return wrapInIntlProvider(
-    <Grommet
-      theme={options?.grommetOptions?.theme || theme}
-      style={options?.grommetOptions?.style}
-    >
-      <ResponsiveContext.Provider
-        value={options?.grommetOptions?.responsiveSize ?? 'large'}
+    <CunninghamProvider>
+      <Grommet
+        theme={options?.grommetOptions?.theme || theme}
+        style={options?.grommetOptions?.style}
       >
-        <BreadCrumbsProvider>
-          <GlobalStyles />
-          <QueryClientProvider
-            client={options?.queryOptions?.client ?? queryClient}
-          >
-            <Toaster />
-            <ToastHack />
-            {wrapInRouter(
-              <div data-testid="test-component-container">{element}</div>,
-              options?.routerOptions?.routes,
-              options?.routerOptions?.componentPath || '/*',
-              options?.routerOptions?.history,
-              options?.routerOptions?.header,
-              options?.routerOptions?.wrapper,
-            )}
-          </QueryClientProvider>
-        </BreadCrumbsProvider>
-      </ResponsiveContext.Provider>
-    </Grommet>,
+        <ResponsiveContext.Provider
+          value={options?.grommetOptions?.responsiveSize ?? 'large'}
+        >
+          <BreadCrumbsProvider>
+            <GlobalStyles />
+            <QueryClientProvider
+              client={options?.queryOptions?.client ?? queryClient}
+            >
+              <Toaster />
+              <ToastHack />
+              {wrapInRouter(
+                <div data-testid="test-component-container">{element}</div>,
+                options?.routerOptions?.routes,
+                options?.routerOptions?.componentPath || '/*',
+                options?.routerOptions?.history,
+                options?.routerOptions?.header,
+                options?.routerOptions?.wrapper,
+              )}
+            </QueryClientProvider>
+          </BreadCrumbsProvider>
+        </ResponsiveContext.Provider>
+      </Grommet>
+    </CunninghamProvider>,
     options?.intlOptions?.locale || 'en',
   );
 };

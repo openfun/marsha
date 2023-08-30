@@ -1,8 +1,4 @@
-import {
-  CunninghamProvider,
-  DataGrid,
-  usePagination,
-} from '@openfun/cunningham-react';
+import { DataGrid, usePagination } from '@openfun/cunningham-react';
 import { Box, Button, Text } from 'grommet';
 import { Spinner } from 'lib-components';
 import { useEffect } from 'react';
@@ -103,42 +99,40 @@ export const PlaylistUserList = ({ playlistId }: PlaylistUserListProps) => {
   return (
     <Box>
       {data && data.count ? (
-        <CunninghamProvider>
-          <DataGrid
-            columns={[
-              {
-                id: 'column-user',
-                headerName: intl.formatMessage(messages.columnNameUsers),
-                renderCell: ({ row: playlistAccess }) => (
-                  <UserLabelColumn user={playlistAccess.user} />
-                ),
-              },
-              {
-                id: 'column-role',
-                headerName: intl.formatMessage(messages.columnNameRoles),
-                renderCell: ({ row: playlistAccess }) => (
-                  <UserRolesColumn
-                    playlistAccessId={playlistAccess.id}
-                    role={playlistAccess.role}
-                    userId={playlistAccess.user.id}
-                  />
-                ),
-              },
-              {
-                id: 'column-delete-user',
-                renderCell: ({ row: playlistAccess }) => (
-                  <UserDeleteColumn
-                    playlistAccessId={playlistAccess.id}
-                    userId={playlistAccess.user.id}
-                  />
-                ),
-              },
-            ]}
-            rows={data?.results || []}
-            pagination={pagination}
-            isLoading={isLoading}
-          />
-        </CunninghamProvider>
+        <DataGrid
+          columns={[
+            {
+              id: 'column-user',
+              headerName: intl.formatMessage(messages.columnNameUsers),
+              renderCell: ({ row: playlistAccess }) => (
+                <UserLabelColumn user={playlistAccess.user} />
+              ),
+            },
+            {
+              id: 'column-role',
+              headerName: intl.formatMessage(messages.columnNameRoles),
+              renderCell: ({ row: playlistAccess }) => (
+                <UserRolesColumn
+                  playlistAccessId={playlistAccess.id}
+                  role={playlistAccess.role}
+                  userId={playlistAccess.user.id}
+                />
+              ),
+            },
+            {
+              id: 'column-delete-user',
+              renderCell: ({ row: playlistAccess }) => (
+                <UserDeleteColumn
+                  playlistAccessId={playlistAccess.id}
+                  userId={playlistAccess.user.id}
+                />
+              ),
+            },
+          ]}
+          rows={data?.results || []}
+          pagination={pagination}
+          isLoading={isLoading}
+        />
       ) : (
         <Text>{intl.formatMessage(messages.noAccess)}</Text>
       )}

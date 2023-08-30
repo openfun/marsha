@@ -1,3 +1,4 @@
+import { CunninghamProvider } from '@openfun/cunningham-react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Grommet } from 'grommet';
@@ -176,34 +177,36 @@ const AppContentLoader = () => {
       <QueryClientProvider client={queryClient}>
         <ReactQueryDevtools />
         <RawIntlProvider value={intl}>
-          <Grommet theme={theme} style={{ height: '100%' }}>
-            <ErrorBoundary
-              fallbackRender={({ error }: { error: Error }) => (
-                <BoundaryScreenError code={500} message={error.message} />
-              )}
-            >
-              <Toaster
-                toastOptions={{
-                  duration: 5000,
-                  success: {
-                    style: {
-                      background: colors['status-ok'],
+          <CunninghamProvider>
+            <Grommet theme={theme} style={{ height: '100%' }}>
+              <ErrorBoundary
+                fallbackRender={({ error }: { error: Error }) => (
+                  <BoundaryScreenError code={500} message={error.message} />
+                )}
+              >
+                <Toaster
+                  toastOptions={{
+                    duration: 5000,
+                    success: {
+                      style: {
+                        background: colors['status-ok'],
+                      },
                     },
-                  },
-                  error: {
-                    style: {
-                      color: colors.white,
-                      background: colors['accent-2'],
+                    error: {
+                      style: {
+                        color: colors.white,
+                        background: colors['accent-2'],
+                      },
                     },
-                  },
-                }}
-              />
-              <Suspense fallback={<Loader />}>
-                <AppContent />
-              </Suspense>
-              <GlobalStyles />
-            </ErrorBoundary>
-          </Grommet>
+                  }}
+                />
+                <Suspense fallback={<Loader />}>
+                  <AppContent />
+                </Suspense>
+                <GlobalStyles />
+              </ErrorBoundary>
+            </Grommet>
+          </CunninghamProvider>
         </RawIntlProvider>
       </QueryClientProvider>
     </CurrentResourceContextProvider>
