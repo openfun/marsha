@@ -113,6 +113,7 @@ describe('queries/updateOne', () => {
       response: expect.objectContaining({
         status: 404,
       }),
+      body: {},
     });
 
     expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/1/');
@@ -154,6 +155,7 @@ describe('queries/updateOne', () => {
       code: 'invalid',
       message: 'Bad Request',
       error: 'An error occured!',
+      body: { error: 'An error occured!' },
       status: 400,
       response: expect.objectContaining({
         status: 400,

@@ -40,6 +40,7 @@ describe('fetchResponseHandler', () => {
       response: expect.objectContaining({
         status: 400,
       }),
+      body: { name: 'John' },
     });
   });
 
@@ -67,6 +68,7 @@ describe('fetchResponseHandler', () => {
       response: expect.objectContaining({
         status: 500,
       }),
+      body: { name: 'John' },
     });
   });
 
@@ -89,6 +91,7 @@ describe('fetchResponseHandler', () => {
       response: expect.objectContaining({
         status: 500,
       }),
+      body: {},
     });
   });
 
@@ -114,6 +117,7 @@ describe('fetchResponseHandler', () => {
         response: expect.objectContaining({
           status: 500,
         }),
+        body: {},
       });
     });
 
@@ -138,6 +142,7 @@ describe('fetchResponseHandler', () => {
         response: expect.objectContaining({
           status: 500,
         }),
+        body: {},
       });
     });
 
@@ -162,6 +167,7 @@ describe('fetchResponseHandler', () => {
         response: expect.objectContaining({
           status: 500,
         }),
+        body: {},
       });
     });
 
@@ -186,6 +192,7 @@ describe('fetchResponseHandler', () => {
         response: expect.objectContaining({
           status: 500,
         }),
+        body: {},
       });
     });
 

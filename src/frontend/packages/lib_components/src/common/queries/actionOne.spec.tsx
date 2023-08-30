@@ -166,6 +166,7 @@ describe('queries/actionOne', () => {
       response: expect.objectContaining({
         status: 404,
       }),
+      body: {},
     });
 
     expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/1/action/');

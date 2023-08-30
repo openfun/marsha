@@ -46,6 +46,7 @@ export const fetchResponseHandler = async <T>(
     status: response.status,
     message,
     response: response,
+    body: bodyResponse,
     ...bodyResponse,
   });
 };
