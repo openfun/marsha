@@ -239,6 +239,9 @@ describe('<useSelectPlaylist />', () => {
         response: expect.objectContaining({
           status: 401,
         }),
+        body: expect.objectContaining({
+          detail: 'Sorry...',
+        }),
       });
     });
   });

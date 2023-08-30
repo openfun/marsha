@@ -10,6 +10,7 @@ export interface IFetchResponseError<T = unknown> {
   status: number;
   response: Response;
   message: string;
+  body?: T;
   detail?: string;
   errors?: { [key in keyof T]?: string[] }[];
 }
@@ -21,14 +22,16 @@ export class FetchResponseError<T = unknown>
   code: IFetchResponseError['code'];
   status: IFetchResponseError['status'];
   response: IFetchResponseError['response'];
+  body?: IFetchResponseError<T>['body'];
   detail?: IFetchResponseError['detail'];
-  errors?: IFetchResponseError['errors'];
+  errors?: IFetchResponseError<T>['errors'];
   error?: IFetchResponseError<T>;
 
   constructor(error: IFetchResponseError<T>) {
     super(error.message);
 
     this.name = 'FetchResponseError';
+    this.body = error.body;
     this.error = error;
     this.code = error.code;
     this.status = error.status;

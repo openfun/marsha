@@ -109,6 +109,7 @@ describe('queries/createOne', () => {
       }),
       message: 'Not Found',
       status: 404,
+      body: {},
     });
 
     expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/');
@@ -153,6 +154,7 @@ describe('queries/createOne', () => {
       response: expect.objectContaining({
         status: 400,
       }),
+      body: { error: 'An error occured!' },
     });
 
     expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/');
