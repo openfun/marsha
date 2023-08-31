@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Display claim link only when is-claimed request is in success
+
 ## [4.3.0] - 2023-08-29
 
 ### Added

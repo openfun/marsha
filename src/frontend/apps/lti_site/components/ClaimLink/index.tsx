@@ -31,20 +31,22 @@ export const ClaimLink = ({ decodedJwt }: ClaimLinkProps) => {
     appConfig.video ||
     appConfig.document) as Exclude<AppDataRessource, DepositedFile>;
 
-  const [showClaimLink, setShowClaimLink] = useState(
-    ['videos', 'classrooms'].includes(appConfig.modelName) && !!decodedJwt.user,
-  );
-  const { data } = usePlaylistIsClaimed(resource?.playlist.id, {
-    enabled: showClaimLink && !!resource?.playlist.id,
+  const [showClaimLink, setShowClaimLink] = useState(false);
+  const { data, isLoading } = usePlaylistIsClaimed(resource?.playlist.id, {
+    enabled: !!resource?.playlist.id,
   });
 
   useEffect(() => {
-    if (data?.is_claimed) {
-      setShowClaimLink(false);
+    if (isLoading) {
+      return;
+    }
+
+    if (data && data.is_claimed === false) {
+      setShowClaimLink(true);
     } else {
       return;
     }
-  }, [data?.is_claimed]);
+  }, [data, isLoading]);
 
   if (
     !resource ||
