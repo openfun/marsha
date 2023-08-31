@@ -8,3 +8,4 @@ django-configurations
 uvicorn
 boto3
 shortuuid 
+factory_boy

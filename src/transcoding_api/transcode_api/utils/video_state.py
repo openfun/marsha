@@ -32,7 +32,7 @@ def move_to_next_state(
     is_new_video: bool = True,
 ):
     # Maybe the video changed in database, refresh it
-    video = video.refresh_from_db()
+    video.refresh_from_db()
 
     # Video does not exist anymore
     if not video:

@@ -5,6 +5,7 @@ from abc import ABC, abstractmethod
 from uuid import UUID
 
 from asgiref.sync import async_to_sync
+from django.conf import settings
 from django.utils import timezone
 
 from transcode_api.models import RunnerJob, RunnerJobState
@@ -138,7 +139,7 @@ class AbstractJobHandler(ABC):
         )
         next_state = (
             error_state
-            if runner_job.failures >= 5  # TODO: to put in settings
+            if runner_job.failures >= settings.TRANSCODING_RUNNER_MAX_FAILURE
             or not self.is_abort_supported()
             else RunnerJobState.PENDING
         )

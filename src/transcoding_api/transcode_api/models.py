@@ -34,7 +34,7 @@ class Runner(models.Model):
     def update_last_contact(self, ip_address):
         if timezone.now() - self.lastContact < timedelta(minutes=5):
             return
-        self.lastContact = timezone.datetime.now()
+        self.lastContact = timezone.now()
         self.ip = ip_address
         self.save()
 

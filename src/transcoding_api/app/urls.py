@@ -1,21 +1,9 @@
 from django.contrib import admin
-from django.urls import include, path, re_path
-from rest_framework import routers
+from django.urls import path
 
-from transcode_api.views import (
-    RunnerJobViewSet,
-    RunnerRegistrationTokenViewSet,
-    RunnerViewSet,
-    VideoViewSet,
-)
-
-router = routers.DefaultRouter(trailing_slash=False)
-router.register(r"runners/registration-tokens", RunnerRegistrationTokenViewSet)
-router.register(r"runners", RunnerViewSet)
-router.register(r"runners/jobs", RunnerJobViewSet, basename="jobs")
-router.register(r"videos", VideoViewSet, basename="videos")
+from transcode_api.urls import urlpatterns as transcode_api_urls
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    re_path(r"api/v1/", include(router.urls)),
 ]
+urlpatterns += transcode_api_urls

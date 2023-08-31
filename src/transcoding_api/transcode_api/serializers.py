@@ -11,11 +11,7 @@ from transcode_api.models import (
 class RunnerRegistrationTokenSerializer(serializers.ModelSerializer):
     class Meta:
         model = RunnerRegistrationToken
-        fields = "__all__"
-        read_only_fields = (
-            "createdAt",
-            "updatedAt",
-        )
+        fields = ("id", "registrationToken")
 
 
 class RunnerSerializer(serializers.ModelSerializer):
@@ -82,8 +78,6 @@ class RunnerJobSerializer(BaseRunnerJobSerializer):
             "payload",
             "startedAt",
             "finishedAt",
-            "createdAt",
-            "updatedAt",
             "jobToken",
             "runner",
             "parent",

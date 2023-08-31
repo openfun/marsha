@@ -42,7 +42,7 @@ class RunnerViewSet(mixins.DestroyModelMixin, ListMixin, viewsets.GenericViewSet
         runner.runnerToken = "ptrt-" + str(uuid.uuid4())
         runner.ip = request.META.get("REMOTE_ADDR")
         runner.runnerRegistrationToken = runnerRegistrationToken
-        runner.lastContact = timezone.datetime.now()
+        runner.lastContact = timezone.datetime.now(tz=timezone.utc)
         runner.save()
 
         serializer = self.get_serializer(runner)

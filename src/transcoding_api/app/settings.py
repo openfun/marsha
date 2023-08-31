@@ -93,7 +93,7 @@ class Base(Configuration):
         }
     }
 
-    STORAGE_VIDEO_LOCATION = values.Value(str(BASE_DIR / "storage/videos/"))
+    STORAGE_VIDEO_LOCATION = BASE_DIR / "storage/videos/"
 
     STORAGES = {
         "default": {
@@ -103,7 +103,7 @@ class Base(Configuration):
             },
         },
         "videos": {
-            "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
             "OPTIONS": {
                 "location": STORAGE_VIDEO_LOCATION,
             },
@@ -132,6 +132,8 @@ class Base(Configuration):
     TRANSCODING_FPS_AVERAGE = values.IntegerValue(30)
     TRANSCODING_FPS_MAX = values.IntegerValue(60)
     TRANSCODING_FPS_KEEP_ORIGIN_FPS_RESOLUTION_MIN = values.IntegerValue(720)
+
+    TRANSCODING_RUNNER_MAX_FAILURE = values.IntegerValue(5)
 
     # Password validation
     # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -175,25 +177,3 @@ class Base(Configuration):
 
 class Development(Base):
     DEBUG = values.BooleanValue(True)
-    STORAGE_VIDEO_LOCATION = values.Value(
-        str(BASE_DIR / "storage/videos/"),
-        environ_name="STORAGE_VIDEO_LOCATION",
-    )
-
-    STORAGES = {
-        "default": {
-            "BACKEND": "django.core.files.storage.FileSystemStorage",
-            "OPTIONS": {
-                "location": BASE_DIR / "storage/",
-            },
-        },
-        "videos": {
-            "BACKEND": "django.core.files.storage.FileSystemStorage",
-            "OPTIONS": {
-                "location": STORAGE_VIDEO_LOCATION,
-            },
-        },
-        "staticfiles": {
-            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
-        },
-    }

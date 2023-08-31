@@ -20,7 +20,7 @@ from .mixins import ListMixin
 logger = logging.getLogger(__name__)
 
 
-class RunnerJobViewSet(mixins.DestroyModelMixin, ListMixin, viewsets.GenericViewSet):
+class RunnerJobViewSet(viewsets.GenericViewSet, ListMixin, mixins.DestroyModelMixin):
     queryset = RunnerJob.objects.all()
     serializer_class = RunnerJobSerializer
     lookup_field = "uuid"
@@ -47,7 +47,7 @@ class RunnerJobViewSet(mixins.DestroyModelMixin, ListMixin, viewsets.GenericView
         return runner
 
     @action(detail=False, methods=["post"], url_path="request")
-    def request(self, request):
+    def request_runner_job(self, request):
         runner = self._get_runner_from_token(request)
         jobs = RunnerJob.objects.list_available_jobs()
 
@@ -73,7 +73,7 @@ class RunnerJobViewSet(mixins.DestroyModelMixin, ListMixin, viewsets.GenericView
 
         job.state = RunnerJobState.PROCESSING
         job.processingJobToken = "ptrjt-" + str(uuid4())
-        job.startedAt = timezone.datetime.now()
+        job.startedAt = timezone.now()
         job.runner = runner
         job.save()
 
@@ -153,7 +153,7 @@ class RunnerJobViewSet(mixins.DestroyModelMixin, ListMixin, viewsets.GenericView
         methods=["post"],
         url_path="files/videos/(?P<video_id>[^/.]+)/max-quality",
     )
-    def get_max_quality_video_file(self, request, uuid=None, video_id=None):
+    def download_video_file(self, request, uuid=None, video_id=None):
         runner = self._get_runner_from_token(request)
         job = self.get_queryset().get(uuid=uuid)
         video = self._get_video_from_uuid(video_id)

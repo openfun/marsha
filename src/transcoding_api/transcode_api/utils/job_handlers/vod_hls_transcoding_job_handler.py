@@ -72,6 +72,7 @@ class VODHLSTranscodingJobHandler(AbstractVODTranscodingJobHandler):
         # Saving the mp4 file in the video folder and creating the VideoFile object
         uploaded_video_file = result_payload["video_file"]
         resolution = runner_job.payload["output"]["resolution"]
+
         filename = video_storage.save(
             get_video_directory(video, generate_hls_video_filename(resolution)),
             uploaded_video_file,
@@ -102,14 +103,6 @@ class VODHLSTranscodingJobHandler(AbstractVODTranscodingJobHandler):
             move_video_to_next_state=True,
             video=video,
         )
-
-        if private_payload["deleteWebVideoFiles"]:
-            logger.info(
-                "Removing web video files of %s now we have a HLS version of it.",
-                video.uuid,
-            )
-
-            video.remove_all_web_video_files()
 
         logger.info(
             "Runner VOD HLS job %s for %s ended.",

@@ -19,13 +19,13 @@ class RunnerRegistrationTokenViewSet(
     serializer_class = RunnerRegistrationTokenSerializer
 
     @action(detail=False, methods=["post"], url_path="generate")
-    def generate(self, request):
+    def generate_registration_token(self, request):
         serializer = self.get_serializer(
             data={"registrationToken": "ptrrt-" + str(uuid.uuid4())}
         )
         serializer.is_valid(raise_exception=True)
-        runner = serializer.save()
+        runner_registration_token = serializer.save()
 
-        serializer = self.get_serializer(runner)
+        serializer = self.get_serializer(runner_registration_token)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)

@@ -35,7 +35,7 @@ class VideoViewSet(mixins.DestroyModelMixin, ListMixin, viewsets.GenericViewSet)
     def transcode_new_video(self, video: Video, filename: str):
         path = video_storage.path(filename)
         probe = ffmpeg.probe(path)
-
+        
         video_file = build_new_file(video=video, filename=filename, mode="web-video")
 
         video.duration = get_video_stream_duration(path, existing_probe=probe)
