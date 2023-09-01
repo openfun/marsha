@@ -105,7 +105,7 @@ def test_render(page: Page, live_server: LiveServer, settings) -> None:
     settings.MARKDOWN_ENABLED = True
     page, _ = _preview_markdown(page, live_server)
 
-    page.get_by_placeholder("Enter title of your course here").fill("my title")
+    page.get_by_label("Enter title of your course here").fill("my title")
     page.get_by_role("button", name="Create your course").click()
 
     editor_container = page.get_by_test_id("editor_container")
