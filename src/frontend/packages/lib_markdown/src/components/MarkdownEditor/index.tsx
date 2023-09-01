@@ -1,9 +1,6 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable @typescript-eslint/require-await */
-/* eslint-disable react-hooks/exhaustive-deps */
+import { Input } from '@openfun/cunningham-react';
 import { useQueryClient } from '@tanstack/react-query';
-import { Anchor, Box, Button, Footer, Text, TextInput } from 'grommet';
+import { Anchor, Box, Button, Footer, Text } from 'grommet';
 import { Nullable } from 'lib-common';
 import { Loader, MarkdownDocumentRenderingOptions } from 'lib-components';
 import React, { Suspense, useEffect } from 'react';
@@ -114,10 +111,7 @@ export const MarkdownEditor = ({ markdownDocumentId }: MarkdownEditorProps) => {
     replaceOnceInDocument,
   } = useCodemirrorEditor();
 
-  const onImageUploadFinished = async (
-    imageId: string,
-    imageFileName: string,
-  ) => {
+  const onImageUploadFinished = (imageId: string, imageFileName: string) => {
     // Called once the image has been uploaded *and* processed
     replaceOnceInDocument(
       `\\[//\\]: # \\(${imageId}\\)`,
@@ -150,16 +144,17 @@ export const MarkdownEditor = ({ markdownDocumentId }: MarkdownEditorProps) => {
       },
     });
 
+  const language_code = markdownDocument?.translations[0]?.language_code;
   useEffect(() => {
-    if (markdownDocument?.translations[0]?.language_code) {
-      setLanguage(markdownDocument.translations[0].language_code);
+    if (language_code) {
+      setLanguage(language_code);
     }
-  }, [markdownDocument?.translations[0]?.language_code]);
+  }, [language_code]);
 
   // Allow data reloading from backend on language change
   useEffect(() => {
     queryClient.invalidateQueries(['markdown-documents', markdownDocumentId]);
-  }, [language]);
+  }, [markdownDocumentId, queryClient, language]);
 
   // Initialization hook
   useEffect(() => {
@@ -194,7 +189,7 @@ export const MarkdownEditor = ({ markdownDocumentId }: MarkdownEditorProps) => {
     setLocalRenderingOptions(markdownDocument.rendering_options);
     setInitialRenderingOptions(markdownDocument.rendering_options);
     setLocalIsDraft(markdownDocument.is_draft);
-  }, [markdownDocument, language]);
+  }, [language, markdownDocument, replaceEditorWholeContent]);
 
   // Only change detection here
   contentChanged.current =
@@ -225,7 +220,7 @@ export const MarkdownEditor = ({ markdownDocumentId }: MarkdownEditorProps) => {
         language_code: language,
         title: localTitle,
         content: localMarkdownContent,
-        rendered_content: localRenderedContent!,
+        rendered_content: localRenderedContent || undefined,
       });
       if (localRenderingOptions !== initialRenderingOptions) {
         mutateDocument({
@@ -243,9 +238,10 @@ export const MarkdownEditor = ({ markdownDocumentId }: MarkdownEditorProps) => {
   };
 
   const onDropAccepted = (files: File[]) => {
-    files.forEach(async (file) => {
-      const markdownImageId = await addImageUpload(file);
-      insertText(`[//]: # (${markdownImageId})\n`);
+    files.forEach((file) => {
+      addImageUpload(file).then((markdownImageId) => {
+        insertText(`[//]: # (${markdownImageId})\n`);
+      });
     });
   };
 
@@ -266,12 +262,12 @@ export const MarkdownEditor = ({ markdownDocumentId }: MarkdownEditorProps) => {
             pad={{ bottom: 'xsmall' }}
             gap="small"
           >
-            <TextInput
-              a11yTitle={intl.formatMessage(messages.title)}
-              placeholder={intl.formatMessage(messages.title)}
-              value={localTitle}
+            <Input
+              aria-label={intl.formatMessage(messages.title)}
+              label={intl.formatMessage(messages.title)}
+              fullWidth
               onChange={(event) => setLocalTitle(event.target.value)}
-              // This is enforced by backend, but simpler to not allow user for too long title
+              value={localTitle}
               maxLength={255}
             />
             <Box flex="grow" />
