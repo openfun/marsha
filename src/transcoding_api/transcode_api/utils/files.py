@@ -52,6 +52,7 @@ def build_new_file(video: Video, filename: str, mode, existing_probe=None):
         path = video_storage.path(filename)
         probe = ffmpeg.probe(path)
     else:
+        path = ""
         probe = existing_probe
 
     size = int(probe["format"]["size"])

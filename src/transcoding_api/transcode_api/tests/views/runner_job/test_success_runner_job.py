@@ -4,99 +4,20 @@ from datetime import datetime
 from unittest.mock import patch
 
 import ffmpeg
-from django.core.files import storage
+from django.core.files.storage import get_storage_class
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, override_settings
 from django.utils import timezone
 
 from transcode_api.factories import RunnerFactory, RunnerJobFactory, VideoFactory
 from transcode_api.models import RunnerJobState, RunnerJobType
+from transcode_api.tests.probe_response import probe_response
 
 # We don't enforce arguments documentation in tests
 # pylint: disable=unused-argument
 
 
-probe_response = {
-    "streams": [
-        {
-            "index": 0,
-            "codec_name": "h264",
-            "codec_long_name": "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10",
-            "profile": "Constrained Baseline",
-            "codec_type": "video",
-            "codec_tag_string": "avc1",
-            "codec_tag": "0x31637661",
-            "width": 960,
-            "height": 540,
-            "coded_width": 960,
-            "coded_height": 540,
-            "closed_captions": 0,
-            "has_b_frames": 0,
-            "sample_aspect_ratio": "1:1",
-            "display_aspect_ratio": "16:9",
-            "pix_fmt": "yuv420p",
-            "level": 31,
-            "color_range": "tv",
-            "color_space": "bt709",
-            "color_transfer": "bt709",
-            "color_primaries": "bt709",
-            "chroma_location": "left",
-            "refs": 1,
-            "is_avc": "true",
-            "nal_length_size": "4",
-            "r_frame_rate": "30000/1001",
-            "avg_frame_rate": "30000/1001",
-            "time_base": "1/30000",
-            "start_pts": 0,
-            "start_time": "0.000000",
-            "duration_ts": 666666,
-            "duration": "22.222200",
-            "bit_rate": "1066073",
-            "bits_per_raw_sample": "8",
-            "nb_frames": "666",
-            "disposition": {
-                "default": 1,
-                "dub": 0,
-                "original": 0,
-                "comment": 0,
-                "lyrics": 0,
-                "karaoke": 0,
-                "forced": 0,
-                "hearing_impaired": 0,
-                "visual_impaired": 0,
-                "clean_effects": 0,
-                "attached_pic": 0,
-                "timed_thumbnails": 0,
-            },
-            "tags": {
-                "creation_time": "2020-07-22T10:18:45.000000Z",
-                "language": "und",
-                "vendor_id": "[0][0][0][0]",
-            },
-        }
-    ],
-    "format": {
-        "filename": "/videos/video-213a81c8-bdfe-4870-b2bc-d71d3c30f3a4/base_video.mp4",
-        "nb_streams": 1,
-        "nb_programs": 0,
-        "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
-        "format_long_name": "QuickTime / MOV",
-        "start_time": "0.000000",
-        "duration": "22.222200",
-        "size": "2964950",
-        "bit_rate": "1067383",
-        "probe_score": 100,
-        "tags": {
-            "major_brand": "isom",
-            "minor_version": "1",
-            "compatible_brands": "isomavc1mp42",
-            "creation_time": "2020-07-22T10:18:53.000000Z",
-        },
-    },
-}
-
-
-@override_settings(STORAGE_VIDEO_LOCATION="/tmp")
+@override_settings(STORAGE_VIDEO_LOCATION="TMP")
 class SuccessRunnerJobAPITest(TestCase):
     """Test for the Runner Job success API."""
 
@@ -136,7 +57,6 @@ class SuccessRunnerJobAPITest(TestCase):
 
         self.assertEqual(response.status_code, 404)
 
-    @override_settings(TEST_SETTINGS="/tmp")
     def test_success_hls_job_with_a_valid_runner_token(self):
         """Should be able to abort and reset the processing HLS job."""
         runner_job = self.create_processing_job(RunnerJobType.VOD_HLS_TRANSCODING)
@@ -149,15 +69,19 @@ class SuccessRunnerJobAPITest(TestCase):
         now = datetime(2018, 8, 8, tzinfo=timezone.utc)
 
         with tempfile.TemporaryDirectory(prefix="video_temp_dir") as temp_dir:
-            fake_storage = storage.get_storage_class(
+            fake_storage = get_storage_class(
                 "django.core.files.storage.FileSystemStorage"
             )(temp_dir)
 
             with patch.object(timezone, "now", return_value=now), patch.object(
                 ffmpeg, "probe", return_value=probe_response
-            ), patch("transcode_api.storage.get_storage_class") as mock_video_storage:
-                mock_video_storage.return_value = fake_storage
-
+            ), patch(
+                "transcode_api.utils.job_handlers.vod_hls_transcoding_job_handler.video_storage",
+                fake_storage,
+            ), patch(
+                "transcode_api.utils.transcoding.hls_playlist.video_storage",
+                fake_storage,
+            ):
                 response = self.client.post(
                     self._api_url(),
                     data={
@@ -166,17 +90,33 @@ class SuccessRunnerJobAPITest(TestCase):
                         "payload[resolutionPlaylistFile]": uploaded_video,
                     },
                 )
+                self.assertEqual(response.status_code, 204)
 
-        self.assertEqual(response.status_code, 204)
+                runner_job.refresh_from_db()
+                self.video.refresh_from_db()
 
-        runner_job.refresh_from_db()
-        self.video.refresh_from_db()
+                self.assertEqual(runner_job.state, 3)  # COMPLETED
+                self.assertEqual(runner_job.failures, 0)  # should have been OK
 
-        self.assertEqual(runner_job.state, 3)  # COMPLETED
-        self.assertEqual(runner_job.failures, 0)  # should have been OK
+                self.assertIsNotNone(
+                    self.video.streamingPlaylist
+                )  # playlist should have been created
 
-        self.assertIsNotNone(
-            self.video.streamingPlaylist
-        )  # playlist should have been created
+                self.assertEqual(self.video.state, 1)  # VideoState.PUBLISHED
 
-        self.assertEqual(self.video.state, 1)  # VideoState.PUBLISHED
+                list_dir, _ = fake_storage.listdir("")
+                self.assertEqual(len(list_dir), 1)
+                _, video_files = fake_storage.listdir(list_dir[0])
+                # video, playlist, master playlist
+                self.assertEqual(len(video_files), 3)
+                self.assertIn("master.m3u8", video_files)
+                self.assertTrue(
+                    fake_storage.exists(self.video.streamingPlaylist.playlistFilename)
+                )
+
+                self.assertEqual(self.video.streamingPlaylist.videoFiles.count(), 1)
+                self.assertTrue(
+                    fake_storage.exists(
+                        self.video.streamingPlaylist.videoFiles.first().filename
+                    )
+                )

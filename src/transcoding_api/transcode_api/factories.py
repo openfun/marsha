@@ -99,7 +99,6 @@ class VideoFileFactory(DjangoModelFactory):
     size = factory.Faker("random_int", min=0, max=1000000)
     extname = factory.Faker("file_extension")
     fps = factory.Faker("random_int", min=-1, max=60)
-    metadata = factory.Faker("pydict")
+    metadata = factory.Faker("json")
     filename = factory.Faker("file_name")
     video = factory.SubFactory(VideoFactory)
-    streamingPlaylist = factory.SubFactory(VideoStreamingPlaylistFactory)

@@ -77,6 +77,7 @@ class VODHLSTranscodingJobHandler(AbstractVODTranscodingJobHandler):
             get_video_directory(video, generate_hls_video_filename(resolution)),
             uploaded_video_file,
         )
+
         video_file = build_new_file(video=video, filename=filename, mode="hls")
 
         # Saving the associated m3u8 file
