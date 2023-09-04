@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Add playlist is_claimable attribute
+
 ## [4.3.1] - 2023-08-31
 
 ### Fixed

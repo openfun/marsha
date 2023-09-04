@@ -182,7 +182,10 @@ class PlaylistViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
 
         lti_user_id = clean_lti_user_id(self.request.user.token.get("user").get("id"))
 
-        if lti_user_id in settings.PLAYLIST_CLAIM_EXCLUDED_LTI_USER_ID:
+        if (
+            lti_user_id in settings.PLAYLIST_CLAIM_EXCLUDED_LTI_USER_ID
+            or not playlist.is_claimable
+        ):
             return Response({"is_claimed": True})
 
         try:
