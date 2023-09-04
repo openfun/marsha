@@ -74,6 +74,54 @@ class PlaylistIsClaimedAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"is_claimed": False})
 
+    def test_playlist_is_claimed_student_not_claimable(self):
+        """Random logged-in users cannot check if a not claimable playlist is claimed."""
+        video = factories.VideoFactory(playlist__is_claimable=False)
+        jwt_token = StudentLtiTokenFactory(playlist=video.playlist)
+
+        response = self.client.get(
+            f"/api/playlists/{video.playlist.id}/is-claimed/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_playlist_is_claimed_LTI_administrator_not_claimable(self):
+        """If the playlist is not claimable, LTI administrators sees it as claimed."""
+        video = factories.VideoFactory(playlist__is_claimable=False)
+
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            playlist=video.playlist,
+            roles=[ADMINISTRATOR],
+        )
+
+        response = self.client.get(
+            f"/api/playlists/{video.playlist.id}/is-claimed/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"is_claimed": True})
+
+    def test_playlist_is_claimed_LTI_instructor_not_claimable(self):
+        """If the playlist is not claimable, LTI instructors sees it as claimed."""
+        video = factories.VideoFactory(playlist__is_claimable=False)
+
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            playlist=video.playlist,
+            roles=[INSTRUCTOR],
+        )
+
+        response = self.client.get(
+            f"/api/playlists/{video.playlist.id}/is-claimed/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"is_claimed": True})
+
     @override_settings(PLAYLIST_CLAIM_EXCLUDED_LTI_USER_ID=["STUDENT"])
     def test_playlist_is_claimed_LTI_instructor_invalid_user_id(self):
         """LTI instructors with an excluded user_id must have is_claimed True as response."""

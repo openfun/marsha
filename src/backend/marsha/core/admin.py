@@ -369,6 +369,7 @@ class PlaylistAdmin(admin.ModelAdmin):
         "is_public",
         "is_portable_to_playlist",
         "is_portable_to_consumer_site",
+        "is_claimable",
         "updated_on",
         "created_on",
     )
@@ -382,6 +383,7 @@ class PlaylistAdmin(admin.ModelAdmin):
         "is_public",
         "is_portable_to_playlist",
         "is_portable_to_consumer_site",
+        "is_claimable",
         "created_by",
         "duplicated_from",
         "retention_duration",

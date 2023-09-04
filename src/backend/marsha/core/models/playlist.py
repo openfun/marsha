@@ -148,6 +148,11 @@ class Playlist(BaseModel):
         ),
         verbose_name=_("retention duration in day"),
     )
+    is_claimable = models.BooleanField(
+        default=True,
+        help_text=_("Allow LTI users to claim this playlist"),
+        verbose_name=_("is claimable"),
+    )
 
     objects = SafeDeleteManager(PlaylistQueryset)
 
