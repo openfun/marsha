@@ -15,14 +15,14 @@
     "test": "jest"
   },
   "dependencies": {
-    "aws-sdk": "2.1445.0",
+    "aws-sdk": "2.1450.0",
     "update-state": "file:../utils/update-state"
   },
   "devDependencies": {
     "@types/jest": "29.5.4",
     "@types/request-promise-native": "1.0.18",
     "jest": "29.6.4",
-    "prettier": "3.0.2"
+    "prettier": "3.0.3"
   },
   "resolutions": {
     "merge": "^2.0.0",
