@@ -19,3 +19,27 @@ $roboto-font-path: '../fonts/roboto' !default;
   font-family: 'Roboto-Bold';
   src: url('#{$roboto-font-path}/roboto-bold.ttf') format('truetype');
 }
+
+@font-face {
+  font-family: 'Roboto';
+  src: url('#{$roboto-font-path}/roboto-light.ttf') format('truetype');
+  font-weight: 100;
+}
+
+@font-face {
+  font-family: 'Roboto';
+  src: url('#{$roboto-font-path}/roboto-regular.ttf') format('truetype');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Roboto';
+  src: url('#{$roboto-font-path}/roboto-medium.ttf') format('truetype');
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: 'Roboto';
+  src: url('#{$roboto-font-path}/roboto-bold.ttf') format('truetype');
+  font-weight: 800;
+}
