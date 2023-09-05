@@ -114,3 +114,43 @@ class PlaylistClaimAPITest(TestCase):
             ).role,
             INSTRUCTOR,
         )
+
+    def test_claim_playlist_by_orga_administrator_not_claimable(self):
+        """If the playlist is not claimable, organization administrators cannot claim them."""
+        organization_access = factories.OrganizationAccessFactory(role=ADMINISTRATOR)
+        playlist = factories.PlaylistFactory(
+            organization=organization_access.organization,
+            is_claimable=False,
+        )
+
+        jwt_token = UserAccessTokenFactory(user=organization_access.user)
+
+        response = self.client.post(
+            f"/api/playlists/{playlist.id}/claim/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 403)
+        playlist.refresh_from_db()
+        self.assertFalse(PlaylistAccess.objects.filter(playlist=playlist).exists())
+
+    def test_claim_playlist_by_orga_instructor_no_other_access_not_claimable(self):
+        """If the playlist is not claimable, organization instructors cannot claim them."""
+        organization_access = factories.OrganizationAccessFactory(role=INSTRUCTOR)
+        playlist = factories.PlaylistFactory(
+            organization=organization_access.organization,
+            is_claimable=False,
+        )
+
+        jwt_token = UserAccessTokenFactory(user=organization_access.user)
+
+        response = self.client.post(
+            f"/api/playlists/{playlist.id}/claim/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 403)
+        playlist.refresh_from_db()
+        self.assertFalse(PlaylistAccess.objects.filter(playlist=playlist).exists())

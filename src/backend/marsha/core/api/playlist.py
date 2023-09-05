@@ -155,6 +155,8 @@ class PlaylistViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
     def claim(self, request, *args, **kwargs):
         """Claim a playlist by creating a PlaylistAccess."""
         playlist = self.get_object()
+        if not playlist.is_claimable:
+            return Response(status=status.HTTP_403_FORBIDDEN)
         playlist_access_exists = PlaylistAccess.objects.filter(
             playlist=playlist,
         ).exists()
