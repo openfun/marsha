@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Grommet } from 'grommet';
 import { colors } from 'lib-common';
+import { retryQuery } from 'lib-components';
 import { Toaster } from 'react-hot-toast';
 import { BrowserRouter } from 'react-router-dom';
 
@@ -11,7 +12,13 @@ import AppConfig from './AppConfig';
 import AppRoutes from './AppRoutes';
 
 const themeExtended = getFullThemeExtend();
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: retryQuery,
+    },
+  },
+});
 
 const App = () => {
   return (
