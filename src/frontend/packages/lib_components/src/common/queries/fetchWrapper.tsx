@@ -1,3 +1,5 @@
+import { getIntl } from 'lib-common';
+
 import {
   fetchReconnectWrapper,
   fetchReconnectWrapperOptions,
@@ -13,6 +15,15 @@ export const fetchWrapper = (
   init?: RequestInit,
   options?: FetchWrapperOptions,
 ): Promise<Response> => {
+  const headers = init?.headers as Record<string, string> | undefined;
+  init = {
+    ...init,
+    headers: {
+      ...headers,
+      'Accept-Language': headers?.['Accept-Language'] || getIntl().locale,
+    },
+  };
+
   if (!options?.withoutReconnectWrapper) {
     return fetchReconnectWrapper(input, init, options?.optionsReconnectWrapper);
   }

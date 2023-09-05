@@ -47,6 +47,7 @@ describe('useUpdateSharedLiveMedia', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'PATCH',
       body: JSON.stringify({
@@ -84,6 +85,7 @@ describe('useUpdateSharedLiveMedia', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'PATCH',
       body: JSON.stringify({

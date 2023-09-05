@@ -35,6 +35,7 @@ describe('features/PortabilityRequests/api/useLtiUserAssociations', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
         method: 'POST',
         body: JSON.stringify({
@@ -65,6 +66,7 @@ describe('features/PortabilityRequests/api/useLtiUserAssociations', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
         method: 'POST',
         body: JSON.stringify({

@@ -31,6 +31,7 @@ describe('harvestLive', () => {
     expect(fetchMock.lastCall()![1]!.headers).toEqual({
       Authorization: 'Bearer some token',
       'Content-Type': 'application/json',
+      'Accept-Language': 'en',
     });
   });
 

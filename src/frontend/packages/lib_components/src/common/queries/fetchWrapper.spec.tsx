@@ -29,14 +29,14 @@ describe('fetchWrapper', () => {
     expect(mockedFetchReconnectWrapper).toHaveBeenCalled();
     expect(mockedFetchReconnectWrapper).toHaveBeenCalledWith(
       'some request',
-      { body: 'some body' },
+      { body: 'some body', headers: { 'Accept-Language': 'en' } },
       { isRetry: true },
     );
 
     expect(fetchMock.calls().length).toEqual(0);
   });
 
-  it('loads without reconnet wrapper option', () => {
+  it('loads without reconnect wrapper option', () => {
     fetchMock.mock('http://some.url.com', 200);
 
     fetchWrapper(
@@ -54,6 +54,30 @@ describe('fetchWrapper', () => {
     expect(fetchMock.calls()[0][1]).toEqual({
       body: 'some body',
       method: 'POST',
+      headers: {
+        'Accept-Language': 'en',
+      },
+    });
+  });
+
+  it('let the header language if already set', () => {
+    fetchMock.mock('http://some.url.com', 200);
+
+    fetchWrapper(
+      'http://some.url.com',
+      {
+        headers: { 'Accept-Language': 'test' },
+      },
+      {
+        withoutReconnectWrapper: true,
+      },
+    );
+
+    expect(fetchMock.calls().length).toEqual(1);
+    expect(fetchMock.calls()[0][1]).toEqual({
+      headers: {
+        'Accept-Language': 'test',
+      },
     });
   });
 });

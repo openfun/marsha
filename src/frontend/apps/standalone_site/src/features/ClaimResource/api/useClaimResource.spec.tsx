@@ -35,6 +35,7 @@ describe('useClaimResource', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'POST',
     });
@@ -62,6 +63,7 @@ describe('useClaimResource', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'POST',
     });

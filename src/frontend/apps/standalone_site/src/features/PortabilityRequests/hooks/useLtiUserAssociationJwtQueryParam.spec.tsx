@@ -60,6 +60,7 @@ describe('features/PortabilityRequests/hooks/useLtiUserAssociationJwtQueryParam'
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
         method: 'POST',
         body: JSON.stringify({
@@ -95,6 +96,7 @@ describe('features/PortabilityRequests/hooks/useLtiUserAssociationJwtQueryParam'
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
         method: 'POST',
         body: JSON.stringify({

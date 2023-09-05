@@ -67,6 +67,7 @@ describe('<DashboardDocument />', () => {
     );
     expect(fetchMock.lastCall()![1]!.headers).toEqual({
       Authorization: 'Bearer cool_token_m8',
+      'Accept-Language': 'en',
     });
     screen.getByText('Processing');
 
@@ -105,6 +106,7 @@ describe('<DashboardDocument />', () => {
     );
     expect(fetchMock.lastCall()![1]!.headers).toEqual({
       Authorization: 'Bearer cool_token_m8',
+      'Accept-Language': 'en',
     });
 
     expect(

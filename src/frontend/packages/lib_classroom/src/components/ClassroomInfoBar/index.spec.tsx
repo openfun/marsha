@@ -70,6 +70,7 @@ describe('<ClassroomInfoBar />', () => {
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'PATCH',
       body: JSON.stringify({
@@ -137,6 +138,7 @@ describe('<ClassroomInfoBar />', () => {
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'PATCH',
       body: JSON.stringify({

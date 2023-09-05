@@ -36,6 +36,7 @@ describe('useStopSharingMedia', () => {
     fetchMock.patch(`/api/videos/${video.id}/end-sharing/`, {
       headers: {
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       status: 200,
       body: JSON.stringify(video),
@@ -61,6 +62,7 @@ describe('useStopSharingMedia', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'PATCH',
     });
@@ -102,6 +104,7 @@ describe('useStopSharingMedia', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'PATCH',
     });

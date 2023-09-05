@@ -44,6 +44,7 @@ describe('useLiveSessions', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
     });
     expect(result.current.data).toEqual(liveSessions);
@@ -75,6 +76,7 @@ describe('useLiveSessions', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
     });
     expect(result.current.data).toEqual(liveSessions);
@@ -99,6 +101,7 @@ describe('useLiveSessions', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
     });
     expect(result.current.data).toEqual(undefined);

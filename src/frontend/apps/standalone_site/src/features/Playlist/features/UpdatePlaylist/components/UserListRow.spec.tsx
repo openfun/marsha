@@ -199,7 +199,7 @@ describe('<UserListRow />', () => {
       ),
     );
     expect(fetchMock.lastCall()![1]).toEqual({
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Accept-Language': 'en' },
       method: 'DELETE',
     });
   });
@@ -239,7 +239,7 @@ describe('<UserListRow />', () => {
       ),
     );
     expect(fetchMock.lastCall()![1]).toEqual({
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Accept-Language': 'en' },
       method: 'DELETE',
     });
   });

@@ -45,6 +45,7 @@ describe('useDeleteThumbnail', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'DELETE',
     });
@@ -77,6 +78,7 @@ describe('useDeleteThumbnail', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'DELETE',
     });

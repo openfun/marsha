@@ -74,6 +74,7 @@ describe('marshaJoinDiscussionPluginHandler', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'POST',
       body: JSON.stringify({
@@ -113,6 +114,7 @@ describe('marshaJoinDiscussionPluginHandler', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'POST',
       body: JSON.stringify(targetParticipant),
@@ -199,6 +201,7 @@ describe('marshaJoinDiscussionPluginHandler', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'DELETE',
       body: JSON.stringify(targetParticipant),
@@ -254,6 +257,7 @@ describe('marshaJoinDiscussionPluginHandler', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'DELETE',
       body: JSON.stringify(targetParticipant),
@@ -289,6 +293,7 @@ describe('marshaJoinDiscussionPluginHandler', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'DELETE',
       body: JSON.stringify({

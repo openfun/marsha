@@ -61,6 +61,7 @@ describe('useStartSharingMedia', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'PATCH',
       body: JSON.stringify({ sharedlivemedia: sharedLiveMedia.id }),
@@ -103,6 +104,7 @@ describe('useStartSharingMedia', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'PATCH',
       body: JSON.stringify({ sharedlivemedia: sharedLiveMedia.id }),

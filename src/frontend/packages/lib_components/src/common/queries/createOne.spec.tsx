@@ -24,6 +24,7 @@ describe('queries/createOne', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'POST',
       body: JSON.stringify(objectToCreate),
@@ -46,6 +47,7 @@ describe('queries/createOne', () => {
     expect(fetchMock.lastCall()?.[1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'POST',
       body: JSON.stringify(objectToCreate),
@@ -74,6 +76,7 @@ describe('queries/createOne', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'POST',
       body: JSON.stringify(objectToCreate),
@@ -113,6 +116,7 @@ describe('queries/createOne', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'POST',
       body: JSON.stringify(objectToCreate),
@@ -156,6 +160,7 @@ describe('queries/createOne', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'POST',
       body: JSON.stringify(objectToCreate),

@@ -47,6 +47,7 @@ describe('useLiveAttendances', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
     });
     expect(result.current.data).toEqual(liveAttendances);
@@ -74,6 +75,7 @@ describe('useLiveAttendances', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
     });
     expect(result.current.data).toEqual(undefined);

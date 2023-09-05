@@ -27,6 +27,7 @@ describe('queries/bulkDelete', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'DELETE',
       body: '{"ids":["id1","id2"]}',
@@ -66,6 +67,7 @@ describe('queries/bulkDelete', () => {
     expect(fetchMock.lastCall()?.[1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'DELETE',
       body: '{"ids":["id1","id2"]}',
@@ -92,6 +94,7 @@ describe('queries/bulkDelete', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'DELETE',
       body: '{"ids":["id1","id2"]}',
@@ -133,6 +136,7 @@ describe('queries/bulkDelete', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'DELETE',
       body: '{"ids":["id1","id2"]}',

@@ -102,6 +102,7 @@ describe('<TimedTrackModalWrapper />', () => {
       headers: {
         Authorization: 'Bearer json web token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'DELETE',
     });
@@ -142,6 +143,7 @@ describe('<TimedTrackModalWrapper />', () => {
       headers: {
         Authorization: 'Bearer json web token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'DELETE',
     });

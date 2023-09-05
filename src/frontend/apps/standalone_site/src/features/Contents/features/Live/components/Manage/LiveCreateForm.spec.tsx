@@ -185,7 +185,10 @@ describe('<LiveCreateForm />', () => {
           method: 'POST',
         })?.[1],
       ).toEqual({
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept-Language': 'en',
+        },
         method: 'POST',
         body: JSON.stringify({
           playlist: 'an-other-playlist',

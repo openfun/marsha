@@ -57,6 +57,7 @@ describe('queries', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
       });
       expect(result.current.data).toEqual(fileDepositories);
@@ -82,6 +83,7 @@ describe('queries', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
       });
       expect(result.current.data).toEqual(undefined);
@@ -115,6 +117,7 @@ describe('queries', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
       });
       expect(result.current.data).toEqual(fileDepository);
@@ -143,6 +146,7 @@ describe('queries', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
       });
       expect(result.current.data).toEqual(undefined);
@@ -172,6 +176,7 @@ describe('queries', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
         method: 'POST',
         body: JSON.stringify({
@@ -204,6 +209,7 @@ describe('queries', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
         method: 'POST',
         body: JSON.stringify({
@@ -245,6 +251,7 @@ describe('queries', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
         method: 'PATCH',
         body: JSON.stringify({
@@ -279,6 +286,7 @@ describe('queries', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
         method: 'PATCH',
         body: JSON.stringify({
@@ -319,6 +327,7 @@ describe('queries', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
       });
       expect(result.current.data).toEqual(depositedFiles.slice(0, 3));
@@ -353,6 +362,7 @@ describe('queries', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
       });
       expect(result.current.data).toEqual(depositedFiles.slice(3, 4));
@@ -387,6 +397,7 @@ describe('queries', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
       });
       expect(result.current.data).toEqual(undefined);
@@ -426,6 +437,7 @@ describe('queries', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
         method: 'PATCH',
         body: JSON.stringify({
@@ -467,6 +479,7 @@ describe('queries', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
         method: 'PATCH',
         body: JSON.stringify({

@@ -30,6 +30,7 @@ describe('useConfig', () => {
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
     });
     expect(result.current.data).toEqual({
@@ -55,6 +56,7 @@ describe('useConfig', () => {
     expect(fetchMock.lastCall()![0]).toEqual('/api/config/');
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
+        'Accept-Language': 'en',
         'Content-Type': 'application/json',
       },
     });

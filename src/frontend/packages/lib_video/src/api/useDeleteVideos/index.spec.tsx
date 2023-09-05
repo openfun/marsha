@@ -41,6 +41,7 @@ describe('useDeleteVideos', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       body: `{"ids":["${video1.id}","${video2.id}"]}`,
       method: 'DELETE',
@@ -69,6 +70,7 @@ describe('useDeleteVideos', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       body: `{"ids":["${video.id}"]}`,
       method: 'DELETE',

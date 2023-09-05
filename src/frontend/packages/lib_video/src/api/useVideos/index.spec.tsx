@@ -37,6 +37,7 @@ describe('queries', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
       });
       expect(result.current.data).toEqual(video);
@@ -60,6 +61,7 @@ describe('queries', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
       });
       expect(result.current.data).toEqual(undefined);
@@ -86,6 +88,7 @@ describe('queries', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
       });
       expect(result.current.data).toEqual(videos);
@@ -110,6 +113,7 @@ describe('queries', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
       });
       expect(result.current.data).toEqual(undefined);

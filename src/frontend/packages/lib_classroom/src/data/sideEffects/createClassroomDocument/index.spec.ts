@@ -36,6 +36,7 @@ describe('sideEffects/createClassroomDocument', () => {
     expect(fetchArgs.headers).toEqual({
       Authorization: 'Bearer token',
       'Content-Type': 'application/json',
+      'Accept-Language': 'en',
     });
     expect(fetchArgs.method).toEqual('POST');
   });

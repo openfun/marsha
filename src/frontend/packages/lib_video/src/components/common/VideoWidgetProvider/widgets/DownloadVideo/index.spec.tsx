@@ -206,6 +206,7 @@ describe('<InstructorDownloadVideo />', () => {
       headers: {
         'Content-Type': 'application/json',
         Authorization: 'Bearer json web token',
+        'Accept-Language': 'en',
       },
       method: 'PATCH',
       body: '{"show_download":true}',
@@ -247,6 +248,7 @@ describe('<InstructorDownloadVideo />', () => {
       headers: {
         'Content-Type': 'application/json',
         Authorization: 'Bearer json web token',
+        'Accept-Language': 'en',
       },
       method: 'PATCH',
       body: '{"show_download":false}',

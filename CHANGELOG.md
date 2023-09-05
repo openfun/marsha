@@ -11,6 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Add playlist is_claimable attribute
+- Add the Accept-Language header to most of the http request (#2394)
 
 ## [4.3.1] - 2023-08-31
 

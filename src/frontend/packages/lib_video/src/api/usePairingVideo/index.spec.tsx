@@ -41,6 +41,7 @@ describe('usePairingingVideo', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'GET',
     });
@@ -67,6 +68,7 @@ describe('usePairingingVideo', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'GET',
     });

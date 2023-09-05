@@ -58,6 +58,7 @@ describe('queries', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
       });
       expect(result.current.data).toEqual(classrooms);
@@ -83,6 +84,7 @@ describe('queries', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
       });
       expect(result.current.data).toEqual(undefined);
@@ -109,6 +111,7 @@ describe('queries', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
       });
       expect(result.current.data).toEqual(classroom);
@@ -134,6 +137,7 @@ describe('queries', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
       });
       expect(result.current.data).toEqual(undefined);
@@ -162,6 +166,7 @@ describe('queries', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
         method: 'POST',
         body: JSON.stringify({
@@ -194,6 +199,7 @@ describe('queries', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
         method: 'POST',
         body: JSON.stringify({
@@ -226,6 +232,7 @@ describe('queries', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
         method: 'DELETE',
       });
@@ -253,6 +260,7 @@ describe('queries', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
         method: 'DELETE',
       });
@@ -283,6 +291,7 @@ describe('queries', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
         method: 'PATCH',
         body: JSON.stringify({
@@ -314,6 +323,7 @@ describe('queries', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
         method: 'PATCH',
         body: JSON.stringify({
@@ -350,6 +360,7 @@ describe('queries', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
         method: 'PATCH',
         body: JSON.stringify({
@@ -383,6 +394,7 @@ describe('queries', () => {
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
           Authorization: 'Bearer some token',
+          'Accept-Language': 'en',
           'Content-Type': 'application/json',
         },
         method: 'PATCH',
@@ -418,6 +430,7 @@ describe('queries', () => {
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
+          'Accept-Language': 'en',
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
         },
@@ -452,6 +465,7 @@ describe('queries', () => {
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
+          'Accept-Language': 'en',
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
         },
@@ -491,6 +505,7 @@ describe('queries', () => {
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
+          'Accept-Language': 'en',
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
         },
@@ -525,6 +540,7 @@ describe('queries', () => {
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
+          'Accept-Language': 'en',
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
         },
@@ -564,6 +580,7 @@ describe('queries', () => {
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
+          'Accept-Language': 'en',
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
         },
@@ -605,6 +622,7 @@ describe('queries', () => {
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
+          'Accept-Language': 'en',
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
         },
@@ -648,6 +666,7 @@ describe('useDeleteClassrooms', () => {
     expect(fetchMock.lastCall()![0]).toEqual(`/api/classrooms/`);
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
+        'Accept-Language': 'en',
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
       },
@@ -676,6 +695,7 @@ describe('useDeleteClassrooms', () => {
     expect(fetchMock.lastCall()![0]).toEqual(`/api/classrooms/`);
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
+        'Accept-Language': 'en',
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
       },
