@@ -240,6 +240,7 @@ describe('<DashboardClassroom />', () => {
       headers: {
         Authorization: 'Bearer token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'PATCH',
       body: JSON.stringify({

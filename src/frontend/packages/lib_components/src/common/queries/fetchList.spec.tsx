@@ -23,6 +23,7 @@ describe('queries/fetchList', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
     });
     expect(response).toEqual({ key: 'value' });
@@ -46,6 +47,7 @@ describe('queries/fetchList', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
     });
     expect(response).toEqual({ key: 'value' });
@@ -66,6 +68,7 @@ describe('queries/fetchList', () => {
     expect(fetchMock.lastCall()?.[1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
     });
     expect(response).toEqual({ key: 'value' });
@@ -92,6 +95,7 @@ describe('queries/fetchList', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
     });
   });
@@ -114,6 +118,7 @@ describe('queries/fetchList', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
     });
   });

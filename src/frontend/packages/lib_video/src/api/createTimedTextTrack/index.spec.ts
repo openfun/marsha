@@ -32,6 +32,7 @@ describe('sideEffects/createTimedTextTrack()', () => {
     expect(fetchArgs.headers).toEqual({
       Authorization: 'Bearer some token',
       'Content-Type': 'application/json',
+      'Accept-Language': 'en',
     });
     expect(fetchArgs.method).toEqual('POST');
   });

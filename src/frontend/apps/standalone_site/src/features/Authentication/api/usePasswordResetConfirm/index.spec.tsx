@@ -35,6 +35,7 @@ describe('features/Authentication/api/usePasswordResetConfirm', () => {
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
         method: 'POST',
         body: JSON.stringify({
@@ -74,6 +75,7 @@ describe('features/Authentication/api/usePasswordResetConfirm', () => {
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
         method: 'POST',
         body: JSON.stringify({

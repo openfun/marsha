@@ -460,6 +460,7 @@ describe('<CreateVOD />', () => {
       headers: {
         'Content-Type': 'application/json',
         Authorization: 'Bearer json web token',
+        'Accept-Language': 'en',
       },
       method: 'PATCH',
       body: '{"title":"video title","license":"CC_BY"}',

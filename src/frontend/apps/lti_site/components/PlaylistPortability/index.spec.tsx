@@ -64,6 +64,7 @@ describe('<PlaylistPortability />', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
     });
 
@@ -101,6 +102,7 @@ describe('<PlaylistPortability />', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'PATCH',
       body: JSON.stringify({
@@ -117,6 +119,7 @@ describe('<PlaylistPortability />', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
     });
 

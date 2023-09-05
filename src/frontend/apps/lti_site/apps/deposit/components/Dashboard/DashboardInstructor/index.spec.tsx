@@ -294,6 +294,7 @@ describe('<DashboardInstructor />', () => {
       headers: {
         Authorization: 'Bearer json web token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'PATCH',
       body: JSON.stringify({ title: 'My file depository title updated' }),
@@ -346,6 +347,7 @@ describe('<DashboardInstructor />', () => {
       headers: {
         Authorization: 'Bearer json web token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'PATCH',
       body: JSON.stringify({
@@ -401,6 +403,7 @@ describe('<DashboardInstructor />', () => {
       headers: {
         Authorization: 'Bearer json web token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'PATCH',
       body: JSON.stringify({
@@ -453,6 +456,7 @@ describe('<DashboardInstructor />', () => {
       headers: {
         Authorization: 'Bearer json web token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'PATCH',
       body: JSON.stringify({

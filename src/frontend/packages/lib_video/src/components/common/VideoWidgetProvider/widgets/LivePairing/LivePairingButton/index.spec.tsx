@@ -47,6 +47,7 @@ describe('<DashboardLivePairing />', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'GET',
     });

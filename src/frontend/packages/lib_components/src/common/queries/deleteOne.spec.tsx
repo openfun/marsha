@@ -23,6 +23,7 @@ describe('queries/deleteOne', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'DELETE',
     });
@@ -58,6 +59,7 @@ describe('queries/deleteOne', () => {
     expect(fetchMock.lastCall()?.[1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'DELETE',
     });
@@ -83,6 +85,7 @@ describe('queries/deleteOne', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'DELETE',
     });
@@ -123,6 +126,7 @@ describe('queries/deleteOne', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'DELETE',
     });

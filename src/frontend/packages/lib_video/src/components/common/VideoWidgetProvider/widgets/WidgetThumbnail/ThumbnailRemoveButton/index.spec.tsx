@@ -78,6 +78,7 @@ describe('<ThumbnailRemoveButton />', () => {
       headers: {
         Authorization: 'Bearer json web token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'DELETE',
     });
@@ -120,6 +121,7 @@ describe('<ThumbnailRemoveButton />', () => {
       headers: {
         Authorization: 'Bearer json web token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'DELETE',
     });

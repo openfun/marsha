@@ -37,6 +37,7 @@ describe('useDeleteVideo', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'DELETE',
     });
@@ -62,6 +63,7 @@ describe('useDeleteVideo', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'DELETE',
     });

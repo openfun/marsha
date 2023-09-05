@@ -60,6 +60,7 @@ describe('<DisallowedDownloadButton />', () => {
       headers: {
         Authorization: 'Bearer json web token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'PATCH',
       body: JSON.stringify({
@@ -103,6 +104,7 @@ describe('<DisallowedDownloadButton />', () => {
       headers: {
         Authorization: 'Bearer json web token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'PATCH',
       body: JSON.stringify({

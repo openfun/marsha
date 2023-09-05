@@ -29,6 +29,7 @@ describe('usePageApi', () => {
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
     });
     expect(result.current.data).toEqual({
@@ -54,6 +55,7 @@ describe('usePageApi', () => {
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
     });
     expect(result.current.data).toEqual(undefined);

@@ -46,6 +46,7 @@ describe('features/PortabilityRequests/api/usePortabilityRequests', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
         method: 'POST',
         body: JSON.stringify({}),
@@ -81,6 +82,7 @@ describe('features/PortabilityRequests/api/usePortabilityRequests', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
         method: 'POST',
         body: JSON.stringify({}),
@@ -116,6 +118,7 @@ describe('features/PortabilityRequests/api/usePortabilityRequests', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
         method: 'POST',
         body: JSON.stringify({}),
@@ -151,6 +154,7 @@ describe('features/PortabilityRequests/api/usePortabilityRequests', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
         method: 'POST',
         body: JSON.stringify({}),
@@ -194,6 +198,7 @@ describe('features/PortabilityRequests/api/usePortabilityRequests', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
       });
       expect(result.current.data).toEqual(portabilityRequestList);
@@ -229,6 +234,7 @@ describe('features/PortabilityRequests/api/usePortabilityRequests', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
       });
       expect(result.current.data).toEqual(undefined);

@@ -18,6 +18,7 @@ describe('sideEffects/deleteTimedTextTrack', () => {
 
     expect(fetchMock.lastCall()![1]!.headers).toEqual({
       Authorization: 'Bearer some token',
+      'Accept-Language': 'en',
     });
     expect(response).toBe(true);
   });

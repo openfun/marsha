@@ -151,6 +151,7 @@ describe('<VideoManage />', () => {
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       body: `{"ids":["id1","id2"]}`,
       method: 'DELETE',
@@ -186,6 +187,7 @@ describe('<VideoManage />', () => {
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       body: `{"ids":["id1","id2"]}`,
       method: 'DELETE',

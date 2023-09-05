@@ -145,6 +145,7 @@ describe('<SharedLiveMedia />', () => {
       headers: {
         Authorization: 'Bearer json web token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'POST',
     });
@@ -226,6 +227,7 @@ describe('<SharedLiveMedia />', () => {
       headers: {
         Authorization: 'Bearer json web token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'DELETE',
     });
@@ -305,6 +307,7 @@ describe('<SharedLiveMedia />', () => {
       headers: {
         Authorization: 'Bearer json web token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'DELETE',
     });

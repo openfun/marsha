@@ -151,6 +151,7 @@ describe('<ToggleSubtitlesAsTranscript />', () => {
       headers: {
         'Content-Type': 'application/json',
         Authorization: 'Bearer json web token',
+        'Accept-Language': 'en',
       },
       method: 'PATCH',
       body: '{"should_use_subtitle_as_transcript":true}',
@@ -185,6 +186,7 @@ describe('<ToggleSubtitlesAsTranscript />', () => {
       headers: {
         'Content-Type': 'application/json',
         Authorization: 'Bearer json web token',
+        'Accept-Language': 'en',
       },
       method: 'PATCH',
       body: '{"should_use_subtitle_as_transcript":false}',

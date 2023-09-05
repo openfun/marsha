@@ -392,6 +392,7 @@ describe('<UploadDocuments />', () => {
     expect(deleteCall[0][1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'DELETE',
     });

@@ -41,6 +41,7 @@ describe('useCreateVideo', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'POST',
       body: JSON.stringify({
@@ -74,6 +75,7 @@ describe('useCreateVideo', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'POST',
       body: JSON.stringify({
@@ -117,6 +119,7 @@ describe('useCreateVideo', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'POST',
       body: JSON.stringify({
@@ -155,6 +158,7 @@ describe('useCreateVideo', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'POST',
       body: JSON.stringify({

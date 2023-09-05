@@ -129,6 +129,7 @@ describe('VideoXAPIStatement', () => {
       expect(requestParameters.headers).toEqual({
         Authorization: 'Bearer jwt',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       });
 
       const body = JSON.parse(requestParameters.body as string);
@@ -175,6 +176,7 @@ describe('VideoXAPIStatement', () => {
       expect(requestParameters.headers).toEqual({
         Authorization: 'Bearer jwt',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       });
 
       const body = JSON.parse(requestParameters.body as string);
@@ -225,6 +227,7 @@ describe('VideoXAPIStatement', () => {
       expect(requestParameters.headers).toEqual({
         Authorization: 'Bearer jwt',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       });
 
       const body = JSON.parse(requestParameters.body as string);
@@ -263,6 +266,7 @@ describe('VideoXAPIStatement', () => {
       expect(requestParameters.headers).toEqual({
         Authorization: 'Bearer jwt',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       });
 
       const body = JSON.parse(requestParameters.body as string);
@@ -308,6 +312,7 @@ describe('VideoXAPIStatement', () => {
       expect(requestParameters.headers).toEqual({
         Authorization: 'Bearer jwt',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       });
 
       const body = JSON.parse(requestParameters.body as string);
@@ -351,6 +356,7 @@ describe('VideoXAPIStatement', () => {
       expect(requestParameters.headers).toEqual({
         Authorization: 'Bearer jwt',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       });
 
       const body = JSON.parse(requestParameters.body as string);
@@ -402,6 +408,7 @@ describe('VideoXAPIStatement', () => {
       expect(requestParameters.headers).toEqual({
         Authorization: 'Bearer jwt',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       });
 
       const body = JSON.parse(requestParameters.body as string);
@@ -448,6 +455,7 @@ describe('VideoXAPIStatement', () => {
       expect(requestParameters.headers).toEqual({
         Authorization: 'Bearer jwt',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       });
 
       const body = JSON.parse(requestParameters.body as string);
@@ -500,6 +508,7 @@ describe('VideoXAPIStatement', () => {
       expect(requestParameters.headers).toEqual({
         Authorization: 'Bearer jwt',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       });
 
       const body = JSON.parse(requestParameters.body as string);
@@ -556,6 +565,7 @@ describe('VideoXAPIStatement', () => {
       expect(requestParameters.headers).toEqual({
         Authorization: 'Bearer jwt',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       });
 
       const body = JSON.parse(requestParameters.body as string);
@@ -732,6 +742,7 @@ describe('VideoXAPIStatement', () => {
       expect(requestParameters.headers).toEqual({
         Authorization: 'Bearer jwt',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       });
 
       const body = JSON.parse(requestParameters.body as string);

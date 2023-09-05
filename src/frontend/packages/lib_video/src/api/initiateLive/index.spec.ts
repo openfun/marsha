@@ -56,6 +56,7 @@ describe('sideEffects/initiateLive', () => {
     expect(fetchMock.lastCall()![1]!.headers).toEqual({
       Authorization: 'Bearer some token',
       'Content-Type': 'application/json',
+      'Accept-Language': 'en',
     });
   });
 
@@ -93,6 +94,7 @@ describe('sideEffects/initiateLive', () => {
     expect(fetchMock.lastCall()![1]!.headers).toEqual({
       Authorization: 'Bearer some token',
       'Content-Type': 'application/json',
+      'Accept-Language': 'en',
     });
   });
 

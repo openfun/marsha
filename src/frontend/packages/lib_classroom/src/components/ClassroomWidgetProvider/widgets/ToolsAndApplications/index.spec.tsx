@@ -73,6 +73,7 @@ describe('<ToolsAndApplications />', () => {
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'PATCH',
       body: '{"enable_chat":false}',
@@ -102,6 +103,7 @@ describe('<ToolsAndApplications />', () => {
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'PATCH',
       body: '{"enable_shared_notes":false}',
@@ -131,6 +133,7 @@ describe('<ToolsAndApplications />', () => {
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'PATCH',
       body: '{"enable_waiting_room":true}',
@@ -175,6 +178,7 @@ describe('<ToolsAndApplications />', () => {
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'PATCH',
       body: '{"enable_recordings":false}',
@@ -231,6 +235,7 @@ describe('<ToolsAndApplications />', () => {
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'PATCH',
       body: `{"recording_purpose":"${recording_purpose_updated}"}`,

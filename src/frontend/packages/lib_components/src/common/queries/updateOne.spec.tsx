@@ -25,6 +25,7 @@ describe('queries/updateOne', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'PATCH',
       body: JSON.stringify(objectToUpdate),
@@ -48,6 +49,7 @@ describe('queries/updateOne', () => {
     expect(fetchMock.lastCall()?.[1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'PATCH',
       body: JSON.stringify(objectToUpdate),
@@ -77,6 +79,7 @@ describe('queries/updateOne', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'PATCH',
       body: JSON.stringify(objectToUpdate),
@@ -117,6 +120,7 @@ describe('queries/updateOne', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'PATCH',
       body: JSON.stringify(objectToUpdate),
@@ -161,6 +165,7 @@ describe('queries/updateOne', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'PATCH',
       body: JSON.stringify(objectToUpdate),
