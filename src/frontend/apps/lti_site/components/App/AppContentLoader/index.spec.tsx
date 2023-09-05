@@ -1,3 +1,4 @@
+import { QueryClient } from '@tanstack/react-query';
 import { screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { Maybe } from 'lib-common';
@@ -7,6 +8,7 @@ import {
   appState,
   modelName,
   playlistMockFactory,
+  retryQuery,
   useCurrentSession,
   useCurrentUser,
   useJwt,
@@ -116,6 +118,153 @@ describe('<AppContentLoader />', () => {
 
     expect(intl?.locale).toEqual('pl');
   });
+
+  it('calls playlist/is-claimed only once for 403', async () => {
+    const mockConsoleError = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
+
+    useJwt.setState({
+      jwt: 'ewogICJhbGciOiAiSFMyNTYiLAogICJ0eXAiOiAiSldUIgp9.ewogICJzZXNzaW9uX2lkIjogInNvbWVfc2Vzc2lvbl9pZCIsCiAgInVzZXIiOiB7CiAgICAiYW5vbnltb3VzX2lkIjogImFub255bW91cyBpZCIsCiAgICAiZW1haWwiOiAic29tZSBlbWFpbCIsCiAgICAiaWQiOiAiaWQiLAogICAgInVzZXJuYW1lIjogInVzZXIgbmFtZSIsCiAgICAidXNlcl9mdWxsbmFtZSI6ICJ1c2VyIGZ1bGwgbmFtZSIKICB9LAogICJsb2NhbGUiOiAicGwiLAogICJtYWludGVuYW5jZSI6IGZhbHNlLAogICJwZXJtaXNzaW9ucyI6IHsKICAgICJjYW5fYWNjZXNzX2Rhc2hib2FyZCI6IGZhbHNlLAogICAgImNhbl91cGRhdGUiOiBmYWxzZQogIH0sCiAgInBsYXlsaXN0X2lkIjogInBsYXlsaXN0IGlkIiwKICAicm9sZXMiOiBbXQp9.gv0kmitQfOv93TQuFTHsiqQJFWeTkbmb1h8J8uMVX70',
+    });
+
+    const playlist = playlistMockFactory({ id: '488db2d0' });
+    const video = videoMockFactory({ playlist });
+
+    const isClaimed = fetchMock.get('/api/playlists/488db2d0/is-claimed/', {
+      status: 403,
+    });
+
+    render(
+      <AppConfigProvider
+        value={{
+          appName: appNames.CLASSROOM,
+          attendanceDelay: 10,
+          state: appState.SUCCESS,
+          modelName: modelName.VIDEOS,
+          resource: video,
+          sentry_dsn: 'test.dns.com',
+          environment: 'tests',
+          frontend: 'test-frontend',
+          release: 'debug',
+          static: {
+            svg: {
+              icons: '',
+            },
+            img: {
+              liveBackground: '',
+              liveErrorBackground: '',
+              marshaWhiteLogo: '',
+              videoWizardBackground: '',
+              errorMain: '',
+            },
+          },
+          uploadPollInterval: 10,
+          p2p: {
+            isEnabled: false,
+            stunServerUrls: [],
+            webTorrentTrackerUrls: [],
+          },
+        }}
+      >
+        <AppContentLoader />
+      </AppConfigProvider>,
+      {
+        queryOptions: {
+          client: new QueryClient({
+            defaultOptions: {
+              queries: {
+                retry: retryQuery,
+                retryDelay: 100,
+              },
+            },
+          }),
+        },
+      },
+    );
+
+    await waitFor(() => {
+      expect(isClaimed.calls()).toHaveLength(1);
+    });
+
+    // console.error has been called, no more retry will be done.
+    expect(mockConsoleError).toHaveBeenCalled();
+  });
+
+  it('calls playlist/is-claimed four times with 500', async () => {
+    const mockConsoleError = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
+
+    useJwt.setState({
+      jwt: 'ewogICJhbGciOiAiSFMyNTYiLAogICJ0eXAiOiAiSldUIgp9.ewogICJzZXNzaW9uX2lkIjogInNvbWVfc2Vzc2lvbl9pZCIsCiAgInVzZXIiOiB7CiAgICAiYW5vbnltb3VzX2lkIjogImFub255bW91cyBpZCIsCiAgICAiZW1haWwiOiAic29tZSBlbWFpbCIsCiAgICAiaWQiOiAiaWQiLAogICAgInVzZXJuYW1lIjogInVzZXIgbmFtZSIsCiAgICAidXNlcl9mdWxsbmFtZSI6ICJ1c2VyIGZ1bGwgbmFtZSIKICB9LAogICJsb2NhbGUiOiAicGwiLAogICJtYWludGVuYW5jZSI6IGZhbHNlLAogICJwZXJtaXNzaW9ucyI6IHsKICAgICJjYW5fYWNjZXNzX2Rhc2hib2FyZCI6IGZhbHNlLAogICAgImNhbl91cGRhdGUiOiBmYWxzZQogIH0sCiAgInBsYXlsaXN0X2lkIjogInBsYXlsaXN0IGlkIiwKICAicm9sZXMiOiBbXQp9.gv0kmitQfOv93TQuFTHsiqQJFWeTkbmb1h8J8uMVX70',
+    });
+
+    const playlist = playlistMockFactory({ id: '488db2d0' });
+    const video = videoMockFactory({ playlist });
+
+    const isClaimed = fetchMock.get('/api/playlists/488db2d0/is-claimed/', {
+      status: 500,
+    });
+
+    render(
+      <AppConfigProvider
+        value={{
+          appName: appNames.CLASSROOM,
+          attendanceDelay: 10,
+          state: appState.SUCCESS,
+          modelName: modelName.VIDEOS,
+          resource: video,
+          sentry_dsn: 'test.dns.com',
+          environment: 'tests',
+          frontend: 'test-frontend',
+          release: 'debug',
+          static: {
+            svg: {
+              icons: '',
+            },
+            img: {
+              liveBackground: '',
+              liveErrorBackground: '',
+              marshaWhiteLogo: '',
+              videoWizardBackground: '',
+              errorMain: '',
+            },
+          },
+          uploadPollInterval: 10,
+          p2p: {
+            isEnabled: false,
+            stunServerUrls: [],
+            webTorrentTrackerUrls: [],
+          },
+        }}
+      >
+        <AppContentLoader />
+      </AppConfigProvider>,
+      {
+        queryOptions: {
+          client: new QueryClient({
+            defaultOptions: {
+              queries: {
+                retry: retryQuery,
+                retryDelay: 10,
+              },
+            },
+          }),
+        },
+      },
+    );
+
+    await waitFor(
+      () => {
+        expect(isClaimed.calls()).toHaveLength(4);
+      },
+      { timeout: 10000 },
+    );
+
+    // console.error has been called, no more retry will be done.
+    expect(mockConsoleError).toHaveBeenCalled();
+  }, 10000);
 
   it('renders an error page if no jwt provided', async () => {
     const mockConsoleError = jest

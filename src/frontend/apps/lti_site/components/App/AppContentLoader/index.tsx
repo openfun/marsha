@@ -10,6 +10,7 @@ import {
   ResourceContext,
   User,
   appNames,
+  retryQuery,
   useAppConfig,
   useCurrentSession,
   useCurrentUser,
@@ -117,7 +118,14 @@ const AppContent = () => {
 const AppContentLoader = () => {
   const appData = useAppConfig();
   const [isLoaded, setIsLoaded] = useState(false);
-  const queryClient = new QueryClient();
+
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: retryQuery,
+      },
+    },
+  });
 
   //  load it from the store to prevent having a dependency and recompute decodedJwt
   const decodedJwt = useMemo(() => {
