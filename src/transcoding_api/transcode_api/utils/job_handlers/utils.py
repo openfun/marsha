@@ -7,15 +7,6 @@ from transcode_api.utils.video_state import move_to_next_state
 
 logger = logging.getLogger(__name__)
 
-WEBSERVER_URL = "http://127.0.0.1:8000"  # TODO: use settings
-
-
-def generate_runner_transcoding_video_input_file_url(job_uuid, video_uuid):
-    return (
-        WEBSERVER_URL
-        + f"/api/v1/runners/jobs/{job_uuid}/files/videos/{video_uuid}/max-quality"
-    )
-
 
 def load_transcoding_runner_video(runnerJob: RunnerJob):
     video_uuid = runnerJob.privatePayload["videoUUID"]
@@ -31,16 +22,11 @@ def load_transcoding_runner_video(runnerJob: RunnerJob):
     return video
 
 
-def on_transcoding_ended(
-    video: Video, is_new_video: bool, move_video_to_next_state: bool
-):
+def on_transcoding_ended(video: Video, move_video_to_next_state: bool):
     video.decrease_job_info("pendingTranscode")
 
     if move_video_to_next_state:
-        move_to_next_state(
-            video=video,
-            is_new_video=is_new_video,
-        )
+        move_to_next_state(video=video)
 
 
 # def on_vod_web_video_or_audio_merge_transcoding_job(
@@ -65,3 +51,34 @@ def on_transcoding_ended(
 #         "VOD web video or audio merge transcoding job completed for video %s.",
 #         video.uuid,
 #     )
+
+
+# def on_web_video_file_transcoding(
+#     video: Video, video_file: VideoFile, video_output_path, was_audio_file=False
+# ):
+#     video.refresh_from_db()
+
+#     output_path = "get_fs_video_file_output_path(video_file)"
+
+#     probe = ffmpeg.probe(video_output_path)
+
+#     stats = os.stat(video_output_path)
+
+#     fps = get_video_stream_fps(probe)
+#     metadata = build_file_metadata(probe=probe)
+
+#     move(video_output_path, output_path)
+
+#     video_file.size = stats.st_size
+#     video_file.fps = fps
+#     video_file.metadata = metadata
+
+#     old_file = VideoFile.objects.filter(
+#         video=video, fps=video_file.fps, resolution=video_file.resolution
+#     ).first()
+#     if old_file:
+#         old_file.remove_web_video_file()
+
+#     video_file.save()
+
+#     return {"video": video, "videoFile": video_file}

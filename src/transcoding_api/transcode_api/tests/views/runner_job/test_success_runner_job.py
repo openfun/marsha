@@ -1,16 +1,16 @@
 """Tests for the Runner Job success API."""
-import tempfile
+import logging
 from datetime import datetime
 from unittest.mock import patch
 
 import ffmpeg
-from django.core.files.storage import get_storage_class
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, override_settings
 from django.utils import timezone
 
 from transcode_api.factories import RunnerFactory, RunnerJobFactory, VideoFactory
 from transcode_api.models import RunnerJobState, RunnerJobType
+from transcode_api.storage import video_storage
 from transcode_api.tests.probe_response import probe_response
 
 # We don't enforce arguments documentation in tests
@@ -28,6 +28,10 @@ class SuccessRunnerJobAPITest(TestCase):
         self.video = VideoFactory(
             name="Test video", uuid="02404b18-3c50-4929-af61-913f4df65e99"
         )
+        logging.disable(logging.CRITICAL)
+
+    def tearDown(self):
+        logging.disable(logging.NOTSET)
 
     def create_processing_job(self, type: RunnerJobType):
         return RunnerJobFactory(
@@ -45,8 +49,20 @@ class SuccessRunnerJobAPITest(TestCase):
     def _api_url(self):
         return "/api/v1/runners/jobs/02404b18-3c50-4929-af61-913f4df65e00/success"
 
-    def test_request_with_an_invalid_runner_token(self):
-        """Should not be able to request the list."""
+    def test_success_with_an_invalid_job_uuid(self):
+        """Should not be able to success with an invalid job uuid."""
+        self.create_processing_job(RunnerJobType.VOD_HLS_TRANSCODING)
+        response = self.client.post(
+            "/api/v1/runners/jobs/02404b18-3c50-4929-af61-913f4df65e01/success",
+            data={
+                "runnerToken": "runnerToken",
+            },
+        )
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_success_with_an_invalid_runner_token(self):
+        """Should not be able to success with an invalid runner token."""
         self.create_processing_job(RunnerJobType.VOD_HLS_TRANSCODING)
         response = self.client.post(
             self._api_url(),
@@ -68,55 +84,42 @@ class SuccessRunnerJobAPITest(TestCase):
 
         now = datetime(2018, 8, 8, tzinfo=timezone.utc)
 
-        with tempfile.TemporaryDirectory(prefix="video_temp_dir") as temp_dir:
-            fake_storage = get_storage_class(
-                "django.core.files.storage.FileSystemStorage"
-            )(temp_dir)
+        with patch.object(timezone, "now", return_value=now), patch.object(
+            ffmpeg, "probe", return_value=probe_response
+        ):
+            response = self.client.post(
+                self._api_url(),
+                data={
+                    "runnerToken": "runnerToken",
+                    "payload[videoFile]": uploaded_video,
+                    "payload[resolutionPlaylistFile]": uploaded_video,
+                },
+            )
+            self.assertEqual(response.status_code, 204)
 
-            with patch.object(timezone, "now", return_value=now), patch.object(
-                ffmpeg, "probe", return_value=probe_response
-            ), patch(
-                "transcode_api.utils.job_handlers.vod_hls_transcoding_job_handler.video_storage",
-                fake_storage,
-            ), patch(
-                "transcode_api.utils.transcoding.hls_playlist.video_storage",
-                fake_storage,
-            ):
-                response = self.client.post(
-                    self._api_url(),
-                    data={
-                        "runnerToken": "runnerToken",
-                        "payload[videoFile]": uploaded_video,
-                        "payload[resolutionPlaylistFile]": uploaded_video,
-                    },
+            runner_job.refresh_from_db()
+            self.video.refresh_from_db()
+
+            self.assertEqual(runner_job.state, 3)  # COMPLETED
+            self.assertEqual(runner_job.failures, 0)  # should have been OK
+
+            self.assertIsNotNone(
+                self.video.streamingPlaylist
+            )  # playlist should have been created
+
+            self.assertEqual(self.video.state, 1)  # VideoState.PUBLISHED
+
+            _, video_files = video_storage.listdir(f"video-{self.video.uuid}")
+            # video, playlist, master playlist
+            self.assertEqual(len(video_files), 3)
+            self.assertIn("master.m3u8", video_files)
+            self.assertTrue(
+                video_storage.exists(self.video.streamingPlaylist.playlistFilename)
+            )
+
+            self.assertEqual(self.video.streamingPlaylist.videoFiles.count(), 1)
+            self.assertTrue(
+                video_storage.exists(
+                    self.video.streamingPlaylist.videoFiles.first().filename
                 )
-                self.assertEqual(response.status_code, 204)
-
-                runner_job.refresh_from_db()
-                self.video.refresh_from_db()
-
-                self.assertEqual(runner_job.state, 3)  # COMPLETED
-                self.assertEqual(runner_job.failures, 0)  # should have been OK
-
-                self.assertIsNotNone(
-                    self.video.streamingPlaylist
-                )  # playlist should have been created
-
-                self.assertEqual(self.video.state, 1)  # VideoState.PUBLISHED
-
-                list_dir, _ = fake_storage.listdir("")
-                self.assertEqual(len(list_dir), 1)
-                _, video_files = fake_storage.listdir(list_dir[0])
-                # video, playlist, master playlist
-                self.assertEqual(len(video_files), 3)
-                self.assertIn("master.m3u8", video_files)
-                self.assertTrue(
-                    fake_storage.exists(self.video.streamingPlaylist.playlistFilename)
-                )
-
-                self.assertEqual(self.video.streamingPlaylist.videoFiles.count(), 1)
-                self.assertTrue(
-                    fake_storage.exists(
-                        self.video.streamingPlaylist.videoFiles.first().filename
-                    )
-                )
+            )

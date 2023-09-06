@@ -5,6 +5,7 @@ import os
 import re
 
 import ffmpeg
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from transcode_api.models import Video, VideoFile, VideoStreamingPlaylist
 from transcode_api.storage import video_storage
@@ -16,6 +17,7 @@ from transcode_api.utils.ffprobe import (
 from transcode_api.utils.files import (
     build_file_metadata,
     get_hls_resolution_playlist_filename,
+    get_video_directory,
 )
 
 from .codecs import get_audio_stream_codec, get_video_stream_codec
@@ -45,15 +47,13 @@ def on_hls_video_file_transcoding(video: Video, video_file: VideoFile):
             video=video,
         )
 
-    video_file_path = video_storage.path(video_file.filename)
+    video_file_url = video_storage.url(video_file.filename)
     video_file.streamingPlaylist = playlist
-    probe = ffmpeg.probe(video_file_path)
+    probe = ffmpeg.probe(video_file_url)
 
     # Update video duration if it was not set (in case of a live for example)
     if not video.duration:
-        video.duration = get_video_stream_duration(
-            video_file_path, existing_probe=probe
-        )
+        video.duration = get_video_stream_duration(video_file_url, existing_probe=probe)
 
     video_file.size = int(probe["format"]["size"])
     video_file.fps = get_video_stream_fps(probe)
@@ -61,11 +61,12 @@ def on_hls_video_file_transcoding(video: Video, video_file: VideoFile):
 
     video_file.save()
     video.save()
+
     update_master_hls_playlist(video, playlist)
 
 
 def update_master_hls_playlist(video: Video, playlist: VideoStreamingPlaylist):
-    master_playlists = ["#EXTM3U", "#EXT-X-VERSION:3"]
+    master_playlist_elements = ["#EXTM3U", "#EXT-X-VERSION:3"]
     playlist.refresh_from_db()
 
     if not playlist.videoFiles.all():
@@ -76,12 +77,15 @@ def update_master_hls_playlist(video: Video, playlist: VideoStreamingPlaylist):
         return
 
     for file in playlist.videoFiles.all():
-        video_file_path = video_storage.path(file.filename)
+        video_file_url = video_storage.url(file.filename)
+        probe = ffmpeg.probe(video_file_url)
         playlist_filename = get_hls_resolution_playlist_filename(
             os.path.basename(file.filename)
         )
 
-        size = get_video_stream_dimensions_info(path=video_file_path)
+        size = get_video_stream_dimensions_info(
+            path=file.filename, existing_probe=probe
+        )
 
         bandwidth = "BANDWIDTH=" + str(video.get_bandwidth_bits(file))
         resolution = f"RESOLUTION={size['width'] or 0}x{size['height'] or 0}"
@@ -91,23 +95,29 @@ def update_master_hls_playlist(video: Video, playlist: VideoStreamingPlaylist):
             line += f",FRAME-RATE={file.fps}"
 
         codecs = [
-            get_video_stream_codec(video_file_path),
-            get_audio_stream_codec(video_file_path),
+            get_video_stream_codec(file.filename, probe),
+            get_audio_stream_codec(file.filename, probe),
         ]
 
         line += f',CODECS="{",".join(filter(None, codecs))}"'
 
-        master_playlists.append(line)
-        master_playlists.append(playlist_filename)
+        master_playlist_elements.append(line)
+        master_playlist_elements.append(playlist_filename)
 
-    master_playlist_path = f"video-{video.uuid}/master.m3u8"
+    master_playlist_path = get_video_directory(video, "master.m3u8")
     playlist.playlistFilename = master_playlist_path
     playlist.save()
 
-    with video_storage.open(master_playlist_path, "w") as f:
-        for playlist_element in master_playlists:
-            f.write(playlist_element + "\n")
+    master_playlist_content = SimpleUploadedFile(
+        "master.m3u8", b"", content_type="m3u8"
+    )
 
+    for playlist_element in master_playlist_elements:
+        master_playlist_content.write(f"{playlist_element}\n".encode())
+
+    if video_storage.exists(master_playlist_path):
+        video_storage.delete(master_playlist_path)
+    video_storage.save(master_playlist_path, master_playlist_content)
     logger.info(
         "Updating %s master playlist file of video %s",
         master_playlist_path,

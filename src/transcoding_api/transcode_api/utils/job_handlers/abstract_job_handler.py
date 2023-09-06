@@ -8,7 +8,7 @@ from asgiref.sync import async_to_sync
 from django.conf import settings
 from django.utils import timezone
 
-from transcode_api.models import RunnerJob, RunnerJobState
+from transcode_api.models import RunnerJob, RunnerJobState, RunnerJobType
 from transcode_api.socket import send_available_jobs_ping_to_runners
 
 logger = logging.getLogger(__name__)
@@ -21,7 +21,7 @@ class AbstractJobHandler(ABC):
 
     def create_runner_job(
         self,
-        type: str,
+        type: RunnerJobType,
         job_uuid: UUID,
         payload: dict,
         private_payload: dict,
@@ -53,18 +53,18 @@ class AbstractJobHandler(ABC):
     ) -> None:
         pass
 
-    async def update(
+    def update(
         self,
         runner_job: RunnerJob,
         progress: int | None = None,
         update_payload=None,
     ) -> None:
-        await self.specific_update(runner_job, update_payload=update_payload)
+        self.specific_update(runner_job, update_payload)
 
         if progress is not None:
             runner_job.progress = progress
 
-        await runner_job.save()
+        runner_job.save()
 
     @abstractmethod
     def specific_complete(self, runner_job: RunnerJob, result_payload) -> None:
@@ -79,10 +79,10 @@ class AbstractJobHandler(ABC):
             runner_job.state = RunnerJobState.COMPLETED
         except Exception as err:
             runner_job.state = RunnerJobState.ERRORED
-            runner_job.error = err.message
+            runner_job.error = str(err)
 
         runner_job.progress = None
-        runner_job.finished_at = timezone.now()
+        runner_job.finishedAt = timezone.now()
 
         runner_job.save()
 
@@ -104,7 +104,7 @@ class AbstractJobHandler(ABC):
 
         runner_job.save()
 
-        children = runner_job.list_children().all()
+        children = runner_job.children.all()
         for child in children:
             self.cancel(child, from_parent=True)
 
@@ -120,10 +120,6 @@ class AbstractJobHandler(ABC):
             )
 
         self.specific_abort(runner_job)
-        runner_job.reset_to_pending()
-        runner_job.save()
-
-    def set_abort_state(self, runner_job: RunnerJob) -> None:
         runner_job.reset_to_pending()
         runner_job.save()
 
@@ -155,7 +151,7 @@ class AbstractJobHandler(ABC):
         runner_job.save()
 
         if runner_job.state == error_state:
-            children = runner_job.list_children().all()
+            children = runner_job.children.all()
             for child in children:
                 self.error(child, "Parent error", from_parent=True)
 

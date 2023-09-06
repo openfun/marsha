@@ -5,8 +5,8 @@ from transcode_api.utils.ffprobe import get_audio_stream, get_video_stream
 logger = logging.getLogger(__name__)
 
 
-def get_video_stream_codec(path: str):
-    video_stream = get_video_stream(path)
+def get_video_stream_codec(path: str, existing_probe=None):
+    video_stream = get_video_stream(path, existing_probe=existing_probe)
     if not video_stream:
         return ""
 
@@ -22,7 +22,11 @@ def get_video_stream_codec(path: str):
         "av01": {"High": "1", "Main": "0", "Professional": "2"},
     }
 
-    base_profile = base_profile_matrix[video_codec].get(video_stream["profile"])
+    if video_codec not in base_profile_matrix:
+        logger.warn("Cannot get video codec of %s.", path)
+        return ""
+
+    base_profile = base_profile_matrix[video_codec].get(video_stream["profile"], None)
     if not base_profile:
         logger.warn(
             "Cannot get video profile codec of %s.",
@@ -31,7 +35,7 @@ def get_video_stream_codec(path: str):
         base_profile = base_profile_matrix[video_codec]["High"]  # Fallback
 
     if video_codec == "av01":
-        level = str(video_stream.level)
+        level = str(video_stream.get("level"))
         if len(level) == 1:
             level = "0" + level
 
@@ -46,13 +50,15 @@ def get_video_stream_codec(path: str):
     return f"{video_codec}.{base_profile}{level}"
 
 
-def get_audio_stream_codec(path: str):
-    audio_stream = get_audio_stream(path).get("audio_stream", None)
+def get_audio_stream_codec(path: str, existing_probe=None):
+    audio_stream = get_audio_stream(path, existing_probe=existing_probe).get(
+        "audio_stream", None
+    )
 
     if not audio_stream:
         return ""
 
-    audio_codec_name = audio_stream.codec_name
+    audio_codec_name = audio_stream["codec_name"]
 
     if audio_codec_name == "opus":
         return "opus"

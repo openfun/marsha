@@ -55,10 +55,7 @@ class RunnerJobViewSet(viewsets.GenericViewSet, ListMixin, mixins.DestroyModelMi
 
         serializer = SimpleRunnerJobSerializer(jobs, many=True)
 
-        logger.debug(
-            "Runner %s requests for a job.",
-            runner.name,
-        )
+        logger.debug(f"Runner {runner.name} requests for a job.")
         return Response({"availableJobs": serializer.data}, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["post"], url_path="accept")
@@ -80,10 +77,7 @@ class RunnerJobViewSet(viewsets.GenericViewSet, ListMixin, mixins.DestroyModelMi
         runner.update_last_contact(request.META.get("REMOTE_ADDR"))
 
         logger.info(
-            "Remote runner %s has accepted job %s (%s)",
-            runner.name,
-            job.uuid,
-            job.type,
+            f"Remote runner {runner.name} has accepted job {job.uuid} ({job.type})"
         )
 
         serializer = self.get_serializer(job)
@@ -92,14 +86,11 @@ class RunnerJobViewSet(viewsets.GenericViewSet, ListMixin, mixins.DestroyModelMi
     @action(detail=True, methods=["post"], url_path="abort")
     def abort_runner_job(self, request, uuid=None):
         runner = self._get_runner_from_token(request)
-        job = self.get_queryset().get(uuid=uuid)
+        job = self._get_job_from_uuid(uuid)
         job.failures += 1
 
         logger.info(
-            "Remote runner %s is aborting job %s (%s)",
-            runner.name,
-            job.uuid,
-            job.type,
+            f"Remote runner {runner.name} is aborting job {job.uuid} ({job.type})"
         )
 
         runner_job_handler = get_runner_job_handler_class(job)
@@ -111,14 +102,11 @@ class RunnerJobViewSet(viewsets.GenericViewSet, ListMixin, mixins.DestroyModelMi
     @action(detail=True, methods=["post"], url_path="error")
     def error_runner_job(self, request, uuid=None):
         runner = self._get_runner_from_token(request)
-        job = self.get_queryset().get(uuid=uuid)
+        job = self._get_job_from_uuid(uuid)
         job.failures += 1
 
         logger.error(
-            "Remote runner %s had an error with job %s (%s)",
-            runner.name,
-            job.uuid,
-            job.type,
+            f"Remote runner {runner.name} had an error with job {job.uuid} ({job.type})"
         )
 
         runner_job_handler = get_runner_job_handler_class(job)
@@ -128,10 +116,25 @@ class RunnerJobViewSet(viewsets.GenericViewSet, ListMixin, mixins.DestroyModelMi
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    @action(detail=True, methods=["post"], url_path="update")
+    def update_runner_job(self, request, uuid=None):
+        runner = self._get_runner_from_token(request)
+        job = self._get_job_from_uuid(uuid)
+
+        runner_job_handler = get_runner_job_handler_class(job)
+
+        runner_job_handler().update(
+            runner_job=job, progress=request.data.get("progress")
+        )
+
+        runner.update_last_contact(request.META.get("REMOTE_ADDR"))
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
     @action(detail=True, methods=["post"], url_path="success")
     def success_runner_job(self, request, uuid=None):
         runner = self._get_runner_from_token(request)
-        job = self.get_queryset().get(uuid=uuid)
+        job = self._get_job_from_uuid(uuid)
 
         runner_job_handler = get_runner_job_handler_class(job)
 
@@ -152,17 +155,15 @@ class RunnerJobViewSet(viewsets.GenericViewSet, ListMixin, mixins.DestroyModelMi
         detail=True,
         methods=["post"],
         url_path="files/videos/(?P<video_id>[^/.]+)/max-quality",
+        url_name="download_video_file",
     )
     def download_video_file(self, request, uuid=None, video_id=None):
         runner = self._get_runner_from_token(request)
-        job = self.get_queryset().get(uuid=uuid)
+        job = self._get_job_from_uuid(uuid)
         video = self._get_video_from_uuid(video_id)
 
         logger.info(
-            "Get max quality file of video %s of job %s for runner %s",
-            video.uuid,
-            job.uuid,
-            runner.name,
+            f"Get max quality file of video {video.uuid} of job {job.uuid} for runner {runner.name}"
         )
 
         video_file = video.get_max_quality_file()

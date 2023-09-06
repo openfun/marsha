@@ -1,4 +1,5 @@
 """Tests for the Runner Job Error API."""
+import logging
 from datetime import datetime
 from unittest.mock import patch
 
@@ -22,6 +23,10 @@ class AcceptRunnerJobAPITest(TestCase):
         self.video = VideoFactory(
             name="Test video", uuid="02404b18-3c50-4929-af61-913f4df65e99"
         )
+        logging.disable(logging.CRITICAL)
+
+    def tearDown(self):
+        logging.disable(logging.NOTSET)
 
     def create_processing_job(
         self,
@@ -42,8 +47,20 @@ class AcceptRunnerJobAPITest(TestCase):
     def _api_url(self):
         return "/api/v1/runners/jobs/02404b18-3c50-4929-af61-913f4df65e00/error"
 
-    def test_request_with_an_invalid_runner_token(self):
-        """Should not be able to request the list."""
+    def test_error_with_an_invalid_job_uuid(self):
+        """Should not be able to error with an invalid job uuid."""
+        self.create_processing_job(RunnerJobType.VOD_HLS_TRANSCODING)
+        response = self.client.post(
+            "/api/v1/runners/jobs/02404b18-3c50-4929-af61-913f4df65e01/error",
+            data={
+                "runnerToken": "runnerToken",
+            },
+        )
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_error_with_an_invalid_runner_token(self):
+        """Should not be able to error with an invalid runner token."""
         self.create_processing_job(RunnerJobType.VOD_HLS_TRANSCODING)
         response = self.client.post(
             self._api_url(),

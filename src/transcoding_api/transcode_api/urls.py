@@ -10,7 +10,7 @@ from transcode_api.views import (
 
 router = routers.DefaultRouter(trailing_slash=False)
 router.register(r"runners/registration-tokens", RunnerRegistrationTokenViewSet)
-router.register(r"runners/jobs", RunnerJobViewSet)
+router.register(r"runners/jobs", RunnerJobViewSet, basename="runner-jobs")
 router.register(r"runners", RunnerViewSet)
 router.register(r"videos", VideoViewSet)
 

@@ -2,6 +2,7 @@ import logging
 
 import ffmpeg
 import shortuuid
+from django.urls import reverse
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -32,13 +33,20 @@ class VideoViewSet(mixins.DestroyModelMixin, ListMixin, viewsets.GenericViewSet)
     queryset = Video.objects.all()
     serializer_class = RunnerJobSerializer
 
+    def build_video_url(self, job_uuid, video_uuid):
+        return self.request.build_absolute_uri(
+            reverse("runner-jobs-download_video_file", args=(job_uuid, video_uuid))
+        )
+
     def transcode_new_video(self, video: Video, filename: str):
-        path = video_storage.path(filename)
-        probe = ffmpeg.probe(path)
+        url = video_storage.url(filename)
+        probe = ffmpeg.probe(url)
 
-        video_file = build_new_file(video=video, filename=filename, mode="web-video")
+        video_file = build_new_file(
+            video=video, filename=filename, existing_probe=probe
+        )
 
-        video.duration = get_video_stream_duration(path, existing_probe=probe)
+        video.duration = get_video_stream_duration(filename, existing_probe=probe)
 
         thumbnail_filename = build_video_thumbnails(
             video=video, video_file=video_file, existing_probe=probe
@@ -47,23 +55,14 @@ class VideoViewSet(mixins.DestroyModelMixin, ListMixin, viewsets.GenericViewSet)
         video.thumbnailFilename = thumbnail_filename
         video.save()
 
-        logger.info(
-            "Video with name %s and uuid %s created.",
-            video.name,
-            video.uuid,
-        )
+        logger.info(f"Video with name {video.name} and uuid {video.uuid} created.")
 
-        try:
-            create_transcoding_jobs(
-                video=video, video_file=video_file, existing_probe=probe
-            )
-        except Exception as e:
-            logger.error(
-                "Cannot build new video jobs of %s.",
-                video.uuid,
-                exc_info=e,
-            )
-            raise e
+        create_transcoding_jobs(
+            video=video,
+            video_file=video_file,
+            existing_probe=probe,
+            build_video_url=self.build_video_url,
+        )
 
         return Response(
             {
@@ -86,7 +85,7 @@ class VideoViewSet(mixins.DestroyModelMixin, ListMixin, viewsets.GenericViewSet)
             state=build_next_video_state(),
         )
         filename = video_storage.save(
-            get_video_directory(video, f"base_video.{extension}"),
+            get_video_directory(video, f"base_video{extension}"),
             uploaded_video_file,
         )
 

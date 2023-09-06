@@ -55,6 +55,7 @@ class Base(Configuration):
         "django.contrib.auth.middleware.AuthenticationMiddleware",
         "django.contrib.messages.middleware.MessageMiddleware",
         "django.middleware.clickjacking.XFrameOptionsMiddleware",
+        "whitenoise.middleware.WhiteNoiseMiddleware",
     ]
 
     ROOT_URLCONF = "app.urls"
@@ -79,7 +80,11 @@ class Base(Configuration):
 
     # AWS
 
-    AWS_S3_REGION_NAME = values.Value("eu-west-1")
+    AWS_ACCESS_KEY_ID = "ASIAYFVINNSFBB3SHWQT"
+    AWS_SECRET_ACCESS_KEY = "7OV4IxhVu0rD8myZFgVwqdWJ5kHmAB5s5c9u+tRm"
+    AWS_S3_SIGNATURE_VERSION = "s3v4"
+    AWS_S3_SESSION_PROFILE = "ADMIN-TEAM-561920175242"
+    AWS_S3_REGION_NAME = values.Value("eu-west-3")
     AWS_S3_URL_PROTOCOL = values.Value("https")
     AWS_BASE_NAME = values.Value()
 
@@ -93,7 +98,7 @@ class Base(Configuration):
         }
     }
 
-    STORAGE_VIDEO_LOCATION = BASE_DIR / "storage/videos/"
+    STATIC_ROOT = BASE_DIR / "staticfiles"
 
     STORAGES = {
         "default": {
@@ -103,13 +108,10 @@ class Base(Configuration):
             },
         },
         "videos": {
-            "BACKEND": "django.core.files.storage.FileSystemStorage",
-            "OPTIONS": {
-                "location": STORAGE_VIDEO_LOCATION,
-            },
+            "BACKEND": "app.storage.MyVideoStorage",
         },
         "staticfiles": {
-            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
         },
     }
 
@@ -134,6 +136,8 @@ class Base(Configuration):
     TRANSCODING_FPS_KEEP_ORIGIN_FPS_RESOLUTION_MIN = values.IntegerValue(720)
 
     TRANSCODING_RUNNER_MAX_FAILURE = values.IntegerValue(5)
+
+    TRANSCODING_VIDEO_IS_PUBLISHED_CALLBACK_PATH = values.Value("")
 
     # Password validation
     # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -177,3 +181,19 @@ class Base(Configuration):
 
 class Development(Base):
     DEBUG = values.BooleanValue(True)
+
+
+class Test(Base):
+    DEBUG = values.BooleanValue(True)
+
+    STORAGES = {
+        "default": {
+            "BACKEND": "transcode_api.tests.storage_testing.TestStorage",
+        },
+        "videos": {
+            "BACKEND": "transcode_api.tests.storage_testing.TestStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+    }

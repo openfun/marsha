@@ -4,7 +4,7 @@ from rest_framework.response import Response
 
 class ListMixin:
     """
-    Mixin that replicating the peertube list API.
+    Mixin that replicates the Peertube list API.
     """
 
     def list(self, request, *args, **kwargs):
@@ -24,5 +24,3 @@ class ListMixin:
                 "total": paginator.count,
             }
         )
-
-

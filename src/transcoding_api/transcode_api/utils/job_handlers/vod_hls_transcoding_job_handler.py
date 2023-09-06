@@ -19,7 +19,6 @@ from transcode_api.utils.transcoding.hls_playlist import (
 
 from .abstract_vod_transcoding_job_handler import AbstractVODTranscodingJobHandler
 from .utils import (
-    generate_runner_transcoding_video_input_file_url,
     load_transcoding_runner_video,
     on_transcoding_ended,
 )
@@ -28,14 +27,14 @@ logger = logging.getLogger(__name__)
 
 
 class VODHLSTranscodingJobHandler(AbstractVODTranscodingJobHandler):
-    def create(self, video: Video, resolution, fps, depends_on_runner_job, priority):
+    def create(
+        self, video: Video, resolution, fps, depends_on_runner_job, build_video_url
+    ):
         job_uuid = uuid.uuid4()
 
         payload = {
             "input": {
-                "videoFileUrl": generate_runner_transcoding_video_input_file_url(
-                    str(job_uuid), str(video.uuid)
-                ),
+                "videoFileUrl": build_video_url(job_uuid, video.uuid),
             },
             "output": {
                 "resolution": resolution,
@@ -54,7 +53,7 @@ class VODHLSTranscodingJobHandler(AbstractVODTranscodingJobHandler):
             job_uuid=job_uuid,
             payload=payload,
             private_payload=private_payload,
-            priority=priority,
+            priority=0,
             depends_on_runner_job=depends_on_runner_job,
         )
 
@@ -63,8 +62,6 @@ class VODHLSTranscodingJobHandler(AbstractVODTranscodingJobHandler):
         return job
 
     def specific_complete(self, runner_job: RunnerJob, result_payload):
-        private_payload = runner_job.privatePayload
-
         video = load_transcoding_runner_video(runner_job)
         if not video:
             return
@@ -78,7 +75,7 @@ class VODHLSTranscodingJobHandler(AbstractVODTranscodingJobHandler):
             uploaded_video_file,
         )
 
-        video_file = build_new_file(video=video, filename=filename, mode="hls")
+        video_file = build_new_file(video=video, filename=filename)
 
         # Saving the associated m3u8 file
         resolution_playlist_file = result_payload["resolution_playlist_file"]
@@ -86,12 +83,11 @@ class VODHLSTranscodingJobHandler(AbstractVODTranscodingJobHandler):
             get_hls_resolution_playlist_filename(video_file.filename),
             resolution_playlist_file,
         )
-        resolution_playlist_file_path = video_storage.path(resolution_playlist_filename)
 
         # The content of the m3u8 file is not correct, we need to replace the video filename
         # because we gave it a new name
         rename_video_file_in_playlist(
-            resolution_playlist_file_path, os.path.basename(video_file.filename)
+            resolution_playlist_filename, os.path.basename(video_file.filename)
         )
 
         on_hls_video_file_transcoding(
@@ -100,11 +96,9 @@ class VODHLSTranscodingJobHandler(AbstractVODTranscodingJobHandler):
         )
 
         on_transcoding_ended(
-            is_new_video=private_payload["isNewVideo"],
             move_video_to_next_state=True,
             video=video,
         )
-
         logger.info(
             "Runner VOD HLS job %s for %s ended.",
             runner_job.uuid,

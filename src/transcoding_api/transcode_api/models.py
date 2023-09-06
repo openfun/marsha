@@ -80,15 +80,12 @@ class RunnerJob(models.Model):
     startedAt = models.DateTimeField(null=True, blank=True)
     finishedAt = models.DateTimeField(null=True, blank=True)
     dependsOnRunnerJob = models.ForeignKey(
-        "self", null=True, blank=True, on_delete=models.CASCADE
+        "self", null=True, blank=True, on_delete=models.CASCADE, related_name="children"
     )
     runner = models.ForeignKey(Runner, null=True, blank=True, on_delete=models.SET_NULL)
 
     createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(auto_now=True)
-
-    def list_children(self):
-        return RunnerJob.objects.filter(dependsOnRunnerJob=self)
 
     def set_to_error_or_cancel(self, state):
         self.state = state
@@ -104,9 +101,13 @@ class RunnerJob(models.Model):
         self.startedAt = None
 
     def update_dependant_jobs(self):
-        children = self.list_children()
-        num_updated = children.update(state=RunnerJobState.PENDING)
+        num_updated = self.children.update(state=RunnerJobState.PENDING)
         return num_updated
+
+
+class VideoJobInfoColumnType(models.TextChoices):
+    PENDING_MOVE = "pendingMove"
+    PENDING_TRANSCODE = "pendingTranscode"
 
 
 class VideoState(models.IntegerChoices):
@@ -131,6 +132,8 @@ class Video(models.Model):
     updatedAt = models.DateTimeField(auto_now=True)
 
     def get_max_quality_file(self):
+        if not self.files.count():
+            return None
         return max(self.files.all(), key=lambda f: f.resolution)
 
     def remove_all_web_video_files(self):
@@ -144,13 +147,15 @@ class Video(models.Model):
 
         return int((video_file.size * 8) / self.duration)
 
-    def increase_or_create_job_info(self, column: str, amount: int = 1) -> int:
+    def increase_or_create_job_info(
+        self, column: VideoJobInfoColumnType, amount: int = 1
+    ) -> int:
         job_info, created = VideoJobInfo.objects.get_or_create(video=self)
         setattr(job_info, column, getattr(job_info, column) + amount)
         job_info.save()
         return getattr(job_info, column)
 
-    def decrease_job_info(self, column: str) -> int | None:
+    def decrease_job_info(self, column: VideoJobInfoColumnType) -> int | None:
         try:
             job_info = VideoJobInfo.objects.get(video=self)
             setattr(job_info, column, getattr(job_info, column) - 1)
@@ -158,11 +163,6 @@ class Video(models.Model):
             return getattr(job_info, column)
         except VideoJobInfo.DoesNotExist:
             return None
-
-
-class VideoJobInfoColumnType(models.TextChoices):
-    PENDING_MOVE = "pendingMove"
-    PENDING_TRANSCODE = "pendingTranscode"
 
 
 class VideoJobInfo(models.Model):

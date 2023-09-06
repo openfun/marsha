@@ -48,6 +48,32 @@ class DownloadVideoRunnerJobAPITest(TestCase):
             "files/videos/02404b18-3c50-4929-af61-913f4df65e99/max-quality"
         )
 
+    def test_download_video_with_an_invalid_job_uuid(self):
+        """Should not be able to download with an invalid job uuid."""
+        self.create_processing_job(RunnerJobType.VOD_HLS_TRANSCODING)
+        response = self.client.post(
+            "/api/v1/runners/jobs/02404b18-3c50-4929-af61-913f4df65e01/"
+            "files/videos/02404b18-3c50-4929-af61-913f4df65e99/max-quality",
+            data={
+                "runnerToken": "runnerToken",
+            },
+        )
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_download_video_with_an_invalid_video_uuid(self):
+        """Should not be able to download with an invalid video uuid."""
+        self.create_processing_job(RunnerJobType.VOD_HLS_TRANSCODING)
+        response = self.client.post(
+            "/api/v1/runners/jobs/02404b18-3c50-4929-af61-913f4df65e00/"
+            "files/videos/02404b18-3c50-4929-af61-913f4df69e99/max-quality",
+            data={
+                "runnerToken": "runnerToken",
+            },
+        )
+
+        self.assertEqual(response.status_code, 404)
+
     def test_request_with_an_invalid_runner_token(self):
         """Should not be able to request the list."""
         self.create_processing_job(RunnerJobType.VOD_HLS_TRANSCODING)

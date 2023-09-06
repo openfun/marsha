@@ -55,10 +55,20 @@ probe_response = {
                 "language": "und",
                 "vendor_id": "[0][0][0][0]",
             },
-        }
+        },
+        {
+            "index": 1,
+            "codec_name": "aac",
+            "codec_type": "audio",
+            "channels": 2,
+            "sample_rate": "48000 Hz",
+            "duration": "00:01:00.00",
+            "bit_rate": "1066073",
+            "tags": {"language": "eng"},
+        },
     ],
     "format": {
-        "filename": "/videos/video-213a81c8-bdfe-4870-b2bc-d71d3c30f3a4/base_video.mp4",
+        "filename": "/path/to/audio.mp3",
         "nb_streams": 1,
         "nb_programs": 0,
         "format_name": "mov,mp4,m4a,3gp,3g2,mj2",

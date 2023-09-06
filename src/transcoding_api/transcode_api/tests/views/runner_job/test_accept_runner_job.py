@@ -6,6 +6,7 @@ from django.test import TestCase
 from django.utils import timezone
 
 from transcode_api.factories import RunnerFactory, RunnerJobFactory
+from transcode_api.models import RunnerJobState
 
 # We don't enforce arguments documentation in tests
 # pylint: disable=unused-argument
@@ -18,7 +19,7 @@ class AcceptRunnerJobAPITest(TestCase):
 
     def setUp(self):
         runner = RunnerFactory(name="New Runner", runnerToken="runnerToken")
-        self.runner = RunnerJobFactory(
+        self.runner_job = RunnerJobFactory(
             runner=runner,
             type="vod-hls-transcoding",
             uuid="02404b18-3c50-4929-af61-913f4df65e00",
@@ -29,8 +30,19 @@ class AcceptRunnerJobAPITest(TestCase):
     def _api_url(self):
         return "/api/v1/runners/jobs/02404b18-3c50-4929-af61-913f4df65e00/accept"
 
-    def test_request_with_an_invalid_runner_token(self):
-        """Should not be able to request the list."""
+    def test_accept_with_an_invalid_job_uuid(self):
+        """Should not be able to accept with an invalid job uuid."""
+        response = self.client.post(
+            "/api/v1/runners/jobs/02404b18-3c50-4929-af61-913f4df65e01/accept",
+            data={
+                "runnerToken": "runnerToken",
+            },
+        )
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_accept_with_an_invalid_runner_token(self):
+        """Should not be able to accept with an invalid runner token."""
         response = self.client.post(
             self._api_url(),
             data={
@@ -53,7 +65,7 @@ class AcceptRunnerJobAPITest(TestCase):
             )
 
         self.assertEqual(response.status_code, 200)
-        self.runner.refresh_from_db()
+        self.runner_job.refresh_from_db()
 
         self.assertEqual(
             response.json()["job"],
@@ -61,7 +73,7 @@ class AcceptRunnerJobAPITest(TestCase):
                 "error": None,
                 "failures": 0,
                 "finishedAt": None,
-                "jobToken": self.runner.processingJobToken,
+                "jobToken": self.runner_job.processingJobToken,
                 "parent": None,
                 "payload": {"foo": "bar"},
                 "priority": 1,
@@ -77,3 +89,18 @@ class AcceptRunnerJobAPITest(TestCase):
                 "uuid": "02404b18-3c50-4929-af61-913f4df65e00",
             },
         )
+
+    def test_accept_an_already_processing_job(self):
+        """Should be able to request the 10 first available jobs."""
+        self.runner_job.state = RunnerJobState.PROCESSING
+        self.runner_job.save()
+
+        response = self.client.post(
+            self._api_url(),
+            data={
+                "runnerToken": "runnerToken",
+            },
+        )
+
+        self.assertEqual(response.status_code, 409)
+        self.assertEqual(response.data, "This job is not in pending state anymore")

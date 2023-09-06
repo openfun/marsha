@@ -47,12 +47,12 @@ def generate_hls_master_playlist_filename(is_live: bool = False):
     return str(uuid4()) + "-master.m3u8"
 
 
-def build_new_file(video: Video, filename: str, mode, existing_probe=None):
+def build_new_file(video: Video, filename: str, existing_probe=None):
     if not existing_probe:
-        path = video_storage.path(filename)
-        probe = ffmpeg.probe(path)
+        url = video_storage.url(filename)
+        probe = ffmpeg.probe(url)
     else:
-        path = ""
+        url = ""
         probe = existing_probe
 
     size = int(probe["format"]["size"])
@@ -62,10 +62,10 @@ def build_new_file(video: Video, filename: str, mode, existing_probe=None):
         resolution = VideoResolution.H_NOVIDEO
     else:
         fps = get_video_stream_fps(probe)
-        resolution = get_video_stream_dimensions_info(path, probe)["resolution"]
+        resolution = get_video_stream_dimensions_info(url, probe)["resolution"]
 
     video_file = VideoFile.objects.create(
-        extname=get_lower_case_extension(path),
+        extname=get_lower_case_extension(filename),
         size=size,
         metadata=build_file_metadata(probe=probe),
         resolution=resolution,

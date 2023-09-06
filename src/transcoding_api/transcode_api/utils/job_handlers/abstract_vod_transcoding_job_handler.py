@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 
-from transcode_api.models import RunnerJobState
+from transcode_api.models import RunnerJob, RunnerJobState
 from transcode_api.utils.job_handlers.abstract_job_handler import AbstractJobHandler
 from transcode_api.utils.job_handlers.utils import load_transcoding_runner_video
 from transcode_api.utils.video_state import (
@@ -17,10 +17,14 @@ class AbstractVODTranscodingJobHandler(AbstractJobHandler):
     def is_abort_supported(self):
         return True
 
-    def specific_update(self, options):
+    def specific_update(
+        self,
+        runner_job: RunnerJob,
+        update_payload=None,
+    ) -> None:
         pass
 
-    def specific_abort(self, options):
+    def specific_abort(self, runner_job: RunnerJob) -> None:
         pass
 
     def specific_error(self, runner_job, message, next_state):
@@ -52,4 +56,4 @@ class AbstractVODTranscodingJobHandler(AbstractJobHandler):
             )
 
             private_payload = runner_job.privatePayload
-            move_to_next_state(video=video, is_new_video=private_payload.isNewVideo)
+            move_to_next_state(video=video, is_new_video=private_payload["isNewVideo"])

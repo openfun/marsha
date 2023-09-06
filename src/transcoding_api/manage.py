@@ -19,8 +19,12 @@ def main():
 
 
 if __name__ == "__main__":
-    os.environ.setdefault("DJANGO_CONFIGURATION", "Development")
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "app.settings")
+
+    if sys.argv[1] == "test":
+        os.environ.setdefault("DJANGO_CONFIGURATION", "Test")
+    else:
+        os.environ.setdefault("DJANGO_CONFIGURATION", "Development")
 
     from configurations.management import execute_from_command_line
 

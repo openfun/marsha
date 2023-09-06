@@ -2,14 +2,24 @@ from __future__ import annotations
 
 import logging
 
+from django.conf import settings
+from django.utils.module_loading import import_string
+
 from transcode_api.models import Video, VideoState
 
 logger = logging.getLogger(__name__)
 
 
 def video_is_published(video: Video):
-    # TODO: Inform the back the video is published
-    return True
+    try:
+        callback_path = settings.TRANSCODING_VIDEO_IS_PUBLISHED_CALLBACK_PATH
+        if not callback_path:
+            return
+
+        callback = import_string(callback_path)
+        callback(video)
+    except Exception:
+        logger.error("Error in video_is_published callback")
 
 
 def build_next_video_state(current_state: VideoState = None) -> VideoState:
@@ -26,17 +36,9 @@ def build_next_video_state(current_state: VideoState = None) -> VideoState:
     return VideoState.PUBLISHED
 
 
-def move_to_next_state(
-    video: Video,
-    previous_video_state: VideoState | None = None,
-    is_new_video: bool = True,
-):
+def move_to_next_state(video: Video):
     # Maybe the video changed in database, refresh it
     video.refresh_from_db()
-
-    # Video does not exist anymore
-    if not video:
-        return None
 
     # Already in its final state
     if video.state == VideoState.PUBLISHED:
@@ -45,7 +47,7 @@ def move_to_next_state(
     new_state = build_next_video_state(video.state)
 
     if new_state == VideoState.PUBLISHED:
-        return move_to_published_state(video, previous_video_state, is_new_video)
+        return move_to_published_state(video)
 
 
 def move_to_failed_transcoding_state(video: Video):
@@ -56,11 +58,7 @@ def move_to_failed_transcoding_state(video: Video):
     video.save()
 
 
-def move_to_published_state(
-    video: Video,
-    is_new_video: bool,
-    previous_video_state: VideoState | None = None,
-):
+def move_to_published_state(video: Video):
     logger.info(
         "Publishing video %s.",
         video.uuid,

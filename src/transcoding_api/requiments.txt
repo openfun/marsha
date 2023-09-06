@@ -8,4 +8,6 @@ django-configurations
 uvicorn
 boto3
 shortuuid 
+websockets
+whitenoise
 factory_boy
