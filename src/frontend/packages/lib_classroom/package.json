@@ -16,6 +16,7 @@
     "prettier": "prettier --list-different '**/*.+(ts|tsx|json|js|jsx)' --ignore-path ../../../.prettierignore"
   },
   "peerDependencies": {
+    "@openfun/cunningham-react": "*",
     "@tanstack/react-query": "*",
     "@tanstack/react-query-devtools": "*",
     "grommet": "*",
@@ -35,6 +36,7 @@
     "@babel/preset-env": "7.22.14",
     "@babel/preset-typescript": "7.22.11",
     "@formatjs/cli": "6.1.3",
+    "@openfun/cunningham-react": "*",
     "@tanstack/react-query": "*",
     "@tanstack/react-query-devtools": "*",
     "@testing-library/jest-dom": "*",
