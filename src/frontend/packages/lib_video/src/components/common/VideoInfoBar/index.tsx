@@ -1,7 +1,8 @@
+import { Input } from '@openfun/cunningham-react';
 import { Box, Heading, Paragraph } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { Nullable, theme } from 'lib-common';
-import { EditionSVG, TextInput, Video, report } from 'lib-components';
+import { EditionSVG, report } from 'lib-components';
 import { DateTime } from 'luxon';
 import React, {
   Fragment,
@@ -18,28 +19,9 @@ import { useUpdateVideo } from '@lib-video/api/useUpdateVideo';
 import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
 import { useParticipantsStore } from '@lib-video/hooks/useParticipantsStore';
 
-const StyledBoxTextInput = styled(Box)`
-  & > div:first-child {
-    display: flex;
-    flex-direction: row-reverse;
-    width: 100%;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem;
-  }
-`;
-
-const StyledTitleTextInput = styled(TextInput)`
-  border: 1px solid ${normalizeColor('blue-active', theme)};
-  border-radius: 4px;
-  color: ${normalizeColor('blue-chat', theme)};
-  font-size: 1.125rem;
-  :not(:focus) {
-    color: ${normalizeColor('blue-chat', theme)};
-    font-weight: bold;
-    opacity: unset;
-    font-size: 1.125rem;
-    border: unset;
+const StyledBoxInput = styled(Box)`
+  & .c__input__wrapper {
+    border: none;
   }
 `;
 
@@ -50,7 +32,7 @@ const messages = defineMessages({
     id: 'components.LiveInfoBar.noTitle',
   },
   placeholderTitleInput: {
-    defaultMessage: 'Enter title of your live here',
+    defaultMessage: 'Enter title of your {videoType} here',
     description:
       'A placeholder text indicating the purpose of the input and what it is supposed to received.',
     id: 'components.LiveInfoBar.placeholderTitleInput',
@@ -119,34 +101,36 @@ export const VideoInfoBar = ({ isTeacher, startDate }: VideoInfoBarProps) => {
     },
   });
 
-  const updateVideo = useCallback(
-    (updatedVideoProperty: Partial<Video>) => {
-      if (updatedVideoProperty.title === '') {
-        toast.error(intl.formatMessage(messages.updateTitleBlank), {
-          position: 'bottom-center',
-        });
-        setTitle(video.title || intl.formatMessage(messages.noTitle));
-        return;
+  const handleChange = useCallback(
+    (inputText: string) => {
+      setTitle(inputText);
+
+      if (inputText) {
+        videoMutation.mutate({ title: inputText });
       }
-      videoMutation.mutate(updatedVideoProperty);
     },
-    [videoMutation, intl, video.title],
+    [videoMutation],
   );
+
+  useEffect(() => {
+    if (title === '') {
+      toast.error(intl.formatMessage(messages.updateTitleBlank), {
+        position: 'bottom-center',
+      });
+      setTitle(video.title || intl.formatMessage(messages.noTitle));
+      return;
+    }
+  }, [intl, title, video.title]);
 
   useEffect(() => {
     setTitle(video.title || intl.formatMessage(messages.noTitle));
   }, [intl, video.title]);
 
-  const handleChange = (inputText: string) => {
-    setTitle(inputText);
-    updateVideo({ title: inputText });
-  };
-
   return (
     <Fragment>
       {isTeacher ? (
-        <StyledBoxTextInput alignContent="center" direction="row">
-          <StyledTitleTextInput
+        <StyledBoxInput alignContent="center" direction="row">
+          <Input
             icon={
               <EditionSVG
                 iconColor={normalizeColor('blue-chat', theme)}
@@ -155,15 +139,18 @@ export const VideoInfoBar = ({ isTeacher, startDate }: VideoInfoBarProps) => {
                 containerStyle={{ margin: 'auto' }}
               />
             }
+            aria-label={intl.formatMessage(messages.placeholderTitleInput, {
+              videoType: video.is_live ? 'live' : 'video',
+            })}
+            label={intl.formatMessage(messages.placeholderTitleInput, {
+              videoType: video.is_live ? 'live' : 'video',
+            })}
+            fullWidth
             onBlur={(event) => handleChange(event.target.value)}
-            placeholder={intl.formatMessage(messages.placeholderTitleInput)}
-            setValue={(value) => setTitle(value)}
-            title={intl.formatMessage(messages.placeholderTitleInput)}
             value={title}
-            plain
-            width="100%"
+            state={!title ? 'error' : undefined}
           />
-        </StyledBoxTextInput>
+        </StyledBoxInput>
       ) : (
         <Heading
           a11yTitle={title}

@@ -1,7 +1,7 @@
+import { Input } from '@openfun/cunningham-react';
 import { Box, Button, Text } from 'grommet';
 import { Breakpoints, Nullable } from 'lib-common';
 import {
-  TextInput,
   Video,
   WhiteCard,
   modelName,
@@ -170,16 +170,16 @@ export const CreateVOD = ({
             {intl.formatMessage(messages.descriptionText)}
           </Text>
 
-          <TextInput
+          <Input
+            aria-label={intl.formatMessage(messages.placeholderTitleInput)}
             disabled={formState !== FormState.WAITING_FOR_SUBMIT}
-            placeholder={intl.formatMessage(messages.placeholderTitleInput)}
-            setValue={(title) =>
+            label={intl.formatMessage(messages.placeholderTitleInput)}
+            onChange={(event) =>
               setWizardedVideo({
                 ...wizardedVideo,
-                title,
+                title: event.target.value,
               })
             }
-            title={intl.formatMessage(messages.placeholderTitleInput)}
             value={wizardedVideo.title || ''}
           />
 

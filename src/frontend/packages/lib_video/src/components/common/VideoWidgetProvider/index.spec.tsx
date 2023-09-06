@@ -1,4 +1,4 @@
-import { screen, waitFor, within } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import faker from 'faker';
 import fetchMock from 'fetch-mock';
@@ -70,6 +70,14 @@ describe('<VideoWidgetProvider />', () => {
         upload_max_size_bytes: 1000000,
       },
       { method: 'OPTIONS' },
+    );
+
+    fetchMock.mock(
+      `/api/videos/${videoId}/`,
+      {
+        ok: true,
+      },
+      { method: 'PATCH' },
     );
   });
 
@@ -378,7 +386,14 @@ describe('<VideoWidgetProvider />', () => {
       is_ready_to_show: true,
       mode: timedTextMode.TRANSCRIPT,
     }) as TimedTextTranscript;
-    useTimedTextTrack.getState().setSelectedTranscript(timedTextMock);
+
+    fetchMock.mock(timedTextMock.url, {
+      ok: true,
+    });
+
+    act(() => {
+      useTimedTextTrack.getState().setSelectedTranscript(timedTextMock);
+    });
 
     await waitFor(() => {
       expect(screen.getByText('Transcripts')).toBeInTheDocument();

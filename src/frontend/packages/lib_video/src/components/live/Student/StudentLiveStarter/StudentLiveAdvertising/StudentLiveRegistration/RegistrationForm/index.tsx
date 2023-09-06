@@ -1,15 +1,9 @@
-import { Button, Paragraph, TextInput, ThemeContext } from 'grommet';
+import { Input } from '@openfun/cunningham-react';
+import { Button, Paragraph, ThemeContext } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { Maybe, theme } from 'lib-common';
-import {
-  Form,
-  FormField,
-  LiveSession,
-  checkToken,
-  decodeJwt,
-  useJwt,
-} from 'lib-components';
-import React, { useMemo, useState } from 'react';
+import { LiveSession, checkToken, decodeJwt, useJwt } from 'lib-components';
+import { useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { createLiveSession } from '@lib-video/api/createLiveSession';
@@ -111,12 +105,6 @@ const messages = defineMessages({
       'Error message to warn the user that his email registration did not work. Ask user to check his Email address otherwise to contact us or to try later.',
     id: 'components.SubscribScheduledVideoEmail.form.email.default.error',
   },
-  emailFormatValidationError: {
-    defaultMessage: 'You have to submit a valid email to register.',
-    description:
-      'Error message if input value does not conform to email regex.',
-    id: 'components.SubscribScheduledVideoEmail.form.email.validation.error',
-  },
   emailInputLabel: {
     defaultMessage: 'Email address',
     description: 'Label for email input in form.',
@@ -191,101 +179,93 @@ export const RegistrationForm = ({
 
   return (
     <ThemeContext.Extend value={formTheme}>
-      <Form
-        value={values}
-        onChange={setValues}
-        onSubmit={async ({ value }) => {
-          if (!value.email) {
+      <form
+        onChange={(e) => {
+          const { name, value } = e.target as HTMLInputElement;
+          setValues((_value) => ({ ..._value, [name]: value }));
+        }}
+        onSubmit={(e) => {
+          e.preventDefault();
+
+          if (!values.email) {
             //  submit without email should not be possible since validation should fail
             return;
           }
 
-          let anonymousId: Maybe<string>;
-          if (!isValidToken) {
-            anonymousId = getAnonymousId();
-          }
-          let updatedLiveSession: LiveSession;
-          if (!liveSession) {
-            updatedLiveSession = await createLiveSession(
-              live.id,
-              value.email,
-              intl.locale,
-              anonymousId,
-            );
-          } else {
-            updatedLiveSession = await updateLiveSession(
-              liveSession,
-              intl.locale,
-              value.email,
-              true,
-              anonymousId,
-            );
-          }
+          const submit = async () => {
+            let anonymousId: Maybe<string>;
+            if (!isValidToken) {
+              anonymousId = getAnonymousId();
+            }
+            let updatedLiveSession: LiveSession;
 
-          setLtiUserError(undefined);
-          setRegistrationCompleted(updatedLiveSession);
-        }}
-        onSubmitError={(value, error) => {
-          if (!value.email) {
-            //  submit without email should not be possible since validation should fail
-            return {};
-          }
+            try {
+              if (!liveSession) {
+                updatedLiveSession = await createLiveSession(
+                  live.id,
+                  values.email,
+                  intl.locale,
+                  anonymousId,
+                );
+              } else {
+                updatedLiveSession = await updateLiveSession(
+                  liveSession,
+                  intl.locale,
+                  values.email,
+                  true,
+                  anonymousId,
+                );
+              }
 
-          if (!displayEmailInput) {
-            setLtiUserError(
-              intl.formatMessage(messages.updateMailDefaultError, value),
-            );
-            return {};
-          }
+              setLtiUserError(undefined);
+              setRegistrationCompleted(updatedLiveSession);
+            } catch (error) {
+              if (!displayEmailInput) {
+                setLtiUserError(
+                  intl.formatMessage(messages.updateMailDefaultError, values),
+                );
+                return;
+              }
 
-          let errorMessage;
-          if (
-            isBackendFormError(error) &&
-            error.email.length > 0 &&
-            error.email[0].indexOf('already registered') > 0
-          ) {
-            errorMessage = intl.formatMessage(
-              messages.updateMailAlreadyExistingError,
-              value,
-            );
-          } else if (isValidationFormError(error)) {
-            errorMessage = intl.formatMessage(
-              messages.updateMailNotValidError,
-              value,
-            );
-          } else {
-            errorMessage = intl.formatMessage(
-              messages.updateMailDefaultError,
-              value,
-            );
-          }
+              let errorMessage;
+              if (
+                isBackendFormError(error) &&
+                error.email.length > 0 &&
+                error.email[0].indexOf('already registered') > 0
+              ) {
+                errorMessage = intl.formatMessage(
+                  messages.updateMailAlreadyExistingError,
+                  values,
+                );
+              } else if (isValidationFormError(error)) {
+                errorMessage = intl.formatMessage(
+                  messages.updateMailNotValidError,
+                  values,
+                );
+              } else {
+                errorMessage = intl.formatMessage(
+                  messages.updateMailDefaultError,
+                  values,
+                );
+              }
 
-          return { email: errorMessage };
+              setLtiUserError(errorMessage);
+            }
+          };
+
+          submit();
         }}
       >
         {displayEmailInput && (
-          <FormField
-            htmlFor="text-input-id"
+          <Input
+            aria-label={intl.formatMessage(messages.emailInputLabel)}
+            fullWidth
             label={intl.formatMessage(messages.emailInputLabel)}
             name="email"
-            validate={[
-              {
-                regexp:
-                  /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
-                message: intl.formatMessage(
-                  messages.emailFormatValidationError,
-                ),
-                status: 'error',
-              },
-            ]}
-          >
-            <TextInput
-              id="text-input-id"
-              name="email"
-              placeholder="email"
-              type="TextInput"
-            />
-          </FormField>
+            type="email"
+            required
+            defaultValue={values.email}
+          />
         )}
 
         <Button
@@ -301,7 +281,7 @@ export const RegistrationForm = ({
             {ltiUserError}
           </Paragraph>
         )}
-      </Form>
+      </form>
     </ThemeContext.Extend>
   );
 };

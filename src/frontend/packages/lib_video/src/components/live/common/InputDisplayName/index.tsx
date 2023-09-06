@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+import { Input, Loader } from '@openfun/cunningham-react';
 import { Box, Text, Tip } from 'grommet';
 import { Maybe, Nullable } from 'lib-common';
 import {
@@ -26,8 +25,6 @@ import { isAnonymous } from '@lib-video/utils/chat/chat';
 import { getAnonymousId } from '@lib-video/utils/localstorage';
 import { converse } from '@lib-video/utils/window';
 
-import { InputBar } from '../Chat/InputBar';
-
 import { InputDisplayNameIncorrectAlert } from './InputDisplayNameIncorrectAlert';
 
 const messages = defineMessages({
@@ -50,7 +47,7 @@ const messages = defineMessages({
     id: 'components.InputDisplayName.inputDisplayNameLabel',
   },
   inputDisplayNamePlaceholder: {
-    defaultMessage: 'Enter your desired display name...',
+    defaultMessage: 'Enter your display name',
     description: 'The input bar to fill your display name.',
     id: 'components.InputDisplayName.inputDisplayNamePlaceholder',
   },
@@ -102,6 +99,11 @@ export const InputDisplayName = ({ onSuccess }: InputDisplayNameProps) => {
     setLiveSession: state.setLiveSession,
   }));
   const isMounted = useRef(true);
+  const [displayName, setDisplayName] = useState(
+    liveSession?.username ||
+      (user !== AnonymousUser.ANONYMOUS && user?.username) ||
+      '',
+  );
 
   useEffect(() => {
     return () => {
@@ -264,18 +266,36 @@ export const InputDisplayName = ({ onSuccess }: InputDisplayNameProps) => {
             </Tip>
           </Box>
         </Box>
-        <InputBar
-          defaultValue={
-            liveSession?.username ||
-            (user !== AnonymousUser.ANONYMOUS && user?.username) ||
-            ''
+        <Input
+          rightIcon={
+            !isWaiting ? (
+              <span
+                className="material-icons"
+                onClick={() => {
+                  processDisplayName(displayName);
+                }}
+                style={{
+                  cursor: 'pointer',
+                }}
+                role="button"
+              >
+                send
+              </span>
+            ) : (
+              <Loader size="small" />
+            )
           }
-          handleUserInput={processDisplayName}
-          isChatInput={false}
-          isWaiting={isWaiting}
-          placeholderText={intl.formatMessage(
-            messages.inputDisplayNamePlaceholder,
-          )}
+          aria-label={intl.formatMessage(messages.inputDisplayNamePlaceholder)}
+          label={intl.formatMessage(messages.inputDisplayNamePlaceholder)}
+          fullWidth
+          value={displayName}
+          disabled={isWaiting}
+          onChange={(event) => setDisplayName(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              processDisplayName(displayName);
+            }
+          }}
         />
       </Box>
       <Box>
