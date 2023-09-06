@@ -1,13 +1,19 @@
-import { Box, CheckBox, FormField, Text, TextInput } from 'grommet';
+import { Input } from '@openfun/cunningham-react';
+import { Box, CheckBox, Text } from 'grommet';
 import { Classroom, DashboardButton } from 'lib-components';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
   label: {
-    defaultMessage: 'Please enter your name to join the classroom',
-    description: 'Label for asking username to join the classroom.',
+    defaultMessage: 'Enter your name',
+    description: 'Placeholder for asking username to join the classroom.',
     id: 'component.DashboardClassroomAskUsername.label',
+  },
+  infoInput: {
+    defaultMessage: 'Please enter your name to join the classroom',
+    description: 'Text info for asking username to join the classroom.',
+    id: 'component.DashboardClassroomAskUsername.infoInput',
   },
   cancel: {
     defaultMessage: 'Cancel',
@@ -47,14 +53,16 @@ const DashboardClassroomAskUsernameWrapper = ({
 
   return (
     <Box pad="large" gap="medium" className="DashboardClassroomAskUsername">
-      <FormField label={intl.formatMessage(messages.label)}>
-        <TextInput
-          value={userFullname}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            setUserFullname(event.currentTarget.value);
-          }}
-        />
-      </FormField>
+      <Input
+        aria-label={intl.formatMessage(messages.label)}
+        label={intl.formatMessage(messages.label)}
+        fullWidth
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+          setUserFullname(event.currentTarget.value);
+        }}
+        value={userFullname}
+        text={intl.formatMessage(messages.infoInput)}
+      />
       {children}
     </Box>
   );

@@ -1,7 +1,8 @@
+import { Input } from '@openfun/cunningham-react';
 import { Box, BoxProps } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
-import { Classroom, EditionSVG, TextInput, report } from 'lib-components';
+import { EditionSVG, report } from 'lib-components';
 import { useCallback, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -10,17 +11,9 @@ import styled from 'styled-components';
 import { useUpdateClassroom } from '@lib-classroom/data';
 import { useCurrentClassroom } from '@lib-classroom/hooks/useCurrentClassroom';
 
-const StyledTitleTextInput = styled(TextInput)`
-  border: 1px solid ${normalizeColor('blue-active', theme)};
-  border-radius: 4px;
-  color: ${normalizeColor('blue-chat', theme)};
-  font-size: 1.125rem;
-  :not(:focus) {
-    color: ${normalizeColor('blue-chat', theme)};
-    font-weight: bold;
-    opacity: unset;
-    font-size: 1.125rem;
-    border: unset;
+const StyledBoxInput = styled(Box)`
+  & .c__input__wrapper {
+    border: none;
   }
 `;
 
@@ -80,28 +73,30 @@ export const ClassroomInfoBar = (props: BoxProps) => {
     },
   });
 
-  const updateClassroom = useCallback(
-    (updatedVideoProperty: Partial<Classroom>) => {
-      if (updatedVideoProperty.title === '') {
-        toast.error(intl.formatMessage(messages.updateTitleBlank), {
-          position: 'bottom-center',
-        });
-        setTitle(classroom.title || intl.formatMessage(messages.noTitle));
-        return;
+  const handleChange = useCallback(
+    (inputText: string) => {
+      setTitle(inputText);
+
+      if (inputText) {
+        classroomMutation.mutate({ title: inputText });
       }
-      classroomMutation.mutate(updatedVideoProperty);
     },
-    [classroomMutation, intl, classroom.title],
+    [classroomMutation],
   );
+
+  useEffect(() => {
+    if (title === '') {
+      toast.error(intl.formatMessage(messages.updateTitleBlank), {
+        position: 'bottom-center',
+      });
+      setTitle(classroom.title || intl.formatMessage(messages.noTitle));
+      return;
+    }
+  }, [intl, title, classroom.title]);
 
   useEffect(() => {
     setTitle(classroom.title || intl.formatMessage(messages.noTitle));
   }, [intl, classroom.title]);
-
-  const handleChange = (inputText: string) => {
-    setTitle(inputText);
-    updateClassroom({ title: inputText });
-  };
 
   return (
     <Box
@@ -111,13 +106,13 @@ export const ClassroomInfoBar = (props: BoxProps) => {
       width={{ min: 'small' }}
       {...props}
     >
-      <Box
+      <StyledBoxInput
         margin={{ right: 'small' }}
         gap="small"
         alignContent="center"
         direction="row"
       >
-        <StyledTitleTextInput
+        <Input
           icon={
             <EditionSVG
               iconColor={normalizeColor('blue-chat', theme)}
@@ -126,14 +121,13 @@ export const ClassroomInfoBar = (props: BoxProps) => {
               containerStyle={{ margin: 'auto' }}
             />
           }
+          aria-label={intl.formatMessage(messages.placeholderTitleInput)}
+          label={intl.formatMessage(messages.placeholderTitleInput)}
+          fullWidth
           onBlur={(event) => handleChange(event.target.value)}
-          placeholder={intl.formatMessage(messages.placeholderTitleInput)}
-          setValue={(value) => setTitle(value)}
-          title={intl.formatMessage(messages.placeholderTitleInput)}
           value={title}
-          plain
         />
-      </Box>
+      </StyledBoxInput>
     </Box>
   );
 };
