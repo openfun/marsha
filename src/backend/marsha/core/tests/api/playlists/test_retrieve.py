@@ -107,6 +107,7 @@ class PlaylistRetrieveAPITest(TestCase):
                 "is_portable_to_consumer_site": False,
                 "is_portable_to_playlist": True,
                 "is_public": False,
+                "is_claimable": True,
                 "lti_id": playlist.lti_id,
                 "organization": None,
                 "portable_to": [],
@@ -148,6 +149,7 @@ class PlaylistRetrieveAPITest(TestCase):
                 "is_portable_to_consumer_site": False,
                 "is_portable_to_playlist": True,
                 "is_public": False,
+                "is_claimable": True,
                 "lti_id": playlist.lti_id,
                 "organization": {
                     "id": str(organization.id),

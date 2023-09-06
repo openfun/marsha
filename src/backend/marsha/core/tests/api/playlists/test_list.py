@@ -94,6 +94,7 @@ class PlaylistListAPITest(TestCase):
                     "is_portable_to_consumer_site": False,
                     "is_portable_to_playlist": True,
                     "is_public": False,
+                    "is_claimable": True,
                     "lti_id": "playlist#two",
                     "organization": {
                         "id": str(org_2.id),
@@ -120,6 +121,7 @@ class PlaylistListAPITest(TestCase):
                     "is_portable_to_consumer_site": False,
                     "is_portable_to_playlist": True,
                     "is_public": False,
+                    "is_claimable": True,
                     "lti_id": "playlist#one",
                     "organization": {
                         "id": str(org_1.id),
@@ -198,6 +200,7 @@ class PlaylistListAPITest(TestCase):
                     "is_portable_to_consumer_site": False,
                     "is_portable_to_playlist": True,
                     "is_public": False,
+                    "is_claimable": True,
                     "lti_id": "playlist#eleven",
                     "organization": {
                         "id": str(org_1.id),
@@ -285,6 +288,7 @@ class PlaylistListAPITest(TestCase):
                     "is_portable_to_consumer_site": False,
                     "is_portable_to_playlist": True,
                     "is_public": False,
+                    "is_claimable": True,
                     "lti_id": "playlist#five",
                     "organization": None,
                     "portable_to": [],
@@ -308,6 +312,7 @@ class PlaylistListAPITest(TestCase):
                     "is_portable_to_consumer_site": False,
                     "is_portable_to_playlist": True,
                     "is_public": False,
+                    "is_claimable": True,
                     "lti_id": "playlist#four",
                     "organization": None,
                     "portable_to": [],
@@ -331,6 +336,7 @@ class PlaylistListAPITest(TestCase):
                     "is_portable_to_consumer_site": False,
                     "is_portable_to_playlist": True,
                     "is_public": False,
+                    "is_claimable": True,
                     "lti_id": "playlist#three",
                     "organization": {
                         "id": str(org_2.id),
@@ -357,6 +363,7 @@ class PlaylistListAPITest(TestCase):
                     "is_portable_to_consumer_site": False,
                     "is_portable_to_playlist": True,
                     "is_public": False,
+                    "is_claimable": True,
                     "lti_id": "playlist#one",
                     "organization": {
                         "id": str(org_1.id),
@@ -477,6 +484,7 @@ class PlaylistListAPITest(TestCase):
                     "is_portable_to_consumer_site": False,
                     "is_portable_to_playlist": True,
                     "is_public": False,
+                    "is_claimable": True,
                     "lti_id": "playlist#one",
                     "organization": {
                         "id": str(org_1.id),
@@ -503,6 +511,7 @@ class PlaylistListAPITest(TestCase):
                     "is_portable_to_consumer_site": False,
                     "is_portable_to_playlist": True,
                     "is_public": False,
+                    "is_claimable": True,
                     "lti_id": "playlist#three",
                     "organization": {
                         "id": str(org_2.id),
@@ -529,6 +538,7 @@ class PlaylistListAPITest(TestCase):
                     "is_portable_to_consumer_site": False,
                     "is_portable_to_playlist": True,
                     "is_public": False,
+                    "is_claimable": True,
                     "lti_id": "playlist#four",
                     "organization": None,
                     "portable_to": [],
