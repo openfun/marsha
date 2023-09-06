@@ -120,6 +120,7 @@ class PlaylistCreateAPITest(TestCase):
                 "is_portable_to_playlist": False,
                 "is_portable_to_consumer_site": False,
                 "is_public": False,
+                "is_claimable": False,
                 "lti_id": "playlist_twenty",
                 "organization": {
                     "id": str(org.id),
@@ -182,6 +183,7 @@ class PlaylistCreateAPITest(TestCase):
                 "is_portable_to_playlist": False,
                 "is_portable_to_consumer_site": False,
                 "is_public": False,
+                "is_claimable": False,
                 "lti_id": "playlist_twenty",
                 "organization": {
                     "id": str(org.id),

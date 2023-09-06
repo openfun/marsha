@@ -28,6 +28,7 @@ class PlaylistSerializer(serializers.ModelSerializer):
             "is_portable_to_playlist",
             "is_portable_to_consumer_site",
             "is_public",
+            "is_claimable",
             "lti_id",
             "organization",
             "portable_to",
