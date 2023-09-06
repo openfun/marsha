@@ -25,6 +25,9 @@
   transition: all var(--c--theme--transitions--duration)
     var(--c--theme--transitions--ease-out);
 }
+.c__input__wrapper:hover {
+  box-shadow: var(--c--theme--colors--primary-500) 0px 0px 0px 2px;
+}
 .c__input__wrapper .labelled-box__label.placeholder {
   cursor: inherit;
 }
