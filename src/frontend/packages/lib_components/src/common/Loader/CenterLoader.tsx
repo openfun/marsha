@@ -1,7 +1,8 @@
 import { Loader } from '@openfun/cunningham-react';
 import { Box, BoxProps } from 'grommet';
+import { ComponentPropsWithoutRef } from 'react';
 
-type LoaderProps = React.ComponentProps<typeof Loader>;
+type LoaderProps = ComponentPropsWithoutRef<typeof Loader>;
 interface CenterLoaderProps {
   boxProps?: BoxProps;
   loaderProps?: LoaderProps;
