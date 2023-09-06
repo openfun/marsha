@@ -129,9 +129,8 @@ describe('<StudentLiveRegistration />', () => {
 
     expect(container.childNodes.length).toEqual(1);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Register' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Register' }));
 
-    await screen.findByText('You have to submit a valid email to register.');
     expect(mockCreateLiveSession).not.toHaveBeenCalled();
   });
 

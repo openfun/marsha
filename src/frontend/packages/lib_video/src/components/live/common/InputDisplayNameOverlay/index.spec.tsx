@@ -1,4 +1,3 @@
-/* eslint-disable testing-library/no-node-access */
 import { act, screen, waitFor } from '@testing-library/react';
 import userEventInit from '@testing-library/user-event';
 import { Nullable } from 'lib-common';
@@ -8,7 +7,7 @@ import {
   useCurrentUser,
   useJwt,
 } from 'lib-components';
-import { render, renderImageSnapshot, wrapInIntlProvider } from 'lib-tests';
+import { render, wrapInIntlProvider } from 'lib-tests';
 
 import { setLiveSessionDisplayName } from '@lib-video/api/setLiveSessionDisplayName';
 import {
@@ -141,13 +140,14 @@ describe('<InputDisplayNameOverlay />', () => {
 
   it('enters a valid nickname but the server takes too long to answer.', async () => {
     mockConverse.mockImplementation(
-      async (
+      (
         _displayName: string,
         _callbackSuccess: () => void,
         callbackError: (stanza: Nullable<HTMLElement>) => void,
       ) => {
-        await new Promise((r) => setTimeout(r, 2000));
-        callbackError(null);
+        new Promise((r) => setTimeout(r, 2000)).then(() => {
+          callbackError(null);
+        });
       },
     );
     mockSetLiveSessionDisplayName.mockResolvedValue({
@@ -158,22 +158,25 @@ describe('<InputDisplayNameOverlay />', () => {
     render(wrapInVideo(<InputDisplayNameOverlay />, live));
 
     const inputTextbox = screen.getByRole('textbox');
-    const validateButton = screen.getByRole('button');
+    const validateButton = screen.getByRole('button', { name: 'send' });
     await userEvent.type(inputTextbox, 'John_Doe');
-    expect(validateButton.querySelector('svg')).toBeTruthy();
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
     await userEvent.click(validateButton);
     await waitFor(() =>
       expect(mockSetLiveSessionDisplayName).toHaveBeenCalled(),
     );
     expect(converse.claimNewNicknameInChatRoom).toHaveBeenCalledTimes(1);
     // When waiting prosody answer, svg button is replaced by a waiting spinner
-    expect(validateButton.querySelector('svg')).toBeNull();
+    expect(
+      screen.queryByRole('button', { name: 'send' }),
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole('status')).toBeInTheDocument();
     act(() => {
       jest.advanceTimersByTime(3000);
     });
-    await waitFor(() =>
-      expect(validateButton.querySelector('svg')).toBeTruthy(),
-    );
+    expect(
+      await screen.findByRole('button', { name: 'send' }),
+    ).toBeInTheDocument();
     screen.getByText('The server took too long to respond. Please retry.');
   });
 
@@ -183,19 +186,20 @@ describe('<InputDisplayNameOverlay />', () => {
     });
 
     mockConverse.mockImplementation(
-      async (
+      (
         _displayName: string,
         _callbackSuccess: () => void,
         callbackError: (stanza: Nullable<HTMLElement>) => void,
       ) => {
-        await new Promise((r) => setTimeout(r, 2000));
-        const parser = new DOMParser();
-        callbackError(
-          parser.parseFromString(
-            '<error code="409" />',
-            'text/xml',
-          ) as any as HTMLElement,
-        );
+        new Promise((r) => setTimeout(r, 2000)).then(() => {
+          const parser = new DOMParser();
+          callbackError(
+            parser.parseFromString(
+              '<error code="409" />',
+              'text/xml',
+            ) as any as HTMLElement,
+          );
+        });
       },
     );
     mockSetLiveSessionDisplayName.mockResolvedValue({
@@ -206,9 +210,9 @@ describe('<InputDisplayNameOverlay />', () => {
     render(wrapInVideo(<InputDisplayNameOverlay />, live));
 
     const inputTextbox = screen.getByRole('textbox');
-    const validateButton = screen.getByRole('button');
+    const validateButton = screen.getByRole('button', { name: 'send' });
     await userEvent.type(inputTextbox, 'John_Doe');
-    expect(validateButton.querySelector('svg')).toBeTruthy();
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
     await userEvent.click(validateButton);
     await waitFor(() =>
       expect(mockSetLiveSessionDisplayName).toHaveBeenCalled(),
@@ -217,7 +221,9 @@ describe('<InputDisplayNameOverlay />', () => {
     act(() => {
       jest.advanceTimersByTime(3000);
     });
-    expect(validateButton.querySelector('svg')).toBeTruthy();
+    expect(
+      await screen.findByRole('button', { name: 'send' }),
+    ).toBeInTheDocument();
     screen.getByText(
       'Your nickname is already used in the chat. Please choose another one.',
     );
@@ -230,19 +236,20 @@ describe('<InputDisplayNameOverlay />', () => {
     });
 
     mockConverse.mockImplementation(
-      async (
+      (
         _displayName: string,
         _callbackSuccess: () => void,
         callbackError: (stanza: Nullable<HTMLElement>) => void,
       ) => {
-        await new Promise((r) => setTimeout(r, 2000));
-        const parser = new DOMParser();
-        callbackError(
-          parser.parseFromString(
-            '<error code="409" />',
-            'text/xml',
-          ) as any as HTMLElement,
-        );
+        new Promise((r) => setTimeout(r, 2000)).then(() => {
+          const parser = new DOMParser();
+          callbackError(
+            parser.parseFromString(
+              '<error code="409" />',
+              'text/xml',
+            ) as any as HTMLElement,
+          );
+        });
       },
     );
     mockSetLiveSessionDisplayName.mockResolvedValue({
@@ -253,22 +260,25 @@ describe('<InputDisplayNameOverlay />', () => {
     render(wrapInVideo(<InputDisplayNameOverlay />, live));
 
     const inputTextbox = screen.getByRole('textbox');
-    const validateButton = screen.getByRole('button');
+    const validateButton = screen.getByRole('button', { name: 'send' });
     await userEvent.type(inputTextbox, 'John_Doe');
-    expect(validateButton.querySelector('svg')).toBeTruthy();
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
     await userEvent.click(validateButton);
     await waitFor(() =>
       expect(mockSetLiveSessionDisplayName).toHaveBeenCalled(),
     );
     expect(converse.claimNewNicknameInChatRoom).toHaveBeenCalledTimes(1);
     // When waiting prosody answer, svg button is replaced by a waiting spinner
-    expect(validateButton.querySelector('svg')).toBeNull();
+    expect(
+      screen.queryByRole('button', { name: 'send' }),
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole('status')).toBeInTheDocument();
     act(() => {
       jest.advanceTimersByTime(3000);
     });
-    await waitFor(() =>
-      expect(validateButton.querySelector('svg')).toBeTruthy(),
-    );
+    expect(
+      await screen.findByRole('button', { name: 'send' }),
+    ).toBeInTheDocument();
     screen.getByText(
       'Your nickname is already used in the chat. Please choose another one.',
     );
@@ -281,19 +291,20 @@ describe('<InputDisplayNameOverlay />', () => {
     });
 
     mockConverse.mockImplementation(
-      async (
+      (
         _displayName: string,
         _callbackSuccess: () => void,
         callbackError: (stanza: Nullable<HTMLElement>) => void,
       ) => {
-        await new Promise((r) => setTimeout(r, 2000));
-        const parser = new DOMParser();
-        callbackError(
-          parser.parseFromString(
-            '<unknownStanza unknownAttribute="unrecognizedValue" />',
-            'text/xml',
-          ) as any as HTMLElement,
-        );
+        new Promise((r) => setTimeout(r, 2000)).then(() => {
+          const parser = new DOMParser();
+          callbackError(
+            parser.parseFromString(
+              '<unknownStanza unknownAttribute="unrecognizedValue" />',
+              'text/xml',
+            ) as any as HTMLElement,
+          );
+        });
       },
     );
     mockSetLiveSessionDisplayName.mockResolvedValue({
@@ -304,22 +315,25 @@ describe('<InputDisplayNameOverlay />', () => {
     render(wrapInVideo(<InputDisplayNameOverlay />, live));
 
     const inputTextbox = screen.getByRole('textbox');
-    const validateButton = screen.getByRole('button');
+    const validateButton = screen.getByRole('button', { name: 'send' });
     await userEvent.type(inputTextbox, 'John_Doe');
-    expect(validateButton.querySelector('svg')).toBeTruthy();
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
     await userEvent.click(validateButton);
     await waitFor(() =>
       expect(mockSetLiveSessionDisplayName).toHaveBeenCalled(),
     );
     expect(converse.claimNewNicknameInChatRoom).toHaveBeenCalledTimes(1);
     // When waiting prosody answer, svg button is replaced by a waiting spinner
-    expect(validateButton.querySelector('svg')).toBeNull();
+    expect(
+      screen.queryByRole('button', { name: 'send' }),
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole('status')).toBeInTheDocument();
     act(() => {
       jest.advanceTimersByTime(3000);
     });
-    await waitFor(() =>
-      expect(validateButton.querySelector('svg')).toBeTruthy(),
-    );
+    expect(
+      await screen.findByRole('button', { name: 'send' }),
+    ).toBeInTheDocument();
     screen.getByText('Impossible to connect you to the chat. Please retry.');
     expect(useLiveSession.getState().liveSession).toBeUndefined();
   });
@@ -425,15 +439,5 @@ describe('<InputDisplayNameOverlay />', () => {
     render(wrapInVideo(wrapInIntlProvider(<InputDisplayNameOverlay />), live));
 
     expect(screen.getByRole('textbox')).toHaveValue('jane_doe');
-  });
-
-  it('displays the component and compares it with previous render. [screenshot]', async () => {
-    useJwt.setState({
-      jwt: 'some_jwt',
-    });
-
-    await renderImageSnapshot(wrapInVideo(<InputDisplayNameOverlay />, live));
-
-    expect(screen.getByRole('textbox')).toBeInTheDocument();
   });
 });

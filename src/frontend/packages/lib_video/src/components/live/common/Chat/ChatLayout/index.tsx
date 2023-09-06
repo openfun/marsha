@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+import { Input } from '@openfun/cunningham-react';
 import { Box, Spinner } from 'grommet';
-import React from 'react';
+import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { useChatItemState } from '@lib-video/hooks/useChatItemsStore';
@@ -10,7 +9,6 @@ import { useSetDisplayName } from '@lib-video/hooks/useSetDisplayName';
 import { converse } from '@lib-video/utils/window';
 
 import { ChatConversationDisplayer } from '../ChatConversationDisplayer';
-import { InputBar } from '../InputBar';
 import { JoinChatButton } from '../JoinChatButton';
 
 export interface ChatLayoutProps {
@@ -24,10 +22,11 @@ export const ChatLayout = ({ isModerated }: ChatLayoutProps) => {
     (state) => state.hasReceivedMessageHistory,
   );
   const intl = useIntl();
+  const [chatmessage, setChatmessage] = useState('');
 
-  const processChatMessage = (chatMsg: string) => {
-    converse.sendMessage(chatMsg);
-    return Promise.resolve(true);
+  const processChatMessage = () => {
+    converse.sendMessage(chatmessage);
+    setChatmessage('');
   };
 
   const messages = defineMessages({
@@ -55,10 +54,28 @@ export const ChatLayout = ({ isModerated }: ChatLayoutProps) => {
       {!isModerated && (
         <Box margin="small" height={{ min: 'auto' }}>
           {liveSession?.display_name ? (
-            <InputBar
-              handleUserInput={processChatMessage}
-              isChatInput={true}
-              placeholderText={intl.formatMessage(messages.inputBarPlaceholder)}
+            <Input
+              rightIcon={
+                <span
+                  className="material-icons"
+                  onClick={() => processChatMessage()}
+                  style={{
+                    cursor: 'pointer',
+                  }}
+                >
+                  send
+                </span>
+              }
+              aria-label={intl.formatMessage(messages.inputBarPlaceholder)}
+              label={intl.formatMessage(messages.inputBarPlaceholder)}
+              fullWidth
+              value={chatmessage}
+              onChange={(event) => setChatmessage(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') {
+                  processChatMessage();
+                }
+              }}
             />
           ) : (
             <JoinChatButton

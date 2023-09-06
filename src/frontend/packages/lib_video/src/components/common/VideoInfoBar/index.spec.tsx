@@ -175,7 +175,7 @@ describe('<VideoInfoBar />', () => {
     );
 
     const titleInput = screen.getByRole('textbox', {
-      name: 'Enter title of your live here',
+      name: 'Enter title of your video here',
     });
     act(() => {
       titleInput.focus();
@@ -217,7 +217,7 @@ describe('<VideoInfoBar />', () => {
     );
 
     const titleInput = await screen.findByRole('textbox', {
-      name: 'Enter title of your live here',
+      name: 'Enter title of your video here',
     });
     act(() => {
       titleInput.focus();
@@ -247,7 +247,7 @@ describe('<VideoInfoBar />', () => {
     );
 
     const textInput = screen.getByRole('textbox', {
-      name: 'Enter title of your live here',
+      name: 'Enter title of your video here',
     });
     expect(textInput).toHaveValue('An existing title');
 
@@ -308,5 +308,24 @@ describe('<VideoInfoBar />', () => {
     );
 
     expect(screen.getByText('2 viewers connected')).toBeInTheDocument();
+  });
+
+  it('checks input placeholder when live', () => {
+    const mockedVideo = videoMockFactory({
+      is_live: true,
+    });
+
+    render(
+      wrapInVideo(
+        <VideoInfoBar isTeacher startDate="some date" />,
+        mockedVideo,
+      ),
+    );
+
+    expect(
+      screen.getByRole('textbox', {
+        name: 'Enter title of your live here',
+      }),
+    ).toBeInTheDocument();
   });
 });

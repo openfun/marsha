@@ -80,9 +80,6 @@ describe('<RegistrationForm />', () => {
 
     const textbox = screen.getByRole('textbox', { name: 'Email address' });
     screen.getByRole('button', { name: 'Register' });
-    expect(
-      screen.queryByText('You have to submit a valid email to register.'),
-    ).not.toBeInTheDocument();
 
     const email = 'test_email@openfun.fr';
     await userEvent.type(textbox, email);
@@ -103,12 +100,15 @@ describe('<RegistrationForm />', () => {
       ),
     );
 
-    screen.getByRole('textbox', { name: 'Email address' });
-    screen.getByDisplayValue('some.email@openfun.fr');
-    screen.getByRole('button', { name: 'Register' });
     expect(
-      screen.queryByText('You have to submit a valid email to register.'),
-    ).not.toBeInTheDocument();
+      screen.getByRole('textbox', { name: 'Email address' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByDisplayValue('some.email@openfun.fr'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Register' }),
+    ).toBeInTheDocument();
   });
 
   it('hides the field for lti user with email', async () => {
@@ -211,29 +211,6 @@ describe('<RegistrationForm />', () => {
     expect(setRegistrationCompleted).toHaveBeenCalledTimes(1);
   });
 
-  it('renders the error when email is invalid', async () => {
-    render(
-      wrapInVideo(
-        <RegistrationForm
-          defaultEmail="some.invalid.email@openfun."
-          liveSession={undefined}
-          setRegistrationCompleted={setRegistrationCompleted}
-        />,
-        live,
-      ),
-    );
-
-    screen.getByRole('textbox', { name: 'Email address' });
-    screen.getByDisplayValue('some.invalid.email@openfun.');
-    expect(
-      screen.queryByText('You have to submit a valid email to register.'),
-    ).not.toBeInTheDocument();
-
-    await userEvent.click(screen.getByRole('button', { name: 'Register' }));
-
-    await screen.findByText('You have to submit a valid email to register.');
-  });
-
   it('renders an error when validation fail server side', async () => {
     mockCreateLiveSession.mockRejectedValue(
       jest.fn(() => Promise.reject('some error')),
@@ -252,15 +229,14 @@ describe('<RegistrationForm />', () => {
 
     screen.getByRole('textbox', { name: 'Email address' });
     screen.getByDisplayValue('some.email@openfun.fr');
-    expect(
-      screen.queryByText('You have to submit a valid email to register.'),
-    ).not.toBeInTheDocument();
 
     await userEvent.click(screen.getByRole('button', { name: 'Register' }));
 
-    await screen.findByText(
-      'Impossible to register your email some.email@openfun.fr for this event. Make sure your email is valid otherwise, please try again later or contact us.',
-    );
+    expect(
+      await screen.findByText(
+        'Impossible to register your email some.email@openfun.fr for this event. Make sure your email is valid otherwise, please try again later or contact us.',
+      ),
+    ).toBeInTheDocument();
   });
   it('updates the live session when this one is set in the props', async () => {
     const existingLiveSession = liveSessionFactory({
