@@ -1,5 +1,7 @@
 import { configureScope, init } from '@sentry/browser';
 
+import { beforeSendSentry } from '@lib-components/utils';
+
 import { useSentry } from '.';
 
 jest.mock('@sentry/browser', () => ({
@@ -21,6 +23,7 @@ describe('useSentry', () => {
       .setSentry('sentry_dsn', 'environment', 'release', 'test');
 
     expect(mockInit).toHaveBeenCalledWith({
+      beforeSend: beforeSendSentry,
       dsn: 'sentry_dsn',
       environment: 'environment',
       release: 'release',

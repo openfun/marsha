@@ -1,3 +1,4 @@
+export * from './beforeSendSentry';
 export * from './checkToken';
 export * from './createContext';
 export * from './debounce';

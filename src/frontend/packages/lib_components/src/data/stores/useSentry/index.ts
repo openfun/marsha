@@ -1,6 +1,8 @@
 import { configureScope, init } from '@sentry/browser';
 import { create } from 'zustand';
 
+import { beforeSendSentry } from '@lib-components/utils';
+
 interface SentryStore {
   isSentryReady: boolean;
   setSentry: (
@@ -23,6 +25,7 @@ export const useSentry = create<SentryStore>((set) => ({
       dsn,
       environment,
       release,
+      beforeSend: beforeSendSentry,
     });
 
     configureScope((scope) => scope.setExtra('application', application));
