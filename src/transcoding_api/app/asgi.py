@@ -20,6 +20,6 @@ django_asgi_app = get_asgi_application()
 # its important to make all other imports below this comment
 import socketio  # noqa: E402
 
-from transcode_api.socket import sio  # noqa: E402
+from django_peertube_runner_connector.socket import sio  # noqa: E402
 
 application = socketio.ASGIApp(sio, django_asgi_app)

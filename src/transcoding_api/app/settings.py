@@ -36,7 +36,7 @@ class Base(Configuration):
     # Application definition
 
     INSTALLED_APPS = [
-        "transcode_api.apps.TranscodeAPIConfig",
+        "django_peertube_runner_connector.apps.DjangoPeertubeRunnerConnectorConfig",
         "django.contrib.admin",
         "django.contrib.auth",
         "django.contrib.contenttypes",
@@ -188,10 +188,10 @@ class Test(Base):
 
     STORAGES = {
         "default": {
-            "BACKEND": "transcode_api.tests.storage_testing.TestStorage",
+            "BACKEND": "django_peertube_runner_connector.tests.storage_testing.TestStorage",
         },
         "videos": {
-            "BACKEND": "transcode_api.tests.storage_testing.TestStorage",
+            "BACKEND": "django_peertube_runner_connector.tests.storage_testing.TestStorage",
         },
         "staticfiles": {
             "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
