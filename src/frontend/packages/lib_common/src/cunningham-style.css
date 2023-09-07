@@ -55,7 +55,7 @@ input:-webkit-autofill:focus {
   color: var(--c--theme--colors--primary-500);
   font-size: var(--c--theme--font--size-datagrid-cell);
 }
-.c__datagrid > table th {
+.c__datagrid > table th .c__datagrid__header {
   color: var(--c--theme--colors--primary-500);
   font-weight: var(--c--theme--font--weights-datagrid-header);
   font-size: var(--c--theme--font--size-datagrid-header);
