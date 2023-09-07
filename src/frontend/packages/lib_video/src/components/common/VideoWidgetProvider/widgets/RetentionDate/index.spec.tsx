@@ -60,7 +60,7 @@ describe('Video <RetentionDate />', () => {
       screen.getByTestId('retention-date-picker'),
     ).getByRole('presentation');
 
-    expect(inputRetentionDate).toHaveTextContent('mm/dd/yyyy');
+    expect(inputRetentionDate).toHaveTextContent('MM/DD/YYYY');
 
     const retentionDate = DateTime.local()
       .plus({ days: 1 })

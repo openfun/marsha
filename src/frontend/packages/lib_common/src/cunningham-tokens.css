@@ -97,10 +97,19 @@
   --c--theme--transitions--ease-out: cubic-bezier(0.33, 1, 0.68, 1);
   --c--theme--transitions--ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
   --c--theme--transitions--duration: 250ms;
+ /**
+   * Field
+  **/
   --c--components--forms-field--color: var(--c--theme--colors--primary-500);
+  /**
+   * Datagrid
+  **/
   --c--theme--font--weights-datagrid-header: var(--c--theme--font--weights--extrabold);
   --c--theme--font--size-datagrid-header: var(--c--theme--font--sizes--ml);
   --c--theme--font--size-datagrid-cell: var(--c--theme--font--sizes--ml);
+  /**
+   * Input
+  */
   --c--components--forms-input--border-color: var(--c--theme--colors--primary-500);
   --c--components--forms-input--border-radius--hover: var(
     --c--components--forms-input--border-radius
@@ -110,9 +119,13 @@
   );
   --c--components--forms-input--border-color--hover: var(--c--components--forms-input--border-color);
   --c--components--forms-input--color: var(--c--theme--colors--primary-500);
+  /**
+   * Datepicker
+  **/
   --c--components--forms-datepicker--color: var(
     --c--theme--colors--primary-400
   );
+  --c--components--forms-datepicker--value-color: var(--c--components--forms-datepicker--color);
   --c--components--forms-datepicker--border-color: var(
     --c--theme--colors--primary-500
   );
@@ -125,5 +138,5 @@
   --c--components--forms-datepicker--border-color--hover: var(
     --c--components--forms-datepicker--border-color
   );
-  --c--components--forms-field--color: var(--c--theme--colors--primary-500);
+  --c--components--forms-labelledbox--label-color--big: var(--c--theme--colors--primary-500);
 }

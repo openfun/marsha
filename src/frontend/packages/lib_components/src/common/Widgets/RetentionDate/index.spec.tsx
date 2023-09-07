@@ -43,7 +43,7 @@ describe('RetentionDate', () => {
       screen.getByTestId('retention-date-picker'),
     ).getByRole('presentation');
 
-    expect(inputStartingAtDate).toHaveTextContent('mm/dd/yyyy');
+    expect(inputStartingAtDate).toHaveTextContent('MM/DD/YYYY');
 
     const startingAt = DateTime.local()
       .plus({ days: 1 })
@@ -76,7 +76,7 @@ describe('RetentionDate', () => {
       screen.getByTestId('retention-date-picker'),
     ).getByRole('presentation');
 
-    expect(inputStartingAtDate).toHaveTextContent('mm/dd/yyyy');
+    expect(inputStartingAtDate).toHaveTextContent('MM/DD/YYYY');
 
     const startingAt = DateTime.local()
       .minus({ days: 1 })
@@ -117,6 +117,6 @@ describe('RetentionDate', () => {
     await userEvent.click(deleteButton);
 
     await waitFor(() => expect(mockedOnChange).toHaveBeenCalledTimes(1));
-    expect(inputStartingAtDate).toHaveTextContent('mm/dd/yyyy');
+    expect(inputStartingAtDate).toHaveTextContent('MM/DD/YYYY');
   });
 });

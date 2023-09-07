@@ -26,7 +26,7 @@ describe('<SchedulingFields />', () => {
     const inputStartingAtDate = within(
       screen.getByTestId('starting-at-date-picker'),
     ).getByRole('presentation');
-    expect(inputStartingAtDate).toHaveTextContent('mm/dd/yyyy');
+    expect(inputStartingAtDate).toHaveTextContent('MM/DD/YYYY');
 
     const startingAt = DateTime.local()
       .plus({ days: 1 })
@@ -114,7 +114,7 @@ describe('<SchedulingFields />', () => {
       }),
     );
 
-    expect(inputStartingAtDate).toHaveTextContent('mm/dd/yyyy');
+    expect(inputStartingAtDate).toHaveTextContent('MM/DD/YYYY');
 
     expect(onStartingAtChange).toHaveBeenCalledWith(null);
 
@@ -144,7 +144,7 @@ describe('<SchedulingFields />', () => {
     const inputStartingAtDate = within(
       screen.getByTestId('starting-at-date-picker'),
     ).getByRole('presentation');
-    expect(inputStartingAtDate).toHaveTextContent('mm/dd/yyyy');
+    expect(inputStartingAtDate).toHaveTextContent('MM/DD/YYYY');
     await userTypeDatePicker(
       startingAtPast,
       screen.getByText(/Starting date/i),
