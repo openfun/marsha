@@ -13,12 +13,13 @@ from transcode_api.models import RunnerJob, RunnerJobState, RunnerJobType, Video
 # pylint: disable=unused-argument
 
 
-class AcceptRunnerJobAPITest(TestCase):
+class ErrorRunnerJobAPITest(TestCase):
     """Test for the Runner Job Error API."""
 
     maxDiff = None
 
     def setUp(self):
+        """Create a runner and a video"""
         self.runner = RunnerFactory(name="New Runner", runnerToken="runnerToken")
         self.video = VideoFactory(
             name="Test video", uuid="02404b18-3c50-4929-af61-913f4df65e99"

@@ -21,6 +21,8 @@ from ...probe_response import probe_response
 
 
 class HlsPlaylistTestCase(TestCase):
+    """Test the hls playlist utils file."""
+
     maxDiff = None
 
     @patch.object(ffmpeg, "probe")
@@ -28,6 +30,7 @@ class HlsPlaylistTestCase(TestCase):
         self,
         mock_run,
     ):
+        """Should be able to update the master hls playlist."""
         video = VideoFactory(uuid="123e4567-e89b-12d3-a456-426655440001", duration=10)
         playlist = VideoStreamingPlaylistFactory(video=video)
         VideoFileFactory(
@@ -55,6 +58,7 @@ test.mp4.m3u8
         self,
         mock_run,
     ):
+        """Should be able to update the master hls playlist with two files."""
         video = VideoFactory(uuid="123e4567-e89b-12d3-a456-426655440002", duration=10)
         playlist = VideoStreamingPlaylistFactory(video=video)
         VideoFileFactory(
@@ -91,6 +95,7 @@ test2.m3u8
         self,
         mock_run,
     ):
+        """Should do nothing if there are no files."""
         video = VideoFactory(uuid="123e4567-e89b-12d3-a456-426655440001", duration=10)
         playlist = VideoStreamingPlaylistFactory(video=video)
         update_master_hls_playlist(video, playlist)
@@ -102,7 +107,7 @@ test2.m3u8
     def test_on_hls_video_file_transcoding_on_existing_playlist(
         self, mock_probe, mock_update_master_hls_playlist
     ):
-        # Set up mock objects
+        """Should be able to update the master hls on a existing playlist."""
         video = VideoFactory(uuid="123e4567-e89b-12d3-a456-426655440002", duration=10)
         playlist = VideoStreamingPlaylistFactory(video=video)
         video_file = VideoFileFactory(
@@ -130,10 +135,8 @@ test2.m3u8
             },
         )
 
-        # Assert that the video did not change
         self.assertEqual(video.duration, 10)
 
-        # Assert that the master HLS playlist was updated
         mock_update_master_hls_playlist.assert_called_once_with(video, playlist)
 
     @patch("transcode_api.utils.transcoding.hls_playlist.update_master_hls_playlist")
@@ -141,7 +144,7 @@ test2.m3u8
     def test_on_hls_video_file_transcoding_without_existing_playlist(
         self, mock_probe, mock_update_master_hls_playlist
     ):
-        # Set up mock objects
+        """Should be able to create a new playlist and set it up correctly."""
         video = VideoFactory(uuid="123e4567-e89b-12d3-a456-426655440003", duration=None)
         video_file = VideoFileFactory(
             video=video,
@@ -150,7 +153,6 @@ test2.m3u8
             size=1000,
         )
 
-        # Call the function
         on_hls_video_file_transcoding(video, video_file)
         video_file.refresh_from_db()
         video.refresh_from_db()
@@ -175,7 +177,7 @@ test2.m3u8
         mock_update_master_hls_playlist.assert_called_once_with(video, mock.ANY)
 
     def test_rename_video_file_in_playlist(self):
-        # Set up mock objects
+        """Should be able to rename a video file in a playlist file."""
         video = VideoFactory(uuid="123e4567-e89b-12d3-a456-426655440004", duration=10)
         playlist = VideoStreamingPlaylistFactory(
             video=video, playlistFilename=f"video-{video.uuid}/master.m3u8"

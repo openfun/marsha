@@ -9,13 +9,17 @@ from transcode_api.utils.thumbnail import build_video_thumbnails
 
 
 class ThumbnailTestCase(TestCase):
+    """Test the thumbnail utils file."""
+
     def setUp(self):
+        """Create a video, video file and a video url."""
         self.video = VideoFactory(name="Test Video")
         self.video_file = VideoFileFactory(video=self.video, filename="test.mp4")
-        self.video_path = video_storage.url(self.video_file.filename)
+        self.video_url = video_storage.url(self.video_file.filename)
         self.thumbnail_filename = f"video-{self.video.uuid}/thumbnail.jpg"
 
     def tearDown(self):
+        """Delete the created thumbnail file."""
         video_storage.delete(self.thumbnail_filename)
 
     @patch("transcode_api.utils.thumbnail.get_video_stream_dimensions_info")
@@ -23,6 +27,7 @@ class ThumbnailTestCase(TestCase):
     def test_build_video_thumbnails(
         self, mock_run, mock_get_video_stream_dimensions_info
     ):
+        """Should create a thumbnail file."""
         mock_get_video_stream_dimensions_info.return_value = {
             "width": 1920,
             "height": 1080,
@@ -38,5 +43,5 @@ class ThumbnailTestCase(TestCase):
         self.assertTrue(video_storage.exists(thumbnail_filename))
 
         mock_get_video_stream_dimensions_info.assert_called_once_with(
-            path=self.video_path, existing_probe=None
+            path=self.video_url, existing_probe=None
         )

@@ -15,10 +15,14 @@ mock_callback_video_published = Mock()
 
 
 class VideoStateTestCase(TestCase):
+    """Test the video state utils file."""
+
     def setUp(self):
+        """Create a video."""
         self.video = VideoFactory(name="Test Video")
 
     def test_build_next_video_state(self):
+        """Should return the next video state depending on the current."""
         with self.assertRaises(ValueError):
             build_next_video_state(VideoState.PUBLISHED)
 
@@ -56,6 +60,7 @@ class VideoStateTestCase(TestCase):
         )
 
     def test_move_to_failed_transcoding_state(self):
+        """Should  move to a failed transcoding state."""
         self.video.state = VideoState.TO_TRANSCODE
         self.video.save()
 
@@ -64,6 +69,7 @@ class VideoStateTestCase(TestCase):
         self.assertEqual(self.video.state, VideoState.TRANSCODING_FAILED)
 
     def test_move_to_failed_transcoding_state_already_failed(self):
+        """If the video is already in a failed transcoding state, do nothing."""
         self.video.state = VideoState.TRANSCODING_FAILED
         self.video.save()
 
@@ -73,6 +79,7 @@ class VideoStateTestCase(TestCase):
 
     @patch("transcode_api.utils.video_state.video_is_published")
     def test_move_to_published_state(self, mock_video_is_published):
+        """Should move to a published state."""
         move_to_published_state(self.video)
 
         self.assertEqual(self.video.state, VideoState.PUBLISHED)
@@ -82,6 +89,7 @@ class VideoStateTestCase(TestCase):
         TRANSCODING_VIDEO_IS_PUBLISHED_CALLBACK_PATH="transcode_api.tests.utils.test_video_state.mock_callback_video_published"
     )
     def test_video_is_published(self):
+        """Should call the video callback defined in settings."""
         video_is_published(self.video)
 
         mock_callback_video_published.assert_called_once_with(self.video)

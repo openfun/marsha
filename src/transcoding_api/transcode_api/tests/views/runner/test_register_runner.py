@@ -13,12 +13,12 @@ class RegisterRunnerAPITest(TestCase):
 
     maxDiff = None
 
-    @classmethod
-    def setUpTestData(cls):
-        super().setUpTestData()
+    def setUp(self):
+        """Create a registration token."""
         RunnerRegistrationTokenFactory(registrationToken="registrationToken")
 
     def _api_url(self):
+        """Return the register API URL."""
         return "/api/v1/runners/register"
 
     def test_register_fail_no_name_and_no_token(self):

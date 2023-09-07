@@ -1,4 +1,4 @@
-"""Tests for the Runner Job success API."""
+"""Tests for the Runner Job update API."""
 import logging
 
 from django.test import TestCase, override_settings
@@ -10,13 +10,13 @@ from transcode_api.models import RunnerJobState, RunnerJobType
 # pylint: disable=unused-argument
 
 
-@override_settings(STORAGE_VIDEO_LOCATION="TMP")
-class SuccessRunnerJobAPITest(TestCase):
-    """Test for the Runner Job success API."""
+class UpdateRunnerJobAPITest(TestCase):
+    """Test for the Runner Job update API."""
 
     maxDiff = None
 
     def setUp(self):
+        """Create a runner and a video."""
         self.runner = RunnerFactory(name="New Runner", runnerToken="runnerToken")
         self.video = VideoFactory(
             name="Test video", uuid="02404b18-3c50-4929-af61-913f4df65e99"
@@ -24,9 +24,11 @@ class SuccessRunnerJobAPITest(TestCase):
         logging.disable(logging.CRITICAL)
 
     def tearDown(self):
+        """restore logging"""
         logging.disable(logging.NOTSET)
 
     def create_processing_job(self, type: RunnerJobType):
+        """Create a processing job."""
         return RunnerJobFactory(
             runner=self.runner,
             type=type,
@@ -40,6 +42,7 @@ class SuccessRunnerJobAPITest(TestCase):
         )
 
     def _api_url(self):
+        """Return the update API URL."""
         return "/api/v1/runners/jobs/02404b18-3c50-4929-af61-913f4df65e00/update"
 
     def test_request_with_an_invalid_job_uuid(self):

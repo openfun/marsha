@@ -12,13 +12,13 @@ class ListRunnerAPITest(TestCase):
 
     maxDiff = None
 
-    @classmethod
-    def setUpTestData(cls):
-        super().setUpTestData()
+    def setUp(self):
+        """Create 20 runners."""
         for i in range(20):
             RunnerFactory(name=f"Runner{i}", runnerToken=f"token{i}")
 
     def _api_url(self, count=None, start=None):
+        """Return the Runner list API URL."""
         api_url = "/api/v1/runners?"
 
         if count:

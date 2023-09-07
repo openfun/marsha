@@ -9,8 +9,11 @@ from transcode_api.utils.job_handlers.vod_hls_transcoding_job_handler import (
 )
 
 
-class TestVODHLSTranscodingJobHandler(TestCase):
+class TestAbstractVODHLSTranscodingJobHandler(TestCase):
+    """Test the abstract VOD_HLS_TRANSCODING job handler."""
+
     def setUp(self):
+        """Create a video, a runner job and a video job."""
         # Create a Video object to use in the tests
         self.video = VideoFactory(
             uuid="123e4567-e89b-12d3-a456-426655440002",
@@ -44,7 +47,8 @@ class TestVODHLSTranscodingJobHandler(TestCase):
     @patch(
         "transcode_api.utils.job_handlers.abstract_vod_transcoding_job_handler.move_to_failed_transcoding_state"
     )
-    def test_error(self, mock_move):
+    def test_specific_error(self, mock_move):
+        """Should move the job to the failed state and decrease pendingTranscode."""
         handler = VODHLSTranscodingJobHandler()
         handler.specific_error(
             runner_job=self.runner_job,
@@ -58,7 +62,8 @@ class TestVODHLSTranscodingJobHandler(TestCase):
     @patch(
         "transcode_api.utils.job_handlers.abstract_vod_transcoding_job_handler.move_to_next_state"
     )
-    def test_cancel(self, mock_move):
+    def test_specific_cancel(self, mock_move):
+        """Should move the job to the next state and decrease pendingTranscode."""
         handler = VODHLSTranscodingJobHandler()
         handler.specific_cancel(runner_job=self.runner_job)
         mock_move.assert_called_once_with(video=self.video, is_new_video=False)

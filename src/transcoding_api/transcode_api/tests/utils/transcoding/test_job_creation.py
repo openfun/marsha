@@ -17,7 +17,10 @@ from ...probe_response import probe_response
 
 
 class JobCreationTestCase(TestCase):
+    """Test the job creation utils file."""
+
     def setUp(self):
+        """Create a video , a related video file and a file."""
         new_file = SimpleUploadedFile(
             "file.mp4", b"file_content", content_type="video/mp4"
         )
@@ -37,6 +40,7 @@ class JobCreationTestCase(TestCase):
         TRANSCODING_FPS_KEEP_ORIGIN_FPS_RESOLUTION_MIN=720,
     )
     def test_compute_output_fps(self):
+        """Should compute the output fps depending on the resolution and settings."""
         fps = 30
         resolution = 480
         output_fps = compute_output_fps(resolution, fps)
@@ -68,6 +72,7 @@ class JobCreationTestCase(TestCase):
         TRANSCODING_FPS_HD_STANDARD=[50, 60],
     )
     def test_get_closest_framerate_standard(self):
+        """Should return the closest framerate standard depending on the settings."""
         fps = 23.976
         standard_fps = get_closest_framerate_standard(fps, "STANDARD")
         self.assertEqual(standard_fps, 20)
@@ -101,6 +106,7 @@ class JobCreationTestCase(TestCase):
         mock_build_lower_resolution_job_payloads,
         mock_vod_hls_transcoding_job_handler,
     ):
+        """Should call VODHLSTranscodingJobHandler to create transcoding jobs."""
         mocked_class = Mock()
         mock_vod_hls_transcoding_job_handler.return_value = mocked_class
 
@@ -132,6 +138,7 @@ class JobCreationTestCase(TestCase):
         self,
         mock_vod_hls_transcoding_job_handler,
     ):
+        """Should create 2 transcoding jobs for parent and child."""   
         mocked_class = Mock()
         mock_vod_hls_transcoding_job_handler.return_value = mocked_class
 

@@ -18,8 +18,10 @@ uuid_regex = "[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
 
 
 class TestVODHLSTranscodingJobHandler(TestCase):
+    """Test the VOD_HLS_TRANSCODING job handler."""
+    
     def setUp(self):
-        # Create a Video object to use in the tests
+        """Create a video, a video file and a video job."""
         self.video = VideoFactory(
             uuid="123e4567-e89b-12d3-a456-426655440002",
             name="Test Video",
@@ -31,6 +33,7 @@ class TestVODHLSTranscodingJobHandler(TestCase):
         self.video_job_info = VideoJobInfoFactory(video=self.video, pendingTranscode=1)
 
     def test_create(self):
+        """Should be able to create a VOD_HLS_TRANSCODING runner job."""
         handler = VODHLSTranscodingJobHandler()
         runner_job = handler.create(
             self.video, "720", 30, None, lambda x, y: "test_url"
@@ -84,6 +87,7 @@ class TestVODHLSTranscodingJobHandler(TestCase):
         mock_on_transcoding_ended,
         mock_on_hls_video_file_transcoding,
     ):
+        """Should be able to complete a VOD_HLS_TRANSCODING runner job."""
         mock_build_new_file.return_value = self.video_file
         mock_generate_hls_video_filename.return_value = (
             "4b3bbd37-4e87-48a9-8f26-c04c0b9fdbb5-720-fragmented.mp4"

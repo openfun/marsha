@@ -1,7 +1,7 @@
-# Transcode API: an small API app to communicate with Peertube trandoding runners and transcode your videos
+# django-peertube-runner-connector: a django application to connect to a peertube runner and transcode videos 
 
 ## Overview 
-The Transcode API is designed to use Peertube transcoding runners outside of Peertube App. It implements a set of endpoints and a SocketIO server that allow runners to request jobs, updated job status, download media files and upload the transcoded media files. It provides two endpoints that can be used by users to transcode a given video.
+django-peertube-runner-connector is designed to use Peertube transcoding runners outside of Peertube App. It implements a set of endpoints and a SocketIO server that allow runners to request jobs, updated job status, download media files and upload the transcoded media files. It provides two endpoints that can be used by users to transcode a given video.
 
 
 ## Architecture

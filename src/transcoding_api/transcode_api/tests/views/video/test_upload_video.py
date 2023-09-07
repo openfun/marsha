@@ -23,13 +23,15 @@ from transcode_api.tests.probe_response import probe_response
 
 class UploadVideoAPITest(TestCase):
     """Test for the Video upload API."""
-
+    
     maxDiff = None
 
     def setUp(self):
+        """Create a runner."""
         self.runner = RunnerFactory(name="New Runner", runnerToken="runnerToken")
 
     def _api_url(self):
+        """Return the video upload API URL."""
         return "/api/v1/videos/upload"
 
     def test_upload_video(self):

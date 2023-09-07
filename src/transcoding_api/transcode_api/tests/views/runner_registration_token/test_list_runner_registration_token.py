@@ -12,13 +12,13 @@ class ListRunnerRegistrationTokenAPITest(TestCase):
 
     maxDiff = None
 
-    @classmethod
-    def setUpTestData(cls):
-        super().setUpTestData()
+    def setUp(self):
+        """Create 20 registration tokens."""
         for i in range(20):
             RunnerRegistrationTokenFactory(registrationToken=f"token{i}")
 
     def _api_url(self, count=None, start=None):
+        """Return the Runner Registration Tokens list API URL."""
         api_url = "/api/v1/runners/registration-tokens?"
 
         if count:
@@ -30,7 +30,7 @@ class ListRunnerRegistrationTokenAPITest(TestCase):
         return api_url
 
     def test_fetch_list_registration_tokens(self):
-        """Should be able to fetch a runner list."""
+        """Should be able to fetch runner registration list."""
         response = self.client.get(self._api_url())
 
         self.assertEqual(response.status_code, 200)
@@ -60,7 +60,7 @@ class ListRunnerRegistrationTokenAPITest(TestCase):
         )
 
     def test_fetch_list_registration_tokens_with_count(self):
-        """Should be able to fetch a runner list with the right count."""
+        """Should be able to fetch runner registration list with the right count."""
         response = self.client.get(self._api_url(count=5))
 
         self.assertEqual(response.status_code, 200)
@@ -80,7 +80,7 @@ class ListRunnerRegistrationTokenAPITest(TestCase):
         )
 
     def test_fetch_list_registration_tokens_with_start(self):
-        """Should be able to fetch a runner list at the next page."""
+        """Should be able to fetch runner registration list at the next page."""
         response = self.client.get(self._api_url(count=5, start=1))
 
         self.assertEqual(response.status_code, 200)

@@ -17,25 +17,17 @@ from transcode_api.tests.probe_response import probe_response
 
 
 class TranscodeVideoAPITest(TestCase):
-    """Test for the Runner Job success API."""
+    """Test for the Transcode Video API."""
 
     maxDiff = None
 
     def setUp(self):
+        """Create a runner."""
         self.runner = RunnerFactory(name="New Runner", runnerToken="runnerToken")
 
     def _api_url(self):
+        """Return the transcode API URL."""
         return "/api/v1/videos/transcode"
-
-    def test_transcode_video_with_invalid_path(self):
-        """Should not be able to transcode a video with an invalid path."""
-
-        response = self.client.post(
-            self._api_url(),
-            data={"name": "New_Video", "path": "invalid/path"},
-        )
-
-        self.assertEqual(response.status_code, 404)
 
     def test_transcode_video_with_invalid_path(self):
         """Should not be able to transcode a video with an invalid path."""

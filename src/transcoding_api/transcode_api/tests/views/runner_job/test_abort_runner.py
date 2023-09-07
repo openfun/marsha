@@ -12,15 +12,17 @@ from transcode_api.models import RunnerJobState, RunnerJobType
 # pylint: disable=unused-argument
 
 
-class AcceptRunnerJobAPITest(TestCase):
+class AbortRunnerJobAPITest(TestCase):
     """Test for the Runner Job Abort API."""
 
     maxDiff = None
 
     def setUp(self):
+        """Create a runner."""
         self.runner = RunnerFactory(name="New Runner", runnerToken="runnerToken")
 
     def create_processing_job(self, type: RunnerJobType):
+        """Create a processing job."""
         return RunnerJobFactory(
             runner=self.runner,
             type=type,
@@ -31,6 +33,7 @@ class AcceptRunnerJobAPITest(TestCase):
         )
 
     def _api_url(self):
+        """Return the abort API URL."""
         return "/api/v1/runners/jobs/02404b18-3c50-4929-af61-913f4df65e00/abort"
 
     def test_abort_with_an_invalid_job_uuid(self):

@@ -12,7 +12,10 @@ from transcode_api.utils.job_handlers.vod_hls_transcoding_job_handler import (
 
 
 class TestAbstractJobHandler(TestCase):
+    """Test the abstract job handler."""
+
     def setUp(self):
+        """Create a video, a runner job."""
         # Create a Video object to use in the tests
         self.video = VideoFactory(
             uuid="123e4567-e89b-12d3-a456-426655440002",
@@ -45,6 +48,7 @@ class TestAbstractJobHandler(TestCase):
         "transcode_api.utils.job_handlers.abstract_job_handler.send_available_jobs_ping_to_runners"
     )
     def test_create_runner_parent_job(self, mock_ping):
+        """Should be able to create a VOD_HLS_TRANSCODING runner job."""
         handler = VODHLSTranscodingJobHandler()
         runner_job = handler.create_runner_job(
             type=RunnerJobType.VOD_HLS_TRANSCODING,
@@ -67,6 +71,7 @@ class TestAbstractJobHandler(TestCase):
         "transcode_api.utils.job_handlers.abstract_job_handler.send_available_jobs_ping_to_runners"
     )
     def test_create_runner_child_job(self, mock_ping):
+        """Should be able to create a VOD_HLS_TRANSCODING child runner job."""
         handler = VODHLSTranscodingJobHandler()
         runner_job = handler.create_runner_job(
             type=RunnerJobType.VOD_HLS_TRANSCODING,
@@ -86,6 +91,7 @@ class TestAbstractJobHandler(TestCase):
         mock_ping.assert_not_called()
 
     def test_update_with_progress(self):
+        """Should update the progress of the runner job."""
         handler = VODHLSTranscodingJobHandler()
         handler.specific_update = Mock()
         handler.update(
@@ -98,6 +104,7 @@ class TestAbstractJobHandler(TestCase):
         handler.specific_update.assert_called_once_with(self.runner_job, None)
 
     def test_update_without_progress(self):
+        """Should not update the progress of the runner job."""
         handler = VODHLSTranscodingJobHandler()
         handler.specific_update = Mock()
         handler.update(
@@ -113,6 +120,7 @@ class TestAbstractJobHandler(TestCase):
         "transcode_api.utils.job_handlers.abstract_job_handler.send_available_jobs_ping_to_runners"
     )
     def test_complete_with_child(self, mock_ping):
+        """Should be able to complete a VOD_HLS_TRANSCODING job."""
         handler = VODHLSTranscodingJobHandler()
         handler.specific_complete = Mock()
         runner_job = RunnerJobFactory(
@@ -144,6 +152,7 @@ class TestAbstractJobHandler(TestCase):
         "transcode_api.utils.job_handlers.abstract_job_handler.send_available_jobs_ping_to_runners"
     )
     def test_complete_without_child(self, mock_ping):
+        """Should be able to complete a VOD_HLS_TRANSCODING job without a child."""
         handler = VODHLSTranscodingJobHandler()
         handler.specific_complete = Mock()
         handler.complete(
@@ -167,6 +176,7 @@ class TestAbstractJobHandler(TestCase):
         "transcode_api.utils.job_handlers.abstract_job_handler.send_available_jobs_ping_to_runners"
     )
     def test_complete_with_specific_complete_failing(self, mock_ping):
+        """Should be able to complete a VOD_HLS_TRANSCODING job with a failing specific_complete."""
         handler = VODHLSTranscodingJobHandler()
         handler.specific_complete = Mock()
         handler.specific_complete.side_effect = Exception("Test")
@@ -188,6 +198,7 @@ class TestAbstractJobHandler(TestCase):
         )
 
     def test_cancel(self):
+        """Should be able to cancel a VOD_HLS_TRANSCODING job."""
         runner_job = RunnerJobFactory(
             state=RunnerJobState.WAITING_FOR_PARENT_JOB,
             type=RunnerJobType.VOD_HLS_TRANSCODING,
@@ -212,6 +223,7 @@ class TestAbstractJobHandler(TestCase):
         self.assertEqual(runner_job.state, RunnerJobState.PARENT_CANCELLED)
 
     def test_abort_with_abort_supported(self):
+        """Should reset the state of the runner job."""
         handler = VODHLSTranscodingJobHandler()
         handler.is_abort_supported = Mock(return_value=True)
         handler.specific_abort = Mock()
@@ -223,6 +235,7 @@ class TestAbstractJobHandler(TestCase):
         self.assertEqual(self.runner_job.startedAt, None)
 
     def test_abort_with_abort_not_supported(self):
+        """Should put the runner job in error state."""
         handler = VODHLSTranscodingJobHandler()
         handler.is_abort_supported = Mock(return_value=False)
         handler.specific_abort = Mock()
@@ -236,6 +249,7 @@ class TestAbstractJobHandler(TestCase):
         handler.specific_abort.assert_not_called()
 
     def test_error_with_abort_supported(self):
+        """Should reset the state of the runner job."""
         handler = VODHLSTranscodingJobHandler()
         handler.is_abort_supported = Mock(return_value=True)
         handler.specific_error = Mock()
@@ -252,6 +266,7 @@ class TestAbstractJobHandler(TestCase):
 
     @override_settings(TRANSCODING_RUNNER_MAX_FAILURE=1)
     def test_error_with_max_failure_exceeded(self):
+        """Should put the runner job in error state."""
         handler = VODHLSTranscodingJobHandler()
         handler.is_abort_supported = Mock(return_value=True)
         handler.specific_error = Mock()
@@ -267,6 +282,7 @@ class TestAbstractJobHandler(TestCase):
         )
 
     def test_error_with_abort_not_supported(self):
+        """Should put the runner job in error state."""
         handler = VODHLSTranscodingJobHandler()
         handler.is_abort_supported = Mock(return_value=False)
         handler.specific_error = Mock()

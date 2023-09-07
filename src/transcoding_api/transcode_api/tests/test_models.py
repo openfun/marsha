@@ -21,6 +21,8 @@ from transcode_api.models import (
 
 
 class TestModel(TestCase):
+    """Tests helper methods for the models"""
+
     def setUp(self):
         self.video = VideoFactory(
             duration=60,
@@ -29,6 +31,7 @@ class TestModel(TestCase):
 
     @patch("transcode_api.models.video_storage")
     def test_remove_web_video_file(self, mock_storage):
+        """Should call video_storage.delete()"""
         video_file = VideoFileFactory(filename="test.mp4")
 
         video_file.remove_web_video_file()
@@ -36,6 +39,7 @@ class TestModel(TestCase):
         mock_storage.delete.assert_called_once_with("test.mp4")
 
     def test_is_audio(self):
+        """Should return True if the file has no resolution"""
         audio_file = VideoFileFactory(
             resolution=VideoResolution.H_NOVIDEO,
             size=1024,
@@ -53,7 +57,8 @@ class TestModel(TestCase):
         self.assertTrue(audio_file.is_audio())
         self.assertFalse(video_file.is_audio())
 
-    def test_update_last_contact_within_5_minutes(self):
+    def test_update_last_contact(self):
+        """Should update the lastContact and ip"""
         runner = RunnerFactory(
             runnerToken="test_runner_token",
             name="Test Runner",
@@ -70,7 +75,8 @@ class TestModel(TestCase):
         )
         self.assertEqual(runner.ip, "192.168.0.1")
 
-    def test_update_last_contact(self):
+    def test_update_last_contact_within_5_minutes(self):
+        """Should not update the lastContact and ip fields because it's within 5 minutes"""
         runner = RunnerFactory(
             runnerToken="test_runner_token",
             name="Test Runner",
@@ -89,6 +95,7 @@ class TestModel(TestCase):
         self.assertEqual(runner.ip, "127.0.0.1")
 
     def test_set_to_error_or_cancel(self):
+        """Should set the state to either ERRORED and update related fields"""
         runner_job = RunnerJobFactory(
             state=RunnerJobState.PROCESSING,
             error=None,
@@ -103,6 +110,7 @@ class TestModel(TestCase):
         self.assertIsNotNone(runner_job.finishedAt)
 
     def test_reset_to_pending(self):
+        """Should set the state to PENDING and update related fields"""
         runner_job = RunnerJobFactory(
             state=RunnerJobState.PROCESSING,
             error=None,
@@ -121,6 +129,7 @@ class TestModel(TestCase):
         self.assertIsNone(runner_job.finishedAt)
 
     def test_update_dependant_jobs(self):
+        """Should update the dependant jobs to PENDING"""
         runner_job = RunnerJobFactory(
             state=RunnerJobState.PROCESSING,
         )
@@ -144,13 +153,13 @@ class TestModel(TestCase):
         self.assertEqual(child2.state, RunnerJobState.PENDING)
 
     def test_get_max_quality_file_with_not_file(self):
-        # Call the get_max_quality_file method
-        max_quality_file = self.video.get_max_quality_file()
+        """Should return None because no files exist"""
 
-        # Check that the method returns the expected VideoFile object
+        max_quality_file = self.video.get_max_quality_file()
         self.assertIsNone(max_quality_file)
 
     def test_get_max_quality_file(self):
+        """Should return the max quality file"""
         VideoFileFactory(video=self.video, resolution=VideoResolution.H_720P)
         video_file2 = VideoFileFactory(
             video=self.video, resolution=VideoResolution.H_1080P
@@ -158,15 +167,14 @@ class TestModel(TestCase):
 
         max_quality_file = self.video.get_max_quality_file()
 
-        # Check that the method returns the expected VideoFile object
         self.assertEqual(video_file2, max_quality_file)
 
     @patch("transcode_api.models.video_storage")
     def test_remove_all_web_video_files(self, mock_storage):
+        """Should call video_storage.delete() for every related video_file and delete them"""
         video_file1 = VideoFileFactory(video=self.video)
         video_file2 = VideoFileFactory(video=self.video)
 
-        # Call the remove_all_web_video_files method
         self.video.remove_all_web_video_files()
 
         mock_storage.delete.has_calls(
@@ -178,14 +186,15 @@ class TestModel(TestCase):
         self.assertFalse(VideoFile.objects.filter(video=self.video).exists())
 
     def test_get_bandwidth_bits(self):
+        """Should return the expected bandwidth in bits"""
         video_file1 = VideoFileFactory(video=self.video, size=133333)
 
         bandwidth_bits = self.video.get_bandwidth_bits(video_file1)
 
-        # Check that the method returns the expected bandwidth in bits
         self.assertEqual(bandwidth_bits, 17777)
 
     def test_get_bandwidth_bits_with_no_duration(self):
+        """Should return the expected bandwidth in bits"""
         self.video.duration = None
         video_file1 = VideoFileFactory(video=self.video, size=133333)
 
@@ -195,31 +204,29 @@ class TestModel(TestCase):
         self.assertEqual(bandwidth_bits, 133333)
 
     def test_increase_or_create_job_info_pending_transcode(self):
-        # Call the increase_or_create_job_info method with a column name and an amount
+        """"Should increase the pendingTranscode on related JobInfo model column by 2"""
         num_jobs = self.video.increase_or_create_job_info(
             VideoJobInfoColumnType.PENDING_TRANSCODE, 2
         )
 
-        # Check that the method created a new VideoJobInfo object and updated the specified column
         self.assertEqual(num_jobs, 2)
         self.assertTrue(VideoJobInfo.objects.filter(video=self.video).exists())
         job_info = VideoJobInfo.objects.get(video=self.video)
         self.assertEqual(job_info.pendingTranscode, 2)
 
     def test_increase_or_create_job_info_pending_move(self):
-        # Call the increase_or_create_job_info method with a column name and an amount
+        """"Should increase the pendingMove on related JobInfo model column by 4"""
         num_jobs = self.video.increase_or_create_job_info(
             VideoJobInfoColumnType.PENDING_MOVE, 4
         )
 
-        # Check that the method created a new VideoJobInfo object and updated the specified column
         self.assertEqual(num_jobs, 4)
         self.assertTrue(VideoJobInfo.objects.filter(video=self.video).exists())
         job_info = VideoJobInfo.objects.get(video=self.video)
         self.assertEqual(job_info.pendingMove, 4)
 
     def test_decrease_job_info_pending_transcode(self):
-        # Call the decrease_job_info method with a column name
+        """"Should decrease the pendingTranscode on related JobInfo model column by 1"""
         job_info = VideoJobInfoFactory(video=self.video, pendingTranscode=2)
         num_jobs = self.video.decrease_job_info(
             VideoJobInfoColumnType.PENDING_TRANSCODE
@@ -230,7 +237,7 @@ class TestModel(TestCase):
         self.assertEqual(job_info.pendingTranscode, 1)
 
     def test_decrease_job_info_pending_move(self):
-        # Call the decrease_job_info method with a column name
+        """"Should decrease the pendingTranscode on related JobInfo model column by 3"""
         job_info = VideoJobInfoFactory(video=self.video, pendingMove=4)
         num_jobs = self.video.decrease_job_info(VideoJobInfoColumnType.PENDING_MOVE)
 

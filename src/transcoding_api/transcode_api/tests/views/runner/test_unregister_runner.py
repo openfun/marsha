@@ -12,9 +12,8 @@ class UnregisterRunnerAPITest(TestCase):
 
     maxDiff = None
 
-    @classmethod
-    def setUpTestData(cls):
-        super().setUpTestData()
+    def setUp(self):
+        """Create a runner and a registration token."""
         runner_registration_token = RunnerRegistrationTokenFactory(
             registrationToken="registrationToken"
         )
@@ -25,6 +24,7 @@ class UnregisterRunnerAPITest(TestCase):
         )
 
     def _api_url(self):
+        """Return the unregister API URL."""
         return "/api/v1/runners/unregister"
 
     def test_unregister_fail_no_token(self):

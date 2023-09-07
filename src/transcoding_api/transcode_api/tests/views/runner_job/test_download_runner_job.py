@@ -1,4 +1,4 @@
-"""Tests for the Runner Job success API."""
+"""Tests for the Runner Job download API."""
 import tempfile
 from unittest.mock import patch
 
@@ -19,17 +19,19 @@ from transcode_api.models import RunnerJobState, RunnerJobType
 
 
 class DownloadVideoRunnerJobAPITest(TestCase):
-    """Test for the Runner Job success API."""
+    """Test for the Runner Job download API."""
 
     maxDiff = None
 
     def setUp(self):
+        """Create a runner and a video."""
         self.runner = RunnerFactory(name="New Runner", runnerToken="runnerToken")
         self.video = VideoFactory(
             name="Test video", uuid="02404b18-3c50-4929-af61-913f4df65e99"
         )
 
     def create_processing_job(self, type: RunnerJobType):
+        """Create a processing job."""
         return RunnerJobFactory(
             runner=self.runner,
             type=type,
@@ -43,6 +45,7 @@ class DownloadVideoRunnerJobAPITest(TestCase):
         )
 
     def _api_url(self):
+        """Return the download API URL."""
         return (
             "/api/v1/runners/jobs/02404b18-3c50-4929-af61-913f4df65e00/"
             "files/videos/02404b18-3c50-4929-af61-913f4df65e99/max-quality"

@@ -18,6 +18,7 @@ class AcceptRunnerJobAPITest(TestCase):
     maxDiff = None
 
     def setUp(self):
+        """Create a runner and a related runner job."""
         runner = RunnerFactory(name="New Runner", runnerToken="runnerToken")
         self.runner_job = RunnerJobFactory(
             runner=runner,
@@ -28,6 +29,7 @@ class AcceptRunnerJobAPITest(TestCase):
         )
 
     def _api_url(self):
+        """Return the accept API URL."""
         return "/api/v1/runners/jobs/02404b18-3c50-4929-af61-913f4df65e00/accept"
 
     def test_accept_with_an_invalid_job_uuid(self):
@@ -53,7 +55,7 @@ class AcceptRunnerJobAPITest(TestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_accept_with_a_valid_runner_token(self):
-        """Should be able to request the 10 first available jobs."""
+        """Should be able to accept a job."""
         now = datetime(2018, 8, 8, tzinfo=timezone.utc)
 
         with patch.object(timezone, "now", return_value=now):
@@ -91,7 +93,7 @@ class AcceptRunnerJobAPITest(TestCase):
         )
 
     def test_accept_an_already_processing_job(self):
-        """Should be able to request the 10 first available jobs."""
+        """Should not be able to accept an already processing job."""
         self.runner_job.state = RunnerJobState.PROCESSING
         self.runner_job.save()
 

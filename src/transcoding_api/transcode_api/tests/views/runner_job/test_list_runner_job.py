@@ -12,9 +12,8 @@ class ListRunnerAPITest(TestCase):
 
     maxDiff = None
 
-    @classmethod
-    def setUpTestData(cls):
-        super().setUpTestData()
+    def setUp(self):
+        """Create 20 jobs and a related runner."""
         runner = RunnerFactory(name="New Runner", runnerToken="runnerToken")
         for i in range(20):
             RunnerJobFactory(
@@ -27,6 +26,7 @@ class ListRunnerAPITest(TestCase):
             )
 
     def _api_url(self, count=None, start=None):
+        """Return the Runner Job list API URL."""
         api_url = "/api/v1/runners/jobs?"
 
         if count:
