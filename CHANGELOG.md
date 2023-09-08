@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [4.4.0] - 2023-09-08
+
 ### Added
 
 - Add playlist is_claimable attribute
@@ -1782,7 +1784,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v4.3.1...master
+[unreleased]: https://github.com/openfun/marsha/compare/v4.4.0...master
+[4.4.0]: https://github.com/openfun/marsha/compare/v4.3.1...v4.4.0
 [4.3.1]: https://github.com/openfun/marsha/compare/v4.3.0...v4.3.1
 [4.3.0]: https://github.com/openfun/marsha/compare/v4.2.1...v4.3.0
 [4.2.1]: https://github.com/openfun/marsha/compare/v4.2.0...v4.2.1
