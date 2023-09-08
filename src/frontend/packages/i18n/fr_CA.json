@@ -255,13 +255,17 @@
     "description": "Button label for discarding ask username form in classroom dashboard view.",
     "message": "Cancel"
   },
+  "component.DashboardClassroomAskUsername.infoInput": {
+    "description": "Text info for asking username to join the classroom.",
+    "message": "Please enter your name to join the classroom"
+  },
   "component.DashboardClassroomAskUsername.join": {
     "description": "Button label for setting username and joining the classroom in classroom dashboard view.",
     "message": "Join"
   },
   "component.DashboardClassroomAskUsername.label": {
-    "description": "Label for asking username to join the classroom.",
-    "message": "Please enter your name to join the classroom"
+    "description": "Placeholder for asking username to join the classroom.",
+    "message": "Enter your name"
   },
   "component.DashboardClassroomAskUsername.studentConsent": {
     "description": "Checkbox label for student consent to be recorded in classroom dashboard view.",
@@ -1237,7 +1241,7 @@
   },
   "components.InputDisplayName.inputDisplayNamePlaceholder": {
     "description": "The input bar to fill your display name.",
-    "message": "Enter your desired display name..."
+    "message": "Enter your display name"
   },
   "components.InputDisplayName.inputNicknameAlreadyExists": {
     "description": "An alert message saying that the user can't select the entered nickname because someone is already using it in the chat.",
@@ -1297,7 +1301,7 @@
   },
   "components.LiveInfoBar.placeholderTitleInput": {
     "description": "A placeholder text indicating the purpose of the input and what it is supposed to received.",
-    "message": "Enter title of your live here"
+    "message": "Enter title of your {videoType} here"
   },
   "components.LiveInfoBar.updateTitleBlank": {
     "description": "Message displayed when the user tried to enter a blank title.",
@@ -1598,10 +1602,6 @@
   "components.SubscribScheduledVideoEmail.form.email.label": {
     "description": "Label for email input in form.",
     "message": "Email address"
-  },
-  "components.SubscribScheduledVideoEmail.form.email.validation.error": {
-    "description": "Error message if input value does not conform to email regex.",
-    "message": "You have to submit a valid email to register."
   },
   "components.SubscribScheduledVideoEmail.form.submit.title": {
     "description": "Title for the submit button in registration form",
