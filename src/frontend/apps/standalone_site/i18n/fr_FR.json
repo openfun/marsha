@@ -43,6 +43,14 @@
     "description": "Organization tab title in settings page, to config organizations.",
     "message": "Mes organisations"
   },
+  "components.Text.PrivateTextInputfield.hidePassword": {
+    "description": "A18n label for the hidden password button.",
+    "message": "Masquer le mot de passe."
+  },
+  "components.Text.PrivateTextInputfield.revealPassword": {
+    "description": "A18n label for the password button.",
+    "message": "Afficher le mot de passe."
+  },
   "components.Text.Text404": {
     "description": "Website page 404",
     "message": "Désolé, cette page n'existe pas."
@@ -169,11 +177,11 @@
   },
   "features.Authentication.components.PasswordResetConfirmForm.passwordConfirmLabel": {
     "description": "Aria label for password confirmation field",
-    "message": "Mot de passe (confirmation)"
+    "message": "Confirmer le nouveau mot de passe"
   },
   "features.Authentication.components.PasswordResetConfirmForm.passwordLabel": {
     "description": "Label for password field",
-    "message": "Mot de passe"
+    "message": "Nouveau mot de passe"
   },
   "features.Authentication.components.PasswordResetConfirmForm.requiredField": {
     "description": "Message when required field is missing.",
@@ -198,10 +206,6 @@
   "features.Authentication.components.PasswordResetForm.labelSubmit": {
     "description": "Label submit button",
     "message": "Réinitialiser mon mot de passe"
-  },
-  "features.Authentication.components.PasswordResetForm.requiredField": {
-    "description": "Message when required field is missing.",
-    "message": "Ce champ est obligatoire."
   },
   "features.Authentication.components.PasswordResetForm.successText": {
     "description": "Displayed text when password reset request succeeded.",
@@ -807,16 +811,16 @@
     "description": "Account settings page's title.",
     "message": "Mon compte"
   },
-  "features.Profile.AccountSettings.hiddeCurrentPassword": {
+  "features.Profile.AccountSettings.hideCurrentPassword": {
     "description": "A18n label for the hidden current password button.",
     "message": "Cacher le mot de passe."
   },
-  "features.Profile.AccountSettings.hiddeNewPassword": {
-    "description": "A18n label for the hidde new password button.",
+  "features.Profile.AccountSettings.hideNewPassword": {
+    "description": "A18n label for the hidden new password button.",
     "message": "Cacher le nouveau mot de passe"
   },
-  "features.Profile.AccountSettings.hiddePasswordValidation": {
-    "description": "A18n label for the hidde password confirmation button.",
+  "features.Profile.AccountSettings.hidePasswordValidation": {
+    "description": "A18n label for the hidden password confirmation button.",
     "message": "Cacher le mot de passe (confirmation)"
   },
   "features.Profile.AccountSettings.newPassword": {
@@ -835,17 +839,17 @@
     "description": "Label for password confirmation text input.",
     "message": "Répéter le nouveau mot de passe"
   },
-  "features.Profile.AccountSettings.showCurrentPassword": {
-    "description": "A18n label for the show current password button.",
+  "features.Profile.AccountSettings.revealCurrentPassword": {
+    "description": "A18n label for the revealed current password button.",
     "message": "Montrer le mot de passe."
   },
-  "features.Profile.AccountSettings.showNewPassword": {
-    "description": "A18n label for the show new password button.",
-    "message": "Montrer le nouveau mot de passe"
+  "features.Profile.AccountSettings.revealNewPassword": {
+    "description": "A18n label for the revealed new password button.",
+    "message": "Révéler le nouveau mot de passe"
   },
-  "features.Profile.AccountSettings.showPasswordValidation": {
-    "description": "A18n label for the show password confirmation button.",
-    "message": "Montrer le nouveau mot de passe (confirmation)"
+  "features.Profile.AccountSettings.revealPasswordValidation": {
+    "description": "A18n label for the reveal password confirmation button.",
+    "message": "Révéler la confirmation du mot de passe"
   },
   "features.Profile.AccountSettings.submit": {
     "description": "Title for the submit button for the bloc in settings to update the password.",
