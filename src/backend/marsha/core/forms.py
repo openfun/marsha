@@ -35,6 +35,7 @@ class VideoForm(ModelForm):
             "playlist",
             "title",
             "upload_state",
+            "license",
         ]
 
     def clean_upload_state(self):
