@@ -78,6 +78,7 @@ class VideoCreateAPITest(TestCase):
                 "lti_id": "video_one",
                 "playlist": str(playlist.id),
                 "title": "Some video",
+                "license": "CC_BY-ND",
             },
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -127,7 +128,7 @@ class VideoCreateAPITest(TestCase):
                 "urls": None,
                 "xmpp": None,
                 "tags": [],
-                "license": None,
+                "license": "CC_BY-ND",
             },
         )
 
@@ -174,6 +175,7 @@ class VideoCreateAPITest(TestCase):
                 "lti_id": "video_one",
                 "playlist": str(playlist.id),
                 "title": "Some video",
+                "license": "CC_BY-ND",
             },
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -223,7 +225,7 @@ class VideoCreateAPITest(TestCase):
                 "urls": None,
                 "xmpp": None,
                 "tags": [],
-                "license": None,
+                "license": "CC_BY-ND",
             },
         )
 
