@@ -214,7 +214,7 @@ describe('<DashboardInstructor />', () => {
       },
     );
 
-    const fileFilter = screen.getByRole('button', { name: /Filter files/i });
+    const fileFilter = screen.getByRole('combobox', { name: /Filter files/i });
     await userEvent.click(fileFilter);
     await userEvent.click(
       await screen.findByRole('option', { name: 'Unread' }),

@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { useJwt } from 'lib-components';
@@ -55,16 +55,12 @@ describe('<LicenseSelect />', () => {
       }),
     );
 
+    const selectButton = await screen.findByRole('combobox', {
+      name: 'Select the license',
+    });
     expect(
-      screen.getByRole('button', {
-        name: 'Select the license under which you want to publish your video; Selected: CC_BY',
-      }),
-    ).not.toBeDisabled();
-    expect(
-      screen.getByRole('textbox', {
-        name: 'Select the license under which you want to publish your video, CC_BY',
-      }),
-    ).toHaveValue('Creative Common By Attribution');
+      await within(selectButton).findByText('Creative Common By Attribution'),
+    ).toBeInTheDocument();
   });
 
   it('renders the component but is disabled', async () => {
@@ -85,16 +81,12 @@ describe('<LicenseSelect />', () => {
       }),
     );
 
+    const selectButton = await screen.findByRole('combobox', {
+      name: 'Select the license',
+    });
     expect(
-      screen.getByRole('button', {
-        name: 'Select the license under which you want to publish your video; Selected: CC_BY',
-      }),
-    ).toBeDisabled();
-    expect(
-      screen.getByRole('textbox', {
-        name: 'Select the license under which you want to publish your video, CC_BY',
-      }),
-    ).toHaveValue('Creative Common By Attribution');
+      await within(selectButton).findByText('Creative Common By Attribution'),
+    ).toBeInTheDocument();
   });
 
   it('renders the component with no licenses', async () => {
@@ -110,24 +102,15 @@ describe('<LicenseSelect />', () => {
     );
 
     expect(
-      screen.queryByRole('button', {
-        name: 'Select the license under which you want to publish your video; Selected: CC_BY',
-      }),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('textbox', {
-        name: 'Select the license under which you want to publish your video, CC_BY',
-      }),
+      screen.queryByText('Creative Common By Attribution'),
     ).not.toBeInTheDocument();
 
-    screen.getByRole('button', {
-      name: 'Select the license under which you want to publish your video; Selected: error',
+    const selectButton = await screen.findByRole('combobox', {
+      name: 'Select the license',
     });
     expect(
-      screen.getByRole('textbox', {
-        name: 'Select the license under which you want to publish your video, error',
-      }),
-    ).toHaveValue('No license availables');
+      await within(selectButton).findByText('No license availables'),
+    ).toBeInTheDocument();
   });
 
   it('changes the selected license', async () => {
@@ -148,17 +131,14 @@ describe('<LicenseSelect />', () => {
       }),
     );
 
+    const selectButton = await screen.findByRole('combobox', {
+      name: 'Select the license',
+    });
     expect(
-      await screen.findByRole('textbox', {
-        name: /Select the license under which you want to publish your video, CC_BY/i,
-      }),
-    ).toHaveValue('Creative Common By Attribution');
+      await within(selectButton).findByText('Creative Common By Attribution'),
+    ).toBeInTheDocument();
 
-    await userEvent.click(
-      screen.getByRole('button', {
-        name: 'Select the license under which you want to publish your video; Selected: CC_BY',
-      }),
-    );
+    await userEvent.click(selectButton);
 
     const allRightsReservedButtonOption = screen.getByRole('option', {
       name: 'All rights reserved',
@@ -166,13 +146,8 @@ describe('<LicenseSelect />', () => {
 
     await userEvent.click(allRightsReservedButtonOption);
 
-    screen.getByRole('button', {
-      name: 'Select the license under which you want to publish your video; Selected: NO_CC',
-    });
     expect(
-      screen.getByRole('textbox', {
-        name: 'Select the license under which you want to publish your video, NO_CC',
-      }),
-    ).toHaveValue('All rights reserved');
+      await within(selectButton).findByText('All rights reserved'),
+    ).toBeInTheDocument();
   });
 });

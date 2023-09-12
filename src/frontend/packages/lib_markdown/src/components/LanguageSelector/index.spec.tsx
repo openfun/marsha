@@ -18,7 +18,7 @@ describe('<LanguageSelector />', () => {
     );
 
     await userEvent.click(
-      screen.getByRole('button', { name: /Select language/i }),
+      screen.getByRole('combobox', { name: /Select language/i }),
     );
     await userEvent.click(
       await screen.findByRole('option', { name: /French/i }),
@@ -36,7 +36,7 @@ describe('<LanguageSelector />', () => {
     );
 
     await userEvent.click(
-      screen.getByRole('button', { name: /Select language/i }),
+      screen.getByRole('combobox', { name: /Select language/i }),
     );
     await userEvent.click(
       await screen.findByRole('option', { name: /English/i }),
@@ -59,7 +59,7 @@ describe('<LanguageSelector />', () => {
     );
 
     await userEvent.click(
-      screen.getByRole('button', { name: /Select language/i }),
+      screen.getByRole('combobox', { name: /Select language/i }),
     );
 
     expect(screen.queryByText('French')).not.toBeInTheDocument();
@@ -78,7 +78,7 @@ describe('<LanguageSelector />', () => {
     );
 
     await userEvent.click(
-      screen.getByRole('button', { name: /Select language/i }),
+      screen.getByRole('combobox', { name: /Select language/i }),
     );
     await userEvent.click(
       await screen.findByRole('option', { name: /French/i }),

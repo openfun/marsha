@@ -45,7 +45,7 @@ describe('<MarkdownViewer />', () => {
 
     // Change language to fr
     await userEvent.click(
-      screen.getByRole('button', { name: /Select language/i }),
+      screen.getByRole('combobox', { name: /Select language/i }),
     );
     await userEvent.click(
       await screen.findByRole('option', { name: /French/i }),
@@ -75,7 +75,7 @@ describe('<MarkdownViewer />', () => {
 
     // Change language to fr
     await userEvent.click(
-      screen.getByRole('button', { name: /Select language/i }),
+      screen.getByRole('combobox', { name: /Select language/i }),
     );
     await userEvent.click(
       await screen.findByRole('option', { name: /French/i }),
@@ -127,7 +127,7 @@ describe('<MarkdownViewer />', () => {
 
     // Change language to fr
     await userEvent.click(
-      screen.getByRole('button', { name: /Select language/i }),
+      screen.getByRole('combobox', { name: /Select language/i }),
     );
     await userEvent.click(
       await screen.findByRole('option', { name: /French/i }),

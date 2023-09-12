@@ -1,4 +1,5 @@
-import { Select, timedTextMode, useTimedTextTrack } from 'lib-components';
+import { Select } from '@openfun/cunningham-react';
+import { timedTextMode, useTimedTextTrack } from 'lib-components';
 import { useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -6,11 +7,17 @@ import { LanguageChoice } from '@lib-video/types/SelectOptions';
 
 const messages = defineMessages({
   selectLanguageLabel: {
-    defaultMessage:
-      'Select the language for which you want to upload a timed text file',
+    defaultMessage: 'Choose the language',
     description:
       'The label of the select used for choosing the language for which the user wants to upload a file.',
     id: 'components.LanguageSelect.selectLanguageLabel',
+  },
+  selectLanguageInfo: {
+    defaultMessage:
+      'The language for which you want to upload a timed text file',
+    description:
+      'The text under the select used for choosing the language for which the user wants to upload a file.',
+    id: 'components.LanguageSelect.selectLanguageInfo',
   },
   noLanguageAvailableLabel: {
     defaultMessage: 'No language availables',
@@ -98,14 +105,19 @@ export const LanguageSelect = ({
   return (
     <Select
       aria-label={intl.formatMessage(messages.selectLanguageLabel)}
+      label={intl.formatMessage(messages.selectLanguageLabel)}
       options={availableSelectableLanguages ?? [errorLanguageChoice]}
-      replace={false}
-      labelKey="label"
       value={selectedLanguage.value}
-      valueKey={{ key: 'value', reduce: true }}
-      onChange={({ option }: { option: { label: string; value: string } }) => {
-        setSelectedLanguage(option);
+      onChange={(evt) => {
+        setSelectedLanguage(
+          availableSelectableLanguages?.find(
+            (lang) => lang.value === evt.target.value,
+          ) ?? errorLanguageChoice,
+        );
       }}
+      fullWidth
+      clearable={false}
+      text={intl.formatMessage(messages.selectLanguageInfo)}
     />
   );
 };

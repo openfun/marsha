@@ -1,12 +1,10 @@
-import { Input } from '@openfun/cunningham-react';
-import { Box, Button, Heading, Select, Text, ThemeContext } from 'grommet';
+import { Input, Select } from '@openfun/cunningham-react';
+import { Box, Button, Heading, Text, ThemeContext } from 'grommet';
 import { Nullable } from 'lib-common';
 import {
   ButtonLoaderStyle,
   FetchResponseError,
   Form,
-  FormField,
-  FormHelpText,
   Modal,
   ModalButton,
   Organization,
@@ -80,7 +78,7 @@ const messages = defineMessages({
   },
   playlistRetentionDurationHelper: {
     defaultMessage:
-      'This retention duration is use to know how long related resources will be kept.',
+      'This retention duration is used to know how long related resources will be kept.',
     description: 'Playlist retention duration helper in create playlist form .',
     id: 'feature.Playlist.PlaylistForm.playlistRetentionDurationHelper',
   },
@@ -179,7 +177,7 @@ export const PlaylistForm = ({
   const [formValues, setFormValues] = useState<Partial<PlaylistFormValues>>({
     organizationId: initialValues?.organizationId,
     name: initialValues?.name || '',
-    retention_duration: initialValues?.retention_duration || null,
+    retention_duration: initialValues?.retention_duration,
   });
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [currentOrganizationPage, setCurrentOrganizationPage] = useState(0);
@@ -268,25 +266,25 @@ export const PlaylistForm = ({
         label: intl.formatMessage(
           messages.playlistRetentionDurationChoiceNoDuration,
         ),
-        value: null,
+        value: '',
       },
       {
         label: intl.formatMessage(
           messages.playlistRetentionDurationChoice30Days,
         ),
-        value: 30,
+        value: '30',
       },
       {
         label: intl.formatMessage(
           messages.playlistRetentionDurationChoice1Year,
         ),
-        value: 365,
+        value: '365',
       },
       {
         label: intl.formatMessage(
           messages.playlistRetentionDurationChoice5years,
         ),
-        value: 365 * 5,
+        value: `${365 * 5}`,
       },
     ],
     [intl],
@@ -365,37 +363,25 @@ export const PlaylistForm = ({
           )}
 
           <Box>
-            <FormField
-              required
-              disabled={!isEditable}
+            <Select
+              aria-label={intl.formatMessage(messages.organizationFieldLabel)}
               label={intl.formatMessage(messages.organizationFieldLabel)}
-              htmlFor="select-organization-id"
-              name="organizationId"
-              margin="0"
-            >
-              <Select
-                disabled={!isEditable}
-                name="organizationId"
-                id="select-organization-id"
-                options={organizations}
-                onMore={() => {
-                  if (!organizationResponse) {
-                    return;
-                  }
-
-                  if (organizations.length < organizationResponse.count) {
-                    setCurrentOrganizationPage(
-                      (currentPage) => currentPage + 1,
-                    );
-                  }
-                }}
-                labelKey="name"
-                valueKey={{ key: 'id', reduce: true }}
-              />
-            </FormField>
-            <FormHelpText>
-              {intl.formatMessage(messages.organizationHelper)}
-            </FormHelpText>
+              disabled={!isEditable}
+              clearable={false}
+              options={organizations.map((organization) => ({
+                label: organization.name,
+                value: organization.id,
+              }))}
+              onChange={(e) => {
+                setFormValues((value) => ({
+                  ...value,
+                  organizationId: e.target.value as string,
+                }));
+              }}
+              fullWidth
+              text={intl.formatMessage(messages.organizationHelper)}
+              value={formValues.organizationId}
+            />
           </Box>
 
           <Input
@@ -416,31 +402,31 @@ export const PlaylistForm = ({
           />
 
           <Box>
-            <FormField
-              disabled={!isEditable}
+            <Select
+              aria-label={intl.formatMessage(
+                messages.playlistRetentionDurationFieldLabel,
+              )}
               label={intl.formatMessage(
                 messages.playlistRetentionDurationFieldLabel,
               )}
-              htmlFor="select-retention_duration-id"
-              name="retention_duration"
-              margin="0"
-            >
-              <Select
-                aria-label={intl.formatMessage(
-                  messages.playlistRetentionDurationFieldLabel,
-                )}
-                defaultValue={retentionDurationChoices[0]}
-                id="select-retention_duration-id"
-                name="retention_duration"
-                labelKey="label"
-                options={retentionDurationChoices}
-                replace={false}
-                valueKey={{ key: 'value', reduce: true }}
-              />
-            </FormField>
-            <FormHelpText>
-              {intl.formatMessage(messages.playlistRetentionDurationHelper)}
-            </FormHelpText>
+              disabled={!isEditable}
+              options={retentionDurationChoices}
+              onChange={(e) => {
+                setFormValues((value) => ({
+                  ...value,
+                  retention_duration: (e.target.value as number) || null,
+                }));
+              }}
+              fullWidth
+              text={intl.formatMessage(
+                messages.playlistRetentionDurationHelper,
+              )}
+              value={
+                formValues.retention_duration
+                  ? `${formValues.retention_duration}`
+                  : undefined
+              }
+            />
           </Box>
         </Box>
         <Box gap="xsmall">

@@ -43,8 +43,8 @@ describe('<InstructorDownloadVideo />', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'help' }));
 
-    const button = screen.getByRole('button', {
-      name: 'This input allows you to select the quality you desire for your download.; Selected: 1080 p',
+    const button = screen.getByRole('combobox', {
+      name: 'Download quality',
     });
     within(button).getByText('1080 p');
 
@@ -63,9 +63,10 @@ describe('<InstructorDownloadVideo />', () => {
       ),
     );
 
-    const defaultButtonSelect = screen.getByRole('button', {
-      name: 'This input allows you to select the quality you desire for your download.; Selected: 1080 p',
+    const defaultButtonSelect = screen.getByRole('combobox', {
+      name: 'Download quality',
     });
+    expect(within(defaultButtonSelect).getByText('1080 p')).toBeInTheDocument();
 
     await userEvent.click(defaultButtonSelect);
 

@@ -1,4 +1,4 @@
-import { Select } from 'grommet';
+import { Select } from '@openfun/cunningham-react';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -7,11 +7,17 @@ import { LicenseChoice } from '@lib-video/types/SelectOptions';
 
 const messages = defineMessages({
   selectLicenseLabel: {
-    defaultMessage:
-      'Select the license under which you want to publish your video',
+    defaultMessage: 'Select the license',
     description:
       'The label of the select used for choosing the license under which the instructor wants to publish your video',
     id: 'components.LicenseSelect.selectLicenseLabel',
+  },
+  selectLicenseInfo: {
+    defaultMessage:
+      'Select the license under which you want to publish your video',
+    description:
+      'The info under the select used for choosing the license under which the instructor wants to publish your video',
+    id: 'components.LicenseSelect.selectLicenseInfo',
   },
   noLicenseAvailableLabel: {
     defaultMessage: 'No license availables',
@@ -70,18 +76,23 @@ export const LicenseSelect = ({ disabled, onChange }: LicenseSelectProps) => {
   return (
     <Select
       aria-label={intl.formatMessage(messages.selectLicenseLabel)}
-      id="select-license-id"
-      name="license"
-      disabled={disabled}
-      labelKey="label"
-      onChange={({ option }: { option: { label: string; value: string } }) => {
-        setSelectedLicense(option);
-        onChange(option);
-      }}
+      label={intl.formatMessage(messages.selectLicenseLabel)}
       options={choices ?? [errorLicenseChoice]}
-      replace={false}
+      fullWidth
       value={selectedLicense.value}
-      valueKey={{ key: 'value', reduce: true }}
+      onChange={(evt) => {
+        if (evt.target.value !== selectedLicense.value) {
+          const choice =
+            choices?.find((option) => option.value === evt.target.value) ||
+            errorLicenseChoice;
+
+          setSelectedLicense(choice);
+          onChange(choice);
+        }
+      }}
+      clearable={false}
+      disabled={disabled}
+      text={intl.formatMessage(messages.selectLicenseInfo)}
     />
   );
 };

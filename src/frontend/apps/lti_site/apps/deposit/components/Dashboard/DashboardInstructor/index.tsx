@@ -1,4 +1,5 @@
-import { Box, Heading, Pagination, Paragraph, Select, Text } from 'grommet';
+import { Select } from '@openfun/cunningham-react';
+import { Box, Heading, Pagination, Paragraph, Text } from 'grommet';
 import { Maybe } from 'lib-common';
 import { FileDepository, Loader } from 'lib-components';
 import React, { FocusEvent, useState } from 'react';
@@ -9,6 +10,8 @@ import {
   useDepositedFiles,
   useUpdateFileDepository,
 } from 'apps/deposit/data/queries';
+
+type SelectProps = React.ComponentPropsWithoutRef<typeof Select>;
 
 const PAGE_SIZE = 10;
 
@@ -77,7 +80,7 @@ export const DashboardInstructor = ({
   const [indices, setIndices] = useState([0, PAGE_SIZE]);
   const [readFilter, setReadFilter] = useState<Maybe<string>>(undefined);
 
-  const { data, isError, isLoading, refetch } = useDepositedFiles(
+  const { data, isError, isLoading } = useDepositedFiles(
     fileDepository.id,
     {
       limit: `${PAGE_SIZE}`,
@@ -103,9 +106,8 @@ export const DashboardInstructor = ({
     },
   ];
 
-  const onReadFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setReadFilter(event.target.value);
-    refetch();
+  const onReadFilterChange: SelectProps['onChange'] = (event) => {
+    setReadFilter(event.target.value as Maybe<string>);
   };
 
   const { mutate } = useUpdateFileDepository(fileDepository.id);
@@ -190,17 +192,11 @@ export const DashboardInstructor = ({
                 pad="medium"
               >
                 <Select
-                  a11yTitle={intl.formatMessage(messages.readFilterTitle)}
-                  id="readFilterSelect"
-                  name="read"
-                  placeholder={intl.formatMessage(
-                    messages.readFilterPlaceholder,
-                  )}
-                  value={readFilter}
-                  options={readFilterOptions}
-                  labelKey="label"
-                  valueKey={{ key: 'value', reduce: true }}
+                  aria-label={intl.formatMessage(messages.readFilterTitle)}
+                  label={intl.formatMessage(messages.readFilterTitle)}
                   onChange={onReadFilterChange}
+                  options={readFilterOptions}
+                  value={readFilter}
                 />
                 <Text>
                   <FormattedMessage

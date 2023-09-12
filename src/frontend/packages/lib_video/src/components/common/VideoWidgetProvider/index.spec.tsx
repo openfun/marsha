@@ -226,13 +226,14 @@ describe('<VideoWidgetProvider />', () => {
       render(wrapInVideo(<VideoWidgetProvider isLive isTeacher />, mockVideo));
 
       await screen.findByText('Join the discussion');
-      const button = screen.getByRole('button', {
-        name: /select join the discussion mode/i,
+      const button = screen.getByRole('combobox', {
+        name: 'Join the discussion mode',
       });
-      const select = within(button).getByRole('textbox');
-      expect(select).toHaveValue(
-        'Accept joining the discussion after approval',
-      );
+      expect(
+        within(button).getByText(
+          'Accept joining the discussion after approval',
+        ),
+      ).toBeInTheDocument();
     });
 
     it('tests DashboardLiveWidgetThumbnail', async () => {

@@ -56,7 +56,11 @@ describe('<PlaylistForm />', () => {
     deferred.resolve({ count: 0, results: [] });
 
     await waitForElementToBeRemoved(loader);
-    expect(screen.getByLabelText('Organization*required')).toBeInTheDocument();
+    expect(
+      await screen.findByRole('combobox', {
+        name: 'Organization',
+      }),
+    ).toBeInTheDocument();
     expect(screen.getByLabelText('Name')).toBeInTheDocument();
 
     const submitButton = screen.getByRole('button', { name: 'Save' });
@@ -86,13 +90,11 @@ describe('<PlaylistForm />', () => {
     );
 
     expect(
-      await screen.findByLabelText('Organization*required'),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', {
-        name: 'Open Drop; Selected: first id',
+      await screen.findByRole('combobox', {
+        name: 'Organization',
       }),
     ).toBeInTheDocument();
+    expect(screen.getByText('first organization')).toBeInTheDocument();
     expect(screen.getByLabelText('Name')).toBeInTheDocument();
 
     expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument();
@@ -132,13 +134,11 @@ describe('<PlaylistForm />', () => {
     );
 
     expect(
-      await screen.findByLabelText('Organization*required'),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', {
-        name: 'Open Drop; Selected: second id',
+      await screen.findByRole('combobox', {
+        name: 'Organization',
       }),
     ).toBeInTheDocument();
+    expect(screen.getByText('second organization')).toBeInTheDocument();
     expect(screen.getByDisplayValue('some initial name')).toBeInTheDocument();
 
     expect(fetchMock.calls().length).toEqual(1);
@@ -178,13 +178,11 @@ describe('<PlaylistForm />', () => {
     );
 
     expect(
-      await screen.findByLabelText('Organization*required'),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', {
-        name: 'Open Drop; Selected: third id',
+      await screen.findByRole('combobox', {
+        name: 'Organization',
       }),
     ).toBeInTheDocument();
+    expect(screen.getByText('third organization')).toBeInTheDocument();
     expect(screen.getByDisplayValue('some initial name')).toBeInTheDocument();
 
     expect(fetchMock.calls().length).toEqual(2);
@@ -225,11 +223,8 @@ describe('<PlaylistForm />', () => {
     );
 
     expect(
-      await screen.findByLabelText('Organization*required'),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', {
-        name: 'Open Drop',
+      await screen.findByRole('combobox', {
+        name: 'Organization',
       }),
     ).toBeInTheDocument();
     expect(screen.getByDisplayValue('some initial name')).toBeInTheDocument();
@@ -276,7 +271,9 @@ describe('<PlaylistForm />', () => {
     );
 
     expect(
-      await screen.findByLabelText('Organization*required'),
+      await screen.findByRole('combobox', {
+        name: 'Organization',
+      }),
     ).toBeInTheDocument();
 
     await userEvent.click(screen.getByRole('button', { name: 'Save' }));
@@ -285,7 +282,7 @@ describe('<PlaylistForm />', () => {
     expect(mockedOnSubmit).toHaveBeenCalledWith({
       name: 'some initial name',
       organizationId: 'third id',
-      retention_duration: 365,
+      retention_duration: '365',
     });
 
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }));
@@ -328,7 +325,9 @@ describe('<PlaylistForm />', () => {
     );
     await userEvent.click(screen.getByRole('button', { name: 'Retry' }));
     expect(
-      await screen.findByLabelText('Organization*required'),
+      await screen.findByRole('combobox', {
+        name: 'Organization',
+      }),
     ).toBeInTheDocument();
   });
 
@@ -358,13 +357,11 @@ describe('<PlaylistForm />', () => {
     );
 
     expect(
-      await screen.findByLabelText('Organization*required'),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', {
-        name: 'Open Drop; Selected: first id',
+      await screen.findByRole('combobox', {
+        name: 'Organization',
       }),
     ).toBeInTheDocument();
+    expect(screen.getByText('first organization')).toBeInTheDocument();
     expect(screen.getByLabelText('Name')).toBeInTheDocument();
     expect(screen.getByDisplayValue('some initial name')).toBeInTheDocument();
 
@@ -374,11 +371,7 @@ describe('<PlaylistForm />', () => {
       screen.queryByRole('button', { name: 'Delete playlist' }),
     ).not.toBeInTheDocument();
 
-    await userEvent.click(
-      screen.getByRole('button', {
-        name: 'Open Drop; Selected: first id',
-      }),
-    );
+    await userEvent.click(screen.getByText('first organization'));
     await userEvent.click(
       await screen.findByRole('option', { name: 'second organization' }),
     );
@@ -389,11 +382,7 @@ describe('<PlaylistForm />', () => {
       'an other awesome name',
     );
 
-    expect(
-      await screen.findByRole('button', {
-        name: 'Open Drop; Selected: second id',
-      }),
-    ).toBeInTheDocument();
+    expect(screen.getByText('second organization')).toBeInTheDocument();
     expect(
       await screen.findByDisplayValue('an other awesome name'),
     ).toBeInTheDocument();
@@ -403,13 +392,11 @@ describe('<PlaylistForm />', () => {
     await waitFor(() => expect(mockedOnCancel).toHaveBeenCalled());
 
     expect(
-      await screen.findByLabelText('Organization*required'),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', {
-        name: 'Open Drop; Selected: first id',
+      await screen.findByRole('combobox', {
+        name: 'Organization',
       }),
     ).toBeInTheDocument();
+    expect(screen.getByText('first organization')).toBeInTheDocument();
     expect(screen.getByLabelText('Name')).toBeInTheDocument();
     expect(screen.getByDisplayValue('some initial name')).toBeInTheDocument();
   });
@@ -433,13 +420,11 @@ describe('<PlaylistForm />', () => {
     );
 
     expect(
-      await screen.findByLabelText('Organization*required'),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', {
-        name: 'Open Drop; Selected: first id',
+      await screen.findByRole('combobox', {
+        name: 'Organization',
       }),
     ).toBeInTheDocument();
+    expect(screen.getByText('first organization')).toBeInTheDocument();
     expect(screen.getByLabelText('Name')).toBeInTheDocument();
 
     expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument();
@@ -470,13 +455,11 @@ describe('<PlaylistForm />', () => {
     );
 
     expect(
-      await screen.findByLabelText('Organization*required'),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', {
-        name: 'Open Drop; Selected: first id',
+      await screen.findByRole('combobox', {
+        name: 'Organization',
       }),
     ).toBeInTheDocument();
+    expect(screen.getByText('first organization')).toBeInTheDocument();
     expect(screen.getByLabelText('Name')).toBeInTheDocument();
 
     const deleteButton = screen.getByRole('button', {
@@ -517,13 +500,11 @@ describe('<PlaylistForm />', () => {
     );
 
     expect(
-      await screen.findByLabelText('Organization*required'),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', {
-        name: 'Open Drop; Selected: first id',
+      await screen.findByRole('combobox', {
+        name: 'Organization',
       }),
     ).toBeInTheDocument();
+    expect(screen.getByText('first organization')).toBeInTheDocument();
     expect(screen.getByLabelText('Name')).toBeInTheDocument();
 
     const deleteButton = screen.getByRole('button', {
@@ -561,13 +542,11 @@ describe('<PlaylistForm />', () => {
     );
 
     expect(
-      await screen.findByLabelText('Organization*required'),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', {
-        name: 'Open Drop; Selected: first id',
+      await screen.findByRole('combobox', {
+        name: 'Organization',
       }),
     ).toBeInTheDocument();
+    expect(screen.getByText('first organization')).toBeInTheDocument();
     expect(screen.getByLabelText('Name')).toBeInTheDocument();
 
     const deleteButton = screen.getByRole('button', {

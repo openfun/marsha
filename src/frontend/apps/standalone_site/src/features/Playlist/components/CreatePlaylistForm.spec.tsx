@@ -91,21 +91,17 @@ describe('<CreatePlaylistForm />', () => {
 
     expect(await screen.findByText('Create a playlist')).toBeInTheDocument();
 
-    await userEvent.click(
-      await screen.findByRole('button', { name: 'Open Drop; Selected: id' }),
-    );
+    expect(screen.getByText('org')).toBeInTheDocument();
 
     await userEvent.click(
-      await screen.findByRole('option', { name: 'other-org' }),
-    );
-
-    expect(
-      await screen.findByRole('button', {
-        name: 'Open Drop; Selected: other-id',
+      screen.getByRole('combobox', {
+        name: 'Organization',
       }),
-    ).toBeInTheDocument();
-    expect(screen.getByDisplayValue('other-org')).toBeInTheDocument();
-    expect(screen.queryByDisplayValue('org')).not.toBeInTheDocument();
+    );
+    await userEvent.click(screen.getByRole('option', { name: 'other-org' }));
+
+    expect(screen.getByText('other-org')).toBeInTheDocument();
+    expect(screen.queryByText('org')).not.toBeInTheDocument();
 
     await userEvent.type(
       screen.getByRole('textbox', { name: 'Name' }),

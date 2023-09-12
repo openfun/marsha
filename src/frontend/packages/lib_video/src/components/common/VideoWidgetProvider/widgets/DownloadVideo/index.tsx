@@ -1,4 +1,5 @@
-import { Box, Button, Select, Text } from 'grommet';
+import { Select } from '@openfun/cunningham-react';
+import { Box, Button } from 'grommet';
 import {
   FoldableItem,
   ToggleInput,
@@ -27,10 +28,14 @@ const messages = defineMessages({
     id: 'components.DownloadVideo.title',
   },
   selectQualityLabel: {
-    defaultMessage:
-      'This input allows you to select the quality you desire for your download.',
+    defaultMessage: 'Download quality',
     description: 'Label of the select button.',
     id: 'components.DownloadVideo.selectQualityLabel',
+  },
+  selectQualityInfo: {
+    defaultMessage: 'Select the quality you desire for your download.',
+    description: 'Text explaining the select button.',
+    id: 'components.DownloadVideo.selectQualityInfo',
   },
   noResolutionsAvailableOption: {
     defaultMessage: 'No resolutions available',
@@ -104,10 +109,9 @@ export const DownloadVideo = ({ isTeacher }: DownloadVideoProps) => {
     options.push(noResolutionsAvailableOption);
   }
 
-  const [selectedOption, setSelectedOption] = useState<{
-    label: string;
-    value: string;
-  }>(options[options.length - 1]);
+  const [selectedQuality, setSelectedQuality] = useState(
+    options[options.length - 1].value,
+  );
 
   const [toggleAllowDownload, setToggleAllowDownload] = useState(
     video.show_download,
@@ -175,24 +179,15 @@ export const DownloadVideo = ({ isTeacher }: DownloadVideoProps) => {
       <Box direction="column" gap="small" style={{ marginTop: '0.75rem' }}>
         <Select
           aria-label={intl.formatMessage(messages.selectQualityLabel)}
+          label={intl.formatMessage(messages.selectQualityLabel)}
           options={options}
-          replace={false}
-          labelKey="label"
-          value={selectedOption.label}
-          valueKey={{ key: 'value', reduce: true }}
-          valueLabel={(label: string) => (
-            <Box pad="small">
-              <Text color="blue-active">{`${label}`}</Text>
-            </Box>
-          )}
-          onChange={({
-            option,
-          }: {
-            option: { label: string; value: string };
-          }) => {
-            setSelectedOption(option);
+          fullWidth
+          value={selectedQuality}
+          onChange={(evt) => {
+            setSelectedQuality(evt.target.value as string);
           }}
-          title={intl.formatMessage(messages.selectQualityLabel)}
+          clearable={false}
+          text={intl.formatMessage(messages.selectQualityInfo)}
         />
         <StyledAnchorButton
           a11yTitle={intl.formatMessage(messages.downloadButtonLabel)}
@@ -202,7 +197,7 @@ export const DownloadVideo = ({ isTeacher }: DownloadVideoProps) => {
           label={intl.formatMessage(messages.downloadButtonLabel)}
           href={
             video.urls
-              ? video.urls.mp4[Number(selectedOption.value) as videoSize]
+              ? video.urls.mp4[Number(selectedQuality) as videoSize]
               : undefined
           }
           target="_blank"

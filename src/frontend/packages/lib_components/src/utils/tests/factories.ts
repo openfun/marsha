@@ -147,7 +147,7 @@ export const videoMockFactory = (video: Partial<Video> = {}): Video => {
     is_public: false,
     join_mode: JoinMode.APPROVAL,
     lti_url: `https://example.com/lti/videos/${id}`,
-    license: 'All rights reserved',
+    license: 'NO_CC',
     show_download: true,
     starting_at: null,
     estimated_duration: null,

@@ -1,5 +1,5 @@
-import { Input } from '@openfun/cunningham-react';
-import { Box, Heading, Paragraph, Select } from 'grommet';
+import { Input, Select } from '@openfun/cunningham-react';
+import { Box, Heading, Paragraph } from 'grommet';
 import { Nullable } from 'lib-common';
 import { ModalButton } from 'lib-components';
 import { debounce } from 'lodash';
@@ -67,7 +67,7 @@ export const AddUserAccessForm = ({
   const [searchedUser, setSearchedUser] = useState('');
   const [selectedUser, setSelectedUser] = useState<Nullable<UserLite>>(null);
   const [roleValue, setRoleValue] = useState(
-    options.find((option) => option.key === PlaylistRole.STUDENT),
+    options.find((option) => option.value === PlaylistRole.STUDENT),
   );
   const { mutate: createPlaylistAccess } = useCreatePlaylistAccess({
     onSuccess: () => {
@@ -101,17 +101,17 @@ export const AddUserAccessForm = ({
         <Box gap="small">
           <SearchUserListRow user={selectedUser}>
             <Select
-              a11yTitle={intl.formatMessage(messages.roleSelectLabel)}
-              labelKey="label"
-              value={roleValue}
+              aria-label={intl.formatMessage(messages.roleSelectLabel)}
+              label={intl.formatMessage(messages.roleSelectLabel)}
               options={options}
-              onChange={({
-                option,
-              }: {
-                option: { label: string; key: PlaylistRole };
-              }) => {
-                setRoleValue(option);
+              onChange={(evt) => {
+                setRoleValue(
+                  options?.find((option) => option.value === evt.target.value),
+                );
               }}
+              fullWidth
+              value={roleValue?.value}
+              clearable={false}
             />
           </SearchUserListRow>
           <ModalButton
@@ -121,7 +121,7 @@ export const AddUserAccessForm = ({
                 createPlaylistAccess({
                   playlist: playlistId,
                   user: selectedUser.id,
-                  role: roleValue.key,
+                  role: roleValue.value,
                 });
               }
             }}

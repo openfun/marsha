@@ -76,17 +76,12 @@ describe('<UserListRow />', () => {
       screen.getByText('my full name (my-email@openfun.fr)'),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: /Open Drop/ }),
-    ).toBeInTheDocument();
-    expect(screen.getByRole('textbox')).toHaveValue('Administrator');
-    expect(
       screen.getByRole('button', { name: 'Delete user.' }),
     ).toBeInTheDocument();
 
-    await userEvent.click(screen.getByRole('button', { name: /Open Drop/ }));
-
+    await userEvent.click(screen.getByText('Administrator'));
     expect(
-      await screen.findByRole('option', { name: 'Instructor' }),
+      screen.getByRole('option', { name: 'Instructor' }),
     ).toBeInTheDocument();
     expect(screen.getByRole('option', { name: 'Student' })).toBeInTheDocument();
     expect(
@@ -109,8 +104,7 @@ describe('<UserListRow />', () => {
       />,
     );
 
-    await userEvent.click(screen.getByRole('button', { name: /Open Drop/ }));
-
+    await userEvent.click(screen.getByText('Administrator'));
     const instructorOption = screen.getByRole('option', {
       name: 'Instructor',
     });
@@ -118,7 +112,7 @@ describe('<UserListRow />', () => {
 
     await userEvent.click(instructorOption);
 
-    expect(screen.getByRole('textbox')).toHaveValue('Instructor');
+    expect(screen.getByText('Instructor')).toBeInTheDocument();
     expect(
       await screen.findByText('Right has been updated with success.'),
     ).toBeInTheDocument();
@@ -144,8 +138,9 @@ describe('<UserListRow />', () => {
       />,
     );
 
-    await userEvent.click(screen.getByRole('button', { name: /Open Drop/ }));
+    expect(screen.queryByText('Instructor')).not.toBeInTheDocument();
 
+    await userEvent.click(screen.getByText('Administrator'));
     const instructorOption = screen.getByRole('option', {
       name: 'Instructor',
     });
@@ -153,7 +148,7 @@ describe('<UserListRow />', () => {
 
     await userEvent.click(instructorOption);
 
-    expect(screen.getByRole('textbox')).toHaveValue('Instructor');
+    expect(screen.getByText('Instructor')).toBeInTheDocument();
 
     deferred.reject();
 
@@ -161,7 +156,7 @@ describe('<UserListRow />', () => {
       await screen.findByText('An error occurred while updating the right.'),
     ).toBeInTheDocument();
 
-    expect(screen.getByRole('textbox')).toHaveValue('Administrator');
+    expect(await screen.findByText('Administrator')).toBeInTheDocument();
   });
 
   it('calls for delete', async () => {
@@ -260,8 +255,9 @@ describe('<UserListRow />', () => {
     expect(
       screen.getByText('my full name (my-email@openfun.fr)'),
     ).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Open Drop/ })).toBeDisabled();
-    expect(screen.getByRole('textbox')).toHaveValue('Administrator');
+    const select = screen.getByRole('combobox');
+    expect(select.contains(screen.getByText('Administrator'))).toBeTruthy();
+    expect(select.hasAttribute('disabled')).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Delete user.' })).toBeDisabled();
   });
 });

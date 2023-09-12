@@ -1,6 +1,5 @@
-import { Select } from 'grommet';
-import { Nullable } from 'lib-common';
-import { FoldableItem } from 'lib-components';
+import { Select } from '@openfun/cunningham-react';
+import { CenterLoader, FoldableItem } from 'lib-components';
 import React, { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -8,7 +7,6 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useUpdateVideo } from '@lib-video/api/useUpdateVideo';
 import { useVideoMetadata } from '@lib-video/api/useVideoMetadata';
 import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
-import { LicenseChoice } from '@lib-video/types';
 
 const messages = defineMessages({
   info: {
@@ -38,18 +36,24 @@ const messages = defineMessages({
     id: 'components.LicenseManager.noLicenseAvailableLabel',
   },
   selectLicenseLabel: {
-    defaultMessage:
-      'Select the license under which you want to publish your video',
+    defaultMessage: 'Select the license',
     description:
       'The label of the select used for choosing the license under which the instructor wants to publish your video',
     id: 'components.LicenseManager.selectLicenseLabel',
+  },
+  selectLicenseInfo: {
+    defaultMessage:
+      'Select the license under which you want to publish your video',
+    description:
+      'The text under the select used for choosing the license under which the instructor wants to publish your video',
+    id: 'components.LicenseManager.selectLicenseInfo',
   },
 });
 
 export const LicenseManager = () => {
   const intl = useIntl();
   const video = useCurrentVideo();
-  const { data } = useVideoMetadata(intl.locale);
+  const { data, isLoading } = useVideoMetadata(intl.locale);
   const choices = useMemo(() => {
     return data?.actions.POST.license.choices?.map((choice) => ({
       label: choice.display_name,
@@ -57,15 +61,19 @@ export const LicenseManager = () => {
     }));
   }, [data?.actions.POST.license.choices]);
 
-  const [selectedLicense, setSelectedLicense] = useState<
-    Nullable<LicenseChoice>
-  >(video.license ? { label: video.license, value: video.license } : null);
+  const [selectedLicense, setSelectedLicense] = useState(
+    video.license || undefined,
+  );
 
   useEffect(() => {
+    if (isLoading) {
+      return;
+    }
+
     return setSelectedLicense(
-      choices?.find((choice) => choice.label === video.license) || null,
+      choices?.find((choice) => choice.value === video.license)?.value,
     );
-  }, [choices, video.license]);
+  }, [choices, isLoading, video.license]);
 
   const errorLicenseChoice = {
     label: intl.formatMessage(messages.noLicenseAvailableLabel),
@@ -85,28 +93,36 @@ export const LicenseManager = () => {
     },
   });
 
-  function onChange(option: LicenseChoice) {
-    videoMutation.mutate({ license: option.value });
-    setSelectedLicense(option);
-  }
-
   return (
     <FoldableItem
       infoText={intl.formatMessage(messages.info)}
       initialOpenValue={true}
       title={intl.formatMessage(messages.title)}
     >
-      <Select
-        aria-label={intl.formatMessage(messages.selectLicenseLabel)}
-        id="select-license-id"
-        name="license"
-        labelKey="label"
-        onChange={onChange}
-        options={choices ?? [errorLicenseChoice]}
-        replace={false}
-        value={selectedLicense?.value}
-        valueKey={{ key: 'value', reduce: true }}
-      />
+      {!isLoading ? (
+        <Select
+          aria-label={intl.formatMessage(messages.selectLicenseLabel)}
+          label={intl.formatMessage(messages.selectLicenseLabel)}
+          options={choices ?? [errorLicenseChoice]}
+          value={selectedLicense}
+          onChange={(evt) => {
+            if (selectedLicense === evt.target.value) {
+              return;
+            }
+
+            setSelectedLicense(evt.target.value as string);
+
+            if (evt.target.value !== errorLicenseChoice.value) {
+              videoMutation.mutate({ license: evt.target.value as string });
+            }
+          }}
+          fullWidth
+          clearable={false}
+          text={intl.formatMessage(messages.selectLicenseInfo)}
+        />
+      ) : (
+        <CenterLoader />
+      )}
     </FoldableItem>
   );
 };

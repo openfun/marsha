@@ -100,12 +100,14 @@ export const MarkdownWizard = ({ markdownDocumentId }: MarkdownWizardProps) => {
               maxLength={255}
               onChange={(event) => setLocalTitle(event.target.value)}
               value={localTitle}
+              fullWidth
             />
           </Box>
           <LanguageSelector
             currentLanguage={language}
             onLanguageChange={setLanguage}
             disabled={false}
+            fullWidth
           />
 
           <Button

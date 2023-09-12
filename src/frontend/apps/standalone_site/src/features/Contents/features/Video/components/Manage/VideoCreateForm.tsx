@@ -191,19 +191,13 @@ const VideoCreateForm = () => {
             videoUploadState={newVideo?.upload_state}
           />
 
-          <FormField
-            label={intl.formatMessage(messages.licenseLabel)}
-            htmlFor="select-license-id"
-            name="license"
-            required
-            margin={{ vertical: 'small' }}
-          >
+          <Field className="mt-s" fullWidth>
             <LicenseSelect
               onChange={(option) =>
                 setVideo((_video) => ({ ..._video, license: option.value }))
               }
             />
-          </FormField>
+          </Field>
         </Box>
 
         <ModalButton

@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
@@ -90,14 +90,10 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
       { intlOptions: { locale: 'fr-FR' } },
     );
 
-    await screen.findByRole('button', {
-      name: 'Select the language for which you want to upload a timed text file; Selected: fr',
+    const button = await screen.findByRole('combobox', {
+      name: 'Choose the language',
     });
-    expect(
-      screen.getByRole('textbox', {
-        name: 'Select the language for which you want to upload a timed text file, fr',
-      }),
-    ).toHaveValue('French');
+    expect(await within(button).findByText('French')).toBeInTheDocument();
     screen.getByText('No uploaded files');
 
     screen.getByRole('button', { name: 'Upload file' });

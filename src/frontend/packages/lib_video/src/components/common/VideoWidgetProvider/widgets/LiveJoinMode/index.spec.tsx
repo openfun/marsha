@@ -46,11 +46,12 @@ describe('<LiveJoinMode />', () => {
     );
 
     screen.getByText('Join the discussion');
-    const button = screen.getByRole('button', {
-      name: /select join the discussion mode/i,
+    const button = screen.getByRole('combobox', {
+      name: 'Join the discussion mode',
     });
-    const select = within(button).getByRole('textbox');
-    expect(select).toHaveValue('Accept joining the discussion after approval');
+    expect(
+      within(button).getByText('Accept joining the discussion after approval'),
+    ).toBeInTheDocument();
   });
 
   it('selects join mode denied', async () => {
@@ -72,11 +73,12 @@ describe('<LiveJoinMode />', () => {
       ),
     );
 
-    const button = screen.getByRole('button', {
-      name: /select join the discussion mode/i,
+    const button = screen.getByRole('combobox', {
+      name: 'Join the discussion mode',
     });
-    const select = within(button).getByRole('textbox');
-    expect(select).toHaveValue('Accept joining the discussion after approval');
+    expect(
+      within(button).getByText('Accept joining the discussion after approval'),
+    ).toBeInTheDocument();
 
     await userEvent.click(button);
     await userEvent.click(screen.getByText(/not allowed/i));
@@ -106,7 +108,7 @@ describe('<LiveJoinMode />', () => {
         { ...mockedVideo, join_mode: JoinMode.DENIED },
       ),
     );
-    expect(within(button).getByRole('textbox')).toHaveValue('Not allowed');
+    expect(within(button).getByText('Not allowed')).toBeInTheDocument();
   });
 
   it('selects join mode ask for approval', async () => {
@@ -128,11 +130,10 @@ describe('<LiveJoinMode />', () => {
       ),
     );
 
-    const button = screen.getByRole('button', {
-      name: /select join the discussion mode/i,
+    const button = screen.getByRole('combobox', {
+      name: 'Join the discussion mode',
     });
-    const select = within(button).getByRole('textbox');
-    expect(select).toHaveValue('Not allowed');
+    expect(within(button).getByText('Not allowed')).toBeInTheDocument();
 
     await userEvent.click(button);
     await userEvent.click(
@@ -164,9 +165,9 @@ describe('<LiveJoinMode />', () => {
         { ...mockedVideo, join_mode: JoinMode.APPROVAL },
       ),
     );
-    expect(within(button).getByRole('textbox')).toHaveValue(
-      'Accept joining the discussion after approval',
-    );
+    expect(
+      within(button).getByText('Accept joining the discussion after approval'),
+    ).toBeInTheDocument();
   });
 
   it('selects join mode forced', async () => {
@@ -188,11 +189,12 @@ describe('<LiveJoinMode />', () => {
       ),
     );
 
-    const button = screen.getByRole('button', {
-      name: /select join the discussion mode/i,
+    const button = screen.getByRole('combobox', {
+      name: 'Join the discussion mode',
     });
-    const select = within(button).getByRole('textbox');
-    expect(select).toHaveValue('Accept joining the discussion after approval');
+    expect(
+      within(button).getByText('Accept joining the discussion after approval'),
+    ).toBeInTheDocument();
 
     await userEvent.click(button);
     await userEvent.click(
@@ -224,9 +226,9 @@ describe('<LiveJoinMode />', () => {
         { ...mockedVideo, join_mode: JoinMode.FORCED },
       ),
     );
-    expect(within(button).getByRole('textbox')).toHaveValue(
-      'Everybody will join the discussion',
-    );
+    expect(
+      within(button).getByText('Everybody will join the discussion'),
+    ).toBeInTheDocument();
   });
 
   it('selects join mode denied, but backend returns an error', async () => {
@@ -245,11 +247,12 @@ describe('<LiveJoinMode />', () => {
       ),
     );
 
-    const button = screen.getByRole('button', {
-      name: /select join the discussion mode/i,
+    const button = screen.getByRole('combobox', {
+      name: 'Join the discussion mode',
     });
-    const select = within(button).getByRole('textbox');
-    expect(select).toHaveValue('Accept joining the discussion after approval');
+    expect(
+      within(button).getByText('Accept joining the discussion after approval'),
+    ).toBeInTheDocument();
 
     await userEvent.click(button);
     await userEvent.click(screen.getByText(/not allowed/i));

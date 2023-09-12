@@ -1,4 +1,5 @@
-import { Box, Button, Select, Text } from 'grommet';
+import { Select } from '@openfun/cunningham-react';
+import { Box, Button, Text } from 'grommet';
 import {
   AnonymousUser,
   BinSVG,
@@ -13,12 +14,17 @@ import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { useDeletePlaylistAccess } from '../api/useDeletePlaylistAccess';
-import { useUpdatePlaylistAcess } from '../api/useUpdatePlaylistAccess';
+import { useUpdatePlaylistAccess } from '../api/useUpdatePlaylistAccess';
 import { PlaylistAccess, PlaylistRole } from '../types/playlistAccess';
 
 import { userRoleOptions } from './UserRoleOptions';
 
 const messages = defineMessages({
+  labelSelectRole: {
+    defaultMessage: 'Role',
+    description: 'The label on the select role input.',
+    id: 'features.Playlist.features.UpdatePlaylist.components.UserListRow.labelSelectRole',
+  },
   anonymousUser: {
     defaultMessage: 'Anonymous',
     description: 'Update page, playlist access row for user without full name.',
@@ -66,9 +72,6 @@ const messages = defineMessages({
   },
 });
 
-type Option = { label: string; key: PlaylistRole };
-type SelectOnChangeEvent = { option: Option };
-
 interface UserLabelColumnProps {
   user: PlaylistAccess['user'];
 }
@@ -84,7 +87,17 @@ export const UserLabelColumn = ({ user }: UserLabelColumnProps) => {
     userLabel = user.email;
   }
 
-  return <Fragment>{userLabel}</Fragment>;
+  return (
+    <Text
+      truncate
+      style={{
+        display: 'block',
+        whiteSpace: 'normal',
+      }}
+    >
+      {userLabel}
+    </Text>
+  );
 };
 
 interface UserRolesColumnProps {
@@ -101,16 +114,16 @@ export const UserRolesColumn = ({
   const intl = useIntl();
 
   const options = userRoleOptions(intl);
-  const initialOption = options.find((option) => option.key === role);
+  const initialRole = options.find((option) => option.value === role)?.value;
+  const [userRole, setUserRole] = useState(initialRole);
 
-  const [userRole, setUserRole] = useState(initialOption);
-  const { mutate: updateMutation } = useUpdatePlaylistAcess(playlistAccessId, {
+  const { mutate: updateMutation } = useUpdatePlaylistAccess(playlistAccessId, {
     onSuccess: () => {
       toast.success(intl.formatMessage(messages.updatePlaylistAccessSuccess));
     },
     onError: () => {
       toast.error(intl.formatMessage(messages.updatePlaylistAccessError));
-      setUserRole(initialOption);
+      setUserRole(initialRole);
     },
   });
   const { currentUser } = useCurrentUser();
@@ -122,15 +135,23 @@ export const UserRolesColumn = ({
 
   return (
     <Select
-      value={userRole}
-      options={options}
-      labelKey="label"
+      className="c_select__no_border"
+      aria-label={intl.formatMessage(messages.labelSelectRole)}
+      label={intl.formatMessage(messages.labelSelectRole)}
+      hideLabel
       disabled={userId === idUser}
-      onChange={({ option }: SelectOnChangeEvent) => {
-        setUserRole(option);
-        updateMutation({ role: option.key });
+      options={options}
+      onChange={(evt) => {
+        if (evt.target.value === userRole) {
+          return;
+        }
+
+        setUserRole(evt.target.value as PlaylistRole);
+        updateMutation({ role: evt.target.value as PlaylistRole });
       }}
-      size="var(--c--theme--font--size-datagrid-cell)"
+      fullWidth
+      value={userRole}
+      clearable={false}
     />
   );
 };

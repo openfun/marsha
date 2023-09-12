@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { Playlist } from 'lib-components';
@@ -78,13 +78,20 @@ describe('<UpdatePlaylistPage />', () => {
     expect(
       await screen.findByRole('heading', { name: 'Main informations' }),
     ).toBeInTheDocument();
+    expect(await screen.findByText('first orga')).toBeInTheDocument();
     expect(
-      await screen.findByRole('button', {
-        name: 'Open Drop; Selected: id orga',
+      screen.queryByRole('combobox', {
+        name: 'Organization',
       }),
     ).not.toBeDisabled();
     expect(screen.getByDisplayValue('playlist title')).not.toBeDisabled();
-    expect(screen.getByDisplayValue('1 year')).not.toBeDisabled();
+
+    expect(screen.getByText('1 year')).toBeInTheDocument();
+    expect(
+      screen.queryByRole('combobox', {
+        name: 'Retention duration',
+      }),
+    ).not.toBeDisabled();
 
     expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument();
 
@@ -103,12 +110,6 @@ describe('<UpdatePlaylistPage />', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Save' }));
 
-    await waitFor(() =>
-      expect(
-        screen.getByRole('button', { name: 'Open Drop; Selected: id orga' }),
-      ).toBeDisabled(),
-    );
-
     fetchMock.mock('/api/playlists/some-id/', playlist, {
       overwriteRoutes: true,
     });
@@ -117,12 +118,6 @@ describe('<UpdatePlaylistPage />', () => {
     expect(
       await screen.findByText('Playlist updated with success.'),
     ).toBeInTheDocument();
-
-    await waitFor(() =>
-      expect(
-        screen.getByRole('button', { name: 'Open Drop; Selected: id orga' }),
-      ).not.toBeDisabled(),
-    );
 
     expect(
       screen.getByRole('button', { name: 'Delete playlist' }),

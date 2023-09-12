@@ -1,5 +1,4 @@
-import { Select } from 'grommet';
-import React from 'react';
+import { Select } from '@openfun/cunningham-react';
 import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
@@ -15,6 +14,7 @@ type LanguageSelectorProps = {
   onLanguageChange: (selectedLanguage: string) => void;
   disabled: boolean;
   availableLanguages?: string[];
+  fullWidth?: boolean;
 };
 
 export const LanguageSelector = ({
@@ -22,6 +22,7 @@ export const LanguageSelector = ({
   onLanguageChange,
   disabled,
   availableLanguages,
+  fullWidth,
 }: LanguageSelectorProps) => {
   const intl = useIntl();
   let languageList = ['en', 'fr']; // may prefer an API call to fetch values
@@ -31,22 +32,23 @@ export const LanguageSelector = ({
     );
   }
 
-  const displayedLanguage = intl.formatDisplayName(currentLanguage, {
-    type: 'language',
-  });
   return (
     <Select
-      margin="xsmall"
-      a11yTitle={intl.formatMessage(messages.selectLanguageLabel)}
-      value={displayedLanguage}
-      disabled={disabled}
+      aria-label={intl.formatMessage(messages.selectLanguageLabel)}
+      label={intl.formatMessage(messages.selectLanguageLabel)}
       options={languageList.map((lang) => ({
-        label: intl.formatDisplayName(lang, { type: 'language' }),
+        label: intl.formatDisplayName(lang, { type: 'language' }) as string,
         value: lang,
       }))}
-      onChange={({ option }: { option: { label: string; value: string } }) => {
-        onLanguageChange(option.value);
+      fullWidth={fullWidth}
+      value={currentLanguage}
+      onChange={(evt) => {
+        if (evt.target.value !== currentLanguage) {
+          onLanguageChange(evt.target.value as string);
+        }
       }}
+      clearable={false}
+      disabled={disabled}
     />
   );
 };

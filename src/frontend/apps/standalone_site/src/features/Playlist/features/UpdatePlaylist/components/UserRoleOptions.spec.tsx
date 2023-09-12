@@ -8,9 +8,9 @@ describe('UserRoleOptions', () => {
       locale: 'en',
     });
     const expectedOptions = [
-      { label: 'Administrator', key: 'administrator' },
-      { label: 'Instructor', key: 'instructor' },
-      { label: 'Student', key: 'student' },
+      { label: 'Administrator', value: 'administrator' },
+      { label: 'Instructor', value: 'instructor' },
+      { label: 'Student', value: 'student' },
     ];
     expect(userRoleOptions(intl)).toEqual(expectedOptions);
   });

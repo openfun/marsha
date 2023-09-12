@@ -10,6 +10,7 @@ import { Modal, Playlist, useResponsive } from 'lib-components';
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { Route, Routes, useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 
 import { WhiteCard } from 'components/Cards';
 import { ITEM_PER_PAGE } from 'conf/global';
@@ -66,6 +67,18 @@ const messages = defineMessages({
     id: 'features.Playlist.columnNameOrganization',
   },
 });
+
+export const BoxDatagrid = styled(Box)`
+  .c__datagrid {
+    display: block;
+    overflow: auto;
+  }
+  .c__datagrid td {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+`;
 
 /**
  * Clean the data to be displayed in the table
@@ -217,51 +230,57 @@ export const PlaylistPage = () => {
               </Box>
             )}
             {!shouldDisplayNoPlaylistYetMessage && (
-              <DataGrid
-                columns={[
-                  {
-                    field: 'created_on',
-                    headerName: intl.formatMessage(
-                      messages.columnNameCreatedOn,
-                    ),
-                  },
-                  {
-                    field: 'title',
-                    headerName: intl.formatMessage(messages.columnNameTitle),
-                  },
-                  {
-                    enableSorting: false,
-                    field: 'organization',
-                    headerName: intl.formatMessage(
-                      messages.columnNameOrganization,
-                    ),
-                  },
-                  {
-                    id: 'column-actions',
-                    renderCell: ({ row }) => (
-                      <ButtonCunningham
-                        color="tertiary"
-                        aria-label={intl.formatMessage(
-                          messages.updatePlaylist,
-                          {
-                            playlistName: row.title,
-                          },
-                        )}
-                        size="small"
-                        onClick={() => {
-                          navigate(`${routes.PLAYLIST.path}/${row.id}/update`);
-                        }}
-                        icon={<span className="material-icons">settings</span>}
-                      />
-                    ),
-                  },
-                ]}
-                rows={rows}
-                pagination={pagination}
-                sortModel={sortModel}
-                onSortModelChange={setSortModel}
-                isLoading={isLoading}
-              />
+              <BoxDatagrid>
+                <DataGrid
+                  columns={[
+                    {
+                      field: 'created_on',
+                      headerName: intl.formatMessage(
+                        messages.columnNameCreatedOn,
+                      ),
+                    },
+                    {
+                      field: 'title',
+                      headerName: intl.formatMessage(messages.columnNameTitle),
+                    },
+                    {
+                      enableSorting: false,
+                      field: 'organization',
+                      headerName: intl.formatMessage(
+                        messages.columnNameOrganization,
+                      ),
+                    },
+                    {
+                      id: 'column-actions',
+                      renderCell: ({ row }) => (
+                        <ButtonCunningham
+                          color="tertiary"
+                          aria-label={intl.formatMessage(
+                            messages.updatePlaylist,
+                            {
+                              playlistName: row.title,
+                            },
+                          )}
+                          size="small"
+                          onClick={() => {
+                            navigate(
+                              `${routes.PLAYLIST.path}/${row.id}/update`,
+                            );
+                          }}
+                          icon={
+                            <span className="material-icons">settings</span>
+                          }
+                        />
+                      ),
+                    },
+                  ]}
+                  rows={rows}
+                  pagination={pagination}
+                  sortModel={sortModel}
+                  onSortModelChange={setSortModel}
+                  isLoading={isLoading}
+                />
+              </BoxDatagrid>
             )}
           </Fragment>
         </WhiteCard>
