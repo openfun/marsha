@@ -1,8 +1,4 @@
-import {
-  UseMutationOptions,
-  useMutation,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { UseMutationOptions, useMutation } from '@tanstack/react-query';
 import { updateOne } from 'lib-components';
 
 import { PlaylistAccess, PlaylistRole } from '../../types/playlistAccess';
@@ -17,7 +13,7 @@ type UseUpdatePlaylistAccessError =
       errors: { [key in keyof UseUpdatePlaylistAccessData]?: string[] };
     }[];
 
-export const useUpdatePlaylistAcess = (
+export const useUpdatePlaylistAccess = (
   id: string,
   options?: UseMutationOptions<
     PlaylistAccess,
@@ -25,7 +21,6 @@ export const useUpdatePlaylistAcess = (
     UseUpdatePlaylistAccessData
   >,
 ) => {
-  const queryClient = useQueryClient();
   return useMutation<
     PlaylistAccess,
     UseUpdatePlaylistAccessError,
@@ -39,7 +34,6 @@ export const useUpdatePlaylistAcess = (
       }),
     ...options,
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries(['playlist-accesses']);
       options?.onSuccess?.(data, variables, context);
     },
   });

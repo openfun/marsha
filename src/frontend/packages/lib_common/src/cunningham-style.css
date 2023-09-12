@@ -41,17 +41,34 @@ input:-webkit-autofill:focus {
     color 0s 600000s;
 }
 /**
+ * Select
+*/
+.c_select__no_border .c__select .c__select__wrapper,
+.c_select__no_border .c__select .c__select__wrapper:hover, 
+.c_select__no_border .c__select:not(.c__select--disabled) .c__select__wrapper:hover {
+  border: none;
+  box-shadow: none;
+}
+.c__select__wrapper {
+  transition: all var(--c--theme--transitions--duration)
+    var(--c--theme--transitions--ease-out);
+}
+.c__select:not(.c__select--disabled) .c__select__wrapper:hover {
+  box-shadow: var(--c--theme--colors--primary-500) 0px 0px 0px 2px;
+}
+.c__select__menu__item {
+  transition: all var(--c--theme--transitions--duration)
+    var(--c--theme--transitions--ease-out);
+}
+.c__select--disabled .c__select__wrapper label, .c__select--disabled .c__select__wrapper input {
+  background: none;
+}
+/**
  * DataGrid
 */
-.c__datagrid {
-  display: block;
-  overflow: auto;
-}
 .c__datagrid > table td {
   max-width: 10rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
   color: var(--c--theme--colors--primary-500);
   font-size: var(--c--theme--font--size-datagrid-cell);
 }

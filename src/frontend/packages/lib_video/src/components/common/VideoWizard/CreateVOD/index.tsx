@@ -181,6 +181,7 @@ export const CreateVOD = ({
               })
             }
             value={wizardedVideo.title || ''}
+            fullWidth
           />
 
           <UploadVideoForm

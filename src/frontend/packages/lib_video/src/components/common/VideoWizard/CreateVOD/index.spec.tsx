@@ -1,6 +1,6 @@
 /* eslint-disable testing-library/no-node-access */
 /* eslint-disable testing-library/no-container */
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
@@ -121,13 +121,14 @@ describe('<CreateVOD />', () => {
     screen.getByRole('textbox', { name: 'Enter title of your video here' });
     screen.getByText('Add a video or drag & drop it');
     screen.getByTestId('input-video-test-id');
-    await waitFor(() =>
-      expect(
-        screen.getByRole('textbox', {
-          name: 'Select the license under which you want to publish your video, CC_BY',
-        }),
-      ).toHaveValue('Creative Common By Attribution'),
-    );
+    const rerenderedLicense = await screen.findByRole('combobox', {
+      name: 'Select the license',
+    });
+    expect(
+      await within(rerenderedLicense).findByText(
+        'Creative Common By Attribution',
+      ),
+    ).toBeInTheDocument();
 
     const goBackButton = screen.getByRole('button', { name: 'Go back' });
     const createVideoButton = screen.getByRole('button', {
@@ -200,13 +201,14 @@ describe('<CreateVOD />', () => {
     ).toBeInTheDocument();
 
     screen.getByTestId('input-video-test-id');
-    await waitFor(() =>
-      expect(
-        screen.getByRole('textbox', {
-          name: 'Select the license under which you want to publish your video, CC_BY',
-        }),
-      ).toHaveValue('Creative Common By Attribution'),
-    );
+    const rerenderedLicense = await screen.findByRole('combobox', {
+      name: 'Select the license',
+    });
+    expect(
+      await within(rerenderedLicense).findByText(
+        'Creative Common By Attribution',
+      ),
+    ).toBeInTheDocument();
 
     const goBackButton = screen.getByRole('button', { name: 'Go back' });
     const createVideoButton = screen.getByRole('button', {
@@ -354,9 +356,14 @@ describe('<CreateVOD />', () => {
     const rerenderedTitle = screen.getByRole('textbox', {
       name: 'Enter title of your video here',
     });
-    const rerenderedLicense = screen.getByRole('textbox', {
-      name: 'Select the license under which you want to publish your video, CC_BY',
+    const rerenderedLicense = await screen.findByRole('combobox', {
+      name: 'Select the license',
     });
+    expect(
+      await within(rerenderedLicense).findByText(
+        'Creative Common By Attribution',
+      ),
+    ).toBeInTheDocument();
     const rerenderedCreateVideoButton = screen.getByRole('button', {
       name: 'Create a video',
     });
@@ -364,7 +371,7 @@ describe('<CreateVOD />', () => {
       name: 'Go back',
     });
     expect(rerenderedTitle).toBeDisabled();
-    expect(rerenderedLicense).toBeDisabled();
+    expect(rerenderedLicense.hasAttribute('disabled')).toBeTruthy();
     expect(rerenderedGoBackButton).toBeDisabled();
     expect(rerenderedCreateVideoButton).toBeDisabled();
 
@@ -607,9 +614,14 @@ describe('<CreateVOD />', () => {
     const rerenderedTitle = screen.getByRole('textbox', {
       name: 'Enter title of your video here',
     });
-    const rerenderedLicense = screen.getByRole('textbox', {
-      name: 'Select the license under which you want to publish your video, CC_BY',
+    const rerenderedLicense = await screen.findByRole('combobox', {
+      name: 'Select the license',
     });
+    expect(
+      await within(rerenderedLicense).findByText(
+        'Creative Common By Attribution',
+      ),
+    ).toBeInTheDocument();
     const rerenderedCreateVideoButton = screen.getByRole('button', {
       name: 'Create a video',
     });
@@ -618,7 +630,7 @@ describe('<CreateVOD />', () => {
     });
     screen.getByText('50 %');
     expect(rerenderedTitle).toBeDisabled();
-    expect(rerenderedLicense).toBeDisabled();
+    expect(rerenderedLicense.hasAttribute('disabled')).toBeTruthy();
     expect(rerenderedGoBackButton).toBeDisabled();
     expect(rerenderedCreateVideoButton).toBeDisabled();
 

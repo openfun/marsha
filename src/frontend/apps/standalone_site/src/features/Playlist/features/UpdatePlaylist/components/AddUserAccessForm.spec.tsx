@@ -72,7 +72,9 @@ describe('AddUserAccessForm', () => {
     await userEvent.click(
       screen.getByRole('button', { name: 'Add user User 1 in playlist' }),
     );
-    await userEvent.click(screen.getByRole('button', { name: /Select role/i }));
+    await userEvent.click(
+      screen.getByRole('combobox', { name: /Select role/i }),
+    );
     await userEvent.click(
       await screen.findByRole('option', { name: /Instructor/i }),
     );
@@ -153,7 +155,9 @@ describe('AddUserAccessForm', () => {
     await userEvent.click(
       screen.getByRole('button', { name: 'Add user User 1 in playlist' }),
     );
-    await userEvent.click(screen.getByRole('button', { name: /Select role/i }));
+    await userEvent.click(
+      screen.getByRole('combobox', { name: /Select role/i }),
+    );
     await userEvent.click(
       await screen.findByRole('option', { name: /Instructor/i }),
     );

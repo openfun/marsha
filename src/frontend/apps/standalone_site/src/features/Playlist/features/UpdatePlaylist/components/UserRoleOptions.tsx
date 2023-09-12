@@ -23,14 +23,14 @@ const messages = defineMessages({
 export const userRoleOptions = (intl: IntlShape) => [
   {
     label: intl.formatMessage(messages.adminLabel),
-    key: PlaylistRole.ADMINISTRATOR,
+    value: PlaylistRole.ADMINISTRATOR,
   },
   {
     label: intl.formatMessage(messages.instructorLabel),
-    key: PlaylistRole.INSTRUCTOR,
+    value: PlaylistRole.INSTRUCTOR,
   },
   {
     label: intl.formatMessage(messages.studentLabel),
-    key: PlaylistRole.STUDENT,
+    value: PlaylistRole.STUDENT,
   },
 ];

@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { Deferred, render } from 'lib-tests';
@@ -74,7 +74,9 @@ describe('<PlaylistUserList />', () => {
 
     render(<PlaylistUserList playlistId="some-id" />);
 
-    expect(await screen.findByText('sbire 1')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('sbire 1')).toBeInTheDocument();
+    });
     expect(screen.getByText('sbire 2')).toBeInTheDocument();
     expect(screen.getByText('sbire 3')).toBeInTheDocument();
   });

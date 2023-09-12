@@ -159,11 +159,14 @@ describe('<MarkdownEditor />', () => {
     act(() => documentDeferred.resolve(markdownDocument));
 
     await screen.findByDisplayValue(markdownDocument.translations[0].title);
+
+    const selectLanguage = screen.getByRole('combobox', {
+      name: /Select language/i,
+    });
+    expect(selectLanguage).toBeInTheDocument();
     expect(
-      screen.getByRole('button', {
-        name: /Select language; Selected: French/i,
-      }),
-    ).toBeVisible();
+      await within(selectLanguage).findByText('French'),
+    ).toBeInTheDocument();
     await waitFor(() =>
       expect(
         screen.getAllByText(markdownDocument.translations[0].content).length,
@@ -251,7 +254,7 @@ describe('<MarkdownEditor />', () => {
 
     // Change language to fr
     await userEvent.click(
-      screen.getByRole('button', { name: /Select language/i }),
+      screen.getByRole('combobox', { name: /Select language/i }),
     );
     await userEvent.click(
       await screen.findByRole('option', { name: /French/i }),
@@ -591,7 +594,12 @@ describe('<MarkdownEditor />', () => {
       ).toHaveTextContent(`[//]: # (${markdownImageId})`),
     );
 
-    expect(screen.getByRole('status')).toHaveTextContent('cats.gif0%');
+    const status = await screen.findByRole('status', {
+      description: (_, element) =>
+        element?.textContent?.includes('cats.gif') ?? false,
+    });
+
+    expect(status).toHaveTextContent('cats.gif0%');
 
     // Image is uploaded
     fetchMock.get(
@@ -610,15 +618,11 @@ describe('<MarkdownEditor />', () => {
     });
 
     await waitFor(() =>
-      expect(screen.getByRole('status')).toHaveTextContent(
-        'Processing cats.gif',
-      ),
+      expect(status).toHaveTextContent('Processing cats.gif'),
     );
 
     // Image is processed
-    expect(await screen.findByRole('status')).toHaveTextContent(
-      'Uploaded cats.gif',
-    );
+    await waitFor(() => expect(status).toHaveTextContent('Uploaded cats.gif'));
     await waitFor(() =>
       expect(
         container.querySelector('div[class="cm-line"]')!,

@@ -294,17 +294,18 @@ export const MarkdownEditor = ({ markdownDocumentId }: MarkdownEditorProps) => {
             />
           </Box>
 
-          <Box direction="row">
+          <Box direction="row" align="center">
             <ScreenDispositionSelector
               screenDisposition={screenDisposition}
               setScreenDisposition={setScreenDisposition}
             />
-            <Box flex="grow" />
-            <LanguageSelector
-              currentLanguage={language}
-              onLanguageChange={setLanguage}
-              disabled={contentChanged.current}
-            />
+            <Box flex="grow" margin="xsmall" align="end">
+              <LanguageSelector
+                currentLanguage={language}
+                onLanguageChange={setLanguage}
+                disabled={contentChanged.current}
+              />
+            </Box>
           </Box>
         </Box>
 

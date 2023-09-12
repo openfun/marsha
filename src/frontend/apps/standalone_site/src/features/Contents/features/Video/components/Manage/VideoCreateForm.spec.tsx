@@ -111,9 +111,12 @@ describe('<VideoCreateForm />', () => {
       screen.getByText('Add a video or drag & drop it'),
     ).toBeInTheDocument();
     expect(
-      await screen.findByRole('button', {
-        name: 'Select the license under which you want to publish your video; Selected: CC_BY',
+      await screen.findByRole('combobox', {
+        name: 'Select the license',
       }),
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByText('Creative Common By Attribution'),
     ).toBeInTheDocument();
     expect(
       screen.getByRole('button', { name: /Add Video/i }),
@@ -147,9 +150,12 @@ describe('<VideoCreateForm />', () => {
       screen.getByText('Add a video or drag & drop it'),
     ).toBeInTheDocument();
     expect(
-      await screen.findByRole('button', {
-        name: 'Select the license under which you want to publish your video; Selected: CC_BY',
+      await screen.findByRole('combobox', {
+        name: 'Select the license',
       }),
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByText('Creative Common By Attribution'),
     ).toBeInTheDocument();
     expect(
       screen.getByRole('button', { name: /Add Video/i }),
@@ -254,9 +260,13 @@ describe('<VideoCreateForm />', () => {
     ).toBeInTheDocument();
 
     expect(
-      await screen.findByRole('button', {
-        name: 'Select the license under which you want to publish your video; Selected: CC_BY',
+      await screen.findByRole('combobox', {
+        name: 'Select the license',
       }),
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByText('Creative Common By Attribution'),
     ).toBeInTheDocument();
 
     const hiddenInput = screen.getByTestId('input-video-test-id');
@@ -334,9 +344,13 @@ describe('<VideoCreateForm />', () => {
     ).toBeInTheDocument();
 
     expect(
-      await screen.findByRole('button', {
-        name: 'Select the license under which you want to publish your video; Selected: CC_BY',
+      await screen.findByRole('combobox', {
+        name: 'Select the license',
       }),
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByText('Creative Common By Attribution'),
     ).toBeInTheDocument();
 
     const hiddenInput = screen.getByTestId('input-video-test-id');

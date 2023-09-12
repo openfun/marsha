@@ -16,6 +16,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Save license when a video is created
 
+### Changed
+
+- Replace grommet Select by Cunningham Select (#2400)
+
 ## [4.4.0] - 2023-09-08
 
 ### Added
