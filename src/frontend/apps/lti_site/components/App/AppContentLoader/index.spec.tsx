@@ -314,4 +314,56 @@ describe('<AppContentLoader />', () => {
 
     expect(mockConsoleError).toHaveBeenCalled();
   });
+
+  it('renders an error page if an error exists', async () => {
+    const mockConsoleError = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
+
+    render(
+      <AppConfigProvider
+        value={{
+          appName: appNames.CLASSROOM,
+          attendanceDelay: 10,
+          state: appState.ERROR,
+          error: {
+            message: 'Something failed miserably.',
+            status_code: 403,
+          },
+          modelName: modelName.VIDEOS,
+          sentry_dsn: 'test.dns.com',
+          environment: 'tests',
+          frontend: 'test-frontend',
+          release: 'debug',
+          static: {
+            svg: {
+              icons: '',
+            },
+            img: {
+              liveBackground: '',
+              liveErrorBackground: '',
+              marshaWhiteLogo: '',
+              videoWizardBackground: '',
+              errorMain: '',
+            },
+          },
+          uploadPollInterval: 10,
+          p2p: {
+            isEnabled: false,
+            stunServerUrls: [],
+            webTorrentTrackerUrls: [],
+          },
+        }}
+      >
+        <AppContentLoader />
+      </AppConfigProvider>,
+    );
+
+    expect(
+      await screen.findByText('Something failed miserably.'),
+    ).toBeInTheDocument();
+    expect(await screen.findByText('403')).toBeInTheDocument();
+
+    expect(mockConsoleError).toHaveBeenCalled();
+  });
 });

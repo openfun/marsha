@@ -64,7 +64,7 @@ interface BoundaryScreenErrorProps {
 }
 
 export const BoundaryScreenError = ({
-  code,
+  code = 500,
   message,
 }: BoundaryScreenErrorProps) => {
   const appData = useAppConfig();

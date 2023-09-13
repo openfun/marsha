@@ -11,6 +11,7 @@ import {
   ResourceContext,
   User,
   appNames,
+  appState,
   retryQuery,
   useAppConfig,
   useCurrentSession,
@@ -76,6 +77,12 @@ const AppContent = () => {
     Content = appsContent[appConfig.frontend];
   } else {
     throw new Error(intlShape.formatMessage(messages.errorAppSet));
+  }
+
+  if (appConfig.state === appState.ERROR && appConfig.error) {
+    throw new Error(appConfig.error.message || 'Unknown error', {
+      cause: appConfig.error.status_code,
+    });
   }
 
   const decodedJwt = useMemo(() => {
@@ -181,7 +188,10 @@ const AppContentLoader = () => {
             <Grommet theme={theme} style={{ height: '100%' }}>
               <ErrorBoundary
                 fallbackRender={({ error }: { error: Error }) => (
-                  <BoundaryScreenError code={500} message={error.message} />
+                  <BoundaryScreenError
+                    code={error.cause as number}
+                    message={error.message}
+                  />
                 )}
               >
                 <Toaster
