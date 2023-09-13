@@ -1670,6 +1670,13 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
 
         context = json.loads(unescape(match.group(1)))
         self.assertEqual(context.get("state"), "error")
+        self.assertDictEqual(
+            context.get("error"),
+            {
+                "message": "lti error",
+                "status_code": None,
+            },
+        )
         self.assertIsNone(context.get("resource"))
         self.assertEqual(context.get("modelName"), "videos")
 
@@ -2058,6 +2065,52 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
 
         context = json.loads(unescape(match.group(1)))
         self.assertEqual(context.get("frontend_home_url"), "https://marsha.education")
+
+    @mock.patch.object(LTI, "verify")
+    @mock.patch.object(LTI, "get_consumer_site")
+    def test_views_lti_video_deleted(self, mock_get_consumer_site, mock_verify):
+        """Validate the format of the response returned by the view for an instructor request."""
+        passport = ConsumerSiteLTIPassportFactory()
+        video = VideoFactory(
+            playlist__lti_id="course-v1:ufr+mathematics+00001",
+            playlist__title="foo bar",
+            playlist__consumer_site=passport.consumer_site,
+        )
+        video.delete()
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
+            "roles": "instructor",
+            "oauth_consumer_key": passport.oauth_consumer_key,
+            "user_id": "56255f3807599c377bf0e5bf072359fd",
+            "launch_presentation_locale": "fr",
+            "lis_person_sourcedid": "jane_doe",
+            "lis_person_contact_email_primary": "jane@test-mooc.fr",
+        }
+
+        mock_get_consumer_site.return_value = passport.consumer_site
+        response = self.client.post(f"/lti/videos/{video.id}", data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+        content = response.content.decode("utf-8")
+
+        match = re.search(
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
+        )
+
+        context = json.loads(unescape(match.group(1)))
+
+        self.assertIsNone(context.get("resource"))
+        self.assertEqual(context.get("state"), "error")
+        self.assertDictEqual(
+            context.get("error"),
+            {"message": "Resource has been deleted.", "status_code": 410},
+        )
+
+        # Make sure we only go through LTI verification once as it is costly (getting passport +
+        # signature)
+        self.assertEqual(mock_verify.call_count, 1)
 
 
 class VideoLTIViewForPortabilityTestCase(BaseLTIViewForPortabilityTestCase):

@@ -198,6 +198,13 @@ class DocumentPublicViewTestCase(TestCase):
 
         self.assertIsNone(context.get("resource"))
         self.assertEqual(context.get("state"), "error")
+        self.assertDictEqual(
+            context.get("error"),
+            {
+                "message": "Document matching query does not exist.",
+                "status_code": None,
+            },
+        )
         self.assertEqual(context.get("modelName"), "documents")
 
     def test_document_not_existing(self):
@@ -216,4 +223,11 @@ class DocumentPublicViewTestCase(TestCase):
 
         self.assertIsNone(context.get("resource"))
         self.assertEqual(context.get("state"), "error")
+        self.assertDictEqual(
+            context.get("error"),
+            {
+                "message": "Document matching query does not exist.",
+                "status_code": None,
+            },
+        )
         self.assertEqual(context.get("modelName"), "documents")

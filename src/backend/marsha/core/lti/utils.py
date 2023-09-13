@@ -1,6 +1,7 @@
 """Helpers to create a dedicated resources."""
-from django.core.exceptions import FieldDoesNotExist
+from django.core.exceptions import FieldDoesNotExist, ValidationError
 from django.db.models import Q
+from django.utils.translation import gettext as _
 
 from ..defaults import PENDING
 from ..models import (
@@ -10,6 +11,19 @@ from ..models import (
     Playlist,
     PlaylistAccess,
 )
+
+
+class ResourceException(BaseException):
+    """Wrapper to normalize exceptions caught in views."""
+
+    def __init__(self, message="", status_code=None):
+        self.message = message
+        self.status_code = status_code
+
+    def __str__(self):
+        return (
+            f"{self.status_code}: {self.message}" if self.status_code else self.message
+        )
 
 
 class PortabilityError(Exception):
@@ -135,7 +149,7 @@ def get_or_create_resource(model, lti):
             f"playlist ({lti.context_id}) and/or consumer site ({lti.get_consumer_site().domain})."
         )
 
-    playlist, _ = Playlist.objects.get_or_create(
+    playlist, _created = Playlist.objects.get_or_create(
         lti_id=lti.context_id,
         consumer_site=lti.get_consumer_site(),
         defaults={"title": lti.context_title},
@@ -156,8 +170,14 @@ def get_or_create_resource(model, lti):
         if field_exists_on_model(model, field_name):
             default_attributes[field_name] = field_value
 
-    # Create resource
-    new_resource = model.objects.create(**default_attributes)
+    try:
+        # Create resource
+        new_resource = model.objects.create(**default_attributes)
+    except ValidationError:
+        # resource must be deleted
+        raise ResourceException(
+            message=_("Resource has been deleted."), status_code=410
+        ) from None
 
     if hasattr(queryset, "annotate_can_edit"):  # for video only for now
         new_resource.can_edit = True
