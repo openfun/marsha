@@ -7,7 +7,7 @@ import {
   uploadState,
   useCurrentResourceContext,
 } from 'lib-components';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { IntlShape, defineMessages, useIntl } from 'react-intl';
 import { NavLink } from 'react-router-dom';
@@ -100,17 +100,24 @@ const VodNotReady = ({
   conversionEnabled,
 }: RecordingProps) => {
   const intl = useIntl();
-  const { refetch: refetchClassroom } = useClassroom(recording.classroom_id);
+  const [converting, setConverting] = useState(false);
+  const { refetch: refetchClassroom } = useClassroom(
+    recording.classroom_id,
+    {},
+  );
 
   const convertVOD = useCallback(
     (recording: ClassroomRecording) => {
+      setConverting(true);
       let title = buildRecordingTitle(recording, intl);
       if (classroomTitle) {
         title = `${classroomTitle} - ${title}`;
       }
 
       createVOD(recording, title).then(() => {
-        refetchClassroom();
+        refetchClassroom().then(() => {
+          setConverting(false);
+        });
       });
     },
     [classroomTitle, intl, refetchClassroom],
@@ -169,7 +176,7 @@ const VodNotReady = ({
           label={intl.formatMessage(messages.convertVODLabel)}
           onClick={() => convertVOD(recording)}
           size="xsmall"
-          disabled={!conversionEnabled}
+          disabled={!conversionEnabled || converting}
         />
       )}
     </Box>
