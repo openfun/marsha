@@ -175,6 +175,16 @@
       >
       </iframe>
     </section>
+    <p>
+      <b>Consumer site</b>: {{ consumer_site }} - <b>users</b> :
+      {% for user in consumer_site_users %}
+        {{ user.username }}
+      {% endfor %}<br>
+      <b>Playlist</b>: {{ playlist }} ({{ playlist.id }}) - <b>users</b> :
+      {% for user in playlist_users %}
+        {{ user.username }}
+      {% endfor %}
+    </p>
 
     {% if last_objects %}
       <section>
@@ -192,7 +202,7 @@
                      data-context_id="{{ resource.playlist.lti_id }}"
                      title="{{ resource.title }}"
                   >
-                    {{ resource.updated_on }}
+                    {{ resource.title }} - {{ resource.updated_on|date:'d/m/Y H:i' }}
                   </p>
                 {% endfor %}
               {% endif %}

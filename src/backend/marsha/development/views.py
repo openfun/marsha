@@ -98,6 +98,10 @@ class DevelopmentLTIView(TemplateView):
                 reverse("development:lti-development-view")
             ),
             "oauth_dict": oauth_dict,
+            "consumer_site": consumer_site,
+            "consumer_site_users": consumer_site.users.all(),
+            "playlist": playlist,
+            "playlist_users": playlist.users.all(),
             "last_objects": {
                 "videos": Video.objects.filter(playlist=playlist).order_by(
                     "-updated_on"
