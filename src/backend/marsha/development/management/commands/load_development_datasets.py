@@ -234,27 +234,35 @@ class Command(BaseCommand):
                 "name": "localhost",
             },
         )
-        ConsumerSiteAccess.objects.get_or_create(
-            consumer_site=localhost_cs,
-            user=self.consumer_site_admin,
-            defaults={
-                "role": ADMINISTRATOR,
-            },
-        )
-        ConsumerSiteAccess.objects.get_or_create(
-            consumer_site=localhost_cs,
-            user=self.consumer_site_instructor,
-            defaults={
-                "role": INSTRUCTOR,
-            },
-        )
+        for username in (
+            "consumer_site_admin",
+            "organization_admin",
+            "playlist_admin",
+        ):
+            ConsumerSiteAccess.objects.get_or_create(
+                consumer_site=localhost_cs,
+                user=getattr(self, username),
+                defaults={
+                    "role": ADMINISTRATOR,
+                },
+            )
+
+        for username in (
+            "consumer_site_instructor",
+            "organization_instructor",
+            "playlist_instructor",
+        ):
+            ConsumerSiteAccess.objects.get_or_create(
+                consumer_site=localhost_cs,
+                user=getattr(self, username),
+                defaults={
+                    "role": INSTRUCTOR,
+                },
+            )
+
         for username in (
             "consumer_site_student",
-            "organization_admin",
-            "organization_instructor",
             "organization_student",
-            "playlist_admin",
-            "playlist_instructor",
             "playlist_student",
         ):
             ConsumerSiteAccess.objects.get_or_create(
@@ -290,17 +298,22 @@ class Command(BaseCommand):
                 "role": ADMINISTRATOR,
             },
         )
-        OrganizationAccess.objects.get_or_create(
-            organization=organization,
-            user=self.organization_instructor,
-            defaults={
-                "role": INSTRUCTOR,
-            },
-        )
+
         for username in (
-            "organization_student",
+            "organization_instructor",
             "playlist_admin",
             "playlist_instructor",
+        ):
+            OrganizationAccess.objects.get_or_create(
+                organization=organization,
+                user=getattr(self, username),
+                defaults={
+                    "role": INSTRUCTOR,
+                },
+            )
+
+        for username in (
+            "organization_student",
             "playlist_student",
         ):
             OrganizationAccess.objects.get_or_create(
