@@ -53,8 +53,14 @@ export interface PortabilityConfig {
   portability_request_exists: boolean;
 }
 
+export interface ResourceError {
+  message: string;
+  status_code: number;
+}
+
 export interface AppConfig {
   attendanceDelay: number;
+  error?: ResourceError;
   state: appState;
   video?: Nullable<Video>;
   videos?: Video[];
