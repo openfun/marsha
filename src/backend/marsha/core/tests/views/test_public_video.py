@@ -209,6 +209,13 @@ class VideoPublicViewTestCase(TestCase):
 
         self.assertIsNone(context.get("resource"))
         self.assertEqual(context.get("state"), "error")
+        self.assertDictEqual(
+            context.get("error"),
+            {
+                "message": "Video matching query does not exist.",
+                "status_code": None,
+            },
+        )
         self.assertEqual(context.get("modelName"), "videos")
 
     def test_video_not_existing(self):
@@ -227,6 +234,13 @@ class VideoPublicViewTestCase(TestCase):
 
         self.assertIsNone(context.get("resource"))
         self.assertEqual(context.get("state"), "error")
+        self.assertDictEqual(
+            context.get("error"),
+            {
+                "message": "Video matching query does not exist.",
+                "status_code": None,
+            },
+        )
         self.assertEqual(context.get("modelName"), "videos")
 
     @override_settings(LIVE_CHAT_ENABLED=True)
@@ -374,6 +388,13 @@ class VideoPublicViewTestCase(TestCase):
         context = json.loads(unescape(match.group(1)))
         self.assertIsNone(context.get("resource"))
         self.assertEqual(context.get("state"), "error")
+        self.assertDictEqual(
+            context.get("error"),
+            {
+                "message": "Video matching query does not exist.",
+                "status_code": None,
+            },
+        )
         self.assertEqual(context.get("modelName"), "videos")
 
         # now livesession params are added, direct access is possible

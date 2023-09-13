@@ -313,6 +313,13 @@ class DocumentLTIViewTestCase(TestCase):
 
         context = json.loads(html.unescape(match.group(1)))
         self.assertEqual(context.get("state"), "error")
+        self.assertDictEqual(
+            context.get("error"),
+            {
+                "message": "lti error",
+                "status_code": None,
+            },
+        )
         self.assertIsNone(context.get("resource"))
 
 

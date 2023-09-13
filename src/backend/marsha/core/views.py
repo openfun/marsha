@@ -59,6 +59,7 @@ from .defaults import (
 from .lti import LTI
 from .lti.utils import (
     PortabilityError,
+    ResourceException,
     get_or_create_resource,
     get_resource_closest_owners_and_playlist,
     get_selectable_resources,
@@ -215,10 +216,6 @@ class SiteView(mixins.WaffleSwitchMixin, MarshaViewMixin, TemplateView):
             )
 
 
-class ResourceException(Exception):
-    """Wrapper to normalize exceptions caught in views."""
-
-
 class BaseResourceView(TemplateResponseMixin, MarshaViewMixin, View):
     """
     Base view to provide common methods for view which concerns resource.
@@ -229,7 +226,7 @@ class BaseResourceView(TemplateResponseMixin, MarshaViewMixin, View):
     frontend_name = "LTI"  # even for public resource
     template_name = "core/resource.html"
 
-    def _app_data_exception(self, error: BaseException):
+    def _app_data_exception(self, error: ResourceException):
         """
         Build app data in a context of failure (object not found, LTI authentication failed...)
 
@@ -248,6 +245,10 @@ class BaseResourceView(TemplateResponseMixin, MarshaViewMixin, View):
         logger.warning(str(error))
         app_data = self._get_base_app_data()
         app_data["state"] = APP_DATA_STATE_ERROR
+        app_data["error"] = {
+            "message": error.message,
+            "status_code": error.status_code,
+        }
         return app_data
 
     def _build_context_exception(self, error: BaseException):
@@ -291,7 +292,7 @@ class BaseResourceView(TemplateResponseMixin, MarshaViewMixin, View):
             self._init_context()
             app_data = self._get_app_data()
         except ResourceException as error:
-            return self._build_context_exception(error.__cause__)
+            return self._build_context_exception(error)
 
         return self._build_context_data(app_data)
 
@@ -418,7 +419,7 @@ class BaseLTIView(BaseModelResourceView, ABC):
         try:
             return get_or_create_resource(self.model, self.lti)
         except PortabilityError as error:
-            raise ResourceException from error
+            raise ResourceException(str(error)) from error
 
     def _init_context(self):
         """Extract LTI information (and verifies the request) before data process."""
@@ -429,7 +430,7 @@ class BaseLTIView(BaseModelResourceView, ABC):
         try:
             self.lti.verify()
         except LTIException as error:
-            raise ResourceException from error
+            raise ResourceException(str(error)) from error
 
     def _get_app_data(self):
         """Build app data for the frontend with information retrieved from the LTI launch request.
@@ -653,7 +654,7 @@ class BaseView(BaseModelResourceView, ABC):
                 pk=resource_id,
             )
         except self.model.DoesNotExist as error:
-            raise ResourceException from error
+            raise ResourceException(str(error)) from error
 
     # pylint: disable=unused-argument
     def get(self, request, *args, **kwargs):
@@ -842,7 +843,7 @@ class LTISelectView(BaseResourceView):
         try:
             self.lti.verify()
         except LTIException as error:
-            raise ResourceException from error
+            raise ResourceException(str(error)) from error
 
     def _get_app_data(self):
         """Build app data for the frontend with information retrieved from the LTI launch request.

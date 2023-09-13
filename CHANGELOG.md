@@ -15,6 +15,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Save license when a video is created
+- Show an error when a resource has been deleted
 
 ### Changed
 

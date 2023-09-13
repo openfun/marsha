@@ -469,6 +469,13 @@ class SelectLTIViewTestCase(TestCase):
         context = json.loads(unescape(match.group(1)))
 
         self.assertEqual(context.get("state"), "error")
+        self.assertDictEqual(
+            context.get("error"),
+            {
+                "message": "OAuth error: Please check your key and secret",
+                "status_code": None,
+            },
+        )
         mock_logger.assert_called_once_with(
             "OAuth error: Please check your key and secret"
         )
@@ -498,6 +505,14 @@ class SelectLTIViewTestCase(TestCase):
         context = json.loads(unescape(match.group(1)))
 
         self.assertEqual(context.get("state"), "error")
+        self.assertDictEqual(
+            context.get("error"),
+            {
+                "message": "Host domain (wrongserver)"
+                " does not match registered passport (testserver).",
+                "status_code": None,
+            },
+        )
         mock_logger.assert_called_once_with(
             "Host domain (wrongserver) does not match registered passport (testserver)."
         )
