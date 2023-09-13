@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Disable classroom convert button when converting
+
 ### Fixed
 
 - Save license when a video is created

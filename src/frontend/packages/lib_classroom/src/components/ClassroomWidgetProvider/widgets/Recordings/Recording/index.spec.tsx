@@ -1,8 +1,8 @@
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { uploadState, useCurrentResourceContext, useJwt } from 'lib-components';
-import { render } from 'lib-tests';
+import { Deferred, render } from 'lib-tests';
 import { DateTime } from 'luxon';
 
 import {
@@ -106,12 +106,11 @@ describe('<Recordings />', () => {
       ).toISO() as string,
       classroom_id: classroom.id,
     });
+    const deferedCreateVod = new Deferred();
 
     fetchMock.mock(
       `/api/classrooms/${classroom.id}/recordings/${classroomRecording.id}/create-vod/`,
-      {
-        key: 'value',
-      },
+      deferedCreateVod.promise,
       {
         method: 'POST',
       },
@@ -131,9 +130,14 @@ describe('<Recordings />', () => {
       name: 'Convert Tuesday, March 1, 2022 - 11:00 AM to VOD',
     });
     expect(createVodButton).toBeInTheDocument();
+    expect(createVodButton).toBeEnabled();
     await userEvent.click(createVodButton);
+    expect(createVodButton).toBeDisabled();
+    deferedCreateVod.resolve({ key: 'value' });
 
-    expect(fetchMock.calls()).toHaveLength(3);
+    await waitFor(() => {
+      expect(fetchMock.calls()).toHaveLength(3);
+    });
     expect(fetchMock.calls()[1][0]).toBe(
       `/api/classrooms/${classroom.id}/recordings/${classroomRecording.id}/create-vod/`,
     );
