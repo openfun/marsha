@@ -53,7 +53,7 @@ describe('<LanguageSelect />', () => {
     expect(within(button).getByText('French')).toBeInTheDocument();
   });
 
-  it('renders the component with instructor local language unavailable', async () => {
+  it('propagates correctly undefined when the local language is unavailable', async () => {
     render(
       <LanguageSelect
         onChange={onChangeMock}
@@ -64,16 +64,14 @@ describe('<LanguageSelect />', () => {
     );
 
     await waitFor(() =>
-      expect(onChangeMock).toHaveBeenLastCalledWith({
-        label: 'English',
-        value: 'en',
-      }),
+      expect(onChangeMock).toHaveBeenLastCalledWith(undefined),
     );
 
-    const button = await screen.findByRole('combobox', {
-      name: 'Choose the language',
-    });
-    expect(within(button).getByText('English')).toBeInTheDocument();
+    expect(
+      await screen.findByRole('combobox', {
+        name: 'Choose the language',
+      }),
+    ).toBeInTheDocument();
   });
 
   it('renders the component with some languages already having some subtitles uploaded', async () => {
@@ -118,41 +116,6 @@ describe('<LanguageSelect />', () => {
     expect(
       screen.queryByRole('option', { name: 'Swedish' }),
     ).not.toBeInTheDocument();
-  });
-
-  it('renders the component with no languages', async () => {
-    render(
-      <LanguageSelect
-        onChange={onChangeMock}
-        timedTextModeWidget={timedTextMode.SUBTITLE}
-      />,
-      { intlOptions: { locale: 'fr-FR' } },
-    );
-
-    await waitFor(() =>
-      expect(onChangeMock).toHaveBeenLastCalledWith({
-        label: 'No language availables',
-        value: 'error',
-      }),
-    );
-
-    expect(
-      screen.queryByRole('button', {
-        name: 'Select the language for which you want to upload a timed text file; Selected: fr',
-      }),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('textbox', {
-        name: 'Select the language for which you want to upload a timed text file, fr',
-      }),
-    ).not.toBeInTheDocument();
-
-    const button = await screen.findByRole('combobox', {
-      name: 'Choose the language',
-    });
-    expect(
-      within(button).getByText('No language availables'),
-    ).toBeInTheDocument();
   });
 
   it('changes the selected language', async () => {

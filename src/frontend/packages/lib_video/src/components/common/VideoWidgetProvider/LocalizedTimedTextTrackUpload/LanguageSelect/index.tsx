@@ -1,6 +1,11 @@
 import { Select } from '@openfun/cunningham-react';
-import { timedTextMode, useTimedTextTrack } from 'lib-components';
-import { useEffect, useMemo, useState } from 'react';
+import { Maybe } from 'lib-common';
+import {
+  TimedTextTrackState,
+  timedTextMode,
+  useTimedTextTrack,
+} from 'lib-components';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { LanguageChoice } from '@lib-video/types/SelectOptions';
@@ -19,16 +24,10 @@ const messages = defineMessages({
       'The text under the select used for choosing the language for which the user wants to upload a file.',
     id: 'components.LanguageSelect.selectLanguageInfo',
   },
-  noLanguageAvailableLabel: {
-    defaultMessage: 'No language availables',
-    description:
-      'The label displayed in the select when there is no available language.',
-    id: 'components.LanguageSelect.noLanguageAvailableLabel',
-  },
 });
 
 interface LanguageSelectProps {
-  onChange: (selection: LanguageChoice) => void;
+  onChange: (selection?: LanguageChoice) => void;
   timedTextModeWidget: timedTextMode;
   choices?: LanguageChoice[];
 }
@@ -40,17 +39,14 @@ export const LanguageSelect = ({
 }: LanguageSelectProps) => {
   const intl = useIntl();
 
-  const errorLanguageChoice = useMemo(
-    () => ({
-      label: intl.formatMessage(messages.noLanguageAvailableLabel),
-      value: 'error',
+  const timedTextTrackFn = useCallback(
+    (state: TimedTextTrackState) => ({
+      timedTextTracks: state.getTimedTextTracks(),
     }),
-    [intl],
+    [],
   );
 
-  const { timedTextTracks } = useTimedTextTrack((state) => ({
-    timedTextTracks: state.getTimedTextTracks(),
-  }));
+  const { timedTextTracks } = useTimedTextTrack(timedTextTrackFn);
 
   const availableSelectableLanguages = useMemo(() => {
     const filteredTimedTextTracks = timedTextTracks.filter(
@@ -61,59 +57,42 @@ export const LanguageSelect = ({
     );
 
     return (
-      choices &&
       choices
-        .filter((lang) => !excludedLanguages.includes(lang.value))
-        .sort((a, b) => a.label.localeCompare(b.label))
+        ?.filter((lang) => !excludedLanguages.includes(lang.value))
+        .sort((a, b) => a.label.localeCompare(b.label)) || []
     );
   }, [choices, timedTextTracks, timedTextModeWidget]);
 
-  const userLocalAvailableLanguage = useMemo(() => {
-    const userLocalLanguage = intl.locale;
-
-    return availableSelectableLanguages
-      ? availableSelectableLanguages.find((availableLanguage) =>
-          userLocalLanguage.startsWith(availableLanguage.value),
-        )
-      : errorLanguageChoice;
-  }, [availableSelectableLanguages, intl, errorLanguageChoice]);
-
-  const [selectedLanguage, setSelectedLanguage] = useState<{
-    label: string;
-    value: string;
-  }>(
-    userLocalAvailableLanguage ??
-      (availableSelectableLanguages
-        ? availableSelectableLanguages[0]
-        : errorLanguageChoice),
+  const [selectedLanguage, setSelectedLanguage] = useState<Maybe<string>>(
+    availableSelectableLanguages?.[0]?.value,
   );
 
   useEffect(() => {
-    onChange(selectedLanguage);
-  }, [onChange, selectedLanguage]);
-
-  if (
-    availableSelectableLanguages &&
-    availableSelectableLanguages.length > 0 &&
-    !availableSelectableLanguages.includes(selectedLanguage)
-  ) {
-    setSelectedLanguage(
-      userLocalAvailableLanguage ?? availableSelectableLanguages[0],
+    const userLocalAvailableLanguage = availableSelectableLanguages?.find(
+      (availableLanguage) => intl.locale.startsWith(availableLanguage.value),
     );
-  }
+
+    setSelectedLanguage(userLocalAvailableLanguage?.value);
+    onChange(userLocalAvailableLanguage);
+  }, [intl.locale, availableSelectableLanguages, onChange]);
 
   return (
     <Select
       aria-label={intl.formatMessage(messages.selectLanguageLabel)}
       label={intl.formatMessage(messages.selectLanguageLabel)}
-      options={availableSelectableLanguages ?? [errorLanguageChoice]}
-      value={selectedLanguage.value}
+      options={availableSelectableLanguages}
+      value={selectedLanguage}
       onChange={(evt) => {
-        setSelectedLanguage(
-          availableSelectableLanguages?.find(
-            (lang) => lang.value === evt.target.value,
-          ) ?? errorLanguageChoice,
+        if (selectedLanguage === evt.target.value) {
+          return;
+        }
+
+        const optionSelectedLanguage = availableSelectableLanguages?.find(
+          (lang) => lang.value === evt.target.value,
         );
+
+        setSelectedLanguage(optionSelectedLanguage?.value);
+        onChange(optionSelectedLanguage);
       }}
       fullWidth
       clearable={false}
