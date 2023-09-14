@@ -1,7 +1,8 @@
 import { Box, Button } from 'grommet';
-import { Nullable } from 'lib-common';
+import { Maybe, Nullable } from 'lib-common';
 import {
   ItemList,
+  TimedTextTrackState,
   formatSizeErrorScale,
   modelName,
   report,
@@ -61,9 +62,15 @@ export const LocalizedTimedTextTrackUpload = ({
   const intl = useIntl();
   const video = useCurrentVideo();
   const { addUpload, resetUpload, uploadManagerState } = useUploadManager();
-  const timedTextTracks = useTimedTextTrack((state) =>
-    state.getTimedTextTracks(),
+
+  const timedTextTrackFn = useCallback(
+    (state: TimedTextTrackState) => ({
+      timedTextTracks: state.getTimedTextTracks(),
+    }),
+    [],
   );
+
+  const { timedTextTracks } = useTimedTextTrack(timedTextTrackFn);
   const filteredTimedTextTracks = timedTextTracks.filter(
     (track) => track.mode === timedTextModeWidget,
   );
@@ -160,7 +167,7 @@ export const LocalizedTimedTextTrackUpload = ({
   ]);
 
   const onChangeLanguageSelect = useCallback(
-    (option: LanguageChoice) => setSelectedLanguage(option),
+    (option: Maybe<LanguageChoice>) => setSelectedLanguage(option || null),
     [],
   );
 
@@ -213,6 +220,7 @@ export const LocalizedTimedTextTrackUpload = ({
         primary
         style={{ height: '50px', fontFamily: 'Roboto-Medium' }}
         title={intl.formatMessage(messages.uploadButtonLabel)}
+        disabled={!selectedLanguage}
       />
     </Box>
   );
