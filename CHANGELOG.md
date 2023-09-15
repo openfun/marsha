@@ -22,6 +22,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Checkbox to delete resource remains displayed on others pages (#2416)
 - Remove a non-existent attribute which breaks classroom document admin view
 - Change color of a disabled button in the deposit file student dashboard
+- Remove multiple primary buttons in the deposit file dashboard
 
 ## [4.4.0] - 2023-09-08
 

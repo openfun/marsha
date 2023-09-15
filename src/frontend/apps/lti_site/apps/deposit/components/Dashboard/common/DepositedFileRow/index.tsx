@@ -80,9 +80,6 @@ export const DepositedFileRow = ({ file }: DepositedFileProps) => {
         <Box align="end" justify="end" gap="small" flex>
           <Box
             justify="end"
-            background={
-              file.upload_state === 'ready' ? 'blue-active' : undefined
-            }
             pad={{
               horizontal: file.upload_state === 'ready' ? 'medium' : undefined,
               vertical: 'xsmall',
@@ -93,7 +90,6 @@ export const DepositedFileRow = ({ file }: DepositedFileProps) => {
               <Anchor
                 onClick={markFileAsRead}
                 download
-                color="white"
                 a11yTitle={intl.formatMessage(messages.labelDownload)}
                 label={intl.formatMessage(messages.labelDownload)}
                 style={{ fontFamily: 'Roboto-Medium' }}
