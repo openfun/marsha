@@ -193,4 +193,19 @@ describe('<VideoManage />', () => {
       method: 'DELETE',
     });
   });
+
+  it('controls that the component does not stay selectable when unmount', () => {
+    const { unmount } = render(<VideoManage />);
+    act(() =>
+      useSelectFeatures.setState({
+        isSelectionEnabled: true,
+      }),
+    );
+
+    expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
+
+    unmount();
+
+    expect(useSelectFeatures.getState().isSelectionEnabled).toBe(false);
+  });
 });

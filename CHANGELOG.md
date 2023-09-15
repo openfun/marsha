@@ -11,16 +11,14 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Disable classroom convert button when converting
+- Replace grommet Select by Cunningham Select (#2400)
 
 ### Fixed
 
 - Save license when a video is created
 - Show an error when a resource has been deleted
 - Allow depositedfiles to have unicode characters in their filename
-
-### Changed
-
-- Replace grommet Select by Cunningham Select (#2400)
+- checkbox to delete resource remains displayed on others pages (#2416)
 
 ## [4.4.0] - 2023-09-08
 

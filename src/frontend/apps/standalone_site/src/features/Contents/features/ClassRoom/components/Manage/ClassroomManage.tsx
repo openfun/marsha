@@ -112,10 +112,10 @@ const ClassroomManage = () => {
   });
 
   useEffect(() => {
-    if (!isSelectionEnabled) {
+    return () => {
       resetSelection();
-    }
-  }, [isSelectionEnabled, resetSelection]);
+    };
+  }, [resetSelection]);
 
   return (
     <Fragment>
