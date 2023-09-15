@@ -5,6 +5,7 @@ import {
   fireEvent,
   screen,
   waitFor,
+  waitForElementToBeRemoved,
   within,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -185,12 +186,7 @@ describe('<MarkdownEditor />', () => {
     render(<MarkdownEditor markdownDocumentId={markdownDocument.id} />);
 
     // Wait for rendered content: all loaders gone
-    await waitFor(
-      () => expect(screen.queryByRole('status')).not.toBeInTheDocument(),
-      {
-        timeout: 1000,
-      },
-    );
+    await waitForElementToBeRemoved(() => screen.queryByRole('status'));
 
     expect(screen.getByTestId('renderer_container')).toContainHTML(
       '<div class="markdown-body />',
