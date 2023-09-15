@@ -302,6 +302,9 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
         deposited_files = DepositedFileFactory.create_batch(
             3, file_depository=file_depository, uploaded_on=now
         )
+        unicode_deposited_file = DepositedFileFactory(
+            file_depository=file_depository, uploaded_on=now, filename="test’.pdf"
+        )
         jwt_token = InstructorOrAdminLtiTokenFactory(playlist=file_depository.playlist)
 
         now = datetime(2021, 11, 30, tzinfo=baseTimezone.utc)
@@ -328,10 +331,26 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
         self.assertEqual(
             response.json(),
             {
-                "count": 3,
+                "count": 4,
                 "next": None,
                 "previous": None,
                 "results": [
+                    {
+                        "author_name": unicode_deposited_file.author_name,
+                        "file_depository_id": str(file_depository.id),
+                        "filename": unicode_deposited_file.filename,
+                        "id": str(unicode_deposited_file.id),
+                        "read": False,
+                        "size": unicode_deposited_file.size,
+                        "upload_state": "pending",
+                        "uploaded_on": "2018-08-08T00:00:00Z",
+                        "url": (
+                            f"https://abc.cloudfront.net/{file_depository.id}/depositedfile/"
+                            f"{unicode_deposited_file.id}/1533686400?response-content-disposition"
+                            "=attachment%3B+filename%3Dtest%25E2%2580%2599.pdf"
+                            f"&{expected_cloudfront_signature}"
+                        ),
+                    },
                     {
                         "author_name": deposited_files[2].author_name,
                         "file_depository_id": str(file_depository.id),
