@@ -23,6 +23,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Remove a non-existent attribute which breaks classroom document admin view
 - Change color of a disabled button in the deposit file student dashboard
 - Remove multiple primary buttons in the deposit file dashboard
+- Remove multiple calls of playlist is-claimed endpoint
 
 ## [4.4.0] - 2023-09-08
 
