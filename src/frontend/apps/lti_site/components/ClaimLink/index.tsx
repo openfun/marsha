@@ -34,6 +34,9 @@ export const ClaimLink = ({ decodedJwt }: ClaimLinkProps) => {
   const [showClaimLink, setShowClaimLink] = useState(false);
   const { data, isLoading } = usePlaylistIsClaimed(resource?.playlist.id, {
     enabled: !!resource?.playlist.id,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   });
 
   useEffect(() => {
