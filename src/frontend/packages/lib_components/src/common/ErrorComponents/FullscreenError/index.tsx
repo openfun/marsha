@@ -1,9 +1,9 @@
-import { Box, Heading, Paragraph } from 'grommet';
+import { Box, Paragraph } from 'grommet';
 import React from 'react';
 import { FormattedMessage, defineMessages } from 'react-intl';
 import styled from 'styled-components';
 
-import { H2 } from '@lib-components/common/Headings';
+import { Heading } from '@lib-components/common/Headings';
 import { LayoutMainArea } from '@lib-components/common/LayoutMainArea';
 
 export enum ErrorComponents {
@@ -192,10 +192,10 @@ const messages = {
 
 export const ErrorMessage: React.FC<ErrorComponentsProps> = ({ code }) => (
   <Box direction="column" pad="medium" align="center">
-    <Heading level={6} margin={{ bottom: 'small' }}>
+    <Heading level={5}>
       <FormattedMessage {...messages[code].title} />
     </Heading>
-    <Paragraph>
+    <Paragraph margin={{ top: 'small' }}>
       <FormattedMessage {...messages[code].text} />
     </Paragraph>
   </Box>
@@ -204,9 +204,9 @@ export const ErrorMessage: React.FC<ErrorComponentsProps> = ({ code }) => (
 export const FullScreenError: React.FC<ErrorComponentsProps> = ({ code }) => (
   <FullScreenErrorStyled>
     <ErrorContent>
-      <H2>
+      <Heading level={2} color="var(--c--theme--colors--greyscale-800)">
         <FormattedMessage {...messages[code].title} />
-      </H2>
+      </Heading>
       <Paragraph>
         <FormattedMessage {...messages[code].text} />
       </Paragraph>

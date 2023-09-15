@@ -1,8 +1,8 @@
 import { Input } from '@openfun/cunningham-react';
-import { Box, Heading, Paragraph } from 'grommet';
+import { Box, Paragraph } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { Nullable, theme } from 'lib-common';
-import { EditionSVG, report } from 'lib-components';
+import { EditionSVG, Heading, report } from 'lib-components';
 import { DateTime } from 'luxon';
 import React, {
   Fragment,
@@ -153,14 +153,10 @@ export const VideoInfoBar = ({ isTeacher, startDate }: VideoInfoBarProps) => {
         </StyledBoxInput>
       ) : (
         <Heading
-          a11yTitle={title}
-          color="blue-active"
-          level="1"
-          margin={{ bottom: 'small' }}
-          size="1.3rem"
-          title={title}
-          truncate
+          aria-label={title}
+          level={2}
           style={{ maxWidth: '100%' }}
+          truncate
         >
           {title}
         </Heading>

@@ -1,9 +1,10 @@
-import { Heading, Text } from 'grommet';
+import { Text } from 'grommet';
 import {
   BinSVG,
   ButtonLoader,
   ButtonLoaderStyle,
   ClassroomRecording,
+  Heading,
   Modal,
   ModalButton,
   report,
@@ -75,11 +76,7 @@ export const DeleteClassroomRecordingButton = ({
   return (
     <div>
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <Heading
-          size="3"
-          alignSelf="center"
-          margin={{ top: '0', bottom: 'small' }}
-        >
+        <Heading level={2} textAlign="center" className="mt-0 mb-s">
           {intl.formatMessage(messages.deleteModalTitle)}
         </Heading>
         <Text margin={{ top: 'small' }}>

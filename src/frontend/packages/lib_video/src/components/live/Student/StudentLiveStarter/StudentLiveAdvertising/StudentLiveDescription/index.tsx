@@ -1,6 +1,5 @@
-import { Box, Heading, Paragraph } from 'grommet';
-import { normalizeColor } from 'grommet/utils';
-import { theme } from 'lib-common';
+import { Box, Paragraph } from 'grommet';
+import { Heading } from 'lib-components';
 import { DateTime } from 'luxon';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -29,12 +28,9 @@ export const StudentLiveDescription = ({
   return (
     <Box margin={{ top: 'small' }}>
       <Heading
-        a11yTitle={live.title || undefined}
-        alignSelf="center"
-        color={normalizeColor('blue-active', theme)}
+        aria-label={live.title || undefined}
         level={2}
         textAlign="center"
-        size="small"
         style={{ fontStyle: live.title ? undefined : 'italic' }}
       >
         {live.title ||
@@ -43,7 +39,7 @@ export const StudentLiveDescription = ({
       {live.description && (
         <Paragraph
           alignSelf="center"
-          color={normalizeColor('blue-active', theme)}
+          color="var(--c--theme--colors--primary-500)"
           margin={{ left: 'large', right: 'large' }}
           textAlign="center"
         >

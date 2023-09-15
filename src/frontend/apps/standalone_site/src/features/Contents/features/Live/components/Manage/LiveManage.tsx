@@ -1,5 +1,11 @@
-import { Box, Button, Heading, Text } from 'grommet';
-import { ButtonLoaderStyle, Modal, ModalButton, report } from 'lib-components';
+import { Box, Button, Text } from 'grommet';
+import {
+  ButtonLoaderStyle,
+  Heading,
+  Modal,
+  ModalButton,
+  report,
+} from 'lib-components';
 import { useDeleteVideos } from 'lib-video';
 import { Fragment, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -165,12 +171,7 @@ const LiveManage = () => {
             navigate('..');
           }}
         >
-          <Heading
-            level={2}
-            margin={{ top: 'xxsmall' }}
-            textAlign="center"
-            weight="bold"
-          >
+          <Heading level={2} textAlign="center" className="mt-0 mb-sl">
             {intl.formatMessage(messages.CreateWebinarLabel)}
           </Heading>
           <LiveCreateForm />
@@ -182,11 +183,7 @@ const LiveManage = () => {
           setIsDeleteModalOpen(false);
         }}
       >
-        <Heading
-          size="3"
-          alignSelf="center"
-          margin={{ top: '0', bottom: 'small' }}
-        >
+        <Heading level={2} textAlign="center" className="mt-st mb-b">
           {intl.formatMessage(messages.webinarsDeleteModalTitle, {
             item_count: selectedItems.length,
           })}

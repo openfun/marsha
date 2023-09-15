@@ -1,5 +1,5 @@
-import { Box, Grid, Heading, Paragraph } from 'grommet';
-import { FileDepository, Loader, useResponsive } from 'lib-components';
+import { Box, Grid, Paragraph } from 'grommet';
+import { FileDepository, Heading, Loader, useResponsive } from 'lib-components';
 import React from 'react';
 import { FormattedMessage, defineMessages } from 'react-intl';
 

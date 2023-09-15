@@ -1,5 +1,5 @@
-import { Box, Heading, Paragraph } from 'grommet';
-import { useAppConfig, useResponsive } from 'lib-components';
+import { Box, Paragraph } from 'grommet';
+import { Heading, useAppConfig, useResponsive } from 'lib-components';
 import React, { CSSProperties } from 'react';
 import { FormattedMessage, defineMessages } from 'react-intl';
 
@@ -50,19 +50,13 @@ export const StudentLiveWaitingRoom = () => {
           margin={{ bottom: 'small', horizontal: 'auto', top: 'none' }}
           pad="large"
         >
-          <Heading
-            color="blue-active"
-            level={1}
-            margin={{ bottom: 'small' }}
-            size="medium"
-            textAlign="center"
-          >
+          <Heading level={2} textAlign="center">
             <FormattedMessage {...messages.title} />
           </Heading>
           <Paragraph
             alignSelf="center"
             color="blue-active"
-            margin={{ left: 'large', right: 'large' }}
+            margin={{ top: 'small', left: 'large', right: 'large' }}
             textAlign="center"
           >
             <FormattedMessage {...messages.infos} />

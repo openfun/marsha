@@ -1,7 +1,7 @@
 import { Select } from '@openfun/cunningham-react';
-import { Box, Heading, Pagination, Paragraph, Text } from 'grommet';
+import { Box, Pagination, Paragraph, Text } from 'grommet';
 import { Maybe } from 'lib-common';
-import { FileDepository, Loader } from 'lib-components';
+import { FileDepository, Heading, Loader } from 'lib-components';
 import React, { FocusEvent, useState } from 'react';
 import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
 
@@ -153,6 +153,7 @@ export const DashboardInstructor = ({
           onBlur={onBlurTitle}
           onFocus={onFocusTitle}
           suppressContentEditableWarning={true}
+          style={{ lineHeight: '50px' }}
         >
           {fileDepository.title || intl.formatMessage(messages.noTitle)}
         </Heading>

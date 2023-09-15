@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Replace grommet Heading (#2410)
+
 ## [4.5.0] - 2023-09-15
 
 ### Changed

@@ -1,6 +1,7 @@
-import { Box, Heading } from 'grommet';
+import { Box } from 'grommet';
 import {
   Document,
+  Heading,
   Live,
   LiveModeType,
   Loader,

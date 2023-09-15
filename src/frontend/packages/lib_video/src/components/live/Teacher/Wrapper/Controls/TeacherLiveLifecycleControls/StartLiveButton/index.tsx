@@ -1,5 +1,5 @@
-import { Box, Button, ButtonProps, Heading, Paragraph, Spinner } from 'grommet';
-import { PlaySVG, Video, liveState, useVideo } from 'lib-components';
+import { Box, Button, ButtonProps, Paragraph, Spinner } from 'grommet';
+import { Heading, PlaySVG, Video, liveState, useVideo } from 'lib-components';
 import React, { Fragment, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -94,11 +94,8 @@ export const StartLiveButton = ({ video, ...props }: StartLiveButtonProps) => {
   const modaleContent = (
     <Fragment>
       <Heading
-        a11yTitle={title}
-        color="white"
-        level="3"
-        margin={{ horizontal: 'auto' }}
-        title={title}
+        aria-label={title}
+        level={2}
         truncate
         textAlign="center"
         style={{ width: '100%' }}

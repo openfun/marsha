@@ -4,9 +4,9 @@ import {
   SortModel,
   usePagination,
 } from '@openfun/cunningham-react';
-import { Box, Button, Heading, Text } from 'grommet';
+import { Box, Button, Text } from 'grommet';
 import { Breakpoints, Maybe } from 'lib-common';
-import { Modal, Playlist, useResponsive } from 'lib-components';
+import { Heading, Modal, Playlist, useResponsive } from 'lib-components';
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { Route, Routes, useNavigate } from 'react-router-dom';
@@ -168,9 +168,7 @@ export const PlaylistPage = () => {
             align={isXxsmallDevice ? 'center' : 'initiale'}
           >
             <Box flex>
-              <Heading level={3} truncate>
-                {intl.formatMessage(messages.title)}
-              </Heading>
+              <Heading level={2}>{intl.formatMessage(messages.title)}</Heading>
             </Box>
             {!shouldDisplayNoPlaylistYetMessage && (
               <Box

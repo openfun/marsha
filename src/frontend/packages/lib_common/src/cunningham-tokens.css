@@ -158,4 +158,13 @@
   --c--components--forms-select--font-size: var(--c--theme--font--sizes--ml);
   --c--components--forms-select--value-color--disabled: var(--c--theme--colors--greyscale-400);
   --c--components--forms-labelledbox--label-color--big: var(--c--theme--colors--primary-500);
+  /**
+    * Heading sizes: Standard sizes
+    */
+  --c--theme--font--sizes--h1: 2.2rem;
+  --c--theme--font--sizes--h2: 1.7rem;
+  --c--theme--font--sizes--h3: 1.37rem;
+  --c--theme--font--sizes--h4: 1.15rem;
+  --c--theme--font--sizes--h5: 1rem;
+  --c--theme--font--sizes--h6: 0.87rem;
 }

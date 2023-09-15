@@ -1,7 +1,7 @@
 import { Input, Select } from '@openfun/cunningham-react';
-import { Box, Heading, Paragraph } from 'grommet';
+import { Box, Paragraph } from 'grommet';
 import { Nullable } from 'lib-common';
-import { ModalButton } from 'lib-components';
+import { Heading, ModalButton } from 'lib-components';
 import { debounce } from 'lodash';
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -88,12 +88,7 @@ export const AddUserAccessForm = ({
 
   return (
     <Box>
-      <Heading
-        level={2}
-        margin={{ top: 'xxsmall' }}
-        textAlign="center"
-        weight="bold"
-      >
+      <Heading level={2} className="mt-st" textAlign="center">
         {intl.formatMessage(messages.title)}
       </Heading>
 

@@ -1,8 +1,9 @@
-import { Heading, Paragraph } from 'grommet';
+import { Paragraph } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { Maybe, theme } from 'lib-common';
 import {
   AnonymousUser,
+  Heading,
   checkToken,
   decodeJwt,
   useCurrentUser,

@@ -66,6 +66,7 @@ export const Dashboard = ({ live, playerType, socketUrl }: DasboardProps) => {
       <CurrentLiveProvider value={live}>
         <VideoWebSocketInitializer url={socketUrl} videoId={live.id}>
           <ConverseInitializer>
+            <StudentLiveError />
             <StudentLiveStarter playerType={playerType} />
           </ConverseInitializer>
         </VideoWebSocketInitializer>

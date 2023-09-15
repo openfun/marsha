@@ -1,7 +1,8 @@
-import { Button, Heading, Text } from 'grommet';
+import { Button, Text } from 'grommet';
 import {
   ButtonLoaderStyle,
   FoldableItem,
+  Heading,
   Modal,
   ModalButton,
   ModalControlMethods,
@@ -138,11 +139,7 @@ export const DeleteVideo = () => {
       title={intl.formatMessage(messages.title)}
     >
       <Modal controlMethods={modalActions}>
-        <Heading
-          size="3"
-          alignSelf="center"
-          margin={{ top: '0', bottom: 'small' }}
-        >
+        <Heading level={2} textAlign="center" className="mt-0 mb-s">
           {video.is_live
             ? intl.formatMessage(messages.liveDeleteModalTitle)
             : intl.formatMessage(messages.videoDeleteModalTitle)}

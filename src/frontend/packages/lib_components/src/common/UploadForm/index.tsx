@@ -8,7 +8,7 @@ import {
   FULL_SCREEN_ERROR_ROUTE,
   builderFullScreenErrorRoute,
 } from '@lib-components/common/ErrorComponents/route';
-import { IframeHeading } from '@lib-components/common/Headings';
+import { Heading } from '@lib-components/common/Headings';
 import { LayoutMainArea } from '@lib-components/common/LayoutMainArea';
 import { Loader } from '@lib-components/common/Loader';
 import { UploadField } from '@lib-components/common/UploadField';
@@ -91,12 +91,6 @@ const UploadFormContainer = styled(LayoutMainArea)`
   display: flex;
   flex-direction: column;
   align-items: stretch;
-`;
-
-const IframeHeadingWithLayout = styled(IframeHeading)`
-  flex-grow: 0;
-  margin: 0;
-  text-align: center;
 `;
 
 const UploadFieldContainer = styled.div`
@@ -195,14 +189,18 @@ export const UploadForm = ({
       return (
         <div>
           <UploadFormContainer>
-            <IframeHeadingWithLayout>
+            <Heading
+              level={2}
+              textAlign="center"
+              color="var(--c--theme--colors--greyscale-800)"
+            >
               <FormattedMessage
                 {...(objectType === modelName.TIMEDTEXTTRACKS
                   ? timedtexttrackTitleMessages[(object as TimedText).mode]
                   : objectType !== modelName.SHAREDLIVEMEDIAS &&
                     titleMessages[objectType])}
               />
-            </IframeHeadingWithLayout>
+            </Heading>
             <UploadFieldContainer>
               <UploadField {...{ objectType, objectId, parentId }} />
             </UploadFieldContainer>
