@@ -1163,9 +1163,13 @@
     "description": "The disabled option displayed in the select when there is no selection to perform.",
     "message": "No resolutions available"
   },
+  "components.DownloadVideo.selectQualityInfo": {
+    "description": "Text explaining the select button.",
+    "message": "Select the quality you desire for your download."
+  },
   "components.DownloadVideo.selectQualityLabel": {
     "description": "Label of the select button.",
-    "message": "This input allows you to select the quality you desire for your download."
+    "message": "Download quality"
   },
   "components.DownloadVideo.title": {
     "description": "Title of the widget used for downloading the video.",
@@ -1263,13 +1267,13 @@
     "description": "An alert message saying that the servers answer to the nickname change request took too much time.",
     "message": "The server took too long to respond. Please retry."
   },
-  "components.LanguageSelect.noLanguageAvailableLabel": {
-    "description": "The label displayed in the select when there is no available language.",
-    "message": "No language availables"
+  "components.LanguageSelect.selectLanguageInfo": {
+    "description": "The text under the select used for choosing the language for which the user wants to upload a file.",
+    "message": "The language for which you want to upload a timed text file"
   },
   "components.LanguageSelect.selectLanguageLabel": {
     "description": "The label of the select used for choosing the language for which the user wants to upload a file.",
-    "message": "Select the language for which you want to upload a timed text file"
+    "message": "Choose the language"
   },
   "components.LicenseManager.info": {
     "description": "Info of the widget used for managing the license.",
@@ -1279,9 +1283,13 @@
     "description": "The label displayed in the select when there is no license.",
     "message": "No license available"
   },
+  "components.LicenseManager.selectLicenseInfo": {
+    "description": "The text under the select used for choosing the license under which the instructor wants to publish your video",
+    "message": "Select the license under which you want to publish your video"
+  },
   "components.LicenseManager.selectLicenseLabel": {
     "description": "The label of the select used for choosing the license under which the instructor wants to publish your video",
-    "message": "Select the license under which you want to publish your video"
+    "message": "Select the license"
   },
   "components.LicenseManager.title": {
     "description": "Title of the widget used to manage the license of the video.",
@@ -1291,9 +1299,13 @@
     "description": "The label displayed in the select when there is no license.",
     "message": "No license availables"
   },
+  "components.LicenseSelect.selectLicenseInfo": {
+    "description": "The info under the select used for choosing the license under which the instructor wants to publish your video",
+    "message": "Select the license under which you want to publish your video"
+  },
   "components.LicenseSelect.selectLicenseLabel": {
     "description": "The label of the select used for choosing the license under which the instructor wants to publish your video",
-    "message": "Select the license under which you want to publish your video"
+    "message": "Select the license"
   },
   "components.LiveInfoBar.noTitle": {
     "description": "Title placeholder when no title is defined for this live",
@@ -1333,7 +1345,11 @@
   },
   "components.LiveJoinMode.selectLabel": {
     "description": "The label for the select to set join modes.",
-    "message": "Select join the discussion mode"
+    "message": "Join the discussion mode"
+  },
+  "components.LiveJoinMode.selectLabelInfo": {
+    "description": "The text under the select to set join modes.",
+    "message": "Choose the mode when someone join the discussion"
   },
   "components.LiveJoinMode.title": {
     "description": "Title of the widget used for setting join modes.",
