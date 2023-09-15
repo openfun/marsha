@@ -1,7 +1,7 @@
 """Structure of deposit related models API responses with Django Rest Framework serializers."""
 import mimetypes
 from os.path import splitext
-from urllib.parse import quote_plus
+from urllib.parse import quote, quote_plus
 
 from django.conf import settings
 from django.urls import reverse
@@ -148,9 +148,12 @@ class DepositedFileSerializer(
             f"{time_utils.to_timestamp(obj.uploaded_on)}"
         )
 
+        response_content_disposition = quote_plus(
+            "attachment; filename=" + quote(obj.filename)
+        )
         url = (
             f"{base:s}{self._get_extension_string(obj)}?"
-            f"response-content-disposition={quote_plus('attachment; filename=' + obj.filename)}"
+            f"response-content-disposition={response_content_disposition}"
         )
 
         if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
