@@ -117,7 +117,7 @@
   },
   "feature.Playlist.PlaylistForm.playlistRetentionDurationHelper": {
     "description": "Playlist retention duration helper in create playlist form .",
-    "message": "This retention duration is use to know how long related resources will be kept."
+    "message": "This retention duration is used to know how long related resources will be kept."
   },
   "feature.Playlist.PlaylistForm.requiredField": {
     "description": "Message when playlist field is missing.",
@@ -666,6 +666,10 @@
   "features.Playlist.features.UpdatePlaylist.components.UserListRow.deleteUserLabel": {
     "description": "Delete playlist access button accessibility title.",
     "message": "Delete user."
+  },
+  "features.Playlist.features.UpdatePlaylist.components.UserListRow.labelSelectRole": {
+    "description": "The label on the select role input.",
+    "message": "Role"
   },
   "features.Playlist.features.UpdatePlaylist.components.UserListRow.updatePlaylistAccessError": {
     "description": "Toast message when a playlist access has been updated with error.",

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: marsha\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-07 12:18+0000\n"
-"PO-Revision-Date: 2023-09-08 08:22\n"
+"POT-Creation-Date: 2023-09-15 08:28+0000\n"
+"PO-Revision-Date: 2023-09-15 12:48\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -273,7 +273,7 @@ msgstr "{:s} [deleted]"
 
 #: marsha/bbb/models.py:214
 msgid "classroom to which this document belongs"
-msgstr ""
+msgstr "classe virtuelle à laquelle appartient ce document"
 
 #: marsha/bbb/models.py:221 marsha/deposit/models.py:111
 msgid "filename"
@@ -554,11 +554,11 @@ msgstr "Creative Common : Attribution - Pas d’Utilisation Commerciale - Partag
 
 #: marsha/core/defaults.py:122
 msgid "Creative Common By Attribution No Derivatives"
-msgstr ""
+msgstr "Creative Common : Attribution - Pas de Modification"
 
 #: marsha/core/defaults.py:123
 msgid "Creative Common By Attribution Non Commercial No Derivatives"
-msgstr ""
+msgstr "Creative Common : Attribution - Pas d'Utilisation Commerciale - Pas de Modification"
 
 #: marsha/core/defaults.py:124
 msgid "Public Domain Dedication "
@@ -583,6 +583,10 @@ msgstr "dépôt de fichier"
 #: marsha/core/defaults.py:140
 msgid "VOD conversion"
 msgstr "Conversion VOD"
+
+#: marsha/core/lti/utils.py:179
+msgid "Resource has been deleted."
+msgstr "La ressource a été supprimée."
 
 #: marsha/core/management/commands/send_reminders.py:139
 msgid "Webinar has been updated."
@@ -1026,11 +1030,11 @@ msgstr "durée de rétention en jour"
 
 #: marsha/core/models/playlist.py:153
 msgid "Allow LTI users to claim this playlist"
-msgstr ""
+msgstr "Autoriser les utilisateurs LTI à réclamer cette playlist"
 
 #: marsha/core/models/playlist.py:154
 msgid "is claimable"
-msgstr ""
+msgstr "est réclamable"
 
 #: marsha/core/models/playlist.py:164
 msgid "playlists"
