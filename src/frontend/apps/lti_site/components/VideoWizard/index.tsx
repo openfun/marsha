@@ -70,7 +70,7 @@ const VideoWizard = () => {
               }}
               onPreviousButtonClick={() => {
                 if (history.length > 1) {
-                  navigate(-1);
+                  navigate('..');
                 } else {
                   navigate(builderVideoWizzardRoute());
                 }

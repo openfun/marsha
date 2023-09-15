@@ -80,7 +80,7 @@ export const DeleteClassroom = () => {
       toast.success(intl.formatMessage(messages.classroomDeleteSuccess), {
         position: 'bottom-center',
       });
-      navigate(-1);
+      navigate('..');
     },
     onError: (err: unknown) => {
       report(err);

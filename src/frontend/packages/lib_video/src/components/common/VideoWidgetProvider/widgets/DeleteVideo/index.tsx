@@ -112,7 +112,7 @@ export const DeleteVideo = () => {
           position: 'bottom-center',
         },
       );
-      navigate(-1);
+      navigate('..');
     },
     onError: (err: unknown) => {
       report(err);
