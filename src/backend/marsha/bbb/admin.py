@@ -76,7 +76,6 @@ class ClassroomDocumentAdmin(admin.ModelAdmin):
         "id",
         "filename",
         "classroom",
-        "extension",
     )
     readonly_fields = [
         "id",
