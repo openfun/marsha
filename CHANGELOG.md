@@ -21,6 +21,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Correctly redirect a user when a resource is deleted (#2419)
 - Checkbox to delete resource remains displayed on others pages (#2416)
 - Remove a non-existent attribute which breaks classroom document admin view
+- Change color of a disabled button in the deposit file student dashboard
 
 ## [4.4.0] - 2023-09-08
 

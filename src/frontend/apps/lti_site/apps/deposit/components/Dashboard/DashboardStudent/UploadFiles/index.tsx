@@ -232,7 +232,6 @@ export const UploadFiles = () => {
           void uploadFiles();
         }}
         label={intl.formatMessage(messages.uploadButtonLabel)}
-        color="blue-active"
         margin={{ bottom: 'large' }}
         disabled={filesToUpload.length === 0}
       />
