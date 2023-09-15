@@ -185,8 +185,11 @@ describe('<MarkdownEditor />', () => {
     render(<MarkdownEditor markdownDocumentId={markdownDocument.id} />);
 
     // Wait for rendered content: all loaders gone
-    await waitFor(() =>
-      expect(screen.queryByRole('status')).not.toBeInTheDocument(),
+    await waitFor(
+      () => expect(screen.queryByRole('status')).not.toBeInTheDocument(),
+      {
+        timeout: 1000,
+      },
     );
 
     expect(screen.getByTestId('renderer_container')).toContainHTML(
