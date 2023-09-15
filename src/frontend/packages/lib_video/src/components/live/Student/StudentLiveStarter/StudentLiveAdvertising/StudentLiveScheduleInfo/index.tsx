@@ -1,7 +1,12 @@
-import { Box, Clock, Heading, Paragraph } from 'grommet';
+import { Box, Clock, Paragraph } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
-import { ChronometerSVG, liveState, useResponsive } from 'lib-components';
+import {
+  ChronometerSVG,
+  Heading,
+  liveState,
+  useResponsive,
+} from 'lib-components';
 import { DateTime } from 'luxon';
 import React, {
   Fragment,
@@ -17,8 +22,7 @@ const Header = ({ title }: { title: ReactNode }) => (
   <Heading
     color={normalizeColor('blue-active', theme)}
     level={5}
-    margin="none"
-    style={{ display: 'flex' }}
+    style={{ display: 'flex', margin: '0' }}
   >
     {title}
   </Heading>
@@ -173,9 +177,10 @@ export const StudentLiveScheduleInfo = ({
       <Fragment>
         <Box margin="auto" pad={{ horizontal: '36px' }}>
           <Heading
-            color={normalizeColor('blue-active', theme)}
             level={3}
-            margin="auto"
+            style={{
+              margin: 'auto',
+            }}
           >
             {intl.formatMessage(headingMessage)}
           </Heading>

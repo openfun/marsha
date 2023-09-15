@@ -22,7 +22,7 @@ export const LiveModale = ({ content, actions }: LiveModaleProps) => {
         round="small"
         width={{ min: '45vw', max: '600px', width: '50%' }}
         height={{ min: 'auto' }}
-        style={{ zIndex: 3 }}
+        style={{ zIndex: 33 }}
       >
         {content}
         {actions.map((action, index) => (

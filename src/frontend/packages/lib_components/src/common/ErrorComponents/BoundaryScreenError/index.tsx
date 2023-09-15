@@ -1,10 +1,11 @@
-import { Box, Heading, Image, Paragraph, Stack, Text } from 'grommet';
+import { Box, Image, Paragraph, Stack, Text } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
 import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
+import { Heading } from '@lib-components/common/Headings';
 import { useAppConfig } from '@lib-components/data/stores/useAppConfig';
 import { useResponsive } from '@lib-components/hooks/useResponsive';
 
@@ -20,11 +21,6 @@ const LeftCircle = styled(Box)`
 const Onomatopoeia = styled(Paragraph)<ResponsiveProps>`
   font-family: 'Roboto-Light';
   letter-spacing: ${({ isMobile }) => (isMobile ? `-0.104rem;` : '-0.183rem')};
-`;
-
-const H2Code = styled(Heading)<ResponsiveProps>`
-  font-family: 'Roboto-Bold';
-  letter-spacing: ${({ isMobile }) => (isMobile ? `-0.157rem` : '-0.392rem')};
 `;
 
 const ErrorMessage = styled(Paragraph)<ResponsiveProps>`
@@ -139,14 +135,13 @@ export const BoundaryScreenError = ({
           >
             <FormattedMessage {...messages.onomatopoeia} />
           </Onomatopoeia>
-          <H2Code
-            margin="none"
+          <Heading
+            className={isSmall ? 'm-b' : 'm-xl'}
             level={2}
-            size={isSmall ? '3.75rem' : '9.375rem'}
-            isMobile={isSmall}
+            fontSize={isSmall ? '3.75rem' : '9.375rem'}
           >
             {code}
-          </H2Code>
+          </Heading>
           <ErrorMessage
             maxLines={3}
             size="0.875rem"

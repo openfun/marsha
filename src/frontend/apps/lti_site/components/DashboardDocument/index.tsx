@@ -1,6 +1,7 @@
 import { Box } from 'grommet';
 import {
   Document,
+  Heading,
   ObjectStatusPicker,
   UploadManagerStatus,
   UploadableObjectProgress,
@@ -13,7 +14,6 @@ import React, { useEffect } from 'react';
 import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
-import { DashboardInternalHeading } from 'components/Dashboard/DashboardInternalHeading';
 import { pollForTrack } from 'data/sideEffects/pollForTrack';
 
 import { DashboardDocumentPaneButtons } from './DashboardDocumentPaneButtons';
@@ -54,10 +54,6 @@ const DashboardDocumentInnerContainer = styled.div`
   padding: 1rem;
 `;
 
-const DashboardDocumentInternalHeading = styled(DashboardInternalHeading)`
-  padding: 0 1rem 0 0;
-`;
-
 const CommonStatusLine = ({
   document,
   documentUploadStatus,
@@ -66,9 +62,13 @@ const CommonStatusLine = ({
   documentUploadStatus?: UploadManagerStatus;
 }) => (
   <Box align="center" direction="row">
-    <DashboardDocumentInternalHeading>
+    <Heading
+      level={5}
+      style={{ margin: 0, paddingRight: '1rem' }}
+      color="var(--c--theme--colors--secondary-text)"
+    >
       <FormattedMessage {...messages.title} />
-    </DashboardDocumentInternalHeading>
+    </Heading>
     <ObjectStatusPicker object={document} uploadStatus={documentUploadStatus} />
   </Box>
 );
@@ -109,9 +109,13 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
             />
             {intl.formatMessage(messages[READY])}
             <Box align="center" direction="row" margin={{ top: 'small' }}>
-              <DashboardDocumentInternalHeading>
+              <Heading
+                level={5}
+                style={{ margin: 0, paddingRight: '1rem' }}
+                color="var(--c--theme--colors--secondary-text)"
+              >
                 {intl.formatMessage(messages.filename)}
-              </DashboardDocumentInternalHeading>
+              </Heading>
               <div>{document.filename}</div>
             </Box>
           </Box>

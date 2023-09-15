@@ -1,6 +1,11 @@
-import { Box, Heading, Text } from 'grommet';
+import { Box, Text } from 'grommet';
 import { Nullable } from 'lib-common';
-import { AnonymousUser, useCurrentUser, useResponsive } from 'lib-components';
+import {
+  AnonymousUser,
+  Heading,
+  useCurrentUser,
+  useResponsive,
+} from 'lib-components';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { Contents } from 'features/Contents';
@@ -43,7 +48,7 @@ export const ProfilePage = () => {
 
   return (
     <Box>
-      <Heading level="2">{intl.formatMessage(messages.header)}</Heading>
+      <Heading level={1}>{intl.formatMessage(messages.header)}</Heading>
       <Box
         background="#daeeff"
         margin={{ vertical: 'small' }}

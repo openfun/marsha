@@ -1,10 +1,11 @@
 import { Input, Select } from '@openfun/cunningham-react';
-import { Box, Button, Heading, Text, ThemeContext } from 'grommet';
+import { Box, Button, Text, ThemeContext } from 'grommet';
 import { Nullable } from 'lib-common';
 import {
   ButtonLoaderStyle,
   FetchResponseError,
   Form,
+  Heading,
   Modal,
   ModalButton,
   Organization,
@@ -353,11 +354,7 @@ export const PlaylistForm = ({
       >
         <Box gap="medium">
           {title && (
-            <Heading
-              size="3"
-              alignSelf="center"
-              margin={{ top: '0', bottom: 'small' }}
-            >
+            <Heading level={2} textAlign="center" className="mt-0 mb-b">
               {title}
             </Heading>
           )}
@@ -463,11 +460,7 @@ export const PlaylistForm = ({
           )}
           {playlistId && (
             <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-              <Heading
-                size="3"
-                alignSelf="center"
-                margin={{ top: '0', bottom: 'small' }}
-              >
+              <Heading level={2} textAlign="center" className="mt-0 mb-b">
                 {intl.formatMessage(messages.deleteModalTitle)}
               </Heading>
               <Text margin={{ top: 'small' }}>

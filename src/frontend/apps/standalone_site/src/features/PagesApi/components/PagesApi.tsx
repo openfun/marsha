@@ -1,6 +1,7 @@
-import { Box, Heading } from 'grommet';
+import { Box } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
+import { Heading } from 'lib-components';
 import ReactMarkdown from 'react-markdown';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
@@ -38,7 +39,7 @@ const PagesApi = () => {
           pad={{ vertical: 'small', horizontal: 'medium' }}
           round="small"
         >
-          <Heading>{data?.name || ''}</Heading>
+          <Heading className="mt-sl">{data?.name || ''}</Heading>
           <ReactMarkdown>{data?.content || ''}</ReactMarkdown>
         </BoxMarkdown>
       )}

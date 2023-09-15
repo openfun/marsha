@@ -1,4 +1,5 @@
-import { Box, Heading } from 'grommet';
+import { Box } from 'grommet';
+import { Heading } from 'lib-components';
 import React from 'react';
 import { useIntl } from 'react-intl';
 

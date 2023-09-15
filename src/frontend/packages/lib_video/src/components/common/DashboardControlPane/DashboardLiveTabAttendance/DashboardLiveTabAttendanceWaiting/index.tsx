@@ -1,5 +1,5 @@
-import { Box, Heading } from 'grommet';
-import { useAppConfig } from 'lib-components';
+import { Box } from 'grommet';
+import { Heading, useAppConfig } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -39,7 +39,7 @@ export const DashboardLiveTabAttendanceWaiting = ({}) => {
           }}
         >
           <Box margin="auto" pad={{ horizontal: '36px' }}>
-            <Heading color="blue-active" level={3} margin="auto">
+            <Heading level={3} textAlign="center">
               {intl.formatMessage(messages.noParticipants)}
             </Heading>
           </Box>

@@ -1,4 +1,4 @@
-import { Heading } from 'grommet';
+import { Heading } from 'lib-components';
 import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
@@ -13,14 +13,7 @@ const Text404 = () => {
   const intl = useIntl();
 
   return (
-    <Heading
-      level={3}
-      style={{
-        padding: '0.3rem 1rem',
-        maxWidth: '100%',
-      }}
-      alignSelf="center"
-    >
+    <Heading level={2} textAlign="center">
       {intl.formatMessage(messages.page404)}
     </Heading>
   );

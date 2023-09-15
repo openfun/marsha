@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
-import { Box, Button, Heading } from 'grommet';
-import { FetchResponseError } from 'lib-components';
+import { Box, Button } from 'grommet';
+import { FetchResponseError, Heading } from 'lib-components';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -135,7 +135,7 @@ export const AccountSettings = () => {
 
   return (
     <Box>
-      <Heading level="2">{intl.formatMessage(messages.header)}</Heading>
+      <Heading level={1}>{intl.formatMessage(messages.header)}</Heading>
       <Box width="large" margin={{ horizontal: 'auto' }}>
         <Box
           background="white"

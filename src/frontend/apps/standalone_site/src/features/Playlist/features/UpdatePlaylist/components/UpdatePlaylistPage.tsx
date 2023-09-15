@@ -1,5 +1,5 @@
-import { Box, Heading } from 'grommet';
-import { Spinner, report } from 'lib-components';
+import { Box } from 'grommet';
+import { Heading, Spinner, report } from 'lib-components';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -67,7 +67,7 @@ export const UpdatePlaylistPage = ({ playlistId }: UpdatePlaylistPageProps) => {
   return (
     <Box gap="medium">
       <WhiteCard height={{ min: 'auto' }}>
-        <Heading level={3} margin={{ top: '0' }}>
+        <Heading level={2} style={{ marginTop: '0' }}>
           {intl.formatMessage(messages.mainInfoTitle)}
         </Heading>
         <Box
@@ -108,7 +108,7 @@ export const UpdatePlaylistPage = ({ playlistId }: UpdatePlaylistPageProps) => {
       </WhiteCard>
 
       <WhiteCard height={{ min: 'auto' }}>
-        <Heading level={3} margin={{ vertical: '0' }}>
+        <Heading level={2} style={{ marginTop: '0' }}>
           {intl.formatMessage(messages.accessTitle)}
         </Heading>
         <AddUserAccessButton

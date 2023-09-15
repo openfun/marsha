@@ -1,5 +1,5 @@
-import { Box, Heading, Paragraph } from 'grommet';
-import { CopyClipboard, Video, liveState } from 'lib-components';
+import { Box, Paragraph } from 'grommet';
+import { CopyClipboard, Heading, Video, liveState } from 'lib-components';
 import React, { Fragment } from 'react';
 import { toast } from 'react-hot-toast';
 import { FormattedMessage, defineMessages, useIntl } from 'react-intl';

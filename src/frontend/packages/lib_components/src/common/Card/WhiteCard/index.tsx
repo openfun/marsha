@@ -1,6 +1,7 @@
-import { Box, Heading } from 'grommet';
+import { Box } from 'grommet';
 import React, { PropsWithChildren } from 'react';
 
+import { Heading } from '@lib-components/common/Headings';
 import { useResponsive } from '@lib-components/hooks/useResponsive';
 
 interface WhiteCardProps {
@@ -31,7 +32,7 @@ export const WhiteCard = ({
         }}
         height="initial"
       >
-        <Heading color="blue-active" fill level={3} textAlign="center">
+        <Heading level={2} textAlign="center">
           {title}
         </Heading>
         {children}

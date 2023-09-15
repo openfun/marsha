@@ -1,6 +1,12 @@
-import { Box, Button, Heading, Text } from 'grommet';
+import { Box, Button, Text } from 'grommet';
 import { useDeleteClassrooms } from 'lib-classroom';
-import { ButtonLoaderStyle, Modal, ModalButton, report } from 'lib-components';
+import {
+  ButtonLoaderStyle,
+  Heading,
+  Modal,
+  ModalButton,
+  report,
+} from 'lib-components';
 import { Fragment, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -164,12 +170,7 @@ const ClassroomManage = () => {
             navigate('..');
           }}
         >
-          <Heading
-            level={2}
-            margin={{ top: 'xxsmall' }}
-            textAlign="center"
-            weight="bold"
-          >
+          <Heading level={2} textAlign="center" className="mt-0 mb-sl">
             {intl.formatMessage(messages.CreateClassroomLabel)}
           </Heading>
           <ClassroomCreateForm />
@@ -181,11 +182,7 @@ const ClassroomManage = () => {
           setIsDeleteModalOpen(false);
         }}
       >
-        <Heading
-          size="3"
-          alignSelf="center"
-          margin={{ top: '0', bottom: 'small' }}
-        >
+        <Heading level={2} textAlign="center" className="mt-st mb-b">
           {intl.formatMessage(messages.classroomsDeleteModalTitle, {
             item_count: selectedItems.length,
           })}

@@ -1,6 +1,7 @@
-import { Box, Button, Heading, Text } from 'grommet';
+import { Box, Button, Text } from 'grommet';
 import {
   ButtonLoaderStyle,
+  Heading,
   Modal,
   ModalButton,
   UploadManager,
@@ -173,12 +174,7 @@ const VideoManage = () => {
             navigate('..');
           }}
         >
-          <Heading
-            level={2}
-            margin={{ top: 'xxsmall' }}
-            textAlign="center"
-            weight="bold"
-          >
+          <Heading level={2} textAlign="center" className="mt-0 mb-sl">
             {intl.formatMessage(messages.CreateVideoLabel)}
           </Heading>
           <UploadManager>
@@ -192,11 +188,7 @@ const VideoManage = () => {
           setIsDeleteModalOpen(false);
         }}
       >
-        <Heading
-          size="3"
-          alignSelf="center"
-          margin={{ top: '0', bottom: 'small' }}
-        >
+        <Heading level={2} textAlign="center" className="mt-st mb-b">
           {intl.formatMessage(messages.videosDeleteModalTitle, {
             item_count: selectedItems.length,
           })}

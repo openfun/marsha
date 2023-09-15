@@ -1,43 +1,45 @@
-import styled from 'styled-components';
+import { createElement } from 'react';
 
-const headingsStyle = `
-  margin-bottom: 0.5rem;
-  font-family: inherit;
-  font-weight: 500;
-  line-height: 1.2;
-  color: inherit;
-`;
+interface HeadingProps extends React.HTMLAttributes<HTMLHeadingElement> {
+  level?: 1 | 2 | 3 | 4 | 5 | 6;
+  textAlign?: React.CSSProperties['textAlign'];
+  color?: React.CSSProperties['color'];
+  fontSize?: React.CSSProperties['fontSize'];
+  truncate?: boolean;
+}
 
-export const H1 = styled.h1`
-  font-size: 2.5rem;
-  ${headingsStyle};
-`;
+export const Heading = ({
+  children,
+  className,
+  color,
+  fontSize,
+  level = 1,
+  textAlign,
+  truncate,
+  ...props
+}: HeadingProps) => {
+  let moreStyles = {};
+  if (truncate) {
+    moreStyles = {
+      textOverflow: 'ellipsis',
+      overflow: 'hidden',
+      whiteSpace: 'nowrap',
+    };
+  }
 
-export const H2 = styled.h2`
-  font-size: 2rem;
-  ${headingsStyle};
-`;
-
-export const H3 = styled.h3`
-  font-size: 1.75rem;
-  ${headingsStyle};
-`;
-
-export const H4 = styled.h4`
-  font-size: 1.5rem;
-  ${headingsStyle};
-`;
-
-export const H5 = styled.h5`
-  font-size: 1.25rem;
-  ${headingsStyle};
-`;
-
-export const H6 = styled.h6`
-  font-size: 1rem;
-  ${headingsStyle};
-`;
-
-export const IframeHeading = styled(H2)`
-  padding: 0.5rem 0;
-`;
+  return createElement(
+    `h${level}`,
+    {
+      className: `fs-h fs-h${level} ${className || ''}`,
+      ...props,
+      style: {
+        textAlign,
+        color,
+        fontSize,
+        ...moreStyles,
+        ...props.style,
+      },
+    },
+    children,
+  );
+};

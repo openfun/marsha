@@ -1,7 +1,7 @@
-import { Box, Button, ButtonProps, Heading, Paragraph, Spinner } from 'grommet';
+import { Box, Button, ButtonProps, Paragraph, Spinner } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
-import { StopSVG, Video, useVideo } from 'lib-components';
+import { Heading, StopSVG, Video, useVideo } from 'lib-components';
 import React, { Fragment, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -99,11 +99,8 @@ export const StopLiveButton = ({ video, ...props }: StopLiveButtonProps) => {
   const modaleContent = (
     <Fragment>
       <Heading
-        a11yTitle={title}
-        color="white"
-        level="3"
-        margin={{ horizontal: 'auto' }}
-        title={title}
+        aria-label={title}
+        level={2}
         truncate
         textAlign="center"
         style={{ width: '100%' }}
@@ -122,7 +119,11 @@ export const StopLiveButton = ({ video, ...props }: StopLiveButtonProps) => {
       color={normalizeColor('red-active', theme)}
       disabled={!!liveModaleConfiguration || status.type === 'loading'}
       label={
-        <Box flex direction="row" style={{ whiteSpace: 'nowrap' }}>
+        <Box
+          flex
+          direction="row"
+          style={{ whiteSpace: 'nowrap', color: 'white' }}
+        >
           {intl.formatMessage(messages.title)}
           {status.type !== 'loading' && (
             <StopSVG

@@ -1,5 +1,5 @@
-import { Box, Heading, Image, Text } from 'grommet';
-import { StyledLink, useResponsive } from 'lib-components';
+import { Box, Image, Text } from 'grommet';
+import { Heading, StyledLink, useResponsive } from 'lib-components';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
@@ -44,21 +44,21 @@ const TextBannerBox = styled(Box)`
 `;
 
 interface LayoutProps {
-  isFullLayout: boolean;
+  $isFullLayout: boolean;
 }
 const HeadingBanner = styled(Heading)<LayoutProps>`
   transition: all 0.3s ease-in-out;
-  font-family: 'Roboto-Black';
-  ${({ isFullLayout }) => `
-    font-size: ${isFullLayout ? 'min(5vw, 56px)' : 'min(3vw, 56px)'};
-    line-height: ${isFullLayout ? 'min(5vw, 56px)' : 'min(3vw, 56px)'};
+  font-weight: 900;
+  ${({ $isFullLayout }) => `
+    font-size: ${$isFullLayout ? 'min(5vw, 56px)' : 'min(3vw, 56px)'};
+    line-height: ${$isFullLayout ? 'min(5vw, 56px)' : 'min(3vw, 56px)'};
   `}
 `;
 const TextBanner = styled(Text)<LayoutProps>`
   transition: all 0.3s ease-in-out;
-  ${({ isFullLayout }) => `
-    font-size: ${isFullLayout ? 'min(2.2vw, 23px)' : 'min(1.4vw, 23px)'};
-    line-height: ${isFullLayout ? 'min(2.6vw, 26px)' : 'min(1.7vw, 32px)'};
+  ${({ $isFullLayout }) => `
+    font-size: ${$isFullLayout ? 'min(2.2vw, 23px)' : 'min(1.4vw, 23px)'};
+    line-height: ${$isFullLayout ? 'min(2.6vw, 26px)' : 'min(1.7vw, 32px)'};
   `}
 `;
 
@@ -82,9 +82,9 @@ const HomePage = () => {
           <TextBannerBox>
             <HeadingBanner
               level={2}
-              margin={{ bottom: '1.3vw', top: '0' }}
-              color="blue-content"
-              isFullLayout={
+              style={{ marginBottom: '1.3vw', marginTop: '0' }}
+              color="var(--c--theme--colors--primary-800)"
+              $isFullLayout={
                 isSmallerBreakpoint(breakpoint, 'xsmedium') ||
                 !isMenuOpen(isDesktop)
               }
@@ -94,7 +94,7 @@ const HomePage = () => {
             <TextBanner
               weight="bold"
               color="blue-content"
-              isFullLayout={
+              $isFullLayout={
                 isSmallerBreakpoint(breakpoint, 'xsmedium') ||
                 !isMenuOpen(isDesktop)
               }

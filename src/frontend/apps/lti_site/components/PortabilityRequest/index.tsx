@@ -1,6 +1,11 @@
-import { Box, Button, Heading, Paragraph } from 'grommet';
+import { Box, Button, Paragraph } from 'grommet';
 import { Clock } from 'grommet-icons';
-import { DecodedJwtLTI, PortabilityConfig, useJwt } from 'lib-components';
+import {
+  DecodedJwtLTI,
+  Heading,
+  PortabilityConfig,
+  useJwt,
+} from 'lib-components';
 import React from 'react';
 import toast from 'react-hot-toast';
 import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
@@ -94,12 +99,12 @@ export const PortabilityRequest = ({
 
   return (
     <Box direction="column" pad="medium" align="center">
-      <Heading level={6} margin={{ bottom: 'small' }}>
+      <Heading level={5}>
         <FormattedMessage {...messages.resourceRequiresPortability} />
       </Heading>
       {portabilityRequested ? (
         <React.Fragment>
-          <Paragraph>
+          <Paragraph margin={{ top: 'small' }}>
             <FormattedMessage
               {...messages.resourcePortabilityAlreadyRequested}
             />
@@ -108,7 +113,7 @@ export const PortabilityRequest = ({
         </React.Fragment>
       ) : (
         <React.Fragment>
-          <Paragraph>
+          <Paragraph margin={{ top: 'small' }}>
             <FormattedMessage {...messages.pleaseMakeRequest} />
           </Paragraph>
           <Button
