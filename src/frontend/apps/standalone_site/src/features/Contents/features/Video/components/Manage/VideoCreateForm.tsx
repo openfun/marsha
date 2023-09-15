@@ -203,7 +203,7 @@ const VideoCreateForm = () => {
         <ModalButton
           label={intl.formatMessage(messages.submitLabel)}
           onClickCancel={() => {
-            navigate(-1);
+            navigate('..');
           }}
           isSubmitting={isCreating}
           isDisabled={!video.videoFile || isUploading}

@@ -161,7 +161,7 @@ const ClassroomManage = () => {
         <Modal
           isOpen
           onClose={() => {
-            navigate(-1);
+            navigate('..');
           }}
         >
           <Heading

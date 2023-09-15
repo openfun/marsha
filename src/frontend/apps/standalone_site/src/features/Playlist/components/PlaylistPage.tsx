@@ -151,7 +151,7 @@ export const PlaylistPage = () => {
             <Modal
               isOpen
               onClose={() => {
-                navigate(-1);
+                navigate('..');
               }}
             >
               <CreatePlaylistForm />

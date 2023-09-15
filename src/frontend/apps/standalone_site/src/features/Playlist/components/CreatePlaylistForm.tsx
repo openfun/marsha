@@ -53,7 +53,7 @@ export const CreatePlaylistForm = () => {
         });
       }}
       onCancel={() => {
-        navigate(-1);
+        navigate('..');
       }}
       submitTitle={intl.formatMessage(messages.createPlaylistButtonTitle)}
       isSubmitting={isCreating}

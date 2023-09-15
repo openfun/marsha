@@ -153,7 +153,7 @@ const ClassroomCreateForm = () => {
 
         <ModalButton
           label={intl.formatMessage(messages.submitLabel)}
-          onClickCancel={() => navigate(-1)}
+          onClickCancel={() => navigate('..')}
           isSubmitting={isCreating}
           isDisabled={!classroom.title || !classroom.playlist}
         />

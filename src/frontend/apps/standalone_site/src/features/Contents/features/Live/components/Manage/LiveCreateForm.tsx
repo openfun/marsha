@@ -166,7 +166,7 @@ const LiveCreateForm = () => {
         <ModalButton
           label={intl.formatMessage(messages.submitLabel)}
           onClickCancel={() => {
-            navigate(-1);
+            navigate('..');
           }}
           isSubmitting={isCreating || isUpdatingToLive}
           isDisabled={!live.title || !live.playlist}
