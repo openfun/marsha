@@ -114,7 +114,7 @@ def get_or_create_resource(model, lti):
         )
 
     try:
-        return queryset.get(
+        instance = queryset.get(
             Q() if (lti.is_instructor or lti.is_admin) else model.get_ready_clause(),
             # The resource exists in this playlist on this consumer site
             Q(playlist__lti_id=lti.context_id, playlist__consumer_site=consumer_site)
@@ -133,6 +133,14 @@ def get_or_create_resource(model, lti):
             | Q(playlist__consumer_site__in=consumer_site.reachable_from.all()),
             pk=lti.resource_id,
         )
+        if (
+            hasattr(instance, "last_lti_url")
+            and lti.origin_url
+            and instance.last_lti_url != lti.origin_url
+        ):
+            instance.last_lti_url = lti.origin_url
+            instance.save(update_fields=["last_lti_url"])
+        return instance
     except model.DoesNotExist:
         pass
 
@@ -165,6 +173,7 @@ def get_or_create_resource(model, lti):
     specific_attributes = (
         ("upload_state", PENDING),
         ("show_download", lti.get_consumer_site().video_show_download_default),
+        ("last_lti_url", lti.origin_url),
     )
     for field_name, field_value in specific_attributes:
         if field_exists_on_model(model, field_name):
