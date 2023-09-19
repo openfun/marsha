@@ -387,6 +387,7 @@ class VideoUpdateLiveStateAPITest(TestCase):
             },
         )
         self.assertEqual(video.resolutions, [240, 480, 720])
+        self.assertIsNone(video.live_stopped_by_email)
 
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
     def test_api_video_update_live_state_invalid_signature(self):

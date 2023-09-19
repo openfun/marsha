@@ -106,6 +106,7 @@ class CleanAwsElementalStackCommandTest(TestCase):
                 "stopped_at": time_utils.to_timestamp(
                     datetime(2022, 11, 4, 15, 25, tzinfo=timezone.utc)
                 ),
+                "live_stopped_with_email": "user@example.com",
             },
         )
 
@@ -149,6 +150,7 @@ class CleanAwsElementalStackCommandTest(TestCase):
                 "stopped_at": time_utils.to_timestamp(
                     datetime(2022, 10, 14, 15, 25, tzinfo=timezone.utc)
                 ),
+                "live_stopped_with_email": "user@example.com",
             },
         )
 
@@ -192,6 +194,7 @@ class CleanAwsElementalStackCommandTest(TestCase):
                 "stopped_at": time_utils.to_timestamp(
                     datetime(2022, 10, 14, 15, 25, tzinfo=timezone.utc)
                 ),
+                "live_stopped_with_email": "user@example.com",
             },
         )
 
@@ -266,8 +269,13 @@ class CleanAwsElementalStackCommandTest(TestCase):
 
             # Live 1, 2 and 3 should not have been updated
             self.assertEqual(live1.live_state, IDLE)
+            self.assertIsNone(live1.live_info)
             self.assertEqual(live2.live_state, RUNNING)
+            self.assertIsNone(live2.live_info.get("live_stopped_with_email"))
             self.assertEqual(live3.live_state, STOPPED)
+            self.assertEqual(
+                live3.live_info.get("live_stopped_with_email"), "user@example.com"
+            )
 
             # Live 4 and 5 should have been updated
             self.assertEqual(live4.live_state, ENDED)
@@ -283,6 +291,7 @@ class CleanAwsElementalStackCommandTest(TestCase):
                     ),
                 },
             )
+            self.assertEqual(live4.live_info.get("live_stopped_with_email"), None)
 
             self.assertEqual(live5.live_state, ENDED)
             self.assertEqual(live5.upload_state, DELETED)
@@ -297,6 +306,7 @@ class CleanAwsElementalStackCommandTest(TestCase):
                     ),
                 },
             )
+            self.assertEqual(live5.live_info.get("live_stopped_with_email"), None)
 
         out.close()
 
