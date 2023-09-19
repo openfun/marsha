@@ -1,7 +1,10 @@
 """Test update recording management command."""
+from datetime import timezone
 import logging
 
 from django.core.management.base import BaseCommand
+
+from dateutil.parser import parse
 
 from marsha.bbb.models import Classroom, ClassroomRecording
 from marsha.bbb.utils.bbb_utils import get_recordings, process_recordings
@@ -67,10 +70,12 @@ class Command(BaseCommand):
             classroom_recordings = classroom.recordings.all()
             if before:
                 classroom_recordings = classroom_recordings.filter(
-                    started_at__lt=before
+                    started_at__lt=parse(before).replace(tzinfo=timezone.utc)
                 )
             if after:
-                classroom_recordings = classroom_recordings.filter(started_at__gt=after)
+                classroom_recordings = classroom_recordings.filter(
+                    started_at__gt=parse(after).replace(tzinfo=timezone.utc)
+                )
             known_recording_ids = classroom_recordings.values_list(
                 "record_id", flat=True
             )

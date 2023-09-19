@@ -1,5 +1,5 @@
 """Test delete_outdated_videos command."""
-from datetime import date, datetime
+from datetime import date, datetime, timezone as baseTimezone
 from unittest.mock import patch
 
 from django.core.management import call_command
@@ -35,7 +35,9 @@ class DeleteOutdatedVideosTestCase(TestCase):
         """
         Test the delete_outdated_videos command.
         """
-        with patch.object(timezone, "now", return_value=datetime(2022, 1, 2)):
+        with patch.object(
+            timezone, "now", return_value=datetime(2022, 1, 2, tzinfo=baseTimezone.utc)
+        ):
             call_command("delete_outdated_videos")
             self.assertEqual(Video.objects.count(), 2)
 

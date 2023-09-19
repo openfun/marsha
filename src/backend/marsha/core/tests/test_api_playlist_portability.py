@@ -39,7 +39,7 @@ class PlaylistPortabilityAPITest(TestCase):
             response = self._patch_video(video, {})
 
         self.assertEqual(response.status_code, 200)
-        self.assertQuerysetEqual(video.playlist.portable_to.all(), [])
+        self.assertQuerySetEqual(video.playlist.portable_to.all(), [])
 
     def test_no_portability_empty_portable_to(self):
         """
@@ -54,7 +54,7 @@ class PlaylistPortabilityAPITest(TestCase):
             response = self._patch_video(video, {"portable_to": []})
 
         self.assertEqual(response.status_code, 200)
-        self.assertQuerysetEqual(video.playlist.portable_to.all(), [])
+        self.assertQuerySetEqual(video.playlist.portable_to.all(), [])
 
     def test_no_portability_portable_to_new(self):
         """
@@ -70,7 +70,7 @@ class PlaylistPortabilityAPITest(TestCase):
             response = self._patch_video(video, {"portable_to": [str(new_playlist.id)]})
 
         self.assertEqual(response.status_code, 200)
-        self.assertQuerysetEqual(video.playlist.portable_to.all(), [new_playlist])
+        self.assertQuerySetEqual(video.playlist.portable_to.all(), [new_playlist])
 
     def test_no_portability_portable_to_invalid_uuid(self):
         """
@@ -88,7 +88,7 @@ class PlaylistPortabilityAPITest(TestCase):
         self.assertEqual(
             response.json(), {"portable_to": "“invalid_uuid” is not a valid UUID."}
         )
-        self.assertQuerysetEqual(video.playlist.portable_to.all(), [])
+        self.assertQuerySetEqual(video.playlist.portable_to.all(), [])
 
     def test_no_portability_portable_to_unknown(self):
         """
@@ -108,7 +108,7 @@ class PlaylistPortabilityAPITest(TestCase):
             response.json(),
             {"portable_to": f"Some playlists don't exist: {unknown_id}."},
         )
-        self.assertQuerysetEqual(video.playlist.portable_to.all(), [])
+        self.assertQuerySetEqual(video.playlist.portable_to.all(), [])
 
     def test_no_portability_portable_to_unknown_and_new(self):
         """
@@ -131,7 +131,7 @@ class PlaylistPortabilityAPITest(TestCase):
             response.json(),
             {"portable_to": f"Some playlists don't exist: {unknown_id}."},
         )
-        self.assertQuerysetEqual(video.playlist.portable_to.all(), [])
+        self.assertQuerySetEqual(video.playlist.portable_to.all(), [])
 
     def test_no_portability_portable_to_self(self):
         """
@@ -149,7 +149,7 @@ class PlaylistPortabilityAPITest(TestCase):
         self.assertEqual(
             response.json(), {"portable_to": "Playlist is not portable to itself."}
         )
-        self.assertQuerysetEqual(video.playlist.portable_to.all(), [])
+        self.assertQuerySetEqual(video.playlist.portable_to.all(), [])
 
     def test_no_portability_portable_to_multiple_self(self):
         """
@@ -169,7 +169,7 @@ class PlaylistPortabilityAPITest(TestCase):
         self.assertEqual(
             response.json(), {"portable_to": "Playlist is not portable to itself."}
         )
-        self.assertQuerysetEqual(video.playlist.portable_to.all(), [])
+        self.assertQuerySetEqual(video.playlist.portable_to.all(), [])
 
     def test_no_portability_portable_to_self_and_new(self):
         """
@@ -190,7 +190,7 @@ class PlaylistPortabilityAPITest(TestCase):
         self.assertEqual(
             response.json(), {"portable_to": "Playlist is not portable to itself."}
         )
-        self.assertQuerysetEqual(video.playlist.portable_to.all(), [])
+        self.assertQuerySetEqual(video.playlist.portable_to.all(), [])
 
     def test_no_portability_portable_to_self_and_unknown(self):
         """
@@ -211,7 +211,7 @@ class PlaylistPortabilityAPITest(TestCase):
         self.assertEqual(
             response.json(), {"portable_to": "Playlist is not portable to itself."}
         )
-        self.assertQuerysetEqual(video.playlist.portable_to.all(), [])
+        self.assertQuerySetEqual(video.playlist.portable_to.all(), [])
 
     def test_no_portability_portable_to_self_new_and_unknown(self):
         """
@@ -240,7 +240,7 @@ class PlaylistPortabilityAPITest(TestCase):
         self.assertEqual(
             response.json(), {"portable_to": "Playlist is not portable to itself."}
         )
-        self.assertQuerysetEqual(video.playlist.portable_to.all(), [])
+        self.assertQuerySetEqual(video.playlist.portable_to.all(), [])
 
     def test_has_portability_no_portable_to(self):
         """
@@ -257,7 +257,7 @@ class PlaylistPortabilityAPITest(TestCase):
             response = self._patch_video(video, {})
 
         self.assertEqual(response.status_code, 200)
-        self.assertQuerysetEqual(video.playlist.portable_to.all(), [ported_to_playlist])
+        self.assertQuerySetEqual(video.playlist.portable_to.all(), [ported_to_playlist])
 
     def test_has_portability_empty_portable_to(self):
         """
@@ -274,7 +274,7 @@ class PlaylistPortabilityAPITest(TestCase):
             response = self._patch_video(video, {"portable_to": []})
 
         self.assertEqual(response.status_code, 200)
-        self.assertQuerysetEqual(video.playlist.portable_to.all(), [])
+        self.assertQuerySetEqual(video.playlist.portable_to.all(), [])
 
     def test_has_portability_portable_to_ported(self):
         """
@@ -293,7 +293,7 @@ class PlaylistPortabilityAPITest(TestCase):
             )
 
         self.assertEqual(response.status_code, 200)
-        self.assertQuerysetEqual(video.playlist.portable_to.all(), [ported_to_playlist])
+        self.assertQuerySetEqual(video.playlist.portable_to.all(), [ported_to_playlist])
 
     def test_has_portability_portable_to_new(self):
         """
@@ -310,7 +310,7 @@ class PlaylistPortabilityAPITest(TestCase):
         response = self._patch_video(video, {"portable_to": [str(new_playlist.id)]})
 
         self.assertEqual(response.status_code, 200)
-        self.assertQuerysetEqual(video.playlist.portable_to.all(), [new_playlist])
+        self.assertQuerySetEqual(video.playlist.portable_to.all(), [new_playlist])
 
     def test_has_portability_portable_to_unknown(self):
         """
@@ -332,7 +332,7 @@ class PlaylistPortabilityAPITest(TestCase):
             response.json(),
             {"portable_to": f"Some playlists don't exist: {unknown_id}."},
         )
-        self.assertQuerysetEqual(video.playlist.portable_to.all(), [ported_to_playlist])
+        self.assertQuerySetEqual(video.playlist.portable_to.all(), [ported_to_playlist])
 
     def test_has_portability_portable_to_unknown_and_ported(self):
         """
@@ -356,7 +356,7 @@ class PlaylistPortabilityAPITest(TestCase):
             response.json(),
             {"portable_to": f"Some playlists don't exist: {unknown_id}."},
         )
-        self.assertQuerysetEqual(video.playlist.portable_to.all(), [ported_to_playlist])
+        self.assertQuerySetEqual(video.playlist.portable_to.all(), [ported_to_playlist])
 
     def test_has_portability_portable_to_new_and_ported(self):
         """
@@ -375,7 +375,7 @@ class PlaylistPortabilityAPITest(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertQuerysetEqual(
+        self.assertQuerySetEqual(
             video.playlist.portable_to.all(),
             [new_playlist, ported_to_playlist],
             ordered=False,
@@ -404,7 +404,7 @@ class PlaylistPortabilityAPITest(TestCase):
             response.json(),
             {"portable_to": f"Some playlists don't exist: {unknown_id}."},
         )
-        self.assertQuerysetEqual(video.playlist.portable_to.all(), [ported_to_playlist])
+        self.assertQuerySetEqual(video.playlist.portable_to.all(), [ported_to_playlist])
 
     def test_has_portability_portable_to_unknown_ported_and_new(self):
         """
@@ -437,7 +437,7 @@ class PlaylistPortabilityAPITest(TestCase):
             response.json(),
             {"portable_to": f"Some playlists don't exist: {unknown_id}."},
         )
-        self.assertQuerysetEqual(video.playlist.portable_to.all(), [ported_to_playlist])
+        self.assertQuerySetEqual(video.playlist.portable_to.all(), [ported_to_playlist])
 
     def test_has_portability_portable_to_unknown_self_ported_and_new(self):
         """
@@ -470,4 +470,4 @@ class PlaylistPortabilityAPITest(TestCase):
         self.assertEqual(
             response.json(), {"portable_to": "Playlist is not portable to itself."}
         )
-        self.assertQuerysetEqual(video.playlist.portable_to.all(), [ported_to_playlist])
+        self.assertQuerySetEqual(video.playlist.portable_to.all(), [ported_to_playlist])

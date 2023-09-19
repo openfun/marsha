@@ -36,6 +36,7 @@ class MarkdownDocumentFactory(DjangoModelFactory):
 
     class Meta:  # noqa
         model = models.MarkdownDocument
+        skip_postgeneration_save = True
 
     lti_id = factory.Faker("uuid4")
     playlist = factory.SubFactory(PlaylistFactory)

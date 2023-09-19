@@ -1,5 +1,5 @@
 """Tests for the RetentionDateObjectMixin in the ``core`` app of the Marsha project."""
-from datetime import date, datetime
+from datetime import date, datetime, timezone as baseTimezone
 from unittest.mock import Mock, patch
 
 from django.test import TestCase, override_settings
@@ -39,7 +39,9 @@ class RetentionDateObjectMixinTextCase(TestCase):
         """
         with patch(
             "marsha.core.models.playlist.s3_utils", new=self.mock_s3_utils
-        ), patch.object(timezone, "now", return_value=datetime(2022, 1, 1)):
+        ), patch.object(
+            timezone, "now", return_value=datetime(2022, 1, 1, tzinfo=baseTimezone.utc)
+        ):
             video = VideoFactory(playlist=self.playlist)
 
             self.assertEqual(video.retention_date, date(2022, 1, 31))
@@ -56,8 +58,10 @@ class RetentionDateObjectMixinTextCase(TestCase):
 
         with patch(
             "marsha.core.models.playlist.s3_utils", new=self.mock_s3_utils
-        ), patch.object(timezone, "now", return_value=datetime(2022, 1, 15)):
-            video.retention_date = datetime(2022, 1, 1)
+        ), patch.object(
+            timezone, "now", return_value=datetime(2022, 1, 15, tzinfo=baseTimezone.utc)
+        ):
+            video.retention_date = datetime(2022, 1, 1, tzinfo=baseTimezone.utc)
             video.save()
             video.refresh_from_db()
 
@@ -78,7 +82,9 @@ class RetentionDateObjectMixinTextCase(TestCase):
 
         with patch(
             "marsha.core.models.playlist.s3_utils", new=self.mock_s3_utils
-        ), patch.object(timezone, "now", return_value=datetime(2022, 1, 1)):
+        ), patch.object(
+            timezone, "now", return_value=datetime(2022, 1, 1, tzinfo=baseTimezone.utc)
+        ):
             video.delete()
             video.refresh_from_db()
 
@@ -99,7 +105,9 @@ class RetentionDateObjectMixinTextCase(TestCase):
 
         with patch(
             "marsha.core.models.playlist.s3_utils", new=self.mock_s3_utils
-        ), patch.object(timezone, "now", return_value=datetime(2022, 1, 1)):
+        ), patch.object(
+            timezone, "now", return_value=datetime(2022, 1, 1, tzinfo=baseTimezone.utc)
+        ):
             video.undelete()
             video.refresh_from_db()
 

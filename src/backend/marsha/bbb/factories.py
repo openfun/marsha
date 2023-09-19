@@ -1,4 +1,5 @@
 """Factories for the ``bbb`` app of the Marsha project."""
+from datetime import timezone
 
 import factory
 from factory.django import DjangoModelFactory
@@ -44,4 +45,4 @@ class ClassroomRecordingFactory(DjangoModelFactory):
 
     classroom = factory.SubFactory(ClassroomFactory)
     record_id = factory.Faker("uuid4")
-    started_at = factory.Faker("date_time")
+    started_at = factory.Faker("date_time", tzinfo=timezone.utc)
