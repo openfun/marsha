@@ -279,6 +279,7 @@ class VideoAdmin(BaseFileAdmin):
     """Admin class for the Video model."""
 
     fields = BaseFileAdmin.fields + (
+        "last_lti_url",
         "live_state",
         "live_type",
         "live_info",

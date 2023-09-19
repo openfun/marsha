@@ -128,11 +128,11 @@ class Video(BaseFile, RetentionDateObjectMixin):
         verbose_name=_("allow video recording"),
         help_text=_("Allow video recording?"),
     )
-    live_stopped_by_email = models.EmailField(
-        help_text=_("live stopped by email address"),
-        verbose_name=_("live stopped by email (used for VOD conversion reminders)"),
+    last_lti_url = models.URLField(
         blank=True,
         null=True,
+        verbose_name=_("last LTI URL"),
+        help_text=_("Last LTI URL which was used to launch this video"),
     )
     estimated_duration = models.DurationField(
         blank=True,

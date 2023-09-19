@@ -736,3 +736,48 @@ class LTITestCase(TestCase):
         )
         lti = LTI(request, resource_id)
         self.assertIsNone(lti.email)
+
+    def test_lti_origin_url_edx(self):
+        """Build origin_url for an edx request."""
+        ConsumerSiteLTIPassportFactory(
+            oauth_consumer_key="ABC123", consumer_site__domain="testserver"
+        )
+        data = {
+            "resource_link_id": "df7",
+            "context_id": "course-v1:ufr+mathematics+0001",
+            "roles": "Student",
+            "oauth_consumer_key": "ABC123",
+        }
+        resource_id = uuid.uuid4()
+        request = self.factory.post(
+            f"/lti/videos/{resource_id}",
+            data,
+            HTTP_X_FORWARDED_PROTO="https",
+            HTTP_REFERER="http://testserver",
+        )
+        lti = LTI(request, resource_id)
+        self.assertEqual(
+            lti.origin_url, "http://testserver/course/course-v1:ufr+mathematics+0001"
+        )
+
+    def test_lti_origin_url_moodle(self):
+        """Build origin_url for an edx request."""
+        ConsumerSiteLTIPassportFactory(
+            oauth_consumer_key="ABC123", consumer_site__domain="testserver"
+        )
+        data = {
+            "ext_lms": "moodle-2",
+            "resource_link_id": "df7",
+            "context_id": "1",
+            "roles": "Student",
+            "oauth_consumer_key": "ABC123",
+        }
+        resource_id = uuid.uuid4()
+        request = self.factory.post(
+            f"/lti/videos/{resource_id}",
+            data,
+            HTTP_X_FORWARDED_PROTO="https",
+            HTTP_REFERER="https://testserver/",
+        )
+        lti = LTI(request, resource_id)
+        self.assertEqual(lti.origin_url, "https://testserver/course/view.php?id=1")

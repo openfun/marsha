@@ -80,7 +80,9 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
         }
 
         mock_get_consumer_site.return_value = passport.consumer_site
-        response = self.client.post(f"/lti/videos/{video.pk}", data)
+        response = self.client.post(
+            f"/lti/videos/{video.pk}", data, HTTP_REFERER="http://testserver.net"
+        )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -185,6 +187,11 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
+        video.refresh_from_db()
+        self.assertEqual(
+            video.last_lti_url,
+            "http://testserver.net/course/course-v1:ufr+mathematics+00001",
+        )
 
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")

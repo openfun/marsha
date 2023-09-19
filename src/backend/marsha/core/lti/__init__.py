@@ -1,6 +1,6 @@
 """LTI module that supports LTI 1.0."""
 import re
-from urllib.parse import unquote_plus, urlparse
+from urllib.parse import unquote_plus, urljoin, urlparse
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
@@ -33,6 +33,22 @@ class LTI:
         self.resource_id = resource_id
         self.request = request
         self._consumer_site = None
+
+    @property
+    def origin_url(self):
+        """Try to recreate the URL that was used to launch the LTI request."""
+        base_url = self.request.META.get("HTTP_REFERER")
+        if not base_url:
+            return None
+        context_id = self.request.POST.get("context_id")
+
+        url = None
+        if self.is_edx_format:
+            url = urljoin(base_url, f"/course/{context_id}")
+        elif self.is_moodle_format:
+            url = urljoin(base_url, f"/course/view.php?id={context_id}")
+
+        return url
 
     def verify(self):
         """Verify the LTI request.
@@ -298,6 +314,18 @@ class LTI:
 
         """
         return re.search(r"^course-v[0-9]:.*$", self.context_id)
+
+    @property
+    def is_moodle_format(self):
+        """Check if the LTI request comes from Moodle.
+
+        Returns
+        -------
+        boolean
+            True if the LTI request is sent by Moodle
+
+        """
+        return "moodle" in "".join(self.request.POST.values())
 
     @property
     def launch_presentation_locale(self):
