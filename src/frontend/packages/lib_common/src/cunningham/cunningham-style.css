@@ -23,6 +23,9 @@
 .typo {
   line-height: normal;
 }
+.typo-text:not([class*="clr-"]), .fs-h {
+  color: var(--c--theme--colors--primary-500);
+}
 /**
  * Input
 */
