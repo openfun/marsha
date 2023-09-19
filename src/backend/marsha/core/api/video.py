@@ -3,6 +3,7 @@
 from copy import deepcopy
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.db import OperationalError, transaction
@@ -555,6 +556,16 @@ class VideoViewSet(
         video.live_state = defaults.STOPPING
         if video.is_recording:
             stop_recording(video)
+
+        # only store email if the live was recording
+        try:
+            live_stopped_with_email = (
+                get_user_model().objects.get(pk=request.user.pk).email
+            )
+        except get_user_model().DoesNotExist:
+            live_stopped_with_email = request.user.token.get("user").get("email")
+        if live_stopped_with_email:
+            video.live_info.update({"live_stopped_with_email": live_stopped_with_email})
         video.save()
         channel_layers_utils.dispatch_video_to_groups(video)
         serializer = self.get_serializer(video)

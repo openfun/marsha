@@ -70,6 +70,8 @@ class VideoAPITest(TestCase):
         )
 
         self.assertEqual(response.status_code, 403)
+        video.refresh_from_db()
+        self.assertIsNone(video.live_info.get("live_stopped_with_email"))
 
     @override_settings(LIVE_CHAT_ENABLED=False)
     def assert_user_can_stop_live(self, user, video):
@@ -93,6 +95,8 @@ class VideoAPITest(TestCase):
         content = json.loads(response.content)
 
         self.assertEqual(content["live_state"], STOPPING)
+        video.refresh_from_db()
+        self.assertEqual(video.live_info.get("live_stopped_with_email"), user.email)
 
     def test_api_video_stop_live_anonymous_user(self):
         """Anonymous users are not allowed to stop a live."""
@@ -105,6 +109,8 @@ class VideoAPITest(TestCase):
         self.assertEqual(
             content, {"detail": "Authentication credentials were not provided."}
         )
+        video.refresh_from_db()
+        self.assertIsNone(video.live_info)
 
     def test_stop_live_by_random_user(self):
         """Authenticated user without access cannot stop a live."""
@@ -187,6 +193,8 @@ class VideoAPITest(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
+        video.refresh_from_db()
+        self.assertIsNone(video.live_info)
 
     def test_api_video_student_stop_live(self):
         """A student should not be able to stop a live."""
@@ -203,6 +211,8 @@ class VideoAPITest(TestCase):
         self.assertEqual(
             content, {"detail": "You do not have permission to perform this action."}
         )
+        video.refresh_from_db()
+        self.assertIsNone(video.live_info)
 
     def test_api_video_stop_live_staff_or_user(self):
         """Users authenticated via a session should not be able to stop a live."""
@@ -216,6 +226,8 @@ class VideoAPITest(TestCase):
             self.assertEqual(
                 content, {"detail": "Authentication credentials were not provided."}
             )
+            video.refresh_from_db()
+            self.assertIsNone(video.live_info)
 
     @override_settings(LIVE_CHAT_ENABLED=False)
     def test_api_video_instructor_stop_live(self):
@@ -327,6 +339,11 @@ class VideoAPITest(TestCase):
                 "license": None,
             },
         )
+        video.refresh_from_db()
+        self.assertEqual(
+            video.live_info.get("live_stopped_with_email"),
+            jwt_token.get("user").get("email"),
+        )
 
     def test_api_instructor_stop_non_live_video(self):
         """An instructor should not stop a video when not in live mode."""
@@ -350,6 +367,8 @@ class VideoAPITest(TestCase):
             mock_stop_live.assert_not_called()
 
         self.assertEqual(response.status_code, 400)
+        video.refresh_from_db()
+        self.assertIsNone(video.live_info)
 
     def test_api_instructor_stop_non_running_live(self):
         """An instructor should not stop a video when not in live state."""
@@ -374,6 +393,8 @@ class VideoAPITest(TestCase):
             mock_stop_live.assert_not_called()
             mock_dispatch_video_to_groups.assert_not_called()
         self.assertEqual(response.status_code, 400)
+        video.refresh_from_db()
+        self.assertIsNone(video.live_info)
 
     @override_settings(LIVE_CHAT_ENABLED=False)
     def test_api_video_instructor_stop_live_recording_slice(self):
@@ -497,4 +518,8 @@ class VideoAPITest(TestCase):
                     "status": PENDING,
                 }
             ],
+        )
+        self.assertEqual(
+            video.live_info.get("live_stopped_with_email"),
+            jwt_token.get("user").get("email"),
         )
