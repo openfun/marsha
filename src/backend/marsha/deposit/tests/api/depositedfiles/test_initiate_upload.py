@@ -177,7 +177,7 @@ class DepositedFileInitiateUploadAPITest(TestCase):
         )
         jwt_token = UserAccessTokenFactory(user=organization_access.user)
 
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:

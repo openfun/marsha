@@ -1,4 +1,5 @@
 """Test the development ``refresh_bbb_recordings` management command."""
+from datetime import datetime, timezone
 from logging import Logger
 from unittest import mock
 
@@ -572,7 +573,7 @@ class RefreshBBBRecordingsTestCase(TransactionTestCase):
             id="0fabc045-6b9b-4914-bfbd-8b90c9eee9fc",
             record_id="d58d38e9e31b71a04b993c041d7ca74ef8d5f0dd-1673007560234",
             classroom=classroom,
-            started_at="2023-01-09",
+            started_at=datetime(2023, 1, 9, tzinfo=timezone.utc),
         )
 
         responses.add(
@@ -708,7 +709,7 @@ class RefreshBBBRecordingsTestCase(TransactionTestCase):
             id="0fabc045-6b9b-4914-bfbd-8b90c9eee9fc",
             record_id="d58d38e9e31b71a04b993c041d7ca74ef8d5f0dd-1673007560234",
             classroom=classroom,
-            started_at="2023-01-09",
+            started_at=datetime(2023, 1, 9, tzinfo=timezone.utc),
         )
 
         responses.add(
