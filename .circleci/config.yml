@@ -223,7 +223,7 @@ jobs:
   # Build backend development environment
   build-back:
     docker:
-      - image: cimg/python:3.10.7
+      - image: cimg/python:3.11
         auth:
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASS
@@ -245,7 +245,7 @@ jobs:
   # Build backend translations
   build-back-i18n:
     docker:
-      - image: cimg/python:3.10.7
+      - image: cimg/python:3.11
         auth:
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASS
@@ -296,7 +296,7 @@ jobs:
 
   lint-back:
     docker:
-      - image: cimg/python:3.10.7
+      - image: cimg/python:3.11
         auth:
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASS
@@ -325,7 +325,7 @@ jobs:
 
   test-back:
     docker:
-      - image: cimg/python:3.10.7
+      - image: cimg/python:3.11
         auth:
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASS
@@ -677,20 +677,26 @@ jobs:
       - restore_cache:
           keys:
             - build-front-<< pipeline.parameters.cache-version >>-{{ checksum "frontend-last-commit.txt" }}
+      - run: # Can be removed when switching to mcr.microsoft.com/playwright:lunar
+          name: Install Python 3.11
+          command: apt update && apt upgrade -y && apt install -y software-properties-common && add-apt-repository -y ppa:deadsnakes/ppa && DEBIAN_FRONTEND=noninteractive apt install -y python3.11 python3.11-dev build-essential
+      - run:  # Can be removed when switching to mcr.microsoft.com/playwright:lunar
+          name: Install pip for Python 3.11
+          command: curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11
       - run:
-          name: Install pip & xmlsec1 requirements
-          command: apt-get update && apt-get install -y python3-pip pkg-config libxml2-dev libxmlsec1-openssl libxmlsec1-dev
+          name: Install xmlsec1 requirements
+          command: apt-get update && apt-get install -y pkg-config libxml2-dev libxmlsec1-openssl libxmlsec1-dev
       - run:
           name: Install e2e dependencies
           working_directory: /home/circleci/marsha/src/backend
-          command: python3 -m pip install --user .[dev,e2e]
+          command: python3.11 -m pip install --user .[dev,e2e]
       - run:
           name: Copy iframe resizer
           command: yarn workspace marsha run copy-iframe-resizer
       - run:
           name: Ensure << parameters.browser >> browser is installed
           working_directory: /home/circleci/marsha/src/backend
-          command: python3 -m playwright install "<< parameters.browser >>"
+          command: python3.11 -m playwright install "<< parameters.browser >>"
       - run:
           name: Install dockerize
           command: |
@@ -712,7 +718,7 @@ jobs:
             - run:
                 name: Install chrome
                 working_directory: ~/marsha/src/backend
-                command: python3 -m playwright install chrome
+                command: python3.11 -m playwright install chrome
       # webkit browser is kind of broken with jammy
       # see https://github.com/microsoft/playwright/issues/15764#issuecomment-1462787720
       - when:
