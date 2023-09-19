@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Send an email when a live stream is ready to be converted to VOD
+
 ### Changed
 
 - Replace grommet Heading (#2410)

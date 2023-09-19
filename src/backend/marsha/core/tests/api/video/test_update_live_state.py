@@ -4,6 +4,7 @@ import json
 import random
 from unittest import mock
 
+from django.core import mail
 from django.test import TestCase, override_settings
 
 from marsha.core import api, factories
@@ -303,6 +304,12 @@ class VideoUpdateLiveStateAPITest(TestCase):
                 "started_at": "1533686400",
                 "stopped_at": "1533686400",
             },
+        )
+
+        # check email has been sent
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(
+            mail.outbox[0].to[0], video.live_info.get("live_stopped_with_email")
         )
 
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
