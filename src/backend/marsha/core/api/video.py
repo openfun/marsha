@@ -764,6 +764,7 @@ class VideoViewSet(
             video.uploaded_on = time_utils.to_datetime(
                 serializer.validated_data["extraParameters"].get("uploaded_on")
             )
+            video.live_stopped_by_email = None
 
         video.live_info = live_info
         video.save()
