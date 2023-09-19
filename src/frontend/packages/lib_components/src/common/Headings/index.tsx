@@ -1,45 +1,27 @@
-import { createElement } from 'react';
+import { Typo, TypoProps } from '../Typo';
 
-interface HeadingProps extends React.HTMLAttributes<HTMLHeadingElement> {
+export interface HeadingPropsOnly {
   level?: 1 | 2 | 3 | 4 | 5 | 6;
-  textAlign?: React.CSSProperties['textAlign'];
-  color?: React.CSSProperties['color'];
-  fontSize?: React.CSSProperties['fontSize'];
-  truncate?: boolean;
 }
 
-export const Heading = ({
-  children,
-  className,
-  color,
-  fontSize,
-  level = 1,
-  textAlign,
-  truncate,
-  ...props
-}: HeadingProps) => {
-  let moreStyles = {};
-  if (truncate) {
-    moreStyles = {
-      textOverflow: 'ellipsis',
-      overflow: 'hidden',
-      whiteSpace: 'nowrap',
-    };
+type HeadingProps = Omit<TypoProps<'h1', HeadingPropsOnly>, 'type'>;
+
+/**
+ * @param HeadingProps -
+ *  - level - 1 | 2 | 3 | 4 | 5 | 6
+ * @inheritdoc {@link Typo}
+ * @returns Heading component
+ */
+export const Heading = ({ className, level = 1, ...props }: HeadingProps) => {
+  if (level < 1 || level > 6) {
+    throw new Error('Heading level must be between 1 and 6');
   }
 
-  return createElement(
-    `h${level}`,
-    {
-      className: `fs-h fs-h${level} ${className || ''}`,
-      ...props,
-      style: {
-        textAlign,
-        color,
-        fontSize,
-        ...moreStyles,
-        ...props.style,
-      },
-    },
-    children,
+  return (
+    <Typo
+      type={`h${level}`}
+      className={`fs-h fs-h${level} ${className || ''}`}
+      {...props}
+    />
   );
 };

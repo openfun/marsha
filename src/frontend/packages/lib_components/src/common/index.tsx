@@ -67,6 +67,7 @@ export * from './Text';
 export * from './ThumbnailDisplayer';
 export * from './ToggleButton';
 export * from './ToggleInput';
+export * from './Typo';
 export * from './UploadField';
 export * from './UploadField/DropzoneIcon';
 export * from './UploadField/DropzonePlaceholder';

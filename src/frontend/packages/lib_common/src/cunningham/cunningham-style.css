@@ -4,7 +4,7 @@
 @import './cunningham-tokens.css';
 @import './cunningham-custom-tokens.css';
 
-.c__input, .c__field, .c__select, .c__datagrid, .fs-h {
+.c__input, .c__field, .c__select, .c__datagrid, .typo {
   font-family: var(--c--theme--font--families--base);
 }
 .c__field {
@@ -20,8 +20,8 @@
   top: 50%;
   transform: translateY(-50%);
 }
-.fs-h {
-  color: var(--c--theme--colors--primary-500)
+.typo {
+  line-height: normal;
 }
 /**
  * Input
