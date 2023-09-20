@@ -37,7 +37,7 @@ from marsha.core.factories import (
     VideoFactory,
 )
 from marsha.core.lti import LTI
-from marsha.core.models import ADMINISTRATOR
+from marsha.core.models import ADMINISTRATOR, Video
 from marsha.core.simple_jwt.tokens import PlaylistAccessToken, PlaylistRefreshToken
 
 from .test_lti_base import BaseLTIViewForPortabilityTestCase
@@ -51,6 +51,298 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
     """Test the video view in the ``core`` app of the Marsha project."""
 
     maxDiff = None
+
+    @mock.patch.object(LTI, "verify")
+    @mock.patch.object(LTI, "get_consumer_site")
+    @override_settings(SENTRY_DSN="https://sentry.dsn")
+    @override_settings(RELEASE="1.2.3")
+    @override_settings(VIDEO_PLAYER="videojs")
+    @override_settings(ATTENDANCE_PUSH_DELAY=10)
+    @override_settings(FRONTEND_HOME_URL="https://marsha.education")
+    @override_switch(SENTRY, active=True)
+    def test_views_lti_video_post_instructor_no_video(
+        self, mock_get_consumer_site, mock_verify
+    ):
+        """Validate the format of the response returned by the view for an instructor request."""
+        passport = ConsumerSiteLTIPassportFactory()
+        video_id = uuid.uuid4()
+        video_lti_id = "video-lti-id"
+        playlist_lti_id = "context-id"
+        data = {
+            "resource_link_id": video_lti_id,
+            "context_id": playlist_lti_id,
+            "roles": "instructor",
+            "oauth_consumer_key": passport.oauth_consumer_key,
+            "user_id": "56255f3807599c377bf0e5bf072359fd",
+            "launch_presentation_locale": "fr",
+            "lis_person_sourcedid": "jane_doe",
+            "lis_person_contact_email_primary": "jane@test-mooc.fr",
+        }
+
+        mock_get_consumer_site.return_value = passport.consumer_site
+        response = self.client.post(f"/lti/videos/{video_id}", data)
+
+        video = Video.objects.get(id=video_id)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+        content = response.content.decode("utf-8")
+
+        match = re.search(
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
+        )
+
+        context = json.loads(unescape(match.group(1)))
+        jwt_token = PlaylistAccessToken(context.get("jwt"))
+        PlaylistRefreshToken(context.get("refresh_token"))  # Must not raise
+        self.assertEqual(context.get("frontend_home_url"), "https://marsha.education")
+        self.assertEqual(jwt_token.payload["playlist_id"], str(video.playlist.id))
+        self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
+        self.assertEqual(
+            jwt_token.payload["consumer_site"], str(passport.consumer_site.id)
+        )
+        self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
+        self.assertEqual(jwt_token.payload["locale"], "fr_FR")
+        self.assertEqual(
+            jwt_token.payload["permissions"],
+            {"can_access_dashboard": True, "can_update": True},
+        )
+        self.assertDictEqual(
+            jwt_token.payload["user"],
+            {
+                "email": "jane@test-mooc.fr",
+                "id": "56255f3807599c377bf0e5bf072359fd",
+                "username": "jane_doe",
+                "user_fullname": None,
+            },
+        )
+
+        self.assertEqual(context.get("state"), "success")
+        self.assertEqual(
+            context.get("static"),
+            {
+                "img": {
+                    "errorMain": "/static/img/errorTelescope.png",
+                    "liveBackground": "/static/img/liveBackground.jpg",
+                    "liveErrorBackground": "/static/img/liveErrorBackground.jpg",
+                    "marshaWhiteLogo": "/static/img/marshaWhiteLogo.png",
+                    "videoWizardBackground": "/static/img/videoWizardBackground.png",
+                },
+            },
+        )
+        self.assertEqual(
+            context.get("resource"),
+            {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
+                "active_stamp": None,
+                "allow_recording": True,
+                "can_edit": True,
+                "estimated_duration": None,
+                "has_chat": True,
+                "has_live_media": True,
+                "is_public": False,
+                "is_ready_to_show": False,
+                "is_recording": False,
+                "is_scheduled": False,
+                "join_mode": "approval",
+                "show_download": True,
+                "starting_at": None,
+                "description": video.description,
+                "id": str(video.id),
+                "upload_state": "pending",
+                "is_live": False,
+                "timed_text_tracks": [],
+                "thumbnail": None,
+                "title": video.title,
+                "urls": None,
+                "should_use_subtitle_as_transcript": False,
+                "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
+                "playlist": {
+                    "id": str(video.playlist.id),
+                    "title": playlist_lti_id,
+                    "lti_id": playlist_lti_id,
+                },
+                "recording_time": 0,
+                "retention_date": None,
+                "shared_live_medias": [],
+                "live_state": None,
+                "live_info": {},
+                "live_type": None,
+                "xmpp": None,
+                "tags": [],
+                "license": None,
+            },
+        )
+        self.assertEqual(context.get("modelName"), "videos")
+        self.assertEqual(context.get("sentry_dsn"), "https://sentry.dsn")
+        self.assertEqual(context.get("environment"), "test")
+        self.assertEqual(context.get("release"), "1.2.3")
+        self.assertEqual(context.get("player"), "videojs")
+        self.assertEqual(context.get("attendanceDelay"), 10 * 1000)
+        self.assertFalse(context.get("flags").get("live_raw"))
+        self.assertTrue(context.get("flags").get("sentry"))
+        self.assertFalse(context.get("dashboardCollapsed"))
+        # Make sure we only go through LTI verification once as it is costly (getting passport +
+        # signature)
+        self.assertEqual(mock_verify.call_count, 1)
+
+    @mock.patch.object(LTI, "verify")
+    @mock.patch.object(LTI, "get_consumer_site")
+    @override_settings(SENTRY_DSN="https://sentry.dsn")
+    @override_settings(RELEASE="1.2.3")
+    @override_settings(VIDEO_PLAYER="videojs")
+    @override_settings(ATTENDANCE_PUSH_DELAY=10)
+    @override_settings(FRONTEND_HOME_URL="https://marsha.education")
+    @override_switch(SENTRY, active=True)
+    def test_views_lti_video_post_instructor_no_video_generic(
+        self, mock_get_consumer_site, mock_verify
+    ):
+        """Validate the format of the response returned by the view for an instructor request."""
+        passport = ConsumerSiteLTIPassportFactory()
+        video_lti_id = "video-lti-id"
+        playlist_lti_id = "context-id"
+        data = {
+            "resource_link_id": video_lti_id,
+            "context_id": playlist_lti_id,
+            "roles": "instructor",
+            "oauth_consumer_key": passport.oauth_consumer_key,
+            "user_id": "56255f3807599c377bf0e5bf072359fd",
+            "launch_presentation_locale": "fr",
+            "lis_person_sourcedid": "jane_doe",
+            "lis_person_contact_email_primary": "jane@test-mooc.fr",
+        }
+
+        mock_get_consumer_site.return_value = passport.consumer_site
+        response = self.client.post(
+            "/lti/videos/",
+            data,
+            HTTP_REFERER=f"https://{passport.consumer_site.domain}/",
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        video = Video.objects.get(
+            lti_id=video_lti_id,
+            playlist__lti_id=playlist_lti_id,
+            playlist__consumer_site__domain=passport.consumer_site.domain,
+        )
+
+        self.assertContains(response, "<html>")
+        content = response.content.decode("utf-8")
+
+        match = re.search(
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
+        )
+
+        context = json.loads(unescape(match.group(1)))
+        jwt_token = PlaylistAccessToken(context.get("jwt"))
+        PlaylistRefreshToken(context.get("refresh_token"))  # Must not raise
+        self.assertEqual(context.get("frontend_home_url"), "https://marsha.education")
+        self.assertEqual(jwt_token.payload["playlist_id"], str(video.playlist.id))
+        self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
+        self.assertEqual(
+            jwt_token.payload["consumer_site"], str(passport.consumer_site.id)
+        )
+        self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
+        self.assertEqual(jwt_token.payload["locale"], "fr_FR")
+        self.assertEqual(
+            jwt_token.payload["permissions"],
+            {"can_access_dashboard": True, "can_update": True},
+        )
+        self.assertDictEqual(
+            jwt_token.payload["user"],
+            {
+                "email": "jane@test-mooc.fr",
+                "id": "56255f3807599c377bf0e5bf072359fd",
+                "username": "jane_doe",
+                "user_fullname": None,
+            },
+        )
+
+        self.assertEqual(context.get("state"), "success")
+        self.assertEqual(
+            context.get("static"),
+            {
+                "img": {
+                    "errorMain": "/static/img/errorTelescope.png",
+                    "liveBackground": "/static/img/liveBackground.jpg",
+                    "liveErrorBackground": "/static/img/liveErrorBackground.jpg",
+                    "marshaWhiteLogo": "/static/img/marshaWhiteLogo.png",
+                    "videoWizardBackground": "/static/img/videoWizardBackground.png",
+                },
+            },
+        )
+        self.assertEqual(
+            context.get("resource"),
+            {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
+                "active_stamp": None,
+                "allow_recording": True,
+                "can_edit": True,
+                "estimated_duration": None,
+                "has_chat": True,
+                "has_live_media": True,
+                "is_public": False,
+                "is_ready_to_show": False,
+                "is_recording": False,
+                "is_scheduled": False,
+                "join_mode": "approval",
+                "show_download": True,
+                "starting_at": None,
+                "description": video.description,
+                "id": str(video.id),
+                "upload_state": "pending",
+                "is_live": False,
+                "timed_text_tracks": [],
+                "thumbnail": None,
+                "title": video.title,
+                "urls": None,
+                "should_use_subtitle_as_transcript": False,
+                "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
+                "playlist": {
+                    "id": str(video.playlist.id),
+                    "title": playlist_lti_id,
+                    "lti_id": playlist_lti_id,
+                },
+                "recording_time": 0,
+                "retention_date": None,
+                "shared_live_medias": [],
+                "live_state": None,
+                "live_info": {},
+                "live_type": None,
+                "xmpp": None,
+                "tags": [],
+                "license": None,
+            },
+        )
+        self.assertEqual(context.get("modelName"), "videos")
+        self.assertEqual(context.get("sentry_dsn"), "https://sentry.dsn")
+        self.assertEqual(context.get("environment"), "test")
+        self.assertEqual(context.get("release"), "1.2.3")
+        self.assertEqual(context.get("player"), "videojs")
+        self.assertEqual(context.get("attendanceDelay"), 10 * 1000)
+        self.assertFalse(context.get("flags").get("live_raw"))
+        self.assertTrue(context.get("flags").get("sentry"))
+        self.assertFalse(context.get("dashboardCollapsed"))
+        # Make sure we only go through LTI verification once as it is costly (getting passport +
+        # signature)
+        self.assertEqual(mock_verify.call_count, 1)
+
+        # With a second call, we should get the same video
+        response = self.client.post(
+            "/lti/videos/",
+            data,
+            HTTP_REFERER=f"https://{passport.consumer_site.domain}/",
+        )
+        self.assertEqual(response.status_code, 200)
+        context = json.loads(unescape(match.group(1)))
+        video2 = Video.objects.get(pk=context.get("resource").get("id"))
+        self.assertEqual(video, video2)
 
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")

@@ -107,6 +107,7 @@ urlpatterns = [
         name="select_lti_view",
     ),
     path("lti/respond/", LTIRespondView.as_view(), name="respond_lti_view"),
+    path("lti/videos/", VideoLTIView.as_view(), name="videos_lti_view_generic"),
     path("lti/videos/<uuid:uuid>", VideoLTIView.as_view(), name="video_lti_view"),
     path(
         "lti/documents/<uuid:uuid>", DocumentLTIView.as_view(), name="document_lti_view"

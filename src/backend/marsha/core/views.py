@@ -4,7 +4,7 @@ import json
 from logging import getLogger
 import os
 import re
-from urllib.parse import unquote, urljoin
+from urllib.parse import unquote, urljoin, urlparse
 import uuid
 
 from django.conf import settings
@@ -423,9 +423,22 @@ class BaseLTIView(BaseModelResourceView, ABC):
 
     def _init_context(self):
         """Extract LTI information (and verifies the request) before data process."""
+        resource_id = self.kwargs.get("uuid")
+        if not resource_id:
+            try:
+                resource_id = self.model.objects.values_list("id", flat=True).get(
+                    lti_id=self.request.POST.get("resource_link_id"),
+                    playlist__lti_id=self.request.POST.get("context_id"),
+                    playlist__consumer_site__domain=urlparse(
+                        self.request.META.get("HTTP_REFERER")
+                    ).hostname,
+                )
+            except self.model.DoesNotExist:
+                # resource_id is null, the resource will be created
+                pass
         self.lti = LTI(  # pylint:disable=attribute-defined-outside-init
             self.request,
-            self.kwargs["uuid"],
+            resource_id=resource_id,
         )
         try:
             self.lti.verify()
