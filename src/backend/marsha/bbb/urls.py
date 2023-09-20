@@ -28,6 +28,11 @@ router.register("meetings", ClassroomViewSet, basename="meetings")
 
 urlpatterns = [
     path(
+        "lti/classrooms/",
+        ClassroomLTIView.as_view(),
+        name="classrooms_lti_view_generic",
+    ),
+    path(
         "lti/classrooms/<uuid:uuid>",
         ClassroomLTIView.as_view(),
         name="classroom_lti_view",
