@@ -11,6 +11,7 @@ from django.test import TestCase, override_settings
 import responses
 
 from marsha.bbb.factories import ClassroomFactory
+from marsha.bbb.models import Classroom
 from marsha.core.factories import (
     ConsumerSiteAccessFactory,
     ConsumerSiteLTIPassportFactory,
@@ -193,6 +194,92 @@ class ClassroomLTIViewTestCase(TestCase):
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
+
+    @responses.activate
+    @mock.patch.object(LTI, "verify")
+    @mock.patch.object(LTI, "get_consumer_site")
+    def test_views_lti_classroom_instructor_no_classroom_generic(
+        self, mock_get_consumer_site, mock_verify
+    ):
+        """Validate the response returned for an instructor request when there is no file."""
+        passport = ConsumerSiteLTIPassportFactory()
+        data = {
+            "resource_link_id": "example.com-123",
+            "context_id": "course-v1:ufr+mathematics+00001",
+            "roles": "instructor",
+            "oauth_consumer_key": passport.oauth_consumer_key,
+            "user_id": "56255f3807599c377bf0e5bf072359fd",
+            "lis_person_sourcedid": "jane_doe",
+        }
+        mock_get_consumer_site.return_value = passport.consumer_site
+
+        responses.add(
+            responses.GET,
+            "https://10.7.7.1/bigbluebutton/api/getMeetingInfo",
+            body="""
+            <response>
+                <returncode>SUCCESS</returncode>
+                <running>true</running>
+            </response>
+            """,
+            status=200,
+        )
+
+        response = self.client.post(
+            "/lti/classrooms/",
+            data,
+            HTTP_REFERER=f"https://{passport.consumer_site.domain}/",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        classroom1 = Classroom.objects.get(
+            lti_id="example.com-123",
+            playlist__lti_id="course-v1:ufr+mathematics+00001",
+            playlist__consumer_site__domain=passport.consumer_site.domain,
+        )
+
+        self.assertContains(response, "<html>")
+        content = response.content.decode("utf-8")
+
+        match = re.search(
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
+        )
+
+        context = json.loads(html.unescape(match.group(1)))
+        self.assertIsNotNone(context.get("jwt"))
+        self.assertEqual(context.get("state"), "success")
+        self.assertIsNotNone(context.get("resource"))
+        self.assertEqual(context.get("modelName"), "classrooms")
+        self.assertEqual(
+            context.get("static"),
+            {
+                "img": {
+                    "errorMain": "/static/img/errorTelescope.png",
+                    "liveBackground": "/static/img/liveBackground.jpg",
+                    "liveErrorBackground": "/static/img/liveErrorBackground.jpg",
+                    "marshaWhiteLogo": "/static/img/marshaWhiteLogo.png",
+                    "videoWizardBackground": "/static/img/videoWizardBackground.png",
+                    "bbbBackground": "/static/img/bbbBackground.png",
+                    "bbbLogo": "/static/img/bbbLogo.png",
+                },
+            },
+        )
+
+        # Make sure we only go through LTI verification once as it is costly (getting passport +
+        # signature)
+        self.assertEqual(mock_verify.call_count, 1)
+
+        # With a second call, we should get the same video
+        response = self.client.post(
+            "/lti/classrooms/",
+            data,
+            HTTP_REFERER=f"https://{passport.consumer_site.domain}/",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        context = json.loads(html.unescape(match.group(1)))
+        classroom2 = Classroom.objects.get(pk=context.get("resource").get("id"))
+        self.assertEqual(classroom1, classroom2)
 
     @responses.activate
     @mock.patch.object(LTI, "verify")
