@@ -25,6 +25,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Send an email when a live stream is converted to VOD
 - Send an email when a live stream is about to be deleted
 - Generic video LTI url
+- Display complete error message in frontend
 
 ### Changed
 
