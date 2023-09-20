@@ -54,6 +54,8 @@ class LoadDevelopmentDatasetsTestCase(TransactionTestCase):
                 " - done.",
                 "Creating playlists...",
                 " - done.",
+                "Creating LTI passports...",
+                " - done.",
             ],
         )
 
@@ -97,6 +99,8 @@ class LoadDevelopmentDatasetsTestCase(TransactionTestCase):
                 "Creating organizations...",
                 " - done.",
                 "Creating playlists...",
+                " - done.",
+                "Creating LTI passports...",
                 " - done.",
             ],
         )
@@ -145,6 +149,8 @@ class LoadDevelopmentDatasetsTestCase(TransactionTestCase):
                 "Creating organizations...",
                 " - done.",
                 "Creating playlists...",
+                " - done.",
+                "Creating LTI passports...",
                 " - done.",
             ],
         )
