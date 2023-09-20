@@ -24,6 +24,7 @@ from marsha.core.models import (
     ConsumerSite,
     ConsumerSiteAccess,
     ConsumerSiteOrganization,
+    LTIPassport,
     Organization,
     OrganizationAccess,
     Playlist,
@@ -79,6 +80,7 @@ class Command(BaseCommand):
         localhost_cs = self._create_consumer_sites()
         organization = self._create_organizations(localhost_cs)
         self._create_playlists(localhost_cs, organization)
+        self._create_lti_passports()
 
     def _create_site(self):
         self.stdout.write("Creating custom frontend...")
@@ -416,3 +418,18 @@ class Command(BaseCommand):
         PortabilityRequestFactory(from_playlist=playlist, from_user=self.superuser)
         VideoFactory.create_batch(3, playlist=playlist)
         WebinarVideoFactory.create_batch(3, playlist=playlist)
+
+    def _create_lti_passports(self):
+        """Create LTI passports."""
+        self.stdout.write("Creating LTI passports...")
+        moodle_site, _ = ConsumerSite.objects.get_or_create(
+            name="Moodle sandbox",
+            domain="sandbox.moodledemo.net",
+        )
+        LTIPassport.objects.get_or_create(
+            consumer_site=moodle_site,
+            oauth_consumer_key="sandbox",
+            shared_secret="sandbox",  # nosec
+        )
+
+        self.stdout.write(" - done.")
