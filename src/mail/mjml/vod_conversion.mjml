@@ -5,7 +5,7 @@
       <mj-column background-color="#fff">
         <mj-text>{% load i18n %}</mj-text>
         <mj-text align="center" font-size="15px" padding="8px 8px">
-          {%trans "Live Stream is ready to convert"%}
+          {{ subject }}
         </mj-text>
       </mj-column>
     </mj-section>
@@ -17,13 +17,15 @@
     <mj-section background-color="#FFFFFF" padding="0px 50px">
       <mj-column width="100%">
         <mj-include path="./partial/hello.mjml"/>
-        <mj-text align="center" font-size="18px" padding="10px 50px">
-          {%trans "The live stream you recorded for"%} "{{video.title}}"
-          {%trans "is ready to be converted to VOD."%}
-        </mj-text>
-        <mj-text align="center" font-size="18px" padding="10px 50px">
-          {% blocktranslate %}The live stream recording will be available until {{ expiration_date }}.{% endblocktranslate %}
-        </mj-text>
+        <mj-raw>
+        {% for paragraph in paragraphs %}
+        </mj-raw>
+          <mj-text align="center" font-size="18px" padding="10px 50px">
+            {{ paragraph }}
+          </mj-text>
+        <mj-raw>
+        {% endfor %}
+        </mj-raw>
       </mj-column>
     </mj-section>
     <mj-section>
@@ -31,13 +33,27 @@
         <mj-button
           background-color="#055fd2"
           color="#FFFFFF"
-          href="{{video_access_url}}"
+          href="{{video_frontend_access_url}}"
           padding="20px 0 0 0"
           font-weight="bold"
           font-size="16px"
         >
-          {%trans "Access the live stream"%}
+          {{ video_frontend_access_label }}
         </mj-button>
+        <mj-raw>{% if video_lti_access_url %}</mj-raw><mj-text align="center" font-size="18px" padding="10px">
+          {%trans "Or"%}
+        </mj-text>
+        <mj-button
+          border="1px solid #055fd2"
+          background-color="#FFFFFF"
+          color="#055fd2"
+          href="{{video_lti_access_url}}"
+          padding="0"
+          font-weight="bold"
+          font-size="16px"
+        >
+          {{ video_lti_access_label }}
+        </mj-button><mj-raw>{% endif %}</mj-raw>
       </mj-column>
     </mj-section>
     <mj-section background-color="#FFFFFF" padding="20px"></mj-section>

@@ -130,7 +130,9 @@ Live Stream is converted to VOD
 {video.title}
 
 Hello,
-The live stream you recorded for "{video.title}" is converted to VOD.
+
+The live stream you recorded for &quot;{video.title}&quot; is converted to VOD.
+
 
 Access the VOD from Marsha [https://marsha.education/my-contents/videos/{video.id}]
 
@@ -172,8 +174,11 @@ Live Stream will be deleted soon
 {video.title}
 
 Hello,
-The live stream you recorded for "{video.title}" is ready to be converted to VOD.
-The live stream recording will be available until Jan. 15, 2020, 9:30 a.m..
+
+The live stream you recorded for &quot;{video.title}&quot; is ready to be converted to VOD.
+
+The live stream recording will be available until 15/01/2020.
+
 
 Access the live stream from Marsha [https://marsha.education/my-contents/videos/{video.id}]
 
