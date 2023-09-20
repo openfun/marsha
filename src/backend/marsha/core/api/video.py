@@ -58,7 +58,10 @@ from ..utils.medialive_utils import (
     update_id3_tags,
     wait_medialive_channel_is_created,
 )
-from ..utils.send_emails import send_ready_to_convert_notification
+from ..utils.send_emails import (
+    send_ready_to_convert_notification,
+    send_vod_ready_notification,
+)
 from ..utils.time_utils import to_timestamp
 from ..utils.xmpp_utils import close_room, create_room, reopen_room_for_vod
 from .base import APIViewMixin, BulkDestroyModelMixin, ObjectPkMixin
@@ -766,7 +769,7 @@ class VideoViewSet(
             video.uploaded_on = time_utils.to_datetime(
                 serializer.validated_data["extraParameters"].get("uploaded_on")
             )
-            video.live_stopped_by_email = None
+            send_vod_ready_notification(video)
 
         video.live_info = live_info
         video.save()
