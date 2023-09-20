@@ -4,7 +4,11 @@ from django.core.management import BaseCommand
 from django.utils import timezone
 
 from marsha.core.factories import VideoFactory
-from marsha.core.utils.send_emails import send_ready_to_convert_notification
+from marsha.core.utils.send_emails import (
+    send_convert_reminder_notification,
+    send_ready_to_convert_notification,
+    send_vod_ready_notification,
+)
 
 
 class Command(BaseCommand):
@@ -28,3 +32,10 @@ class Command(BaseCommand):
             self.stdout.write("Ready to convert notification email sent")
         else:
             self.stderr.write("Ready to convert notification email not sent")
+
+        self.stdout.write()
+        self.stdout.write("Convert to vod ready")
+        if send_vod_ready_notification(video):
+            self.stdout.write("Convert to vod ready notification email sent")
+        else:
+            self.stderr.write("Convert to vod ready notification email not sent")

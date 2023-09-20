@@ -244,6 +244,7 @@ class VideoUpdateLiveStateAPITest(TestCase):
                 },
                 "cloudwatch": {"logGroupName": "/aws/lambda/dev-test-marsha-medialive"},
                 "started_at": "1533686400",
+                "live_stopped_with_email": "sarah@fun-test.fr",
             },
             live_type=RAW,
             starting_at=starting_at,
@@ -303,6 +304,7 @@ class VideoUpdateLiveStateAPITest(TestCase):
                 "cloudwatch": {"logGroupName": "/aws/lambda/dev-test-marsha-medialive"},
                 "started_at": "1533686400",
                 "stopped_at": "1533686400",
+                "live_stopped_with_email": "sarah@fun-test.fr",
             },
         )
 
@@ -349,10 +351,12 @@ class VideoUpdateLiveStateAPITest(TestCase):
                 "cloudwatch": {"logGroupName": "/aws/lambda/dev-test-marsha-medialive"},
                 "started_at": "1533686400",
                 "stopped_at": "1533686400",
+                "live_stopped_with_email": "sarah@fun-test.fr",
             },
             live_type=JITSI,
             starting_at=starting_at,
         )
+        live_stopped_with_email = video.live_info.get("live_stopped_with_email")
         data = {
             "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
             "requestId": "c31c7ce8-705d-4352-b7f0-e60f2bfa2845",
@@ -394,7 +398,13 @@ class VideoUpdateLiveStateAPITest(TestCase):
             },
         )
         self.assertEqual(video.resolutions, [240, 480, 720])
-        self.assertIsNone(video.live_stopped_by_email)
+
+        # check email has been sent
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].to[0], live_stopped_with_email)
+
+        # after the last email has been sent, no more email address should be kept
+        self.assertIsNone(video.live_info.get("live_stopped_with_email"))
 
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
     def test_api_video_update_live_state_invalid_signature(self):
