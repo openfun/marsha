@@ -137,7 +137,6 @@ export const BoundaryScreenError = ({
           <Text
             type="p"
             className="m-0"
-            truncate={3}
             textAlign="center"
             style={{
               maxWidth: `90%`,
