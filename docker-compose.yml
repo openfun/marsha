@@ -3,7 +3,7 @@ version: "3.4"
 services:
   db:
     image: postgres:12
-    env_file: env.d/${ENV_FILE:-development}
+    env_file: env.d/db
     volumes:
       - ./docker/files/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     ports:
@@ -27,6 +27,7 @@ services:
         DOCKER_USER: ${DOCKER_USER:-1000}
     image: marsha:dev
     env_file:
+      - env.d/db
       - env.d/${ENV_FILE:-development}
     # Override production container command that runs gunicorn in favor of the
     # django development server
