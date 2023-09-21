@@ -14,8 +14,8 @@
     {% if description %}
         <blti:description>{{ description }}</blti:description>
     {% endif %}
-    <blti:launch_url>http://{{ host }}</blti:launch_url>
-    <blti:secure_launch_url>https://{{ host }}</blti:secure_launch_url>
+    <blti:launch_url>http://{{ launch_url }}</blti:launch_url>
+    <blti:secure_launch_url>https://{{ launch_url }}</blti:secure_launch_url>
 
     {% if icon_url %}
         <blti:icon>http:{{ icon_url }}</blti:icon>

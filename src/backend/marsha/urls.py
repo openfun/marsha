@@ -100,6 +100,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("marsha.page.urls")),
     # LTI
+    path("lti/<str:model>/config.xml", LTIConfigView.as_view(), name="config_lti_view"),
     path("lti/config.xml", LTIConfigView.as_view(), name="config_lti_view"),
     re_path(
         LTI_SELECT_ROUTE_PATTERN,
