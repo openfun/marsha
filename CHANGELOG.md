@@ -12,6 +12,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Replace grommet Heading (#2410)
 - Upgrade to python 3.11
+- Upgrade channels and channels-redis to version 4
 
 ## [4.5.0] - 2023-09-15
 

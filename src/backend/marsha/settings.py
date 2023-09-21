@@ -870,7 +870,9 @@ class Development(Base):
     P2P_WEB_TORRENT_TRACKER_URLS = values.ListValue(["ws://localhost:8080"])
 
     # Development tools
-    INSTALLED_APPS = Base.INSTALLED_APPS + ["marsha.development.apps.DevelopmentConfig"]
+    INSTALLED_APPS = (
+        ["daphne"] + Base.INSTALLED_APPS + ["marsha.development.apps.DevelopmentConfig"]
+    )
 
     # Mail
     EMAIL_HOST = values.Value("mailcatcher")

@@ -37,17 +37,6 @@
       ]
     },
     {
-      "groupName": "allowed django channels version",
-      "matchManagers": [
-        "setup-cfg"
-      ],
-      "matchPackageNames": [
-        "channels",
-        "channels-redis"
-      ],
-      "allowedVersions": "<4"
-    },
-    {
       "groupName": "allowed urllib3 versions",
       "matchManagers": [
         "setup-cfg"
