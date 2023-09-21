@@ -19,7 +19,7 @@ from django.http.response import Http404
 from django.shortcuts import get_object_or_404
 from django.template import Context, Engine
 from django.templatetags.static import static
-from django.urls import reverse
+from django.urls import NoReverseMatch, reverse
 from django.utils import translation
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_exempt
@@ -815,25 +815,36 @@ class LTIConfigView(TemplateResponseMixin, View):
             generated from applying the data to the template
 
         """
-        icon_url = ""
-        if settings.LTI_CONFIG_ICON:
+        model = kwargs.get("model")
+        launch_url = request.get_host()
+        title = settings.LTI_CONFIG_TITLE
+        icon_url = settings.LTI_CONFIG_ICON
+        if model in ["videos", "classrooms"]:
+            title = settings.LTI_CONFIG_TITLES.get(model)
+            icon_url = settings.LTI_CONFIG_ICONS.get(model)
+            try:
+                launch_url += reverse(f"{model}_lti_view_generic")
+            except NoReverseMatch:
+                app = model[:-1] if model.endswith("s") else model
+                launch_url += reverse(f"{app}:{model}_lti_view_generic")
+
+        if icon_url:
             if settings.CLOUDFRONT_DOMAIN in settings.STATIC_URL:
-                icon_url = static(settings.LTI_CONFIG_ICON)
+                icon_url = static(icon_url)
             else:
-                icon_url = f"//{request.get_host()}{static(settings.LTI_CONFIG_ICON)}"
-        return self.render_to_response(
-            {
-                "code": settings.LTI_CONFIG_TITLE.lower()
-                if settings.LTI_CONFIG_TITLE
-                else None,
-                "contact_email": settings.LTI_CONFIG_CONTACT_EMAIL,
-                "description": settings.LTI_CONFIG_DESCRIPTION,
-                "host": request.get_host(),
-                "icon_url": icon_url,
-                "title": settings.LTI_CONFIG_TITLE,
-                "url": settings.LTI_CONFIG_URL,
-            }
-        )
+                icon_url = f"//{request.get_host()}{static(icon_url)}"
+        context = {
+            "code": settings.LTI_CONFIG_TITLE.lower()
+            if settings.LTI_CONFIG_TITLE
+            else None,
+            "contact_email": settings.LTI_CONFIG_CONTACT_EMAIL,
+            "description": settings.LTI_CONFIG_DESCRIPTION,
+            "launch_url": launch_url,
+            "icon_url": icon_url,
+            "title": title,
+            "url": settings.LTI_CONFIG_URL,
+        }
+        return self.render_to_response(context)
 
 
 @method_decorator(csrf_exempt, name="dispatch")

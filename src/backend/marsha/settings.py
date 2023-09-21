@@ -371,11 +371,29 @@ class Base(Configuration):
 
     # LTI Config
     LTI_CONFIG_TITLE = values.Value("Marsha")
+    LTI_CONFIG_TITLES = values.DictValue(
+        {
+            "videos": "Marsha Videos",
+            "classrooms": "Marsha Classrooms",
+        }
+    )
     LTI_CONFIG_DESCRIPTION = values.Value(
         "An LTI first, opensource and extensible Learning Content Management System"
     )
     LTI_CONFIG_ICON = values.Value("marsha_32x32_blue.png")
+    LTI_CONFIG_ICONS = values.DictValue(
+        {
+            "videos": "marsha_video_32x32_blue.png",
+            "classrooms": "marsha_classroom_32x32_blue.png",
+        }
+    )
     LTI_CONFIG_URL = values.Value()
+    LTI_CONFIG_URLS = values.DictValue(
+        {
+            "videos": values.Value(),
+            "classrooms": values.Value(),
+        }
+    )
     LTI_CONFIG_CONTACT_EMAIL = values.Value()
 
     # BBB
