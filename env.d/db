@@ -1,0 +1,5 @@
+# Database
+POSTGRES_HOST=db
+POSTGRES_DB=marsha
+POSTGRES_USER=marsha_user
+POSTGRES_PASSWORD=pass

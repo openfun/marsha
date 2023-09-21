@@ -5,12 +5,6 @@ DJANGO_CONFIGURATION=Test
 DJANGO_SECRET_KEY=ThisIsAnExampleKeyForTestPurposeOnly
 DJANGO_JWT_SIGNING_KEY=ThisIsAnExampleKeyForDevPurposeOnly
 
-# Database
-POSTGRES_HOST=db
-POSTGRES_DB=marsha
-POSTGRES_USER=marsha_user
-POSTGRES_PASSWORD=pass
-
 # AWS User
 DJANGO_AWS_ACCESS_KEY_ID=aws-access-key-id
 DJANGO_AWS_SECRET_ACCESS_KEY=aws-secret-access-key
