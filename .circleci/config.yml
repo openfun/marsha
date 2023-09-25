@@ -577,7 +577,7 @@ jobs:
 
   test-e2e:
     docker:
-      - image: mcr.microsoft.com/playwright:v1.33.0
+      - image: mcr.microsoft.com/playwright:v1.40.0-jammy
         auth:
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASS
@@ -654,7 +654,9 @@ jobs:
       - run:
           name: Ensure << parameters.browser >> browser is installed
           working_directory: /home/circleci/marsha/src/backend
-          command: python3.11 -m playwright install "<< parameters.browser >>"
+          command: |
+            python3.11 -m playwright install-deps "<< parameters.browser >>"
+            python3.11 -m playwright install "<< parameters.browser >>"
       - run:
           name: Install dockerize
           command: |
@@ -679,16 +681,16 @@ jobs:
                 command: python3.11 -m playwright install chrome
       # webkit browser is kind of broken with jammy
       # see https://github.com/microsoft/playwright/issues/15764#issuecomment-1462787720
-      - when:
-          condition:
-            equal: [webkit, << parameters.browser_channel >>]
-          steps:
-            - run:
-                name: Remove broken gstreamer plugin scan
-                command: rm /usr/lib/x86_64-linux-gnu/gstreamer1.0/gstreamer-1.0/gst-plugin-scanner
-            - run:
-                name: Replace gstreamer plugin scan with a dummy
-                command: ln -s /usr/bin/true /usr/lib/x86_64-linux-gnu/gstreamer1.0/gstreamer-1.0/gst-plugin-scanner
+      # - when:
+      #     condition:
+      #       equal: [ webkit, << parameters.browser_channel >> ]
+      #     steps:
+      #       - run:
+      #           name: Remove broken gstreamer plugin scan
+      #           command: rm /usr/lib/x86_64-linux-gnu/gstreamer1.0/gstreamer-1.0/gst-plugin-scanner
+      #       - run:
+      #           name: Replace gstreamer plugin scan with a dummy
+      #           command: ln -s /usr/bin/true /usr/lib/x86_64-linux-gnu/gstreamer1.0/gstreamer-1.0/gst-plugin-scanner
       - run:
           name: Run e2e tests
           working_directory: /home/circleci/marsha/src/backend
