@@ -1580,10 +1580,10 @@ available-typed-arrays@^1.0.5:
   resolved "https://registry.yarnpkg.com/available-typed-arrays/-/available-typed-arrays-1.0.5.tgz#92f95616501069d07d10edb2fc37d3e1c65123b7"
   integrity sha512-DMD0KiN46eipeziST1LPP/STfDU0sufISXmjSgvVsoU2tqxctQeASejWcfNtxYKqETM1UxQ8sp2OrSBWpHY6sw==
 
-aws-sdk@2.1459.0:
-  version "2.1459.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1459.0.tgz#9df2c684dc2da4882eb0f963d89fcfdc1eaa4793"
-  integrity sha512-My45PgQYhRTh6fOeZ94ELUoXzza/6gTy0J22aK4iy0DEA+uE5gjr1VthnIwbLYNMeEqn8xwJZuNJqvi/WaUUcQ==
+aws-sdk@2.1463.0:
+  version "2.1463.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1463.0.tgz#ae584a0ea57c73fb43ef75f4d51a5076a4aaba8b"
+  integrity sha512-NGJLovoHEX6uN3u9iHx0KWg9AigZfSz9YekLQssqGk5vHAEzW7TlCgRsqTu6vhGI5FzlYWapSvUpJUriQUCwMA==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
@@ -3524,10 +3524,10 @@ node-int64@^0.4.0:
   resolved "https://registry.yarnpkg.com/node-int64/-/node-int64-0.4.0.tgz#87a9065cdb355d3182d8f94ce11188b825c68a3b"
   integrity sha1-h6kGXNs1XTGC2PlM4RGIuCXGijs=
 
-node-poppler@6.2.7:
-  version "6.2.7"
-  resolved "https://registry.yarnpkg.com/node-poppler/-/node-poppler-6.2.7.tgz#d79f79c1db5d58d8ba3cc554e20f3ae5637ab588"
-  integrity sha512-hn/au400cH3gxL3NR8TxTUcRtAQfOwRtOouWqN5H1BpfTWg38XY8NMO8QftM+3zBQpDCZISwZpwRRIolzgbn0w==
+node-poppler@7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/node-poppler/-/node-poppler-7.0.0.tgz#47a5f9c97dc47d87c10ce617ef90710520afae20"
+  integrity sha512-k39qjRzZ5Q/4VHv5jeq7XDsc6ObnBVOts96P1ysfIaMDSBQUiqwTC9JbG7jbKw1u8zbzNvDYh7K+PzH5QTMN8g==
   dependencies:
     camelcase "^6.3.0"
     semver "^7.5.4"
