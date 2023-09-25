@@ -70,6 +70,7 @@ services:
     env_file:
       - env.d/db
       - env.d/${ENV_FILE:-development}
+      - env.d/db
     ports:
       - "8070:8000"
     volumes:
