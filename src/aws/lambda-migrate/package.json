@@ -3,7 +3,7 @@
   "name": "aws-marsha-migrate",
   "version": "4.5.0",
   "engines": {
-    "node": "16"
+    "node": "18"
   },
   "description": "Tasks to run when we want to execute a migration on AWS services",
   "repository": {
@@ -20,5 +20,8 @@
   "devDependencies": {
     "jest": "29.7.0",
     "prettier": "3.0.3"
+  },
+  "volta": {
+    "node": "18.18.0"
   }
 }

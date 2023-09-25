@@ -3,7 +3,7 @@
   "name": "aws-marsha-configure",
   "version": "4.5.0",
   "engines": {
-    "node": "16"
+    "node": "18"
   },
   "description": "Configure AWS via a Lambda for what can not be configured via Terraform for the Marsha video workflow",
   "repository": {
@@ -26,5 +26,8 @@
   "resolutions": {
     "merge": "^2.0.0",
     "handlebars": "^4.1.2"
+  },
+  "volta": {
+    "node": "18.18.0"
   }
 }

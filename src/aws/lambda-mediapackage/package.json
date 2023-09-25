@@ -3,7 +3,7 @@
   "name": "aws-marsha-mediapackage",
   "version": "4.5.0",
   "engines": {
-    "node": "16"
+    "node": "18"
   },
   "description": "Tasks to execute when a mediapackage event is fired",
   "repository": {
@@ -26,5 +26,8 @@
     "m3u8-parser": "7.1.0",
     "node-fetch": "2.6.7",
     "update-state": "file:../utils/update-state"
+  },
+  "volta": {
+    "node": "18.18.0"
   }
 }

@@ -3,7 +3,7 @@
   "name": "aws-marsha-medialive",
   "version": "4.5.0",
   "engines": {
-    "node": "16"
+    "node": "18"
   },
   "description": "Tasks to execute when a medialive event is fired",
   "repository": {
@@ -22,5 +22,8 @@
   },
   "dependencies": {
     "update-state": "file:../utils/update-state"
+  },
+  "volta": {
+    "node": "18.18.0"
   }
 }
