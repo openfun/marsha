@@ -10,7 +10,7 @@
     "@testing-library/user-event": "*",
     "@types/fetch-mock": "7.3.6",
     "@types/jest": "29.5.5",
-    "@types/node": "18.17.17",
+    "@types/node": "18.17.19",
     "@types/react": "*",
     "@types/react-dom": "*",
     "@types/react-router-dom": "*",

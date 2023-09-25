@@ -8,12 +8,12 @@
   "description": "Convert a source video to all the formats used in Marsha",
   "dependencies": {
     "@openfun/subsrt": "1.0.5",
-    "aws-sdk": "2.1459.0",
+    "aws-sdk": "2.1463.0",
     "clamscan": "2.1.2",
     "he": "1.2.0",
     "jimp": "0.22.10",
     "jsdom": "22.1.0",
-    "node-poppler": "6.2.7",
+    "node-poppler": "7.0.0",
     "update-state": "file:../utils/update-state"
   },
   "repository": {
