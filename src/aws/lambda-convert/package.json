@@ -3,7 +3,7 @@
   "name": "aws-marsha-convert",
   "version": "4.5.0",
   "engines": {
-    "node": "16"
+    "node": "18"
   },
   "description": "Convert a source video to all the formats used in Marsha",
   "dependencies": {
@@ -34,5 +34,8 @@
   "resolutions": {
     "merge": "^2.0.0",
     "handlebars": "^4.1.2"
+  },
+  "volta": {
+    "node": "18.18.0"
   }
 }

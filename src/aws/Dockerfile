@@ -6,7 +6,7 @@ ARG MEDIAINFO_VERSION=20.09
 RUN wget https://mediaarea.net/download/binary/mediainfo/20.09/MediaInfo_CLI_${MEDIAINFO_VERSION}_Lambda.zip && \
     unzip MediaInfo_CLI_${MEDIAINFO_VERSION}_Lambda.zip -d /tmp/mediainfo
 
-FROM amazon/aws-lambda-nodejs:16.2023.02.03.11 as core
+FROM amazon/aws-lambda-nodejs:18 as core
 ARG POPPLER_VERSION
 ARG POPPLER_DATA_VERSION
 ARG OPENJPEG_VERSION
