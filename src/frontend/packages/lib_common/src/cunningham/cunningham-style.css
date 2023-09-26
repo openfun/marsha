@@ -1,6 +1,8 @@
 @import '@openfun/cunningham-react/icons';
 @import '@openfun/cunningham-react/style';
+@import '@openfun/cunningham-react/fonts';
 @import './cunningham-tokens.css';
+@import './cunningham-custom-tokens.css';
 
 .c__input, .c__field, .c__select, .c__datagrid, .fs-h {
   font-family: var(--c--theme--font--families--base);
@@ -17,18 +19,6 @@
 .labelled-box label.placeholder {
   top: 50%;
   transform: translateY(-50%);
-}
-.m-0 {
-  margin: 0;
-}
-.mt-0 {
-  margin-top: 0;
-}
-.mt-sl {
-  margin-top: 2.2rem;
-}
-.mb-sl {
-  margin-bottom: 2.2rem;
 }
 .fs-h {
   color: var(--c--theme--colors--primary-500)

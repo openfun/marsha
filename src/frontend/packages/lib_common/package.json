@@ -8,14 +8,14 @@
     ".": {
       "default": "./src/index.ts"
     },
-    "./cunningham-style": "./src/cunningham-style.css"
+    "./cunningham-style": "./src/cunningham/cunningham-style.css"
   },
   "scripts": {
     "lint": "tsc --noEmit && eslint src/**/*.{ts,tsx}",
     "lint:fix": "yarn run lint --fix",
     "test": "cross-env TZ=UTC jest --passWithNoTests",
     "prettier": "prettier --list-different '**/*.+(ts|tsx|json|js|jsx)' --ignore-path ../../../.prettierignore",
-    "build-theme": "cunningham -g css -o src"
+    "build-theme": "cunningham -g css -o src/cunningham --utility-classes"
   },
   "peerDependencies": {
     "@openfun/cunningham-react": "*",
