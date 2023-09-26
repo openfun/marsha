@@ -33,7 +33,8 @@
     "build-lti": "yarn workspace marsha run build",
     "build-site": "yarn workspace standalone_site run build",
     "start-site": "yarn workspace standalone_site run start",
-    "prettier": "yarn workspace lib-components run prettier && yarn workspace lib-classroom run prettier && yarn workspace lib-common run prettier && yarn workspace lib-markdown run prettier && yarn workspace lib-tests run prettier && yarn workspace lib-video run prettier"
+    "prettier": "yarn workspace lib-components run prettier && yarn workspace lib-classroom run prettier && yarn workspace lib-common run prettier && yarn workspace lib-markdown run prettier && yarn workspace lib-tests run prettier && yarn workspace lib-video run prettier",
+    "grommet-scan": "react-scanner -c ./react-scanner.config.js"
   },
   "resolutions": {
     "@babel/plugin-proposal-private-property-in-object": "7.21.11",
