@@ -1,9 +1,10 @@
-import { Box, Text } from 'grommet';
+import { Box } from 'grommet';
 import { Nullable } from 'lib-common';
 import {
   ObjectStatusPicker,
   RetryUploadButton,
   SharedLiveMedia,
+  Text,
   UploadingObject,
   uploadState,
 } from 'lib-components';
@@ -103,12 +104,7 @@ export const SharedLiveMediaItem = ({
               </Box>
             )
           ) : IS_UPLOAD_IN_PROGRESS ? (
-            <Text
-              color="blue-active"
-              size="0.9rem"
-              style={{ fontFamily: 'Roboto-Medium' }}
-              truncate
-            >
+            <Text truncate>
               <ObjectStatusPicker
                 object={sharedLiveMedia}
                 uploadStatus={uploadingObject?.status}
@@ -117,11 +113,7 @@ export const SharedLiveMediaItem = ({
           ) : (
             <React.Fragment>
               <Box>
-                <Text
-                  color="red-active"
-                  size="0.9rem"
-                  style={{ fontFamily: 'Roboto-Medium' }}
-                >
+                <Text color="clr-danger-300">
                   {intl.formatMessage(messages.retryUploadFailedLabel)}
                 </Text>
               </Box>

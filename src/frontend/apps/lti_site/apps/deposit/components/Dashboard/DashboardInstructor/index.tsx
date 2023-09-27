@@ -1,7 +1,7 @@
 import { Select } from '@openfun/cunningham-react';
-import { Box, Pagination, Paragraph, Text } from 'grommet';
+import { Box, Pagination, Paragraph } from 'grommet';
 import { Maybe } from 'lib-common';
-import { BoxLoader, FileDepository, Heading } from 'lib-components';
+import { BoxLoader, FileDepository, Heading, Text } from 'lib-components';
 import React, { FocusEvent, useState } from 'react';
 import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
 

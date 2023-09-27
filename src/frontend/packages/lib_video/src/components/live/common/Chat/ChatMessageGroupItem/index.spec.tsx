@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react';
-import { renderImageSnapshot } from 'lib-tests';
+import { render } from 'lib-tests';
 import { DateTime } from 'luxon';
 import React from 'react';
 
@@ -36,20 +36,16 @@ const groupWithSeveralMessages: ChatMessageGroupType = {
 };
 
 describe('<ChatMessageGroupItem />', () => {
-  it('renders the component when there is only one message and compares it with previous render [screenshot]', async () => {
-    await renderImageSnapshot(
-      <ChatMessageGroupItem msgGroup={groupWithOneMessage} />,
-    );
+  it('renders the component when there is only one message and compares it with previous render', () => {
+    render(<ChatMessageGroupItem msgGroup={groupWithOneMessage} />);
 
     expect(screen.getByText('John Doe')).toBeInTheDocument();
     expect(screen.getByText('(12:12)')).toBeInTheDocument();
     expect(screen.getByText('This is an example message')).toBeInTheDocument();
   });
 
-  it('renders the component when there are several messages and compares it with previous render [screenshot]', async () => {
-    await renderImageSnapshot(
-      <ChatMessageGroupItem msgGroup={groupWithSeveralMessages} />,
-    );
+  it('renders the component when there are several messages and compares it with previous render [screenshot]', () => {
+    render(<ChatMessageGroupItem msgGroup={groupWithSeveralMessages} />);
 
     expect(screen.getByText('John Doe')).toBeInTheDocument();
     expect(screen.getByText('(12:12)')).toBeInTheDocument();

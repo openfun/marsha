@@ -1,20 +1,12 @@
-import { Box, CheckBox, Text } from 'grommet';
-import { ContentCard, StyledLink, Video } from 'lib-components';
+import { Box, CheckBox } from 'grommet';
+import { ContentCard, StyledLink, Text, Video } from 'lib-components';
 import { Fragment, useEffect, useState } from 'react';
-import styled from 'styled-components';
 
 import { ReactComponent as LiveIcon } from 'assets/svg/iko_live.svg';
 import { ReactComponent as VueListIcon } from 'assets/svg/iko_vuelistesvg.svg';
 import { useSelectFeatures } from 'features/Contents/store/selectionStore';
 
 import routes from '../../routes';
-
-const TextTruncated = styled(Text)`
-  display: -webkit-box;
-  -webkit-line-clamp: 5;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-`;
 
 const Live = ({ live }: { live: Video }) => {
   const livePath = `${routes.LIVE.path}/${live.id}`;
@@ -79,7 +71,7 @@ const Live = ({ live }: { live: Video }) => {
               <Box>
                 <VueListIcon width={20} height={20} color="blue-active" />
               </Box>
-              <Text size="0.688rem" weight="bold">
+              <Text size="tiny" weight="bold">
                 {live.playlist.title}
               </Text>
             </Box>
@@ -88,9 +80,9 @@ const Live = ({ live }: { live: Video }) => {
         title={live.title || ''}
       >
         {live.description && (
-          <TextTruncated size="0.688rem" color="grey" title={live.description}>
+          <Text size="small" truncate={5} color="grey" title={live.description}>
             {live.description}
-          </TextTruncated>
+          </Text>
         )}
       </ContentCard>
     </StyledLink>

@@ -1,8 +1,9 @@
-import { Box, Button, DropButton, Text } from 'grommet';
+import { Box, Button, DropButton } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { Breakpoints, Nullable, theme } from 'lib-common';
 import {
   AnonymousUser,
+  Text,
   useCurrentUser,
   useResponsive,
   useSiteConfig,
@@ -21,7 +22,7 @@ import { LanguagePicker } from 'features/Language/';
 import { Burger } from 'features/Menu';
 import { routes } from 'routes/routes';
 
-const NavLinkStyled = styled(NavLink)`
+const styleItem = `
   text-decoration: none;
   color: ${normalizeColor('blue-active', theme)};
   display: flex;
@@ -34,21 +35,15 @@ const NavLinkStyled = styled(NavLink)`
   &.hover {
     background-color: ${normalizeColor('bg-menu-hover', theme)};
   }
+  align-items: center;
+`;
+
+const NavLinkStyled = styled(NavLink)`
+  ${styleItem}
 `;
 
 const ButtonStyled = styled(Button)`
-  text-decoration: none;
-  color: ${normalizeColor('blue-active', theme)};
-  display: flex;
-  gap: 1rem;
-  align-items: left;
-  padding: 6px 12px;
-  border-radius: 6px;
-  transition: background-color 0.2s ease-in-out;
-  &:hover,
-  &.hover {
-    background-color: ${normalizeColor('bg-menu-hover', theme)};
-  }
+  ${styleItem}
 `;
 
 const colorMenu = normalizeColor('blue-active', theme);
@@ -181,13 +176,9 @@ const Header = forwardRef<Nullable<HTMLDivElement>>((_props, ref) => {
             <Box direction="row" align="center" gap="small" justify="end">
               {!isSmallerBreakpoint(breakpoint, Breakpoints.xsmall) && (
                 <Text
-                  truncate
+                  truncate={2}
                   style={{
-                    WebkitBoxOrient: 'vertical',
-                    WebkitLineClamp: 2,
-                    display: '-webkit-box',
                     maxWidth: '90px',
-                    whiteSpace: 'normal',
                   }}
                 >
                   {fullName}

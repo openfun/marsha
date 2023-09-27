@@ -1,10 +1,11 @@
 import { Input, Loader } from '@openfun/cunningham-react';
-import { Box, Text, Tip } from 'grommet';
+import { Box, Tip } from 'grommet';
 import { Maybe, Nullable } from 'lib-common';
 import {
   AnonymousUser,
   LiveSession,
   QuestionMarkSVG,
+  Text,
   checkToken,
   decodeJwt,
   useCurrentUser,
@@ -235,19 +236,17 @@ export const InputDisplayName = ({ onSuccess }: InputDisplayNameProps) => {
     >
       <Box background="bg-marsha" gap="8px" pad="12px" round="6px">
         <Box direction="row">
-          <Text
-            margin={{
-              right: '5px',
-            }}
-            size="0.875rem"
-          >
+          <Text className="mr-t">
             {intl.formatMessage(messages.inputDisplayNameLabel)}
           </Text>
           <Box>
             <Tip
+              dropProps={{
+                elevation: 'medium',
+              }}
               content={
                 <Box background="white" pad="2px" round="6px" width="150px">
-                  <Text size="0.625rem">
+                  <Text size="tiny" className="m-t">
                     {intl.formatMessage(messages.inputDisplayNameInformative)}
                   </Text>
                 </Box>

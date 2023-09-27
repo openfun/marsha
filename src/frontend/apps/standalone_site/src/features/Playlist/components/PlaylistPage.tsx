@@ -4,9 +4,9 @@ import {
   SortModel,
   usePagination,
 } from '@openfun/cunningham-react';
-import { Box, Button, Text } from 'grommet';
+import { Box, Button } from 'grommet';
 import { Breakpoints, Maybe } from 'lib-common';
-import { Heading, Modal, Playlist, useResponsive } from 'lib-components';
+import { Heading, Modal, Playlist, Text, useResponsive } from 'lib-components';
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { Route, Routes, useNavigate } from 'react-router-dom';
@@ -196,7 +196,7 @@ export const PlaylistPage = () => {
                 pad="medium"
                 round="small"
               >
-                <Text size="large">{intl.formatMessage(messages.error)}</Text>
+                <Text>{intl.formatMessage(messages.error)}</Text>
                 <Box margin={{ horizontal: 'auto', top: 'medium' }}>
                   <Button
                     a11yTitle={intl.formatMessage(messages.retry)}

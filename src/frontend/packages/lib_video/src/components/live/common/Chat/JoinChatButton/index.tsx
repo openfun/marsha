@@ -1,4 +1,5 @@
-import { Box, Button, Text } from 'grommet';
+import { Box, Button } from 'grommet';
+import { Text } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -32,7 +33,7 @@ export const JoinChatButton = ({
     >
       <Button disabled={disabled} fill onClick={handleClick}>
         <Box align="center" fill justify="center">
-          <Text color="blue-chat" size="1.063rem" truncate>
+          <Text size="large" truncate>
             {intl.formatMessage(messages.joinChatButton)}
           </Text>
         </Box>

@@ -6,11 +6,11 @@ import {
   CardFooter,
   CardHeader,
   Card as GrommetCard,
-  Text,
 } from 'grommet';
 import React, { PropsWithChildren, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
+import { Text } from '@lib-components/common/Text';
 import { useResponsive } from '@lib-components/hooks';
 
 const CardBox = styled(Box)`
@@ -81,7 +81,7 @@ export const ContentCard = ({
     >
       <CardHeader>{header}</CardHeader>
       <CardBody pad={{ horizontal: 'medium', top: 'xsmall', bottom: 'xsmall' }}>
-        <Text size="small" weight="bold" color="#093388">
+        <Text weight="bold" color="clr-primary-800">
           {title}
         </Text>
         {children && (

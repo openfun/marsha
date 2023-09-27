@@ -1,9 +1,10 @@
-import { Anchor, Box, Button, Text } from 'grommet';
+import { Anchor, Box, Button } from 'grommet';
 import {
   BinSVG,
   ClassroomDocument,
   ObjectStatusPicker,
   RetryUploadButton,
+  Text,
   UploadingObject,
   ValidSVG,
   uploadState,
@@ -125,7 +126,7 @@ export const DocumentRow = ({
           a11yTitle={intl.formatMessage(messages.buttonLabel)}
           onClick={() => setDeleteDocument()}
           plain
-          style={{ display: 'block', padding: 0 }}
+          style={{ display: 'flex' }}
         >
           <BinSVG height="18px" iconColor="blue-active" width="14px" />
         </Button>
@@ -142,7 +143,7 @@ export const DocumentRow = ({
             isClickable={document.upload_state === uploadState.READY}
             label={
               <Box style={{ minWidth: '0' }}>
-                <Text color="blue-active" size="0.9rem" truncate>
+                <Text truncate weight="extrabold">
                   {title}
                 </Text>
               </Box>
@@ -174,12 +175,7 @@ export const DocumentRow = ({
       >
         {document.upload_state !== uploadState.READY &&
           (isUploadInProgress ? (
-            <Text
-              color="blue-active"
-              size="0.9rem"
-              style={{ fontFamily: 'Roboto-Medium' }}
-              truncate
-            >
+            <Text weight="medium" truncate>
               <ObjectStatusPicker
                 object={document}
                 uploadStatus={uploadingObject?.status}
@@ -188,11 +184,7 @@ export const DocumentRow = ({
           ) : (
             <React.Fragment>
               <Box>
-                <Text
-                  color="red-active"
-                  size="0.9rem"
-                  style={{ fontFamily: 'Roboto-Medium' }}
-                >
+                <Text color="clr-danger-300" weight="medium">
                   {intl.formatMessage(messages.retryUploadFailedLabel)}
                 </Text>
               </Box>

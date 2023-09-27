@@ -1,12 +1,8 @@
-import { Box, CheckBoxExtendedProps, Text } from 'grommet';
+import { Box, CheckBoxExtendedProps } from 'grommet';
 import React from 'react';
-import styled from 'styled-components';
 
+import { Text } from '../Text';
 import { ToggleButton } from '../ToggleButton';
-
-const StyledText = styled(Text)`
-  font-family: 'Roboto-Medium';
-`;
 
 interface ToggleInputProps extends CheckBoxExtendedProps {
   checked: boolean;
@@ -41,9 +37,9 @@ export const ToggleInput = ({
         title={label}
         {...props}
       />
-      <StyledText color="blue-active" size="1rem" truncate={truncateLabel}>
+      <Text size="large" weight="medium" truncate={truncateLabel}>
         {label}
-      </StyledText>
+      </Text>
     </Box>
   );
 };

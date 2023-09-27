@@ -1,5 +1,7 @@
-import { Box, Text } from 'grommet';
+import { Box } from 'grommet';
 import React from 'react';
+
+import { Text } from '@lib-components/common/Text';
 
 interface ItemListProps<T> {
   children: (item: T, index: string) => React.ReactNode;
@@ -33,13 +35,12 @@ export const ItemList = <T,>({
           direction="column"
           gap="small"
           justify="center"
+          pad="small"
         >
           {itemList.length ? (
             itemList.map((item, index) => children(item, `list_item_${index}`))
           ) : (
-            <Text color="blue-active" margin="small" size="0.8rem" truncate>
-              {noItemsMessage}
-            </Text>
+            <Text truncate>{noItemsMessage}</Text>
           )}
         </Box>
       </Box>

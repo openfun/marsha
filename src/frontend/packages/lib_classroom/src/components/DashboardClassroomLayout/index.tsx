@@ -1,6 +1,6 @@
-import { Box, Grid, Text } from 'grommet';
+import { Box, Grid } from 'grommet';
 import { Breakpoints, Nullable } from 'lib-common';
-import { useAppConfig, useResponsive } from 'lib-components';
+import { Text, useAppConfig, useResponsive } from 'lib-components';
 import React from 'react';
 
 interface DashboardClassroomMessageProps {
@@ -16,7 +16,7 @@ export const DashboardClassroomMessage = ({
     background="blue-message"
     round="xsmall"
   >
-    <Text color="blue-active" textAlign="center" weight="bold">
+    <Text textAlign="center" weight="bold">
       {message}
     </Text>
   </Box>
@@ -63,22 +63,14 @@ export const DashboardClassroomLayout = ({
           {left}
         </Box>
         <Box>
-          <Box
-            height="30px"
-            width="30px"
-            background={{
-              image: `url(${appData.static.img.bbbLogo || ''})`,
-              size: 'cover',
-              position: 'left center',
-            }}
-          >
-            <Text
-              margin={{ top: '5px', left: '35px' }}
-              size="small"
-              color="white"
-            >
-              BigBlueButton
-            </Text>
+          <Box direction="row" align="center" gap="xsmall">
+            <img
+              height="30px"
+              width="30px"
+              src={appData.static.img.bbbLogo || ''}
+              alt="BigBlueButton Logo"
+            />
+            <Text color="white">BigBlueButton</Text>
           </Box>
           <Box
             align={isDesktop ? 'end' : 'center'}

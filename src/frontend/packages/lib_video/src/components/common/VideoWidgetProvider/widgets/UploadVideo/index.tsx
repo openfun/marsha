@@ -1,9 +1,10 @@
-import { Box, Button, Text } from 'grommet';
+import { Box, Button } from 'grommet';
 import { Nullable } from 'lib-common';
 import {
   BoxLoader,
   FoldableItem,
   ProgressionBar,
+  Text,
   UploadManagerStatus,
   ValidSVG,
   modelName,
@@ -107,7 +108,7 @@ export const UploadVideo = () => {
             round="xsmall"
           >
             <BoxLoader size="small" />
-            <Text alignSelf="center" color="blue-active" size="0.725rem">
+            <Text textAlign="center" size="small">
               {intl.formatMessage(messages.videoProcessing)}
             </Text>
           </Box>
@@ -125,7 +126,7 @@ export const UploadVideo = () => {
             round="xsmall"
           >
             <ValidSVG height="20px" iconColor="blue-active" width="20px" />
-            <Text color="blue-active" size="1em">
+            <Text weight="medium" size="large">
               {intl.formatMessage(messages.videoAvailable)}
             </Text>
           </Box>

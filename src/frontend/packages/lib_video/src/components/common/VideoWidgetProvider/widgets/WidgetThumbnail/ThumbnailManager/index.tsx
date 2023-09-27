@@ -1,5 +1,6 @@
-import { Box, Text } from 'grommet';
+import { Box } from 'grommet';
 import {
+  Text,
   Thumbnail,
   ThumbnailDisplayer,
   UploadManagerState,
@@ -23,9 +24,7 @@ export const ThumbnailManager = ({
     <React.Fragment>
       {messageToDisplay ? (
         <Box border={{ color: 'blue-active' }} pad="small" round="xsmall">
-          <Text alignSelf="center" color="blue-active" size="0.875rem">
-            {messageToDisplay}
-          </Text>
+          <Text textAlign="center">{messageToDisplay}</Text>
         </Box>
       ) : (
         <ThumbnailDisplayer rounded urlsThumbnail={thumbnail.urls} />

@@ -1,13 +1,8 @@
-import { Box, Text } from 'grommet';
+import { Box } from 'grommet';
+import { Text } from 'lib-components';
 import React from 'react';
-import styled from 'styled-components';
 
 import { ChatAvatar } from '@lib-video/components/live/common/Chat/ChatAvatar';
-
-const StyledText = styled(Text)`
-  font-family: 'Roboto-Medium';
-  letter-spacing: 0.07px;
-`;
 
 interface ViewersListItemProps {
   isInstructor: boolean;
@@ -21,13 +16,9 @@ export const ViewersListItem = ({
   return (
     <Box align="center" direction="row" gap="10px">
       <ChatAvatar isInstructor={isInstructor} />
-      <StyledText
-        color="blue-active"
-        size="0.75rem"
-        weight={isInstructor ? 'bold' : 'normal'}
-      >
+      <Text size="small" weight={isInstructor ? 'bold' : 'medium'}>
         {name}
-      </StyledText>
+      </Text>
     </Box>
   );
 };

@@ -1,9 +1,10 @@
-import { Box, Button, Text } from 'grommet';
+import { Box, Button } from 'grommet';
 import {
   ButtonLoaderStyle,
   Heading,
   Modal,
   ModalButton,
+  Text,
   report,
 } from 'lib-components';
 import { useDeleteVideos } from 'lib-video';
@@ -126,9 +127,9 @@ const LiveManage = () => {
   return (
     <Fragment>
       <ContentsHeader>
-        <Text size="large" weight="bold">
+        <Heading level={3} className="m-0">
           {intl.formatMessage(messages.WebinarTitle)}
-        </Text>
+        </Heading>
         {!isSelectionEnabled && (
           <Box direction="row" gap="small">
             <Button
@@ -188,7 +189,7 @@ const LiveManage = () => {
             item_count: selectedItems.length,
           })}
         </Heading>
-        <Text margin={{ top: 'small' }}>
+        <Text className="mt-t">
           {intl.formatMessage(messages.confirmDeleteWebinarsText, {
             item_count: selectedItems.length,
           })}

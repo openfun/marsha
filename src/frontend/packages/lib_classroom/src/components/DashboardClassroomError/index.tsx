@@ -1,4 +1,5 @@
-import { Box, Text } from 'grommet';
+import { Box } from 'grommet';
+import { Text } from 'lib-components';
 import React from 'react';
 import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
 
@@ -30,11 +31,7 @@ export const DashboardClassroomError = () => {
       <DashboardClassroomMessage
         message={intl.formatMessage(errorMessages.notFound.title)}
       />
-      <Text
-        textAlign="center"
-        margin={{ vertical: 'large' }}
-        color="blue-active"
-      >
+      <Text textAlign="center" className="mt-b mb-b">
         <FormattedMessage {...errorMessages.notFound.text} />
       </Text>
     </Box>

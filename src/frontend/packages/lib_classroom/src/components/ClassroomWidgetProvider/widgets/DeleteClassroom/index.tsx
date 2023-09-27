@@ -1,10 +1,11 @@
-import { Button, Text } from 'grommet';
+import { Button } from 'grommet';
 import {
   ButtonLoaderStyle,
   FoldableItem,
   Heading,
   Modal,
   ModalButton,
+  Text,
   report,
   useCurrentResourceContext,
 } from 'lib-components';
@@ -105,7 +106,7 @@ export const DeleteClassroom = () => {
         <Heading level={2} textAlign="center" className="mt-0 mb-s">
           {intl.formatMessage(messages.deleteModalTitle)}
         </Heading>
-        <Text margin={{ top: 'small' }}>
+        <Text className="mt-t">
           {intl.formatMessage(messages.confirmDeleteText)}
         </Text>
         <ModalButton

@@ -1,12 +1,11 @@
-import { Box, Button, Paragraph, Text } from 'grommet';
+import { Box, Button, Paragraph } from 'grommet';
 import { Schedule } from 'grommet-icons';
 import { Nullable } from 'lib-common';
-import { Classroom, useResponsive } from 'lib-components';
+import { Classroom, Heading, Text, useResponsive } from 'lib-components';
 import { DateTime, Duration, Settings } from 'luxon';
 import React, { CSSProperties, Fragment, useEffect, useMemo } from 'react';
 import ICalendarLink from 'react-icalendar-link';
 import { defineMessages, useIntl } from 'react-intl';
-import styled from 'styled-components';
 
 import {
   DashboardClassroomLayout,
@@ -21,26 +20,13 @@ const DashboardClassRoomTitleDescription = ({
 }) => {
   return (
     <React.Fragment>
-      <Text
-        size="large"
-        weight="bold"
-        color="blue-active"
-        textAlign="center"
-        margin={{ top: 'large' }}
-      >
+      <Heading level={2} textAlign="center">
         {classroom.title}
-      </Text>
-      <Text color="blue-active" textAlign="center">
-        {classroom.description}
-      </Text>
+      </Heading>
+      <Text textAlign="center">{classroom.description}</Text>
     </React.Fragment>
   );
 };
-
-const StyledText = styled(Text)`
-  padding-left: 10px;
-  vertical-align: bottom;
-`;
 
 const messages = defineMessages({
   joinedAs: {
@@ -227,9 +213,7 @@ const DashboardClassroomStudent = ({
             side: 'all',
           }}
         >
-          <Text color="blue-active" textAlign="center">
-            {displayedEventTime}
-          </Text>
+          <Text textAlign="center">{displayedEventTime}</Text>
         </Box>
         <DashboardClassroomStudentCounter starting_at={classroom.starting_at} />
         <Box
@@ -244,9 +228,9 @@ const DashboardClassroomStudent = ({
                   a11yTitle={intl.formatMessage(messages.a11AddCalendar)}
                   color="blue-active"
                 />
-                <StyledText color="blue-active">
+                <Text className="pl-s">
                   {intl.formatMessage(messages.addCalendar)}
-                </StyledText>
+                </Text>
               </ICalendarLink>
             </Paragraph>
           )}

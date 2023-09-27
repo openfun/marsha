@@ -1,5 +1,5 @@
-import { Box, Button, Text } from 'grommet';
-import { Participant } from 'lib-components';
+import { Box, Button } from 'grommet';
+import { Participant, Text } from 'lib-components';
 import React from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -41,9 +41,7 @@ export const OnStageRequestToast = ({
       round="xsmall"
       pad="medium"
     >
-      <Text color="blue-active" size="0.875rem">
-        {onStageRequestMessage(participantsList, intl)}
-      </Text>
+      <Text>{onStageRequestMessage(participantsList, intl)}</Text>
 
       <Button
         primary

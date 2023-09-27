@@ -1,7 +1,8 @@
-import { Box, Button, Text } from 'grommet';
+import { Box, Button } from 'grommet';
 import { Breakpoints } from 'lib-common';
 import {
   ErrorComponents,
+  Text,
   WhiteCard,
   WizardLayout,
   builderDashboardRoute,
@@ -91,7 +92,7 @@ const VideoWizard = () => {
                     : 'xlarge',
                 }}
               >
-                <Text color="blue-active" size="1rem" textAlign="center">
+                <Text textAlign="center">
                   {intl.formatMessage(messages.descriptionText)}
                 </Text>
 

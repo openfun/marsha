@@ -1,6 +1,7 @@
-import { Box, Button, Paragraph, Text } from 'grommet';
+import { Box, Button, Paragraph } from 'grommet';
 import {
   PlusSVG,
+  Text,
   UploadManagerStatus,
   UploadableObjectProgress,
   formatSizeErrorScale,
@@ -161,7 +162,9 @@ export const UploadFiles = () => {
                 <UploadableObjectProgress
                   progress={uploadManagerState[state.objectId].progress}
                 />
-                {intl.formatMessage(messages.uploadingFile)}
+                <Text size="small">
+                  {intl.formatMessage(messages.uploadingFile)}
+                </Text>
               </Box>
             ))}
           </Box>
@@ -182,10 +185,10 @@ export const UploadFiles = () => {
                 </Box>
                 <Box direction="row">
                   <Box justify="start" flex="shrink">
-                    <Text alignSelf="center">{bytesToSize(file.size)}</Text>
+                    <Text textAlign="center">{bytesToSize(file.size)}</Text>
                   </Box>
                   <Box justify="end" flex>
-                    <Text alignSelf="end">
+                    <Text textAlign="end">
                       {DateTime.now().toFormat('dd/MM/yyyy')}
                     </Text>
                   </Box>

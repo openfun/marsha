@@ -1,10 +1,11 @@
-import { Box, Button, Text } from 'grommet';
+import { Box, Button } from 'grommet';
 import { useDeleteClassrooms } from 'lib-classroom';
 import {
   ButtonLoaderStyle,
   Heading,
   Modal,
   ModalButton,
+  Text,
   report,
 } from 'lib-components';
 import { Fragment, useEffect, useState } from 'react';
@@ -126,9 +127,9 @@ const ClassroomManage = () => {
   return (
     <Fragment>
       <ContentsHeader>
-        <Text size="large" weight="bold">
+        <Heading level={3} className="m-0">
           {intl.formatMessage(messages.ClassroomTitle)}
-        </Text>
+        </Heading>
         {!isSelectionEnabled && (
           <Box direction="row" gap="small">
             <Button
@@ -187,7 +188,7 @@ const ClassroomManage = () => {
             item_count: selectedItems.length,
           })}
         </Heading>
-        <Text margin={{ top: 'small' }}>
+        <Text className="mt-t">
           {intl.formatMessage(messages.confirmDeleteClassroomsText, {
             item_count: selectedItems.length,
           })}

@@ -1,9 +1,10 @@
 import ClipboardJS from 'clipboard';
-import { Button, Text, TextExtendedProps } from 'grommet';
+import { Button } from 'grommet';
 import React, { Fragment, ReactElement, useEffect } from 'react';
 
 import { DashedBoxCustom } from '@lib-components/common/DashedBoxCustom';
 import { CopySVG } from '@lib-components/common/SVGIcons/CopySVG';
+import { Text, TextProps } from '@lib-components/common/Text/';
 
 interface Props {
   copyId: string;
@@ -14,7 +15,7 @@ interface Props {
   isActive?: boolean;
   withLabel?: boolean;
   textToCopy?: string;
-  textProps?: TextExtendedProps;
+  textProps?: TextProps<'span'>;
 }
 
 export const CopyClipboard = ({
@@ -42,20 +43,15 @@ export const CopyClipboard = ({
   return (
     <Fragment>
       {withLabel && (
-        <Text
-          color="blue-active"
-          size="0.875rem"
-          style={{ fontFamily: 'Roboto-Medium' }}
-        >
+        <Text weight="medium" className="mt-t">
           {title}
         </Text>
       )}
       <DashedBoxCustom>
         <Text
-          color={isActive ? 'blue-active' : '#b4cff2'}
-          size="0.875rem"
-          style={{ fontFamily: 'Roboto-Medium' }}
+          color={isActive ? 'clr-primary-500' : '#b4cff2'}
           truncate
+          weight="medium"
           {...textProps}
         >
           {text}

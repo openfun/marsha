@@ -1,12 +1,7 @@
-import { Box, Text } from 'grommet';
+import { Box } from 'grommet';
+import { Text } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import styled from 'styled-components';
-
-const RecordingText = styled(Text)`
-  font-size: 12px;
-  line-height: 12px;
-`;
 
 const messages = defineMessages({
   recording: {
@@ -34,7 +29,7 @@ export const StudentLiveRecordingInfo = () => {
         pad="xsmall"
         margin={{ right: 'xsmall' }}
       />
-      <RecordingText>{intl.formatMessage(messages.recording)}</RecordingText>
+      <Text size="small">{intl.formatMessage(messages.recording)}</Text>
     </Box>
   );
 };

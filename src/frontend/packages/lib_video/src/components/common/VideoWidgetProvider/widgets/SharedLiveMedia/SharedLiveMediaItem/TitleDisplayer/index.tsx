@@ -1,6 +1,6 @@
-import { Anchor, Box, Text } from 'grommet';
+import { Anchor, Box } from 'grommet';
 import { Maybe } from 'lib-common';
-import { SharedLiveMedia, uploadState } from 'lib-components';
+import { SharedLiveMedia, Text, uploadState } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
@@ -50,9 +50,7 @@ export const TitleDisplayer = ({
       isClickable={sharedLiveMedia.upload_state === uploadState.READY}
       label={
         <Box style={{ minWidth: '0' }}>
-          <Text color="blue-active" size="0.9rem" truncate>
-            {title}
-          </Text>
+          <Text truncate>{title}</Text>
         </Box>
       }
       rel="noopener"

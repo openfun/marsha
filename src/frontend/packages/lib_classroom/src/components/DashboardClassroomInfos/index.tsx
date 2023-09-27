@@ -1,6 +1,6 @@
-import { Box, Grid, Text } from 'grommet';
+import { Box, Grid } from 'grommet';
 import { Nullable } from 'lib-common';
-import { ClassroomInfos } from 'lib-components';
+import { ClassroomInfos, Text } from 'lib-components';
 import React, { Fragment } from 'react';
 import { FormattedMessage, defineMessages } from 'react-intl';
 
@@ -35,10 +35,10 @@ const DashboardClassroomInfosItem = ({
 }: DashboardClassroomInfosItemProps) => {
   return (
     <Box>
-      <Text size="large" weight="bold" color="blue-active" textAlign="center">
+      <Text size="large" weight="bold" textAlign="center">
         {value}
       </Text>
-      <Text color="blue-active" textAlign="center">
+      <Text textAlign="center">
         <FormattedMessage {...messages[unit]} />
       </Text>
     </Box>

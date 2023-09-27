@@ -1,8 +1,12 @@
 import { Input } from '@openfun/cunningham-react';
 import { useQueryClient } from '@tanstack/react-query';
-import { Anchor, Box, Button, Footer, Text } from 'grommet';
+import { Anchor, Box, Button, Footer } from 'grommet';
 import { Nullable } from 'lib-common';
-import { BoxLoader, MarkdownDocumentRenderingOptions } from 'lib-components';
+import {
+  BoxLoader,
+  MarkdownDocumentRenderingOptions,
+  Text,
+} from 'lib-components';
 import React, { Suspense, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -333,7 +337,7 @@ export const MarkdownEditor = ({ markdownDocumentId }: MarkdownEditorProps) => {
                 </MarkdownImageDropzone>
                 <Box flex="grow" />
                 <Footer background="brand" pad="xxsmall">
-                  <Text>
+                  <Text color="white">
                     {intl.formatMessage(messages.editorEmptyDragDropHelper)}
                   </Text>
                 </Footer>

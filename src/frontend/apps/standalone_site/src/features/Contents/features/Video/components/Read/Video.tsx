@@ -1,10 +1,5 @@
-import { Box, CheckBox, Text } from 'grommet';
-import {
-  ContentCard,
-  Video as IVideo,
-  StyledLink,
-  TextTruncated,
-} from 'lib-components';
+import { Box, CheckBox } from 'grommet';
+import { ContentCard, Video as IVideo, StyledLink, Text } from 'lib-components';
 import { Fragment, useEffect, useState } from 'react';
 
 import { ReactComponent as VideoIcon } from 'assets/svg/iko_next.svg';
@@ -79,7 +74,7 @@ const Video = ({ video }: { video: IVideo }) => {
               <Box>
                 <VueListIcon width={20} height={20} color="blue-active" />
               </Box>
-              <Text size="0.688rem" weight="bold">
+              <Text size="tiny" weight="bold">
                 {video.playlist.title}
               </Text>
             </Box>
@@ -88,9 +83,14 @@ const Video = ({ video }: { video: IVideo }) => {
         title={video.title || ''}
       >
         {video.description && (
-          <TextTruncated size="0.688rem" color="grey" title={video.description}>
+          <Text
+            size="small"
+            truncate={5}
+            color="grey"
+            title={video.description}
+          >
             {video.description}
-          </TextTruncated>
+          </Text>
         )}
       </ContentCard>
     </StyledLink>

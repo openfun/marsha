@@ -1,7 +1,9 @@
-import { Box, Text, ThemeContext } from 'grommet';
+import { Box, ThemeContext } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import React, { useContext } from 'react';
 import styled from 'styled-components';
+
+import { Text } from '@lib-components/common/Text';
 
 interface ComponentWithTheme {
   grommetTheme: object;
@@ -29,7 +31,7 @@ export const Badge = ({ value }: BadgeProps) => {
 
   return (
     <StyledBadge data-testid="badge_container" grommetTheme={theme}>
-      <Text size="0.6rem">{value}</Text>
+      <Text size="tiny">{value}</Text>
     </StyledBadge>
   );
 };

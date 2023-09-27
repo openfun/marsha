@@ -1,6 +1,6 @@
 import { DataGrid, usePagination } from '@openfun/cunningham-react';
-import { Box, Button, Text } from 'grommet';
-import { BoxLoader } from 'lib-components';
+import { Box, Button } from 'grommet';
+import { BoxLoader, Text } from 'lib-components';
 import { useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -76,7 +76,9 @@ export const PlaylistUserList = ({ playlistId }: PlaylistUserListProps) => {
   if (isError) {
     return (
       <Box width="large">
-        <Text>{intl.formatMessage(messages.errorLoadingPlaylist)}</Text>
+        <Text textAlign="center">
+          {intl.formatMessage(messages.errorLoadingPlaylist)}
+        </Text>
         <Box margin="auto" pad={{ top: 'medium' }}>
           <Button
             onClick={() => {
@@ -128,7 +130,7 @@ export const PlaylistUserList = ({ playlistId }: PlaylistUserListProps) => {
           isLoading={isLoading}
         />
       ) : (
-        <Text>{intl.formatMessage(messages.noAccess)}</Text>
+        <Text textAlign="center">{intl.formatMessage(messages.noAccess)}</Text>
       )}
     </Box>
   );

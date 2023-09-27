@@ -184,6 +184,7 @@ export const VideoInfoBar = ({ isTeacher, startDate }: VideoInfoBarProps) => {
               margin={{
                 bottom: 'small',
                 left: numberOfStudents ? '' : 'small',
+                top: 'small',
               }}
               size="small"
             >

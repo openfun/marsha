@@ -1,5 +1,5 @@
 import { Input, Loader } from '@openfun/cunningham-react';
-import { Box, Button, Text } from 'grommet';
+import { Box, Button } from 'grommet';
 import { AddCircle, Trash } from 'grommet-icons';
 import {
   CopyClipboard,
@@ -8,6 +8,7 @@ import {
   ErrorMessage,
   List,
   Playlist,
+  Text,
   Video,
 } from 'lib-components';
 import React, { Fragment, useState } from 'react';
@@ -130,9 +131,10 @@ export const PlaylistPortabilityList = ({
               direction="row-responsive"
               gap="medium"
               align="center"
+              pad="small"
             >
               <Text weight="bold">{reachableFromPlaylist.title}</Text>
-              <Text size="small" color="dark-4">
+              <Text size="small" color="clr-primary-800">
                 {reachableFromPlaylist.id}
               </Text>
             </Box>
@@ -193,7 +195,7 @@ export const PlaylistPortability = ({ object }: PlaylistPortabilityProps) => {
     content = (
       <React.Fragment>
         <Box align="center" direction="row" pad={{ top: 'small' }}>
-          <Text role="heading" margin="small">
+          <Text role="heading" className="m-s">
             <CopyClipboard
               copyId={`playlist-${playlist?.id}`}
               text={
@@ -252,7 +254,7 @@ export const PlaylistPortability = ({ object }: PlaylistPortabilityProps) => {
             background="status-warning"
             width="large"
           >
-            <Text>
+            <Text color="clr-primary-800" size="large">
               <FormattedMessage {...messages.shareWithPlaylistDetails} />
             </Text>
           </Box>

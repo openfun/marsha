@@ -50,7 +50,7 @@ export const LeaveJoinDiscussionWrapper = () => {
         label={intl.formatMessage(messages.waitingInstructor)}
         reversedColor={normalizeColor('white', theme)}
         tintColor={normalizeColor('blue-active', theme)}
-        textColor={normalizeColor('blue-active', theme)}
+        textColor="clr-primary-500"
       />
     );
   } else if (accepted) {

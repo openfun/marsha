@@ -1,7 +1,8 @@
-import { Box, Text } from 'grommet';
+import { Box } from 'grommet';
 import React from 'react';
 import styled from 'styled-components';
 
+import { Text } from '@lib-components/common/Text';
 import { useResponsive } from '@lib-components/hooks/useResponsive';
 
 import type { SvgProps } from '../../../common/SVGIcons';
@@ -26,16 +27,6 @@ const IconBox = styled(Box)`
 const TextBox = styled(Box)`
   display: flex;
   text-align: center;
-`;
-
-const StyledText = styled(Text)`
-  font-weight: normal;
-  font-size: ${({ isMobile }: ResponsiveProps) =>
-    isMobile ? '0.7rem' : '0.9rem'};
-  letter-spacing: ${({ isMobile }: ResponsiveProps) =>
-    isMobile ? '-0.3px' : '-0.13px'};
-  line-height: ${({ isMobile }: ResponsiveProps) =>
-    isMobile ? '0.8rem' : '0.9rem'};
 `;
 
 export interface ButtonLayoutSubComponentProps {
@@ -75,9 +66,9 @@ export const ButtonLayout = ({
 
       {label && (
         <TextBox align="center" margin={{ top: '6px' }}>
-          <StyledText color={textColor} isMobile={isMobile}>
+          <Text color={textColor} size={isMobile ? 'small' : 'medium'}>
             {label}
-          </StyledText>
+          </Text>
         </TextBox>
       )}
     </Box>

@@ -1,8 +1,9 @@
 import { Input } from '@openfun/cunningham-react';
-import { Button, Form, Text } from 'grommet';
+import { Button, Form } from 'grommet';
 import { Maybe } from 'lib-common';
 import {
   Document,
+  Text,
   modelName,
   updateResource,
   useDocument,
@@ -89,7 +90,11 @@ export const DashboardDocumentTitleForm = ({
           margin={{ top: 'small' }}
         />
         {udpated && (
-          <Text margin="small" color="status-ok">
+          <Text
+            color="var(--c--theme--colors--success-500)"
+            className="ml-s"
+            weight="bold"
+          >
             {intl.formatMessage(messages.updateSuccessful)}
           </Text>
         )}

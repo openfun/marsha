@@ -1,6 +1,6 @@
-import { Text } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
+import { Text } from 'lib-components';
 import { Fragment, PropsWithChildren } from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
@@ -20,6 +20,9 @@ const NavLinkStyled = styled(NavLink)`
   &.active {
     background-color: ${normalizeColor('bg-menu-hover', theme)};
   }
+  &:hover {
+    background-color: var(--c--theme--colors--info-100);
+  }
 `;
 
 interface MenuItemProps {
@@ -31,7 +34,7 @@ const MenuItem = ({ route, children }: PropsWithChildren<MenuItemProps>) => {
     <Fragment>
       <NavLinkStyled to={route.path} role="menuitem" end={!route.isNavStrict}>
         {route.menuIcon}
-        <Text size="0.938rem" weight="bold">
+        <Text weight="bold" size="large">
           {route.label}
         </Text>
       </NavLinkStyled>

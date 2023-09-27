@@ -1,4 +1,4 @@
-import { Box, Grommet, Tab, Tabs, Text } from 'grommet';
+import { Box, Grommet, Tab, Tabs } from 'grommet';
 import { deepMerge } from 'grommet/utils';
 import { Document as DocumentIcon } from 'grommet-icons';
 import { theme as baseTheme } from 'lib-common';
@@ -9,6 +9,7 @@ import {
   LiveModeType,
   PlaySVG,
   Playlist,
+  Text,
   Video,
   WebinarSVG,
   appNames,
@@ -57,12 +58,7 @@ export interface RichTabTitleProps {
 export const RichTabTitle = ({ icon, label }: RichTabTitleProps) => (
   <Box direction="row" align="center">
     {icon}
-    <Text
-      size="0.938rem"
-      color="blue-active"
-      margin={{ left: 'xsmall' }}
-      weight="bold"
-    >
+    <Text className="ml-t" weight="bold">
       {label}
     </Text>
   </Box>

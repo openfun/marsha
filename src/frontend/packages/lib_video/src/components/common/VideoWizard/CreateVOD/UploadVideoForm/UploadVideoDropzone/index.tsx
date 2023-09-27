@@ -1,7 +1,7 @@
-import { Box, Text } from 'grommet';
+import { Box } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
-import { RoundPlusSVG } from 'lib-components';
+import { RoundPlusSVG, Text } from 'lib-components';
 import React from 'react';
 import { useDropzone } from 'react-dropzone';
 import { defineMessages, useIntl } from 'react-intl';
@@ -53,11 +53,7 @@ export const UploadVideoDropzone = ({
           iconColor={!isDragActive ? '#b4cff2' : 'white'}
           width="40px"
         />
-        <Text
-          color={!isDragActive ? '#b4cff2' : 'white'}
-          size="1rem"
-          textAlign="center"
-        >
+        <Text color={!isDragActive ? '#b4cff2' : 'white'} textAlign="center">
           {intl.formatMessage(messages.uploadVideoDropzoneLabel)}
         </Text>
         <input data-testid="input-video-test-id" {...getInputProps()} />

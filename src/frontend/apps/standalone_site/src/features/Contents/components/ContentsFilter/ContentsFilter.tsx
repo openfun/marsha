@@ -1,7 +1,7 @@
-import { Box, Button, Text } from 'grommet';
+import { Box, Button } from 'grommet';
 import { Filter } from 'grommet-icons';
 import { Breakpoints } from 'lib-common';
-import { Playlist, useResponsive } from 'lib-components';
+import { Playlist, Text, useResponsive } from 'lib-components';
 import { Fragment, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
@@ -124,7 +124,7 @@ const ContentsFilter = ({ setFilter, filter }: ContentsFilterProps) => {
       >
         <ButtonFilter
           label={
-            <Text size="small" color="blue-active">
+            <Text>
               <Filter color="blue-active" size="20px" />
               {intl.formatMessage(messages.labelFilter)}
             </Text>

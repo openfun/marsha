@@ -1,7 +1,7 @@
-import { Box, Text } from 'grommet';
+import { Box } from 'grommet';
 import { Facebook, Github, Linkedin, Mail, Twitter } from 'grommet-icons';
 import { Breakpoints } from 'lib-common';
-import { StyledLink, useResponsive, useSiteConfig } from 'lib-components';
+import { StyledLink, Text, useResponsive, useSiteConfig } from 'lib-components';
 import React from 'react';
 
 import { usePagesApi } from 'features/PagesApi';
@@ -58,7 +58,7 @@ const Footer = () => {
               css={linkCss}
               key={`link-${page.slug}`}
             >
-              <Text size="small">{page.name}</Text>
+              <Text color="white">{page.name}</Text>
             </StyledLink>
           ))}
         </Box>
@@ -76,7 +76,9 @@ const Footer = () => {
         >
           {siteConfig.is_default_site ? (
             <React.Fragment>
-              <Text size="small">{defaultFooterCopyright}</Text>
+              <Text size="small" color="white">
+                {defaultFooterCopyright}
+              </Text>
               <Box direction="row" gap="small">
                 <a
                   href="https://twitter.com/FunMooc"

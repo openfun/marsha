@@ -1,4 +1,4 @@
-import { Text } from 'grommet';
+import { Text } from 'lib-components';
 import * as React from 'react';
 import styled from 'styled-components';
 import { VTTCue } from 'vtt.js';
@@ -34,6 +34,8 @@ export const TranscriptSentence = ({
     <Sentence
       className={active ? 'sentence-active' : ''}
       onClick={() => setTime(cue.startTime)}
+      size="large"
+      color="clr-greyscale-800"
     >
       <span dangerouslySetInnerHTML={textSentence()} />
     </Sentence>

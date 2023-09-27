@@ -1,7 +1,6 @@
-import { Box, Meter, Stack, Text } from 'grommet';
-import { normalizeColor } from 'grommet/utils';
-import { theme } from 'lib-common';
-import React from 'react';
+import { Box, Meter } from 'grommet';
+
+import { Text } from '../Text';
 
 interface ProgressionBarProps {
   progressPercentage: number;
@@ -9,20 +8,20 @@ interface ProgressionBarProps {
 
 export const ProgressionBar = ({ progressPercentage }: ProgressionBarProps) => {
   return (
-    <Box direction="row">
-      <Stack anchor="center">
-        <Meter round size="xlarge" type="bar" value={progressPercentage} />
-        <Text
-          color={
-            progressPercentage < 45
-              ? normalizeColor('blue-active', theme)
-              : 'white'
-          }
-          size="0.725rem"
-        >
-          {progressPercentage} %
-        </Text>
-      </Stack>
+    <Box direction="row" style={{ position: 'relative' }}>
+      <Meter round size="xlarge" type="bar" value={progressPercentage} />
+      <Text
+        style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+        }}
+        color={progressPercentage < 48 ? undefined : 'white'}
+        size="small"
+      >
+        {progressPercentage} %
+      </Text>
     </Box>
   );
 };

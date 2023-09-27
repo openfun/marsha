@@ -1,7 +1,7 @@
 import { Input } from '@openfun/cunningham-react';
-import { Box, Button, Text } from 'grommet';
+import { Box, Button } from 'grommet';
 import { Breakpoints } from 'lib-common';
-import { WhiteCard, WizardLayout, useResponsive } from 'lib-components';
+import { Text, WhiteCard, WizardLayout, useResponsive } from 'lib-components';
 import {
   LanguageSelector,
   MARKDOWN_EDITOR_ROUTE,
@@ -84,12 +84,7 @@ export const MarkdownWizard = ({ markdownDocumentId }: MarkdownWizardProps) => {
               : 'xlarge',
           }}
         >
-          <Text
-            color="blue-active"
-            margin={{ bottom: 'small' }}
-            size="1rem"
-            textAlign="center"
-          >
+          <Text className="mb-t" textAlign="center">
             {intl.formatMessage(messages.descriptionText)}
           </Text>
 

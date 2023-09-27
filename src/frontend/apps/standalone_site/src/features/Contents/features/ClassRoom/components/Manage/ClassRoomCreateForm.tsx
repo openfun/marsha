@@ -1,8 +1,8 @@
 import { Field, Input } from '@openfun/cunningham-react';
-import { Box, Text, TextArea } from 'grommet';
+import { Box, TextArea } from 'grommet';
 import { Alert } from 'grommet-icons';
 import { useCreateClassroom } from 'lib-classroom';
-import { Form, FormField, ModalButton } from 'lib-components';
+import { Form, FormField, ModalButton, Text } from 'lib-components';
 import { Fragment, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
@@ -105,7 +105,7 @@ const ClassroomCreateForm = () => {
           gap="small"
         >
           <Alert size="42rem" color="#df8c00" />
-          <Text weight="bold" size="small">
+          <Text weight="bold">
             {errorMessages[errorClassroom?.detail as ETypeError] ||
               intl.formatMessage(messages.Error)}
           </Text>

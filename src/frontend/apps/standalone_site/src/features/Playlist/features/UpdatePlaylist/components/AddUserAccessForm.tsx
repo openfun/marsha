@@ -104,7 +104,6 @@ export const AddUserAccessForm = ({
                   options?.find((option) => option.value === evt.target.value),
                 );
               }}
-              fullWidth
               value={roleValue?.value}
               clearable={false}
             />

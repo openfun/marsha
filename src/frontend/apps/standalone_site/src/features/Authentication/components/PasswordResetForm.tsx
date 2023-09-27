@@ -1,6 +1,7 @@
 import { Input } from '@openfun/cunningham-react';
-import { Box, Button, Text } from 'grommet';
+import { Box, Button } from 'grommet';
 import { Alert } from 'grommet-icons';
+import { Text } from 'lib-components';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -82,9 +83,7 @@ export const PasswordResetForm = () => {
         margin={{ vertical: 'medium' }}
         gap="small"
       >
-        <Text weight="bold" size="small">
-          {intl.formatMessage(messages.explainingText)}
-        </Text>
+        <Text weight="bold">{intl.formatMessage(messages.explainingText)}</Text>
       </Box>
       <Input
         aria-label={intl.formatMessage(messages.labelFieldEmail)}
@@ -103,9 +102,7 @@ export const PasswordResetForm = () => {
           gap="small"
         >
           <Alert size="medium" color="#df8c00" />
-          <Text weight="bold" size="small">
-            {message}
-          </Text>
+          <Text weight="bold">{message}</Text>
         </Box>
       )}
       <Box flex={false} margin={{ top: 'medium' }}>

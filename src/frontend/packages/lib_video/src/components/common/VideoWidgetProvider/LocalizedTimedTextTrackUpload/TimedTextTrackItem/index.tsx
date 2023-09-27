@@ -1,7 +1,8 @@
-import { Anchor, Box, Text } from 'grommet';
+import { Anchor, Box } from 'grommet';
 import {
   ObjectStatusPicker,
   RetryUploadButton,
+  Text,
   TimedText,
   UploadingObject,
   uploadState,
@@ -70,13 +71,7 @@ export const TimedTextTrackItem = ({
 
       <Box width={{ min: '0px' }}>
         <Anchor href={timedTextTrack.source_url ?? undefined}>
-          <Text
-            color="blue-active"
-            size="0.9rem"
-            weight="normal"
-            style={{ fontFamily: 'Roboto-Medium' }}
-            truncate
-          >
+          <Text weight="medium" truncate>
             {languageLabel}
           </Text>
         </Anchor>
@@ -91,12 +86,7 @@ export const TimedTextTrackItem = ({
         {timedTextTrack.upload_state !== uploadState.READY && (
           <React.Fragment>
             {IS_UPLOAD_IN_PROGRESS ? (
-              <Text
-                color="blue-active"
-                size="0.9rem"
-                style={{ fontFamily: 'Roboto-Medium' }}
-                truncate
-              >
+              <Text weight="medium" truncate>
                 <ObjectStatusPicker
                   object={timedTextTrack}
                   uploadStatus={uploadingObject?.status}
@@ -105,11 +95,7 @@ export const TimedTextTrackItem = ({
             ) : (
               <React.Fragment>
                 <Box>
-                  <Text
-                    color="red-active"
-                    size="0.9rem"
-                    style={{ fontFamily: 'Roboto-Medium' }}
-                  >
+                  <Text color="clr-danger-300" weight="medium">
                     {intl.formatMessage(messages.retryUploadFailedLabel)}
                   </Text>
                 </Box>

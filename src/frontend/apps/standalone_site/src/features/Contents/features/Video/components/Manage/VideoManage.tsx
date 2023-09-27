@@ -1,9 +1,10 @@
-import { Box, Button, Text } from 'grommet';
+import { Box, Button } from 'grommet';
 import {
   ButtonLoaderStyle,
   Heading,
   Modal,
   ModalButton,
+  Text,
   UploadManager,
   report,
 } from 'lib-components';
@@ -127,9 +128,9 @@ const VideoManage = () => {
   return (
     <Fragment>
       <ContentsHeader>
-        <Text size="large" weight="bold">
+        <Heading level={3} className="m-0">
           {intl.formatMessage(messages.VideoTitle)}
-        </Text>
+        </Heading>
         {!isSelectionEnabled && (
           <Box direction="row" gap="small">
             <Button
@@ -193,7 +194,7 @@ const VideoManage = () => {
             item_count: selectedItems.length,
           })}
         </Heading>
-        <Text margin={{ top: 'small' }}>
+        <Text className="mt-t">
           {intl.formatMessage(messages.confirmDeleteVideosText, {
             item_count: selectedItems.length,
           })}

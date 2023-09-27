@@ -1,11 +1,12 @@
 import { Field, Input } from '@openfun/cunningham-react';
-import { Box, Text, TextArea } from 'grommet';
+import { Box, TextArea } from 'grommet';
 import { Alert } from 'grommet-icons';
 import { Nullable } from 'lib-common';
 import {
   Form,
   FormField,
   ModalButton,
+  Text,
   UploadManagerStatus,
   Video,
   modelName,
@@ -124,9 +125,7 @@ const VideoCreateForm = () => {
           gap="small"
         >
           <Alert size="42rem" color="#df8c00" />
-          <Text weight="bold" size="small">
-            {intl.formatMessage(messages.Error)}
-          </Text>
+          <Text weight="bold">{intl.formatMessage(messages.Error)}</Text>
         </Box>
       )}
       <Form
