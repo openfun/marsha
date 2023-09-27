@@ -1,10 +1,8 @@
 {
   "Box": 513,
-  "Text": 138,
   "Button": 83,
-  "Paragraph": 42,
-  "Stack": 17,
   "Spinner": 16,
+  "Stack": 16,
   "Tab": 15,
   "Grid": 10,
   "ThemeContext.Extend": 10,
