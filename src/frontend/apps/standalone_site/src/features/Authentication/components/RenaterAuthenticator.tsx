@@ -1,5 +1,5 @@
-import { Box, FormField, Image, Text, ThemeContext } from 'grommet';
-import { ClosingCard, Select, useResponsive } from 'lib-components';
+import { Box, FormField, Image, ThemeContext } from 'grommet';
+import { ClosingCard, Select, Text, useResponsive } from 'lib-components';
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useLocation } from 'react-router-dom';
@@ -92,7 +92,7 @@ export const RenaterAuthenticator = () => {
                 {intl.formatMessage(messages.errorMessage)}
               </Text>
               {messageErrorQuery && (
-                <Text size="small" weight="bold" margin={{ top: '2px' }}>
+                <Text size="small" weight="bold" className="mt-st">
                   {messageErrorQuery}
                 </Text>
               )}
@@ -113,7 +113,7 @@ export const RenaterAuthenticator = () => {
         <Box background="blue-active" height="1px" width="100%" />
         <Box width="100%">
           <Text
-            size={isSmallerBreakpoint(breakpoint, 'small') ? 'xsmall' : 'small'}
+            size={isSmallerBreakpoint(breakpoint, 'small') ? 'tiny' : 'small'}
             textAlign="center"
             weight="bold"
           >

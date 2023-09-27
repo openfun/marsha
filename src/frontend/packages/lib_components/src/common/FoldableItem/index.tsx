@@ -1,11 +1,12 @@
-import { Box, Button, Collapsible, Text } from 'grommet';
+import { Box, Button, Collapsible } from 'grommet';
 import React, { useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import styled from 'styled-components';
 
 import { DownArrowSVG } from '@lib-components/common/SVGIcons/DownArrowSVG';
 import { InfoCircleSVG } from '@lib-components/common/SVGIcons/InfoCircleSVG';
 import { useInfoWidgetModal } from '@lib-components/hooks/stores/useInfoWidgetModal';
+
+import { Heading } from '../Headings';
 
 const messages = defineMessages({
   helpButtonTitle: {
@@ -14,10 +15,6 @@ const messages = defineMessages({
     id: 'components.WidgetTemplate.helpButtonTitle',
   },
 });
-
-const StyledTitleText = styled(Text)`
-  font-family: 'Roboto-Bold';
-`;
 
 interface WidgetTemplateProps {
   children: React.ReactNode;
@@ -96,9 +93,9 @@ export const FoldableItem = ({
               />
             </Box>
             <Box style={{ minWidth: '0' }}>
-              <StyledTitleText color="blue-active" size="1.125rem" truncate>
+              <Heading level={3} truncate className="m-0">
                 {title}
-              </StyledTitleText>
+              </Heading>
             </Box>
           </Box>
         </Button>

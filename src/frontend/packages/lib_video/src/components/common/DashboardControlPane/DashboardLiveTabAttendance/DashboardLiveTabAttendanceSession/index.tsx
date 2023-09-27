@@ -1,9 +1,10 @@
-import { Box, Text } from 'grommet';
+import { Box } from 'grommet';
 import { CircleAlert, Clear, StatusGood, StatusGoodSmall } from 'grommet-icons';
 import {
   LiveAttendance,
   LiveAttendanceInfo,
   LiveAttendanceInfos,
+  Text,
 } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -111,11 +112,9 @@ export const DashboardLiveTabAttendanceSession = ({
       <Box direction="row" pad="medium">
         {badge}
         <Text
-          margin={{ left: '2rem' }}
-          color={zeroPercent ? 'red-active' : 'blue-active'}
-          style={{ fontFamily: 'Roboto-Medium' }}
-          size="16px"
-          weight={liveSession.is_registered ? 'bold' : 500}
+          color={zeroPercent ? 'clr-danger-300' : undefined}
+          weight={liveSession.is_registered ? 'bold' : 'medium'}
+          className="ml-b"
         >
           {liveSession.display_name}
         </Text>
@@ -128,13 +127,7 @@ export const DashboardLiveTabAttendanceSession = ({
           round="6px"
           pad="small"
         >
-          <Text
-            textAlign="center"
-            color="white"
-            size="12px"
-            margin={{ left: 'small' }}
-            style={{ fontFamily: 'Roboto-Medium' }}
-          >
+          <Text textAlign="center" color="white" size="small">
             {zeroPercent ? '-' : `${infoSession.percent}  %`}
           </Text>
         </Box>

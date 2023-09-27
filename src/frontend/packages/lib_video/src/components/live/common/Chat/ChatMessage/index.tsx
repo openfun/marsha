@@ -1,9 +1,8 @@
-import { Anchor, Box, Text } from 'grommet';
-import { chatFonts } from 'lib-common';
+import { Anchor, Box } from 'grommet';
+import { Text } from 'lib-components';
 import * as linkify from 'linkifyjs';
 import React, { useMemo } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import styled from 'styled-components';
 
 import { ChatMessageType } from '@lib-video/hooks/useChatItemsStore';
 
@@ -14,12 +13,6 @@ const messages = defineMessages({
     id: 'component.ChatMessage.sentAt',
   },
 });
-
-const MessageContentTextStyled = styled(Text)`
-  line-height: ${chatFonts.secondary.lineHeight};
-  letter-spacing: ${chatFonts.secondary.letterSpacing};
-  font-family: ${chatFonts.secondary.fontFamily};
-`;
 
 interface ChatMessageProps {
   message: ChatMessageType;
@@ -38,11 +31,7 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
           sentAt: message.sentAt.toFormat('HH:mm:ss'),
         })}
       >
-        <MessageContentTextStyled
-          color={chatFonts.secondary.color}
-          size={chatFonts.secondary.fontSize}
-          wordBreak="break-word"
-        >
+        <Text>
           {messageTokens.length > 0
             ? messageTokens.map((token, index) => {
                 if (token.t === 'text') {
@@ -61,7 +50,7 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
                 }
               })
             : message.content}
-        </MessageContentTextStyled>
+        </Text>
       </Box>
     ),
     [message, intl, messageTokens],

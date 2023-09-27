@@ -1,5 +1,4 @@
-import { Text } from 'grommet';
-import { RetryUploadButton, formatSizeErrorScale } from 'lib-components';
+import { RetryUploadButton, Text, formatSizeErrorScale } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -42,7 +41,7 @@ export const UploadVideoRetry = ({
 
   return (
     <BigDashedBox direction="row">
-      <Text color="red-active" size="1rem">
+      <Text color="clr-danger-300" size="large">
         {outputMessage}
       </Text>
       <RetryUploadButton

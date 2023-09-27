@@ -1,6 +1,6 @@
-import { Box, Select, Text, ThemeContext } from 'grommet';
+import { Box, Select, ThemeContext } from 'grommet';
 import { Breakpoints, theme } from 'lib-common';
-import { useResponsive } from 'lib-components';
+import { Text, useResponsive } from 'lib-components';
 import { Fragment } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { css } from 'styled-components';

@@ -85,7 +85,7 @@ describe('<ToggleInput />', () => {
     );
 
     const text = screen.getByText('An example title');
-    expect(text).toHaveStyleRule('text-overflow', 'ellipsis');
+    expect(text).toHaveStyle('text-overflow: ellipsis');
   });
 
   it('renders a non truncated label', () => {
@@ -103,6 +103,6 @@ describe('<ToggleInput />', () => {
     );
 
     const text = screen.getByText('An example title');
-    expect(text).not.toHaveStyleRule('text-overflow', 'ellipsis');
+    expect(text).not.toHaveStyle('text-overflow: ellipsis');
   });
 });

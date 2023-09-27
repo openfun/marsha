@@ -1,5 +1,5 @@
-import { Box, Image, Text } from 'grommet';
-import { Heading, StyledLink, useResponsive } from 'lib-components';
+import { Box, Image } from 'grommet';
+import { Heading, StyledLink, Text, useResponsive } from 'lib-components';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
@@ -83,7 +83,7 @@ const HomePage = () => {
             <HeadingBanner
               level={2}
               style={{ marginBottom: '1.3vw', marginTop: '0' }}
-              color="var(--c--theme--colors--primary-800)"
+              color="clr-primary-800"
               $isFullLayout={
                 isSmallerBreakpoint(breakpoint, 'xsmedium') ||
                 !isMenuOpen(isDesktop)
@@ -93,7 +93,7 @@ const HomePage = () => {
             </HeadingBanner>
             <TextBanner
               weight="bold"
-              color="blue-content"
+              color="clr-primary-800"
               $isFullLayout={
                 isSmallerBreakpoint(breakpoint, 'xsmedium') ||
                 !isMenuOpen(isDesktop)
@@ -106,7 +106,7 @@ const HomePage = () => {
       </BannerBox>
       <Box margin={{ top: 'medium' }}>
         <Box direction="row" justify="end" margin={{ bottom: 'small' }}>
-          <Text weight="bolder" color="blue-content">
+          <Text weight="bold" color="clr-primary-800">
             <StyledLink to={routes.CONTENTS.path}>
               › {intl.formatMessage(messages.SeeEverything)}
             </StyledLink>

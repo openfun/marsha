@@ -1,12 +1,14 @@
-import { Box, Button, Layer, Text } from 'grommet';
+import { Box, Button, Layer } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import styled from 'styled-components';
 
 import { RoundCrossSVG } from '@lib-components/common/SVGIcons/RoundCrossSVG';
 import { useResponsive } from '@lib-components/hooks/useResponsive';
+
+import { Heading } from '../Headings';
+import { Text } from '../Text';
 
 const messages = defineMessages({
   confirmButtonLabel: {
@@ -20,14 +22,6 @@ const messages = defineMessages({
     id: 'components.ConfirmationModal.cancelButtonLabel',
   },
 });
-
-const StyledTitleText = styled(Text)`
-  font-family: 'Roboto-Medium';
-`;
-
-const StyledText = styled(Text)`
-  line-height: 20px;
-`;
 
 interface ConfirmationModalProps {
   text: string;
@@ -75,12 +69,10 @@ export const ConfirmationModal = ({
           gap="medium"
           pad={{ horizontal: 'large', bottom: '30px' }}
         >
-          <StyledTitleText color="blue-active" size="1.5rem" truncate>
+          <Heading level={2} truncate className="m-0">
             {title}
-          </StyledTitleText>
-          <StyledText color="blue-active" size="1rem">
-            {text}
-          </StyledText>
+          </Heading>
+          <Text>{text}</Text>
           <Box direction="row" gap="medium">
             <Button
               primary

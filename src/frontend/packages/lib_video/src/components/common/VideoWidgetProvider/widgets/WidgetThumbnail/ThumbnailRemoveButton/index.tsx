@@ -1,10 +1,11 @@
-import { Button, Text } from 'grommet';
+import { Button } from 'grommet';
 import {
   BinSVG,
   ButtonLoaderStyle,
   Modal,
   ModalButton,
   ModalControlMethods,
+  Text,
   Thumbnail,
   report,
   useThumbnail,
@@ -80,7 +81,7 @@ export const ThumbnailRemoveButton = ({
   return (
     <React.Fragment>
       <Modal controlMethods={modalActions}>
-        <Text margin={{ top: 'small' }}>
+        <Text className="mt-s">
           {intl.formatMessage(messages.confirmationModalText)}
         </Text>
         <ModalButton

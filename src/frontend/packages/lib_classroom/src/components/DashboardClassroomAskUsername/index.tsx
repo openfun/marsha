@@ -1,6 +1,6 @@
 import { Input } from '@openfun/cunningham-react';
-import { Box, CheckBox, Text } from 'grommet';
-import { Classroom, DashboardButton } from 'lib-components';
+import { Box, CheckBox } from 'grommet';
+import { Classroom, DashboardButton, Text } from 'lib-components';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -116,7 +116,7 @@ export const DashboardClassroomAskUsernameStudent = ({
             ]}
             round="small"
           >
-            <Text size="small" color="bg-lightgrey">
+            <Text size="small" color="clr-greyscale-400">
               {recordingPurpose}
             </Text>
           </Box>

@@ -1,5 +1,5 @@
-import { Box, Text } from 'grommet';
-import { Heading, StyledLink } from 'lib-components';
+import { Box } from 'grommet';
+import { Heading, StyledLink, Text } from 'lib-components';
 import { Fragment } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
@@ -41,7 +41,7 @@ const Contents = ({ playlistId }: ContentsProps) => {
             <Heading level={3} style={{ margin: '0' }}>
               {intl.formatMessage(sample.title)}
             </Heading>
-            <Text weight="bolder">
+            <Text weight="bold">
               <StyledLink
                 to={{
                   pathname: sample.route,

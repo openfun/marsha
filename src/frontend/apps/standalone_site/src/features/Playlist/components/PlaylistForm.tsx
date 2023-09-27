@@ -1,5 +1,5 @@
 import { Input, Select } from '@openfun/cunningham-react';
-import { Box, Button, Text, ThemeContext } from 'grommet';
+import { Box, Button, ThemeContext } from 'grommet';
 import { Nullable } from 'lib-common';
 import {
   BoxLoader,
@@ -10,6 +10,7 @@ import {
   Modal,
   ModalButton,
   Organization,
+  Text,
   report,
 } from 'lib-components';
 import { ReactNode, useLayoutEffect, useMemo, useState } from 'react';
@@ -315,7 +316,9 @@ export const PlaylistForm = ({
   if (isError) {
     return (
       <Box width="large">
-        <Text>{intl.formatMessage(messages.errorOrganizations)}</Text>
+        <Text textAlign="center">
+          {intl.formatMessage(messages.errorOrganizations)}
+        </Text>
         <Box margin="auto" pad={{ top: 'medium' }}>
           <Button
             onClick={() => {
@@ -457,9 +460,7 @@ export const PlaylistForm = ({
               <Heading level={2} textAlign="center" className="mt-0 mb-b">
                 {intl.formatMessage(messages.deleteModalTitle)}
               </Heading>
-              <Text margin={{ top: 'small' }}>
-                {intl.formatMessage(messages.confirmDeleteText)}
-              </Text>
+              <Text>{intl.formatMessage(messages.confirmDeleteText)}</Text>
               <ModalButton
                 label={intl.formatMessage(messages.confirmDeleteTitle)}
                 onClickCancel={() => setIsModalOpen(false)}

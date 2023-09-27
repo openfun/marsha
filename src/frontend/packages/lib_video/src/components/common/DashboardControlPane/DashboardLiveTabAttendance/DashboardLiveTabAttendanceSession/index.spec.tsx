@@ -23,7 +23,7 @@ describe('<DashboardLiveTabAttendanceSession />', () => {
 
     screen.getByLabelText('Missed the live');
     const username = screen.getByText('sam');
-    expect(username).toHaveStyle('font-weight: bold;');
+    expect(username).toHaveClass('fw-bold');
     screen.getByText('-');
     // there are 5 timestamps
     expect(screen.getAllByLabelText('Missed').length).toEqual(5);
@@ -69,7 +69,7 @@ describe('<DashboardLiveTabAttendanceSession />', () => {
 
     screen.getByLabelText('Partially present');
     const username = screen.getByText('sam');
-    expect(username).toHaveStyle('font-weight: 500;');
+    expect(username).toHaveClass('fw-medium');
     screen.getByText('50 %');
     // there are 6 timestamps
     expect(screen.getAllByLabelText('Missed').length).toEqual(3);
@@ -137,7 +137,7 @@ describe('<DashboardLiveTabAttendanceSession />', () => {
     screen.getByLabelText('Very diligent');
 
     const username = screen.getByText('sam');
-    expect(username).toHaveStyle('font-weight: 500;');
+    expect(username).toHaveClass('fw-medium');
     screen.getByText('83 %');
     // there are 6 timestamps
     expect(screen.getAllByLabelText('Missed').length).toEqual(1);
@@ -175,7 +175,7 @@ describe('<DashboardLiveTabAttendanceSession />', () => {
     screen.getByLabelText('Partially present');
 
     const username = screen.getByText('sam');
-    expect(username).toHaveStyle('font-weight: 500;');
+    expect(username).toHaveClass('fw-medium');
     screen.getByText('67 %');
     // there are 3 timestamps
     expect(screen.getAllByLabelText('Missed').length).toEqual(1);
@@ -204,7 +204,7 @@ describe('<DashboardLiveTabAttendanceSession />', () => {
     screen.getByLabelText('Very diligent');
 
     const username = screen.getByText('sam');
-    expect(username).toHaveStyle('font-weight: 500;');
+    expect(username).toHaveClass('fw-medium');
     screen.getByText('80 %');
     // there are 5 timestamps
     expect(screen.getAllByLabelText('Missed').length).toEqual(1);
@@ -226,7 +226,7 @@ describe('<DashboardLiveTabAttendanceSession />', () => {
 
     screen.getByLabelText('Missed the live');
     const username = screen.getByText('sam');
-    expect(username).toHaveStyle('font-weight: bold;');
+    expect(username).toHaveClass('fw-bold');
     screen.getByText('-');
     // no timestamps
     expect(screen.queryAllByLabelText('Missed').length).toEqual(0);

@@ -1,8 +1,9 @@
-import { Box, Button, Paragraph, Text } from 'grommet';
+import { Box, Button, Paragraph } from 'grommet';
 import { Nullable } from 'lib-common';
 import {
   Classroom,
   PlusSVG,
+  Text,
   UploadManagerStatus,
   formatSizeErrorScale,
   ClassroomModelName as modelName,
@@ -177,13 +178,7 @@ export const UploadDocuments = ({ classroomId }: UploadDocumentsProps) => {
 
   return (
     <Box>
-      <Text
-        color="blue-active"
-        size="0.875rem"
-        style={{ fontFamily: 'Roboto-Medium' }}
-      >
-        {intl.formatMessage(messages.dropzoneTitle)}
-      </Text>
+      <Text weight="medium">{intl.formatMessage(messages.dropzoneTitle)}</Text>
       <Box
         align="center"
         background="blue-message"
@@ -229,7 +224,7 @@ export const UploadDocuments = ({ classroomId }: UploadDocumentsProps) => {
                   aria-label="File Upload"
                   aria-hidden="true"
                 />
-                <Box direction="row" align="center">
+                <Box direction="row" align="center" gap="small">
                   <PlusSVG iconColor="#75A7E5" height="35px" width="35px" />
                   <Paragraph color="#75A7E5" textAlign="center" margin="none">
                     {intl.formatMessage(messages.dropzonePlaceholder)}

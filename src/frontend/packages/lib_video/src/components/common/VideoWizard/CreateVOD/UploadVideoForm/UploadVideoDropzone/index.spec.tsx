@@ -65,7 +65,7 @@ describe('<UploadVideoDropzone />', () => {
       expect(dashedBox).toHaveStyle('background-color: #b4cff2'),
     );
     expect(svg).toHaveStyle(`fill:  #ffffff`);
-    expect(text).toHaveStyle(`color: ${normalizeColor('white', theme)}`);
+    expect(text).toHaveStyle(`color: white`);
 
     fireEvent.dragLeave(
       container.querySelector('input[type="file"]')!,

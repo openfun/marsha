@@ -1,5 +1,5 @@
 import { Select } from '@openfun/cunningham-react';
-import { Box, Button, Text } from 'grommet';
+import { Box, Button } from 'grommet';
 import {
   AnonymousUser,
   BinSVG,
@@ -7,6 +7,7 @@ import {
   Modal,
   ModalButton,
   ModalControlMethods,
+  Text,
   useCurrentUser,
 } from 'lib-components';
 import { Fragment, useRef, useState } from 'react';
@@ -87,17 +88,7 @@ export const UserLabelColumn = ({ user }: UserLabelColumnProps) => {
     userLabel = user.email;
   }
 
-  return (
-    <Text
-      truncate
-      style={{
-        display: 'block',
-        whiteSpace: 'normal',
-      }}
-    >
-      {userLabel}
-    </Text>
-  );
+  return <Text truncate={2}>{userLabel}</Text>;
 };
 
 interface UserRolesColumnProps {
@@ -186,7 +177,7 @@ export const UserDeleteColumn = ({
   return (
     <Fragment>
       <Modal controlMethods={modalActions}>
-        <Text margin={{ top: 'small' }}>
+        <Text className="mt-s">
           {intl.formatMessage(messages.deleteUserDescription)}
         </Text>
         <ModalButton

@@ -1,7 +1,8 @@
 import { Input } from '@openfun/cunningham-react';
-import { Box, Button, Text } from 'grommet';
+import { Box, Button } from 'grommet';
 import { Breakpoints, Nullable } from 'lib-common';
 import {
+  Text,
   Video,
   WhiteCard,
   modelName,
@@ -161,12 +162,7 @@ export const CreateVOD = ({
               : 'xlarge',
           }}
         >
-          <Text
-            color="blue-active"
-            margin={{ bottom: 'small' }}
-            size="1rem"
-            textAlign="center"
-          >
+          <Text textAlign="center">
             {intl.formatMessage(messages.descriptionText)}
           </Text>
 

@@ -1,7 +1,7 @@
-import { Box, Text } from 'grommet';
+import { Box } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
-import { useResponsive } from 'lib-components';
+import { Text, useResponsive } from 'lib-components';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
@@ -80,7 +80,7 @@ const Menu = () => {
         margin={{ vertical: 'medium', horizontal: 'xxsmall' }}
       />
       <Box role="group">
-        <Text size="small" weight="bold" margin={{ left: '1rem' }}>
+        <Text weight="bold" className="ml-s">
           {intl.formatMessage(messages.menuTypeContentLabel)}
         </Text>
         {contents.map((content, index) => (

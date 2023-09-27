@@ -1,8 +1,9 @@
-import { Box, Text } from 'grommet';
+import { Box } from 'grommet';
 import { Nullable } from 'lib-common';
 import {
   AnonymousUser,
   Heading,
+  Text,
   useCurrentUser,
   useResponsive,
 } from 'lib-components';
@@ -31,7 +32,7 @@ const Field = ({ value, defaultMessage }: FieldProps) => {
       background="#edf5fa"
       round="8px"
     >
-      <Text color={value === null ? 'bg-grey' : undefined} truncate>
+      <Text color={value === null ? 'clr-greyscale-400' : undefined}>
         {value || defaultMessage}
       </Text>
     </Box>

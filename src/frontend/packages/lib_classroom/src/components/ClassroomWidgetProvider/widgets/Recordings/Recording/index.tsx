@@ -1,9 +1,10 @@
-import { Anchor, Box, Button, Text } from 'grommet';
+import { Anchor, Box, Button } from 'grommet';
 import { createVOD, useClassroom } from 'lib-classroom';
 import { Nullable } from 'lib-common';
 import {
   ClassroomRecording,
   CopyClipboard,
+  Text,
   uploadState,
   useCurrentResourceContext,
 } from 'lib-components';
@@ -143,20 +144,14 @@ const VodNotReady = ({
         target="_blank"
         rel="noreferrer noopener"
       >
-        <Text
-          color="blue-active"
-          size="0.9rem"
-          style={{ whiteSpace: 'initial' }}
-        >
+        <Text style={{ whiteSpace: 'initial' }}>
           {recording.vod
             ? recording.vod.title
             : buildRecordingTitle(recording, intl)}
         </Text>
       </StyledAnchor>
       {recording.vod ? (
-        <Text color="blue-active" size="0.9rem">
-          {recording.vod.upload_state}
-        </Text>
+        <Text>{recording.vod.upload_state}</Text>
       ) : (
         <Button
           a11yTitle={
@@ -201,9 +196,7 @@ const VodReady = ({ recording }: RecordingProps) => {
           to={`/my-contents/videos/${recording.vod.id}`}
           title={intl.formatMessage(messages.vodDashboardLabel)}
         >
-          <Text color="blue-active" size="0.9rem">
-            {recording.vod.title}
-          </Text>
+          <Text>{recording.vod.title}</Text>
         </NavLinkStyled>
       )}
       {ltiLink && (

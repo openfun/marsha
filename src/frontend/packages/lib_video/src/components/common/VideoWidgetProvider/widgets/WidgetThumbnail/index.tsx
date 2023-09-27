@@ -1,10 +1,11 @@
-import { Box, Button, Stack, Text } from 'grommet';
+import { Box, Button, Stack } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { Nullable, theme } from 'lib-common';
 import {
   BoxLoader,
   FoldableItem,
   PictureSVG,
+  Text,
   ThumbnailDisplayer,
   UploadManagerStatus,
   formatSizeErrorScale,
@@ -193,12 +194,7 @@ export const WidgetThumbnail = ({ isLive = true }: WidgetThumbnailProps) => {
                 pad="small"
                 round="xsmall"
               >
-                <Text
-                  color="blue-active"
-                  size="1rem"
-                  style={{ fontFamily: 'Roboto-Medium' }}
-                  truncate
-                >
+                <Text size="large" weight="medium" truncate>
                   {intl.formatMessage(messages.uploadThumbnailButtonLabel)}
                 </Text>
                 <PictureSVG

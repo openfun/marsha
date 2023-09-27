@@ -1,7 +1,10 @@
-import { Box, Stack, Tab, Text } from 'grommet';
-import { normalizeColor } from 'grommet/utils';
-import { theme, colors as themeColors } from 'lib-common';
-import { RingingBellSVG, useCurrentResourceContext } from 'lib-components';
+import { Box, Stack, Tab } from 'grommet';
+import { colors as themeColors } from 'lib-common';
+import {
+  RingingBellSVG,
+  Text,
+  useCurrentResourceContext,
+} from 'lib-components';
 import React from 'react';
 import { FormattedMessage, defineMessages } from 'react-intl';
 import styled from 'styled-components';
@@ -125,14 +128,7 @@ export const LiveVideoTabPanel = ({
                 direction="row"
                 gap="xxsmall"
               >
-                <Text
-                  color="blue-active"
-                  size="0.650rem"
-                  style={{
-                    color: normalizeColor('blue-active', theme),
-                    fontFamily: 'Roboto-Medium',
-                  }}
-                >
+                <Text size="tiny">
                   {video.participants_asking_to_join.length}
                 </Text>
                 <RingingBellSVG

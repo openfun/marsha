@@ -1,11 +1,6 @@
-import { Box, CheckBox, Text } from 'grommet';
+import { Box, CheckBox } from 'grommet';
 import { FormSchedule, InProgress } from 'grommet-icons';
-import {
-  ClassroomLite,
-  ContentCard,
-  StyledLink,
-  TextTruncated,
-} from 'lib-components';
+import { ClassroomLite, ContentCard, StyledLink, Text } from 'lib-components';
 import { Fragment, useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 
@@ -70,8 +65,7 @@ const ClassRoom = ({ classroom }: { classroom: ClassroomLite }) => {
               weight="bold"
               color="white"
               textAlign="center"
-              size="small"
-              margin={{ top: 'small' }}
+              className="mt-t"
               truncate
               style={{ maxWidth: '85%' }}
             >
@@ -86,7 +80,7 @@ const ClassRoom = ({ classroom }: { classroom: ClassroomLite }) => {
                 <Box>
                   <FormSchedule size="medium" color="blue-active" />
                 </Box>
-                <Text size="0.688rem" weight="bold">
+                <Text size="tiny" weight="bold">
                   {localDate(classroom.starting_at, intl.locale)}
                 </Text>
               </Box>
@@ -96,7 +90,7 @@ const ClassRoom = ({ classroom }: { classroom: ClassroomLite }) => {
                 <Box>
                   <InProgress color="blue-active" style={{ height: '20px' }} />
                 </Box>
-                <Text size="0.688rem" weight="bold">
+                <Text size="tiny" weight="bold">
                   {classroom.estimated_duration}
                 </Text>
               </Box>
@@ -105,7 +99,7 @@ const ClassRoom = ({ classroom }: { classroom: ClassroomLite }) => {
               <Box>
                 <VueListIcon width={20} height={20} color="blue-active" />
               </Box>
-              <Text size="0.688rem" weight="bold">
+              <Text size="tiny" weight="bold">
                 {classroom.playlist.title}
               </Text>
             </Box>
@@ -114,13 +108,14 @@ const ClassRoom = ({ classroom }: { classroom: ClassroomLite }) => {
         title={classroom.title || ''}
       >
         {classroom.description && (
-          <TextTruncated
-            size="0.688rem"
+          <Text
+            size="small"
+            truncate={5}
             color="grey"
             title={classroom.description}
           >
             {classroom.description}
-          </TextTruncated>
+          </Text>
         )}
       </ContentCard>
     </StyledLink>

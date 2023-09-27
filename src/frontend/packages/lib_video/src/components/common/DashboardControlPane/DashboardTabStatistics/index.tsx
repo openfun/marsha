@@ -1,5 +1,5 @@
-import { Box, Grid, Text } from 'grommet';
-import { BoxLoader } from 'lib-components';
+import { Box, Grid } from 'grommet';
+import { BoxLoader, Text } from 'lib-components';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -74,20 +74,15 @@ export const DashboardTabStatistics = () => {
               pad={{ horizontal: '15px', vertical: '20px' }}
             >
               <Text
-                color="#055FD2"
-                weight="bold"
-                size="40px"
-                alignSelf="center"
+                weight="black"
+                textAlign="center"
+                style={{
+                  fontSize: '40px',
+                }}
               >
                 {metric.value} {metric.sign}
               </Text>
-              <Text
-                color="#055FD2"
-                weight="normal"
-                size="16px"
-                alignSelf="center"
-                textAlign="center"
-              >
+              <Text size="large" textAlign="center">
                 {metric.description}
               </Text>
             </Box>

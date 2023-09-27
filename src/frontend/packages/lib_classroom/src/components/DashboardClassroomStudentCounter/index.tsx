@@ -1,4 +1,5 @@
-import { Box, Grid, Text } from 'grommet';
+import { Box, Grid } from 'grommet';
+import { Text } from 'lib-components';
 import { DateTime, DurationObjectUnits } from 'luxon';
 import React, { useCallback, useEffect } from 'react';
 
@@ -45,17 +46,10 @@ export const DashboardClassroomStudentCounter = ({
         <Grid columns={{ count: 4, size: 'auto' }}>
           {Object.entries(counter).map(([name, value]) => (
             <Box key={name}>
-              <Text
-                size="large"
-                weight="bold"
-                color="blue-active"
-                textAlign="center"
-              >
+              <Text size="xlarge" weight="bold" textAlign="center">
                 {value}
               </Text>
-              <Text color="blue-active" textAlign="center">
-                {name}
-              </Text>
+              <Text textAlign="center">{name}</Text>
             </Box>
           ))}
         </Grid>

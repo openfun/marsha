@@ -1,6 +1,11 @@
-import { Anchor, Box, Text } from 'grommet';
+import { Anchor, Box } from 'grommet';
 import { Breakpoints } from 'lib-common';
-import { DepositedFile, truncateFilename, useResponsive } from 'lib-components';
+import {
+  DepositedFile,
+  Text,
+  truncateFilename,
+  useResponsive,
+} from 'lib-components';
 import { DateTime } from 'luxon';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -62,17 +67,13 @@ export const DepositedFileRow = ({ file }: DepositedFileProps) => {
       pad="medium"
       round="small"
     >
-      <Box direction="row" fill>
+      <Box direction="row" fill align="center">
         <Box justify="start" gap="small" flex>
-          <Text size="medium">{file.author_name}</Text>
+          <Text weight="medium">{file.author_name}</Text>
         </Box>
         {uploadedOn && (
           <Box justify="start" flex="shrink">
-            <Text
-              size="small"
-              wordBreak="keep-all"
-              margin={{ right: 'xxsmall' }}
-            >
+            <Text size="small" className="mr-t">
               {uploadedOnDate}&nbsp;{uploadedOnTime}
             </Text>
           </Box>
@@ -105,7 +106,7 @@ export const DepositedFileRow = ({ file }: DepositedFileProps) => {
 
       <Box direction="row" fill>
         <Box justify="start" flex>
-          <Text title={file.filename} weight={file.read ? 'normal' : 'bolder'}>
+          <Text title={file.filename} weight={file.read ? 'regular' : 'bold'}>
             {isSmallerBreakpoint(breakpoint, Breakpoints.large)
               ? truncateFilename(file.filename, 40)
               : breakpoint === 'large'

@@ -1,8 +1,9 @@
-import { Box, Text } from 'grommet';
+import { Box } from 'grommet';
 import {
   DashedBoxCustom,
   FoldableItem,
   SchedulingFields,
+  Text,
   TextAreaInput,
   Video,
   debounce,
@@ -132,10 +133,8 @@ export const SchedulingAndDescription = () => {
         <DashedBoxCustom>
           {video.starting_at ? (
             <Fragment>
-              <Text color="blue-active" size="0.875rem">
-                {intl.formatMessage(messages.endDateWebinarLabel)}
-              </Text>
-              <Text color="blue-active" size="0.875rem">
+              <Text>{intl.formatMessage(messages.endDateWebinarLabel)}</Text>
+              <Text>
                 {video.estimated_duration
                   ? DateTime.fromISO(video.starting_at)
                       .plus(Duration.fromISOTime(video.estimated_duration))
@@ -150,7 +149,7 @@ export const SchedulingAndDescription = () => {
             </Fragment>
           ) : (
             <Box fill>
-              <Text alignSelf="center" color="blue-active" size="0.875rem">
+              <Text textAlign="center">
                 {intl.formatMessage(messages.notScheduledWebinar)}
               </Text>
             </Box>

@@ -1,19 +1,11 @@
-import { Box, Button, Layer, Text } from 'grommet';
+import { Box, Button, Heading, Layer } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { isFirefox, isIframe, theme } from 'lib-common';
 import React, { useCallback, useEffect } from 'react';
-import styled from 'styled-components';
 
 import { RoundCrossSVG } from '@lib-components/common/SVGIcons/RoundCrossSVG';
+import { Text } from '@lib-components/common/Text';
 import { useResponsive } from '@lib-components/hooks/useResponsive';
-
-const StyledTitleText = styled(Text)`
-  font-family: 'Roboto-Medium';
-`;
-
-const StyledText = styled(Text)`
-  line-height: 20px;
-`;
 
 interface InfoModalProps {
   text: string;
@@ -90,16 +82,10 @@ export const InfoModal = ({
           gap="medium"
           pad={{ horizontal: 'large', bottom: '30px' }}
         >
-          <StyledTitleText color="blue-active" size="1.125rem" truncate>
+          <Heading level={3} truncate className="m-0">
             {title}
-          </StyledTitleText>
-          <StyledText
-            color="blue-active"
-            size="0.875rem"
-            style={{ whiteSpace: 'pre-line' }}
-          >
-            {text}
-          </StyledText>
+          </Heading>
+          <Text style={{ whiteSpace: 'pre-line' }}>{text}</Text>
         </Box>
       </Box>
     </Layer>

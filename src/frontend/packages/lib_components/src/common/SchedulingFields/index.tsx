@@ -1,5 +1,5 @@
 import { DatePicker } from '@openfun/cunningham-react';
-import { Box, FormField, Text, TextInput } from 'grommet';
+import { Box, FormField, TextInput } from 'grommet';
 import { MarginType } from 'grommet/utils';
 import { Nullable } from 'lib-common';
 import { DateTime, Duration, Settings } from 'luxon';
@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { FormHelpText } from '@lib-components/common/Form';
+import { Text } from '@lib-components/common/Text';
 
 import { mergeDateTime, splitDateTime } from './utils';
 
@@ -281,7 +282,7 @@ export const SchedulingFields = ({
       </Box>
       {startingAtError && (
         <Box margin={{ top: 'small' }}>
-          <Text alignSelf="center" color="status-critical">
+          <Text textAlign="center" color="clr-danger-300">
             {startingAtError}
           </Text>
         </Box>

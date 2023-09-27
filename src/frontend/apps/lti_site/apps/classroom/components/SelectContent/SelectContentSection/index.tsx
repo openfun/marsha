@@ -1,12 +1,7 @@
 import { Box, Button, Grid } from 'grommet';
 import { AddCircle } from 'grommet-icons';
 import { Nullable } from 'lib-common';
-import {
-  Classroom,
-  ClassroomSVG,
-  ContentCard,
-  TextTruncated,
-} from 'lib-components';
+import { Classroom, ClassroomSVG, ContentCard, Text } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -55,9 +50,14 @@ const SelectContentCard = ({
       title={content.title || ''}
     >
       {content.description && (
-        <TextTruncated size="0.688rem" color="grey" title={content.description}>
+        <Text
+          size="small"
+          truncate={5}
+          color="grey"
+          title={content.description}
+        >
           {content.description}
-        </TextTruncated>
+        </Text>
       )}
     </ContentCard>
   );

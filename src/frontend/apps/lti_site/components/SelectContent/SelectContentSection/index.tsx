@@ -5,7 +5,7 @@ import {
   ContentCard,
   Document,
   PlaySVG,
-  TextTruncated,
+  Text,
   Video,
   WebinarSVG,
   videoSize,
@@ -106,9 +106,14 @@ const SelectContentCard = ({
       title={content.title || ''}
     >
       {content.description && (
-        <TextTruncated size="0.688rem" color="grey" title={content.description}>
+        <Text
+          size="small"
+          truncate={5}
+          color="grey"
+          title={content.description}
+        >
           {content.description}
-        </TextTruncated>
+        </Text>
       )}
     </ContentCard>
   );

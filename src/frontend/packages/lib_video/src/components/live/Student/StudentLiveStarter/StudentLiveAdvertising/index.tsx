@@ -1,6 +1,7 @@
-import { Box, Paragraph, Stack, Text } from 'grommet';
+import { Box, Paragraph, Stack } from 'grommet';
 import { Schedule } from 'grommet-icons';
 import {
+  Text,
   ThumbnailDisplayer,
   liveState,
   useAppConfig,
@@ -10,7 +11,6 @@ import { DateTime, Duration } from 'luxon';
 import React, { CSSProperties, useEffect, useMemo, useState } from 'react';
 import ICalendarLink from 'react-icalendar-link';
 import { defineMessages, useIntl } from 'react-intl';
-import styled from 'styled-components';
 
 import { useCurrentLive } from '@lib-video/hooks/useCurrentVideo';
 
@@ -18,11 +18,6 @@ import { AdvertisingBox } from './AdvertisingBox';
 import { StudentLiveDescription } from './StudentLiveDescription';
 import { StudentLiveRegistration } from './StudentLiveRegistration';
 import { StudentLiveScheduleInfo } from './StudentLiveScheduleInfo';
-
-const StyledText = styled(Text)`
-  padding-left: 10px;
-  vertical-align: bottom;
-`;
 
 const messages = defineMessages({
   a11AddCalendar: {
@@ -144,9 +139,9 @@ export const StudentLiveAdvertising = () => {
                   a11yTitle={intl.formatMessage(messages.a11AddCalendar)}
                   color="blue-active"
                 />
-                <StyledText color="blue-active">
+                <Text className="pl-s">
                   {intl.formatMessage(messages.addCalendar)}
-                </StyledText>
+                </Text>
               </ICalendarLink>
             </Paragraph>
           )}

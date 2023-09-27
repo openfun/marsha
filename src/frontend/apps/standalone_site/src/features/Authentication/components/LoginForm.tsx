@@ -1,7 +1,7 @@
 import { Field, Input } from '@openfun/cunningham-react';
-import { Box, Text } from 'grommet';
+import { Box } from 'grommet';
 import { Alert } from 'grommet-icons';
-import { ButtonLoader } from 'lib-components';
+import { ButtonLoader, Text } from 'lib-components';
 import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -110,15 +110,11 @@ export const LoginForm = () => {
           text={error?.password?.join(' ')}
         />
       </Field>
-      <Link to={routes.PASSWORD_RESET.path}>
-        <Text
-          color="blue-active"
-          weight="normal"
-          style={{ textDecoration: 'underline' }}
-          size="xsmall"
-        >
-          {intl.formatMessage(messages.passwordLost)}
-        </Text>
+      <Link
+        to={routes.PASSWORD_RESET.path}
+        style={{ color: 'var(--c--theme--colors--primary-500)' }}
+      >
+        <Text size="small">{intl.formatMessage(messages.passwordLost)}</Text>
       </Link>
       {error?.detail && (
         <Box
@@ -129,9 +125,7 @@ export const LoginForm = () => {
           gap="small"
         >
           <Alert size="medium" color="#df8c00" />
-          <Text weight="bold" size="small">
-            {error?.detail}
-          </Text>
+          <Text weight="bold">{error?.detail}</Text>
         </Box>
       )}
       <Box flex={false} margin={{ top: 'medium' }}>

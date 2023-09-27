@@ -1,4 +1,4 @@
-import { Button, Text } from 'grommet';
+import { Button } from 'grommet';
 import {
   ButtonLoaderStyle,
   FoldableItem,
@@ -6,6 +6,7 @@ import {
   Modal,
   ModalButton,
   ModalControlMethods,
+  Text,
   report,
   useCurrentResourceContext,
 } from 'lib-components';
@@ -144,7 +145,7 @@ export const DeleteVideo = () => {
             ? intl.formatMessage(messages.liveDeleteModalTitle)
             : intl.formatMessage(messages.videoDeleteModalTitle)}
         </Heading>
-        <Text margin={{ top: 'small' }}>
+        <Text className="mt-t">
           {video.is_live
             ? intl.formatMessage(messages.confirmDeleteLiveText)
             : intl.formatMessage(messages.confirmDeleteVideoText)}

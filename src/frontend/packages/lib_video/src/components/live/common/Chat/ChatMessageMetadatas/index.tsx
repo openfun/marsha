@@ -1,9 +1,8 @@
-import { Box, Text } from 'grommet';
-import { chatFonts } from 'lib-common';
+import { Box } from 'grommet';
+import { Text } from 'lib-components';
 import { DateTime } from 'luxon';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import styled from 'styled-components';
 
 import { ChatAvatar } from '../ChatAvatar';
 
@@ -27,16 +26,6 @@ const messages = defineMessages({
   },
 });
 
-const SenderNameTextStyled = styled(Text)`
-  letter-spacing: ${chatFonts.primary.letterSpacing};
-  line-height: ${chatFonts.primary.lineHeight};
-  font-family: ${chatFonts.primary.fontFamily};
-`;
-
-const SendTimeTextStyled = styled(Text)`
-  letter-spacing: ${chatFonts.tertiary.letterSpacing};
-  font-family: ${chatFonts.tertiary.fontFamily};
-`;
 export const ChatMessageMetadatas = ({
   msgDatetime,
   msgSender,
@@ -61,15 +50,13 @@ export const ChatMessageMetadatas = ({
         }}
         width={{ min: 'auto', max: 'calc(100% - 70px)' }}
       >
-        <SenderNameTextStyled
-          color={chatFonts.primary.color}
-          size={chatFonts.primary.fontSize}
+        <Text
           title={intl.formatMessage(messages.senderTitle)}
           truncate={true}
-          weight={chatFonts.primary.fontWeight}
+          weight="medium"
         >
           {msgSender}
-        </SenderNameTextStyled>
+        </Text>
       </Box>
       <Box
         direction="row-reverse"
@@ -78,13 +65,9 @@ export const ChatMessageMetadatas = ({
         }}
         width="100%"
       >
-        <SendTimeTextStyled
-          color={chatFonts.tertiary.color}
-          size={chatFonts.tertiary.fontSize}
-          title={intl.formatMessage(messages.messageTimeTitle)}
-        >
+        <Text title={intl.formatMessage(messages.messageTimeTitle)} size="tiny">
           {msgDatetime.toFormat('(HH:mm)')}
-        </SendTimeTextStyled>
+        </Text>
       </Box>
     </Box>
   );

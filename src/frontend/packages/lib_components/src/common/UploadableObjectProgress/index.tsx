@@ -1,7 +1,9 @@
-import { Box, Meter, MeterProps, Text } from 'grommet';
+import { Box, Meter, MeterProps } from 'grommet';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
+
+import { Text } from '../Text';
 
 const messages = defineMessages({
   progressLabel: {
@@ -35,7 +37,7 @@ export const UploadableObjectProgress = ({
         a11yTitle={intl.formatMessage(messages.progressLabel)}
         values={values}
       />
-      <Text color="brand" weight="bold">{`${progress}%`}</Text>
+      <Text weight="bold">{`${progress}%`}</Text>
     </Box>
   );
 };

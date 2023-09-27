@@ -61,7 +61,7 @@ export const Button = ({
             reversed={reverseLayout}
             reversedColor={normalizeColor('white', theme)}
             tintColor={tintColor}
-            textColor={normalizeColor('blue-active', theme)}
+            textColor="clr-primary-500"
           />
         );
       }}

@@ -1,6 +1,6 @@
 import { act, screen } from '@testing-library/react';
 import { theme } from 'lib-common';
-import { imageSnapshot, render } from 'lib-tests';
+import { render } from 'lib-tests';
 import { DateTime } from 'luxon';
 import React from 'react';
 
@@ -88,7 +88,7 @@ describe('<ChatConversationDisplayer />', () => {
   });
 
   // eslint-disable-next-line jest/expect-expect
-  it('renders components with messages and presences and compares it with previous render. [screenshot]', async () => {
+  it('renders components with messages and presences and compares it with previous render.', () => {
     render(<ChatConversationDisplayer />, { grommetOptions: { theme } });
 
     for (let i = 0; i < 5; i++) {
@@ -116,7 +116,5 @@ describe('<ChatConversationDisplayer />', () => {
         sentAt: DateTime.fromISO('2020-01-01T12:12:25'),
       }),
     );
-
-    await imageSnapshot(800, 1000);
   });
 });

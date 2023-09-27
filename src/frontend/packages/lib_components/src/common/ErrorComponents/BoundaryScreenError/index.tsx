@@ -1,4 +1,4 @@
-import { Box, Image, Paragraph, Stack, Text } from 'grommet';
+import { Box, Image, Paragraph, Stack } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
 import React from 'react';
@@ -6,6 +6,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { Heading } from '@lib-components/common/Headings';
+import { Text } from '@lib-components/common/Text';
 import { useAppConfig } from '@lib-components/data/stores/useAppConfig';
 import { useResponsive } from '@lib-components/hooks/useResponsive';
 
@@ -150,9 +151,7 @@ export const BoundaryScreenError = ({
           >
             {intl.formatMessage(messages.introduceProblem)}
             &nbsp;
-            <Text size="0.875rem" weight="bold">
-              {message}
-            </Text>
+            <Text weight="bold">{message}</Text>
           </ErrorMessage>
         </Box>
       </Box>

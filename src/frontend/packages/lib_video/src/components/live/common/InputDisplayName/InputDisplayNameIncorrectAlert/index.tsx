@@ -1,4 +1,5 @@
-import { Box, Text } from 'grommet';
+import { Box } from 'grommet';
+import { Text } from 'lib-components';
 import React from 'react';
 
 interface InputDisplayNameIncorrectAlertProps {
@@ -10,7 +11,7 @@ export const InputDisplayNameIncorrectAlert = ({
 }: InputDisplayNameIncorrectAlertProps) => {
   return (
     <Box pad="1px">
-      <Text color="accent-2" size="0.688rem">
+      <Text color="clr-danger-300" size="tiny">
         {alertMsg}
       </Text>
     </Box>

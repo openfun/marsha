@@ -1,6 +1,6 @@
-import { Box, Text } from 'grommet';
+import { Box } from 'grommet';
 import { Alert } from 'grommet-icons';
-import { BoxLoader } from 'lib-components';
+import { BoxLoader, Text } from 'lib-components';
 import { Fragment, PropsWithChildren, ReactElement } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 

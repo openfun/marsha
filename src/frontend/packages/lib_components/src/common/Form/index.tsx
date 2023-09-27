@@ -6,8 +6,6 @@ import {
   FormField as GrommetFormField,
   FormFieldProps as GrommetFormFieldProps,
   FormProps as GrommetFormProps,
-  Text,
-  TextProps,
 } from 'grommet';
 import { Maybe } from 'lib-common';
 import React, {
@@ -17,6 +15,8 @@ import React, {
   useRef,
   useState,
 } from 'react';
+
+import { Text, TextProps } from '../Text';
 
 type ErrorStateType<T> = Partial<Record<keyof T, string>>;
 
@@ -96,7 +96,7 @@ export const FormField = (props: PropsWithChildren<GrommetFormFieldProps>) => {
 
 interface FormHelpTextProps {
   boxProps?: BoxProps;
-  textProps?: TextProps;
+  textProps?: TextProps<'span'>;
   disabled?: boolean;
 }
 
@@ -108,9 +108,9 @@ export const FormHelpText = ({
 }: PropsWithChildren<FormHelpTextProps>) => (
   <Box pad={{ left: 'small' }} margin={{ vertical: '2px' }} {...boxProps}>
     <Text
-      size="xsmall"
+      size="small"
+      color={disabled ? 'clr-greyscale-400' : undefined}
       {...textProps}
-      color={disabled ? 'bg-grey' : 'blue-active'}
     >
       {children}
     </Text>

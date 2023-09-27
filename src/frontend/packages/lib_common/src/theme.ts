@@ -1,5 +1,4 @@
-import { TextProps, ThemeType } from 'grommet';
-import { ColorType } from 'grommet/utils';
+import { ThemeType } from 'grommet';
 import { rgba } from 'polished';
 import { css } from 'styled-components';
 
@@ -91,41 +90,6 @@ export const colors = {
   ...colorsGeneric,
 };
 
-interface Font {
-  color?: ColorType;
-  fontFamily?: string;
-  fontSize?: TextProps['size'];
-  fontWeight?: TextProps['weight'];
-  letterSpacing?: string;
-  lineHeight?: string;
-}
-
-export const chatFonts: { primary: Font; secondary: Font; tertiary: Font } = {
-  primary: {
-    color: colorsGeneric['blue-focus'],
-    fontFamily: 'Roboto-Medium',
-    fontSize: '0.75rem',
-    fontWeight: 500,
-    letterSpacing: '0.07px',
-    lineHeight: '16px',
-  },
-  secondary: {
-    color: colorsGeneric['blue-chat'],
-    fontSize: '0.75rem',
-    fontFamily: 'Roboto-Regular',
-    fontWeight: 'normal',
-    letterSpacing: '0.07px',
-    lineHeight: '18px',
-  },
-  tertiary: {
-    color: '#357cd7',
-    fontSize: '0.563rem',
-    fontFamily: 'Roboto-Regular',
-    fontWeight: 'normal',
-    letterSpacing: '-0.2px',
-  },
-};
-
 /**
  * Breakpoints:
  * - xxsmall: 380px
@@ -160,6 +124,11 @@ export const theme: ThemeType = {
   },
   checkBox: {
     hover: { border: { color: 'blue-active' } },
+    extend: css`
+      & {
+        align-items: center;
+      }
+    `,
   },
   button: {
     default: {

@@ -1,5 +1,5 @@
-import { Meter, Text } from 'grommet';
-import { DashboardButton, liveState } from 'lib-components';
+import { Meter } from 'grommet';
+import { DashboardButton, Text, liveState } from 'lib-components';
 import React, { useEffect, useState } from 'react';
 import { FormattedMessage, defineMessages } from 'react-intl';
 
@@ -90,7 +90,7 @@ export const LivePairingButton = () => {
   if (!secret) {
     // no secret yet, initial state
     content = (
-      <Text alignSelf="center">
+      <Text textAlign="center" color="white">
         <FormattedMessage {...messages.pairingSecretLabel} />
       </Text>
     );
@@ -99,7 +99,7 @@ export const LivePairingButton = () => {
       // secret exists and is not expired yet
       content = (
         <React.Fragment>
-          <Text alignSelf="center" size="large">
+          <Text textAlign="center" size="large" color="white">
             <FormattedMessage
               {...messages.pairingSecretDisplay}
               values={{ secret }}
@@ -120,7 +120,7 @@ export const LivePairingButton = () => {
     } else {
       // secret has expired
       content = (
-        <Text alignSelf="center">
+        <Text textAlign="center" color="white">
           <FormattedMessage {...messages.pairingSecretCountdownExpired} />
         </Text>
       );

@@ -1,6 +1,6 @@
 import { Field, Input } from '@openfun/cunningham-react';
 import { useQueryClient } from '@tanstack/react-query';
-import { Box, Text, TextArea } from 'grommet';
+import { Box, TextArea } from 'grommet';
 import { Alert } from 'grommet-icons';
 import { Nullable } from 'lib-common';
 import {
@@ -8,6 +8,7 @@ import {
   FormField,
   LiveModeType,
   ModalButton,
+  Text,
   useResponsive,
 } from 'lib-components';
 import { initiateLive, useCreateVideo } from 'lib-video';
@@ -107,9 +108,7 @@ const LiveCreateForm = () => {
           gap="small"
         >
           <Alert size="42rem" color="#df8c00" />
-          <Text weight="bold" size="small">
-            {intl.formatMessage(messages.Error)}
-          </Text>
+          <Text weight="bold">{intl.formatMessage(messages.Error)}</Text>
         </Box>
       )}
       <Form

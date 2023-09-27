@@ -1,8 +1,9 @@
 import { DataGrid, SortModel, usePagination } from '@openfun/cunningham-react';
-import { Box, Button, Text } from 'grommet';
-import { BoxLoader, Heading, PortabilityRequest } from 'lib-components';
+import { Box, Button } from 'grommet';
+import { BoxLoader, Heading, PortabilityRequest, Text } from 'lib-components';
 import { useEffect, useMemo, useState } from 'react';
 import { IntlShape, defineMessages, useIntl } from 'react-intl';
+import styled from 'styled-components';
 
 import { WhiteCard } from 'components/Cards';
 import { ITEM_PER_PAGE } from 'conf/global';
@@ -96,6 +97,18 @@ const messages = defineMessages({
     id: 'features.PortabilityRequests.columnNameActions',
   },
 });
+
+export const BoxDatagrid = styled(Box)`
+  .c__datagrid {
+    display: block;
+    overflow: auto;
+  }
+  .c__datagrid td {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+`;
 
 /**
  * Clean the data to be displayed in the table
@@ -227,64 +240,70 @@ export const PortabilityRequests = ({
           </Box>
         )}
         {hasResult && (
-          <DataGrid
-            columns={[
-              {
-                field: 'created_on',
-                headerName: intl.formatMessage(messages.columnNameCreatedOn),
-              },
-              {
-                field: 'portabilityRequest',
-                enableSorting: false,
-                headerName: intl.formatMessage(
-                  messages.columnNamePortabilityRequest,
-                ),
-              },
-              {
-                field: 'consumerSite',
-                enableSorting: false,
-                headerName: intl.formatMessage(messages.columnNameConsumerSite),
-              },
-              {
-                field: 'fromUserEmail',
-                enableSorting: false,
-                headerName: intl.formatMessage(
-                  messages.columnNameFromUserEmail,
-                ),
-              },
-              {
-                field: 'updatedUserEmail',
-                enableSorting: false,
-                headerName: intl.formatMessage(
-                  messages.columnNameUpdatedUserEmail,
-                ),
-              },
-              {
-                id: 'portability-request-column-state',
-                headerName: intl.formatMessage(messages.columnNameStatus),
-                renderCell: ({ row: portabilityRequest }) => (
-                  <PortabilityRequestStateTag
-                    state={portabilityRequest.state}
-                  />
-                ),
-              },
-              {
-                id: 'portability-request-column-actions',
-                headerName: intl.formatMessage(messages.columnNameActions),
-                renderCell: ({ row: portabilityRequest }) => (
-                  <AcceptRejectButtons
-                    portabilityRequestId={portabilityRequest.id}
-                    canAcceptOrReject={portabilityRequest.can_accept_or_reject}
-                  />
-                ),
-              },
-            ]}
-            rows={rows}
-            pagination={pagination}
-            isLoading={isLoading || isFetching}
-            sortModel={sortModel}
-            onSortModelChange={setSortModel}
-          />
+          <BoxDatagrid>
+            <DataGrid
+              columns={[
+                {
+                  field: 'created_on',
+                  headerName: intl.formatMessage(messages.columnNameCreatedOn),
+                },
+                {
+                  field: 'portabilityRequest',
+                  enableSorting: false,
+                  headerName: intl.formatMessage(
+                    messages.columnNamePortabilityRequest,
+                  ),
+                },
+                {
+                  field: 'consumerSite',
+                  enableSorting: false,
+                  headerName: intl.formatMessage(
+                    messages.columnNameConsumerSite,
+                  ),
+                },
+                {
+                  field: 'fromUserEmail',
+                  enableSorting: false,
+                  headerName: intl.formatMessage(
+                    messages.columnNameFromUserEmail,
+                  ),
+                },
+                {
+                  field: 'updatedUserEmail',
+                  enableSorting: false,
+                  headerName: intl.formatMessage(
+                    messages.columnNameUpdatedUserEmail,
+                  ),
+                },
+                {
+                  id: 'portability-request-column-state',
+                  headerName: intl.formatMessage(messages.columnNameStatus),
+                  renderCell: ({ row: portabilityRequest }) => (
+                    <PortabilityRequestStateTag
+                      state={portabilityRequest.state}
+                    />
+                  ),
+                },
+                {
+                  id: 'portability-request-column-actions',
+                  headerName: intl.formatMessage(messages.columnNameActions),
+                  renderCell: ({ row: portabilityRequest }) => (
+                    <AcceptRejectButtons
+                      portabilityRequestId={portabilityRequest.id}
+                      canAcceptOrReject={
+                        portabilityRequest.can_accept_or_reject
+                      }
+                    />
+                  ),
+                },
+              ]}
+              rows={rows}
+              pagination={pagination}
+              isLoading={isLoading || isFetching}
+              sortModel={sortModel}
+              onSortModelChange={setSortModel}
+            />
+          </BoxDatagrid>
         )}
       </WhiteCard>
     </Box>

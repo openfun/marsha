@@ -56,9 +56,8 @@ export type TypoProps<
 > = U & TypoPropsOnly & ReactHTMLInfer<T, G> & ObtainHTMLProps<ReactHTML[T]>;
 
 /**
- * {@link TypoProps}
  *  @param TypoPropsOnly -
- *  - className - string
+ *  - className - string - more here {@link https://openfun.github.io/cunningham/?path=/docs/getting-started-spacings--docs}
  *  - color {@link CSSProperties}
  *  - fontSize {@link CSSProperties}
  *  - textAlign {@link CSSProperties}

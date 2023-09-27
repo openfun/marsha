@@ -1,4 +1,5 @@
-import { Box, Text } from 'grommet';
+import { Box } from 'grommet';
+import { Text } from 'lib-components';
 import { PropsWithChildren } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -45,8 +46,11 @@ export const SearchUserListRow = ({
       }}
       pad="small"
       round="xsmall"
+      align="center"
+      justify="between"
+      gap="small"
     >
-      <Text truncate margin={{ vertical: 'auto', right: 'small' }}>
+      <Text truncate title={userLabel} style={{ flex: 1 }}>
         {userLabel}
       </Text>
       {children}

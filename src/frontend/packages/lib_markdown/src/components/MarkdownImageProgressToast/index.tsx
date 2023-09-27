@@ -1,4 +1,5 @@
-import { Box, Meter, Stack, Text } from 'grommet';
+import { Box, Meter, Stack } from 'grommet';
+import { Text } from 'lib-components';
 import React from 'react';
 
 interface MarkdownImageProgressToastProps {

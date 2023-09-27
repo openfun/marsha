@@ -30,6 +30,7 @@ export const WhiteCard = ({
         style={{
           boxShadow: '0px 0px 6px 0px rgba(2, 117, 180, 0.3)',
         }}
+        className="clr-primary-500"
         height="initial"
       >
         <Heading level={2} textAlign="center">

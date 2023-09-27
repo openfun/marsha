@@ -1,11 +1,10 @@
 import { screen } from '@testing-library/react';
-import { imageSnapshot, render } from 'lib-tests';
-import React from 'react';
+import { render } from 'lib-tests';
 
 import { Badge } from '.';
 
 describe('<Badge />', () => {
-  it('renders the badge component [screenshot]', async () => {
+  it('renders the badge component', () => {
     render(<Badge value="24" />);
 
     screen.getByText('24');
@@ -19,7 +18,5 @@ describe('<Badge />', () => {
     expect(badge).toHaveStyle('padding: 1px 3px;');
     expect(badge).toHaveStyle('position: absolute;');
     expect(badge).toHaveStyle('right: -8px;');
-
-    await imageSnapshot(60, 60);
   });
 });

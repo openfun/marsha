@@ -1,11 +1,6 @@
-import { Box, BoxProps, Text } from 'grommet';
+import { Box, BoxProps } from 'grommet';
+import { Text } from 'lib-components';
 import React from 'react';
-import styled from 'styled-components';
-
-const StyledText = styled(Text)`
-  font-family: 'Roboto-Regular';
-  letter-spacing: -0.2px;
-`;
 
 interface ViewersListHeaderProps extends BoxProps {
   text: string;
@@ -30,9 +25,7 @@ export const ViewersListHeader = ({
         round="14px"
         height={{ min: 'auto' }}
       >
-        <StyledText color="blue-active" size="0.625rem" weight="normal">
-          {text}
-        </StyledText>
+        <Text size="tiny">{text}</Text>
       </Box>
     </Box>
   );

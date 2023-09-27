@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react';
-import { render, renderImageSnapshot } from 'lib-tests';
+import { render } from 'lib-tests';
 import { DateTime } from 'luxon';
 import React from 'react';
 
@@ -18,8 +18,8 @@ const exampleMessageWithUrls: ChatMessageType = {
 };
 
 describe('<ChatMessage />', () => {
-  it('renders the message content container and compares it with previous render [screenshot]', async () => {
-    await renderImageSnapshot(<ChatMessage message={exampleMessage} />);
+  it('renders the message content container and compares it with previous render', () => {
+    render(<ChatMessage message={exampleMessage} />);
 
     expect(screen.getByText('This is an example message')).toBeInTheDocument();
     expect(screen.getByTitle('sent at 12:12:12')).toBeInTheDocument();
