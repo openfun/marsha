@@ -20,6 +20,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Upgrade to python 3.11
 - Upgrade channels and channels-redis to version 4
 
+### Fixed
+
+- force bbb user_id uniqueness in join url
+
 ## [4.5.0] - 2023-09-15
 
 ### Changed

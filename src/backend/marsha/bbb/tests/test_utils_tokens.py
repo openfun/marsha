@@ -2,6 +2,7 @@
 from datetime import datetime, timedelta, timezone as baseTimezone
 import json
 from unittest import mock
+from uuid import UUID
 
 from django.test import TestCase, override_settings
 from django.utils import timezone
@@ -241,17 +242,20 @@ class CreateStableInviteJwtTestCase(TestCase):
         classroom = ClassroomFactory()
         jwt = create_classroom_stable_invite_jwt(classroom)
 
-        response = self.client.patch(
-            f"/api/classrooms/{classroom.id}/join/",
-            data=json.dumps({"fullname": "John Doe"}),
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt}",
-        )
+        with mock.patch("marsha.bbb.api.uuid4") as uuid_mock:
+            uuid_mock.return_value = UUID("0c0ff476-7495-444f-b452-713d5c9aa859")
+            response = self.client.patch(
+                f"/api/classrooms/{classroom.id}/join/",
+                data=json.dumps({"fullname": "John Doe"}),
+                content_type="application/json",
+                HTTP_AUTHORIZATION=f"Bearer {jwt}",
+            )
         self.assertEqual(response.status_code, 200)
         self.assertIn(
             "https://10.7.7.1/bigbluebutton/api/join?"
             f"fullName=John+Doe&meetingID={classroom.meeting_id}&"
-            "role=viewer&userID=None_None&redirect=true",
+            f"role=viewer&userID={classroom.playlist_id}_0c0ff476-7495-444f-b452-713d5c9aa859"
+            "&redirect=true",
             response.data.get("url"),
         )
 
@@ -295,16 +299,19 @@ class CreateStableInviteJwtTestCase(TestCase):
         classroom = ClassroomFactory()
         jwt = create_classroom_stable_invite_jwt(classroom, role=INSTRUCTOR)
 
-        response = self.client.patch(
-            f"/api/classrooms/{classroom.id}/join/",
-            data=json.dumps({"fullname": "John Doe"}),
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt}",
-        )
+        with mock.patch("marsha.bbb.api.uuid4") as uuid_mock:
+            uuid_mock.return_value = UUID("24bd554e-30f8-4a3a-9883-3c98f83982c9")
+            response = self.client.patch(
+                f"/api/classrooms/{classroom.id}/join/",
+                data=json.dumps({"fullname": "John Doe"}),
+                content_type="application/json",
+                HTTP_AUTHORIZATION=f"Bearer {jwt}",
+            )
         self.assertEqual(response.status_code, 200)
         self.assertIn(
             "https://10.7.7.1/bigbluebutton/api/join?"
             f"fullName=John+Doe&meetingID={classroom.meeting_id}&"
-            "role=moderator&userID=None_None&redirect=true",
+            f"role=moderator&userID={classroom.playlist_id}_24bd554e-30f8-4a3a-9883-3c98f83982c9"
+            "&redirect=true",
             response.data.get("url"),
         )
