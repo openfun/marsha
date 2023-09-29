@@ -43,9 +43,7 @@ export const LanguageSelector = ({
       fullWidth={fullWidth}
       value={currentLanguage}
       onChange={(evt) => {
-        if (evt.target.value !== currentLanguage) {
-          onLanguageChange(evt.target.value as string);
-        }
+        onLanguageChange(evt.target.value as string);
       }}
       clearable={false}
       disabled={disabled}

@@ -106,11 +106,9 @@ export const LiveJoinMode = () => {
           fullWidth
           value={video.join_mode}
           onChange={(evt) => {
-            if (evt.target.value !== video.join_mode) {
-              videoMutation.mutate({
-                join_mode: evt.target.value as JoinMode,
-              });
-            }
+            videoMutation.mutate({
+              join_mode: evt.target.value as JoinMode,
+            });
           }}
           clearable={false}
           text={intl.formatMessage(messages.selectLabelInfo)}

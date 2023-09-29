@@ -83,10 +83,6 @@ export const LanguageSelect = ({
       options={availableSelectableLanguages}
       value={selectedLanguage}
       onChange={(evt) => {
-        if (selectedLanguage === evt.target.value) {
-          return;
-        }
-
         const optionSelectedLanguage = availableSelectableLanguages?.find(
           (lang) => lang.value === evt.target.value,
         );
