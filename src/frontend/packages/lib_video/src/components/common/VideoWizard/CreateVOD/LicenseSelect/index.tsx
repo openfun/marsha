@@ -81,14 +81,12 @@ export const LicenseSelect = ({ disabled, onChange }: LicenseSelectProps) => {
       fullWidth
       value={selectedLicense.value}
       onChange={(evt) => {
-        if (evt.target.value !== selectedLicense.value) {
-          const choice =
-            choices?.find((option) => option.value === evt.target.value) ||
-            errorLicenseChoice;
+        const choice =
+          choices?.find((option) => option.value === evt.target.value) ||
+          errorLicenseChoice;
 
-          setSelectedLicense(choice);
-          onChange(choice);
-        }
+        setSelectedLicense(choice);
+        onChange(choice);
       }}
       clearable={false}
       disabled={disabled}

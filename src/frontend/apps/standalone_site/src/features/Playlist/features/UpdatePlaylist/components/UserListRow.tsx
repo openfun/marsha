@@ -133,10 +133,6 @@ export const UserRolesColumn = ({
       disabled={userId === idUser}
       options={options}
       onChange={(evt) => {
-        if (evt.target.value === userRole) {
-          return;
-        }
-
         setUserRole(evt.target.value as PlaylistRole);
         updateMutation({ role: evt.target.value as PlaylistRole });
       }}

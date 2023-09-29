@@ -106,10 +106,6 @@ export const LicenseManager = () => {
           options={choices ?? [errorLicenseChoice]}
           value={selectedLicense}
           onChange={(evt) => {
-            if (selectedLicense === evt.target.value) {
-              return;
-            }
-
             setSelectedLicense(evt.target.value as string);
 
             if (evt.target.value !== errorLicenseChoice.value) {

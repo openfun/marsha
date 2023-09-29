@@ -282,7 +282,7 @@ describe('<PlaylistForm />', () => {
     expect(mockedOnSubmit).toHaveBeenCalledWith({
       name: 'some initial name',
       organizationId: 'third id',
-      retention_duration: '365',
+      retention_duration: 365,
     });
 
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }));
