@@ -1,4 +1,6 @@
 """Declare API endpoints with Django RestFramework viewsets."""
+from uuid import uuid4
+
 from django.conf import settings
 from django.db.models import Q
 from django.http import Http404
@@ -339,8 +341,8 @@ class ClassroomViewSet(
                 roles = request.resource.roles
                 moderator = "administrator" in roles or "instructor" in roles
                 consumer_site_user_id = (
-                    f"{request.resource.consumer_site}_"
-                    f"{request.resource.user.get('id')}"
+                    f"{request.resource.consumer_site or request.resource.playlist_id}_"
+                    f"{request.resource.user.get('id', uuid4())}"
                 )
             else:
                 # Assume that the user is a moderator
@@ -349,6 +351,7 @@ class ClassroomViewSet(
 
                 # Use the user id as consumer_site_user_id
                 consumer_site_user_id = request.user.id
+
             response = join(
                 classroom=self.get_object(),
                 consumer_site_user_id=consumer_site_user_id,
