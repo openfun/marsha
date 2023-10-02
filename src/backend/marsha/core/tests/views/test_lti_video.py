@@ -262,6 +262,14 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
         )
 
         self.assertEqual(context.get("state"), "success")
+        self.assertListEqual(
+            context.get("warnings"),
+            [
+                "To allow course copy or export, the resource url must be updated "
+                "in the LMS with the following one:",
+                f"http://testserver/lti/videos/{video.id}",
+            ],
+        )
         self.assertEqual(
             context.get("static"),
             {
@@ -1774,6 +1782,163 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
 
         self.assertEqual(context.get("state"), "success")
 
+        self.assertEqual(
+            context.get("resource"),
+            {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
+                "active_stamp": "1569309880",
+                "allow_recording": True,
+                "can_edit": False,
+                "estimated_duration": None,
+                "has_chat": True,
+                "has_live_media": True,
+                "is_public": False,
+                "is_ready_to_show": True,
+                "is_recording": False,
+                "is_scheduled": False,
+                "join_mode": "approval",
+                "show_download": True,
+                "starting_at": None,
+                "description": video.description,
+                "id": str(video.id),
+                "is_live": False,
+                "upload_state": video.upload_state,
+                "timed_text_tracks": [],
+                "thumbnail": None,
+                "title": video.title,
+                "urls": {
+                    "mp4": {
+                        "144": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "mp4/1569309880_144.mp4?response-content-disposition=attachment%3B+"
+                        "filename%3Dplaylist-002_1569309880.mp4",
+                        "240": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "mp4/1569309880_240.mp4?response-content-disposition=attachment%3B+"
+                        "filename%3Dplaylist-002_1569309880.mp4",
+                        "480": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "mp4/1569309880_480.mp4?response-content-disposition=attachment%3B+"
+                        "filename%3Dplaylist-002_1569309880.mp4",
+                        "720": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "mp4/1569309880_720.mp4?response-content-disposition=attachment%3B+"
+                        "filename%3Dplaylist-002_1569309880.mp4",
+                        "1080": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "mp4/1569309880_1080.mp4?response-content-disposition=attachment%3B+"
+                        "filename%3Dplaylist-002_1569309880.mp4",
+                    },
+                    "thumbnails": {
+                        "144": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "thumbnails/1569309880_144.0000000.jpg",
+                        "240": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "thumbnails/1569309880_240.0000000.jpg",
+                        "480": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "thumbnails/1569309880_480.0000000.jpg",
+                        "720": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "thumbnails/1569309880_720.0000000.jpg",
+                        "1080": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "thumbnails/1569309880_1080.0000000.jpg",
+                    },
+                    "manifests": {
+                        "hls": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "cmaf/1569309880.m3u8",
+                    },
+                    "previews": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                    "previews/1569309880_100.jpg",
+                },
+                "should_use_subtitle_as_transcript": False,
+                "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
+                "playlist": {
+                    "id": str(video.playlist.id),
+                    "title": "playlist-002",
+                    "lti_id": "course-v1:ufr+mathematics+00001",
+                },
+                "recording_time": 0,
+                "retention_date": None,
+                "shared_live_medias": [],
+                "live_state": None,
+                "live_info": {},
+                "live_type": None,
+                "xmpp": None,
+                "tags": [],
+                "license": None,
+            },
+        )
+        self.assertEqual(context.get("modelName"), "videos")
+        # Make sure we only go through LTI verification once as it is costly (getting passport +
+        # signature)
+        self.assertEqual(mock_verify.call_count, 1)
+
+    @mock.patch.object(LTI, "verify")
+    @mock.patch.object(LTI, "get_consumer_site")
+    def test_views_lti_video_post_student_with_video_generic(
+        self, mock_get_consumer_site, mock_verify
+    ):
+        """Validate the format of the response returned by the view for a student request."""
+        passport = ConsumerSiteLTIPassportFactory()
+        video = VideoFactory(
+            id="59c0fc7a-0f64-46c0-993f-bdf47ecd837f",
+            playlist__lti_id="course-v1:ufr+mathematics+00001",
+            playlist__consumer_site=passport.consumer_site,
+            playlist__title="playlist-002",
+            upload_state=random.choice(
+                [s[0] for s in STATE_CHOICES if s[0] not in [DELETED, HARVESTED]]
+            ),
+            uploaded_on="2019-09-24 07:24:40+00",
+            resolutions=[144, 240, 480, 720, 1080],
+        )
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
+            "roles": "student",
+            # "roles": "instructor",
+            "oauth_consumer_key": passport.oauth_consumer_key,
+            "user_id": "56255f3807599c377bf0e5bf072359fd",
+            "lis_person_sourcedid": "jane_doe",
+        }
+        mock_get_consumer_site.return_value = passport.consumer_site
+
+        response = self.client.post(
+            "/lti/videos/",
+            data,
+            HTTP_REFERER=f"https://{passport.consumer_site.domain}/",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+        content = response.content.decode("utf-8")
+
+        match = re.search(
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
+        )
+
+        context = json.loads(unescape(match.group(1)))
+        jwt_token = PlaylistAccessToken(context.get("jwt"))
+        PlaylistRefreshToken(context.get("refresh_token"))  # Must not raise
+        # breakpoint()
+        self.assertEqual(jwt_token.payload["playlist_id"], str(video.playlist.id))
+        self.assertEqual(
+            jwt_token.payload["user"],
+            {
+                "email": None,
+                "id": "56255f3807599c377bf0e5bf072359fd",
+                "username": "jane_doe",
+                "user_fullname": None,
+            },
+        )
+        self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
+        self.assertEqual(
+            jwt_token.payload["consumer_site"], str(passport.consumer_site.id)
+        )
+        self.assertEqual(jwt_token.payload["roles"], [data["roles"]])
+        self.assertEqual(jwt_token.payload["locale"], "en_US")
+        self.assertEqual(
+            jwt_token.payload["permissions"],
+            {"can_access_dashboard": False, "can_update": False},
+        )
+
+        self.assertEqual(context.get("state"), "success")
+
+        self.assertIsNone(context.get("warnings"))
         self.assertEqual(
             context.get("resource"),
             {

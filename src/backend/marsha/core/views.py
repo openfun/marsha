@@ -22,6 +22,7 @@ from django.templatetags.static import static
 from django.urls import NoReverseMatch, reverse
 from django.utils import translation
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext as _
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
@@ -492,7 +493,7 @@ class BaseLTIView(BaseModelResourceView, ABC):
                 # We keep the creation possibility here in case we want to change this behavior
                 # later (ie. do not create a resource each time a user wants to only copy/paste
                 # the RMS URL to an existing resource).
-                destination_playlist, _ = Playlist.objects.get_or_create(
+                destination_playlist, _created = Playlist.objects.get_or_create(
                     lti_id=self.lti.context_id,
                     consumer_site=self.lti.get_consumer_site(),
                     defaults={"title": self.lti.context_title},
@@ -559,6 +560,14 @@ class BaseLTIView(BaseModelResourceView, ABC):
             app_data["jwt"] = str(jwt_token)
             app_data["refresh_token"] = str(refresh_token)
             app_data["frontend_home_url"] = frontend_home_url
+            if not self.kwargs.get("uuid") and not self.lti.is_student:
+                app_data["warnings"] = [
+                    _(
+                        "To allow course copy or export, the resource url "
+                        "must be updated in the LMS with the following one:"
+                    ),
+                    self.request.build_absolute_uri(app_data["resource"]["id"]),
+                ]
 
         return app_data
 
