@@ -20,11 +20,18 @@ Go to `Plugins` tab, and click on `Manage tools` under `External Tools`:
   <td><img src="images/moodle_lti_select_admin_2.png" alt="Moodle LTI select admin view 2"/></td>
 </tr></table>
 
-##### Semi-automatic configuration
+##### Semi-automatic configurations
 
-A legacy LTI configuration tool is available, which presets the tool with a few parameters, but additional configuration is needed.
+Several legacy LTI configuration tools are available, which presets the tool with a few parameters, but additional configuration is needed.
 
-To use it, in the `Tool URL…` field, paste the following URL: `https://marsha.education/lti/config.xml` and click on `Add Legacy LTI`
+To use it, in the `Tool URL…` field, paste a configuration URL and click on `Add Legacy LTI`
+
+| Configuration URL                                    | Description                            |
+|------------------------------------------------------|----------------------------------------|
+| `https://marsha.education/lti/config.xml`            | Generic configuration for deep linking |
+| `https://marsha.education/lti/videos/config.xml`     | Direct video integration               |
+| `https://marsha.education/lti/classrooms/config.xml` | Direct classroom integration           |
+
 
 <table><tr>
   <td><img src="images/moodle_lti_config_1.png" alt="Moodle configure LTI 1"/></td>
@@ -55,13 +62,21 @@ Additional configuration is needed. Click on the `Edit` button in the Marsha too
   <td><img src="images/moodle_lti_config_4.png" alt="Moodle configure LTI 4"/></td>
 </tr></table>
 
+
 Fill the form with following data:
 
 | Label                    | Value                                                |
 |--------------------------|------------------------------------------------------|
 | Tool configuration usage | Show in activity chooser and as a preconfigured tool |
-| Supports Deep Linking    | Checked                                              |
-| Content Selection URL    | https://marsha.education/lti/select/ (see after)     |
+
+###### Additional configuration for Deep linking
+
+Fill the form with following data:
+
+| Label                    | Value                                            |
+|--------------------------|--------------------------------------------------|
+| Supports Deep Linking    | Checked                                          |
+| Content Selection URL    | https://marsha.education/lti/select/ (see after) |
 
 :warning: About the Content Selection URL :warning:
 
@@ -87,6 +102,40 @@ Click on `configure a tool manually`:
 <table><tr>
   <td><img src="images/moodle_lti_select_admin_3.png" alt="Moodle LTI select admin view 3"/></td>
 </tr></table>
+
+###### Manual configuration for Direct video integration
+
+Fill the form with following data:
+
+| Label                    | Value                                                |
+|--------------------------|------------------------------------------------------|
+| Tool name                | Marsha videos                                        |
+| Tool URL                 | https://marsha.education/lti/videos/                 |
+| LTI version              | LTI 1.0/1.1                                          |
+| Consumer key             | [found in the passport]                              |
+| Shared secret            | [found in the passport]                              |
+| Tool configuration usage | Show in activity chooser and as a preconfigured tool |
+
+Please note that course copy or import / export will need an update of each video's LTI url configuration.
+A message will be displayed in the video dashboard if the LTI url is not up-to-date.
+
+###### Manual configuration for Direct classroom integration
+
+Fill the form with following data:
+
+| Label                    | Value                                                |
+|--------------------------|------------------------------------------------------|
+| Tool name                | Marsha classrooms                                    |
+| Tool URL                 | https://marsha.education/lti/classrooms/             |
+| LTI version              | LTI 1.0/1.1                                          |
+| Consumer key             | [found in the passport]                              |
+| Shared secret            | [found in the passport]                              |
+| Tool configuration usage | Show in activity chooser and as a preconfigured tool |
+
+Please note that course copy or import / export will need an update of each classroom's LTI url configuration.
+A message will be displayed in the classroom dashboard if the LTI url is not up-to-date.
+
+###### Manual configuration for Deep linking
 
 Fill the form with following data:
 

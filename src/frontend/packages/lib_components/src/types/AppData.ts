@@ -61,6 +61,7 @@ export interface ResourceError {
 export interface AppConfig {
   attendanceDelay: number;
   error?: ResourceError;
+  warnings?: string[];
   state: appState;
   video?: Nullable<Video>;
   videos?: Video[];

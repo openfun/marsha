@@ -28,6 +28,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Display complete error message in frontend
 - Generic classroom LTI url
 - Generic LTI cartridge (xml configuration)
+- Display LTI warning message for generic urls regarding course copy
 
 ### Changed
 
