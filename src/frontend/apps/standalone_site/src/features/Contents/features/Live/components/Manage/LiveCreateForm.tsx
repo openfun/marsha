@@ -1,14 +1,13 @@
 import { Field, Input } from '@openfun/cunningham-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Box, TextArea } from 'grommet';
-import { Alert } from 'grommet-icons';
 import { Nullable } from 'lib-common';
 import {
+  BoxError,
   Form,
   FormField,
   LiveModeType,
   ModalButton,
-  Text,
   useResponsive,
 } from 'lib-components';
 import { initiateLive, useCreateVideo } from 'lib-video';
@@ -100,16 +99,7 @@ const LiveCreateForm = () => {
   return (
     <Fragment>
       {(errorVideo || errorPlaylist) && (
-        <Box
-          direction="row"
-          align="center"
-          justify="center"
-          margin={{ bottom: 'medium' }}
-          gap="small"
-        >
-          <Alert size="42rem" color="#df8c00" />
-          <Text weight="bold">{intl.formatMessage(messages.Error)}</Text>
-        </Box>
+        <BoxError message={intl.formatMessage(messages.Error)} />
       )}
       <Form
         onSubmitError={() => ({})}

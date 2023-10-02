@@ -1,8 +1,7 @@
 import { Field, Input } from '@openfun/cunningham-react';
-import { Box, TextArea } from 'grommet';
-import { Alert } from 'grommet-icons';
+import { TextArea } from 'grommet';
 import { useCreateClassroom } from 'lib-classroom';
-import { Form, FormField, ModalButton, Text } from 'lib-components';
+import { BoxError, Form, FormField, ModalButton } from 'lib-components';
 import { Fragment, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
@@ -97,19 +96,12 @@ const ClassroomCreateForm = () => {
   return (
     <Fragment>
       {(errorClassroom || errorPlaylist) && (
-        <Box
-          direction="row"
-          align="center"
-          justify="center"
-          margin={{ bottom: 'medium' }}
-          gap="small"
-        >
-          <Alert size="42rem" color="#df8c00" />
-          <Text weight="bold">
-            {errorMessages[errorClassroom?.detail as ETypeError] ||
-              intl.formatMessage(messages.Error)}
-          </Text>
-        </Box>
+        <BoxError
+          message={
+            errorMessages[errorClassroom?.detail as ETypeError] ||
+            intl.formatMessage(messages.Error)
+          }
+        />
       )}
       <Form
         onSubmitError={() => ({})}
