@@ -94,22 +94,10 @@ describe('<LicenseSelect />', () => {
 
     render(<LicenseSelect onChange={onChangeMock} />);
 
-    await waitFor(() =>
-      expect(onChangeMock).toHaveBeenCalledWith({
-        label: 'No license availables',
-        value: 'error',
-      }),
-    );
-
     expect(
-      screen.queryByText('Creative Common By Attribution'),
-    ).not.toBeInTheDocument();
-
-    const selectButton = await screen.findByRole('combobox', {
-      name: 'Select the license',
-    });
-    expect(
-      await within(selectButton).findByText('No license availables'),
+      await screen.findByText(
+        'Something went wrong when loading the licenses, refresh the page or try again later.',
+      ),
     ).toBeInTheDocument();
   });
 
