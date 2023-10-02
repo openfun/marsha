@@ -37,6 +37,7 @@ import {
 } from 'react-intl';
 
 import { ClaimLink } from 'components/ClaimLink';
+import { Warnings } from 'components/Warnings';
 import { createIntl } from 'utils/lang';
 import { GlobalStyles } from 'utils/theme/baseStyles';
 
@@ -117,6 +118,7 @@ const AppContent = () => {
 
   return (
     <React.Fragment>
+      <Warnings warnings={appConfig.warnings} />
       <ClaimLink decodedJwt={decodedJwt} />
       <Content />
     </React.Fragment>

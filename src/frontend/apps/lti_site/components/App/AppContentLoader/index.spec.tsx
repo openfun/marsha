@@ -366,4 +366,59 @@ describe('<AppContentLoader />', () => {
 
     expect(mockConsoleError).toHaveBeenCalled();
   });
+
+  it('renders warnings if exists', async () => {
+    useJwt.setState({
+      jwt: 'ewogICJhbGciOiAiSFMyNTYiLAogICJ0eXAiOiAiSldUIgp9.ewogICJzZXNzaW9uX2lkIjogInNvbWVfc2Vzc2lvbl9pZCIsCiAgInVzZXIiOiB7CiAgICAiYW5vbnltb3VzX2lkIjogImFub255bW91cyBpZCIsCiAgICAiZW1haWwiOiAic29tZSBlbWFpbCIsCiAgICAiaWQiOiAiaWQiLAogICAgInVzZXJuYW1lIjogInVzZXIgbmFtZSIsCiAgICAidXNlcl9mdWxsbmFtZSI6ICJ1c2VyIGZ1bGwgbmFtZSIKICB9LAogICJsb2NhbGUiOiAicGwiLAogICJtYWludGVuYW5jZSI6IGZhbHNlLAogICJwZXJtaXNzaW9ucyI6IHsKICAgICJjYW5fYWNjZXNzX2Rhc2hib2FyZCI6IGZhbHNlLAogICAgImNhbl91cGRhdGUiOiBmYWxzZQogIH0sCiAgInBsYXlsaXN0X2lkIjogInBsYXlsaXN0IGlkIiwKICAicm9sZXMiOiBbXQp9.gv0kmitQfOv93TQuFTHsiqQJFWeTkbmb1h8J8uMVX70',
+    });
+
+    const playlist = playlistMockFactory({ id: '488db2d0' });
+    const video = videoMockFactory({ playlist });
+
+    fetchMock.get('/api/playlists/488db2d0/is-claimed/', {
+      status: 200,
+      body: {
+        is_claimed: false,
+      },
+    });
+
+    render(
+      <AppConfigProvider
+        value={{
+          appName: appNames.CLASSROOM,
+          attendanceDelay: 10,
+          state: appState.SUCCESS,
+          warnings: ['This is a warning.'],
+          modelName: modelName.VIDEOS,
+          resource: video,
+          sentry_dsn: 'test.dns.com',
+          environment: 'tests',
+          frontend: 'test-frontend',
+          release: 'debug',
+          static: {
+            svg: {
+              icons: '',
+            },
+            img: {
+              liveBackground: '',
+              liveErrorBackground: '',
+              marshaWhiteLogo: '',
+              videoWizardBackground: '',
+              errorMain: '',
+            },
+          },
+          uploadPollInterval: 10,
+          p2p: {
+            isEnabled: false,
+            stunServerUrls: [],
+            webTorrentTrackerUrls: [],
+          },
+        }}
+      >
+        <AppContentLoader />
+      </AppConfigProvider>,
+    );
+
+    expect(await screen.findByText('This is a warning.')).toBeInTheDocument();
+  });
 });
