@@ -958,10 +958,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-13.9.5.tgz#59738bf30b31aea1faa2df7f4a5f55613750cf00"
   integrity sha512-hkzMMD3xu6BrJpGVLeQ3htQQNAcOrJjX7WFmtK8zWQpz2UJf13LCFF2ALA7c9OVdvc2vQJeDdjfR35M0sBCxvw==
 
-"@types/request-promise-native@1.0.18":
-  version "1.0.18"
-  resolved "https://registry.yarnpkg.com/@types/request-promise-native/-/request-promise-native-1.0.18.tgz#437ee2d0b772e01c9691a983b558084b4b3efc2c"
-  integrity sha512-tPnODeISFc/c1LjWyLuZUY+Z0uLB3+IMfNoQyDEi395+j6kTFTTRAqjENjoPJUid4vHRGEozoTrcTrfZM+AcbA==
+"@types/request-promise-native@1.0.19":
+  version "1.0.19"
+  resolved "https://registry.yarnpkg.com/@types/request-promise-native/-/request-promise-native-1.0.19.tgz#8c9cd669f069a3aa309ef486aec16d5f37e708de"
+  integrity sha512-i17J9k5KP2PAMEhoYnoDpHzJHS91aIV1lG0gOqNX1G5mm/48Qm01sIb8gCJMQpddwapXM9KpxdWGSggZNMLKDw==
   dependencies:
     "@types/request" "*"
 
@@ -1076,10 +1076,10 @@ available-typed-arrays@^1.0.5:
   resolved "https://registry.yarnpkg.com/available-typed-arrays/-/available-typed-arrays-1.0.5.tgz#92f95616501069d07d10edb2fc37d3e1c65123b7"
   integrity sha512-DMD0KiN46eipeziST1LPP/STfDU0sufISXmjSgvVsoU2tqxctQeASejWcfNtxYKqETM1UxQ8sp2OrSBWpHY6sw==
 
-aws-sdk@2.1463.0:
-  version "2.1463.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1463.0.tgz#ae584a0ea57c73fb43ef75f4d51a5076a4aaba8b"
-  integrity sha512-NGJLovoHEX6uN3u9iHx0KWg9AigZfSz9YekLQssqGk5vHAEzW7TlCgRsqTu6vhGI5FzlYWapSvUpJUriQUCwMA==
+aws-sdk@2.1468.0:
+  version "2.1468.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1468.0.tgz#28be5d5c6e41aebdf089be7eeb9b67d44bf2f629"
+  integrity sha512-1DAa0UA779M0VyKKPjTPDtox4KOyFrHnGDLbJrDKzqylC+O0DMR4kh9Oy2vfErhwFwsiPUvWgkknddVS+igVGA==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
@@ -3275,7 +3275,7 @@ unbox-primitive@^1.0.2:
     which-boxed-primitive "^1.0.2"
 
 "update-state@file:../utils/update-state":
-  version "4.5.0"
+  version "4.6.0"
   dependencies:
     request "2.88.2"
     request-promise-native "1.0.9"
