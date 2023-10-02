@@ -123,7 +123,6 @@ export const ToggleSubtitlesAsTranscript = () => {
       checked={video.should_use_subtitle_as_transcript}
       onChange={onToggleChange}
       label={intl.formatMessage(messages.useTranscriptToggleLabel)}
-      truncateLabel={false}
     />
   );
 };

@@ -1,15 +1,12 @@
-import { Box, CheckBoxExtendedProps } from 'grommet';
+import { Switch } from '@openfun/cunningham-react';
+import { Box } from 'grommet';
 import React from 'react';
 
-import { Text } from '../Text';
-import { ToggleButton } from '../ToggleButton';
-
-interface ToggleInputProps extends CheckBoxExtendedProps {
+interface ToggleInputProps {
   checked: boolean;
   disabled?: boolean;
   label: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  truncateLabel?: boolean;
 }
 
 export const ToggleInput = ({
@@ -17,8 +14,6 @@ export const ToggleInput = ({
   disabled,
   label,
   onChange,
-  truncateLabel = true,
-  ...props
 }: ToggleInputProps) => {
   return (
     <Box
@@ -30,16 +25,13 @@ export const ToggleInput = ({
       pad={{ horizontal: '36px' }}
       round="6px"
     >
-      <ToggleButton
-        checked={checked}
+      <Switch
         disabled={disabled}
+        checked={checked}
         onChange={onChange}
-        title={label}
-        {...props}
+        label={label}
+        labelSide="right"
       />
-      <Text size="large" weight="medium" truncate={truncateLabel}>
-        {label}
-      </Text>
     </Box>
   );
 };

@@ -13,9 +13,6 @@
 .c__button--tertiary {
   color: var(--c--theme--colors--primary-400);
 }
-.labelled-box label {
-  color: var(--c--theme--colors--primary-500);
-}
 .labelled-box label.placeholder {
   top: 50%;
   transform: translateY(-50%);
@@ -71,6 +68,9 @@ input:-webkit-autofill:focus {
 .c__select--disabled .c__select__wrapper label, .c__select--disabled .c__select__wrapper input {
   background: none;
 }
+.c__select__wrapper:focus-within .labelled-box--disabled label {
+  color: var(--c--components--forms-labelledbox--label-color--small--disabled);
+}
 /**
  * DataGrid
 */
@@ -119,4 +119,14 @@ input:-webkit-autofill:focus {
 .c__date-picker__wrapper button[aria-label='Clear date'],
 .c__date-picker.c__date-picker--invalid .c__date-picker__wrapper * {
   color: var(--c--theme--colors--danger-300);
+}
+/**
+ * Others
+*/
+.c__checkbox:focus-within {
+  border-color: transparent;
+  background-color: transparent;
+}
+.c__checkbox {
+  transition: all 0.8s ease-in-out;
 }

@@ -1,5 +1,5 @@
 import { Select } from '@openfun/cunningham-react';
-import { BoxError, CenterLoader } from 'lib-components';
+import { BoxError, BoxLoader } from 'lib-components';
 import React, { useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -62,7 +62,7 @@ export const LicenseSelect = ({ disabled, onChange }: LicenseSelectProps) => {
   }
 
   if (!choices) {
-    return <CenterLoader />;
+    return <BoxLoader />;
   }
 
   return (

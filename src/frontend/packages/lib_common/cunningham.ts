@@ -27,6 +27,23 @@ const config = {
       bx: '2.2rem',
     },
   },
+  components: {
+    'forms-checkbox': {
+      'background-color': {
+        hover: '#055fd214',
+      },
+      color: 'var(--c--theme--colors--primary-500)',
+      'font-size': 'var(--c--theme--font--sizes--ml)',
+    },
+    'forms-labelledbox': {
+      'label-color': {
+        small: 'var(--c--theme--colors--primary-500)',
+      },
+    },
+    'forms-switch': {
+      'accent-color': 'var(--c--theme--colors--primary-400)',
+    },
+  },
 };
 
 export default config;

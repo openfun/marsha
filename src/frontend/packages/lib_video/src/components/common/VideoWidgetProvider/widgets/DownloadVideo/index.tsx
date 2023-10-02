@@ -173,7 +173,6 @@ export const DownloadVideo = ({ isTeacher }: DownloadVideoProps) => {
           checked={toggleAllowDownload}
           onChange={onToggleChange}
           label={intl.formatMessage(messages.allowDownloadToggleLabel)}
-          truncateLabel={false}
         />
       )}
       <Box direction="column" gap="small" style={{ marginTop: '0.75rem' }}>
