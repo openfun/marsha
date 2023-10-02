@@ -374,17 +374,5 @@
   "components.UploadableObjectStatusBadge.uploading": {
     "description": "Badge text for an uploadable object that is currently uploading.",
     "message": "Téléversement en cours"
-  },
-  "components.UploadsView.completedUploads": {
-    "description": "Title for the part of the view where completed uploads are displayed, if there are any.",
-    "message": "Téléversements terminés"
-  },
-  "components.UploadsView.noOngoingUploads": {
-    "description": "Help message on the uploads view when there are no ongoing file uploads.",
-    "message": "Il n'y a aucun téléversement en cours."
-  },
-  "components.UploadsView.title": {
-    "description": "Title for the file uploads view and its related breadcrumb",
-    "message": "Téléversements de fichiers"
   }
 }
