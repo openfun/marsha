@@ -1,5 +1,6 @@
 import { Select } from '@openfun/cunningham-react';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { BoxError, CenterLoader } from 'lib-components';
+import React, { useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { useVideoMetadata } from '@lib-video/api/useVideoMetadata';
@@ -19,10 +20,12 @@ const messages = defineMessages({
       'The info under the select used for choosing the license under which the instructor wants to publish your video',
     id: 'components.LicenseSelect.selectLicenseInfo',
   },
-  noLicenseAvailableLabel: {
-    defaultMessage: 'No license availables',
-    description: 'The label displayed in the select when there is no license.',
-    id: 'components.LicenseSelect.noLicenseAvailableLabel',
+  errorLoading: {
+    defaultMessage:
+      'Something went wrong when loading the licenses, refresh the page or try again later.',
+    description:
+      'The message displayed when there is a problem when loading the licences.',
+    id: 'components.LicenseSelect.errorLoading',
   },
 });
 
@@ -33,17 +36,7 @@ interface LicenseSelectProps {
 
 export const LicenseSelect = ({ disabled, onChange }: LicenseSelectProps) => {
   const intl = useIntl();
-  const hasRenderRef = useRef(false);
-
-  const errorLicenseChoice = useMemo(
-    () => ({
-      label: intl.formatMessage(messages.noLicenseAvailableLabel),
-      value: 'error',
-    }),
-    [intl],
-  );
-
-  const { data } = useVideoMetadata(intl.locale);
+  const { data, error } = useVideoMetadata(intl.locale);
   const choices = useMemo(
     () =>
       data?.actions.POST.license.choices?.map((choice) => ({
@@ -54,36 +47,39 @@ export const LicenseSelect = ({ disabled, onChange }: LicenseSelectProps) => {
   );
 
   const [selectedLicense, setSelectedLicense] = useState(
-    choices?.length ? choices[0] : errorLicenseChoice,
+    choices?.length ? choices[0] : undefined,
   );
 
   useEffect(() => {
-    if (hasRenderRef.current) {
-      return;
-    }
-
-    hasRenderRef.current = true;
-    onChange(selectedLicense);
-  }, [onChange, selectedLicense]);
-
-  useEffect(() => {
-    if (choices && choices.length && selectedLicense === errorLicenseChoice) {
+    if (choices?.length && !selectedLicense) {
       setSelectedLicense(choices[0]);
       onChange(choices[0]);
     }
-  }, [choices, errorLicenseChoice, onChange, selectedLicense]);
+  }, [choices, onChange, selectedLicense]);
+
+  if (error) {
+    return <BoxError message={intl.formatMessage(messages.errorLoading)} />;
+  }
+
+  if (!choices) {
+    return <CenterLoader />;
+  }
 
   return (
     <Select
       aria-label={intl.formatMessage(messages.selectLicenseLabel)}
       label={intl.formatMessage(messages.selectLicenseLabel)}
-      options={choices ?? [errorLicenseChoice]}
+      options={choices}
       fullWidth
-      value={selectedLicense.value}
+      value={selectedLicense?.value}
       onChange={(evt) => {
-        const choice =
-          choices?.find((option) => option.value === evt.target.value) ||
-          errorLicenseChoice;
+        const choice = choices?.find(
+          (option) => option.value === evt.target.value,
+        );
+
+        if (!choice) {
+          return;
+        }
 
         setSelectedLicense(choice);
         onChange(choice);

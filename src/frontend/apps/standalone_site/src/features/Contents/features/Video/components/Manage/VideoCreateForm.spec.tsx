@@ -293,8 +293,8 @@ describe('<VideoCreateForm />', () => {
         body: JSON.stringify({
           playlist: 'an-other-playlist',
           title: 'my title',
-          license: 'CC_BY',
           description: 'my description',
+          license: 'CC_BY',
           videoFile: {
             path: 'course.mp4',
           },
