@@ -1,5 +1,5 @@
-import { Input } from '@openfun/cunningham-react';
-import { Box, CheckBox } from 'grommet';
+import { Checkbox, Input } from '@openfun/cunningham-react';
+import { Box } from 'grommet';
 import { Classroom, DashboardButton, Text } from 'lib-components';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -95,14 +95,10 @@ export const DashboardClassroomAskUsernameStudent = ({
     >
       <Box>
         {isRecordingEnabled && (
-          <CheckBox
+          <Checkbox
             checked={isStudentConsentRecord}
             onChange={() => setIsStudentConsentRecord(!isStudentConsentRecord)}
-            label={
-              <Text size="small">
-                {intl.formatMessage(messages.studentConsent)}
-              </Text>
-            }
+            label={intl.formatMessage(messages.studentConsent)}
             aria-label={intl.formatMessage(messages.studentConsent)}
           />
         )}

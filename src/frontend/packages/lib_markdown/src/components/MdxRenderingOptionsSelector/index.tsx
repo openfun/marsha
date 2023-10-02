@@ -1,5 +1,5 @@
-import { CheckBox, DropButton, Form } from 'grommet';
-import { CheckBoxExtendedProps } from 'grommet/components/CheckBox';
+import { Switch } from '@openfun/cunningham-react';
+import { Box, DropButton } from 'grommet';
 import { SettingsOption } from 'grommet-icons';
 import { MarkdownDocumentRenderingOptions } from 'lib-components';
 import React from 'react';
@@ -35,7 +35,7 @@ const messages = defineMessages({
   },
 });
 
-interface ToggleCheckBoxProps extends CheckBoxExtendedProps {
+interface ToggleCheckBoxProps {
   optionName: keyof MarkdownDocumentRenderingOptions;
   renderingOptions: MarkdownDocumentRenderingOptions;
   setRenderingOptions: (
@@ -47,22 +47,22 @@ interface ToggleCheckBoxProps extends CheckBoxExtendedProps {
 
 const ToggleCheckBox = (props: ToggleCheckBoxProps) => {
   return (
-    <CheckBox
-      toggle
-      checked={props.renderingOptions[props.optionName]}
-      onChange={(event) => {
-        const options = { ...props.renderingOptions };
-        options[props.optionName] = event.target.checked;
-        props.setRenderingOptions(options);
-      }}
-      label={
-        props.renderingOptions[props.optionName]
-          ? props.enabledLabel
-          : props.disabledLabel
-      }
-      pad="small"
-      {...props}
-    />
+    <Box pad="small">
+      <Switch
+        checked={props.renderingOptions[props.optionName] || false}
+        onChange={(event) => {
+          const options = { ...props.renderingOptions };
+          options[props.optionName] = event.target.checked;
+          props.setRenderingOptions(options);
+        }}
+        label={
+          props.renderingOptions[props.optionName]
+            ? props.enabledLabel
+            : props.disabledLabel
+        }
+        labelSide="right"
+      />
+    </Box>
   );
 };
 
@@ -86,7 +86,7 @@ export const MdxRenderingOptionsSelector = ({
       dropAlign={{ top: 'bottom', left: 'left' }}
       style={{ borderColor: 'transparent' }}
       dropContent={
-        <Form>
+        <Box>
           <ToggleCheckBox
             optionName="useMdx"
             enabledLabel={intl.formatMessage(messages.mdxEnabled)}
@@ -101,7 +101,7 @@ export const MdxRenderingOptionsSelector = ({
             renderingOptions={renderingOptions}
             setRenderingOptions={setRenderingOptions}
           />
-        </Form>
+        </Box>
       }
     />
   );

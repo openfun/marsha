@@ -1,4 +1,5 @@
-import { Box, CheckBox } from 'grommet';
+import { Checkbox } from '@openfun/cunningham-react';
+import { Box } from 'grommet';
 import { ContentCard, StyledLink, Text, Video } from 'lib-components';
 import { Fragment, useEffect, useState } from 'react';
 
@@ -13,14 +14,18 @@ const Live = ({ live }: { live: Video }) => {
   const thumbnail = live.thumbnail?.urls?.[240] || live.urls?.thumbnails?.[240];
   const { isSelectionEnabled, selectedItems, selectItem } = useSelectFeatures();
   const [isLiveSelected, setIsLiveSelected] = useState<boolean>(
-    () => selectedItems.includes(live.id) || false,
+    selectedItems.includes(live.id) || false,
   );
 
   useEffect(() => {
     if (!isSelectionEnabled) {
       setIsLiveSelected(false);
     }
-  }, [isSelectionEnabled, setIsLiveSelected]);
+  }, [isSelectionEnabled]);
+
+  useEffect(() => {
+    setIsLiveSelected(selectedItems.includes(live.id) || false);
+  }, [live.id, selectedItems]);
 
   return (
     <StyledLink to={isSelectionEnabled ? '#' : `${livePath}`}>
@@ -33,7 +38,7 @@ const Live = ({ live }: { live: Video }) => {
               }
             : undefined
         }
-        onClick={() => selectItem(live.id, isLiveSelected, setIsLiveSelected)}
+        onClick={() => selectItem(live.id, isLiveSelected)}
         header={
           <Box
             aria-label="thumbnail"
@@ -56,11 +61,9 @@ const Live = ({ live }: { live: Video }) => {
                 position: 'absolute',
                 top: '21px',
                 left: '21px',
-                background: 'white',
-                borderRadius: '6px',
               }}
             >
-              {isSelectionEnabled && <CheckBox checked={isLiveSelected} />}
+              {isSelectionEnabled && <Checkbox checked={isLiveSelected} />}
             </Box>
             <LiveIcon width={80} height={80} color="white" />
           </Box>

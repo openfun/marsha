@@ -6,11 +6,7 @@ interface useSelectFeatures {
   switchSelectEnabled: () => void;
   setSelectedItems: (selectedItems: string[]) => void;
   resetSelection: () => void;
-  selectItem: (
-    contentId: string,
-    isSelected: boolean,
-    setIsSelected: (isSelected: boolean) => void,
-  ) => void;
+  selectItem: (contentId: string, isSelected: boolean) => void;
 }
 
 export const useSelectFeatures = create<useSelectFeatures>((set, get) => ({
@@ -33,16 +29,14 @@ export const useSelectFeatures = create<useSelectFeatures>((set, get) => ({
       selectedItems: [],
     });
   },
-  selectItem: (contentId, isSelected, setIsSelected) => {
+  selectItem: (contentId, isSelected) => {
     if (get().isSelectionEnabled) {
       if (isSelected) {
         get().setSelectedItems(
           get().selectedItems.filter((itemId) => itemId !== contentId),
         );
-        setIsSelected(false);
       } else {
         get().setSelectedItems([...get().selectedItems, contentId]);
-        setIsSelected(true);
       }
     }
   },

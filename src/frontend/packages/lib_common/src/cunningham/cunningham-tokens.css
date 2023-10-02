@@ -112,6 +112,11 @@
 	--c--theme--transitions--ease-out: cubic-bezier(0.33, 1, 0.68, 1);
 	--c--theme--transitions--ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 	--c--theme--transitions--duration: 250ms;
+	--c--components--forms-checkbox--background-color--hover: #055fd214;
+	--c--components--forms-checkbox--color: var(--c--theme--colors--primary-500);
+	--c--components--forms-checkbox--font-size: var(--c--theme--font--sizes--ml);
+	--c--components--forms-labelledbox--label-color--small: var(--c--theme--colors--primary-500);
+	--c--components--forms-switch--accent-color: var(--c--theme--colors--primary-400);
 } .clr-primary-text { color: var(--c--theme--colors--primary-text); }
 .clr-primary-100 { color: var(--c--theme--colors--primary-100); }
 .clr-primary-200 { color: var(--c--theme--colors--primary-200); }

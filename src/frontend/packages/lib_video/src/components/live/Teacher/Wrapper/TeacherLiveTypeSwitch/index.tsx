@@ -1,4 +1,5 @@
-import { Box, CheckBox } from 'grommet';
+import { Switch } from '@openfun/cunningham-react';
+import { Box } from 'grommet';
 import {
   LiveModeType,
   Text,
@@ -64,7 +65,7 @@ export const TeacherLiveTypeSwitch = () => {
       <Text weight="bold" color="clr-greyscale-800">
         {intl.formatMessage(messages.RAW)}
       </Text>
-      <CheckBox
+      <Switch
         checked={video.live_type === LiveModeType.JITSI}
         onChange={(event) => {
           if (event.target.checked) {
@@ -73,7 +74,6 @@ export const TeacherLiveTypeSwitch = () => {
             configureLive(LiveModeType.RAW);
           }
         }}
-        toggle
       />
       <Text weight="bold" color="clr-greyscale-800">
         {intl.formatMessage(messages.JITSI)}

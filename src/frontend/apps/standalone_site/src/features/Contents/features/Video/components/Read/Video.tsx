@@ -1,4 +1,5 @@
-import { Box, CheckBox } from 'grommet';
+import { Checkbox } from '@openfun/cunningham-react';
+import { Box } from 'grommet';
 import { ContentCard, Video as IVideo, StyledLink, Text } from 'lib-components';
 import { Fragment, useEffect, useState } from 'react';
 
@@ -14,14 +15,18 @@ const Video = ({ video }: { video: IVideo }) => {
     video.thumbnail?.urls?.[240] || video.urls?.thumbnails?.[240];
   const { isSelectionEnabled, selectedItems, selectItem } = useSelectFeatures();
   const [isVideoSelected, setIsVideoSelected] = useState<boolean>(
-    () => selectedItems.includes(video.id) || false,
+    selectedItems.includes(video.id) || false,
   );
 
   useEffect(() => {
     if (!isSelectionEnabled) {
       setIsVideoSelected(false);
     }
-  }, [isSelectionEnabled, setIsVideoSelected]);
+  }, [isSelectionEnabled]);
+
+  useEffect(() => {
+    setIsVideoSelected(selectedItems.includes(video.id) || false);
+  }, [video.id, selectedItems]);
 
   return (
     <StyledLink to={isSelectionEnabled ? '#' : `${videoPath}`}>
@@ -34,9 +39,7 @@ const Video = ({ video }: { video: IVideo }) => {
               }
             : undefined
         }
-        onClick={() =>
-          selectItem(video.id, isVideoSelected, setIsVideoSelected)
-        }
+        onClick={() => selectItem(video.id, isVideoSelected)}
         header={
           <Box
             aria-label="thumbnail"
@@ -59,11 +62,9 @@ const Video = ({ video }: { video: IVideo }) => {
                 position: 'absolute',
                 top: '21px',
                 left: '21px',
-                background: 'white',
-                borderRadius: '6px',
               }}
             >
-              {isSelectionEnabled && <CheckBox checked={isVideoSelected} />}
+              {isSelectionEnabled && <Checkbox checked={isVideoSelected} />}
             </Box>
             <VideoIcon width={75} height={75} color="white" />
           </Box>

@@ -1,4 +1,5 @@
-import { Box, CheckBox } from 'grommet';
+import { Checkbox } from '@openfun/cunningham-react';
+import { Box } from 'grommet';
 import { FormSchedule, InProgress } from 'grommet-icons';
 import { ClassroomLite, ContentCard, StyledLink, Text } from 'lib-components';
 import { Fragment, useEffect, useState } from 'react';
@@ -17,14 +18,18 @@ const ClassRoom = ({ classroom }: { classroom: ClassroomLite }) => {
 
   const { isSelectionEnabled, selectedItems, selectItem } = useSelectFeatures();
   const [isClassroomSelected, setIsClassroomSelected] = useState<boolean>(
-    () => selectedItems.includes(classroom.id) || false,
+    selectedItems.includes(classroom.id) || false,
   );
 
   useEffect(() => {
     if (!isSelectionEnabled) {
       setIsClassroomSelected(false);
     }
-  }, [isSelectionEnabled, setIsClassroomSelected]);
+  }, [isSelectionEnabled]);
+
+  useEffect(() => {
+    setIsClassroomSelected(selectedItems.includes(classroom.id) || false);
+  }, [classroom.id, selectedItems]);
 
   return (
     <StyledLink to={isSelectionEnabled ? '#' : `${classroomPath}`}>
@@ -37,9 +42,7 @@ const ClassRoom = ({ classroom }: { classroom: ClassroomLite }) => {
               }
             : undefined
         }
-        onClick={() =>
-          selectItem(classroom.id, isClassroomSelected, setIsClassroomSelected)
-        }
+        onClick={() => selectItem(classroom.id, isClassroomSelected)}
         header={
           <Box
             width="100%"
@@ -54,11 +57,9 @@ const ClassRoom = ({ classroom }: { classroom: ClassroomLite }) => {
                 position: 'absolute',
                 top: '21px',
                 left: '21px',
-                background: 'white',
-                borderRadius: '6px',
               }}
             >
-              {isSelectionEnabled && <CheckBox checked={isClassroomSelected} />}
+              {isSelectionEnabled && <Checkbox checked={isClassroomSelected} />}
             </Box>
             <ClassroomsIcon width={70} height={70} color="white" />
             <Text

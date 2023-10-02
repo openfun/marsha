@@ -65,7 +65,6 @@ export * from './Select';
 export * from './Styled';
 export * from './Text';
 export * from './ThumbnailDisplayer';
-export * from './ToggleButton';
 export * from './ToggleInput';
 export * from './Typo';
 export * from './UploadField';

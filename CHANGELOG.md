@@ -15,6 +15,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Generic classroom LTI url
 - Generic LTI cartridge (xml configuration)
 - Display LTI warning message for generic urls regarding course copy
+- configure homepage banner using SiteConfig model
 
 ### Changed
 
@@ -24,10 +25,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Replace grommet Text (#2427)
 - Replace grommet Paragraph (#2435)
 - Remove cross on login image (#2451)
-
-### Added
-
-- configure homepage banner using SiteConfig model
+- Replace grommet Checkbox and Pagination (#2437)
 
 ### Fixed
 
@@ -44,6 +42,9 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Replace grommet Heading (#2410)
+- Replace all the loaders by Cunningham Loader (#2436)
+- Replace grommet Text (#2427)
+- Replace grommet Paragraph (#2435)
 - Upgrade to python 3.11
 - Upgrade channels and channels-redis to version 4
 
