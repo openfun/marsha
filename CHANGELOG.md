@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [4.6.0] - 2023-10-02
+
 ### Added
 
 - Send an email when a live stream is ready to be converted to VOD
@@ -1819,7 +1821,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v4.5.0...master
+[unreleased]: https://github.com/openfun/marsha/compare/v4.6.0...master
+[4.6.0]: https://github.com/openfun/marsha/compare/v4.5.0...v4.6.0
 [4.5.0]: https://github.com/openfun/marsha/compare/v4.4.0...v4.5.0
 [4.4.0]: https://github.com/openfun/marsha/compare/v4.3.1...v4.4.0
 [4.3.1]: https://github.com/openfun/marsha/compare/v4.3.0...v4.3.1
