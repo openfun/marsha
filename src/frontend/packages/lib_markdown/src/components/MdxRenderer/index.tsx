@@ -184,10 +184,10 @@ export const MdxRenderer = ({
 
             setLoading(false); // needs to be done before fetching content, of course.
 
-            // Fetch the whole rendered content including the markdown styled div
-            const bodies = document.querySelectorAll('div.markdown-body');
-            if (bodies.length && bodies[0].outerHTML) {
-              onRenderedContentChange(bodies[0].outerHTML);
+            if (sanitizedHtmlRenderedContent) {
+              // Wrap the generated HTML in a div.markdown-body
+              const renderedHTML = `<div class="markdown-body">${sanitizedHtmlRenderedContent}</div>`;
+              onRenderedContentChange(renderedHTML);
             }
           })
           .catch((reason) => {

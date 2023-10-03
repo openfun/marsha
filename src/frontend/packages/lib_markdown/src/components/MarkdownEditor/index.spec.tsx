@@ -71,7 +71,14 @@ describe('<MarkdownEditor />', () => {
     const markdownDocument = markdownDocumentMockFactory({
       id: '1',
       is_draft: true,
-      translations: [markdownTranslationMockFactory({ language_code: 'en' })],
+      translations: [
+        markdownTranslationMockFactory({
+          language_code: 'en',
+          title: 'title',
+          content: 'content',
+          rendered_content: '<p>content</p>',
+        }),
+      ],
     });
     const documentDeferred = new Deferred();
     fetchMock.get('/api/markdown-documents/1/', documentDeferred.promise);
@@ -135,12 +142,37 @@ describe('<MarkdownEditor />', () => {
     });
     expect(publishButton).not.toBeDisabled();
 
+    expect(fetchMock.calls()[1][1]!.body).toEqual(
+      JSON.stringify({
+        language_code: 'en',
+        title: 'title is changed 1',
+        content: 'content',
+        rendered_content: '<div class="markdown-body"><p>content</p></div>',
+      }),
+    );
+
     await userEvent.type(
       screen.getByRole('textbox', { name: 'Title' }),
       ' is changed',
     );
     await waitFor(() => expect(saveButton).not.toBeDisabled());
     expect(publishButton).toBeDisabled();
+
+    const editor = within(screen.getByTestId('editor_container')).getByRole(
+      'textbox',
+    );
+    await userEvent.type(editor, 'updated ');
+    await userEvent.click(saveButton);
+
+    expect(fetchMock.calls()[3][1]!.body).toEqual(
+      JSON.stringify({
+        language_code: 'en',
+        title: 'title is changed',
+        content: 'updated content',
+        rendered_content:
+          '<div class="markdown-body"><p>updated content</p></div>',
+      }),
+    );
   });
 
   it('shows editor in first existing translation language', async () => {

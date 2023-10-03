@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Markdown save sent previously saved content
+
 ## [4.6.0] - 2023-10-02
 
 ### Added
