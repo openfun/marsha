@@ -75,6 +75,7 @@ describe('<MdxRenderer />', () => {
     expect(
       container.getElementsByClassName('markdown-body')[0],
     ).toMatchSnapshot();
+    expect(onRenderedContentChange).toHaveBeenCalledWith('');
   });
 
   it('renders simple markdown', async () => {
@@ -101,6 +102,9 @@ describe('<MdxRenderer />', () => {
     expect(
       container.getElementsByClassName('markdown-body')[0],
     ).toMatchSnapshot();
+    expect(onRenderedContentChange).toHaveBeenCalledWith(
+      container.getElementsByClassName('markdown-body')[0].outerHTML,
+    );
   });
 
   it('renders very simple markdown with brace', async () => {
@@ -160,6 +164,9 @@ describe('<MdxRenderer />', () => {
     expect(
       container.getElementsByClassName('markdown-body')[0],
     ).toMatchSnapshot();
+    expect(onRenderedContentChange).toHaveBeenCalledWith(
+      container.getElementsByClassName('markdown-body')[0].outerHTML,
+    );
   });
 
   it('renders markdown with math to Mathjax', async () => {
@@ -194,6 +201,9 @@ describe('<MdxRenderer />', () => {
     expect(
       container.getElementsByClassName('markdown-body')[0],
     ).toMatchSnapshot();
+    expect(onRenderedContentChange).toHaveBeenCalledWith(
+      container.getElementsByClassName('markdown-body')[0].outerHTML,
+    );
   });
 
   it('renders markdown with MDX', async () => {
@@ -235,6 +245,9 @@ describe('<MdxRenderer />', () => {
     expect(
       container.getElementsByClassName('markdown-body')[0],
     ).toMatchSnapshot();
+    expect(onRenderedContentChange).toHaveBeenCalledWith(
+      container.getElementsByClassName('markdown-body')[0].outerHTML,
+    );
   });
 
   it('renders markdown with Mermaid content', async () => {
@@ -314,6 +327,9 @@ describe('<MdxRenderer />', () => {
     expect(
       container.getElementsByClassName('markdown-body')[0],
     ).toMatchSnapshot();
+    expect(onRenderedContentChange).toHaveBeenCalledWith(
+      container.getElementsByClassName('markdown-body')[0].outerHTML,
+    );
   });
 
   it('renders markdown without XSS', async () => {
@@ -346,6 +362,9 @@ describe('<MdxRenderer />', () => {
     expect(
       container.getElementsByClassName('markdown-body')[0],
     ).toMatchSnapshot();
+    expect(onRenderedContentChange).toHaveBeenCalledWith(
+      container.getElementsByClassName('markdown-body')[0].outerHTML,
+    );
 
     // Now renders with MDX
     rerender(
@@ -367,6 +386,9 @@ describe('<MdxRenderer />', () => {
     expect(
       container.getElementsByClassName('markdown-body')[0],
     ).toMatchSnapshot();
+    expect(onRenderedContentChange).toHaveBeenCalledWith(
+      container.getElementsByClassName('markdown-body')[0].outerHTML,
+    );
   });
 
   it('renders uploaded images', async () => {
