@@ -42,7 +42,7 @@ describe('<DashboardLiveTabAttendance />', () => {
     );
     render(wrapInVideo(<DashboardLiveTabAttendance />, mockedVideo));
 
-    screen.getByText('Loading attendances...');
+    screen.getByLabelText('Loading attendances...');
 
     deferred.resolve({
       count: 3,

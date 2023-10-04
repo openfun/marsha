@@ -1,4 +1,4 @@
-import { Box, Button, ButtonProps, Spinner } from 'grommet';
+import { Box, Button, ButtonProps } from 'grommet';
 import React, {
   CSSProperties,
   Dispatch,
@@ -9,6 +9,8 @@ import React, {
 } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
+
+import { BoxLoader } from '..';
 
 const messages = defineMessages({
   defaultErrorMessage: {
@@ -52,13 +54,16 @@ export const useFetchButton = (
               flex
               margin="auto"
               style={{ whiteSpace: 'nowrap' }}
+              align="center"
             >
               {label}
               {state.type === 'loading' && (
-                <Spinner
-                  data-testid="loader-id"
-                  color="white"
-                  margin={{ left: 'small' }}
+                <BoxLoader
+                  whiteBackground
+                  size="small"
+                  boxProps={{
+                    margin: { left: 'small' },
+                  }}
                 />
               )}
             </Box>

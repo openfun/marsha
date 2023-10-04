@@ -248,7 +248,7 @@ describe('<ConverseInitializer />', () => {
     );
 
     screen.getByText('loaded');
-    expect(screen.queryByTestId('loader-id')).not.toBeInTheDocument();
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
   });
 
   it('initializes converse in the window if not define yet', async () => {
@@ -272,7 +272,7 @@ describe('<ConverseInitializer />', () => {
       ),
     );
 
-    screen.getByTestId('loader-id');
+    screen.getByRole('status');
     expect(screen.queryByText('loaded')).not.toBeInTheDocument();
 
     act(() => {
@@ -280,7 +280,7 @@ describe('<ConverseInitializer />', () => {
     });
 
     await screen.findByText('loaded');
-    expect(screen.queryByTestId('loader-id')).not.toBeInTheDocument();
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
 
     expect(mockInitConverse).not.toHaveBeenCalled();
   });
@@ -319,7 +319,7 @@ describe('<ConverseInitializer />', () => {
       ),
     );
 
-    screen.getByTestId('loader-id');
+    expect(screen.getByRole('status')).toBeInTheDocument();
     expect(screen.queryByText('loaded')).not.toBeInTheDocument();
 
     act(() => {
@@ -327,7 +327,7 @@ describe('<ConverseInitializer />', () => {
     });
 
     await screen.findByText('loaded');
-    expect(screen.queryByTestId('loader-id')).not.toBeInTheDocument();
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
 
     expect(mockInitConverse).toHaveBeenCalledTimes(1);
     expect(mockInitConverse).toHaveBeenCalledWith(

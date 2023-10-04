@@ -83,7 +83,7 @@ describe('<Lives/>', () => {
         client: queryClient,
       },
     });
-    expect(screen.getByRole('alert', { name: /spinner/i })).toBeInTheDocument();
+    expect(screen.getByLabelText('loader')).toBeInTheDocument();
 
     expect(
       await screen.findByText(/Sorry, an error has occurred./i),
@@ -104,7 +104,7 @@ describe('<Lives/>', () => {
     );
 
     render(<Lives />);
-    expect(screen.getByRole('alert', { name: /spinner/i })).toBeInTheDocument();
+    expect(screen.getByLabelText('loader')).toBeInTheDocument();
     expect(
       await screen.findByText(/There is no webinar to display./i),
     ).toBeInTheDocument();
@@ -117,7 +117,7 @@ describe('<Lives/>', () => {
     );
 
     render(<Lives />);
-    expect(screen.getByRole('alert', { name: /spinner/i })).toBeInTheDocument();
+    expect(screen.getByLabelText('loader')).toBeInTheDocument();
     expect(await screen.findByText(/New webinar title/)).toBeInTheDocument();
     expect(screen.getByText(/New webinar description/)).toBeInTheDocument();
     expect(

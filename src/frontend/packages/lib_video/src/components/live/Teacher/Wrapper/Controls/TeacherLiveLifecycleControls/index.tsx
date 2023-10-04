@@ -1,5 +1,5 @@
-import { Box, BoxProps, Paragraph, Spinner } from 'grommet';
-import { liveState } from 'lib-components';
+import { Box, BoxProps, Paragraph } from 'grommet';
+import { BoxLoader, liveState } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -98,7 +98,7 @@ export const TeacherLiveLifecycleControls = ({
         <Paragraph margin="auto">
           {intl.formatMessage(messages.starting)}
         </Paragraph>
-        <Spinner margin={{ left: 'small' }} />
+        <BoxLoader boxProps={{ margin: { left: 'small' } }} size="small" />
       </Box>
     );
   } else if (video.live_state === liveState.RUNNING) {
@@ -109,7 +109,7 @@ export const TeacherLiveLifecycleControls = ({
         <Paragraph margin="auto">
           {intl.formatMessage(messages.stopping)}
         </Paragraph>
-        <Spinner margin={{ left: 'small' }} />
+        <BoxLoader boxProps={{ margin: { left: 'small' } }} size="small" />
       </Box>
     );
   } else if (video.live_state === liveState.HARVESTING) {
@@ -122,7 +122,7 @@ export const TeacherLiveLifecycleControls = ({
         >
           {intl.formatMessage(messages.harvesting)}
         </Paragraph>
-        <Spinner margin={{ left: 'small' }} />
+        <BoxLoader boxProps={{ margin: { left: 'small' } }} size="small" />
       </Box>
     );
   }

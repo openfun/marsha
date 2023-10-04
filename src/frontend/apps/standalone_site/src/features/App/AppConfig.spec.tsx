@@ -128,11 +128,7 @@ describe('AppConfig', () => {
   it('should have features active', async () => {
     render(<AppConfig>My app</AppConfig>);
 
-    expect(
-      screen.getByRole('alert', {
-        name: /spinner/i,
-      }),
-    ).toBeInTheDocument();
+    expect(screen.getByLabelText('loader')).toBeInTheDocument();
 
     deferredConfig.resolve(config);
 
@@ -266,11 +262,7 @@ describe('AppConfig', () => {
     deferredConfig.resolve(config);
     render(<AppConfig>My app</AppConfig>);
 
-    expect(
-      screen.getByRole('alert', {
-        name: /spinner/i,
-      }),
-    ).toBeInTheDocument();
+    expect(screen.getByLabelText('loader')).toBeInTheDocument();
 
     window.isCDNLoaded = true;
     act(() => {

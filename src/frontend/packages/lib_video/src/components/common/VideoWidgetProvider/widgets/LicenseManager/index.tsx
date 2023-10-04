@@ -1,5 +1,5 @@
 import { Select } from '@openfun/cunningham-react';
-import { CenterLoader, FoldableItem } from 'lib-components';
+import { BoxLoader, FoldableItem } from 'lib-components';
 import React, { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -121,7 +121,7 @@ export const LicenseManager = () => {
           text={intl.formatMessage(messages.selectLicenseInfo)}
         />
       ) : (
-        <CenterLoader />
+        <BoxLoader />
       )}
     </FoldableItem>
   );

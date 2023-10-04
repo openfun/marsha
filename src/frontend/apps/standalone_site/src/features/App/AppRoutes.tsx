@@ -1,11 +1,10 @@
 import { lazyImport } from 'lib-common';
-import { Loader } from 'lib-components';
+import { BoxLoader } from 'lib-components';
 import { Suspense, useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 
 import { MainLayout } from 'components/Layout';
-import { ContentSpinner } from 'components/Spinner';
 import { Text404 } from 'components/Text';
 import { useAuthenticator } from 'features/Authentication';
 import { Footer } from 'features/Footer';
@@ -59,7 +58,7 @@ const AppRoutes = () => {
   }, [intl]);
 
   if (isLoading) {
-    return <Loader />;
+    return <BoxLoader boxProps={{ height: '100vh' }} />;
   }
 
   if (isAuthenticated) {
@@ -74,7 +73,7 @@ const AnonymousRoutes = () => {
   const routes = useRoutes();
 
   if (isPagesLoading) {
-    return <ContentSpinner boxProps={{ height: '100vh' }} />;
+    return <BoxLoader boxProps={{ height: '100vh' }} />;
   }
 
   return (
@@ -90,9 +89,7 @@ const AnonymousRoutes = () => {
               pad: { horizontal: 'medium', vertical: 'small' },
             }}
           >
-            <Suspense
-              fallback={<ContentSpinner boxProps={{ height: '100vh' }} />}
-            >
+            <Suspense fallback={<BoxLoader boxProps={{ height: '100vh' }} />}>
               <ClassRoomUpdate />
             </Suspense>
           </MainLayout>
@@ -112,9 +109,7 @@ const AnonymousRoutes = () => {
                 pad: { horizontal: 'medium', vertical: 'small' },
               }}
             >
-              <Suspense
-                fallback={<ContentSpinner boxProps={{ height: '100vh' }} />}
-              >
+              <Suspense fallback={<BoxLoader boxProps={{ height: '100vh' }} />}>
                 <PagesApi />
               </Suspense>
             </MainLayout>
@@ -125,9 +120,7 @@ const AnonymousRoutes = () => {
       <Route
         path="*"
         element={
-          <Suspense
-            fallback={<ContentSpinner boxProps={{ height: '100vh' }} />}
-          >
+          <Suspense fallback={<BoxLoader boxProps={{ height: '100vh' }} />}>
             <AuthRouter />
           </Suspense>
         }
@@ -152,7 +145,7 @@ const AuthenticatedRoutes = () => {
   }, [navigate, pathname, routes]);
 
   if (isPagesLoading) {
-    return <ContentSpinner boxProps={{ height: '100vh' }} />;
+    return <BoxLoader boxProps={{ height: '100vh' }} />;
   }
 
   return (
@@ -163,7 +156,7 @@ const AuthenticatedRoutes = () => {
         <Route
           path={`${routes.PLAYLIST.path}/*`}
           element={
-            <Suspense fallback={<ContentSpinner />}>
+            <Suspense fallback={<BoxLoader />}>
               <PlaylistRouter />
             </Suspense>
           }
@@ -172,7 +165,7 @@ const AuthenticatedRoutes = () => {
         <Route
           path={`${routes.CONTENTS.path}/*`}
           element={
-            <Suspense fallback={<ContentSpinner />}>
+            <Suspense fallback={<BoxLoader />}>
               <ContentsRouter />
             </Suspense>
           }
@@ -181,7 +174,7 @@ const AuthenticatedRoutes = () => {
         <Route
           path={`${routes.PORTABILITY_REQUESTS.path}/*`}
           element={
-            <Suspense fallback={<ContentSpinner />}>
+            <Suspense fallback={<BoxLoader />}>
               <PortabilityRequestsRouteComponent />
             </Suspense>
           }
@@ -190,7 +183,7 @@ const AuthenticatedRoutes = () => {
         <Route
           path={`${routes.PROFILE.path}/*`}
           element={
-            <Suspense fallback={<ContentSpinner />}>
+            <Suspense fallback={<BoxLoader />}>
               <ProfileRouter />
             </Suspense>
           }
@@ -201,7 +194,7 @@ const AuthenticatedRoutes = () => {
             key={route}
             path={route}
             element={
-              <Suspense fallback={<ContentSpinner />}>
+              <Suspense fallback={<BoxLoader />}>
                 <PagesApi />
               </Suspense>
             }
@@ -211,7 +204,7 @@ const AuthenticatedRoutes = () => {
         <Route
           path={`${routes.CLAIM_RESOURCE.path}/*`}
           element={
-            <Suspense fallback={<ContentSpinner />}>
+            <Suspense fallback={<BoxLoader />}>
               <ClaimResource />
             </Suspense>
           }

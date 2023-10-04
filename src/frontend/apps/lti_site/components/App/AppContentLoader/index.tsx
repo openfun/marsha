@@ -5,9 +5,9 @@ import { Grommet } from 'grommet';
 import { colors, theme } from 'lib-common';
 import {
   BoundaryScreenError,
+  BoxLoader,
   CurrentResourceContextProvider,
   DecodedJwtLTI,
-  Loader,
   ResourceContext,
   User,
   appNames,
@@ -210,7 +210,7 @@ const AppContentLoader = () => {
                     },
                   }}
                 />
-                <Suspense fallback={<Loader />}>
+                <Suspense fallback={<BoxLoader />}>
                   <AppContent />
                 </Suspense>
                 <GlobalStyles />

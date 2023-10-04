@@ -1,5 +1,6 @@
+import { BoxLoader } from '@lib-components/common';
 import { Input } from '@openfun/cunningham-react';
-import { Box, Spinner } from 'grommet';
+import { Box } from 'grommet';
 import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -45,9 +46,7 @@ export const ChatLayout = ({ isModerated }: ChatLayoutProps) => {
   return (
     <Box direction="column" fill overflow="auto">
       {!hasReceivedMessageHistory ? (
-        <Box align="center" fill justify="center">
-          <Spinner size="large" />
-        </Box>
+        <BoxLoader />
       ) : (
         <ChatConversationDisplayer />
       )}

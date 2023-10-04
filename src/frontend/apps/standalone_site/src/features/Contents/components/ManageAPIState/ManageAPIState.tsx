@@ -1,10 +1,10 @@
 import { Box, Text } from 'grommet';
 import { Alert } from 'grommet-icons';
+import { BoxLoader } from 'lib-components';
 import { Fragment, PropsWithChildren, ReactElement } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { ReactComponent as ContentsIcon } from 'assets/svg/iko_webinairesvg.svg';
-import { ContentSpinner } from 'components/Spinner';
 
 const messages = defineMessages({
   NoThing: {
@@ -82,7 +82,7 @@ const ManageAPIState = ({
       );
     }
   } else if (isLoading) {
-    content = <ContentSpinner />;
+    content = <BoxLoader />;
   } else if (hasResult) {
     content = <Fragment>{children}</Fragment>;
   }

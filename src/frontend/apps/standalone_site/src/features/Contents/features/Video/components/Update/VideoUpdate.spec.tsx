@@ -51,7 +51,7 @@ describe('<VideoUpdate />', () => {
       }),
     );
 
-    expect(screen.getByRole('alert', { name: /spinner/i })).toBeInTheDocument();
+    expect(screen.getByLabelText('loader')).toBeInTheDocument();
     expect(
       await screen.findByText(/My DashboardVideoWrapper/i),
     ).toBeInTheDocument();
@@ -69,7 +69,7 @@ describe('<VideoUpdate />', () => {
 
     deferred.resolve(500);
 
-    expect(screen.getByRole('alert', { name: /spinner/i })).toBeInTheDocument();
+    expect(screen.getByLabelText('loader')).toBeInTheDocument();
     expect(
       await screen.findByText(/Sorry, an error has occurred./i),
     ).toBeInTheDocument();
@@ -87,7 +87,7 @@ describe('<VideoUpdate />', () => {
 
     deferred.resolve(404);
 
-    expect(screen.getByRole('alert', { name: /spinner/i })).toBeInTheDocument();
+    expect(screen.getByLabelText('loader')).toBeInTheDocument();
     expect(
       await screen.findByText(/We don't find the video you are looking for./i),
     ).toBeInTheDocument();

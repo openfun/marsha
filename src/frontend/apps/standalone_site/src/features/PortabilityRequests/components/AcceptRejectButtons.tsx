@@ -1,6 +1,6 @@
 import { Box, Button } from 'grommet';
 import { FormCheckmark, FormClose } from 'grommet-icons';
-import { PortabilityRequest, Spinner } from 'lib-components';
+import { BoxLoader, PortabilityRequest } from 'lib-components';
 import { Fragment, useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -72,7 +72,7 @@ export const AcceptRejectButtons = ({
   });
 
   if (isLoadingRejectPortabilityRequest || isLoadingAcceptPortabilityRequest) {
-    return <Spinner size="small" />;
+    return <BoxLoader size="small" />;
   }
 
   if (!displayButtons) {

@@ -1,5 +1,10 @@
 import { Box, Grid, Paragraph } from 'grommet';
-import { FileDepository, Heading, Loader, useResponsive } from 'lib-components';
+import {
+  BoxLoader,
+  FileDepository,
+  Heading,
+  useResponsive,
+} from 'lib-components';
 import React from 'react';
 import { FormattedMessage, defineMessages } from 'react-intl';
 
@@ -63,7 +68,7 @@ export const DashboardStudent = ({ fileDepository }: DashboardStudentProps) => {
           <FormattedMessage {...messages.filesListHeader} />
         </Heading>
         {isLoading ? (
-          <Loader />
+          <BoxLoader />
         ) : isError ? (
           <FormattedMessage {...messages.fetchFilesError} />
         ) : (

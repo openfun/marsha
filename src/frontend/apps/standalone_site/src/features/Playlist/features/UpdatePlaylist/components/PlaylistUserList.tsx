@@ -1,6 +1,6 @@
 import { DataGrid, usePagination } from '@openfun/cunningham-react';
 import { Box, Button, Text } from 'grommet';
-import { Spinner } from 'lib-components';
+import { BoxLoader } from 'lib-components';
 import { useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -70,13 +70,7 @@ export const PlaylistUserList = ({ playlistId }: PlaylistUserListProps) => {
   }, [data?.count, pageSize, setPagesCount]);
 
   if (isLoading && !isError) {
-    return (
-      <Box width="large" margin="auto">
-        <Box margin="auto">
-          <Spinner />
-        </Box>
-      </Box>
-    );
+    return <BoxLoader />;
   }
 
   if (isError) {

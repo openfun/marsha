@@ -63,7 +63,7 @@ describe('HarvestVOD', () => {
 
     await waitFor(() =>
       expect(
-        screen.getByRole('button', { name: 'Generate file' }),
+        screen.getByRole('button', { name: /Generate file/ }),
       ).toBeDisabled(),
     );
     expect(useVideo.getState().addResource).not.toHaveBeenCalled();

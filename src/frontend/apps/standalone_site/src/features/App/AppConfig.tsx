@@ -1,9 +1,13 @@
-import { useP2PConfig, useSentry, useSiteConfig } from 'lib-components';
+import {
+  BoxLoader,
+  useP2PConfig,
+  useSentry,
+  useSiteConfig,
+} from 'lib-components';
 import { PropsWithChildren, useEffect, useState } from 'react';
 import { RawIntlProvider } from 'react-intl';
 
 import { useConfig } from 'api/useConfig';
-import { ContentSpinner } from 'components/Spinner';
 import { featureContentLoader, useContentFeatures } from 'features/Contents';
 import { useLanguage } from 'features/Language';
 
@@ -63,7 +67,7 @@ const AppConfig = ({ children }: PropsWithChildren<unknown>) => {
   }, [setSentry, setP2PConfig, config, setSiteConfig]);
 
   if (!isConfigReady) {
-    return <ContentSpinner boxProps={{ height: '100vh' }} />;
+    return <BoxLoader boxProps={{ height: '100vh' }} />;
   }
 
   return <RawIntlProvider value={intl}>{children}</RawIntlProvider>;

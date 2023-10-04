@@ -2,8 +2,8 @@ import { Box, Button, Stack, Text } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { Nullable, theme } from 'lib-common';
 import {
+  BoxLoader,
   FoldableItem,
-  Loader,
   PictureSVG,
   ThumbnailDisplayer,
   UploadManagerStatus,
@@ -137,10 +137,6 @@ export const WidgetThumbnail = ({ isLive = true }: WidgetThumbnailProps) => {
     }
   }, [thumbnail?.upload_state, resetUpload, uploadManagerState, thumbnail?.id]);
 
-  if (isLoading) {
-    return <Loader />;
-  }
-
   return (
     <FoldableItem
       title={intl.formatMessage(messages.title)}
@@ -151,70 +147,80 @@ export const WidgetThumbnail = ({ isLive = true }: WidgetThumbnailProps) => {
       }
       initialOpenValue={true}
     >
-      <Box direction="column" justify="center" gap="small">
-        {!thumbnail ||
-        (thumbnail && !thumbnail.urls && !uploadManagerState[thumbnail.id]) ? (
-          <Box>
-            <ThumbnailDisplayer
-              rounded
-              urlsThumbnail={{ 1080: appData.static.img.liveBackground }}
-            />
-          </Box>
-        ) : (
-          <Stack anchor="top-right">
+      {isLoading ? (
+        <BoxLoader />
+      ) : (
+        <Box direction="column" justify="center" gap="small">
+          {!thumbnail ||
+          (thumbnail &&
+            !thumbnail.urls &&
+            !uploadManagerState[thumbnail.id]) ? (
             <Box>
-              <ThumbnailManager
-                thumbnail={thumbnail}
-                uploadManagerState={uploadManagerState}
+              <ThumbnailDisplayer
+                rounded
+                urlsThumbnail={{ 1080: appData.static.img.liveBackground }}
               />
             </Box>
-            <ThumbnailRemoveButton thumbnail={thumbnail} />
-          </Stack>
-        )}
+          ) : (
+            <Stack anchor="top-right">
+              <Box>
+                <ThumbnailManager
+                  thumbnail={thumbnail}
+                  uploadManagerState={uploadManagerState}
+                />
+              </Box>
+              <ThumbnailRemoveButton thumbnail={thumbnail} />
+            </Stack>
+          )}
 
-        <input
-          accept="image/*"
-          data-testid="input-file-test-id"
-          onChange={(event) => {
-            handleChange(event);
-          }}
-          ref={hiddenFileInputRef}
-          style={{ display: 'none' }}
-          type="file"
-        />
-        <Button
-          color="blue-off"
-          label={
-            <Box
-              align="center"
-              direction="row"
-              justify="between"
-              pad="small"
-              round="xsmall"
-            >
-              <Text
-                color="blue-active"
-                size="1rem"
-                style={{ fontFamily: 'Roboto-Medium' }}
-                truncate
+          <input
+            accept="image/*"
+            data-testid="input-file-test-id"
+            onChange={(event) => {
+              handleChange(event);
+            }}
+            ref={hiddenFileInputRef}
+            style={{ display: 'none' }}
+            type="file"
+          />
+          <Button
+            color="blue-off"
+            label={
+              <Box
+                align="center"
+                direction="row"
+                justify="between"
+                pad="small"
+                round="xsmall"
               >
-                {intl.formatMessage(messages.uploadThumbnailButtonLabel)}
-              </Text>
-              <PictureSVG height="24px" width="24px" iconColor="blue-active" />
-            </Box>
-          }
-          onClick={() => {
-            if (hiddenFileInputRef.current !== null) {
-              hiddenFileInputRef.current.click();
+                <Text
+                  color="blue-active"
+                  size="1rem"
+                  style={{ fontFamily: 'Roboto-Medium' }}
+                  truncate
+                >
+                  {intl.formatMessage(messages.uploadThumbnailButtonLabel)}
+                </Text>
+                <PictureSVG
+                  height="24px"
+                  width="24px"
+                  iconColor="blue-active"
+                />
+              </Box>
             }
-          }}
-          secondary
-          style={{
-            background: normalizeColor('bg-select', theme),
-            padding: '0px',
-          }}
-        />
-      </Box>
+            onClick={() => {
+              if (hiddenFileInputRef.current !== null) {
+                hiddenFileInputRef.current.click();
+              }
+            }}
+            secondary
+            style={{
+              background: normalizeColor('bg-select', theme),
+              padding: '0px',
+            }}
+          />
+        </Box>
+      )}
     </FoldableItem>
   );
 };

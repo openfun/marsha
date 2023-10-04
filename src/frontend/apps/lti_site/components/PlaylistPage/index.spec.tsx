@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react';
-import { Loader, modelName, useAppConfig } from 'lib-components';
+import { BoxLoader, modelName, useAppConfig } from 'lib-components';
 import { render } from 'lib-tests';
 import React, { Suspense } from 'react';
 
@@ -40,12 +40,12 @@ describe('<PlaylistPage />', () => {
     } as any);
 
     render(
-      <Suspense fallback={<Loader />}>
+      <Suspense fallback={<BoxLoader />}>
         <PlaylistPage />
       </Suspense>,
     );
 
-    expect(screen.getByText('Loading playlist...')).toBeInTheDocument();
+    expect(screen.getByLabelText('Loading playlist...')).toBeInTheDocument();
     await screen.findByText('Dashboard');
   });
 
@@ -62,12 +62,12 @@ describe('<PlaylistPage />', () => {
     } as any);
 
     render(
-      <Suspense fallback={<Loader />}>
+      <Suspense fallback={<BoxLoader />}>
         <PlaylistPage />
       </Suspense>,
     );
 
-    expect(screen.getByText('Loading playlist...')).toBeInTheDocument();
+    expect(screen.getByLabelText('Loading playlist...')).toBeInTheDocument();
     await screen.findByText('Dashboard');
   });
 });

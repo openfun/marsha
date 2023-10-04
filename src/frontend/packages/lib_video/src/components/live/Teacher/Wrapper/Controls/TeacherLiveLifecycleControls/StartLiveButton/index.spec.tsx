@@ -39,16 +39,16 @@ describe('<StartLiveButton />', () => {
 
     render(wrapInLiveModaleProvider(<StartLiveButton video={video} />));
 
-    expect(screen.queryByTestId('loader-id')).not.toBeInTheDocument();
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
     await userEvent.click(
       screen.getByRole('button', { name: 'Start streaming' }),
     );
 
-    screen.getByTestId('loader-id');
+    expect(screen.getByRole('status')).toBeInTheDocument();
 
     startDeferred.resolve({ ...video, live_state: liveState.RUNNING });
 
-    await waitForElementToBeRemoved(() => screen.queryByTestId('loader-id'));
+    await waitForElementToBeRemoved(() => screen.queryByRole('status'));
 
     expect(useVideo.getState().videos[video.id]).toEqual({
       ...video,

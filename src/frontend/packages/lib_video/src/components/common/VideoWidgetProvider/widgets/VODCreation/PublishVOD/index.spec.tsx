@@ -86,7 +86,7 @@ describe('PublishVOD', () => {
 
     await waitFor(() =>
       expect(
-        screen.getByRole('button', { name: 'Convert into VOD' }),
+        screen.getByRole('button', { name: /Convert into VOD/ }),
       ).toBeDisabled(),
     );
     expect(useVideo.getState().addResource).not.toHaveBeenCalled();

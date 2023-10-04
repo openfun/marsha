@@ -69,11 +69,7 @@ describe('<ManageAPIState/>', () => {
       </ManageAPIState>,
     );
     expect(screen.queryByText(/My state/i)).not.toBeInTheDocument();
-    expect(
-      screen.getByRole('alert', {
-        name: 'spinner',
-      }),
-    ).toBeInTheDocument();
+    expect(screen.getByLabelText('loader')).toBeInTheDocument();
   });
 
   test('state with success', () => {

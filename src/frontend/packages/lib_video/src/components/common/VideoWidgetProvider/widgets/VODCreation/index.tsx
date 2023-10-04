@@ -1,5 +1,5 @@
-import { Box, Paragraph, Spinner } from 'grommet';
-import { FoldableItem, liveState } from 'lib-components';
+import { Box, Paragraph } from 'grommet';
+import { BoxLoader, FoldableItem, liveState } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -64,7 +64,7 @@ export const VODCreation = () => {
           >
             {intl.formatMessage(messages.harvestingInProgress)}
           </Paragraph>
-          <Spinner margin={{ horizontal: 'auto' }} />
+          <BoxLoader size="small" />
         </Box>
       </Box>
     );

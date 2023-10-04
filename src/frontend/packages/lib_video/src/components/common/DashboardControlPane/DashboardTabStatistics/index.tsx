@@ -1,5 +1,5 @@
 import { Box, Grid, Text } from 'grommet';
-import { Loader } from 'lib-components';
+import { BoxLoader } from 'lib-components';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -43,7 +43,7 @@ export const DashboardTabStatistics = () => {
   });
 
   if (isLoading) {
-    return <Loader />;
+    return <BoxLoader boxProps={{ margin: { top: 'medium' } }} />;
   }
 
   return (

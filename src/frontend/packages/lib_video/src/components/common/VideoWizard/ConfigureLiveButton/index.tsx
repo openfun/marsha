@@ -1,6 +1,6 @@
 import { Button } from 'grommet';
 import { Nullable } from 'lib-common';
-import { LiveModeType, Loader, Video, useVideo } from 'lib-components';
+import { BoxLoader, LiveModeType, Video, useVideo } from 'lib-components';
 import React, { ReactElement, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -54,7 +54,7 @@ export const ConfigureLiveButton = ({
 
   return (
     <React.Fragment>
-      {status === 'pending' && <Loader />}
+      {status === 'pending' && <BoxLoader />}
       <Button
         a11yTitle={intl.formatMessage(messages.startLiveButtonLabel)}
         fill="horizontal"

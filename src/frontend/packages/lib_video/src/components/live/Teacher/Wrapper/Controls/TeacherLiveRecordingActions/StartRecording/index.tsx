@@ -1,7 +1,7 @@
-import { Box, Button, Clock, Spinner, Stack } from 'grommet';
+import { Box, Button, Clock, Stack } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
-import { RecordSVG } from 'lib-components';
+import { BoxLoader, RecordSVG } from 'lib-components';
 import React from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -42,12 +42,20 @@ export const StartRecording = () => {
       label={
         <Stack>
           <Box direction="row" flex style={{ whiteSpace: 'nowrap' }}>
-            <RecordSVG
-              iconColor="white"
-              width="25px"
-              height="25px"
-              containerStyle={{ margin: 'auto', marginRight: '8px' }}
-            />
+            {isLoading ? (
+              <BoxLoader
+                size="small"
+                boxProps={{ margin: { right: 'small' } }}
+              />
+            ) : (
+              <RecordSVG
+                iconColor="white"
+                width="25px"
+                height="25px"
+                containerStyle={{ margin: 'auto', marginRight: '8px' }}
+              />
+            )}
+
             {intl.formatMessage(messages.title)}
             <Clock
               type="digital"
@@ -56,15 +64,6 @@ export const StartRecording = () => {
               time={formatSecToTimeStamp(video.recording_time, intl.locale)}
             />
           </Box>
-          {isLoading && (
-            <Box fill>
-              <Spinner
-                data-testid="loader-id"
-                color="white"
-                margin={{ right: 'small' }}
-              />
-            </Box>
-          )}
         </Stack>
       }
       style={{ borderRadius: '25px' }}

@@ -1,5 +1,8 @@
-import { Box, Spinner } from 'grommet';
-import { liveState, useCurrentResourceContext } from 'lib-components';
+import {
+  BoxLoader,
+  liveState,
+  useCurrentResourceContext,
+} from 'lib-components';
 import React, {
   Fragment,
   PropsWithChildren,
@@ -63,11 +66,7 @@ export const ConverseInitializer = ({
   }, [initConverse, isConverseLoaded, liveSession, video, context]);
 
   if (!isConverseLoaded) {
-    return (
-      <Box fill>
-        <Spinner margin="auto" data-testid="loader-id" />
-      </Box>
-    );
+    return <BoxLoader />;
   }
 
   return <Fragment>{children}</Fragment>;

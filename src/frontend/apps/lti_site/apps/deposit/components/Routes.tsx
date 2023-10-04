@@ -1,8 +1,8 @@
 import {
+  BoxLoader,
   ErrorComponents,
   FULL_SCREEN_ERROR_ROUTE,
   FullScreenError,
-  Loader,
   WithParams,
   builderFullScreenErrorRoute,
   useAppConfig,
@@ -23,7 +23,7 @@ const RoutesDeposit = () => {
   const appData = useAppConfig();
 
   return (
-    <Suspense fallback={<Loader />}>
+    <Suspense fallback={<BoxLoader />}>
       <MemoryRouter>
         <Routes>
           <Route path={DASHBOARD_ROUTE} element={<Dashboard />} />

@@ -81,7 +81,7 @@ describe('<DashboardFileDepository />', () => {
     fetchMock.get('/api/filedepositories/1/', fileDepositoryDeferred.promise);
 
     render(<DashboardFileDepository />);
-    screen.getByText('Loading file depository...');
+    screen.getByLabelText('Loading file depository...');
     fileDepositoryDeferred.resolve(fileDepository);
     await screen.findByText('File depository loaded.');
     expect(screen.getByText('Student view')).toBeInTheDocument();
@@ -98,7 +98,7 @@ describe('<DashboardFileDepository />', () => {
     fetchMock.get('/api/filedepositories/1/', fileDepositoryDeferred.promise);
 
     render(<DashboardFileDepository />);
-    screen.getByText('Loading file depository...');
+    screen.getByLabelText('Loading file depository...');
     fileDepositoryDeferred.resolve(fileDepository);
     await screen.findByText('File depository loaded.');
     expect(screen.getByText('Instructor view')).toBeInTheDocument();
@@ -123,7 +123,7 @@ describe('<DashboardFileDepository />', () => {
     render(<DashboardFileDepository />, {
       queryOptions: { client: queryClient },
     });
-    screen.getByText('Loading file depository...');
+    screen.getByLabelText('Loading file depository...');
     fileDepositoryDeferred.resolve(500);
     expect(
       await screen.findByText('File depository not loaded!'),

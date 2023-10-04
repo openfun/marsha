@@ -1,11 +1,12 @@
-import { Box, Spinner } from 'grommet';
+import { Box } from 'grommet';
 import {
+  BoxLoader,
   ErrorComponents,
   ErrorMessage,
   ShouldNotHappen,
   liveState,
 } from 'lib-components';
-import { FormattedMessage, defineMessages } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 
 import { useLiveAttendances } from '@lib-video/api/useLiveAttendances';
 import { POLL_FOR_ATTENDANCES } from '@lib-video/conf/sideEffects';
@@ -29,6 +30,7 @@ interface InternalProps {
 }
 
 const Internal = ({ live_state, video_id }: InternalProps) => {
+  const intl = useIntl();
   const refetchInterval = [liveState.STOPPING, liveState.RUNNING].includes(
     live_state,
   )
@@ -45,11 +47,10 @@ const Internal = ({ live_state, video_id }: InternalProps) => {
   switch (status) {
     case 'loading':
       return (
-        <Box width="full">
-          <Spinner size="large">
-            <FormattedMessage {...messages.loading} />
-          </Spinner>
-        </Box>
+        <BoxLoader
+          boxProps={{ margin: { top: 'medium' } }}
+          aria-label={intl.formatMessage(messages.loading)}
+        />
       );
     case 'error':
       return (

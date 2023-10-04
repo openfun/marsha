@@ -1,10 +1,10 @@
 import { Box } from 'grommet';
 import {
+  BoxLoader,
   Document,
   Heading,
   Live,
   LiveModeType,
-  Loader,
   LtiSelectResource,
   Playlist,
   Video,
@@ -217,7 +217,7 @@ export const SelectContentTargetedResource = ({
           ) as Promise<{ default: ComponentType<SelectContentResourceProps> }>,
       );
       content = (
-        <Suspense fallback={<Loader />}>
+        <Suspense fallback={<BoxLoader />}>
           <LazyComponent
             playlist={playlist}
             lti_select_form_data={lti_select_form_data}

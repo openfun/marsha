@@ -58,11 +58,7 @@ describe('<ContentsWrapper />', () => {
 
   test('renders ContentsWrapper with Loading', () => {
     render(<TestComponent isLoading />);
-    expect(
-      screen.getByRole('alert', {
-        name: /spinner/i,
-      }),
-    ).toBeInTheDocument();
+    expect(screen.getByLabelText('loader')).toBeInTheDocument();
     expect(screen.getByText('Filter')).toBeInTheDocument();
   });
 

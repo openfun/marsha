@@ -241,7 +241,9 @@ describe('<VideoWidgetProvider />', () => {
 
       // DashboardLiveWidgetThumbnail
       await screen.findByText('Thumbnail');
-      const img = screen.getByRole('img', { name: 'Live video thumbnail' });
+      const img = await screen.findByRole('img', {
+        name: 'Live video thumbnail',
+      });
       expect(img.getAttribute('src')).toEqual(
         'https://example.com/default_thumbnail/144',
       );

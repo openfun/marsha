@@ -1,6 +1,6 @@
 import { Box, Button, Paragraph } from 'grommet';
 import { Nullable } from 'lib-common';
-import { Spinner } from 'lib-components';
+import { BoxLoader } from 'lib-components';
 import { Dispatch, SetStateAction } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -75,7 +75,7 @@ export const SearchUserList = ({
           ))}
         </Box>
       )}
-      {isLoading && <Spinner />}
+      {isLoading && <BoxLoader />}
       {(!users || users.count === 0) && !isError && !isLoading && (
         <Paragraph>{intl.formatMessage(messages.noResults)}</Paragraph>
       )}

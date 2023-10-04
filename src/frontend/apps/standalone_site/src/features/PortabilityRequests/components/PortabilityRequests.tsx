@@ -1,6 +1,6 @@
 import { DataGrid, SortModel, usePagination } from '@openfun/cunningham-react';
 import { Box, Button, Text } from 'grommet';
-import { CenterLoader, Heading, PortabilityRequest } from 'lib-components';
+import { BoxLoader, Heading, PortabilityRequest } from 'lib-components';
 import { useEffect, useMemo, useState } from 'react';
 import { IntlShape, defineMessages, useIntl } from 'react-intl';
 
@@ -193,7 +193,7 @@ export const PortabilityRequests = ({
             <Heading level={2}>{intl.formatMessage(messages.title)}</Heading>
           </Box>
         </Box>
-        {isLoading && <CenterLoader />}
+        {isLoading && <BoxLoader />}
         {isError && (
           <Box
             background="content-background"
