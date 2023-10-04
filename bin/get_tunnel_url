@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+
+BASE_DIR=$(dirname "${BASH_SOURCE[0]}")
+# Using the env file is not mandatory. Variables can be already set in the current environment
+if [[ -f "${BASE_DIR}/../env.d/localtunnel" ]]; then
+  # shellcheck source=env.d/localtunnel
+  source "${BASE_DIR}/../env.d/localtunnel"
+fi
+
+#if LOCALTUNNEL_HOST is 'https://localtunnel.me' , set DOMAIN variable to local.lt
+#else extract domain from LOCALTUNNEL_HOST
+if [[ "${LOCALTUNNEL_HOST}" == "https://localtunnel.me" ]]; then
+  DOMAIN="loca.lt"
+else
+  DOMAIN=${LOCALTUNNEL_HOST//"https://"}
+fi
+
+echo "https://$LOCALTUNNEL_SUBDOMAIN.$DOMAIN"

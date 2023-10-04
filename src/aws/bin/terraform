@@ -44,15 +44,15 @@ function terraform() {
 
 
 
-    declare NGROK_URL
+    declare TUNNEL_URL
     declare DIR_NAME
 
     DIR_NAME=$(dirname "$0")
-    NGROK_URL=$("$DIR_NAME"/../../../bin/get_ngrok_url)
+    TUNNEL_URL=$("$DIR_NAME"/../../../bin/get_tunnel_url)
 
     # Run Terraform commands in the docker container passing our environment variables
 
-    if [[ -z ${NGROK_URL} ]] || [[ ${MARSHA_TERRAFORM_ENV_FILE} != "development" ]]; then
+    if [[ -z ${TUNNEL_URL} ]] || [[ ${MARSHA_TERRAFORM_ENV_FILE} != "development" ]]; then
         docker run --rm -it \
         -u "$(id -u)" \
         -v "${PWD}/:/app" \
@@ -66,7 +66,7 @@ function terraform() {
         -v "${PWD}/:/app" \
         -w "/app" \
         --env-file ./env.d/${MARSHA_TERRAFORM_ENV_FILE} \
-        -e TF_VAR_marsha_base_url="${NGROK_URL}" \
+        -e TF_VAR_marsha_base_url="${TUNNEL_URL}" \
         "hashicorp/terraform:${TERRAFORM_VERSION}" \
         "$@"
     fi

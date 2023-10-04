@@ -1,0 +1,4 @@
+## Localtunnel configuration
+LOCALTUNNEL_SUBDOMAIN=dev-${USER}-marsha
+LOCALTUNNEL_PORT=8060
+LOCALTUNNEL_HOST=https://localtunnel.me
