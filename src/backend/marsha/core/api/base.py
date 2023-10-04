@@ -243,6 +243,8 @@ def get_frontend_configuration(request):
             config["logo_url"] = site_config.logo_url
             config["login_html"] = site_config.login_html
             config["footer_copyright"] = site_config.footer_copyright
+            config["homepage_banner_title"] = site_config.homepage_banner_title
+            config["homepage_banner_text"] = site_config.homepage_banner_text
         except SiteConfig.DoesNotExist:
             pass
 

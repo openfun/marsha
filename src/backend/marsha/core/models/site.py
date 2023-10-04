@@ -64,6 +64,20 @@ class SiteConfig(BaseModel):
         blank=True,
     )
 
+    homepage_banner_title = models.CharField(
+        max_length=255,
+        verbose_name=_("Homepage banner title"),
+        help_text=_("Homepage banner title"),
+        blank=True,
+        null=True,
+    )
+    homepage_banner_text = models.TextField(
+        verbose_name=_("Homepage banner text"),
+        help_text=_("Homepage banner text"),
+        blank=True,
+        null=True,
+    )
+
     footer_copyright = models.CharField(
         max_length=255,
         verbose_name=_("footer text"),

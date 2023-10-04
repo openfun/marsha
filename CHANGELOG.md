@@ -25,6 +25,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Replace grommet Paragraph (#2435)
 - Remove cross on login image (#2451)
 
+### Added
+
+- configure homepage banner using SiteConfig model
+
 ### Fixed
 
 - Markdown save sent previously saved content

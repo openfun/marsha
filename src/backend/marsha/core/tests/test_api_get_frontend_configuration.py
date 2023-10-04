@@ -113,6 +113,8 @@ class TestGetFrontendConfiguration(TestCase):
             login_html="markdown text",
             logo_url="path to logo",
             footer_copyright="footer copyright",
+            homepage_banner_title="banner title",
+            homepage_banner_text="banner text",
         )
         response = self.client.get("/api/config/", HTTP_HOST="marsha.education")
 
@@ -134,6 +136,8 @@ class TestGetFrontendConfiguration(TestCase):
                 "logo_url": "path to logo",
                 "login_html": "markdown text",
                 "footer_copyright": "footer copyright",
+                "homepage_banner_title": "banner title",
+                "homepage_banner_text": "banner text",
             },
         )
 
