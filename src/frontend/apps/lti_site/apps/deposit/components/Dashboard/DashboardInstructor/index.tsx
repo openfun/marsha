@@ -1,9 +1,10 @@
-import { Select } from '@openfun/cunningham-react';
-import { Box, Pagination } from 'grommet';
+import { Pagination, Select } from '@openfun/cunningham-react';
+import { Box } from 'grommet';
 import { Maybe } from 'lib-common';
 import { BoxLoader, FileDepository, Heading, Text } from 'lib-components';
 import React, { FocusEvent, useState } from 'react';
 import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
+import styled from 'styled-components';
 
 import { DepositedFileRow } from 'apps/deposit/components/Dashboard/common/DepositedFileRow';
 import {
@@ -11,7 +12,11 @@ import {
   useUpdateFileDepository,
 } from 'apps/deposit/data/queries';
 
-type SelectProps = React.ComponentPropsWithoutRef<typeof Select>;
+const BoxPagination = styled(Box)`
+  .c__pagination__goto {
+    display: none;
+  }
+`;
 
 const PAGE_SIZE = 10;
 
@@ -106,10 +111,6 @@ export const DashboardInstructor = ({
     },
   ];
 
-  const onReadFilterChange: SelectProps['onChange'] = (event) => {
-    setReadFilter(event.target.value as Maybe<string>);
-  };
-
   const { mutate } = useUpdateFileDepository(fileDepository.id);
 
   const onFocusTitle = (event: FocusEvent) => {
@@ -196,7 +197,9 @@ export const DashboardInstructor = ({
                 <Select
                   aria-label={intl.formatMessage(messages.readFilterTitle)}
                   label={intl.formatMessage(messages.readFilterTitle)}
-                  onChange={onReadFilterChange}
+                  onChange={(event) => {
+                    setReadFilter(event.target.value as Maybe<string>);
+                  }}
                   options={readFilterOptions}
                   value={readFilter}
                 />
@@ -210,20 +213,22 @@ export const DashboardInstructor = ({
                     }}
                   />
                 </Text>
-                <Pagination
-                  step={PAGE_SIZE}
-                  numberItems={data.count}
-                  onChange={({
-                    startIndex,
-                    endIndex,
-                  }: {
-                    startIndex: number;
-                    endIndex: number;
-                  }) => {
-                    setDepositedFilesOffset(startIndex);
-                    setIndices([startIndex, Math.min(endIndex, data.count)]);
-                  }}
-                />
+                <BoxPagination>
+                  <Pagination
+                    pageSize={PAGE_SIZE}
+                    page={depositedFilesOffset / PAGE_SIZE + 1}
+                    pagesCount={Math.ceil(data.count / PAGE_SIZE)}
+                    onPageChange={(page) => {
+                      const startIndex = (page - 1) * PAGE_SIZE;
+                      const endIndex = startIndex + PAGE_SIZE;
+                      setDepositedFilesOffset(startIndex);
+                      setIndices([
+                        startIndex,
+                        Math.min(endIndex, data?.count || 0),
+                      ]);
+                    }}
+                  />
+                </BoxPagination>
               </Box>
               <Box fill margin={{ top: 'small' }} pad="medium" round="xsmall">
                 {data.results.map((file) => (
