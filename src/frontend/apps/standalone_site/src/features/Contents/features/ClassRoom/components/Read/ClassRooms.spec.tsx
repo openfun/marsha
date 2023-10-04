@@ -125,9 +125,7 @@ describe('<ClassRooms/>', () => {
       }),
     ).toBeInTheDocument();
     expect(screen.getByText('01:23:00')).toBeInTheDocument();
-    expect(
-      screen.queryByLabelText('Pagination Navigation'),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Go to next page')).not.toBeInTheDocument();
     expect(screen.getByText('Filter')).toBeInTheDocument();
   });
 
@@ -139,9 +137,7 @@ describe('<ClassRooms/>', () => {
 
     render(<ClassRooms />);
 
-    expect(
-      await screen.findByLabelText('Pagination Navigation'),
-    ).toBeInTheDocument();
+    expect(await screen.findByLabelText('Go to next page')).toBeInTheDocument();
   });
 
   test('render without pagination', async () => {
@@ -154,7 +150,7 @@ describe('<ClassRooms/>', () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByLabelText('Pagination Navigation'),
+        screen.queryByLabelText('Go to next page'),
       ).not.toBeInTheDocument();
     });
   });

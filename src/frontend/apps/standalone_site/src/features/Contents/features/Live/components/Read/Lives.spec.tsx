@@ -120,9 +120,7 @@ describe('<Lives/>', () => {
     expect(screen.getByLabelText('loader')).toBeInTheDocument();
     expect(await screen.findByText(/New webinar title/)).toBeInTheDocument();
     expect(screen.getByText(/New webinar description/)).toBeInTheDocument();
-    expect(
-      screen.queryByLabelText('Pagination Navigation'),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Go to next page')).not.toBeInTheDocument();
     expect(screen.getByText('Filter')).toBeInTheDocument();
   });
 
@@ -137,9 +135,7 @@ describe('<Lives/>', () => {
 
     render(<Lives />);
 
-    expect(
-      await screen.findByLabelText('Pagination Navigation'),
-    ).toBeInTheDocument();
+    expect(await screen.findByLabelText('Go to next page')).toBeInTheDocument();
   });
 
   test('render without pagination', async () => {
@@ -155,7 +151,7 @@ describe('<Lives/>', () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByLabelText('Pagination Navigation'),
+        screen.queryByLabelText('Go to next page'),
       ).not.toBeInTheDocument();
     });
   });

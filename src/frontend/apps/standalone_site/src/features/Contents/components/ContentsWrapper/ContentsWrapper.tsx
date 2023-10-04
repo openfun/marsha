@@ -1,13 +1,25 @@
+import { Pagination } from '@openfun/cunningham-react';
 import { UseQueryResult } from '@tanstack/react-query';
-import { Pagination } from 'grommet';
+import { Box } from 'grommet';
 import { APIList, ContentCards } from 'lib-components';
 import { Fragment } from 'react';
+import styled from 'styled-components';
 
 import useContentPerPage from '../../hooks/useContentPerPage';
 import ContentsFilter, {
   ContentsFilterProps,
 } from '../ContentsFilter/ContentsFilter';
 import ManageAPIState from '../ManageAPIState/ManageAPIState';
+
+const BoxPagination = styled(Box)`
+  .c__pagination__goto {
+    display: none;
+  }
+  .c__pagination__list {
+    border: none;
+    background: none;
+  }
+`;
 
 interface ContentsWrapperProps<ContentType> extends ContentsFilterProps {
   apiResponse: UseQueryResult<APIList<ContentType>>;
@@ -51,22 +63,22 @@ const ContentsWrapper = <ContentType,>({
           {dataset?.results.map((data, index) => dataComponent(data, index))}
         </ContentCards>
         {(dataset?.count || 0) > contentPerPage && withPagination && (
-          <Pagination
-            numberItems={dataset?.count || 0}
-            onChange={({ page: newPage }: { page: number }) => {
-              setCurrentPage(newPage);
-              setTimeout(() => {
-                scrollTo({
-                  top: 0,
-                  behavior: 'smooth',
-                });
-              }, 200);
-            }}
-            page={currentPage}
-            step={contentPerPage}
-            alignSelf="center"
-            margin={{ top: '2rem' }}
-          />
+          <BoxPagination align="center" margin={{ top: 'large' }}>
+            <Pagination
+              pageSize={contentPerPage}
+              page={currentPage}
+              pagesCount={(dataset?.count || 0) / contentPerPage}
+              onPageChange={(newPage) => {
+                setCurrentPage(newPage);
+                setTimeout(() => {
+                  scrollTo({
+                    top: 0,
+                    behavior: 'smooth',
+                  });
+                }, 200);
+              }}
+            />
+          </BoxPagination>
         )}
       </ManageAPIState>
     </Fragment>
