@@ -1,9 +1,9 @@
 import {
+  BoxLoader,
   DASHBOARD_ROUTE,
   ErrorComponents,
   FULL_SCREEN_ERROR_ROUTE,
   FullScreenError,
-  Loader,
   UPLOAD_FORM_ROUTE,
   UploadForm,
   UploadHandlers,
@@ -58,7 +58,7 @@ export const LTIInnerRoutes = () => {
     <UploadManager>
       <UploadHandlers />
       <div className={`marsha-${appData.frontend}`}>
-        <Suspense fallback={<Loader />}>
+        <Suspense fallback={<BoxLoader />}>
           <Routes>
             <Route path={DASHBOARD_ROUTE.default} element={<Dashboard />} />
 

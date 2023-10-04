@@ -1,10 +1,10 @@
 import { DASHBOARD_CLASSROOM_ROUTE } from 'lib-classroom';
 import { lazyImport } from 'lib-common';
 import {
+  BoxLoader,
   ErrorComponents,
   FULL_SCREEN_ERROR_ROUTE,
   FullScreenError,
-  Loader,
   WithParams,
   builderFullScreenErrorRoute,
   useAppConfig,
@@ -37,7 +37,7 @@ const Routes = () => {
 
   return (
     <Wrappers>
-      <Suspense fallback={<Loader />}>
+      <Suspense fallback={<BoxLoader />}>
         <RoutesDom>
           <Route
             path={DASHBOARD_CLASSROOM_ROUTE}

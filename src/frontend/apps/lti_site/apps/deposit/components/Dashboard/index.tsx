@@ -1,9 +1,10 @@
-import { Box, Spinner, ThemeContext, ThemeType } from 'grommet';
+import { Loader } from '@openfun/cunningham-react';
+import { Box, ThemeContext, ThemeType } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
 import { UploadManager, useCurrentResourceContext } from 'lib-components';
 import React, { Fragment } from 'react';
-import { FormattedMessage, defineMessages } from 'react-intl';
+import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
 
 import { depositAppData } from 'apps/deposit/data/depositAppData';
 import { useFileDepository } from 'apps/deposit/data/queries';
@@ -66,6 +67,7 @@ const extendedTheme: ThemeType = {
 };
 
 const Dashboard = () => {
+  const intl = useIntl();
   const [context] = useCurrentResourceContext();
   const canUpdate = context.permissions.can_update;
 
@@ -94,9 +96,7 @@ const Dashboard = () => {
     useFileDepositoryStatus === 'loading'
   ) {
     content = (
-      <Spinner size="large">
-        <FormattedMessage {...messages.loadingFileDepository} />
-      </Spinner>
+      <Loader aria-label={intl.formatMessage(messages.loadingFileDepository)} />
     );
   }
 

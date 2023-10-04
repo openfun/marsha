@@ -1,12 +1,10 @@
 import { Box } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
-import { Heading } from 'lib-components';
+import { BoxLoader, Heading } from 'lib-components';
 import ReactMarkdown from 'react-markdown';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-
-import { ContentSpinner } from 'components/Spinner';
 
 import { usePageApi } from '../api/usePageApi';
 
@@ -30,7 +28,7 @@ const PagesApi = () => {
   return (
     <Box margin={{ top: 'auto' }}>
       {isLoading ? (
-        <ContentSpinner boxProps={{ margin: { vertical: 'large' } }} />
+        <BoxLoader boxProps={{ margin: { vertical: 'large' } }} />
       ) : (
         <BoxMarkdown
           width="large"

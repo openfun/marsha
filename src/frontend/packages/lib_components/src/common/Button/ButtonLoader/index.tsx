@@ -1,6 +1,9 @@
-import { Box, Button, ButtonExtendedProps, Stack } from 'grommet';
+import { Button, ButtonExtendedProps, Stack } from 'grommet';
 
-import { Spinner, SpinnerLookProps } from '@lib-components/common/Loader';
+import {
+  BoxLoader,
+  BoxLoaderProps,
+} from '@lib-components/common/Loader/BoxLoader';
 
 export enum ButtonLoaderStyle {
   DEFAULT = 'DEFAULT',
@@ -11,7 +14,7 @@ interface ButtonLoaderProps {
   isDisabled?: boolean;
   isSubmitting?: boolean;
   onClickSubmit?: () => void;
-  spinnerProps?: SpinnerLookProps;
+  spinnerProps?: BoxLoaderProps;
   style?: ButtonLoaderStyle;
 }
 
@@ -45,13 +48,7 @@ export const ButtonLoader = ({
         }
         {...buttonProps}
       />
-      {isSubmitting && (
-        <Box fill>
-          <Box margin="auto">
-            <Spinner {...spinnerProps} />
-          </Box>
-        </Box>
-      )}
+      {isSubmitting && <BoxLoader {...spinnerProps} />}
     </Stack>
   );
 };

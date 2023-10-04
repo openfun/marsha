@@ -2,7 +2,6 @@ import { Box } from 'grommet';
 import React, { Fragment } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { Spinner } from '@lib-components/common/Loader';
 import { UploadManagerStatus } from '@lib-components/common/UploadManager';
 import {
   UploadableObject,
@@ -10,6 +9,8 @@ import {
   liveState,
   uploadState,
 } from '@lib-components/types/tracks';
+
+import { BoxLoader } from '../Loader/BoxLoader';
 
 const { DELETED, ERROR, PENDING, PROCESSING } = uploadState;
 const { HARVESTING } = liveState;
@@ -141,7 +142,7 @@ export const ObjectStatusPicker = ({
         uploadStatus,
       ))
   ) {
-    icon = <Spinner aria-hidden={true} size="small" />;
+    icon = <BoxLoader size="small" boxProps={{ margin: 'small' }} />;
   } else if ([DELETED, ERROR, PENDING].includes(object.upload_state)) {
     icon = '❌';
   } else {
@@ -149,7 +150,7 @@ export const ObjectStatusPicker = ({
   }
 
   return (
-    <Box direction="row" margin="none" pad="none">
+    <Box direction="row" margin="none" pad="none" align="center">
       {intl.formatMessage(message)}
       &nbsp;
       {icon}

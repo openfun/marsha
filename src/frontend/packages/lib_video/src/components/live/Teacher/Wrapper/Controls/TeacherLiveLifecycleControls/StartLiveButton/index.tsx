@@ -1,5 +1,12 @@
-import { Box, Button, ButtonProps, Paragraph, Spinner } from 'grommet';
-import { Heading, PlaySVG, Video, liveState, useVideo } from 'lib-components';
+import { Box, Button, ButtonProps, Paragraph } from 'grommet';
+import {
+  BoxLoader,
+  Heading,
+  PlaySVG,
+  Video,
+  liveState,
+  useVideo,
+} from 'lib-components';
 import React, { Fragment, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -145,10 +152,10 @@ export const StartLiveButton = ({ video, ...props }: StartLiveButtonProps) => {
         <Box flex direction="row" style={{ whiteSpace: 'nowrap' }}>
           {intl.formatMessage(messages.title)}
           {status.type === 'loading' && (
-            <Spinner
-              data-testid="loader-id"
-              color="white"
-              margin={{ left: 'small' }}
+            <BoxLoader
+              whiteBackground
+              size="small"
+              boxProps={{ margin: { left: 'small' } }}
             />
           )}
           {status.type !== 'loading' && (

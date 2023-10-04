@@ -1,7 +1,7 @@
-import { Box, Button, ButtonProps, Paragraph, Spinner } from 'grommet';
+import { Box, Button, ButtonProps, Paragraph } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
-import { Heading, StopSVG, Video, useVideo } from 'lib-components';
+import { BoxLoader, Heading, StopSVG, Video, useVideo } from 'lib-components';
 import React, { Fragment, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -134,10 +134,10 @@ export const StopLiveButton = ({ video, ...props }: StopLiveButtonProps) => {
             />
           )}
           {status.type === 'loading' && (
-            <Spinner
-              data-testid="loader-id"
-              color="white"
-              margin={{ left: 'small' }}
+            <BoxLoader
+              whiteBackground
+              size="small"
+              boxProps={{ margin: { left: 'small' } }}
             />
           )}
         </Box>

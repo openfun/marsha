@@ -87,7 +87,7 @@ describe('<ClassRooms/>', () => {
         client: queryClient,
       },
     });
-    expect(screen.getByRole('alert', { name: /spinner/i })).toBeInTheDocument();
+    expect(screen.getByLabelText('loader')).toBeInTheDocument();
 
     expect(
       await screen.findByText(/Sorry, an error has occurred./i),
@@ -105,7 +105,7 @@ describe('<ClassRooms/>', () => {
     fetchMock.get('/api/classrooms/?limit=20&offset=0&playlist=', someStuff);
 
     render(<ClassRooms />);
-    expect(screen.getByRole('alert', { name: /spinner/i })).toBeInTheDocument();
+    expect(screen.getByLabelText('loader')).toBeInTheDocument();
     expect(
       await screen.findByText(/There is no classroom to display./i),
     ).toBeInTheDocument();
@@ -115,7 +115,7 @@ describe('<ClassRooms/>', () => {
     fetchMock.get('/api/classrooms/?limit=20&offset=0&playlist=', someResponse);
 
     render(<ClassRooms />);
-    expect(screen.getByRole('alert', { name: /spinner/i })).toBeInTheDocument();
+    expect(screen.getByLabelText('loader')).toBeInTheDocument();
     expect(await screen.findByText(/some title/i)).toBeInTheDocument();
     expect(screen.getByText(/some description/i)).toBeInTheDocument();
     expect(screen.getByText(/some welcome text/i)).toBeInTheDocument();

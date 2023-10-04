@@ -3,10 +3,10 @@ import { deepMerge } from 'grommet/utils';
 import { Document as DocumentIcon } from 'grommet-icons';
 import { theme as baseTheme } from 'lib-common';
 import {
+  BoxLoader,
   Document,
   Live,
   LiveModeType,
-  Loader,
   PlaySVG,
   Playlist,
   Video,
@@ -243,7 +243,7 @@ export const SelectContentTabs = ({
           </Tab>
         )}
         {appTabs.map((LazyComponent, index) => (
-          <Suspense key={index} fallback={<Loader />}>
+          <Suspense key={index} fallback={<BoxLoader />}>
             {playlist && (
               <LazyComponent
                 lti_select_form_data={lti_select_form_data}

@@ -55,7 +55,7 @@ describe('<PlaylistPortability />', () => {
 
     render(<PlaylistPortability object={video} />);
 
-    screen.getByText('Loading playlist...');
+    screen.getByLabelText('Loading playlist...');
 
     expect(fetchMock.lastCall()![0]).toEqual(
       `/api/playlists/${currentPlaylist.id}/`,

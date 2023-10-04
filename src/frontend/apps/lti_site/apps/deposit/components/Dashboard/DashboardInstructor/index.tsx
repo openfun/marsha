@@ -1,7 +1,7 @@
 import { Select } from '@openfun/cunningham-react';
 import { Box, Pagination, Paragraph, Text } from 'grommet';
 import { Maybe } from 'lib-common';
-import { FileDepository, Heading, Loader } from 'lib-components';
+import { BoxLoader, FileDepository, Heading } from 'lib-components';
 import React, { FocusEvent, useState } from 'react';
 import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
 
@@ -180,7 +180,7 @@ export const DashboardInstructor = ({
           <FormattedMessage {...messages.filesListHeader} />
         </Heading>
         {isLoading ? (
-          <Loader />
+          <BoxLoader />
         ) : isError ? (
           <FormattedMessage {...messages.fetchFilesError} />
         ) : (

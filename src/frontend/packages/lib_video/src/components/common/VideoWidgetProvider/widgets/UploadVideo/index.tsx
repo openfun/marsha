@@ -1,6 +1,7 @@
-import { Box, Button, Spinner, Text } from 'grommet';
+import { Box, Button, Text } from 'grommet';
 import { Nullable } from 'lib-common';
 import {
+  BoxLoader,
   FoldableItem,
   ProgressionBar,
   UploadManagerStatus,
@@ -105,7 +106,7 @@ export const UploadVideo = () => {
             pad="small"
             round="xsmall"
           >
-            <Spinner />
+            <BoxLoader size="small" />
             <Text alignSelf="center" color="blue-active" size="0.725rem">
               {intl.formatMessage(messages.videoProcessing)}
             </Text>

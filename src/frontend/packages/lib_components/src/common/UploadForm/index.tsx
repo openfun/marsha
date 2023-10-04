@@ -1,6 +1,6 @@
 import { Maybe } from 'lib-common';
 import { useEffect, useState } from 'react';
-import { FormattedMessage, defineMessages } from 'react-intl';
+import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
 import { Link, Navigate } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -10,7 +10,6 @@ import {
 } from '@lib-components/common/ErrorComponents/route';
 import { Heading } from '@lib-components/common/Headings';
 import { LayoutMainArea } from '@lib-components/common/LayoutMainArea';
-import { Loader } from '@lib-components/common/Loader';
 import { UploadField } from '@lib-components/common/UploadField';
 import {
   UploadManagerStatus,
@@ -21,6 +20,8 @@ import { getStoreResource } from '@lib-components/data/stores/generics';
 import { useAppConfig } from '@lib-components/data/stores/useAppConfig';
 import { modelName, uploadableModelName } from '@lib-components/types/models';
 import { TimedText, UploadableObject } from '@lib-components/types/tracks';
+
+import { BoxLoader } from '../Loader/BoxLoader';
 
 const messages = defineMessages({
   linkToDashboard: {
@@ -115,6 +116,7 @@ export const UploadForm = ({
   objectType,
   parentId,
 }: UploadFormProps) => {
+  const intl = useIntl();
   const appData = useAppConfig();
   const { uploadManagerState, resetUpload } = useUploadManager();
   const objectStatus = uploadManagerState[objectId]?.status;
@@ -150,9 +152,7 @@ export const UploadForm = ({
 
   if (object === undefined) {
     return (
-      <Loader>
-        <FormattedMessage {...messages.preparingUpload} />
-      </Loader>
+      <BoxLoader aria-label={intl.formatMessage(messages.preparingUpload)} />
     );
   }
 

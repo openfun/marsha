@@ -1,5 +1,5 @@
-import { Input } from '@openfun/cunningham-react';
-import { Box, Button, Spinner, Text } from 'grommet';
+import { Input, Loader } from '@openfun/cunningham-react';
+import { Box, Button, Text } from 'grommet';
 import { AddCircle, Trash } from 'grommet-icons';
 import {
   CopyClipboard,
@@ -264,9 +264,7 @@ export const PlaylistPortability = ({ object }: PlaylistPortabilityProps) => {
     usePlaylistStatus === 'loading'
   ) {
     content = (
-      <Spinner size="large">
-        <FormattedMessage {...messages.loadingPlaylist} />
-      </Spinner>
+      <Loader aria-label={intl.formatMessage(messages.loadingPlaylist)} />
     );
   }
 

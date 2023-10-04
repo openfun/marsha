@@ -4,7 +4,7 @@
 /* eslint-disable array-callback-return */
 import { Box } from 'grommet';
 import { Nullable } from 'lib-common';
-import { Loader, MarkdownDocument } from 'lib-components';
+import { BoxLoader, MarkdownDocument } from 'lib-components';
 import React, { useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -65,7 +65,7 @@ export const MarkdownViewer = ({ markdownDocument }: MarkdownViewerProps) => {
   );
 
   if (htmlContent === null) {
-    return <Loader />;
+    return <BoxLoader />;
   }
 
   return (

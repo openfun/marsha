@@ -83,7 +83,7 @@ describe('<Videos/>', () => {
         client: queryClient,
       },
     });
-    expect(screen.getByRole('alert', { name: /spinner/i })).toBeInTheDocument();
+    expect(screen.getByLabelText('loader')).toBeInTheDocument();
 
     expect(
       await screen.findByText(/Sorry, an error has occurred./i),
@@ -104,7 +104,7 @@ describe('<Videos/>', () => {
     );
 
     render(<Videos />);
-    expect(screen.getByRole('alert', { name: /spinner/i })).toBeInTheDocument();
+    expect(screen.getByLabelText('loader')).toBeInTheDocument();
     expect(
       await screen.findByText(/There is no video to display./i),
     ).toBeInTheDocument();
@@ -117,7 +117,7 @@ describe('<Videos/>', () => {
     );
 
     render(<Videos />);
-    expect(screen.getByRole('alert', { name: /spinner/i })).toBeInTheDocument();
+    expect(screen.getByLabelText('loader')).toBeInTheDocument();
     expect(await screen.findByText(/New video title/)).toBeInTheDocument();
     expect(screen.getByText(/New video description/)).toBeInTheDocument();
     expect(

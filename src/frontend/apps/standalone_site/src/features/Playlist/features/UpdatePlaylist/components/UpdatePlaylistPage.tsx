@@ -1,5 +1,5 @@
 import { Box } from 'grommet';
-import { Heading, Spinner, report } from 'lib-components';
+import { BoxLoader, Heading, report } from 'lib-components';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -61,7 +61,7 @@ export const UpdatePlaylistPage = ({ playlistId }: UpdatePlaylistPageProps) => {
   );
 
   if (isLoading || !playlist) {
-    return <Spinner />;
+    return <BoxLoader />;
   }
 
   return (

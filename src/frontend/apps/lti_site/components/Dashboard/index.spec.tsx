@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 import {
+  BoxLoader,
   Document,
-  Loader,
   Video,
   decodeJwt,
   liveState,
@@ -61,7 +61,7 @@ describe('<Dashboard />', () => {
     } as any);
 
     render(
-      <Suspense fallback={<Loader />}>
+      <Suspense fallback={<BoxLoader />}>
         <Dashboard />
       </Suspense>,
     );
@@ -78,7 +78,7 @@ describe('<Dashboard />', () => {
     } as any);
 
     render(
-      <Suspense fallback={<Loader />}>
+      <Suspense fallback={<BoxLoader />}>
         <Dashboard />
       </Suspense>,
     );

@@ -39,17 +39,17 @@ describe('<StopLiveButton />', () => {
 
     render(wrapInLiveModaleProvider(<StopLiveButton video={video} />));
 
-    expect(screen.queryByTestId('loader-id')).not.toBeInTheDocument();
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: 'End live' }));
     await userEvent.click(
       screen.getByRole('button', { name: 'Stop the live' }),
     );
 
-    screen.getByTestId('loader-id');
+    expect(screen.getByRole('status')).toBeInTheDocument();
 
     stopDeferred.resolve({ ...video, live_state: liveState.STOPPING });
 
-    await waitForElementToBeRemoved(() => screen.queryByTestId('loader-id'));
+    await waitForElementToBeRemoved(() => screen.queryByRole('status'));
 
     expect(useVideo.getState().videos[video.id]).toEqual({
       ...video,
@@ -78,7 +78,7 @@ describe('<StopLiveButton />', () => {
 
     render(wrapInLiveModaleProvider(<StopLiveButton video={video} />));
 
-    expect(screen.queryByTestId('loader-id')).not.toBeInTheDocument();
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: 'End live' }));
 
     const liveModale = screen.getByTestId('test-modale');

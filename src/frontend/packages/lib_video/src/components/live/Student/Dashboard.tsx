@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { Live, Loader } from 'lib-components';
+import { BoxLoader, Live } from 'lib-components';
 import React, { useMemo } from 'react';
 import { useIntl } from 'react-intl';
 
@@ -54,7 +54,7 @@ export const Dashboard = ({ live, playerType, socketUrl }: DasboardProps) => {
   if (isLoading) {
     //  live context is not ready yet,
     //  wait for websocket and session to be initialized
-    return <Loader />;
+    return <BoxLoader />;
   }
 
   if (isError) {

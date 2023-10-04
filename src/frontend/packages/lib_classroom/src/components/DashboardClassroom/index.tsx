@@ -1,8 +1,8 @@
 import { Box } from 'grommet';
 import {
   AnonymousUser,
+  BoxLoader,
   Classroom,
-  Spinner,
   useCurrentResourceContext,
   useCurrentUser,
 } from 'lib-components';
@@ -209,12 +209,12 @@ const DashboardClassroom = ({ classroomId }: DashboardClassroomProps) => {
     useClassroomFetchStatus === 'idle' ||
     useClassroomStatus === 'loading'
   ) {
-    content = <Spinner />;
+    content = <BoxLoader />;
   }
 
   return (
     <Box align="center">
-      <Suspense fallback={<Spinner />}>{content}</Suspense>
+      <Suspense fallback={<BoxLoader />}>{content}</Suspense>
     </Box>
   );
 };

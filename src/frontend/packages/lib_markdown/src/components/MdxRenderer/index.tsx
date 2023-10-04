@@ -9,9 +9,9 @@ import DOMPurify from 'dompurify';
 import langLatex from 'highlight.js/lib/languages/latex'; // Support LaTeX code highlighting.
 import { Nullable } from 'lib-common';
 import {
+  BoxLoader,
   MarkdownDocumentRenderingOptions,
   MarkdownImage,
-  Spinner,
 } from 'lib-components';
 import { debounce } from 'lodash';
 import React from 'react';
@@ -221,6 +221,6 @@ export const MdxRenderer = ({
       dangerouslySetInnerHTML={{ __html: renderedText }}
     />
   ) : (
-    <Spinner size="large" />
+    <BoxLoader />
   );
 };

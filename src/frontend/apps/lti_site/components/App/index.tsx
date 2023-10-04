@@ -1,4 +1,4 @@
-import { AppConfigProvider, Loader } from 'lib-components';
+import { AppConfigProvider, BoxLoader } from 'lib-components';
 import React, { Suspense, lazy } from 'react';
 
 import { parseDataElements } from 'utils/parseDataElements/parseDataElements';
@@ -14,7 +14,7 @@ export const App = () => {
   return (
     <AppConfigProvider value={appConfig}>
       <AppInitializer jwt={jwt} refresh_token={refresh_token}>
-        <Suspense fallback={<Loader />}>
+        <Suspense fallback={<BoxLoader />}>
           <AppContentLoader />
         </Suspense>
       </AppInitializer>

@@ -2,7 +2,7 @@ import { Input } from '@openfun/cunningham-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Anchor, Box, Button, Footer, Text } from 'grommet';
 import { Nullable } from 'lib-common';
-import { Loader, MarkdownDocumentRenderingOptions } from 'lib-components';
+import { BoxLoader, MarkdownDocumentRenderingOptions } from 'lib-components';
 import React, { Suspense, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -247,13 +247,13 @@ export const MarkdownEditor = ({ markdownDocumentId }: MarkdownEditorProps) => {
 
   // Don't try to load components while the document has not been fetched
   if (!markdownDocument) {
-    return <Loader />;
+    return <BoxLoader />;
   }
 
   return (
     <Box pad="xsmall">
-      <Suspense fallback={<Loader />}>
-        {isSaving && <Loader />}
+      <Suspense fallback={<BoxLoader />}>
+        {isSaving && <BoxLoader />}
 
         <Box direction="column">
           <Box
@@ -349,7 +349,7 @@ export const MarkdownEditor = ({ markdownDocumentId }: MarkdownEditorProps) => {
                 </Footer>
               </React.Fragment>
             ) : (
-              <Loader />
+              <BoxLoader />
             )}
           </Box>
           <Box

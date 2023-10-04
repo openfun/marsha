@@ -1,9 +1,9 @@
 import { lazyImport } from 'lib-common';
 import {
+  BoxLoader,
   ErrorComponents,
   FULL_SCREEN_ERROR_ROUTE,
   FullScreenError,
-  Loader,
   UploadManager,
   WithParams,
   builderFullScreenErrorRoute,
@@ -35,7 +35,7 @@ const RoutesMarkdown = () => {
   const markdownDocument = MarkdownAppData.markdownDocument;
 
   return (
-    <Suspense fallback={<Loader />}>
+    <Suspense fallback={<BoxLoader />}>
       <MemoryRouter>
         <UploadManager>
           <Routes>

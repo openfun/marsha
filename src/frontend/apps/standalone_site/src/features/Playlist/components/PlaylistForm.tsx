@@ -2,6 +2,7 @@ import { Input, Select } from '@openfun/cunningham-react';
 import { Box, Button, Text, ThemeContext } from 'grommet';
 import { Nullable } from 'lib-common';
 import {
+  BoxLoader,
   ButtonLoaderStyle,
   FetchResponseError,
   Form,
@@ -9,7 +10,6 @@ import {
   Modal,
   ModalButton,
   Organization,
-  Spinner,
   report,
 } from 'lib-components';
 import { ReactNode, useLayoutEffect, useMemo, useState } from 'react';
@@ -309,13 +309,7 @@ export const PlaylistForm = ({
   }, [organizationResponse]);
 
   if (!isInitOrganization && !isError) {
-    return (
-      <Box width="large">
-        <Box margin="auto">
-          <Spinner />
-        </Box>
-      </Box>
-    );
+    return <BoxLoader />;
   }
 
   if (isError) {
