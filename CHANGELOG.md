@@ -25,6 +25,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Replace grommet Heading (#2410)
 - Replace all the loaders by Cunningham Loader (#2436)
 - Replace grommet Text (#2427)
+- Replace grommet Paragraph (#2435)
 - Upgrade to python 3.11
 - Upgrade channels and channels-redis to version 4
 

@@ -1,8 +1,8 @@
-import { Box, Image, Paragraph, Stack } from 'grommet';
+import { Box, Image, Stack } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
 import React from 'react';
-import { FormattedMessage, useIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { Heading } from '@lib-components/common/Headings';
@@ -10,22 +10,9 @@ import { Text } from '@lib-components/common/Text';
 import { useAppConfig } from '@lib-components/data/stores/useAppConfig';
 import { useResponsive } from '@lib-components/hooks/useResponsive';
 
-interface ResponsiveProps {
-  isMobile?: boolean;
-}
-
 const LeftCircle = styled(Box)`
   box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.1);
   transform: translate(-60%);
-`;
-
-const Onomatopoeia = styled(Paragraph)<ResponsiveProps>`
-  font-family: 'Roboto-Light';
-  letter-spacing: ${({ isMobile }) => (isMobile ? `-0.104rem;` : '-0.183rem')};
-`;
-
-const ErrorMessage = styled(Paragraph)<ResponsiveProps>`
-  max-width: ${({ isMobile }) => (isMobile ? `90%;` : '338px')};
 `;
 
 const messages = {
@@ -129,13 +116,17 @@ export const BoundaryScreenError = ({
           pad={isSmall ? 'medium' : undefined}
           style={{ color: normalizeColor('blue-active', theme) }}
         >
-          <Onomatopoeia
-            isMobile={isSmall}
-            size={isSmall ? '2.5rem' : '4.375rem'}
-            margin="none"
+          <Text
+            weight="light"
+            className="m-0"
+            style={{
+              fontSize: isSmall ? '2.5rem' : '4.375rem',
+              letterSpacing: isSmall ? `-0.104rem;` : '-0.183rem',
+              fontWeight: '200',
+            }}
           >
-            <FormattedMessage {...messages.onomatopoeia} />
-          </Onomatopoeia>
+            {intl.formatMessage(messages.onomatopoeia)}
+          </Text>
           <Heading
             className={isSmall ? 'm-b' : 'm-xl'}
             level={2}
@@ -143,16 +134,19 @@ export const BoundaryScreenError = ({
           >
             {code}
           </Heading>
-          <ErrorMessage
-            maxLines={3}
-            size="0.875rem"
+          <Text
+            type="p"
+            className="m-0"
+            truncate={3}
             textAlign="center"
-            margin="none"
+            style={{
+              maxWidth: `90%`,
+            }}
           >
             {intl.formatMessage(messages.introduceProblem)}
             &nbsp;
             <Text weight="bold">{message}</Text>
-          </ErrorMessage>
+          </Text>
         </Box>
       </Box>
     </Stack>

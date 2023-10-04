@@ -248,6 +248,7 @@ export const theme: ThemeType = {
       requiredIndicator: true,
       size: '0.688rem',
       margin: '0.3rem 1rem 0',
+      color: 'blue-active',
     },
     border: {
       position: 'outer',

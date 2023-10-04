@@ -23,6 +23,7 @@ const config = {
     },
     spacings: {
       '0': '0',
+      auto: 'auto',
       bx: '2.2rem',
     },
   },

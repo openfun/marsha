@@ -1,5 +1,5 @@
-import { Box, Paragraph } from 'grommet';
-import { Heading } from 'lib-components';
+import { Box } from 'grommet';
+import { Heading, Text } from 'lib-components';
 import { DateTime } from 'luxon';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -37,14 +37,9 @@ export const StudentLiveDescription = ({
           (!isScheduledPassed && intl.formatMessage(messages.noTitle))}
       </Heading>
       {live.description && (
-        <Paragraph
-          alignSelf="center"
-          color="var(--c--theme--colors--primary-500)"
-          margin={{ left: 'large', right: 'large' }}
-          textAlign="center"
-        >
+        <Text type="p" size="large" className="ml-l mr-l" textAlign="center">
           {live.description}
-        </Paragraph>
+        </Text>
       )}
     </Box>
   );

@@ -1,8 +1,9 @@
-import { Box, Button, ButtonProps, Paragraph } from 'grommet';
+import { Box, Button, ButtonProps } from 'grommet';
 import {
   BoxLoader,
   Heading,
   PlaySVG,
+  Text,
   Video,
   liveState,
   useVideo,
@@ -109,9 +110,9 @@ export const StartLiveButton = ({ video, ...props }: StartLiveButtonProps) => {
       >
         {title}
       </Heading>
-      <Paragraph color="white" textAlign="center">
+      <Text type="p" color="white" textAlign="center" className="mt-0">
         {intl.formatMessage(messages.alertInfo, { br: <br /> })}
-      </Paragraph>
+      </Text>
     </Fragment>
   );
   const onClick = () => {

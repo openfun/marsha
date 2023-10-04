@@ -1,9 +1,10 @@
-import { Box, Button, Paragraph } from 'grommet';
+import { Box, Button } from 'grommet';
 import { Clock } from 'grommet-icons';
 import {
   DecodedJwtLTI,
   Heading,
   PortabilityConfig,
+  Text,
   useJwt,
 } from 'lib-components';
 import React from 'react';
@@ -104,18 +105,18 @@ export const PortabilityRequest = ({
       </Heading>
       {portabilityRequested ? (
         <React.Fragment>
-          <Paragraph margin={{ top: 'small' }}>
+          <Text type="p" className="mt-s">
             <FormattedMessage
               {...messages.resourcePortabilityAlreadyRequested}
             />
-          </Paragraph>
+          </Text>
           <Clock size="large" />
         </React.Fragment>
       ) : (
         <React.Fragment>
-          <Paragraph margin={{ top: 'small' }}>
+          <Text type="p" className="mt-s">
             <FormattedMessage {...messages.pleaseMakeRequest} />
-          </Paragraph>
+          </Text>
           <Button
             label={intl.formatMessage(messages.requestBtnLabel)}
             onClick={onRequestBtnClick}

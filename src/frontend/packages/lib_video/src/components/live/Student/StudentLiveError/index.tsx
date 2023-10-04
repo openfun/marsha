@@ -1,6 +1,7 @@
-import { Box, Paragraph, Stack } from 'grommet';
+import { Box, Stack } from 'grommet';
 import {
   Heading,
+  Text,
   ThumbnailDisplayer,
   useAppConfig,
   useResponsive,
@@ -62,12 +63,9 @@ export const StudentLiveError = ({ error }: StudentLiveAdvertisingProps) => {
             {intl.formatMessage(messages.title)}
           </Heading>
           <Box margin={{ top: 'small' }}>
-            <Paragraph
-              margin="auto"
-              color="var(--c--theme--colors--primary-500)"
-            >
+            <Text type="p" className="mb-0 mt-s">
               {error || intl.formatMessage(messages.default)}
-            </Paragraph>
+            </Text>
           </Box>
         </AdvertisingBox>
       </Box>

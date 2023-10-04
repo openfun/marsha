@@ -1,17 +1,24 @@
-import { Box, Button, Paragraph } from 'grommet';
+import { Box, Button } from 'grommet';
 import { Schedule } from 'grommet-icons';
 import { Nullable } from 'lib-common';
 import { Classroom, Heading, Text, useResponsive } from 'lib-components';
 import { DateTime, Duration, Settings } from 'luxon';
-import React, { CSSProperties, Fragment, useEffect, useMemo } from 'react';
+import React, { Fragment, useEffect, useMemo } from 'react';
 import ICalendarLink from 'react-icalendar-link';
 import { defineMessages, useIntl } from 'react-intl';
+import styled from 'styled-components';
 
 import {
   DashboardClassroomLayout,
   DashboardClassroomMessage,
 } from '@lib-classroom/components/DashboardClassroomLayout';
 import { DashboardClassroomStudentCounter } from '@lib-classroom/components/DashboardClassroomStudentCounter';
+
+const ICalendarLinkStyled = styled(ICalendarLink)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
 const DashboardClassRoomTitleDescription = ({
   classroom,
@@ -153,13 +160,6 @@ const DashboardClassroomStudent = ({
     displayedEventTime += ` > ${displayedEndingAt}`;
   }
 
-  let containerStyle: CSSProperties;
-  if (isMobile) {
-    containerStyle = { width: '90%', maxWidth: '400px' };
-  } else {
-    containerStyle = { maxWidth: '40%', minWidth: '600px' };
-  }
-
   useEffect(() => {
     if (classroom.ended) {
       classroomEnded();
@@ -219,20 +219,23 @@ const DashboardClassroomStudent = ({
         <Box
           margin="auto"
           pad={{ horizontal: 'none', vertical: 'large' }}
-          style={containerStyle}
+          style={
+            isMobile
+              ? { width: '90%', maxWidth: '400px' }
+              : { maxWidth: '40%', minWidth: '600px' }
+          }
+          align="center"
         >
           {scheduledEvent && !isScheduledPassed && (
-            <Paragraph alignSelf="center" textAlign="justify">
-              <ICalendarLink event={scheduledEvent}>
-                <Schedule
-                  a11yTitle={intl.formatMessage(messages.a11AddCalendar)}
-                  color="blue-active"
-                />
-                <Text className="pl-s">
-                  {intl.formatMessage(messages.addCalendar)}
-                </Text>
-              </ICalendarLink>
-            </Paragraph>
+            <ICalendarLinkStyled event={scheduledEvent}>
+              <Schedule
+                a11yTitle={intl.formatMessage(messages.a11AddCalendar)}
+                color="blue-active"
+              />
+              <Text className="pl-s">
+                {intl.formatMessage(messages.addCalendar)}
+              </Text>
+            </ICalendarLinkStyled>
           )}
         </Box>
       </Fragment>

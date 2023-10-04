@@ -1,9 +1,9 @@
-import { Paragraph } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { Maybe, theme } from 'lib-common';
 import {
   AnonymousUser,
   Heading,
+  Text,
   checkToken,
   decodeJwt,
   useCurrentUser,
@@ -88,9 +88,9 @@ export const StudentLiveRegistration = () => {
       </Heading>
 
       {liveSession?.is_registered && (
-        <Paragraph color={normalizeColor('blue-active', theme)}>
+        <Text type="p">
           {intl.formatMessage(messages.updateSuccessfulEmail)}
-        </Paragraph>
+        </Text>
       )}
       {!liveSession?.is_registered && (
         <RegistrationForm
@@ -102,13 +102,9 @@ export const StudentLiveRegistration = () => {
         />
       )}
 
-      <Paragraph
-        color={normalizeColor('blue-active', theme)}
-        margin={{ top: 'medium', bottom: 'none' }}
-        textAlign="center"
-      >
+      <Text type="p" textAlign="center" className="mt-b mb-0">
         {intl.formatMessage(messages.registrationConsentMessage)}
-      </Paragraph>
+      </Text>
     </AdvertisingBox>
   );
 };

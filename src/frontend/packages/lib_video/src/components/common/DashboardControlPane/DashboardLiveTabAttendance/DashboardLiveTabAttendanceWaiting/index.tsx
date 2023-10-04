@@ -39,7 +39,7 @@ export const DashboardLiveTabAttendanceWaiting = ({}) => {
           }}
         >
           <Box margin="auto" pad={{ horizontal: '36px' }}>
-            <Heading level={3} textAlign="center">
+            <Heading level={3} textAlign="center" className="m-0">
               {intl.formatMessage(messages.noParticipants)}
             </Heading>
           </Box>

@@ -1,5 +1,5 @@
-import { Box, Paragraph } from 'grommet';
-import { TimedTextTranscript } from 'lib-components';
+import { Box } from 'grommet';
+import { Text, TimedTextTranscript } from 'lib-components';
 import React, { useEffect, useRef, useState } from 'react';
 import { VTTCue, WebVTT } from 'vtt.js';
 
@@ -73,7 +73,7 @@ export const TranscriptReader = ({ transcript }: TranscriptReaderProps) => {
       overflow="scroll"
       height="small"
     >
-      <Paragraph size="xxlarge">
+      <Text type="p">
         {cues.map((cue) => {
           return (
             <TranscriptSentence
@@ -86,7 +86,7 @@ export const TranscriptReader = ({ transcript }: TranscriptReaderProps) => {
             />
           );
         })}
-      </Paragraph>
+      </Text>
     </Box>
   );
 };

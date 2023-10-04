@@ -1,5 +1,5 @@
 import { Select } from '@openfun/cunningham-react';
-import { Box, Pagination, Paragraph } from 'grommet';
+import { Box, Pagination } from 'grommet';
 import { Maybe } from 'lib-common';
 import { BoxLoader, FileDepository, Heading, Text } from 'lib-components';
 import React, { FocusEvent, useState } from 'react';
@@ -157,7 +157,8 @@ export const DashboardInstructor = ({
         >
           {fileDepository.title || intl.formatMessage(messages.noTitle)}
         </Heading>
-        <Paragraph
+        <Text
+          type="div"
           contentEditable={true}
           onBlur={onBlurDescription}
           onFocus={onFocusDescription}
@@ -165,7 +166,7 @@ export const DashboardInstructor = ({
         >
           {fileDepository.description ||
             intl.formatMessage(messages.noDescription)}
-        </Paragraph>
+        </Text>
       </Box>
 
       <Box

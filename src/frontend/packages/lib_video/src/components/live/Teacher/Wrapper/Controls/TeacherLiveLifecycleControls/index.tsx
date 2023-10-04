@@ -1,5 +1,5 @@
-import { Box, BoxProps, Paragraph } from 'grommet';
-import { BoxLoader, liveState } from 'lib-components';
+import { Box, BoxProps } from 'grommet';
+import { BoxLoader, Text, liveState } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -68,23 +68,23 @@ export const TeacherLiveLifecycleControls = ({
   let content;
   if (!canStartStreaming) {
     content = (
-      <Paragraph
-        margin={firstItemMargin}
+      <Text
         style={{ minWidth: '9.5rem' }}
         textAlign="center"
+        className="mt-auto mb-auto ml-auto mr-0"
       >
         {intl.formatMessage(messages.joinTheRoom)}
-      </Paragraph>
+      </Text>
     );
   } else if (!hasRightToStart) {
     content = (
-      <Paragraph
-        margin={firstItemMargin}
+      <Text
         style={{ minWidth: '11rem' }}
         textAlign="center"
+        className="mt-auto mb-auto ml-auto mr-0"
       >
         {intl.formatMessage(messages.notAnAdministrator)}
-      </Paragraph>
+      </Text>
     );
   } else if (
     [liveState.IDLE, liveState.STOPPED, liveState.HARVESTED].includes(
@@ -94,10 +94,13 @@ export const TeacherLiveLifecycleControls = ({
     content = <StartLiveButton video={video} margin={firstItemMargin} />;
   } else if (video.live_state === liveState.STARTING) {
     content = (
-      <Box direction="row" flex="shrink" margin={firstItemMargin}>
-        <Paragraph margin="auto">
-          {intl.formatMessage(messages.starting)}
-        </Paragraph>
+      <Box
+        direction="row"
+        flex="shrink"
+        margin={firstItemMargin}
+        align="center"
+      >
+        <Text size="large">{intl.formatMessage(messages.starting)}</Text>
         <BoxLoader boxProps={{ margin: { left: 'small' } }} size="small" />
       </Box>
     );
@@ -105,23 +108,27 @@ export const TeacherLiveLifecycleControls = ({
     content = <StopLiveButton video={video} margin={firstItemMargin} />;
   } else if (video.live_state === liveState.STOPPING) {
     content = (
-      <Box direction="row" flex="shrink" margin={firstItemMargin}>
-        <Paragraph margin="auto">
-          {intl.formatMessage(messages.stopping)}
-        </Paragraph>
+      <Box
+        direction="row"
+        flex="shrink"
+        margin={firstItemMargin}
+        align="center"
+      >
+        <Text size="large">{intl.formatMessage(messages.stopping)}</Text>
         <BoxLoader boxProps={{ margin: { left: 'small' } }} size="small" />
       </Box>
     );
   } else if (video.live_state === liveState.HARVESTING) {
     content = (
-      <Box direction="row" flex="shrink" margin={firstItemMargin}>
-        <Paragraph
-          margin="auto"
-          style={{ minWidth: '5.5rem' }}
-          textAlign="center"
-        >
+      <Box
+        direction="row"
+        flex="shrink"
+        margin={firstItemMargin}
+        align="center"
+      >
+        <Text style={{ minWidth: '5.5rem' }} textAlign="center">
           {intl.formatMessage(messages.harvesting)}
-        </Paragraph>
+        </Text>
         <BoxLoader boxProps={{ margin: { left: 'small' } }} size="small" />
       </Box>
     );
