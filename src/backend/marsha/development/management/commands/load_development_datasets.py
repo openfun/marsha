@@ -150,6 +150,10 @@ class Command(BaseCommand):
 """,
                 "logo_url": "http://localhost:3001/logos/fun_blue.png",
                 "footer_copyright": "© 2023 France Université Numérique",
+                "homepage_banner_title": "classes virtuelles",
+                "homepage_banner_text": (
+                    "Le portail national des classes virtuelles de l'enseignement supérieur"
+                ),
             },
         )
         self.stdout.write(" - done.")
