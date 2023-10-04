@@ -1,9 +1,10 @@
 import { defineMessages } from '@formatjs/intl';
-import { Box, Paragraph } from 'grommet';
+import { Box } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { Maybe, theme } from 'lib-common';
 import {
   DownloadSVG,
+  Text,
   useFetchButton,
   useVideo,
   videoSize,
@@ -83,9 +84,9 @@ export const PublishVOD = () => {
 
   return (
     <Box>
-      <Paragraph color="blue-active">
+      <Text type="p" className="mt-0">
         {intl.formatMessage(messages.message)}
-      </Paragraph>
+      </Text>
       {vodUrl && (
         <Box
           height="40px"
@@ -115,12 +116,9 @@ export const PublishVOD = () => {
                   iconColor={normalizeColor('blue-active', theme)}
                   height="20px"
                 />
-                <Paragraph
-                  margin={{ left: 'small', vertical: 'auto' }}
-                  color="blue-active"
-                >
+                <Text className="ml-t">
                   {intl.formatMessage(messages.downloadTitle)}
-                </Paragraph>
+                </Text>
               </Box>
             </Box>
           </a>

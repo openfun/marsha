@@ -1,8 +1,14 @@
 import { Input } from '@openfun/cunningham-react';
-import { Button, Paragraph, ThemeContext } from 'grommet';
+import { Button, ThemeContext } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { Maybe, theme } from 'lib-common';
-import { LiveSession, checkToken, decodeJwt, useJwt } from 'lib-components';
+import {
+  LiveSession,
+  Text,
+  checkToken,
+  decodeJwt,
+  useJwt,
+} from 'lib-components';
 import { useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -277,9 +283,14 @@ export const RegistrationForm = ({
         />
 
         {ltiUserError && (
-          <Paragraph color="red-active" fill margin="small" textAlign="center">
+          <Text
+            type="p"
+            className="mt-s"
+            color="clr-danger-300"
+            textAlign="center"
+          >
             {ltiUserError}
-          </Paragraph>
+          </Text>
         )}
       </form>
     </ThemeContext.Extend>

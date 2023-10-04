@@ -1,8 +1,8 @@
 import { Input } from '@openfun/cunningham-react';
-import { Box, Paragraph } from 'grommet';
+import { Box } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { Nullable, theme } from 'lib-common';
-import { EditionSVG, Heading, report } from 'lib-components';
+import { EditionSVG, Heading, Text, report } from 'lib-components';
 import { DateTime } from 'luxon';
 import React, {
   Fragment,
@@ -21,7 +21,7 @@ import { useParticipantsStore } from '@lib-video/hooks/useParticipantsStore';
 
 const StyledBoxInput = styled(Box)`
   & .c__input__wrapper {
-    border: none;
+    border-color: var(--c--theme--colors--primary-100);
   }
 `;
 
@@ -129,7 +129,11 @@ export const VideoInfoBar = ({ isTeacher, startDate }: VideoInfoBarProps) => {
   return (
     <Fragment>
       {isTeacher ? (
-        <StyledBoxInput alignContent="center" direction="row">
+        <StyledBoxInput
+          alignContent="center"
+          direction="row"
+          margin={{ bottom: 'small' }}
+        >
           <Input
             icon={
               <EditionSVG
@@ -162,34 +166,27 @@ export const VideoInfoBar = ({ isTeacher, startDate }: VideoInfoBarProps) => {
         </Heading>
       )}
       {numberOfStudents > 0 || localStartDate ? (
-        <Box direction="row">
+        <Box>
           {numberOfStudents > 0 && (
-            <Paragraph
+            <Text
+              type="p"
               color="blue-active"
-              margin={{
-                left: isTeacher ? 'small' : '',
-                right: 'large',
-                bottom: 'small',
-              }}
+              className={`mb-0 mr-b mb-t ${isTeacher ? 'ml-s' : ''}`}
               size="small"
             >
               {intl.formatMessage(messages.nbViewers, {
                 numberOfStudents,
               })}
-            </Paragraph>
+            </Text>
           )}
           {localStartDate && (
-            <Paragraph
-              color="blue-active"
-              margin={{
-                bottom: 'small',
-                left: numberOfStudents ? '' : 'small',
-                top: 'small',
-              }}
+            <Text
+              type="p"
+              className={`mb-t ${numberOfStudents ? '' : 'ml-s'}`}
               size="small"
             >
               {localStartDate}
-            </Paragraph>
+            </Text>
           )}
         </Box>
       ) : null}

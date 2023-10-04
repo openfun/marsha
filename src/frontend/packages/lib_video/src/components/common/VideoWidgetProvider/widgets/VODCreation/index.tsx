@@ -1,5 +1,5 @@
-import { Box, Paragraph } from 'grommet';
-import { BoxLoader, FoldableItem, liveState } from 'lib-components';
+import { Box } from 'grommet';
+import { BoxLoader, FoldableItem, Text, liveState } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -56,14 +56,10 @@ export const VODCreation = () => {
   if (video.live_state === liveState.HARVESTING) {
     content = (
       <Box fill background="white">
-        <Box direction="row" margin="auto">
-          <Paragraph
-            margin={{ vertical: 'auto', right: 'small' }}
-            color="blue-active"
-            textAlign="center"
-          >
+        <Box direction="row" margin="auto" align="center">
+          <Text color="blue-active" className="mr-s" textAlign="center">
             {intl.formatMessage(messages.harvestingInProgress)}
-          </Paragraph>
+          </Text>
           <BoxLoader size="small" />
         </Box>
       </Box>
@@ -71,13 +67,9 @@ export const VODCreation = () => {
   } else if (displayMessageLayer) {
     content = (
       <Box fill background="white">
-        <Paragraph
-          margin={{ horizontal: 'auto', vertical: 'small' }}
-          color="blue-active"
-          textAlign="center"
-        >
+        <Text color="blue-active" textAlign="center">
           {intl.formatMessage(messages.noHarvestMessage, { br: <br /> })}
-        </Paragraph>
+        </Text>
       </Box>
     );
   } else if (video.live_state !== liveState.HARVESTED) {

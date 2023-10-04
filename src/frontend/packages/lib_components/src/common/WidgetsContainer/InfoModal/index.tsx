@@ -1,8 +1,9 @@
-import { Box, Button, Heading, Layer } from 'grommet';
+import { Box, Button, Layer } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { isFirefox, isIframe, theme } from 'lib-common';
 import React, { useCallback, useEffect } from 'react';
 
+import { Heading } from '@lib-components/common/Headings';
 import { RoundCrossSVG } from '@lib-components/common/SVGIcons/RoundCrossSVG';
 import { Text } from '@lib-components/common/Text';
 import { useResponsive } from '@lib-components/hooks/useResponsive';
@@ -82,7 +83,7 @@ export const InfoModal = ({
           gap="medium"
           pad={{ horizontal: 'large', bottom: '30px' }}
         >
-          <Heading level={3} truncate className="m-0">
+          <Heading level={2} truncate className="m-0">
             {title}
           </Heading>
           <Text style={{ whiteSpace: 'pre-line' }}>{text}</Text>

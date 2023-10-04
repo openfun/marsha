@@ -1,8 +1,9 @@
-import { Box, Grid, Paragraph } from 'grommet';
+import { Box, Grid } from 'grommet';
 import {
   BoxLoader,
   FileDepository,
   Heading,
+  Text,
   useResponsive,
 } from 'lib-components';
 import React from 'react';
@@ -46,12 +47,12 @@ export const DashboardStudent = ({ fileDepository }: DashboardStudentProps) => {
         <Heading>{fileDepository.title}</Heading>
         {isMobile ? (
           <React.Fragment>
-            <Paragraph>{fileDepository.description}</Paragraph>
+            <Text type="p">{fileDepository.description}</Text>
             <UploadFiles />
           </React.Fragment>
         ) : (
           <Grid columns={{ count: 2, size: 'auto' }} gap="xlarge">
-            <Paragraph>{fileDepository.description}</Paragraph>
+            <Text type="p">{fileDepository.description}</Text>
             <UploadFiles />
           </Grid>
         )}

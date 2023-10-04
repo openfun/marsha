@@ -90,6 +90,15 @@
 	--c--theme--font--weights--black: 900;
 	--c--theme--font--families--base: "Roboto Flex Variable", sans-serif;
 	--c--theme--font--families--accent: "Roboto Flex Variable", sans-serif;
+	--c--theme--font--letterspacings--h1: normal;
+	--c--theme--font--letterspacings--h2: normal;
+	--c--theme--font--letterspacings--h3: normal;
+	--c--theme--font--letterspacings--h4: normal;
+	--c--theme--font--letterspacings--h5: 1px;
+	--c--theme--font--letterspacings--h6: normal;
+	--c--theme--font--letterspacings--l: normal;
+	--c--theme--font--letterspacings--m: normal;
+	--c--theme--font--letterspacings--s: normal;
 	--c--theme--spacings--0: 0;
 	--c--theme--spacings--xl: 4rem;
 	--c--theme--spacings--l: 3rem;
@@ -97,6 +106,7 @@
 	--c--theme--spacings--s: 1rem;
 	--c--theme--spacings--t: 0.5rem;
 	--c--theme--spacings--st: 0.25rem;
+	--c--theme--spacings--auto: auto;
 	--c--theme--spacings--bx: 2.2rem;
 	--c--theme--transitions--ease-in: cubic-bezier(0.32, 0, 0.67, 0);
 	--c--theme--transitions--ease-out: cubic-bezier(0.33, 1, 0.68, 1);
@@ -249,18 +259,54 @@
 .fw-bold { font-weight: var(--c--theme--font--weights--bold); }
 .fw-extrabold { font-weight: var(--c--theme--font--weights--extrabold); }
 .fw-black { font-weight: var(--c--theme--font--weights--black); }
-.fs-h1 { font-size: var(--c--theme--font--sizes--h1); }
-.fs-h2 { font-size: var(--c--theme--font--sizes--h2); }
-.fs-h3 { font-size: var(--c--theme--font--sizes--h3); }
-.fs-h4 { font-size: var(--c--theme--font--sizes--h4); }
-.fs-h5 { font-size: var(--c--theme--font--sizes--h5); }
-.fs-h6 { font-size: var(--c--theme--font--sizes--h6); }
-.fs-l { font-size: var(--c--theme--font--sizes--l); }
-.fs-m { font-size: var(--c--theme--font--sizes--m); }
-.fs-s { font-size: var(--c--theme--font--sizes--s); }
-.fs-ml { font-size: var(--c--theme--font--sizes--ml); }
-.fs-xl { font-size: var(--c--theme--font--sizes--xl); }
-.fs-t { font-size: var(--c--theme--font--sizes--t); }
+.fs-h1 { 
+        font-size: var(--c--theme--font--sizes--h1); 
+        letter-spacing: var(--c--theme--font--letterspacings--h1); 
+      }
+.fs-h2 { 
+        font-size: var(--c--theme--font--sizes--h2); 
+        letter-spacing: var(--c--theme--font--letterspacings--h2); 
+      }
+.fs-h3 { 
+        font-size: var(--c--theme--font--sizes--h3); 
+        letter-spacing: var(--c--theme--font--letterspacings--h3); 
+      }
+.fs-h4 { 
+        font-size: var(--c--theme--font--sizes--h4); 
+        letter-spacing: var(--c--theme--font--letterspacings--h4); 
+      }
+.fs-h5 { 
+        font-size: var(--c--theme--font--sizes--h5); 
+        letter-spacing: var(--c--theme--font--letterspacings--h5); 
+      }
+.fs-h6 { 
+        font-size: var(--c--theme--font--sizes--h6); 
+        letter-spacing: var(--c--theme--font--letterspacings--h6); 
+      }
+.fs-l { 
+        font-size: var(--c--theme--font--sizes--l); 
+        letter-spacing: var(--c--theme--font--letterspacings--l); 
+      }
+.fs-m { 
+        font-size: var(--c--theme--font--sizes--m); 
+        letter-spacing: var(--c--theme--font--letterspacings--m); 
+      }
+.fs-s { 
+        font-size: var(--c--theme--font--sizes--s); 
+        letter-spacing: var(--c--theme--font--letterspacings--s); 
+      }
+.fs-ml { 
+        font-size: var(--c--theme--font--sizes--ml); 
+        letter-spacing: var(--c--theme--font--letterspacings--ml); 
+      }
+.fs-xl { 
+        font-size: var(--c--theme--font--sizes--xl); 
+        letter-spacing: var(--c--theme--font--letterspacings--xl); 
+      }
+.fs-t { 
+        font-size: var(--c--theme--font--sizes--t); 
+        letter-spacing: var(--c--theme--font--letterspacings--t); 
+      }
 .f-base { font-family: var(--c--theme--font--families--base); }
 .f-accent { font-family: var(--c--theme--font--families--accent); }
 .m-0 { margin: var(--c--theme--spacings--0); }.mb-0 { margin-bottom: var(--c--theme--spacings--0); }.mt-0 { margin-top: var(--c--theme--spacings--0); }.ml-0 { margin-left: var(--c--theme--spacings--0); }.mr-0 { margin-right: var(--c--theme--spacings--0); }
@@ -270,6 +316,7 @@
 .m-s { margin: var(--c--theme--spacings--s); }.mb-s { margin-bottom: var(--c--theme--spacings--s); }.mt-s { margin-top: var(--c--theme--spacings--s); }.ml-s { margin-left: var(--c--theme--spacings--s); }.mr-s { margin-right: var(--c--theme--spacings--s); }
 .m-t { margin: var(--c--theme--spacings--t); }.mb-t { margin-bottom: var(--c--theme--spacings--t); }.mt-t { margin-top: var(--c--theme--spacings--t); }.ml-t { margin-left: var(--c--theme--spacings--t); }.mr-t { margin-right: var(--c--theme--spacings--t); }
 .m-st { margin: var(--c--theme--spacings--st); }.mb-st { margin-bottom: var(--c--theme--spacings--st); }.mt-st { margin-top: var(--c--theme--spacings--st); }.ml-st { margin-left: var(--c--theme--spacings--st); }.mr-st { margin-right: var(--c--theme--spacings--st); }
+.m-auto { margin: var(--c--theme--spacings--auto); }.mb-auto { margin-bottom: var(--c--theme--spacings--auto); }.mt-auto { margin-top: var(--c--theme--spacings--auto); }.ml-auto { margin-left: var(--c--theme--spacings--auto); }.mr-auto { margin-right: var(--c--theme--spacings--auto); }
 .m-bx { margin: var(--c--theme--spacings--bx); }.mb-bx { margin-bottom: var(--c--theme--spacings--bx); }.mt-bx { margin-top: var(--c--theme--spacings--bx); }.ml-bx { margin-left: var(--c--theme--spacings--bx); }.mr-bx { margin-right: var(--c--theme--spacings--bx); }
 .p-0 { padding: var(--c--theme--spacings--0); }.pb-0 { padding-bottom: var(--c--theme--spacings--0); }.pt-0 { padding-top: var(--c--theme--spacings--0); }.pl-0 { padding-left: var(--c--theme--spacings--0); }.pr-0 { padding-right: var(--c--theme--spacings--0); }
 .p-xl { padding: var(--c--theme--spacings--xl); }.pb-xl { padding-bottom: var(--c--theme--spacings--xl); }.pt-xl { padding-top: var(--c--theme--spacings--xl); }.pl-xl { padding-left: var(--c--theme--spacings--xl); }.pr-xl { padding-right: var(--c--theme--spacings--xl); }
@@ -278,4 +325,5 @@
 .p-s { padding: var(--c--theme--spacings--s); }.pb-s { padding-bottom: var(--c--theme--spacings--s); }.pt-s { padding-top: var(--c--theme--spacings--s); }.pl-s { padding-left: var(--c--theme--spacings--s); }.pr-s { padding-right: var(--c--theme--spacings--s); }
 .p-t { padding: var(--c--theme--spacings--t); }.pb-t { padding-bottom: var(--c--theme--spacings--t); }.pt-t { padding-top: var(--c--theme--spacings--t); }.pl-t { padding-left: var(--c--theme--spacings--t); }.pr-t { padding-right: var(--c--theme--spacings--t); }
 .p-st { padding: var(--c--theme--spacings--st); }.pb-st { padding-bottom: var(--c--theme--spacings--st); }.pt-st { padding-top: var(--c--theme--spacings--st); }.pl-st { padding-left: var(--c--theme--spacings--st); }.pr-st { padding-right: var(--c--theme--spacings--st); }
+.p-auto { padding: var(--c--theme--spacings--auto); }.pb-auto { padding-bottom: var(--c--theme--spacings--auto); }.pt-auto { padding-top: var(--c--theme--spacings--auto); }.pl-auto { padding-left: var(--c--theme--spacings--auto); }.pr-auto { padding-right: var(--c--theme--spacings--auto); }
 .p-bx { padding: var(--c--theme--spacings--bx); }.pb-bx { padding-bottom: var(--c--theme--spacings--bx); }.pt-bx { padding-top: var(--c--theme--spacings--bx); }.pl-bx { padding-left: var(--c--theme--spacings--bx); }.pr-bx { padding-right: var(--c--theme--spacings--bx); }

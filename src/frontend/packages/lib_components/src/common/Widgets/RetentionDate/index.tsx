@@ -78,12 +78,7 @@ export const RetentionDate = ({
       initialOpenValue
       title={intl.formatMessage(messages.title)}
     >
-      <Box
-        direction="column"
-        gap="small"
-        style={{ marginTop: '0.75rem' }}
-        data-testid="retention-date-picker"
-      >
+      <Box direction="column" gap="small" data-testid="retention-date-picker">
         <DatePicker
           fullWidth
           label={intl.formatMessage(messages.title)}

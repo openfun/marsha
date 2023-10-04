@@ -1,6 +1,7 @@
-import { Box, CheckBox, Paragraph } from 'grommet';
+import { Box, CheckBox } from 'grommet';
 import {
   LiveModeType,
+  Text,
   modelName,
   updateResource,
   useVideo,
@@ -59,10 +60,10 @@ export const TeacherLiveTypeSwitch = () => {
   };
 
   return (
-    <Box direction="row">
-      <Paragraph margin={{ vertical: 'auto', right: 'small' }}>
+    <Box direction="row" gap="small" align="center">
+      <Text weight="bold" color="clr-greyscale-800">
         {intl.formatMessage(messages.RAW)}
-      </Paragraph>
+      </Text>
       <CheckBox
         checked={video.live_type === LiveModeType.JITSI}
         onChange={(event) => {
@@ -74,9 +75,9 @@ export const TeacherLiveTypeSwitch = () => {
         }}
         toggle
       />
-      <Paragraph margin={{ vertical: 'auto', left: 'small' }}>
+      <Text weight="bold" color="clr-greyscale-800">
         {intl.formatMessage(messages.JITSI)}
-      </Paragraph>
+      </Text>
     </Box>
   );
 };

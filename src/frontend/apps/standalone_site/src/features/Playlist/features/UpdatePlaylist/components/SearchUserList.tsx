@@ -1,6 +1,6 @@
-import { Box, Button, Paragraph } from 'grommet';
+import { Box, Button } from 'grommet';
 import { Nullable } from 'lib-common';
-import { BoxLoader } from 'lib-components';
+import { BoxLoader, Text } from 'lib-components';
 import { Dispatch, SetStateAction } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -77,11 +77,11 @@ export const SearchUserList = ({
       )}
       {isLoading && <BoxLoader />}
       {(!users || users.count === 0) && !isError && !isLoading && (
-        <Paragraph>{intl.formatMessage(messages.noResults)}</Paragraph>
+        <Text type="p">{intl.formatMessage(messages.noResults)}</Text>
       )}
       {isError && (
         <Box>
-          <Paragraph>{intl.formatMessage(messages.error)}</Paragraph>
+          <Text type="p">{intl.formatMessage(messages.error)}</Text>
           <Button
             label={intl.formatMessage(messages.retry)}
             onClick={() => {

@@ -1,4 +1,4 @@
-import { Box, Paragraph, Stack } from 'grommet';
+import { Box, Stack } from 'grommet';
 import { Schedule } from 'grommet-icons';
 import {
   Text,
@@ -133,7 +133,7 @@ export const StudentLiveAdvertising = () => {
           />
           <StudentLiveDescription startDate={liveScheduleStartDate} />
           {scheduledEvent && !isScheduledPassed && (
-            <Paragraph alignSelf="center" textAlign="justify">
+            <Text type="p" textAlign="center">
               <ICalendarLink event={scheduledEvent}>
                 <Schedule
                   a11yTitle={intl.formatMessage(messages.a11AddCalendar)}
@@ -143,7 +143,7 @@ export const StudentLiveAdvertising = () => {
                   {intl.formatMessage(messages.addCalendar)}
                 </Text>
               </ICalendarLink>
-            </Paragraph>
+            </Text>
           )}
         </AdvertisingBox>
 

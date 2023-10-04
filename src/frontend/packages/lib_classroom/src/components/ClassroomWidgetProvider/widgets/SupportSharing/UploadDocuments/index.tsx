@@ -1,4 +1,4 @@
-import { Box, Button, Paragraph } from 'grommet';
+import { Box, Button } from 'grommet';
 import { Nullable } from 'lib-common';
 import {
   Classroom,
@@ -226,9 +226,9 @@ export const UploadDocuments = ({ classroomId }: UploadDocumentsProps) => {
                 />
                 <Box direction="row" align="center" gap="small">
                   <PlusSVG iconColor="#75A7E5" height="35px" width="35px" />
-                  <Paragraph color="#75A7E5" textAlign="center" margin="none">
+                  <Text color="#75A7E5" textAlign="center" className="m-0">
                     {intl.formatMessage(messages.dropzonePlaceholder)}
-                  </Paragraph>
+                  </Text>
                 </Box>
               </div>
             )}

@@ -1,5 +1,5 @@
-import { Box, Paragraph } from 'grommet';
-import { CopyClipboard, Heading, Video, liveState } from 'lib-components';
+import { Box } from 'grommet';
+import { CopyClipboard, Heading, Text, Video, liveState } from 'lib-components';
 import React, { Fragment } from 'react';
 import { toast } from 'react-hot-toast';
 import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
@@ -51,8 +51,8 @@ const DashboardLiveRaw = ({ video }: DashboardLiveRawProps) => {
   if (!video.live_state || video.live_state === liveState.IDLE) {
     return (
       <Box>
-        <Paragraph>{intl.formatMessage(messages.idlingTitle)}</Paragraph>
-        <Paragraph>{intl.formatMessage(messages.idlingDescription)}</Paragraph>
+        <Text type="p">{intl.formatMessage(messages.idlingTitle)}</Text>
+        <Text type="p">{intl.formatMessage(messages.idlingDescription)}</Text>
       </Box>
     );
   }

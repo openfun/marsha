@@ -1,5 +1,4 @@
-import { Paragraph } from 'grommet';
-import { useFetchButton, useVideo } from 'lib-components';
+import { Text, useFetchButton, useVideo } from 'lib-components';
 import React, { Fragment, useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -56,9 +55,9 @@ export const HarvestVOD = () => {
 
   return (
     <Fragment>
-      <Paragraph color="blue-active" textAlign="center">
+      <Text type="p" className="mt-0" color="blue-active" textAlign="center">
         {intl.formatMessage(messages.harvestLiveMessage)}
-      </Paragraph>
+      </Text>
       <FetchButton
         label={intl.formatMessage(messages.harvestLiveButtonLabel)}
         style={{ width: '100%' }}

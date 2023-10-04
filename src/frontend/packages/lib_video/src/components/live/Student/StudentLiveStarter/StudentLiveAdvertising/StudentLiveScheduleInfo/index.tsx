@@ -1,9 +1,10 @@
-import { Box, Clock, Paragraph } from 'grommet';
+import { Box, Clock } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
 import {
   ChronometerSVG,
   Heading,
+  Text,
   liveState,
   useResponsive,
 } from 'lib-components';
@@ -184,14 +185,9 @@ export const StudentLiveScheduleInfo = ({
           >
             {intl.formatMessage(headingMessage)}
           </Heading>
-          <Paragraph
-            alignSelf="center"
-            color={normalizeColor('blue-active', theme)}
-            textAlign="center"
-            margin={{ horizontal: 'auto', top: 'small' }}
-          >
+          <Text type="p" textAlign="center" className="ml-auto mr-auto mt-s">
             {intl.formatMessage(descriptionMessage)}
-          </Paragraph>
+          </Text>
         </Box>
       </Fragment>
     );
@@ -273,14 +269,11 @@ export const StudentLiveScheduleInfo = ({
               height="2px"
               margin={{ right: 'xsmall', vertical: 'auto' }}
             />
-            <Paragraph
-              color={normalizeColor('blue-active', theme)}
-              margin="auto"
-            >
+            <Text type="p" className="m-auto">
               {localizedStartDate.toLocaleString(
                 DateTime.DATE_MED_WITH_WEEKDAY,
               )}
-            </Paragraph>
+            </Text>
             <Box
               background={normalizeColor('blue-active', theme)}
               flex="grow"

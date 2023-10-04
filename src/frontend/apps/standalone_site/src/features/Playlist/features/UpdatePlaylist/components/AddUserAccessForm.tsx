@@ -1,7 +1,7 @@
 import { Input, Select } from '@openfun/cunningham-react';
-import { Box, Paragraph } from 'grommet';
+import { Box } from 'grommet';
 import { Nullable } from 'lib-common';
-import { Heading, ModalButton } from 'lib-components';
+import { Heading, ModalButton, Text } from 'lib-components';
 import { debounce } from 'lodash';
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -128,7 +128,7 @@ export const AddUserAccessForm = ({
       )}
       {!selectedUser && (
         <Fragment>
-          <Paragraph>{intl.formatMessage(messages.searchInfos)}</Paragraph>
+          <Text type="p">{intl.formatMessage(messages.searchInfos)}</Text>
           <Input
             aria-label={intl.formatMessage(messages.placeHolder)}
             icon={<SearchPeopleIcon />}

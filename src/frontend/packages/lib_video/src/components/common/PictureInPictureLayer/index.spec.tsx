@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Box, Button, Paragraph } from 'grommet';
+import { Box, Button } from 'grommet';
 import { render } from 'lib-tests';
 
 import { PictureInPictureProvider } from '@lib-video/hooks/usePictureInPicture';
@@ -15,7 +15,7 @@ describe('<PictureInPictureLayer />', () => {
   it('renders the main element only', () => {
     const MainContent = (
       <Box>
-        <Paragraph>main content</Paragraph>
+        <p>main content</p>
       </Box>
     );
 
@@ -32,14 +32,14 @@ describe('<PictureInPictureLayer />', () => {
     const mockMainButtonClick = jest.fn();
     const MainContent = (
       <Box>
-        <Paragraph>main content</Paragraph>
+        <p>main content</p>
         <Button onClick={mockMainButtonClick}>main button</Button>
       </Box>
     );
     const mockPictureButtonClick = jest.fn();
     const Picture = (
       <Box>
-        <Paragraph>my picture</Paragraph>
+        <p>my picture</p>
         <Button onClick={mockPictureButtonClick}>picture button</Button>
       </Box>
     );
@@ -66,14 +66,14 @@ describe('<PictureInPictureLayer />', () => {
     const mockMainButtonClick = jest.fn();
     const MainContent = (
       <Box>
-        <Paragraph>main content</Paragraph>
+        <p>main content</p>
         <Button onClick={mockMainButtonClick}>main button</Button>
       </Box>
     );
     const mockPictureButtonClick = jest.fn();
     const Picture = (
       <Box>
-        <Paragraph>my picture</Paragraph>
+        <p>my picture</p>
         <Button onClick={mockPictureButtonClick}>picture button</Button>
       </Box>
     );
@@ -107,12 +107,12 @@ describe('<PictureInPictureLayer />', () => {
   it('renders the picture with switch action when no actions are provided', async () => {
     const MainContent = (
       <Box>
-        <Paragraph>main content</Paragraph>
+        <p>main content</p>
       </Box>
     );
     const Picture = (
       <Box>
-        <Paragraph>my picture</Paragraph>
+        <p>my picture</p>
       </Box>
     );
 
@@ -134,12 +134,12 @@ describe('<PictureInPictureLayer />', () => {
   it('renders the picture with switch action added to other actions', async () => {
     const MainContent = (
       <Box>
-        <Paragraph>main content</Paragraph>
+        <p>main content</p>
       </Box>
     );
     const Picture = (
       <Box>
-        <Paragraph>my picture</Paragraph>
+        <p>my picture</p>
       </Box>
     );
     const Action = <Button>some action</Button>;

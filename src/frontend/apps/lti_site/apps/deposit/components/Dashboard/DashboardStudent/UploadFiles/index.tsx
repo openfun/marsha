@@ -1,4 +1,4 @@
-import { Box, Button, Paragraph } from 'grommet';
+import { Box, Button } from 'grommet';
 import {
   PlusSVG,
   Text,
@@ -219,9 +219,14 @@ export const UploadFiles = () => {
                   ) : (
                     <PlusSVG iconColor="#75A7E5" height="45px" width="45px" />
                   )}
-                  <Paragraph color="#75A7E5" textAlign="center" margin="none">
+                  <Text
+                    type="p"
+                    color="clr-info-200"
+                    textAlign="center"
+                    className="m-0"
+                  >
                     <FormattedMessage {...messages.dropzonePlaceholder} />
-                  </Paragraph>
+                  </Text>
                 </Box>
               </div>
             </Box>

@@ -1,7 +1,14 @@
-import { Box, Button, ButtonProps, Paragraph } from 'grommet';
+import { Box, Button, ButtonProps } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
-import { BoxLoader, Heading, StopSVG, Video, useVideo } from 'lib-components';
+import {
+  BoxLoader,
+  Heading,
+  StopSVG,
+  Text,
+  Video,
+  useVideo,
+} from 'lib-components';
 import React, { Fragment, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -107,9 +114,9 @@ export const StopLiveButton = ({ video, ...props }: StopLiveButtonProps) => {
       >
         {title}
       </Heading>
-      <Paragraph color="white" textAlign="center">
+      <Text type="p" color="white" textAlign="center" className="mt-0">
         {intl.formatMessage(messages.alertInfo, { br: <br /> })}
-      </Paragraph>
+      </Text>
     </Fragment>
   );
 

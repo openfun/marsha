@@ -1,10 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { Box, Button, Paragraph } from 'grommet';
-import { normalizeColor } from 'grommet/utils';
+import { Box, Button } from 'grommet';
 import { AddCircle } from 'grommet-icons';
-import { colors } from 'lib-common';
-import { JoinMode, List } from 'lib-components';
+import { JoinMode, List, Text } from 'lib-components';
 import React, { ReactNode, useMemo } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -105,13 +101,9 @@ const Section = ({
       )}
 
       {(items.length === 0 || forceNoItemsTitle) && (
-        <Paragraph
-          color={normalizeColor('blue-chat', colors)}
-          margin={{ horizontal: 'medium', top: 'small', bottom: 'none' }}
-          size="0.7rem"
-        >
+        <Text className="mt-s mb-0 ml-b mr-b" size="small">
           {noItemsTitle}
-        </Paragraph>
+        </Text>
       )}
     </Box>
   );
