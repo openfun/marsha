@@ -26,6 +26,7 @@
 # VARIABLES
 
 include env.d/development
+include env.d/localtunnel
 
 BOLD := \033[1m
 RESET := \033[0m
@@ -55,7 +56,7 @@ default: h
 bootstrap: ## Prepare Docker images for the project
 bootstrap: \
 	env.d/development \
-	env.d/ngrok \
+	env.d/localtunnel \
 	env.d/lambda \
 	build \
 	build-lambda-dev \
@@ -112,22 +113,22 @@ shell:
 	@$(COMPOSE_RUN) app /bin/bash
 .PHONY: shell
 
-ngrok: ## start the development server using Docker through ngrok
-ngrok: run
-	@$(COMPOSE) stop ngrok
-	@$(COMPOSE) up -d ngrok
+tunnel: ## start the development server using Docker through localtunnel
+tunnel: run
 	@echo
-	@echo "$(BOLD)App running at:$(RESET)"
-	@bin/get_ngrok_url
-.PHONY: ngrok
+	npx localtunnel -s $(LOCALTUNNEL_SUBDOMAIN) -h $(LOCALTUNNEL_HOST) --port $(LOCALTUNNEL_PORT) --print-requests
+.PHONY: tunnel
 
-ngrok-apply: ## start the development server using Docker through ngrok and apply terraform plan
-ngrok-apply: ngrok
+tunnel-apply: ## start the development server using Docker through localtunnel
+tunnel-apply:
+	@echo "$(BOLD)Applying configuration for:$(RESET)"
+	@bin/get_tunnel_url
+	@echo
 	@make -C src/aws/ apply
 	@echo
-	@echo "$(BOLD)App running at:$(RESET)"
-	@bin/get_ngrok_url
-.PHONY: ngrok-apply
+	@echo "$(BOLD)Configuration applied for:$(RESET)"
+	@bin/get_tunnel_url
+.PHONY: tunnel-apply
 
 
 stop: ## stop the development server using Docker
@@ -488,8 +489,8 @@ build-mails-html-to-plain-text: ## Convert html files to text
 env.d/development:
 	cp env.d/development.dist env.d/development
 	
-env.d/ngrok:
-	cp env.d/ngrok.dist env.d/ngrok
+env.d/localtunnel:
+	cp env.d/localtunnel.dist env.d/localtunnel
 
 env.d/lambda:
 	cp env.d/lambda.dist env.d/lambda

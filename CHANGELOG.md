@@ -8,6 +8,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Replace ngrok with localtunnel to serve marsha on a public domain with
+  stable urls and allow to run multiple tunnels at the same time
+
 ### Fixed
 
 - Markdown save sent previously saved content

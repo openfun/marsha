@@ -80,16 +80,6 @@ services:
     stdin_open: true
     tty: true
 
-  ngrok:
-    image: wernight/ngrok
-    environment: 
-      - NGROK_PORT=8000
-      - NGROK_LOOK_DOMAIN=app
-    env_file:
-      - env.d/ngrok
-    ports:
-      - 4040:4040
-
   crowdin:
     image: crowdin/cli:3.7.10
     volumes:
