@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+
+printf "\nLTI Passports:\n"
+
+docker compose exec app python manage.py shell_plus --quiet-load -c "[print(passport.consumer_site.domain, passport.oauth_consumer_key, passport.shared_secret) for passport in LTIPassport.objects.all() if passport.consumer_site]"
+
+printf "\n"
+
+#if [ ! -f .ngrok_url ]; then
+#    bin/get_ngrok_url > .ngrok_url
+#fi
+
+#EXTERNAL_URL=$(cat .ngrok_url)
+
+EXTERNAL_URL=$(bin/get_tunnel_url)
+
+
+ENDPOINTS=(
+  "/lti/config.xml"
+  "/lti/videos/config.xml"
+  "/lti/classrooms/config.xml"
+)
+
+printf "\nLTI config endpoints:\n"
+for endpoint in "${ENDPOINTS[@]}"; do
+  printf "%s%s\n" "$EXTERNAL_URL" "$endpoint"
+done
+
+printf "\n"
