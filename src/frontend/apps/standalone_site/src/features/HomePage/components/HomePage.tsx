@@ -1,5 +1,11 @@
 import { Box, Image } from 'grommet';
-import { Heading, StyledLink, Text, useResponsive } from 'lib-components';
+import {
+  Heading,
+  StyledLink,
+  Text,
+  useResponsive,
+  useSiteConfig,
+} from 'lib-components';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
@@ -68,6 +74,8 @@ const HomePage = () => {
   const { isSmallerBreakpoint, breakpoint, isDesktop } = useResponsive();
   const { isMenuOpen } = useMenu();
   const [isBannerLoaded, setIsBannerLoaded] = useState(false);
+  const { getSiteConfig } = useSiteConfig();
+  const siteConfig = getSiteConfig();
 
   return (
     <Box margin={{ top: 'medium' }}>
@@ -89,7 +97,8 @@ const HomePage = () => {
                 !isMenuOpen(isDesktop)
               }
             >
-              {intl.formatMessage(messages.BannerTitle)}
+              {siteConfig.homepage_banner_title ||
+                intl.formatMessage(messages.BannerTitle)}
             </HeadingBanner>
             <TextBanner
               weight="bold"
@@ -99,7 +108,8 @@ const HomePage = () => {
                 !isMenuOpen(isDesktop)
               }
             >
-              {intl.formatMessage(messages.BannerDesc)}
+              {siteConfig.homepage_banner_text ||
+                intl.formatMessage(messages.BannerDesc)}
             </TextBanner>
           </TextBannerBox>
         )}

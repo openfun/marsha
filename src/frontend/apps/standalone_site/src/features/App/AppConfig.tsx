@@ -63,6 +63,8 @@ const AppConfig = ({ children }: PropsWithChildren<unknown>) => {
       login_html: config.login_html,
       footer_copyright: config.footer_copyright,
       vod_conversion_enabled: config.vod_conversion_enabled,
+      homepage_banner_title: config.homepage_banner_title,
+      homepage_banner_text: config.homepage_banner_text,
     });
   }, [setSentry, setP2PConfig, config, setSiteConfig]);
 

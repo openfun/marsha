@@ -18,6 +18,8 @@ describe('<HeaderLight />', () => {
         logo_url: undefined,
         login_html: undefined,
         vod_conversion_enabled: true,
+        homepage_banner_title: 'banner title',
+        homepage_banner_text: 'banner text',
       },
     });
   });
@@ -41,6 +43,8 @@ describe('<HeaderLight />', () => {
         logo_url: 'https://example.com/logo.svg',
         login_html: 'custom login markdown',
         vod_conversion_enabled: true,
+        homepage_banner_title: 'banner title',
+        homepage_banner_text: 'banner text',
       },
     });
     render(<HeaderLight />);
@@ -57,6 +61,8 @@ describe('<HeaderLight />', () => {
         logo_url: undefined,
         login_html: 'custom login markdown',
         vod_conversion_enabled: true,
+        homepage_banner_title: 'banner title',
+        homepage_banner_text: 'banner text',
       },
     });
     render(<HeaderLight />);
@@ -81,6 +87,8 @@ describe('<HeaderLight />', () => {
         logo_url: 'https://example.com/logo.svg',
         login_html: 'custom login markdown',
         vod_conversion_enabled: true,
+        homepage_banner_title: 'banner title',
+        homepage_banner_text: 'banner text',
       },
     });
     render(<HeaderLightLink />);
@@ -100,6 +108,8 @@ describe('<HeaderLight />', () => {
         logo_url: undefined,
         login_html: 'custom login markdown',
         vod_conversion_enabled: true,
+        homepage_banner_title: 'banner title',
+        homepage_banner_text: 'banner text',
       },
     });
     render(<HeaderLightLink />);

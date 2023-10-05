@@ -83,6 +83,8 @@ describe('<Footer />', () => {
         logo_url: 'custom logo',
         login_html: 'custom login markdown',
         vod_conversion_enabled: true,
+        homepage_banner_title: 'banner title',
+        homepage_banner_text: 'banner text',
       },
     });
 
@@ -107,6 +109,8 @@ describe('<Footer />', () => {
         logo_url: 'custom logo',
         login_html: 'custom login markdown',
         vod_conversion_enabled: true,
+        homepage_banner_title: 'banner title',
+        homepage_banner_text: 'banner text',
       },
     });
 
