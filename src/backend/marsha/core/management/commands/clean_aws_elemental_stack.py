@@ -94,7 +94,8 @@ class Command(BaseCommand):
         live.upload_state = DELETED
         live.live_info.pop("medialive")
         live.live_info.pop("mediapackage")
-        live.live_info.pop("live_stopped_with_email")
+        if live.live_info.get("live_stopped_with_email"):
+            live.live_info.pop("live_stopped_with_email")
         live.save(
             update_fields=(
                 "live_state",
