@@ -21,6 +21,8 @@ export interface ConfigResponse {
   logo_url?: string;
   login_html?: string;
   footer_copyright?: string;
+  homepage_banner_title?: string;
+  homepage_banner_text?: string;
 }
 
 export const getConfig = async () => {
