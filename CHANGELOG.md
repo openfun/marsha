@@ -38,6 +38,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Replace grommet Paragraph (#2435)
 - Upgrade to python 3.11
 - Upgrade channels and channels-redis to version 4
+- Remove cross on login image (#2451)
 
 ### Fixed
 
