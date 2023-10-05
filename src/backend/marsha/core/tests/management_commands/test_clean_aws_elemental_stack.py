@@ -13,6 +13,9 @@ from marsha.core.management.commands import clean_aws_elemental_stack
 from marsha.core.utils import time_utils
 
 
+# pylint: disable=too-many-statements,too-many-locals
+
+
 class CleanAwsElementalStackCommandTest(TestCase):
     """Test clean_aws_elemental_stack command."""
 
@@ -198,6 +201,50 @@ class CleanAwsElementalStackCommandTest(TestCase):
             },
         )
 
+        # Sixth live, started and stopped, with starting_at, but expired. Should be clean
+        # this is an old live with no live_stopped_with_email in live_info
+        live6_id = uuid.uuid4()
+        live6 = VideoFactory(
+            id=live6_id,
+            live_state=STOPPED,
+            live_type=JITSI,
+            starting_at=datetime(2022, 10, 14, 13, 25, tzinfo=timezone.utc),
+            title="live five",
+            live_info={
+                "medialive": {
+                    "channel": {
+                        "arn": "arn:aws:medialive:eu-west-1:xxx:channel:4444444",
+                        "id": "5555555",
+                    },
+                    "input": {
+                        "endpoints": [
+                            f"rtmp://x.x.x.x:1935/{live6_id}_1667490961-primary",
+                            f"rtmp://x.x.x.x:1935/{live6_id}_1667490961-secondary",
+                        ],
+                        "id": "5555555",
+                    },
+                },
+                "mediapackage": {
+                    "channel": {"id": f"test_{live6_id}_1667490961"},
+                    "endpoints": {
+                        "hls": {
+                            "id": f"test_{live6_id}_1667490961_hls",
+                            "url": (
+                                "https://xxx.mediapackage.eu-west-1.amazonaws.com/out/v1/xxx/"
+                                f"test_{live6_id}_1667490961_hls.m3u8"
+                            ),
+                        }
+                    },
+                },
+                "started_at": time_utils.to_timestamp(
+                    datetime(2022, 10, 14, 13, 25, tzinfo=timezone.utc)
+                ),
+                "stopped_at": time_utils.to_timestamp(
+                    datetime(2022, 10, 14, 15, 25, tzinfo=timezone.utc)
+                ),
+            },
+        )
+
         # Run command
         out = StringIO()
         with mock.patch.object(
@@ -220,6 +267,13 @@ class CleanAwsElementalStackCommandTest(TestCase):
             live5_to_delete = {
                 "Id": "5555555",
                 "Name": f"test_{live5_id}_1667490961",
+                "Tags": {"environment": "test"},
+                "State": "IDLE",
+            }
+            # live 6
+            live6_to_delete = {
+                "Id": "5555555",
+                "Name": f"test_{live6_id}_1667490961",
                 "Tags": {"environment": "test"},
                 "State": "IDLE",
             }
@@ -247,18 +301,21 @@ class CleanAwsElementalStackCommandTest(TestCase):
                 },
                 live4_do_delete,
                 live5_to_delete,
+                live6_to_delete,
             ]
 
             call_command("clean_aws_elemental_stack", stdout=out)
             delete_medialive_stack_mock.assert_any_call(live4_do_delete, mock.ANY)
             delete_medialive_stack_mock.assert_any_call(live5_to_delete, mock.ANY)
-            self.assertEqual(delete_medialive_stack_mock.call_count, 2)
+            delete_medialive_stack_mock.assert_any_call(live6_to_delete, mock.ANY)
+            self.assertEqual(delete_medialive_stack_mock.call_count, 3)
 
             self.assertNotIn(f"Checking video {live1.id}", out.getvalue())
             self.assertNotIn(f"Checking video {live2.id}", out.getvalue())
             self.assertIn(f"Checking video {live3.id}", out.getvalue())
             self.assertIn(f"Checking video {live4.id}", out.getvalue())
             self.assertIn(f"Checking video {live5.id}", out.getvalue())
+            self.assertIn(f"Checking video {live6.id}", out.getvalue())
 
             # Refresh all video from db
             live1.refresh_from_db()
@@ -266,6 +323,7 @@ class CleanAwsElementalStackCommandTest(TestCase):
             live3.refresh_from_db()
             live4.refresh_from_db()
             live5.refresh_from_db()
+            live6.refresh_from_db()
 
             # Live 1, 2 and 3 should not have been updated
             self.assertEqual(live1.live_state, IDLE)
@@ -291,7 +349,7 @@ class CleanAwsElementalStackCommandTest(TestCase):
                     ),
                 },
             )
-            self.assertEqual(live4.live_info.get("live_stopped_with_email"), None)
+            self.assertIsNone(live4.live_info.get("live_stopped_with_email"))
 
             self.assertEqual(live5.live_state, ENDED)
             self.assertEqual(live5.upload_state, DELETED)
@@ -306,7 +364,22 @@ class CleanAwsElementalStackCommandTest(TestCase):
                     ),
                 },
             )
-            self.assertEqual(live5.live_info.get("live_stopped_with_email"), None)
+            self.assertIsNone(live5.live_info.get("live_stopped_with_email"))
+
+            self.assertEqual(live6.live_state, ENDED)
+            self.assertEqual(live6.upload_state, DELETED)
+            self.assertEqual(
+                live6.live_info,
+                {
+                    "started_at": time_utils.to_timestamp(
+                        datetime(2022, 10, 14, 13, 25, tzinfo=timezone.utc)
+                    ),
+                    "stopped_at": time_utils.to_timestamp(
+                        datetime(2022, 10, 14, 15, 25, tzinfo=timezone.utc)
+                    ),
+                },
+            )
+            self.assertIsNone(live6.live_info.get("live_stopped_with_email"))
 
         out.close()
 
