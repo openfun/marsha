@@ -241,6 +241,7 @@ def get_frontend_configuration(request):
                 VOD_CONVERT not in site_config.inactive_features
             )
             config["logo_url"] = site_config.logo_url
+            config["is_logo_enabled"] = site_config.is_logo_enabled
             config["login_html"] = site_config.login_html
             config["footer_copyright"] = site_config.footer_copyright
             config["homepage_banner_title"] = site_config.homepage_banner_title
