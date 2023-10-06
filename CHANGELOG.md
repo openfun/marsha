@@ -8,10 +8,22 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Generic video LTI url
+- Display complete error message in frontend
+- Generic classroom LTI url
+- Generic LTI cartridge (xml configuration)
+- Display LTI warning message for generic urls regarding course copy
+
 ### Changed
 
 - Replace ngrok with localtunnel to serve marsha on a public domain with
   stable urls and allow to run multiple tunnels at the same time
+- Replace all the loaders by Cunningham Loader (#2436)
+- Replace grommet Text (#2427)
+- Replace grommet Paragraph (#2435)
+- Remove cross on login image (#2451)
 
 ### Fixed
 
@@ -24,21 +36,12 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Send an email when a live stream is ready to be converted to VOD
 - Send an email when a live stream is converted to VOD
 - Send an email when a live stream is about to be deleted
-- Generic video LTI url
-- Display complete error message in frontend
-- Generic classroom LTI url
-- Generic LTI cartridge (xml configuration)
-- Display LTI warning message for generic urls regarding course copy
 
 ### Changed
 
 - Replace grommet Heading (#2410)
-- Replace all the loaders by Cunningham Loader (#2436)
-- Replace grommet Text (#2427)
-- Replace grommet Paragraph (#2435)
 - Upgrade to python 3.11
 - Upgrade channels and channels-redis to version 4
-- Remove cross on login image (#2451)
 
 ### Fixed
 
