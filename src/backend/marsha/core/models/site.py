@@ -64,6 +64,13 @@ class SiteConfig(BaseModel):
         blank=True,
     )
 
+    is_logo_enabled = models.BooleanField(
+        default=True,
+        verbose_name=_("logo enabled"),
+        help_text=_("Is the logo enabled ?"),
+        null=True,
+    )
+
     homepage_banner_title = models.CharField(
         max_length=255,
         verbose_name=_("Homepage banner title"),
