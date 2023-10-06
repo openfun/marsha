@@ -144,8 +144,8 @@ const Header = forwardRef<Nullable<HTMLDivElement>>((_props, ref) => {
           aria-controls="menu"
           style={{ flex: 'none' }}
         />
-        <Link to={routes.HOMEPAGE.path} style={{ color: 'currentColor' }}>
-          {siteConfig.is_default_site || !siteConfig.logo_url ? (
+        {siteConfig.is_default_site && (
+          <Link to={routes.HOMEPAGE.path} style={{ color: 'currentColor' }}>
             <MarshaLogoIcon
               height={
                 isSmallerBreakpoint(breakpoint, Breakpoints.small)
@@ -153,12 +153,25 @@ const Header = forwardRef<Nullable<HTMLDivElement>>((_props, ref) => {
                   : '80px'
               }
             />
-          ) : (
-            <Box margin={{ top: 'small' }}>
-              <img src={siteConfig.logo_url} alt="Home" />
-            </Box>
-          )}
-        </Link>
+          </Link>
+        )}
+        {!siteConfig.is_default_site && siteConfig.is_logo_enabled && (
+          <Link to={routes.HOMEPAGE.path} style={{ color: 'currentColor' }}>
+            {!siteConfig.logo_url ? (
+              <MarshaLogoIcon
+                height={
+                  isSmallerBreakpoint(breakpoint, Breakpoints.small)
+                    ? '100%'
+                    : '80px'
+                }
+              />
+            ) : (
+              <Box margin={{ top: 'small' }}>
+                <img src={siteConfig.logo_url} alt="Home" />
+              </Box>
+            )}
+          </Link>
+        )}
       </Box>
 
       <Box direction="row" align="center" gap="small" justify="end">

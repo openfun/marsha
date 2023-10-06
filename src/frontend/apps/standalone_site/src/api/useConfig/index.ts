@@ -19,6 +19,7 @@ export interface ConfigResponse {
   vod_conversion_enabled: boolean;
   is_default_site: boolean;
   logo_url?: string;
+  is_logo_enabled?: boolean;
   login_html?: string;
   footer_copyright?: string;
   homepage_banner_title?: string;
