@@ -12,7 +12,7 @@ describe('<Header />', () => {
     });
   });
 
-  test('renders Header', () => {
+  it('renders Header', () => {
     useCurrentUser.setState({
       currentUser: userMockFactory({
         full_name: 'John Doe',
@@ -27,7 +27,7 @@ describe('<Header />', () => {
     ).toBeInTheDocument();
   });
 
-  test('scroll and update background', () => {
+  it('scrolls and updates background', () => {
     render(<Header />);
 
     const menuBar = screen.getByRole('menubar');
@@ -37,7 +37,7 @@ describe('<Header />', () => {
     expect(menuBar).toHaveStyle('background: #fff');
   });
 
-  test('clic on Logo routes to Homepage', async () => {
+  it('clicks on Logo routes to Homepage', async () => {
     render(<div>My Homepage</div>, {
       routerOptions: {
         routes: [
@@ -60,12 +60,13 @@ describe('<Header />', () => {
     expect(screen.queryByText(/My Videos/i)).not.toBeInTheDocument();
   });
 
-  test('clic on custom Logo routes to Homepage', async () => {
+  it('clicks on custom Logo routes to Homepage', async () => {
     useSiteConfig.setState({
       siteConfig: {
         is_default_site: false,
         footer_copyright: 'custom copyright',
         logo_url: 'https://example.com/logo.svg',
+        is_logo_enabled: true,
         login_html: 'custom login markdown',
         vod_conversion_enabled: true,
         homepage_banner_title: 'banner title',
@@ -96,12 +97,13 @@ describe('<Header />', () => {
     expect(screen.queryByText(/My Videos/i)).not.toBeInTheDocument();
   });
 
-  test('clic on custom Logo routes to Homepage with default logo', async () => {
+  it('clicks on custom Logo routes to Homepage with default logo', async () => {
     useSiteConfig.setState({
       siteConfig: {
         is_default_site: false,
         footer_copyright: 'custom copyright',
         logo_url: undefined,
+        is_logo_enabled: true,
         login_html: 'custom login markdown',
         vod_conversion_enabled: true,
         homepage_banner_title: 'banner title',
@@ -129,5 +131,35 @@ describe('<Header />', () => {
     await userEvent.click(logo);
     expect(screen.getByText(/My Homepage/i)).toBeInTheDocument();
     expect(screen.queryByText(/My Videos/i)).not.toBeInTheDocument();
+  });
+
+  it("doesn't display the logo when is_logo_enabled is false", () => {
+    useSiteConfig.setState({
+      siteConfig: {
+        is_default_site: false,
+        footer_copyright: 'custom copyright',
+        logo_url: undefined,
+        is_logo_enabled: false,
+        login_html: 'custom login markdown',
+        vod_conversion_enabled: true,
+        homepage_banner_title: 'banner title',
+        homepage_banner_text: 'banner text',
+      },
+    });
+
+    render(<div>My Homepage</div>, {
+      routerOptions: {
+        routes: [
+          {
+            path: '/videos',
+            element: <div>My Videos</div>,
+          },
+        ],
+        header: <Header />,
+        history: ['/videos'],
+      },
+    });
+
+    expect(screen.queryByRole('img', { name: 'Home' })).not.toBeInTheDocument();
   });
 });

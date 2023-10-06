@@ -60,6 +60,7 @@ const AppConfig = ({ children }: PropsWithChildren<unknown>) => {
     setSiteConfig({
       is_default_site: config.is_default_site,
       logo_url: config.logo_url,
+      is_logo_enabled: config.is_logo_enabled,
       login_html: config.login_html,
       footer_copyright: config.footer_copyright,
       vod_conversion_enabled: config.vod_conversion_enabled,

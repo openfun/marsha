@@ -56,6 +56,7 @@ describe('<BaseAuthenticationPage />', () => {
         is_default_site: false,
         footer_copyright: 'custom copyright',
         logo_url: 'custom logo',
+        is_logo_enabled: false,
         login_html: 'custom login markdown',
         vod_conversion_enabled: true,
         homepage_banner_title: 'banner title',

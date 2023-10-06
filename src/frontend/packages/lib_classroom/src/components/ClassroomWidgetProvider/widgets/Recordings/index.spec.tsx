@@ -186,8 +186,11 @@ describe('<Recordings />', () => {
         is_default_site: false,
         footer_copyright: 'custom copyright',
         logo_url: 'https://example.com/logo.svg',
+        is_logo_enabled: true,
         login_html: 'custom login markdown',
         vod_conversion_enabled: false,
+        homepage_banner_title: 'banner title',
+        homepage_banner_text: 'banner text',
       },
     });
 
