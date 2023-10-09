@@ -39,16 +39,6 @@
       ]
     },
     {
-      "groupName": "allowed urllib3 versions",
-      "matchManagers": [
-        "setup-cfg"
-      ],
-      "matchPackageNames": [
-        "urllib3"
-      ],
-      "allowedVersions": "<1.27"
-    },
-    {
       "groupName": "allowed docker images",
       "matchDatasources": [
         "docker"
