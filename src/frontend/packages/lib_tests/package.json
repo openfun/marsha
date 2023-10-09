@@ -47,7 +47,7 @@
     "@types/react-dom": "*",
     "@types/react-router-dom": "*",
     "@types/styled-components": "5.1.28",
-    "@types/uuid": "9.0.4",
+    "@types/uuid": "9.0.5",
     "@types/video.js": "7.3.53",
     "cross-env": "7.0.3",
     "eslint": "*",

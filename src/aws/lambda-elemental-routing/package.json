@@ -21,7 +21,7 @@
     "prettier": "3.0.3"
   },
   "dependencies": {
-    "aws-sdk": "2.1468.0"
+    "aws-sdk": "2.1472.0"
   },
   "volta": {
     "node": "18.18.0"
