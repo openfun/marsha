@@ -51,7 +51,7 @@
     "@types/react-dom": "*",
     "@types/react-router-dom": "*",
     "@types/styled-components": "5.1.28",
-    "@types/uuid": "9.0.4",
+    "@types/uuid": "9.0.5",
     "cross-env": "7.0.3",
     "eslint": "*",
     "eslint-config-marsha": "*",
