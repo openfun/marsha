@@ -43,7 +43,7 @@ export const ClosingCard = ({
         <Box direction="row" justify="between" align="center">
           <Box>{message}</Box>
           <Button onClick={() => setDisplay(false)} style={{ display: 'flex' }}>
-            <FormClose aria-label="close" />
+            <FormClose aria-label="close" color="white" />
           </Button>
         </Box>
         {children && (
