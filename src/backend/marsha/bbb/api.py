@@ -7,6 +7,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 import django_filters
 import jwt
@@ -456,7 +457,18 @@ class ClassroomViewSet(
         if invite_token is None:
             return Response(
                 status=400,
-                data={"message": "missing required invite_token in query string"},
+                data={"message": _("missing required invite_token in query string")},
+            )
+
+        if invite_token in settings.BBB_INVITE_TOKEN_BANNED_LIST:
+            return Response(
+                status=400,
+                data={
+                    "message": _(
+                        "invitation link is not valid anymore. Ask for a new invitation"
+                        " link to the classroom maintainer"
+                    )
+                },
             )
 
         classroom = self.get_object()

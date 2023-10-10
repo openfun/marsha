@@ -92,3 +92,25 @@ class ClassroomInviteTokenAPITest(TestCase):
             f"/api/classrooms/{classroom.id}/token/?invite_token={secrets.token_urlsafe()}"
         )
         self.assertEqual(response.status_code, 404)
+
+    @override_settings(
+        BBB_INVITE_TOKEN_BANNED_LIST=["rejected_token", "another_rejected"]
+    )
+    def test_invite_blacklist_token(self):
+        """Using an invite token present in the blacklist settings should be forbidden"""
+        classroom = ClassroomFactory(instructor_token="rejected_token")
+
+        response = self.client.get(
+            f"/api/classrooms/{classroom.id}/token/?invite_token=rejected_token"
+        )
+        self.assertEqual(response.status_code, 400)
+        content = response.json()
+        self.assertEqual(
+            content,
+            {
+                "message": (
+                    "invitation link is not valid anymore. Ask for a new "
+                    "invitation link to the classroom maintainer"
+                )
+            },
+        )
