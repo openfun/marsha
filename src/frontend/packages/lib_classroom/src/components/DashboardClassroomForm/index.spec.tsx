@@ -1,8 +1,9 @@
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { ResponsiveContext } from 'grommet';
 import { useCurrentResourceContext } from 'lib-components';
-import { render } from 'lib-tests';
+import { Deferred, render } from 'lib-tests';
 import { Settings } from 'luxon';
 import React from 'react';
 
@@ -21,6 +22,10 @@ jest.mock('lib-components', () => ({
   useCurrentResourceContext: jest.fn(),
 }));
 
+jest.mock('components/ClassroomWidgetProvider', () => ({
+  ClassroomWidgetProvider: () => <p>Classroom widget provider</p>,
+}));
+
 const mockedUseCurrentResourceContext =
   useCurrentResourceContext as jest.MockedFunction<
     typeof useCurrentResourceContext
@@ -30,17 +35,10 @@ Settings.defaultLocale = 'en';
 Settings.defaultZone = 'Europe/Paris';
 
 describe('<DashboardClassroomForm />', () => {
-  beforeEach(() => {
-    jest.useFakeTimers();
-  });
   afterEach(() => {
     jest.resetAllMocks();
     fetchMock.restore();
   });
-  afterAll(() => {
-    jest.useRealTimers();
-  });
-
   it('creates and renders a classroom form', () => {
     mockedUseCurrentResourceContext.mockReturnValue([
       {
@@ -59,6 +57,9 @@ describe('<DashboardClassroomForm />', () => {
 
     expect(
       screen.getByRole('tab', { name: 'Configuration' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Launch the classroom now in BBB' }),
     ).toBeInTheDocument();
   });
 
@@ -81,7 +82,43 @@ describe('<DashboardClassroomForm />', () => {
     // The configuration tab is the one that contains the widgets, so we just have to detect the
     // Description widget to be sure that we're on the right one.
     expect(
-      screen.getByRole('textbox', { name: 'Description' }),
+      screen.getByRole('tab', { name: 'Configuration' }),
     ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Launch the classroom now in BBB' }),
+    ).toBeInTheDocument();
+  });
+
+  it('creates a classroom when clicking on the launch button', async () => {
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_access_dashboard: true,
+          can_update: true,
+        },
+      },
+    ] as any);
+    const classroom = classroomMockFactory({ id: '1', started: false });
+    const deferred = new Deferred();
+    fetchMock.patch('/api/classrooms/1/create/', deferred.promise);
+    render(
+      <ResponsiveContext.Provider value="large">
+        <DashboardClassroomForm classroom={classroom} />
+      </ResponsiveContext.Provider>,
+    );
+
+    const launchClassroomButton = screen.getByRole('button', {
+      name: 'Launch the classroom now in BBB',
+    });
+
+    expect(launchClassroomButton).toBeEnabled();
+
+    await userEvent.click(launchClassroomButton);
+
+    expect(launchClassroomButton).toBeDisabled();
+
+    deferred.resolve({ message: 'it works' });
+
+    await waitFor(() => expect(launchClassroomButton).toBeEnabled());
   });
 });

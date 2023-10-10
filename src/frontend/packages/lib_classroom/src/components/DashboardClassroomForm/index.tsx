@@ -2,7 +2,7 @@ import { Box, Button, Tab, Tabs, ThemeContext } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
 import { Classroom } from 'lib-components';
-import React from 'react';
+import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
@@ -42,6 +42,7 @@ interface DashboardClassroomFormProps {
 
 const DashboardClassroomForm = ({ classroom }: DashboardClassroomFormProps) => {
   const intl = useIntl();
+  const [isCreating, setIsCreating] = useState(false);
   const extendedTheme = {
     tabs: {
       header: {
@@ -72,9 +73,11 @@ const DashboardClassroomForm = ({ classroom }: DashboardClassroomFormProps) => {
   const createClassroomMutation = useCreateClassroomAction(classroom.id, {
     onSuccess: (data) => {
       toast.success(data.message);
+      setIsCreating(false);
     },
     onError: () => {
       toast.error(intl.formatMessage(messages.createClassroomFail));
+      setIsCreating(false);
     },
   });
 
@@ -99,10 +102,11 @@ const DashboardClassroomForm = ({ classroom }: DashboardClassroomFormProps) => {
           <Button
             type="submit"
             label={intl.formatMessage(messages.startClassroomLabel)}
-            disabled={!classroom.title}
+            disabled={!classroom.title || isCreating}
             primary
             size="small"
             onClick={() => {
+              setIsCreating(true);
               createClassroomMutation.mutate(classroom);
             }}
           />
