@@ -5,6 +5,7 @@ import logging
 from os.path import splitext
 
 from django.conf import settings
+from django.utils.timezone import now
 
 from dateutil.parser import parse
 import requests
@@ -163,6 +164,10 @@ def create(classroom: Classroom, recording_ready_callback_url: str, attempt=0):
         api_response["message"] = "Meeting created."
     classroom.started = True
     classroom.ended = False
+    classroom.sessions.create(
+        started_at=now(),
+        ended_at=None,
+    )
     classroom.save(update_fields=["started", "ended"])
     return api_response
 
