@@ -77,12 +77,17 @@ export const useSelectClassroom = (
   });
 };
 
+type ErrorResponseFetchOneClassroom = FetchResponseError<{ detail: string }>;
 export const useClassroom = (
   classroomId: string,
-  queryConfig?: UseQueryOptions<Classroom, 'classrooms', Classroom>,
+  queryConfig?: UseQueryOptions<
+    Classroom,
+    ErrorResponseFetchOneClassroom,
+    Classroom
+  >,
 ) => {
   const key = ['classrooms', classroomId];
-  return useQuery<Classroom, 'classrooms'>({
+  return useQuery<Classroom, ErrorResponseFetchOneClassroom>({
     queryKey: key,
     queryFn: fetchOne,
     ...queryConfig,
