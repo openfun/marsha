@@ -10,6 +10,7 @@ from secrets import token_urlsafe
 import uuid
 
 from django.db import models
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 
 from safedelete.managers import SafeDeleteManager
@@ -199,6 +200,69 @@ class Classroom(BaseModel, RetentionDateObjectMixin):
             disabled_features.append("presentation")
 
         return ",".join(disabled_features)
+
+
+class ClassroomSession(BaseModel):
+    """Model representing a session in a classroom."""
+
+    classroom = models.ForeignKey(
+        to=Classroom,
+        related_name="sessions",
+        verbose_name=_("classroom session"),
+        help_text=_("classroom to which this session belongs"),
+        # Delete all sessions belonging to this classroom
+        on_delete=models.CASCADE,
+    )
+
+    current_attendees = models.JSONField(
+        verbose_name=_("Classroom session current attendees"),
+        help_text=_("Used to track attendees changes in a classroom session"),
+        null=True,
+        blank=True,
+    )
+
+    attendees = models.JSONField(
+        verbose_name=_("Classroom session attendees"),
+        help_text=_("Classroom session online presence"),
+        null=True,
+        blank=True,
+    )
+
+    started_at = models.DateTimeField(
+        blank=False,
+        verbose_name=_("Session started at date and time"),
+        help_text=_("Start date and time of the session."),
+        null=False,
+        default=now,
+    )
+
+    ended_at = models.DateTimeField(
+        blank=True,
+        verbose_name=_("Session ended at date and time"),
+        help_text=_("End date and time of the session."),
+        null=True,
+    )
+
+    class Meta:
+        db_table = "classroom_session"
+        constraints = [
+            # we can have only one session with ended_at None for a classroom
+            models.UniqueConstraint(
+                fields=["classroom"],
+                condition=models.Q(ended_at__isnull=True),
+                name="classroom_session_unique_not_ended",
+            )
+        ]
+
+    def __str__(self):
+        """Get the string representation of an instance."""
+        result = f"{self.started_at}"
+        if self.ended_at:
+            duration = self.ended_at - self.started_at
+            result = _("{:s} ({:s})").format(result, str(duration))
+        else:
+            result = _("{:s} (pending)").format(result)
+        return result
 
 
 class ClassroomDocument(UploadableFileMixin, BaseModel):

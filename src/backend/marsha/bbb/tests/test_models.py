@@ -7,7 +7,11 @@ from django.test import TestCase
 
 from safedelete.models import SOFT_DELETE_CASCADE
 
-from ..factories import ClassroomFactory, ClassroomRecordingFactory
+from ..factories import (
+    ClassroomFactory,
+    ClassroomRecordingFactory,
+    ClassroomSessionFactory,
+)
 
 
 class ClassroomModelsTestCase(TestCase):
@@ -59,4 +63,42 @@ class ClassroomClassroomRecordingTestCase(TestCase):
         self.assertEqual(
             deprecation.exception.args[0],
             "Access denied to video_file_url: deprecated field",
+        )
+
+
+class ClassroomSessionTestCase(TestCase):
+    """Test the ClassroomSession model."""
+
+    maxDiff = None
+
+    def test_models_classroomsession_str(self):
+        """The str method should display the classroom session start."""
+        classroom_session = ClassroomFactory().sessions.create(
+            started_at="2021-10-29T13:42:27Z",
+            ended_at=None,
+        )
+        self.assertEqual(str(classroom_session), "2021-10-29 13:42:27+00:00 (pending)")
+
+        classroom_session.ended_at = "2021-10-29T15:34:28Z"
+        classroom_session.save()
+        self.assertEqual(str(classroom_session), "2021-10-29 13:42:27+00:00 (1:52:01)")
+
+    def test_models_classroomsession_fields_unique(self):
+        """Classroom sessions should be unique for a given classroom and start."""
+        classroom_session = ClassroomSessionFactory(
+            ended_at=None,
+        )
+
+        # Trying to create a classroom session for the same classroom and no end date
+        # should raise a database error
+        with self.assertRaises(IntegrityError):
+            with transaction.atomic():
+                ClassroomSessionFactory(
+                    classroom=classroom_session.classroom,
+                    ended_at=None,
+                )
+
+        # A classroom session for a different classroom can still be created
+        ClassroomSessionFactory(
+            ended_at=None,
         )

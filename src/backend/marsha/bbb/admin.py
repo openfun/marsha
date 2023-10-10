@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 from marsha.core.admin import link_field
 
-from .models import Classroom, ClassroomDocument
+from .models import Classroom, ClassroomDocument, ClassroomSession
 
 
 class ClassroomDocumentInline(admin.TabularInline):
@@ -59,6 +59,11 @@ class ClassroomAdmin(admin.ModelAdmin):
         "playlist__organization__name",
         "title",
     )
+
+
+@admin.register(ClassroomSession)
+class ClassroomSessionAdmin(admin.ModelAdmin):
+    """Admin class for the ClassroomSession model."""
 
 
 @admin.register(ClassroomDocument)
