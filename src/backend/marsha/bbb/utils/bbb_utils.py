@@ -1,6 +1,7 @@
 """Utils for requesting BBB API"""
 from datetime import timezone
 import hashlib
+import json
 import logging
 from os.path import splitext
 
@@ -193,6 +194,17 @@ def end(classroom: Classroom):
     classroom.started = False
     classroom.ended = True
     classroom.save(update_fields=["started", "ended"])
+
+    classroom_session = classroom.sessions.get(
+        started_at__isnull=False, ended_at__isnull=True
+    )
+    classroom_session.ended_at = now()
+    attendees = json.loads(classroom_session.attendees or "{}")
+    for attendee in attendees.values():
+        if attendee["presence"][-1]["left_at"] is None:
+            attendee["presence"][-1]["left_at"] = to_timestamp(now())
+    classroom_session.attendees = json.dumps(attendees)
+    classroom_session.save(update_fields=["ended_at", "attendees"])
     return api_response
 
 

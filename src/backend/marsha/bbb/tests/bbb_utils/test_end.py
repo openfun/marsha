@@ -1,11 +1,19 @@
 """Tests for the end service in the ``bbb`` app of the Marsha project."""
+from datetime import datetime, timezone
+import json
+from unittest import mock
 
 from django.test import TestCase, override_settings
 
 import responses
 
-from marsha.bbb.factories import ClassroomFactory
+from marsha.bbb.factories import (
+    AttendeeFactory,
+    ClassroomFactory,
+    ClassroomSessionFactory,
+)
 from marsha.bbb.utils.bbb_utils import ApiMeetingException, end
+from marsha.core.utils.time_utils import to_timestamp
 
 
 @override_settings(BBB_API_ENDPOINT="https://10.7.7.1/bigbluebutton/api")
@@ -18,9 +26,43 @@ class ClassroomServiceTestCase(TestCase):
     @responses.activate
     def test_bbb_end_moderator(self):
         """End a meeting in current classroom related server."""
+        entered_at = datetime(2021, 10, 29, 13, 32, 27, tzinfo=timezone.utc)
+        leaved_at = datetime(2021, 10, 29, 13, 40, 27, tzinfo=timezone.utc)
+        now = datetime(2021, 10, 29, 13, 42, 27, tzinfo=timezone.utc)
+        attendee_1 = AttendeeFactory()
+        attendee_2 = AttendeeFactory()
         classroom = ClassroomFactory(
             meeting_id="21e6634f-ab6f-4c77-a665-4229c61b479a",
             title="Classroom 1",
+        )
+        # a classroom session has started
+        session = ClassroomSessionFactory(
+            classroom=classroom,
+            started_at=now,
+            ended_at=None,
+            current_attendees=[attendee_1, attendee_2],
+            attendees=json.dumps(
+                {
+                    attendee_1["userID"]: {
+                        "fullname": attendee_1["fullName"],
+                        "presence": [
+                            {
+                                "entered_at": to_timestamp(entered_at),
+                                "left_at": None,
+                            }
+                        ],
+                    },
+                    attendee_2["userID"]: {
+                        "fullname": attendee_2["fullName"],
+                        "presence": [
+                            {
+                                "entered_at": to_timestamp(entered_at),
+                                "left_at": to_timestamp(leaved_at),
+                            }
+                        ],
+                    },
+                }
+            ),
         )
 
         # initial end request
@@ -67,8 +109,11 @@ class ClassroomServiceTestCase(TestCase):
             """,
             status=200,
         )
-
-        api_response = end(classroom)
+        with mock.patch(
+            "marsha.bbb.utils.bbb_utils.now",
+            return_value=now,
+        ):
+            api_response = end(classroom)
         self.assertDictEqual(
             {
                 "message": "A request to end the meeting was sent.",
@@ -79,6 +124,31 @@ class ClassroomServiceTestCase(TestCase):
         )
         self.assertEqual(classroom.started, False)
         self.assertEqual(classroom.ended, True)
+        session.refresh_from_db()
+        self.assertEqual(session.ended_at, now)
+        self.assertEqual(
+            json.loads(session.attendees),
+            {
+                attendee_1["userID"]: {
+                    "fullname": attendee_1["fullName"],
+                    "presence": [
+                        {
+                            "entered_at": to_timestamp(entered_at),
+                            "left_at": to_timestamp(now),
+                        }
+                    ],
+                },
+                attendee_2["userID"]: {
+                    "fullname": attendee_2["fullName"],
+                    "presence": [
+                        {
+                            "entered_at": to_timestamp(entered_at),
+                            "left_at": to_timestamp(leaved_at),
+                        }
+                    ],
+                },
+            },
+        )
 
     @responses.activate
     def test_bbb_end_attendee(self):
