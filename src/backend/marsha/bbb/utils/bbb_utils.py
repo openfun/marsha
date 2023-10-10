@@ -14,6 +14,7 @@ import xmltodict
 
 from marsha.bbb.models import Classroom, ClassroomRecording
 from marsha.core.utils import time_utils
+from marsha.core.utils.time_utils import to_timestamp
 
 
 logger = logging.getLogger(__name__)
@@ -340,3 +341,87 @@ def delete_recording(
         "recordID": ",".join([x.record_id for x in classroom_recordings]),
     }
     return request_api("deleteRecordings", parameters)
+
+
+def collect_attendees():
+    """Collect attendees from running classrooms and store them in the database."""
+    running_classrooms = Classroom.objects.filter(started=True, ended=False)
+    for classroom in running_classrooms:
+        try:
+            api_response = get_meeting_infos(classroom)
+            classroom_session = classroom.sessions.get(
+                started_at__isnull=False, ended_at__isnull=True
+            )
+            # deduplicate attendees
+            # may happen when a user reconnects to the meeting
+            updated_attendees = []
+            if api_response.get("attendees"):
+                for attendee in api_response.get("attendees"):
+                    if attendee.get("userID") not in str(updated_attendees):
+                        updated_attendees.append(attendee)
+
+            # compare with stored attendees
+            updates = diff_attendees(
+                updated_attendees, classroom_session.current_attendees
+            )
+            # manage updates
+            attendees = update_attendees(
+                json.loads(classroom_session.attendees or "{}"), updates
+            )
+            classroom_session.current_attendees = updated_attendees
+            classroom_session.attendees = json.dumps(attendees)
+            classroom_session.save(update_fields=["current_attendees", "attendees"])
+        except ApiMeetingException as exception:
+            logger.error(
+                "Unable to collect attendees for classroom %s: %s",
+                classroom.pk,
+                exception,
+            )
+
+
+def diff_attendees(updated_attendees, current_attendees):
+    """Return the difference between current attendees and stored attendees."""
+    if not current_attendees:
+        return {"joined": updated_attendees or [], "left": []}
+    if not updated_attendees:
+        return {"joined": [], "left": current_attendees or []}
+    current_attendees_ids = {x["userID"] for x in updated_attendees}
+    stored_attendees_ids = {x["userID"] for x in current_attendees}
+    joined = [
+        current_attendee
+        for current_attendee in updated_attendees
+        if current_attendee["userID"] in current_attendees_ids - stored_attendees_ids
+    ]
+    left = [
+        stored_attendee
+        for stored_attendee in current_attendees
+        if stored_attendee["userID"] in stored_attendees_ids - current_attendees_ids
+    ]
+    return {"joined": joined, "left": left}
+
+
+def update_attendees(attendees, updates):
+    """Updates attendees."""
+    for attendees_joined in updates["joined"]:
+        if attendees_joined["userID"] not in attendees:
+            attendees[attendees_joined["userID"]] = {
+                "fullname": attendees_joined["fullName"],
+                "presence": [
+                    {
+                        "entered_at": to_timestamp(now()),
+                        "left_at": None,
+                    }
+                ],
+            }
+        else:
+            attendees[attendees_joined["userID"]]["presence"].append(
+                {
+                    "entered_at": to_timestamp(now()),
+                    "left_at": None,
+                }
+            )
+    for attendees_left in updates["left"]:
+        attendees[attendees_left["userID"]]["presence"][-1]["left_at"] = to_timestamp(
+            now()
+        )
+    return attendees
