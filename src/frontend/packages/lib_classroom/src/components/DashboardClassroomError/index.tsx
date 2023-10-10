@@ -24,9 +24,19 @@ const errorMessages = {
   }),
 };
 
-export const DashboardClassroomError = () => {
+interface DashboardClassroomErrorProps {
+  message?: string;
+}
+
+export const DashboardClassroomError = ({
+  message,
+}: DashboardClassroomErrorProps) => {
   const intl = useIntl();
-  const left = (
+  const left = message ? (
+    <Box>
+      <DashboardClassroomMessage message={message} />
+    </Box>
+  ) : (
     <Box>
       <DashboardClassroomMessage
         message={intl.formatMessage(errorMessages.notFound.title)}

@@ -381,4 +381,40 @@ describe('<DashboardClassroom />', () => {
       ),
     ).toBeInTheDocument();
   });
+
+  it('shows the api error message when it fails to get the classroom', async () => {
+    mockedUseCurrentResource.mockReturnValue([
+      ltiStudentTokenMockFactory(),
+    ] as any);
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: {
+          retry: false,
+        },
+      },
+    });
+    const classroomDeferred = new Deferred();
+    fetchMock.get('/api/classrooms/1/', classroomDeferred.promise);
+
+    jest.spyOn(console, 'error').mockImplementation(() => jest.fn());
+
+    render(<DashboardClassroom classroomId="1" />, {
+      queryOptions: { client: queryClient },
+    });
+
+    expect(
+      screen.getByRole('status', {
+        hidden: false,
+      }),
+    ).toBeInTheDocument();
+    classroomDeferred.resolve({
+      status: 500,
+      body: {
+        detail: 'This is an error message',
+      },
+    });
+    expect(
+      await screen.findByText('This is an error message'),
+    ).toBeInTheDocument();
+  });
 });

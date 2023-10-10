@@ -27,4 +27,9 @@ describe('<DashboardClassroomError />', () => {
       ),
     ).toBeInTheDocument();
   });
+
+  it('displays the message error', () => {
+    render(<DashboardClassroomError message="my message error" />);
+    expect(screen.getByText('my message error')).toBeInTheDocument();
+  });
 });

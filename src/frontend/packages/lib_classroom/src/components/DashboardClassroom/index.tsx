@@ -80,6 +80,7 @@ const DashboardClassroom = ({ classroomId }: DashboardClassroomProps) => {
     data: classroom,
     status: useClassroomStatus,
     fetchStatus: useClassroomFetchStatus,
+    error,
   } = useClassroom(classroomId, {
     refetchInterval: classroomRefetchInterval.current,
   });
@@ -147,7 +148,11 @@ const DashboardClassroom = ({ classroomId }: DashboardClassroomProps) => {
 
   let content: JSX.Element = <Fragment></Fragment>;
   if (useClassroomStatus === 'error') {
-    content = <DashboardClassroomError />;
+    content = (
+      <DashboardClassroomError
+        message={error?.status !== 404 ? error?.body?.detail : undefined}
+      />
+    );
   } else if (useClassroomStatus === 'success') {
     if (askUsername) {
       // When joining a classroom and user fullname is missing
