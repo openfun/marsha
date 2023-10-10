@@ -16,6 +16,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Generic LTI cartridge (xml configuration)
 - Display LTI warning message for generic urls regarding course copy
 - configure homepage banner using SiteConfig model
+- setting BBB_INVITE_TOKEN_BANNED_LIST
 
 ### Changed
 

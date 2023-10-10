@@ -406,6 +406,7 @@ class Base(Configuration):
     BBB_INVITE_JWT_DEFAULT_DAYS_DURATION = values.PositiveIntegerValue(30)
     BBB_INVITE_JWT_INSTRUCTOR_DAYS_DURATION = values.PositiveIntegerValue(30)
     RECORDINGS_URL_CACHE_TIMEOUT = values.PositiveIntegerValue(3000)
+    BBB_INVITE_TOKEN_BANNED_LIST = values.ListValue([])
 
     # deposit application
     DEPOSIT_ENABLED = values.BooleanValue(False)
