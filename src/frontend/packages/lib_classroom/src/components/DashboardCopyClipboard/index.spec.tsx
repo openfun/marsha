@@ -1,5 +1,6 @@
 import { screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import faker from 'faker';
 import { render } from 'lib-tests';
 
 import DashboardCopyClipboard from '.';
@@ -85,6 +86,12 @@ describe('<DashboardCopyClipboard />', () => {
     await userEvent.click(copyLtiLinkButton);
     expect(document.execCommand).toHaveBeenCalledTimes(3);
     expect(document.execCommand).toHaveBeenLastCalledWith('copy');
+
+    expect(
+      screen.queryByText(
+        'Invitation links have changed and should be shared with your users again.',
+      ),
+    ).not.toBeInTheDocument();
   }, 10000);
 
   it('should not display invite links if no invite tokens', () => {
@@ -114,5 +121,42 @@ describe('<DashboardCopyClipboard />', () => {
     expect(
       screen.getByText('http://dummy.com/lti/classrooms/1'),
     ).toBeInTheDocument();
+  });
+
+  [
+    {
+      message: 'inviteToken starts with "pub_"',
+      props: {
+        inviteToken: `pub_${faker.random.alphaNumeric(10)}`,
+      },
+    },
+    {
+      message: 'inviteToken starts with "inst_"',
+      props: {
+        inviteToken: `inst_${faker.random.alphaNumeric(10)}`,
+      },
+    },
+    {
+      message: 'instructorToken starts with "pub_"',
+      props: {
+        instructorToken: `pub_${faker.random.alphaNumeric(10)}`,
+      },
+    },
+    {
+      message: 'instructorToken starts with "inst_"',
+      props: {
+        instructorToken: `inst_${faker.random.alphaNumeric(10)}`,
+      },
+    },
+  ].forEach(({ message, props }) => {
+    it(`display a warning message when ${message}`, () => {
+      render(<DashboardCopyClipboard classroomId="1" {...props} />);
+
+      expect(
+        screen.getByText(
+          'Invitation links have changed and should be shared with your users again.',
+        ),
+      ).toBeInTheDocument();
+    });
   });
 });
