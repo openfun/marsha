@@ -30,6 +30,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Markdown save sent previously saved content
+- Force to end BBB meeting when creation fail
 
 ## [4.6.0] - 2023-10-02
 

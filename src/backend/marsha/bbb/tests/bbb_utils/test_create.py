@@ -660,3 +660,207 @@ class ClassroomServiceTestCase(TestCase):
         )
         self.assertEqual(classroom.started, True)
         self.assertEqual(classroom.ended, False)
+
+    @responses.activate
+    def test_create_classroom_failing_with_reattempt_exceeded(self):
+        """When creation fail, end is called and create is attempt 5 times before stopping."""
+        classroom = ClassroomFactory(
+            title="Classroom 001",
+            meeting_id="99769277-ca54-4813-9976-b473481ddb13",
+        )
+
+        create_response = responses.add(
+            responses.GET,
+            "https://10.7.7.1/bigbluebutton/api/create",
+            match=[
+                responses.matchers.query_param_matcher(
+                    {
+                        "checksum": "a7e7967e4055bedd0c5be44adc832fb90141bcc0",
+                        "guestPolicy": "ALWAYS_ACCEPT",
+                        "meetingID": "99769277-ca54-4813-9976-b473481ddb13",
+                        "meta_bbb-recording-ready-url": (
+                            "https://example.com/api/classrooms/recording-ready/"
+                        ),
+                        "name": "Classroom 001",
+                        "record": True,
+                        "role": "moderator",
+                        "welcome": "Welcome!",
+                    }
+                )
+            ],
+            body="""
+            <response>
+            <returncode>FAILED</returncode>
+            <messageKey>internalError</messageKey>
+            <message>Unable to create meeting on server.</message>
+            </response>
+            """,
+            status=200,
+        )
+
+        # end request
+        end_response = responses.add(
+            responses.GET,
+            "https://10.7.7.1/bigbluebutton/api/end",
+            match=[
+                responses.matchers.query_param_matcher(
+                    {
+                        "checksum": "6382b2fd11bc4ceaa45fc37259fc357d596dfd4e",
+                        "meetingID": "99769277-ca54-4813-9976-b473481ddb13",
+                    }
+                )
+            ],
+            body="""
+            <response>
+                <returncode>FAILED</returncode>
+                <messageKey>internalError</messageKey>
+                <message>Unable to access meeting on server.</message>
+            </response>
+            """,
+            status=200,
+        )
+
+        with self.assertRaises(ApiMeetingException):
+            create(classroom, "https://example.com/api/classrooms/recording-ready/")
+
+        self.assertEqual(classroom.started, False)
+        self.assertEqual(classroom.ended, False)
+        self.assertEqual(create_response.call_count, 5)
+        self.assertEqual(end_response.call_count, 4)
+
+    @responses.activate
+    def test_create_classroom_failing_before_ending(self):
+        """
+        Forcing to end a meeting when a creation fail can unlock the meeting
+        and then it is possible to create it.
+        This a hack for this issue: https://github.com/bigbluebutton/bigbluebutton/issues/18913
+        """
+        classroom = ClassroomFactory(
+            title="Classroom 001",
+            meeting_id="99769277-ca54-4813-9976-b473481ddb13",
+        )
+
+        # First create, the creation fail
+        create_response = responses.add(
+            responses.GET,
+            "https://10.7.7.1/bigbluebutton/api/create",
+            match=[
+                responses.matchers.query_param_matcher(
+                    {
+                        "checksum": "a7e7967e4055bedd0c5be44adc832fb90141bcc0",
+                        "guestPolicy": "ALWAYS_ACCEPT",
+                        "meetingID": "99769277-ca54-4813-9976-b473481ddb13",
+                        "meta_bbb-recording-ready-url": (
+                            "https://example.com/api/classrooms/recording-ready/"
+                        ),
+                        "name": "Classroom 001",
+                        "record": True,
+                        "role": "moderator",
+                        "welcome": "Welcome!",
+                    }
+                )
+            ],
+            body="""
+            <response>
+            <returncode>FAILED</returncode>
+            <messageKey>internalError</messageKey>
+            <message>Unable to create meeting on server.</message>
+            </response>
+            """,
+            status=200,
+        )
+
+        # end request fails too
+        end_response = responses.add(
+            responses.GET,
+            "https://10.7.7.1/bigbluebutton/api/end",
+            match=[
+                responses.matchers.query_param_matcher(
+                    {
+                        "checksum": "6382b2fd11bc4ceaa45fc37259fc357d596dfd4e",
+                        "meetingID": "99769277-ca54-4813-9976-b473481ddb13",
+                    }
+                )
+            ],
+            body="""
+            <response>
+                <returncode>FAILED</returncode>
+                <messageKey>internalError</messageKey>
+                <message>Unable to access meeting on server.</message>
+            </response>
+            """,
+            status=200,
+        )
+
+        # Second create, the creation succeeded
+        second_create_response = responses.add(
+            responses.GET,
+            "https://10.7.7.1/bigbluebutton/api/create",
+            match=[
+                responses.matchers.query_param_matcher(
+                    {
+                        "checksum": "a7e7967e4055bedd0c5be44adc832fb90141bcc0",
+                        "guestPolicy": "ALWAYS_ACCEPT",
+                        "meetingID": "99769277-ca54-4813-9976-b473481ddb13",
+                        "meta_bbb-recording-ready-url": (
+                            "https://example.com/api/classrooms/recording-ready/"
+                        ),
+                        "name": "Classroom 001",
+                        "record": True,
+                        "role": "moderator",
+                        "welcome": "Welcome!",
+                    }
+                )
+            ],
+            body=f"""
+            <response>
+                <returncode>SUCCESS</returncode>
+                <meetingID>{classroom.id}</meetingID>
+                <internalMeetingID>232a8ab5dbfde4d33a2bd9d5bbc08bd74d04e163-1628693645640</internalMeetingID>
+                <parentMeetingID>bbb-none</parentMeetingID>
+                <attendeePW>attendee_password</attendeePW>
+                <moderatorPW>moderator_password</moderatorPW>
+                <createTime>1628693645640</createTime>
+                <voiceBridge>83267</voiceBridge>
+                <dialNumber>613-555-1234</dialNumber>
+                <createDate>Wed Aug 11 14:54:05 UTC 2021</createDate>
+                <hasUserJoined>false</hasUserJoined>
+                <duration>0</duration>
+                <hasBeenForciblyEnded>false</hasBeenForciblyEnded>
+                <messageKey></messageKey>
+                <message></message>
+            </response>
+            """,
+            status=200,
+        )
+
+        api_response = create(
+            classroom, "https://example.com/api/classrooms/recording-ready/"
+        )
+
+        self.assertDictEqual(
+            {
+                "attendeePW": "attendee_password",
+                "createDate": "Wed Aug 11 14:54:05 UTC 2021",
+                "createTime": "1628693645640",
+                "dialNumber": "613-555-1234",
+                "duration": "0",
+                "hasBeenForciblyEnded": "false",
+                "hasUserJoined": "false",
+                "internalMeetingID": "232a8ab5dbfde4d33a2bd9d5bbc08bd74d04e163-1628693645640",
+                "meetingID": str(classroom.id),
+                "message": "Meeting created.",
+                "messageKey": None,
+                "moderatorPW": "moderator_password",
+                "parentMeetingID": "bbb-none",
+                "returncode": "SUCCESS",
+                "voiceBridge": "83267",
+            },
+            api_response,
+        )
+
+        self.assertEqual(classroom.started, True)
+        self.assertEqual(classroom.ended, False)
+        self.assertEqual(create_response.call_count, 1)
+        self.assertEqual(second_create_response.call_count, 1)
+        self.assertEqual(end_response.call_count, 1)

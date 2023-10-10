@@ -20,8 +20,11 @@ logger = logging.getLogger(__name__)
 class ApiMeetingException(Exception):
     """Exception used when a meeting api request fails."""
 
+    api_response = None
+
     def __init__(self, api_response):
         """Extract error message from bbb api response."""
+        self.api_response = api_response
         super().__init__(api_response.get("message"))
 
 
@@ -106,7 +109,7 @@ def get_url(obj):
     )
 
 
-def create(classroom: Classroom, recording_ready_callback_url: str):
+def create(classroom: Classroom, recording_ready_callback_url: str, attempt=0):
     """Call BBB API to create a meeting."""
     parameters = {
         "meetingID": str(classroom.meeting_id),
@@ -134,12 +137,33 @@ def create(classroom: Classroom, recording_ready_callback_url: str):
                 "/>"
             )
         xml += "</module></modules>"
+    try:
+        api_response = request_api("create", parameters, data=xml)
+    except ApiMeetingException as error:
+        # When a meeting is not correctly closed by BBB, it is not possible
+        # to create it again. To fix this issue, we must try to force to end it
+        # to be _maybe_ able to create it again
+        # See https://github.com/bigbluebutton/bigbluebutton/issues/18913
 
-    api_response = request_api("create", parameters, data=xml)
+        attempt += 1
+        if error.api_response.get("messageKey") == "internalError" and attempt < 5:
+            try:
+                end(classroom=classroom)
+            except ApiMeetingException:
+                pass
+
+            return create(
+                classroom=classroom,
+                recording_ready_callback_url=recording_ready_callback_url,
+                attempt=attempt,
+            )
+
+        raise error
     if not api_response.get("message"):
         api_response["message"] = "Meeting created."
     classroom.started = True
-    classroom.save(update_fields=["started"])
+    classroom.ended = False
+    classroom.save(update_fields=["started", "ended"])
     return api_response
 
 
