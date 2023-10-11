@@ -1,8 +1,14 @@
 import {
+  FetchResponseError,
   TokenResponse,
   fetchResponseHandler,
   fetchWrapper,
 } from 'lib-components';
+
+export type ValidateClassroomInviteError = FetchResponseError<{
+  code: string;
+  message: string;
+}>;
 
 export interface IValidateClassroomInvite {
   access_token: TokenResponse['access'];

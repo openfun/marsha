@@ -12,7 +12,10 @@ import { useRoutes } from 'routes/useRoutes';
 
 import { getCurrentUser } from '../api/getUserData';
 import { validateChallenge } from '../api/validateChallenge';
-import { validateClassroomInviteToken } from '../api/validateClassroomInviteToken';
+import {
+  ValidateClassroomInviteError,
+  validateClassroomInviteToken,
+} from '../api/validateClassroomInviteToken';
 
 const QUERY_PARAMS_CHALLENGE_TOKEN_NAME = 'token';
 
@@ -39,11 +42,15 @@ export const useAuthenticator = () => {
     currentUser !== AnonymousUser.ANONYMOUS && !!currentUser,
   );
   const [isLoading, setIsLoading] = useState(!isAuthenticated);
+  const [error, setError] = useState<string>();
 
   useEffect(() => {
     if (!inviteId) {
       return;
     }
+
+    setJwt(undefined);
+
     const fetchInvite = async (classroomId: string, inviteId: string) => {
       try {
         const response = await validateClassroomInviteToken(
@@ -53,6 +60,7 @@ export const useAuthenticator = () => {
         setJwt(response.access_token);
         setIsLoading(false);
       } catch (error) {
+        setError((error as ValidateClassroomInviteError).message);
         report(error);
       }
     };
@@ -100,7 +108,11 @@ export const useAuthenticator = () => {
    * We check if the user is authenticated or not.
    */
   useEffect(() => {
-    if (currentUser || inviteId) {
+    if (inviteId) {
+      return;
+    }
+
+    if (currentUser) {
       setIsLoading(false);
       return;
     }
@@ -142,5 +154,6 @@ export const useAuthenticator = () => {
   return {
     isAuthenticated,
     isLoading,
+    error,
   };
 };

@@ -46,6 +46,11 @@ jest.mock('features/Authentication', () => ({
   AuthRouter: () => <div>My Login</div>,
 }));
 
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  report: jest.fn(),
+}));
+
 window.scrollTo = jest.fn();
 
 featureContentLoader([]);
@@ -137,6 +142,32 @@ describe('<AppRoutes />', () => {
       expect(screen.getByText('My ClassRoomUpdate Page')).toBeInTheDocument();
       expect(screen.getByText('My Footer')).toBeInTheDocument();
       expect(useJwt.getState().jwt).toEqual('fake-jwt');
+    });
+
+    test('render invite route error message', async () => {
+      fetchMock.get('/api/classrooms/456789/token/?invite_token=123456', {
+        status: 400,
+        body: {
+          code: 'banned_invite_token',
+          message:
+            'invitation link is not valid anymore. Ask for a new invitation link to the classroom maintainer',
+        },
+      });
+
+      render(<AppRoutes />, {
+        routerOptions: {
+          history: ['/my-contents/classroom/456789/invite/123456'],
+        },
+      });
+
+      expect(await screen.findByText('My HeaderLight')).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          'invitation link is not valid anymore. Ask for a new invitation link to the classroom maintainer',
+        ),
+      ).toBeInTheDocument();
+      expect(screen.getByText('My Footer')).toBeInTheDocument();
+      expect(useJwt.getState().jwt).toEqual(undefined);
     });
 
     test('render generale conditions', async () => {

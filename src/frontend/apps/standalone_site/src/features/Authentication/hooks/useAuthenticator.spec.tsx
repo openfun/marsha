@@ -1,4 +1,4 @@
-import { renderHook, waitFor } from '@testing-library/react';
+import { render, renderHook, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { classroomMockFactory } from 'lib-classroom';
 import { useCurrentUser, useJwt } from 'lib-components';
@@ -7,6 +7,11 @@ import { Deferred, wrapperUtils } from 'lib-tests';
 import { featureContentLoader } from 'features/Contents';
 
 import { useAuthenticator } from './useAuthenticator';
+
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  report: jest.fn(),
+}));
 
 const consoleError = jest
   .spyOn(console, 'error')
@@ -198,5 +203,45 @@ describe('<useAuthenticator />', () => {
         `/api/classrooms/${classroom.id}/token/?invite_token=${legacyInvite}`,
       ),
     ).toBe(false);
+  });
+
+  it('checks error classroom invite link', async () => {
+    featureContentLoader([]);
+
+    const classroom = classroomMockFactory({
+      public_token: 'foo',
+    });
+    fetchMock.get(
+      `/api/classrooms/${classroom.id}/token/?invite_token=${classroom.public_token}`,
+      {
+        status: 400,
+        body: {
+          code: 'banned_invite_token',
+          message:
+            'invitation link is not valid anymore. Ask for a new invitation link to the classroom maintainer',
+        },
+      },
+    );
+
+    const { result } = renderHook(() => useAuthenticator(), {
+      wrapper: wrapperUtils({
+        routerOptions: {
+          history: [
+            `/my-contents/classroom/${classroom.id}/invite/${classroom.public_token}`,
+          ],
+        },
+      }),
+    });
+
+    await waitFor(() => expect(result.current.error).toBeDefined());
+    expect(result.current.isAuthenticated).toBeFalsy();
+    await waitFor(() => expect(useJwt.getState().jwt).toEqual(undefined));
+
+    render(result.current.error as any);
+    expect(
+      screen.getByText(
+        /invitation link is not valid anymore. Ask for a new invitation link to the classroom maintainer/i,
+      ),
+    ).toBeInTheDocument();
   });
 });

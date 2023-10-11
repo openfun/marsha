@@ -1,5 +1,5 @@
 import { lazyImport } from 'lib-common';
-import { BoxLoader } from 'lib-components';
+import { BoxError, BoxLoader } from 'lib-components';
 import { Suspense, useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
@@ -41,7 +41,7 @@ const messages = defineMessages({
 const AppRoutes = () => {
   const intl = useIntl();
   const location = useLocation();
-  const { isAuthenticated, isLoading } = useAuthenticator();
+  const { isAuthenticated, isLoading, error } = useAuthenticator();
 
   useEffect(() => {
     window.scrollTo({
@@ -56,6 +56,29 @@ const AppRoutes = () => {
       .querySelector("[name='description']")
       ?.setAttribute('content', intl.formatMessage(messages.metaDescription));
   }, [intl]);
+
+  if (error) {
+    return (
+      <MainLayout
+        Header={HeaderLight}
+        direction="column"
+        footer={<Footer />}
+        contentBoxProps={{
+          pad: { horizontal: 'xlarge', vertical: 'xlarge' },
+        }}
+      >
+        <BoxError
+          background={{ color: 'white' }}
+          pad="large"
+          round="small"
+          border={{ color: 'status-warning', size: '2px' }}
+          width={{ max: 'large' }}
+          margin="auto"
+          message={error}
+        />
+      </MainLayout>
+    );
+  }
 
   if (isLoading) {
     return <BoxLoader boxProps={{ height: '100vh' }} />;
