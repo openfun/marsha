@@ -16,6 +16,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Generic LTI cartridge (xml configuration)
 - Display LTI warning message for generic urls regarding course copy
 - configure homepage banner using SiteConfig model
+- Collect and send through API classroom attendance
 
 ### Changed
 

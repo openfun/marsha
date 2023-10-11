@@ -6,11 +6,17 @@ import zoneinfo
 
 from django.core.cache import cache
 from django.test import TestCase, override_settings
+from django.utils import timezone
 
 import responses
 
 from marsha.bbb import serializers
-from marsha.bbb.factories import ClassroomFactory, ClassroomRecordingFactory
+from marsha.bbb.factories import (
+    AttendeeFactory,
+    ClassroomFactory,
+    ClassroomRecordingFactory,
+    ClassroomSessionFactory,
+)
 from marsha.bbb.utils.tokens import create_classroom_stable_invite_jwt
 from marsha.core.defaults import CLASSROOM_RECORDINGS_KEY_CACHE
 from marsha.core.factories import (
@@ -102,6 +108,7 @@ class ClassroomRetrieveAPITest(TestCase):
                 "recording_purpose": classroom.recording_purpose,
                 "enable_shared_notes": True,
                 "vod_conversion_enabled": True,
+                "sessions": [],
             },
             content,
         )
@@ -161,6 +168,59 @@ class ClassroomRetrieveAPITest(TestCase):
                 "recording_purpose": classroom.recording_purpose,
                 "enable_shared_notes": True,
                 "vod_conversion_enabled": True,
+                "sessions": [],
+            },
+            content,
+        )
+
+    @mock.patch.object(serializers, "get_meeting_infos")
+    def test_api_classroom_fetch_student_with_sessions(self, mock_get_meeting_infos):
+        """Existing sessions should not be retrieved by students."""
+        classroom = ClassroomFactory()
+        ClassroomSessionFactory(classroom=classroom)
+        mock_get_meeting_infos.return_value = {
+            "returncode": "SUCCESS",
+            "running": "true",
+        }
+
+        jwt_token = StudentLtiTokenFactory(playlist=classroom.playlist)
+
+        response = self.client.get(
+            f"/api/classrooms/{classroom.id!s}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content)
+        self.assertDictEqual(
+            {
+                "id": str(classroom.id),
+                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "lti_id": str(classroom.lti_id),
+                "title": classroom.title,
+                "description": classroom.description,
+                "started": False,
+                "ended": False,
+                "meeting_id": str(classroom.meeting_id),
+                "welcome_text": classroom.welcome_text,
+                "playlist": {
+                    "id": str(classroom.playlist.id),
+                    "title": classroom.playlist.title,
+                    "lti_id": classroom.playlist.lti_id,
+                },
+                "starting_at": None,
+                "estimated_duration": None,
+                "public_token": None,
+                "instructor_token": None,
+                "recordings": [],
+                "retention_date": None,
+                "enable_waiting_room": False,
+                "enable_chat": True,
+                "enable_presentation_supports": True,
+                "enable_recordings": True,
+                "recording_purpose": classroom.recording_purpose,
+                "enable_shared_notes": True,
+                "vod_conversion_enabled": True,
+                "sessions": [],
             },
             content,
         )
@@ -234,6 +294,7 @@ class ClassroomRetrieveAPITest(TestCase):
                 "recording_purpose": classroom.recording_purpose,
                 "enable_shared_notes": True,
                 "vod_conversion_enabled": True,
+                "sessions": [],
             },
             content,
         )
@@ -255,7 +316,6 @@ class ClassroomRetrieveAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
 
-        content = json.loads(response.content)
         self.assertDictEqual(
             {
                 "id": str(classroom.id),
@@ -285,8 +345,9 @@ class ClassroomRetrieveAPITest(TestCase):
                 "vod_conversion_enabled": True,
                 "public_token": classroom.public_token,
                 "instructor_token": classroom.instructor_token,
+                "sessions": [],
             },
-            content,
+            response.json(),
         )
 
     @mock.patch.object(serializers, "get_meeting_infos")
@@ -359,6 +420,7 @@ class ClassroomRetrieveAPITest(TestCase):
                 "vod_conversion_enabled": True,
                 "public_token": classroom.public_token,
                 "instructor_token": classroom.instructor_token,
+                "sessions": [],
             },
             content,
         )
@@ -413,6 +475,7 @@ class ClassroomRetrieveAPITest(TestCase):
                 "vod_conversion_enabled": True,
                 "public_token": classroom.public_token,
                 "instructor_token": classroom.instructor_token,
+                "sessions": [],
             },
             content,
         )
@@ -467,6 +530,7 @@ class ClassroomRetrieveAPITest(TestCase):
                 "vod_conversion_enabled": True,
                 "public_token": classroom.public_token,
                 "instructor_token": classroom.instructor_token,
+                "sessions": [],
             },
             content,
         )
@@ -656,6 +720,7 @@ class ClassroomRetrieveAPITest(TestCase):
                 "vod_conversion_enabled": True,
                 "public_token": classroom.public_token,
                 "instructor_token": classroom.instructor_token,
+                "sessions": [],
             },
             content,
         )
@@ -850,6 +915,7 @@ class ClassroomRetrieveAPITest(TestCase):
                 "vod_conversion_enabled": True,
                 "public_token": classroom.public_token,
                 "instructor_token": classroom.instructor_token,
+                "sessions": [],
             },
             content,
         )
@@ -1056,6 +1122,7 @@ class ClassroomRetrieveAPITest(TestCase):
                 "vod_conversion_enabled": True,
                 "public_token": classroom.public_token,
                 "instructor_token": classroom.instructor_token,
+                "sessions": [],
             },
             content,
         )
@@ -1083,6 +1150,167 @@ class ClassroomRetrieveAPITest(TestCase):
                 "https://10.7.7.1/presentation/"
                 "c62c9c205d37815befe1b75ae6ef5878d8da5bb6-1673282694493/meeting.mp4"
             ),
+        )
+
+    @mock.patch.object(serializers, "get_meeting_infos")
+    def test_api_classroom_fetch_with_sessions(self, mock_get_meeting_infos):
+        """An instructor should be able to fetch classroom sessions."""
+        entered_at_1 = datetime(2021, 10, 29, 13, 32, 27, tzinfo=timezone.utc)
+        leaved_at_1 = datetime(2021, 10, 29, 13, 42, 27, tzinfo=timezone.utc)
+        entered_at_2 = datetime(2021, 10, 29, 13, 52, 27, tzinfo=timezone.utc)
+        attendee_1 = AttendeeFactory()
+        attendee_2 = AttendeeFactory()
+        classroom = ClassroomFactory()
+        ClassroomSessionFactory(
+            classroom=classroom,
+            started_at=entered_at_1,
+            ended_at=leaved_at_1,
+            current_attendees=[],
+            attendees=json.dumps(
+                {
+                    attendee_1["userID"]: {
+                        "fullname": attendee_1["fullName"],
+                        "presence": [
+                            {
+                                "entered_at": entered_at_1.isoformat(),
+                                "left_at": leaved_at_1.isoformat(),
+                            }
+                        ],
+                    },
+                    attendee_2["userID"]: {
+                        "fullname": attendee_2["fullName"],
+                        "presence": [
+                            {
+                                "entered_at": entered_at_1.isoformat(),
+                                "left_at": leaved_at_1.isoformat(),
+                            }
+                        ],
+                    },
+                }
+            ),
+        )
+        ClassroomSessionFactory(
+            classroom=classroom,
+            started_at=entered_at_2,
+            ended_at=None,
+            current_attendees=[attendee_1, attendee_2],
+            attendees=json.dumps(
+                {
+                    attendee_1["userID"]: {
+                        "fullname": attendee_1["fullName"],
+                        "presence": [
+                            {
+                                "entered_at": entered_at_2.isoformat(),
+                                "left_at": None,
+                            }
+                        ],
+                    },
+                    attendee_2["userID"]: {
+                        "fullname": attendee_2["fullName"],
+                        "presence": [
+                            {
+                                "entered_at": entered_at_2.isoformat(),
+                                "left_at": None,
+                            }
+                        ],
+                    },
+                }
+            ),
+        )
+        mock_get_meeting_infos.return_value = {
+            "returncode": "SUCCESS",
+            "running": "true",
+        }
+
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=classroom.playlist)
+
+        response = self.client.get(
+            f"/api/classrooms/{classroom.id!s}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        self.assertDictEqual(
+            {
+                "id": str(classroom.id),
+                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "lti_id": str(classroom.lti_id),
+                "title": classroom.title,
+                "description": classroom.description,
+                "started": False,
+                "ended": False,
+                "meeting_id": str(classroom.meeting_id),
+                "welcome_text": classroom.welcome_text,
+                "playlist": {
+                    "id": str(classroom.playlist.id),
+                    "title": classroom.playlist.title,
+                    "lti_id": classroom.playlist.lti_id,
+                },
+                "starting_at": None,
+                "estimated_duration": None,
+                "recordings": [],
+                "retention_date": None,
+                "enable_waiting_room": False,
+                "enable_chat": True,
+                "enable_presentation_supports": True,
+                "enable_recordings": True,
+                "recording_purpose": classroom.recording_purpose,
+                "enable_shared_notes": True,
+                "vod_conversion_enabled": True,
+                "public_token": classroom.public_token,
+                "instructor_token": classroom.instructor_token,
+                "sessions": [
+                    {
+                        "started_at": "2021-10-29T13:32:27Z",
+                        "ended_at": "2021-10-29T13:42:27Z",
+                        "attendees": {
+                            attendee_1["userID"]: {
+                                "fullname": attendee_1["fullName"],
+                                "presence": [
+                                    {
+                                        "entered_at": entered_at_1.isoformat(),
+                                        "left_at": leaved_at_1.isoformat(),
+                                    }
+                                ],
+                            },
+                            attendee_2["userID"]: {
+                                "fullname": attendee_2["fullName"],
+                                "presence": [
+                                    {
+                                        "entered_at": entered_at_1.isoformat(),
+                                        "left_at": leaved_at_1.isoformat(),
+                                    }
+                                ],
+                            },
+                        },
+                    },
+                    {
+                        "started_at": "2021-10-29T13:52:27Z",
+                        "ended_at": None,
+                        "attendees": {
+                            attendee_1["userID"]: {
+                                "fullname": attendee_1["fullName"],
+                                "presence": [
+                                    {
+                                        "entered_at": entered_at_2.isoformat(),
+                                        "left_at": None,
+                                    }
+                                ],
+                            },
+                            attendee_2["userID"]: {
+                                "fullname": attendee_2["fullName"],
+                                "presence": [
+                                    {
+                                        "entered_at": entered_at_2.isoformat(),
+                                        "left_at": None,
+                                    }
+                                ],
+                            },
+                        },
+                    },
+                ],
+            },
+            response.json(),
         )
 
     @mock.patch.object(serializers, "get_meeting_infos")
@@ -1184,6 +1412,7 @@ class ClassroomRetrieveAPITest(TestCase):
                 "recording_purpose": classroom.recording_purpose,
                 "enable_shared_notes": True,
                 "vod_conversion_enabled": True,
+                "sessions": [],
             },
             content,
         )
@@ -1241,6 +1470,7 @@ class ClassroomRetrieveAPITest(TestCase):
                 "recording_purpose": classroom.recording_purpose,
                 "enable_shared_notes": True,
                 "vod_conversion_enabled": True,
+                "sessions": [],
             },
             content,
         )

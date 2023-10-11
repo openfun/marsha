@@ -386,6 +386,7 @@ class ClassroomLTIViewTestCase(TestCase):
                 "vod_conversion_enabled": True,
                 "public_token": classroom.public_token,
                 "instructor_token": classroom.instructor_token,
+                "sessions": [],
             },
             resource_data,
         )
@@ -725,6 +726,7 @@ class MeetingLTIViewTestCase(TestCase):
                 "vod_conversion_enabled": True,
                 "public_token": classroom.public_token,
                 "instructor_token": classroom.instructor_token,
+                "sessions": [],
             },
             resource_data,
         )
