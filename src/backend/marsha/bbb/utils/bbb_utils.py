@@ -11,9 +11,10 @@ from django.utils.timezone import now
 
 from dateutil.parser import parse
 import requests
+from requests.exceptions import MissingSchema
 import xmltodict
 
-from marsha.bbb.models import Classroom, ClassroomRecording
+from marsha.bbb.models import Classroom, ClassroomRecording, ClassroomSession
 from marsha.core.utils import time_utils
 
 
@@ -77,6 +78,7 @@ def request_api(action, parameters, prepare=False, data=None):
         headers={"Content-Type": "application/xml"} if data else None,
     )
     api_response = xmltodict.parse(request.content).get("response")
+    logger.debug("BBB API response: %s", api_response)
     if api_response.get("returncode") == "SUCCESS":
         return api_response
 
@@ -207,6 +209,45 @@ def start_session(classroom: Classroom):
         cookie=cookie,
         bbb_learning_analytics_url=url,
     )
+
+
+def update_session_learning_analytics(classroom: Classroom):
+    """Update a session for a given classroom, with cookie and learning analytics url."""
+    try:
+        classroom_session = classroom.sessions.get(ended_at=None)
+        if learning_analytics := get_learning_analytics(classroom_session):
+            classroom_session.learning_analytics = learning_analytics
+            classroom_session.save(update_fields=["learning_analytics"])
+    except ClassroomSession.DoesNotExist:
+        pass
+
+
+def get_learning_analytics(classroom_session: ClassroomSession):
+    """Get BBB learning analytics."""
+    try:
+        logger.debug(
+            "Learning analytics url: %s", classroom_session.bbb_learning_analytics_url
+        )
+        learning_analytics_response = requests.get(
+            classroom_session.bbb_learning_analytics_url,
+            cookies=json.loads(classroom_session.cookie),
+            timeout=settings.BBB_API_TIMEOUT,
+        )
+        logger.debug(
+            "Learning analytics response: %s", learning_analytics_response.content
+        )
+        logger.debug(
+            "Learning analytics response status code: %s",
+            learning_analytics_response.status_code,
+        )
+        if learning_analytics_response.status_code != 200:
+            return None
+        learning_analytics = (
+            learning_analytics_response.json().get("response").get("data")
+        )
+        return learning_analytics
+    except (JSONDecodeError, MissingSchema):
+        return None
 
 
 def end(classroom: Classroom):
