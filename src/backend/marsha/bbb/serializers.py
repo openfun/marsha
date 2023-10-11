@@ -14,7 +14,12 @@ from django.utils import timezone
 
 from rest_framework import serializers
 
-from marsha.bbb.models import Classroom, ClassroomDocument, ClassroomRecording
+from marsha.bbb.models import (
+    Classroom,
+    ClassroomDocument,
+    ClassroomRecording,
+    ClassroomSession,
+)
 from marsha.bbb.utils.bbb_utils import (
     ApiMeetingException,
     get_meeting_infos,
@@ -95,6 +100,23 @@ class ClassroomRecordingSerializer(ReadOnlyModelSerializer):
         return video_file_url
 
 
+class ClassroomSessionSerializer(serializers.ModelSerializer):
+    """A serializer to display a ClassroomSession resource."""
+
+    class Meta:  # noqa
+        model = ClassroomSession
+        fields = (
+            "started_at",
+            "ended_at",
+            "attendees",
+        )
+        read_only_fields = (
+            "started_at",
+            "ended_at",
+            "attendees",
+        )
+
+
 class ClassroomSerializer(serializers.ModelSerializer):
     """A serializer to display a Classroom resource."""
 
@@ -113,6 +135,7 @@ class ClassroomSerializer(serializers.ModelSerializer):
             "starting_at",
             "estimated_duration",
             "recordings",
+            "sessions",
             "vod_conversion_enabled",
             # specific generated fields
             "infos",
@@ -135,11 +158,13 @@ class ClassroomSerializer(serializers.ModelSerializer):
             "started",
             "ended",
             "recordings",
+            "sessions",
             "vod_conversion_enabled",
             "infos",
         )
 
     playlist = PlaylistLiteSerializer(read_only=True)
+    sessions = serializers.SerializerMethodField()
     infos = serializers.SerializerMethodField()
     public_token = serializers.SerializerMethodField()
     instructor_token = serializers.SerializerMethodField()
@@ -173,6 +198,14 @@ class ClassroomSerializer(serializers.ModelSerializer):
         if self.context.get("is_admin", True):
             return ClassroomRecordingSerializer(
                 obj.recordings.all(), many=True, context=self.context
+            ).data
+        return []
+
+    def get_sessions(self, obj):
+        """Get the sessions for the classroom."""
+        if self.context.get("is_admin", True):
+            return ClassroomSessionSerializer(
+                obj.sessions.all(), many=True, context=self.context
             ).data
         return []
 

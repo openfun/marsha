@@ -183,6 +183,7 @@ class ClassroomUpdateAPITest(TestCase):
                 "vod_conversion_enabled": True,
                 "public_token": classroom.public_token,
                 "instructor_token": classroom.instructor_token,
+                "sessions": [],
             },
             content,
         )
@@ -303,6 +304,7 @@ class ClassroomUpdateAPITest(TestCase):
                 "vod_conversion_enabled": True,
                 "public_token": classroom.public_token,
                 "instructor_token": classroom.instructor_token,
+                "sessions": [],
             },
             content,
         )

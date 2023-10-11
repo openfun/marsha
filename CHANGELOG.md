@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Retrieve BBB learning analytics and send them through API
+
 ### Changed
 
 - Replace grommet Button (#2453)
