@@ -38,7 +38,11 @@ class ClassroomInviteTokenAPITest(TestCase):
         self.assertEqual(response.status_code, 400)
         content = response.json()
         self.assertEqual(
-            content, {"message": "missing required invite_token in query string"}
+            content,
+            {
+                "code": "missing_invite_token",
+                "message": "missing required invite_token in query string",
+            },
         )
 
     def test_invite_public_token(self):
@@ -108,9 +112,10 @@ class ClassroomInviteTokenAPITest(TestCase):
         self.assertEqual(
             content,
             {
+                "code": "banned_invite_token",
                 "message": (
                     "invitation link is not valid anymore. Ask for a new "
                     "invitation link to the classroom maintainer"
-                )
+                ),
             },
         )
