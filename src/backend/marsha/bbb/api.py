@@ -457,17 +457,21 @@ class ClassroomViewSet(
         if invite_token is None:
             return Response(
                 status=400,
-                data={"message": _("missing required invite_token in query string")},
+                data={
+                    "code": "missing_invite_token",
+                    "message": _("missing required invite_token in query string"),
+                },
             )
 
         if invite_token in settings.BBB_INVITE_TOKEN_BANNED_LIST:
             return Response(
                 status=400,
                 data={
+                    "code": "banned_invite_token",
                     "message": _(
                         "invitation link is not valid anymore. Ask for a new invitation"
                         " link to the classroom maintainer"
-                    )
+                    ),
                 },
             )
 
