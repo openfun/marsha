@@ -6,11 +6,16 @@ import zoneinfo
 
 from django.core.cache import cache
 from django.test import TestCase, override_settings
+from django.utils import timezone
 
 import responses
 
 from marsha.bbb import serializers
-from marsha.bbb.factories import ClassroomFactory, ClassroomRecordingFactory
+from marsha.bbb.factories import (
+    ClassroomFactory,
+    ClassroomRecordingFactory,
+    ClassroomSessionFactory,
+)
 from marsha.bbb.utils.tokens import create_classroom_stable_invite_jwt
 from marsha.core.defaults import CLASSROOM_RECORDINGS_KEY_CACHE
 from marsha.core.factories import (
@@ -102,6 +107,7 @@ class ClassroomRetrieveAPITest(TestCase):
                 "recording_purpose": classroom.recording_purpose,
                 "enable_shared_notes": True,
                 "vod_conversion_enabled": True,
+                "sessions": [],
             },
             content,
         )
@@ -161,6 +167,63 @@ class ClassroomRetrieveAPITest(TestCase):
                 "recording_purpose": classroom.recording_purpose,
                 "enable_shared_notes": True,
                 "vod_conversion_enabled": True,
+                "sessions": [],
+            },
+            content,
+        )
+
+    @mock.patch.object(serializers, "get_meeting_infos")
+    def test_api_classroom_fetch_student_with_sessions(self, mock_get_meeting_infos):
+        """Existing sessions should not be retrieved by students."""
+        classroom = ClassroomFactory()
+        ClassroomSessionFactory(
+            classroom=classroom,
+            cookie=json.dumps({"SESSION_ID": "123"}),
+            bbb_learning_analytics_url="https://bbb.learning-analytics.info",
+        )
+        mock_get_meeting_infos.return_value = {
+            "returncode": "SUCCESS",
+            "running": "true",
+        }
+
+        jwt_token = StudentLtiTokenFactory(playlist=classroom.playlist)
+
+        response = self.client.get(
+            f"/api/classrooms/{classroom.id!s}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content)
+        self.assertDictEqual(
+            {
+                "id": str(classroom.id),
+                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "lti_id": str(classroom.lti_id),
+                "title": classroom.title,
+                "description": classroom.description,
+                "started": False,
+                "ended": False,
+                "meeting_id": str(classroom.meeting_id),
+                "welcome_text": classroom.welcome_text,
+                "playlist": {
+                    "id": str(classroom.playlist.id),
+                    "title": classroom.playlist.title,
+                    "lti_id": classroom.playlist.lti_id,
+                },
+                "starting_at": None,
+                "estimated_duration": None,
+                "public_token": None,
+                "instructor_token": None,
+                "recordings": [],
+                "retention_date": None,
+                "enable_waiting_room": False,
+                "enable_chat": True,
+                "enable_presentation_supports": True,
+                "enable_recordings": True,
+                "recording_purpose": classroom.recording_purpose,
+                "enable_shared_notes": True,
+                "vod_conversion_enabled": True,
+                "sessions": [],
             },
             content,
         )
@@ -234,6 +297,7 @@ class ClassroomRetrieveAPITest(TestCase):
                 "recording_purpose": classroom.recording_purpose,
                 "enable_shared_notes": True,
                 "vod_conversion_enabled": True,
+                "sessions": [],
             },
             content,
         )
@@ -255,7 +319,6 @@ class ClassroomRetrieveAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
 
-        content = json.loads(response.content)
         self.assertDictEqual(
             {
                 "id": str(classroom.id),
@@ -285,8 +348,9 @@ class ClassroomRetrieveAPITest(TestCase):
                 "vod_conversion_enabled": True,
                 "public_token": classroom.public_token,
                 "instructor_token": classroom.instructor_token,
+                "sessions": [],
             },
-            content,
+            response.json(),
         )
 
     @mock.patch.object(serializers, "get_meeting_infos")
@@ -359,6 +423,7 @@ class ClassroomRetrieveAPITest(TestCase):
                 "vod_conversion_enabled": True,
                 "public_token": classroom.public_token,
                 "instructor_token": classroom.instructor_token,
+                "sessions": [],
             },
             content,
         )
@@ -413,6 +478,7 @@ class ClassroomRetrieveAPITest(TestCase):
                 "vod_conversion_enabled": True,
                 "public_token": classroom.public_token,
                 "instructor_token": classroom.instructor_token,
+                "sessions": [],
             },
             content,
         )
@@ -467,6 +533,7 @@ class ClassroomRetrieveAPITest(TestCase):
                 "vod_conversion_enabled": True,
                 "public_token": classroom.public_token,
                 "instructor_token": classroom.instructor_token,
+                "sessions": [],
             },
             content,
         )
@@ -656,6 +723,7 @@ class ClassroomRetrieveAPITest(TestCase):
                 "vod_conversion_enabled": True,
                 "public_token": classroom.public_token,
                 "instructor_token": classroom.instructor_token,
+                "sessions": [],
             },
             content,
         )
@@ -850,6 +918,7 @@ class ClassroomRetrieveAPITest(TestCase):
                 "vod_conversion_enabled": True,
                 "public_token": classroom.public_token,
                 "instructor_token": classroom.instructor_token,
+                "sessions": [],
             },
             content,
         )
@@ -1056,6 +1125,7 @@ class ClassroomRetrieveAPITest(TestCase):
                 "vod_conversion_enabled": True,
                 "public_token": classroom.public_token,
                 "instructor_token": classroom.instructor_token,
+                "sessions": [],
             },
             content,
         )
@@ -1083,6 +1153,307 @@ class ClassroomRetrieveAPITest(TestCase):
                 "https://10.7.7.1/presentation/"
                 "c62c9c205d37815befe1b75ae6ef5878d8da5bb6-1673282694493/meeting.mp4"
             ),
+        )
+
+    @mock.patch.object(serializers, "get_meeting_infos")
+    def test_api_classroom_fetch_with_sessions(self, mock_get_meeting_infos):
+        """An instructor should be able to fetch classroom sessions."""
+        entered_at_1 = datetime(2021, 10, 29, 13, 32, 27, tzinfo=timezone.utc)
+        leaved_at_1 = datetime(2021, 10, 29, 13, 42, 27, tzinfo=timezone.utc)
+        entered_at_2 = datetime(2021, 10, 29, 13, 52, 27, tzinfo=timezone.utc)
+        classroom = ClassroomFactory()
+        ClassroomSessionFactory(
+            classroom=classroom,
+            started_at=entered_at_1,
+            ended_at=leaved_at_1,
+            learning_analytics=json.dumps(
+                {
+                    "intId": "0cbb2ac668bb4ac05bf7db4a440aee6de8cd0066-1697111611289",
+                    "extId": "86c5bb46-ace5-4362-9a0d-6dbdde9e745f",
+                    "name": "Classroom webhook",
+                    "users": {
+                        "8ade4720": {
+                            "userKey": "8ade4720",
+                            "extId": "5bc189df9500bfbc70418b399ad5745b",
+                            "intIds": {
+                                "w_xzkbsh7stiq8": {
+                                    "intId": "w_xzkbsh7stiq8",
+                                    "registeredOn": 1697111634434,
+                                    "leftOn": 0,
+                                    "userLeftFlag": False,
+                                }
+                            },
+                            "name": "Instructor",
+                            "isModerator": True,
+                            "isDialIn": False,
+                            "currentIntId": "w_xzkbsh7stiq8",
+                            "answers": {},
+                            "talk": {"totalTime": 0, "lastTalkStartedOn": 0},
+                            "emojis": [],
+                            "webcams": [],
+                            "totalOfMessages": 0,
+                        },
+                        "6af84fe6": {
+                            "userKey": "6af84fe6",
+                            "extId": "dd02eb66ff1f7088facb52c102473230",
+                            "intIds": {
+                                "w_ecvwvvvhwhum": {
+                                    "intId": "w_ecvwvvvhwhum",
+                                    "registeredOn": 1697111639229,
+                                    "leftOn": 1697111696308,
+                                    "userLeftFlag": True,
+                                },
+                                "w_j5dism2ei19x": {
+                                    "intId": "w_j5dism2ei19x",
+                                    "registeredOn": 1697111692850,
+                                    "leftOn": 0,
+                                    "userLeftFlag": False,
+                                },
+                            },
+                            "name": "Student 2",
+                            "isModerator": False,
+                            "isDialIn": False,
+                            "currentIntId": "w_j5dism2ei19x",
+                            "answers": {},
+                            "talk": {"totalTime": 0, "lastTalkStartedOn": 0},
+                            "emojis": [],
+                            "webcams": [],
+                            "totalOfMessages": 0,
+                        },
+                        "869e1c1e": {
+                            "userKey": "869e1c1e",
+                            "extId": "a39b0fa4be7c54821d0409d1ccb44099",
+                            "intIds": {
+                                "w_bgguwo64n4ib": {
+                                    "intId": "w_bgguwo64n4ib",
+                                    "registeredOn": 1697111642068,
+                                    "leftOn": 0,
+                                    "userLeftFlag": False,
+                                }
+                            },
+                            "name": "Student 1",
+                            "isModerator": False,
+                            "isDialIn": False,
+                            "currentIntId": "w_bgguwo64n4ib",
+                            "answers": {},
+                            "talk": {"totalTime": 0, "lastTalkStartedOn": 0},
+                            "emojis": [],
+                            "webcams": [],
+                            "totalOfMessages": 0,
+                        },
+                    },
+                    "polls": {},
+                    "screenshares": [],
+                    "presentationSlides": [
+                        {
+                            "presentationId": "31f33b5e",
+                            "pageNum": 1,
+                            "setOn": 1697111617283,
+                            "presentationName": "default.pdf",
+                        }
+                    ],
+                    "createdOn": 1697111611293,
+                    "endedOn": 0,
+                }
+            ),
+        )
+        ClassroomSessionFactory(
+            classroom=classroom,
+            started_at=entered_at_2,
+            ended_at=None,
+            learning_analytics=json.dumps(
+                {
+                    "intId": "0cbb2ac668bb4ac05bf7db4a440aee6de8cd0066-1697111611289",
+                    "extId": "86c5bb46-ace5-4362-9a0d-6dbdde9e745f",
+                    "name": "Classroom webhook",
+                    "users": {
+                        "8ade4720": {
+                            "userKey": "8ade4720",
+                            "extId": "5bc189df9500bfbc70418b399ad5745b",
+                            "intIds": {
+                                "w_xzkbsh7stiq8": {
+                                    "intId": "w_xzkbsh7stiq8",
+                                    "registeredOn": 1697111634434,
+                                    "leftOn": 0,
+                                    "userLeftFlag": False,
+                                }
+                            },
+                            "name": "Instructor",
+                            "isModerator": True,
+                            "isDialIn": False,
+                            "currentIntId": "w_xzkbsh7stiq8",
+                            "answers": {},
+                            "talk": {"totalTime": 0, "lastTalkStartedOn": 0},
+                            "emojis": [],
+                            "webcams": [],
+                            "totalOfMessages": 0,
+                        },
+                        "6af84fe6": {
+                            "userKey": "6af84fe6",
+                            "extId": "dd02eb66ff1f7088facb52c102473230",
+                            "intIds": {
+                                "w_ecvwvvvhwhum": {
+                                    "intId": "w_ecvwvvvhwhum",
+                                    "registeredOn": 1697111639229,
+                                    "leftOn": 1697111696308,
+                                    "userLeftFlag": True,
+                                },
+                                "w_j5dism2ei19x": {
+                                    "intId": "w_j5dism2ei19x",
+                                    "registeredOn": 1697111692850,
+                                    "leftOn": 0,
+                                    "userLeftFlag": False,
+                                },
+                            },
+                            "name": "Student 2",
+                            "isModerator": False,
+                            "isDialIn": False,
+                            "currentIntId": "w_j5dism2ei19x",
+                            "answers": {},
+                            "talk": {"totalTime": 0, "lastTalkStartedOn": 0},
+                            "emojis": [],
+                            "webcams": [],
+                            "totalOfMessages": 0,
+                        },
+                        "869e1c1e": {
+                            "userKey": "869e1c1e",
+                            "extId": "a39b0fa4be7c54821d0409d1ccb44099",
+                            "intIds": {
+                                "w_bgguwo64n4ib": {
+                                    "intId": "w_bgguwo64n4ib",
+                                    "registeredOn": 1697111642068,
+                                    "leftOn": 0,
+                                    "userLeftFlag": False,
+                                }
+                            },
+                            "name": "Student 1",
+                            "isModerator": False,
+                            "isDialIn": False,
+                            "currentIntId": "w_bgguwo64n4ib",
+                            "answers": {},
+                            "talk": {"totalTime": 0, "lastTalkStartedOn": 0},
+                            "emojis": [],
+                            "webcams": [],
+                            "totalOfMessages": 0,
+                        },
+                    },
+                    "polls": {},
+                    "screenshares": [],
+                    "presentationSlides": [
+                        {
+                            "presentationId": "31f33b5e",
+                            "pageNum": 1,
+                            "setOn": 1697111617283,
+                            "presentationName": "default.pdf",
+                        }
+                    ],
+                    "createdOn": 1697111611293,
+                    "endedOn": 0,
+                }
+            ),
+        )
+        mock_get_meeting_infos.return_value = {
+            "returncode": "SUCCESS",
+            "running": "true",
+        }
+
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=classroom.playlist)
+
+        response = self.client.get(
+            f"/api/classrooms/{classroom.id!s}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        self.assertDictEqual(
+            {
+                "id": str(classroom.id),
+                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "lti_id": str(classroom.lti_id),
+                "title": classroom.title,
+                "description": classroom.description,
+                "started": False,
+                "ended": False,
+                "meeting_id": str(classroom.meeting_id),
+                "welcome_text": classroom.welcome_text,
+                "playlist": {
+                    "id": str(classroom.playlist.id),
+                    "title": classroom.playlist.title,
+                    "lti_id": classroom.playlist.lti_id,
+                },
+                "starting_at": None,
+                "estimated_duration": None,
+                "recordings": [],
+                "retention_date": None,
+                "enable_waiting_room": False,
+                "enable_chat": True,
+                "enable_presentation_supports": True,
+                "enable_recordings": True,
+                "recording_purpose": classroom.recording_purpose,
+                "enable_shared_notes": True,
+                "vod_conversion_enabled": True,
+                "public_token": classroom.public_token,
+                "instructor_token": classroom.instructor_token,
+                "sessions": [
+                    {
+                        "started_at": "2021-10-29T13:32:27Z",
+                        "ended_at": "2021-10-29T13:42:27Z",
+                        "attendees": {
+                            "6af84fe6": {
+                                "fullname": "Student 2",
+                                "presence": [
+                                    {
+                                        "entered_at": 1697111639229,
+                                        "left_at": 1697111696308,
+                                    },
+                                    {
+                                        "entered_at": 1697111692850,
+                                        "left_at": 0,
+                                    },
+                                ],
+                            },
+                            "869e1c1e": {
+                                "fullname": "Student 1",
+                                "presence": [
+                                    {
+                                        "entered_at": 1697111642068,
+                                        "left_at": 0,
+                                    }
+                                ],
+                            },
+                        },
+                    },
+                    {
+                        "started_at": "2021-10-29T13:52:27Z",
+                        "ended_at": None,
+                        "attendees": {
+                            "6af84fe6": {
+                                "fullname": "Student 2",
+                                "presence": [
+                                    {
+                                        "entered_at": 1697111639229,
+                                        "left_at": 1697111696308,
+                                    },
+                                    {
+                                        "entered_at": 1697111692850,
+                                        "left_at": 0,
+                                    },
+                                ],
+                            },
+                            "869e1c1e": {
+                                "fullname": "Student 1",
+                                "presence": [
+                                    {
+                                        "entered_at": 1697111642068,
+                                        "left_at": 0,
+                                    }
+                                ],
+                            },
+                        },
+                    },
+                ],
+            },
+            response.json(),
         )
 
     @mock.patch.object(serializers, "get_meeting_infos")
@@ -1184,6 +1555,7 @@ class ClassroomRetrieveAPITest(TestCase):
                 "recording_purpose": classroom.recording_purpose,
                 "enable_shared_notes": True,
                 "vod_conversion_enabled": True,
+                "sessions": [],
             },
             content,
         )
@@ -1241,6 +1613,7 @@ class ClassroomRetrieveAPITest(TestCase):
                 "recording_purpose": classroom.recording_purpose,
                 "enable_shared_notes": True,
                 "vod_conversion_enabled": True,
+                "sessions": [],
             },
             content,
         )
