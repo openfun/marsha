@@ -4,12 +4,13 @@ Models for the bbb app of the Marsha project.
 In this base model, we activate generic behaviours that apply to all our models and enforce
 checks and validation that go further than what Django is doing.
 """
-
+import json
 import logging
 from secrets import token_urlsafe
 import uuid
 
 from django.db import models
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 
 from safedelete.managers import SafeDeleteManager
@@ -199,6 +200,96 @@ class Classroom(BaseModel, RetentionDateObjectMixin):
             disabled_features.append("presentation")
 
         return ",".join(disabled_features)
+
+
+class ClassroomSession(BaseModel):
+    """Model representing a session in a classroom."""
+
+    classroom = models.ForeignKey(
+        to=Classroom,
+        related_name="sessions",
+        verbose_name=_("classroom session"),
+        help_text=_("classroom to which this session belongs"),
+        # Delete all sessions belonging to this classroom
+        on_delete=models.CASCADE,
+    )
+
+    cookie = models.JSONField(
+        verbose_name=_("BBB session cookie"),
+        help_text=_("BBB session cookie"),
+    )
+
+    bbb_learning_analytics_url = models.CharField(
+        max_length=255,
+        verbose_name=_("BBB learning analytics url"),
+        help_text=_("BBB learning analytics url"),
+    )
+
+    learning_analytics = models.JSONField(
+        verbose_name=_("Classroom session learning analytics"),
+        help_text=_("Classroom session learning analytics"),
+        null=True,
+        blank=True,
+    )
+
+    started_at = models.DateTimeField(
+        blank=False,
+        verbose_name=_("Session started at date and time"),
+        help_text=_("Start date and time of the session."),
+        null=False,
+        default=now,
+    )
+
+    ended_at = models.DateTimeField(
+        blank=True,
+        verbose_name=_("Session ended at date and time"),
+        help_text=_("End date and time of the session."),
+        null=True,
+    )
+
+    class Meta:
+        db_table = "classroom_session"
+        constraints = [
+            # we can have only one session with ended_at None for a classroom
+            models.UniqueConstraint(
+                fields=["classroom"],
+                condition=models.Q(ended_at__isnull=True),
+                name="classroom_session_unique_not_ended",
+            )
+        ]
+
+    def __str__(self):
+        """Get the string representation of an instance."""
+        result = f"{self.started_at}"
+        if self.ended_at:
+            duration = self.ended_at - self.started_at
+            result = _("{:s} ({:s})").format(result, str(duration))
+        else:
+            result = _("{:s} (pending)").format(result)
+        return result
+
+    @property
+    def attendees(self):
+        """Get attendees for current classroom session."""
+        if self.learning_analytics:
+            learning_analytics = json.loads(self.learning_analytics)
+            attendees = {}
+            for user in learning_analytics.get("users").values():
+                if user.get("isModerator"):
+                    continue
+                attendees[user.get("userKey")] = {
+                    "fullname": user.get("name"),
+                    "presence": [
+                        {
+                            "entered_at": presence.get("registeredOn"),
+                            "left_at": presence.get("leftOn"),
+                        }
+                        for presence in user.get("intIds").values()
+                    ],
+                }
+
+            return attendees
+        return {}
 
 
 class ClassroomDocument(UploadableFileMixin, BaseModel):

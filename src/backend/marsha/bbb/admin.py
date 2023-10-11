@@ -3,7 +3,7 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
-from marsha.bbb.models import Classroom, ClassroomDocument
+from marsha.bbb.models import Classroom, ClassroomDocument, ClassroomSession
 from marsha.core.admin import link_field
 
 
@@ -23,6 +23,7 @@ class ClassroomAdmin(admin.ModelAdmin):
     list_display = (
         "id",
         "started",
+        "ended",
         "title",
         link_field("playlist"),
         "lti_id",
@@ -57,6 +58,25 @@ class ClassroomAdmin(admin.ModelAdmin):
         "playlist__title",
         "playlist__organization__name",
         "title",
+    )
+
+
+@admin.register(ClassroomSession)
+class ClassroomSessionAdmin(admin.ModelAdmin):
+    """Admin class for the ClassroomSession model."""
+
+    verbose_name = _("Classroom session")
+    list_display = (
+        "__str__",
+        "started_at",
+        "ended_at",
+        link_field("classroom"),
+    )
+    search_fields = (
+        "id",
+        "classroom__id",
+        "classroom__lti_id",
+        "classroom__title",
     )
 
 
