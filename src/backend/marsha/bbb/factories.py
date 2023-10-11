@@ -45,3 +45,30 @@ class ClassroomRecordingFactory(DjangoModelFactory):
     classroom = factory.SubFactory(ClassroomFactory)
     record_id = factory.Faker("uuid4")
     started_at = factory.Faker("date_time", tzinfo=timezone.utc)
+
+
+class ClassroomSessionFactory(DjangoModelFactory):
+    """Factory for the ClassroomSession model."""
+
+    class Meta:
+        model = models.ClassroomSession
+
+    classroom = factory.SubFactory(ClassroomFactory, started=True, ended=False)
+    started_at = factory.Faker("date_time", tzinfo=timezone.utc)
+    ended_at = None
+    cookie = '{"key": "value"}'
+    bbb_learning_analytics_url = factory.Faker("url")
+    learning_analytics = "{}"
+
+
+class AttendeeFactory(factory.DictFactory):
+    """Factory for the attendee BBB data."""
+
+    userID = factory.Faker("uuid4")
+    fullName = factory.Faker("name")
+    role = factory.Faker("random_element", elements=["MODERATOR", "VIEWER"])
+    isPresenter = "false"
+    isListeningOnly = "false"
+    hasJoinedVoice = "false"
+    hasVideo = "false"
+    clientType = "HTML5"
