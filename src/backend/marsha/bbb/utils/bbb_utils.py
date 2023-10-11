@@ -32,6 +32,10 @@ class ApiMeetingException(Exception):
         super().__init__(api_response.get("message"))
 
 
+class MeetingNotFoundException(ApiMeetingException):
+    """Exception used when a meeting is not found through api request."""
+
+
 class GuestPolicyEnum:
     """Enum that specifies the BBB guestPolicy options"""
 
@@ -81,6 +85,9 @@ def request_api(action, parameters, prepare=False, data=None):
     logger.debug("BBB API response: %s", api_response)
     if api_response.get("returncode") == "SUCCESS":
         return api_response
+
+    if api_response.get("messageKey") == "notFound":
+        raise MeetingNotFoundException(api_response)
 
     raise ApiMeetingException(api_response)
 
@@ -222,6 +229,20 @@ def update_session_learning_analytics(classroom: Classroom):
         pass
 
 
+def end_session(classroom: Classroom):
+    """End a session for a given classroom."""
+    try:
+        classroom_session = classroom.sessions.get(ended_at=None)
+        classroom_session.ended_at = now()
+        update_fields = ["ended_at"]
+        if learning_analytics := get_learning_analytics(classroom_session):
+            classroom_session.learning_analytics = learning_analytics
+            update_fields.append("learning_analytics")
+        classroom_session.save(update_fields=update_fields)
+    except ClassroomSession.DoesNotExist:
+        pass
+
+
 def get_learning_analytics(classroom_session: ClassroomSession):
     """Get BBB learning analytics."""
     try:
@@ -255,6 +276,7 @@ def end(classroom: Classroom):
     parameters = {
         "meetingID": str(classroom.meeting_id),
     }
+    end_session(classroom)
     api_response = request_api("end", parameters)
     classroom.started = False
     classroom.ended = True
@@ -270,6 +292,7 @@ def get_meeting_infos(classroom: Classroom):
     try:
         api_response = request_api("getMeetingInfo", parameters)
         classroom.started = api_response["returncode"] == "SUCCESS"
+        update_session_learning_analytics(classroom)
 
         # simplify attendees list:
         # - removes attendee level
@@ -283,7 +306,8 @@ def get_meeting_infos(classroom: Classroom):
 
         classroom.save(update_fields=["started"])
         return api_response
-    except ApiMeetingException as exception:
+    except MeetingNotFoundException as exception:
+        end_session(classroom)
         classroom.started = False
         classroom.save(update_fields=["started"])
         raise exception
