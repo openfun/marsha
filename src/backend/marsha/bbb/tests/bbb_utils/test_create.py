@@ -1,5 +1,6 @@
 """Tests for the create service in the ``bbb`` app of the Marsha project."""
 from datetime import datetime, timezone
+from unittest import mock
 
 from django.test import TestCase, override_settings
 
@@ -19,10 +20,12 @@ class ClassroomServiceTestCase(TestCase):
     @responses.activate
     def test_bbb_create_new_classroom(self):
         """Create a classroom in current classroom related server."""
+        now = datetime(2021, 10, 29, 13, 42, 27, tzinfo=timezone.utc)
         classroom = ClassroomFactory(
             title="Classroom 001",
             meeting_id="7a567d67-29d3-4547-96f3-035733a4dfaa",
         )
+        self.assertQuerysetEqual(classroom.sessions.all(), [])
 
         responses.add(
             responses.GET,
@@ -65,9 +68,41 @@ class ClassroomServiceTestCase(TestCase):
             status=200,
         )
 
-        api_response = create(
-            classroom, "https://example.com/api/classrooms/recording-ready/"
+        responses.add(
+            responses.GET,
+            "https://10.7.7.1/bigbluebutton/api/join",
+            match=[
+                responses.matchers.query_param_matcher(
+                    {
+                        "meetingID": str(classroom.meeting_id),
+                    },
+                    strict_match=False,
+                )
+            ],
+            body="""Should redirect""",
+            headers={
+                "Location": "https://bbb.net/html5client/join?sessionToken=123",
+            },
+            status=301,
         )
+
+        responses.add(
+            responses.GET,
+            "https://bbb.net/html5client/join?sessionToken=123",
+            body="whatever, just need the cookie",
+            headers={
+                "set-cookie": "foo=bar",
+            },
+            status=200,
+        )
+
+        with mock.patch(
+            "marsha.bbb.utils.bbb_utils.now",
+            return_value=now,
+        ):
+            api_response = create(
+                classroom, "https://example.com/api/classrooms/recording-ready/"
+            )
 
         self.assertDictEqual(
             {
@@ -91,6 +126,14 @@ class ClassroomServiceTestCase(TestCase):
         )
         self.assertEqual(classroom.started, True)
         self.assertEqual(classroom.ended, False)
+        session = classroom.sessions.get()
+        self.assertEqual(session.started_at, now)
+        self.assertEqual(session.ended_at, None)
+        self.assertEqual(session.cookie, '{"foo": "bar"}')
+        self.assertEqual(
+            session.bbb_learning_analytics_url,
+            "https://bbb.net/bigbluebutton/api/learningDashboard?sessionToken=123",
+        )
 
     @responses.activate
     def test_bbb_create_new_classroom_record_disabled(self):
@@ -139,6 +182,34 @@ class ClassroomServiceTestCase(TestCase):
                 <message></message>
             </response>
             """,
+            status=200,
+        )
+
+        responses.add(
+            responses.GET,
+            "https://10.7.7.1/bigbluebutton/api/join",
+            match=[
+                responses.matchers.query_param_matcher(
+                    {
+                        "meetingID": str(classroom.meeting_id),
+                    },
+                    strict_match=False,
+                )
+            ],
+            body="""Should redirect""",
+            headers={
+                "Location": "https://bbb.net/html5client/join?sessionToken=123",
+            },
+            status=301,
+        )
+
+        responses.add(
+            responses.GET,
+            "https://bbb.net/html5client/join?sessionToken=123",
+            body="whatever, just need the cookie",
+            headers={
+                "set-cookie": "foo=bar",
+            },
             status=200,
         )
 
@@ -217,6 +288,34 @@ class ClassroomServiceTestCase(TestCase):
                 <message></message>
             </response>
             """,
+            status=200,
+        )
+
+        responses.add(
+            responses.GET,
+            "https://10.7.7.1/bigbluebutton/api/join",
+            match=[
+                responses.matchers.query_param_matcher(
+                    {
+                        "meetingID": str(classroom.meeting_id),
+                    },
+                    strict_match=False,
+                )
+            ],
+            body="""Should redirect""",
+            headers={
+                "Location": "https://bbb.net/html5client/join?sessionToken=123",
+            },
+            status=301,
+        )
+
+        responses.add(
+            responses.GET,
+            "https://bbb.net/html5client/join?sessionToken=123",
+            body="whatever, just need the cookie",
+            headers={
+                "set-cookie": "foo=bar",
+            },
             status=200,
         )
 
@@ -299,6 +398,34 @@ class ClassroomServiceTestCase(TestCase):
             status=200,
         )
 
+        responses.add(
+            responses.GET,
+            "https://10.7.7.1/bigbluebutton/api/join",
+            match=[
+                responses.matchers.query_param_matcher(
+                    {
+                        "meetingID": str(classroom.meeting_id),
+                    },
+                    strict_match=False,
+                )
+            ],
+            body="""Should redirect""",
+            headers={
+                "Location": "https://bbb.net/html5client/join?sessionToken=123",
+            },
+            status=301,
+        )
+
+        responses.add(
+            responses.GET,
+            "https://bbb.net/html5client/join?sessionToken=123",
+            body="whatever, just need the cookie",
+            headers={
+                "set-cookie": "foo=bar",
+            },
+            status=200,
+        )
+
         api_response = create(
             classroom, "https://example.com/api/classrooms/recording-ready/"
         )
@@ -377,6 +504,34 @@ class ClassroomServiceTestCase(TestCase):
                 <message></message>
             </response>
             """,
+            status=200,
+        )
+
+        responses.add(
+            responses.GET,
+            "https://10.7.7.1/bigbluebutton/api/join",
+            match=[
+                responses.matchers.query_param_matcher(
+                    {
+                        "meetingID": str(classroom.meeting_id),
+                    },
+                    strict_match=False,
+                )
+            ],
+            body="""Should redirect""",
+            headers={
+                "Location": "https://bbb.net/html5client/join?sessionToken=123",
+            },
+            status=301,
+        )
+
+        responses.add(
+            responses.GET,
+            "https://bbb.net/html5client/join?sessionToken=123",
+            body="whatever, just need the cookie",
+            headers={
+                "set-cookie": "foo=bar",
+            },
             status=200,
         )
 
@@ -511,6 +666,34 @@ class ClassroomServiceTestCase(TestCase):
             status=200,
         )
 
+        responses.add(
+            responses.GET,
+            "https://10.7.7.1/bigbluebutton/api/join",
+            match=[
+                responses.matchers.query_param_matcher(
+                    {
+                        "meetingID": str(classroom.meeting_id),
+                    },
+                    strict_match=False,
+                )
+            ],
+            body="""Should redirect""",
+            headers={
+                "Location": "https://bbb.net/html5client/join?sessionToken=123",
+            },
+            status=301,
+        )
+
+        responses.add(
+            responses.GET,
+            "https://bbb.net/html5client/join?sessionToken=123",
+            body="whatever, just need the cookie",
+            headers={
+                "set-cookie": "foo=bar",
+            },
+            status=200,
+        )
+
         api_response = create(
             classroom, "https://example.com/api/classrooms/recording-ready/"
         )
@@ -614,6 +797,34 @@ class ClassroomServiceTestCase(TestCase):
                 <message></message>
             </response>
             """,
+            status=200,
+        )
+
+        responses.add(
+            responses.GET,
+            "https://10.7.7.1/bigbluebutton/api/join",
+            match=[
+                responses.matchers.query_param_matcher(
+                    {
+                        "meetingID": str(classroom.meeting_id),
+                    },
+                    strict_match=False,
+                )
+            ],
+            body="""Should redirect""",
+            headers={
+                "Location": "https://bbb.net/html5client/join?sessionToken=123",
+            },
+            status=301,
+        )
+
+        responses.add(
+            responses.GET,
+            "https://bbb.net/html5client/join?sessionToken=123",
+            body="whatever, just need the cookie",
+            headers={
+                "set-cookie": "foo=bar",
+            },
             status=200,
         )
 
@@ -831,6 +1042,34 @@ class ClassroomServiceTestCase(TestCase):
                 <message></message>
             </response>
             """,
+            status=200,
+        )
+
+        responses.add(
+            responses.GET,
+            "https://10.7.7.1/bigbluebutton/api/join",
+            match=[
+                responses.matchers.query_param_matcher(
+                    {
+                        "meetingID": str(classroom.meeting_id),
+                    },
+                    strict_match=False,
+                )
+            ],
+            body="""Should redirect""",
+            headers={
+                "Location": "https://bbb.net/html5client/join?sessionToken=123",
+            },
+            status=301,
+        )
+
+        responses.add(
+            responses.GET,
+            "https://bbb.net/html5client/join?sessionToken=123",
+            body="whatever, just need the cookie",
+            headers={
+                "set-cookie": "foo=bar",
+            },
             status=200,
         )
 

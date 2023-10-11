@@ -1,10 +1,13 @@
 """Utils for requesting BBB API"""
 from datetime import timezone
 import hashlib
+import json
+from json import JSONDecodeError
 import logging
 from os.path import splitext
 
 from django.conf import settings
+from django.utils.timezone import now
 
 from dateutil.parser import parse
 import requests
@@ -161,6 +164,7 @@ def create(classroom: Classroom, recording_ready_callback_url: str, attempt=0):
         raise error
     if not api_response.get("message"):
         api_response["message"] = "Meeting created."
+    start_session(classroom)
     classroom.started = True
     classroom.ended = False
     classroom.save(update_fields=["started", "ended"])
@@ -177,6 +181,32 @@ def join(classroom: Classroom, consumer_site_user_id, fullname, moderator=False)
         "redirect": "true",
     }
     return request_api("join", parameters, prepare=True)
+
+
+def start_session(classroom: Classroom):
+    """Create a session for a given classroom,
+    and store cookie and learning analytics url."""
+    join_response = join(
+        classroom=classroom,
+        consumer_site_user_id="marsha",
+        fullname="Marsha",
+        moderator=True,
+    )
+    session = requests.Session()
+    response = session.get(
+        join_response.get("url"), allow_redirects=True, timeout=settings.BBB_API_TIMEOUT
+    )
+    cookie = json.dumps(session.cookies.get_dict())
+    url = response.url.replace(
+        "html5client/join", "bigbluebutton/api/learningDashboard"
+    )
+
+    classroom.sessions.create(
+        started_at=now(),
+        ended_at=None,
+        cookie=cookie,
+        bbb_learning_analytics_url=url,
+    )
 
 
 def end(classroom: Classroom):
