@@ -68,7 +68,7 @@ const DashboardClassroom = ({ classroomId }: DashboardClassroomProps) => {
   const user = useCurrentUser((state) => state.currentUser);
   const canUpdate = context.permissions.can_update;
 
-  const classroomRefetchInterval = useRef(5000);
+  const classroomRefetchInterval = useRef(45000);
   const [classroomUrl, setClassroomUrl] = useState('');
   const [askUsername, setAskUsername] = useState(false);
   const [classroomJoined, setClassroomJoined] = useState(false);
