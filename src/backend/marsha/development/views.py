@@ -83,7 +83,8 @@ class DevelopmentLTIView(TemplateView):
                 "oauth_signature_method": "",
             }
 
-        email = fake.email(safe=False)
+        fullname = fake.name()
+        email = fullname.replace(" ", ".").lower() + "@" + fake.domain_name()
 
         return {
             "domain": domain,
@@ -91,6 +92,7 @@ class DevelopmentLTIView(TemplateView):
             "user_id": fake.md5(),
             "lis_result_sourcedid": email.split("@")[0],
             "lis_person_contact_email_primary": email,
+            "lis_person_name_full": fullname,
             "uuid": uuid.uuid4(),
             "select_context_id": playlist.lti_id,
             "select_content_item_return_url": self.request.build_absolute_uri(

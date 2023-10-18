@@ -72,7 +72,6 @@ def _preview_markdown(page: Page, live_server: LiveServer):
         if key in (
             "custom_component_display_name",
             "lti_version",
-            "lis_person_name_full",
             "lti_message_type",
             "launch_presentation_return_url",
             "lis_result_sourcedid",
