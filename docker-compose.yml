@@ -68,6 +68,7 @@ services:
       dockerfile: ./docker/images/e2e/Dockerfile
     image: marsha:e2e
     env_file:
+      - env.d/db
       - env.d/${ENV_FILE:-development}
     ports:
       - "8070:8000"

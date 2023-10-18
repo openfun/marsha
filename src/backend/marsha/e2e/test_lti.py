@@ -78,7 +78,6 @@ def _preview_video(live_server, page, video_uploaded=False):
         if key in (
             "custom_component_display_name",
             "lti_version",
-            "lis_person_name_full",
             "lti_message_type",
             "launch_presentation_return_url",
             "lis_result_sourcedid",
@@ -161,7 +160,6 @@ def _preview_document(live_server, page, document_uploaded=False):
         if key in (
             "custom_component_display_name",
             "lti_version",
-            "lis_person_name_full",
             "lti_message_type",
             "launch_presentation_return_url",
             "lis_result_sourcedid",
