@@ -1,4 +1,4 @@
-import { Box, Button, Stack } from 'grommet';
+import { Box, Stack } from 'grommet';
 import { BinSVG } from 'lib-components';
 import React, { useEffect, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -46,13 +46,13 @@ export const UploadVideoPreview = ({
           <video controls ref={videoRef} src={videoSrc} width="100%" />
         </Box>
         {(!isPlaying || isHovering) && (
-          <Button
-            a11yTitle={intl.formatMessage(messages.removeVideoButtonLabel)}
-            icon={<BinSVG height="18px" iconColor="white" width="14px" />}
+          <BinSVG
+            aria-label={intl.formatMessage(messages.removeVideoButtonLabel)}
+            className="m-b"
+            height="18px"
+            iconColor="white"
             onClick={() => onClickRemoveButton()}
-            plain
-            title={intl.formatMessage(messages.removeVideoButtonLabel)}
-            margin="medium"
+            width="14px"
           />
         )}
       </Stack>

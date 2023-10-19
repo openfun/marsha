@@ -1,4 +1,4 @@
-import { Box, Button, Layer } from 'grommet';
+import { Box, Layer } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { isFirefox, isIframe, theme } from 'lib-common';
 import React, { useCallback, useEffect } from 'react';
@@ -70,13 +70,12 @@ export const InfoModal = ({
           direction="row-reverse"
           pad={{ horizontal: 'small', top: 'small' }}
         >
-          <Button
+          <RoundCrossSVG
             onClick={onClose}
-            plain
-            style={{ display: 'block', padding: 0 }}
-          >
-            <RoundCrossSVG height="20px" iconColor="blue-active" width="20px" />
-          </Button>
+            height="20px"
+            iconColor="blue-active"
+            width="20px"
+          />
         </Box>
         <Box
           direction="column"
