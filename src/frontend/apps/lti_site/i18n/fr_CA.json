@@ -347,10 +347,6 @@
     "description": "section title display for managing webinar resources",
     "message": "Webinars"
   },
-  "components.SidebarUploadsIndicator.title": {
-    "description": "Message for the sidebar uploads indicator link.",
-    "message": "File uploads"
-  },
   "components.UploadableObjectStatusBadge.deleted": {
     "description": "Badge text for an uploadable object that was deleted.",
     "message": "Deleted"

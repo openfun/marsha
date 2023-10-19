@@ -351,6 +351,10 @@
     "description": "Title to advertise a classroom in a ics file which has no title set yet.",
     "message": "Ne manquez pas la classe virtuelle !"
   },
+  "component.DashboardCopyClipboard.linksExpired": {
+    "description": "Message when tokens start by \"pub_\" or \"inst_\".",
+    "message": "Les liens d'invitation ont été modifiés et devraient être partagés avec vos utilisateurs à nouveau."
+  },
   "component.DashboardCopyClipboard.ltiLinkCopiedSuccess": {
     "description": "Toast message when link copied to clipboard.",
     "message": "Lien copié dans le presse-papier !"
@@ -1295,9 +1299,9 @@
     "description": "Title of the widget used to manage the license of the video.",
     "message": "Licence"
   },
-  "components.LicenseSelect.noLicenseAvailableLabel": {
-    "description": "The label displayed in the select when there is no license.",
-    "message": "Aucune licence disponible"
+  "components.LicenseSelect.errorLoading": {
+    "description": "The message displayed when there is a problem when loading the licences.",
+    "message": "Une erreur est survenue durant le chargement des licences. Actualisez la page ou réessayez plus tard."
   },
   "components.LicenseSelect.selectLicenseInfo": {
     "description": "The info under the select used for choosing the license under which the instructor wants to publish your video",
