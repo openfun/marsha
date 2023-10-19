@@ -1,10 +1,9 @@
-import { DatePicker } from '@openfun/cunningham-react';
-import { Box, Button } from 'grommet';
+import { Button, DatePicker } from '@openfun/cunningham-react';
+import { Box } from 'grommet';
 import { Nullable } from 'lib-common';
 import { DateTime } from 'luxon';
 import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import styled from 'styled-components';
 
 import { FoldableItem } from '@lib-components/common/FoldableItem';
 
@@ -26,14 +25,6 @@ const messages = defineMessages({
     id: 'common.Widgets.RetentionDate.deleteRetentionDateButton',
   },
 });
-
-const StyledAnchorButton = styled(Button)`
-  height: 50px;
-  font-family: 'Roboto-Medium';
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
 
 interface RetentionDateProps {
   ressource: string;
@@ -97,17 +88,17 @@ export const RetentionDate = ({
           onChange={onLocalChange}
           value={selectedRetentionDate}
         />
-        <StyledAnchorButton
+        <Button
+          fullWidth
           disabled={!selectedRetentionDate}
-          a11yTitle={intl.formatMessage(messages.deleteRetentionDateButton)}
-          fill="horizontal"
-          label={intl.formatMessage(messages.deleteRetentionDateButton)}
-          primary
+          aria-label={intl.formatMessage(messages.deleteRetentionDateButton)}
           title={intl.formatMessage(messages.deleteRetentionDateButton)}
           onClick={() => {
             onLocalChange(null);
           }}
-        />
+        >
+          {intl.formatMessage(messages.deleteRetentionDateButton)}
+        </Button>
       </Box>
     </FoldableItem>
   );

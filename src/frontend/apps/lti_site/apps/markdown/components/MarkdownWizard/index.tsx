@@ -1,5 +1,5 @@
-import { Input } from '@openfun/cunningham-react';
-import { Box, Button } from 'grommet';
+import { Button, Input } from '@openfun/cunningham-react';
+import { Box } from 'grommet';
 import { Breakpoints } from 'lib-common';
 import { Text, WhiteCard, WizardLayout, useResponsive } from 'lib-components';
 import {
@@ -106,9 +106,9 @@ export const MarkdownWizard = ({ markdownDocumentId }: MarkdownWizardProps) => {
           />
 
           <Button
-            a11yTitle={intl.formatMessage(messages.createMarkdownButtonLabel)}
+            fullWidth
+            aria-label={intl.formatMessage(messages.createMarkdownButtonLabel)}
             disabled={!localTitle}
-            label={intl.formatMessage(messages.createMarkdownButtonLabel)}
             onClick={() => {
               saveDocumentTranslations({
                 language_code: language,
@@ -117,10 +117,10 @@ export const MarkdownWizard = ({ markdownDocumentId }: MarkdownWizardProps) => {
                 rendered_content: '',
               });
             }}
-            primary
-            style={{ minHeight: '50px', fontFamily: 'Roboto-Medium' }}
             title={intl.formatMessage(messages.createMarkdownButtonLabel)}
-          />
+          >
+            {intl.formatMessage(messages.createMarkdownButtonLabel)}
+          </Button>
         </Box>
       </WhiteCard>
     </WizardLayout>

@@ -153,13 +153,15 @@ const LiveCreateForm = () => {
         </Box>
 
         <ModalButton
-          label={intl.formatMessage(messages.submitLabel)}
+          aria-label={intl.formatMessage(messages.submitLabel)}
           onClickCancel={() => {
             navigate('..');
           }}
           isSubmitting={isCreating || isUpdatingToLive}
           isDisabled={!live.title || !live.playlist}
-        />
+        >
+          {intl.formatMessage(messages.submitLabel)}
+        </ModalButton>
       </Form>
     </Fragment>
   );

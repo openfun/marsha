@@ -1,4 +1,4 @@
-import { Button } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
 import { Nullable } from 'lib-common';
 import { BoxLoader, LiveModeType, Video, useVideo } from 'lib-components';
 import React, { ReactElement, useState } from 'react';
@@ -56,14 +56,13 @@ export const ConfigureLiveButton = ({
     <React.Fragment>
       {status === 'pending' && <BoxLoader />}
       <Button
-        a11yTitle={intl.formatMessage(messages.startLiveButtonLabel)}
-        fill="horizontal"
-        label={intl.formatMessage(messages.startLiveButtonLabel)}
+        fullWidth
+        aria-label={intl.formatMessage(messages.startLiveButtonLabel)}
         onClick={() => void configureLive()}
-        primary
-        style={{ minHeight: '50px', fontFamily: 'Roboto-Medium' }}
         title={intl.formatMessage(messages.startLiveButtonLabel)}
-      />
+      >
+        {intl.formatMessage(messages.startLiveButtonLabel)}
+      </Button>
     </React.Fragment>
   );
 };

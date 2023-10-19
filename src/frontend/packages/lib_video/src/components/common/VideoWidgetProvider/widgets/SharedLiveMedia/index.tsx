@@ -1,4 +1,5 @@
-import { Box, Button } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
+import { Box } from 'grommet';
 import { Nullable } from 'lib-common';
 import {
   FoldableItem,
@@ -162,19 +163,18 @@ export const SharedLiveMedia = ({ isLive, isTeacher }: SharedMediaProps) => {
               type="file"
             />
             <Button
-              a11yTitle={intl.formatMessage(messages.uploadButtonLabel)}
-              fill="horizontal"
-              label={intl.formatMessage(messages.uploadButtonLabel)}
+              fullWidth
+              aria-label={intl.formatMessage(messages.uploadButtonLabel)}
               onClick={() => {
                 if (hiddenFileInput.current) {
                   retryUploadIdRef.current = null;
                   hiddenFileInput.current.click();
                 }
               }}
-              primary
-              style={{ minHeight: '50px', fontFamily: 'Roboto-Medium' }}
               title={intl.formatMessage(messages.uploadButtonLabel)}
-            />
+            >
+              {intl.formatMessage(messages.uploadButtonLabel)}
+            </Button>
           </Box>
         )}
 
@@ -182,14 +182,12 @@ export const SharedLiveMedia = ({ isLive, isTeacher }: SharedMediaProps) => {
           sharedLiveMedias.filter((media) => media.show_download).length >=
             1 && (
             <Button
-              a11yTitle={intl.formatMessage(messages.downloadAllLabel)}
-              fill="horizontal"
-              label={intl.formatMessage(messages.downloadAllLabel)}
+              aria-label={intl.formatMessage(messages.downloadAllLabel)}
               onClick={downloadAllMedia}
-              primary
-              style={{ height: '50px', fontFamily: 'Roboto-Medium' }}
               title={intl.formatMessage(messages.downloadAllLabel)}
-            />
+            >
+              {intl.formatMessage(messages.downloadAllLabel)}
+            </Button>
           )}
 
         <ItemList

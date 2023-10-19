@@ -1,4 +1,5 @@
-import { Box, Button } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
+import { Box } from 'grommet';
 import { Nullable } from 'lib-common';
 import {
   BoxLoader,
@@ -141,16 +142,15 @@ export const UploadVideo = () => {
           type="file"
         />
         <Button
-          a11yTitle={intl.formatMessage(messages.replaceVideoButtonLabel)}
-          fill="horizontal"
-          label={intl.formatMessage(messages.replaceVideoButtonLabel)}
+          fullWidth
+          aria-label={intl.formatMessage(messages.replaceVideoButtonLabel)}
           onClick={() =>
             hiddenFileInput.current && hiddenFileInput.current.click()
           }
-          primary
-          style={{ height: '50px', fontFamily: 'Roboto-Medium' }}
           title={intl.formatMessage(messages.replaceVideoButtonLabel)}
-        />
+        >
+          {intl.formatMessage(messages.replaceVideoButtonLabel)}
+        </Button>
       </Box>
     </FoldableItem>
   );

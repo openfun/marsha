@@ -1,7 +1,6 @@
-import { Button } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
 import {
   BinSVG,
-  ButtonLoaderStyle,
   Modal,
   ModalButton,
   ModalControlMethods,
@@ -85,7 +84,7 @@ export const ThumbnailRemoveButton = ({
           {intl.formatMessage(messages.confirmationModalText)}
         </Text>
         <ModalButton
-          label={intl.formatMessage(messages.confirmationModalTitle)}
+          aria-label={intl.formatMessage(messages.confirmationModalTitle)}
           onClickCancel={() => modalActions.current?.close()}
           onClickSubmit={() =>
             thumbnailDelete.mutate({
@@ -93,17 +92,19 @@ export const ThumbnailRemoveButton = ({
               thumbnailId: thumbnail.id,
             })
           }
-          style={ButtonLoaderStyle.DESTRUCTIVE}
-        />
+          color="danger"
+        >
+          {intl.formatMessage(messages.confirmationModalTitle)}
+        </ModalButton>
       </Modal>
       {thumbnail && thumbnail.is_ready_to_show && (
         <Button
-          a11yTitle={intl.formatMessage(messages.deleteButtonLabel)}
+          aria-label={intl.formatMessage(messages.deleteButtonLabel)}
           icon={<BinSVG width="14px" height="18px" iconColor="blue-active" />}
           onClick={() => modalActions.current?.open()}
-          plain
+          color="tertiary"
           title={intl.formatMessage(messages.deleteButtonLabel)}
-          margin="small"
+          className="m-s c__button-no-bg"
         />
       )}
     </React.Fragment>

@@ -129,11 +129,7 @@ export const VideoInfoBar = ({ isTeacher, startDate }: VideoInfoBarProps) => {
   return (
     <Fragment>
       {isTeacher ? (
-        <StyledBoxInput
-          alignContent="center"
-          direction="row"
-          margin={{ bottom: 'small' }}
-        >
+        <StyledBoxInput alignContent="center" direction="row">
           <Input
             icon={
               <EditionSVG
@@ -171,7 +167,7 @@ export const VideoInfoBar = ({ isTeacher, startDate }: VideoInfoBarProps) => {
             <Text
               type="p"
               color="blue-active"
-              className={`mb-0 mr-b mb-t ${isTeacher ? 'ml-s' : ''}`}
+              className={`mb-0 mr-b mb-t`}
               size="small"
             >
               {intl.formatMessage(messages.nbViewers, {
@@ -180,11 +176,7 @@ export const VideoInfoBar = ({ isTeacher, startDate }: VideoInfoBarProps) => {
             </Text>
           )}
           {localStartDate && (
-            <Text
-              type="p"
-              className={`mb-t ${numberOfStudents ? '' : 'ml-s'}`}
-              size="small"
-            >
+            <Text type="p" className={`mb-t`} size="small">
               {localStartDate}
             </Text>
           )}

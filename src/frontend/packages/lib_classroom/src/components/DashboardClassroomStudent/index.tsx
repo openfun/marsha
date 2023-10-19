@@ -1,4 +1,5 @@
-import { Box, Button } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
+import { Box } from 'grommet';
 import { Schedule } from 'grommet-icons';
 import { Nullable } from 'lib-common';
 import { Classroom, Heading, Text, useResponsive } from 'lib-components';
@@ -184,12 +185,12 @@ const DashboardClassroomStudent = ({
     );
     right = (
       <Button
-        label={intl.formatMessage(messages.joinClassroomLabel)}
+        aria-label={intl.formatMessage(messages.joinClassroomLabel)}
         onClick={joinClassroomAction}
-        primary
-        size="large"
-        fill="horizontal"
-      />
+        fullWidth
+      >
+        {intl.formatMessage(messages.joinClassroomLabel)}
+      </Button>
     );
   } else if (classroom.ended) {
     // classroom ended

@@ -1,4 +1,4 @@
-import { Box, Button } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
 import { DownArrowSVG } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -17,10 +17,14 @@ const messages = defineMessages({
 });
 
 const StyledButton = styled(Button)`
-  border-radius: 50%;
   transform: rotate(-90deg);
   padding: 10px;
   margin-left: 20px;
+  &,
+  &:hover,
+  &:active {
+    border-radius: 50%;
+  }
 `;
 interface NextPageButtonProps {
   maxPage: number;
@@ -33,17 +37,12 @@ export const NextPageButton = ({ maxPage }: NextPageButtonProps) => {
 
   return (
     <StyledButton
-      a11yTitle={intl.formatMessage(messages.title)}
+      aria-label={intl.formatMessage(messages.title)}
       disabled={currentPage.page === maxPage}
-      primary
-      label={
-        <Box height="30px" width="30px">
-          <DownArrowSVG iconColor="white" width="100%" height="100%" />
-        </Box>
-      }
       onClick={() => {
         navigateSharingDoc(video, currentPage.page + 1);
       }}
+      icon={<DownArrowSVG iconColor="white" height="30px" width="30px" />}
     />
   );
 };

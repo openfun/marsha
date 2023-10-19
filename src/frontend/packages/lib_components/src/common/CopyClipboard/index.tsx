@@ -1,5 +1,5 @@
+import { Button } from '@openfun/cunningham-react';
 import ClipboardJS from 'clipboard';
-import { Button } from 'grommet';
 import React, { Fragment, ReactElement, useEffect } from 'react';
 
 import { DashedBoxCustom } from '@lib-components/common/DashedBoxCustom';
@@ -52,17 +52,17 @@ export const CopyClipboard = ({
           color={isActive ? 'clr-primary-500' : '#b4cff2'}
           truncate
           weight="medium"
+          title={typeof text === 'string' ? text : undefined}
           {...textProps}
         >
           {text}
         </Text>
         <Button
-          a11yTitle={title}
+          aria-label={title}
           id={copyId}
           data-clipboard-text={textToCopy || text}
-          plain
-          style={{ display: 'flex', padding: 0 }}
           title={title}
+          color="tertiary"
         >
           <CopySVG iconColor="blue-active" width="20px" height="25px" />
         </Button>

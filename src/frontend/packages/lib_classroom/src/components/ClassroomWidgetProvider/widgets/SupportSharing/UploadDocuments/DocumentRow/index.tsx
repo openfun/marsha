@@ -1,4 +1,5 @@
-import { Anchor, Box, Button } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
+import { Anchor, Box } from 'grommet';
 import {
   BinSVG,
   ClassroomDocument,
@@ -123,13 +124,12 @@ export const DocumentRow = ({
     >
       <Box direction="row" align="center" gap="small">
         <Button
-          a11yTitle={intl.formatMessage(messages.buttonLabel)}
+          aria-label={intl.formatMessage(messages.buttonLabel)}
           onClick={() => setDeleteDocument()}
-          plain
           style={{ display: 'flex' }}
-        >
-          <BinSVG height="18px" iconColor="blue-active" width="14px" />
-        </Button>
+          icon={<BinSVG height="18px" iconColor="blue-active" width="14px" />}
+          color="tertiary"
+        />
       </Box>
 
       <Box style={{ minWidth: '0' }} direction="row" align="center" gap="small">
@@ -153,18 +153,24 @@ export const DocumentRow = ({
             title={title}
           />
         </Box>
-        {document.is_default ? (
-          <ValidSVG iconColor="brand" height="20px" width="20px" />
-        ) : (
-          <Button
-            alignSelf="start"
-            onClick={setDefaultDocument}
-            title={intl.formatMessage(messages.setDefaultDocument)}
-            disabled={document.upload_state !== uploadState.READY}
-          >
-            <ValidSVG iconColor="light-5" height="20px" width="20px" />
-          </Button>
-        )}
+        <Button
+          onClick={setDefaultDocument}
+          aria-label={intl.formatMessage(messages.setDefaultDocument)}
+          aria-selected={document.is_default}
+          role="row"
+          title={intl.formatMessage(messages.setDefaultDocument)}
+          disabled={
+            document.upload_state !== uploadState.READY || document.is_default
+          }
+          icon={
+            <ValidSVG
+              iconColor={document.is_default ? 'brand' : 'light-5'}
+              height="20px"
+              width="20px"
+            />
+          }
+          color="tertiary"
+        />
       </Box>
 
       <Box
@@ -172,6 +178,7 @@ export const DocumentRow = ({
         direction="row"
         justify="center"
         margin={{ left: 'auto' }}
+        style={{ flex: 'none' }}
       >
         {document.upload_state !== uploadState.READY &&
           (isUploadInProgress ? (

@@ -323,8 +323,9 @@ describe('<UploadDocuments />', () => {
     render(<UploadDocuments classroomId={classroom.id} />);
 
     await screen.findByText('file.txt');
-    const setDefaultButton = screen.getByRole('button', {
+    const setDefaultButton = screen.getByRole('row', {
       name: 'Click to set as default document',
+      selected: false,
     });
 
     await userEvent.click(setDefaultButton);

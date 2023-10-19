@@ -60,7 +60,7 @@ describe('<StudentLiveControlBar />', () => {
       },
     });
 
-    screen.getByRole('button', { name: 'Show apps' });
+    screen.getByRole('checkbox', { name: 'Show apps' });
     expect(
       screen.queryByRole('button', { name: 'Show chat' }),
     ).not.toBeInTheDocument();

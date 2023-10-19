@@ -1,4 +1,4 @@
-import { Box, Button, ButtonProps } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
 import {
   BoxLoader,
   Heading,
@@ -53,11 +53,17 @@ type StartLiveStatus =
   | { type: 'loading' }
   | { type: 'error'; error: unknown };
 
+type ButtonProps = React.ComponentProps<typeof Button>;
+
 interface StartLiveButtonProps extends ButtonProps {
   video: Video;
 }
 
-export const StartLiveButton = ({ video, ...props }: StartLiveButtonProps) => {
+export const StartLiveButton = ({
+  video,
+  style,
+  ...props
+}: StartLiveButtonProps) => {
   const intl = useIntl();
   const [liveModaleConfiguration, setLiveModaleConfiguration] =
     useLiveModaleConfiguration();
@@ -147,30 +153,29 @@ export const StartLiveButton = ({ video, ...props }: StartLiveButtonProps) => {
 
   return (
     <Button
-      primary
       disabled={isButtonDisabled}
-      label={
-        <Box flex direction="row" style={{ whiteSpace: 'nowrap' }}>
-          {intl.formatMessage(messages.title)}
-          {status.type === 'loading' && (
-            <BoxLoader
-              whiteBackground
-              size="small"
-              boxProps={{ margin: { left: 'small' } }}
-            />
-          )}
-          {status.type !== 'loading' && (
-            <PlaySVG
-              iconColor="white"
-              width="25px"
-              height="25px"
-              containerStyle={{ margin: 'auto', marginLeft: '8px' }}
-            />
-          )}
-        </Box>
-      }
       onClick={onClick}
+      icon={
+        status.type === 'loading' ? (
+          <BoxLoader
+            whiteBackground
+            size="small"
+            boxProps={{ margin: { left: 'small' } }}
+          />
+        ) : (
+          <PlaySVG
+            iconColor="white"
+            width="25px"
+            height="25px"
+            containerStyle={{ margin: 'auto', marginLeft: '8px' }}
+          />
+        )
+      }
+      iconPosition="right"
+      style={{ whiteSpace: 'nowrap', ...style }}
       {...props}
-    />
+    >
+      {intl.formatMessage(messages.title)}
+    </Button>
   );
 };

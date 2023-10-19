@@ -1,18 +1,18 @@
-import { Box, Button } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
+import { Box } from 'grommet';
 import { useDeleteClassrooms } from 'lib-classroom';
 import {
-  ButtonLoaderStyle,
   Heading,
   Modal,
   ModalButton,
   Text,
   report,
+  withLink,
 } from 'lib-components';
 import { Fragment, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { ContentsHeader } from 'features/Contents';
 import { useSelectFeatures } from 'features/Contents/store/selectionStore';
@@ -20,6 +20,8 @@ import { useSelectFeatures } from 'features/Contents/store/selectionStore';
 import routes from '../../routes';
 
 import ClassroomCreateForm from './ClassRoomCreateForm';
+
+const ButtonWithLink = withLink(Button);
 
 const messages = defineMessages({
   ClassroomTitle: {
@@ -73,10 +75,6 @@ const messages = defineMessages({
     id: 'features.Contents.features.ClassRooms.Manage.classroomsDeleteError',
   },
 });
-
-const ButtonStyled = styled(Button)`
-  color: white;
-`;
 
 const ClassroomManage = () => {
   const intl = useIntl();
@@ -133,34 +131,41 @@ const ClassroomManage = () => {
         {!isSelectionEnabled && (
           <Box direction="row" gap="small">
             <Button
-              secondary
-              label={intl.formatMessage(messages.SelectButtonLabel)}
+              color="secondary"
+              aria-label={intl.formatMessage(messages.SelectButtonLabel)}
               onClick={switchSelectEnabled}
-            />
-            <Link to={classroomCreatePath}>
-              <Button
-                primary
-                label={intl.formatMessage(messages.CreateClassroomLabel)}
-              />
-            </Link>
+            >
+              {intl.formatMessage(messages.SelectButtonLabel)}
+            </Button>
+            <ButtonWithLink
+              to={classroomCreatePath}
+              aria-label={intl.formatMessage(messages.CreateClassroomLabel)}
+            >
+              {intl.formatMessage(messages.CreateClassroomLabel)}
+            </ButtonWithLink>
           </Box>
         )}
         {isSelectionEnabled && (
           <Box direction="row" gap="small">
             <Button
-              secondary
-              label={intl.formatMessage(messages.CancelSelectionLabel)}
+              color="secondary"
+              aria-label={intl.formatMessage(messages.CancelSelectionLabel)}
               onClick={switchSelectEnabled}
-            />
-            <ButtonStyled
-              primary
-              color="action-danger"
-              label={intl.formatMessage(messages.DeleteButtonLabel, {
+            >
+              {intl.formatMessage(messages.CancelSelectionLabel)}
+            </Button>
+            <Button
+              color="danger"
+              aria-label={intl.formatMessage(messages.DeleteButtonLabel, {
                 item_count: selectedItems.length,
               })}
               disabled={selectedItems.length < 1}
               onClick={() => setIsDeleteModalOpen(true)}
-            />
+            >
+              {intl.formatMessage(messages.DeleteButtonLabel, {
+                item_count: selectedItems.length,
+              })}
+            </Button>
           </Box>
         )}
       </ContentsHeader>
@@ -194,9 +199,12 @@ const ClassroomManage = () => {
           })}
         </Text>
         <ModalButton
-          label={intl.formatMessage(messages.confirmDeleteClassroomsTitle, {
-            item_count: selectedItems.length,
-          })}
+          aria-label={intl.formatMessage(
+            messages.confirmDeleteClassroomsTitle,
+            {
+              item_count: selectedItems.length,
+            },
+          )}
           onClickCancel={() => {
             setIsDeleteModalOpen(false);
           }}
@@ -205,8 +213,12 @@ const ClassroomManage = () => {
             setIsDeleteModalOpen(false);
             switchSelectEnabled();
           }}
-          style={ButtonLoaderStyle.DESTRUCTIVE}
-        />
+          color="danger"
+        >
+          {intl.formatMessage(messages.confirmDeleteClassroomsTitle, {
+            item_count: selectedItems.length,
+          })}
+        </ModalButton>
       </Modal>
     </Fragment>
   );

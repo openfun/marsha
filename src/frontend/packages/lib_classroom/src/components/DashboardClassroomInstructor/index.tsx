@@ -1,4 +1,5 @@
-import { Box, Button, Grid } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
+import { Box, Grid } from 'grommet';
 import { Breakpoints, Nullable } from 'lib-common';
 import { BoxLoader, Classroom, useResponsive } from 'lib-components';
 import React, { Suspense, lazy } from 'react';
@@ -103,12 +104,12 @@ const DashboardClassroomInstructor = ({
     );
     right = (
       <Button
-        label={intl.formatMessage(messages.endClassroomLabel)}
-        primary
-        size="large"
-        fill="horizontal"
+        aria-label={intl.formatMessage(messages.endClassroomLabel)}
         onClick={endClassroomAction}
-      />
+        fullWidth
+      >
+        {intl.formatMessage(messages.endClassroomLabel)}
+      </Button>
     );
   } else {
     left = (
@@ -131,18 +132,20 @@ const DashboardClassroomInstructor = ({
         fill="horizontal"
       >
         <Button
-          label={intl.formatMessage(messages.endClassroomLabel)}
-          size="large"
-          fill="horizontal"
+          aria-label={intl.formatMessage(messages.endClassroomLabel)}
           onClick={endClassroomAction}
-        />
+          fullWidth
+          color="secondary"
+        >
+          {intl.formatMessage(messages.endClassroomLabel)}
+        </Button>
         <Button
-          label={intl.formatMessage(messages.joinClassroomLabel)}
-          primary
-          size="large"
-          fill="horizontal"
+          aria-label={intl.formatMessage(messages.joinClassroomLabel)}
           onClick={joinClassroomAction}
-        />
+          fullWidth
+        >
+          {intl.formatMessage(messages.joinClassroomLabel)}
+        </Button>
       </Grid>
     );
   }

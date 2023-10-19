@@ -1,4 +1,5 @@
-import { Box, Button, Tab, Tabs, ThemeContext } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
+import { Box, Tab, Tabs, ThemeContext } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
 import { Classroom } from 'lib-components';
@@ -100,16 +101,17 @@ const DashboardClassroomForm = ({ classroom }: DashboardClassroomFormProps) => {
         >
           <ClassroomInfoBar flex />
           <Button
-            type="submit"
-            label={intl.formatMessage(messages.startClassroomLabel)}
             disabled={!classroom.title || isCreating}
-            primary
-            size="small"
             onClick={() => {
               setIsCreating(true);
               createClassroomMutation.mutate(classroom);
             }}
-          />
+            style={{
+              alignSelf: 'center',
+            }}
+          >
+            {intl.formatMessage(messages.startClassroomLabel)}
+          </Button>
         </StyledClassroomInformationBarWrapper>
         <ThemeContext.Extend value={extendedTheme}>
           <Tabs>

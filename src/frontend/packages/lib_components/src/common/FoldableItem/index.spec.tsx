@@ -76,7 +76,9 @@ describe('<FoldableItem />', () => {
     screen.getByText(genericTitle);
     screen.getByRole('button', { name: genericTitle });
     expect(screen.queryByText('Generic component')).toEqual(null);
-    const infoButton = screen.getAllByRole('button')[0];
+    const infoButton = screen.getByRole('button', {
+      name: 'help',
+    });
     expect(screen.queryByText(genericInfoText)).toEqual(null);
 
     await userEvent.click(infoButton);

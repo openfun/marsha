@@ -1,4 +1,5 @@
-import { Box, Button } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
+import { Box } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { Nullable, theme } from 'lib-common';
 import {
@@ -88,26 +89,30 @@ export const VideoLayout = ({
                   </StyledNoSelectElement>
                 </Box>
 
-                {isLargeLayout && !isPanelOpen && sideElement && (
-                  <Button
-                    disabled={!isXmppReady}
-                    icon={
-                      <OpenClosePanelSVG
-                        height="20px"
-                        iconColor="white"
-                        width="20px"
-                      />
-                    }
-                    onClick={() => setPanelVisibility(true)}
-                    style={{
-                      padding: '0px',
-                      position: 'absolute',
-                      right: '30px',
-                      top: '18px',
-                      zIndex: 30,
-                    }}
-                  />
-                )}
+                {isXmppReady &&
+                  isLargeLayout &&
+                  !isPanelOpen &&
+                  sideElement && (
+                    <Button
+                      color="tertiary"
+                      className="c__button-no-bg"
+                      icon={
+                        <OpenClosePanelSVG
+                          height="20px"
+                          iconColor="white"
+                          width="20px"
+                        />
+                      }
+                      onClick={() => setPanelVisibility(true)}
+                      style={{
+                        padding: '0px',
+                        position: 'absolute',
+                        right: '30px',
+                        top: '18px',
+                        zIndex: 30,
+                      }}
+                    />
+                  )}
 
                 {!isLive && isStarted && (
                   <Box margin={{ top: 'medium' }}>
@@ -136,6 +141,8 @@ export const VideoLayout = ({
                 >
                   {isLargeLayout && isPanelOpen && (
                     <Button
+                      color="tertiary"
+                      className="c__button-no-bg"
                       icon={
                         <OpenClosePanelSVG
                           height="20px"
@@ -145,10 +152,10 @@ export const VideoLayout = ({
                       }
                       onClick={() => setPanelVisibility(false)}
                       style={{
-                        left: '-10px',
+                        left: '-26px',
                         padding: '0px',
                         position: 'absolute',
-                        top: '18px',
+                        top: '9px',
                         transform: 'rotate(180deg)',
                         zIndex: 30,
                       }}

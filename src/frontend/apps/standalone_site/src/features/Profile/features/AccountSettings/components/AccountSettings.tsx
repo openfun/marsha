@@ -1,5 +1,6 @@
+import { Button } from '@openfun/cunningham-react';
 import { useMutation } from '@tanstack/react-query';
-import { Box, Button } from 'grommet';
+import { Box } from 'grommet';
 import { FetchResponseError, Heading } from 'lib-components';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
@@ -205,13 +206,14 @@ export const AccountSettings = () => {
 
               <Box>
                 <Button
-                  margin={{ top: 'medium' }}
-                  alignSelf="end"
+                  className="mt-s"
                   type="submit"
                   title={intl.formatMessage(messages.submit)}
-                  primary
-                  label={intl.formatMessage(messages.submit)}
-                />
+                  aria-label={intl.formatMessage(messages.submit)}
+                  style={{ alignSelf: 'end' }}
+                >
+                  {intl.formatMessage(messages.submit)}
+                </Button>
               </Box>
             </form>
           </Box>

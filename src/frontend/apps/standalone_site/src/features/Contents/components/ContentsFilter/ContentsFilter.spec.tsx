@@ -40,7 +40,7 @@ describe('<ContentsFilter />', () => {
     deferredPlaylists.resolve(playlistsResponse);
 
     expect(
-      screen.queryByRole('button', { name: 'Create a new playlist' }),
+      screen.queryByRole('link', { name: 'Create a new playlist' }),
     ).not.toBeInTheDocument();
 
     await userEvent.click(
@@ -83,7 +83,7 @@ describe('<ContentsFilter />', () => {
     deferredPlaylists.resolve(playlistsResponse);
 
     expect(
-      screen.queryByRole('button', { name: 'Create a new playlist' }),
+      screen.queryByRole('link', { name: 'Create a new playlist' }),
     ).not.toBeInTheDocument();
 
     expect(screen.getByText('2')).toBeInTheDocument();

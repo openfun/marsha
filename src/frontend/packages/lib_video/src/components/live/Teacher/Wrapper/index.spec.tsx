@@ -21,6 +21,7 @@ import { Suspense, useEffect } from 'react';
 import DashboardLiveJitsi from '@lib-video/components/live/common/DashboardLiveJitsi';
 import { useChatItemState } from '@lib-video/hooks/useChatItemsStore';
 import { JitsiApiProvider } from '@lib-video/hooks/useJitsiApi';
+import { LiveFeedbackProvider } from '@lib-video/hooks/useLiveFeedback';
 import { LiveModaleConfigurationProvider } from '@lib-video/hooks/useLiveModale';
 import {
   LivePanelItem,
@@ -261,7 +262,9 @@ describe('components/DashboardLive', () => {
           <PictureInPictureProvider value={{ reversed: false }}>
             <JitsiApiProvider value={undefined}>
               <Suspense fallback="loading...">
-                <TeacherLiveWrapper />
+                <LiveFeedbackProvider value={false}>
+                  <TeacherLiveWrapper />
+                </LiveFeedbackProvider>
               </Suspense>
             </JitsiApiProvider>
           </PictureInPictureProvider>
@@ -284,7 +287,9 @@ describe('components/DashboardLive', () => {
           <PictureInPictureProvider value={{ reversed: false }}>
             <JitsiApiProvider value={undefined}>
               <Suspense fallback="loading...">
-                <TeacherLiveWrapper />
+                <LiveFeedbackProvider value={false}>
+                  <TeacherLiveWrapper />
+                </LiveFeedbackProvider>
               </Suspense>
             </JitsiApiProvider>
           </PictureInPictureProvider>
@@ -355,7 +360,9 @@ describe('components/DashboardLive', () => {
           <PictureInPictureProvider value={{ reversed: false }}>
             <JitsiApiProvider value={undefined}>
               <Suspense fallback="loading...">
-                <TeacherLiveWrapper />
+                <LiveFeedbackProvider value={false}>
+                  <TeacherLiveWrapper />
+                </LiveFeedbackProvider>
               </Suspense>
             </JitsiApiProvider>
           </PictureInPictureProvider>
@@ -391,7 +398,9 @@ describe('components/DashboardLive', () => {
           <PictureInPictureProvider value={{ reversed: false }}>
             <JitsiApiProvider value={undefined}>
               <Suspense fallback="loading...">
-                <TeacherLiveWrapper />
+                <LiveFeedbackProvider value={false}>
+                  <TeacherLiveWrapper />
+                </LiveFeedbackProvider>
               </Suspense>
             </JitsiApiProvider>
           </PictureInPictureProvider>
@@ -435,7 +444,9 @@ describe('components/DashboardLive', () => {
           <PictureInPictureProvider value={{ reversed: false }}>
             <JitsiApiProvider value={undefined}>
               <Suspense fallback="loading...">
-                <TeacherLiveWrapper />
+                <LiveFeedbackProvider value={false}>
+                  <TeacherLiveWrapper />
+                </LiveFeedbackProvider>
               </Suspense>
             </JitsiApiProvider>
           </PictureInPictureProvider>
@@ -466,7 +477,9 @@ describe('components/DashboardLive', () => {
           <PictureInPictureProvider value={{ reversed: false }}>
             <JitsiApiProvider value={undefined}>
               <Suspense fallback="loading...">
-                <TeacherLiveWrapper />
+                <LiveFeedbackProvider value={false}>
+                  <TeacherLiveWrapper />
+                </LiveFeedbackProvider>
               </Suspense>
             </JitsiApiProvider>
           </PictureInPictureProvider>
@@ -496,7 +509,9 @@ describe('components/DashboardLive', () => {
           <PictureInPictureProvider value={{ reversed: false }}>
             <JitsiApiProvider value={undefined}>
               <Suspense fallback="loading...">
-                <TeacherLiveWrapper />
+                <LiveFeedbackProvider value={false}>
+                  <TeacherLiveWrapper />
+                </LiveFeedbackProvider>
               </Suspense>
             </JitsiApiProvider>
           </PictureInPictureProvider>
@@ -529,7 +544,9 @@ describe('components/DashboardLive', () => {
           <PictureInPictureProvider value={{ reversed: false }}>
             <JitsiApiProvider value={undefined}>
               <Suspense fallback="loading...">
-                <TeacherLiveWrapper />
+                <LiveFeedbackProvider value={false}>
+                  <TeacherLiveWrapper />
+                </LiveFeedbackProvider>
               </Suspense>
             </JitsiApiProvider>
           </PictureInPictureProvider>
@@ -592,7 +609,9 @@ describe('components/DashboardLive', () => {
           <PictureInPictureProvider value={{ reversed: false }}>
             <JitsiApiProvider value={undefined}>
               <Suspense fallback="loading...">
-                <TeacherLiveWrapper />
+                <LiveFeedbackProvider value={false}>
+                  <TeacherLiveWrapper />
+                </LiveFeedbackProvider>
               </Suspense>
             </JitsiApiProvider>
           </PictureInPictureProvider>
@@ -625,7 +644,9 @@ describe('components/DashboardLive', () => {
           <PictureInPictureProvider value={{ reversed: false }}>
             <JitsiApiProvider value={undefined}>
               <Suspense fallback="loading...">
-                <TeacherLiveWrapper />
+                <LiveFeedbackProvider value={false}>
+                  <TeacherLiveWrapper />
+                </LiveFeedbackProvider>
               </Suspense>
             </JitsiApiProvider>
           </PictureInPictureProvider>

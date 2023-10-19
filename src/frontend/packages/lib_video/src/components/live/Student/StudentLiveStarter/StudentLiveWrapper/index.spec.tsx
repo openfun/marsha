@@ -1155,7 +1155,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     );
   });
 
-  it('displays the jitsi player in the picture and shared media in background when a media is shared', () => {
+  it('displays the jitsi player in the picture and shared media in background when a media is shared', async () => {
     const sharedLiveMedia = sharedLiveMediaMockFactory({ video: videoId });
     const video = liveMockFactory({
       id: videoId,
@@ -1197,7 +1197,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
       ),
     );
 
-    expect(mockJitsi).toHaveBeenCalled();
+    await waitFor(() => expect(mockJitsi).toHaveBeenCalled());
 
     container!.querySelector('#picture-in-picture-master');
     const pipSlave = container!.querySelector('#picture-in-picture-slave');
@@ -1207,7 +1207,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     );
   });
 
-  it('use id3 tags for shared documents instead of video when possible', () => {
+  it('use id3 tags for shared documents instead of video when possible', async () => {
     const sharedLiveMedia = sharedLiveMediaMockFactory({ video: videoId });
     useVideo.getState().setId3Video({
       active_shared_live_media: { id: sharedLiveMedia.id },
@@ -1255,7 +1255,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
       ),
     );
 
-    expect(mockJitsi).toHaveBeenCalled();
+    await waitFor(() => expect(mockJitsi).toHaveBeenCalled());
 
     container!.querySelector('#picture-in-picture-master');
     const pipSlave = container!.querySelector('#picture-in-picture-slave');

@@ -36,7 +36,7 @@ describe('<ConfirmationModal />', () => {
     );
     screen.getByText(genericTitle);
     screen.getByText(genericContent);
-    screen.getByRole('button', { name: '' });
+    screen.getByRole('button', { name: 'Close the modal' });
     screen.getByRole('button', { name: 'Confirm' });
     screen.getByRole('button', { name: 'Cancel' });
 
@@ -57,7 +57,7 @@ describe('<ConfirmationModal />', () => {
     );
     screen.getByRole('button', { name: 'Confirm' });
     screen.getByRole('button', { name: 'Cancel' });
-    const closeButton = screen.getByRole('button', { name: '' });
+    const closeButton = screen.getByRole('button', { name: 'Close the modal' });
 
     await userEvent.click(closeButton);
 
@@ -76,7 +76,7 @@ describe('<ConfirmationModal />', () => {
     );
     screen.getByText(genericTitle);
     screen.getByText(genericContent);
-    screen.getByRole('button', { name: '' });
+    screen.getByRole('button', { name: 'Close the modal' });
     screen.getByRole('button', { name: 'Confirm' });
     const cancelButton = screen.getByRole('button', { name: 'Cancel' });
 
@@ -97,7 +97,7 @@ describe('<ConfirmationModal />', () => {
     );
     screen.getByText(genericTitle);
     screen.getByText(genericContent);
-    screen.getByRole('button', { name: '' });
+    screen.getByRole('button', { name: 'Close the modal' });
     screen.getByRole('button', { name: 'Cancel' });
     const confirmButton = screen.getByRole('button', { name: 'Confirm' });
 

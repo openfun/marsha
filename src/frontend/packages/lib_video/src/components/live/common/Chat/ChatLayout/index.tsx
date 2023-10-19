@@ -1,5 +1,5 @@
 import { BoxLoader } from '@lib-components/common';
-import { Input } from '@openfun/cunningham-react';
+import { Button, Input } from '@openfun/cunningham-react';
 import { Box } from 'grommet';
 import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -10,7 +10,20 @@ import { useSetDisplayName } from '@lib-video/hooks/useSetDisplayName';
 import { converse } from '@lib-video/utils/window';
 
 import { ChatConversationDisplayer } from '../ChatConversationDisplayer';
-import { JoinChatButton } from '../JoinChatButton';
+
+const messages = defineMessages({
+  inputBarPlaceholder: {
+    defaultMessage: 'Message...',
+    description:
+      'The input bar to write, edit and send messages to the chat conversation.',
+    id: 'components.InputBar.inputBarPlaceholder',
+  },
+  joinChatButton: {
+    defaultMessage: 'Join the chat',
+    description: "Button's label offering the user to join the chat.",
+    id: 'components.InputBar.joinChatButton',
+  },
+});
 
 export interface ChatLayoutProps {
   isModerated: boolean;
@@ -29,15 +42,6 @@ export const ChatLayout = ({ isModerated }: ChatLayoutProps) => {
     converse.sendMessage(chatmessage);
     setChatmessage('');
   };
-
-  const messages = defineMessages({
-    inputBarPlaceholder: {
-      defaultMessage: 'Message...',
-      description:
-        'The input bar to write, edit and send messages to the chat conversation.',
-      id: 'components.InputBar.inputBarPlaceholder',
-    },
-  });
 
   const handleJoinChatButton = () => {
     setDisplayName(true);
@@ -77,10 +81,14 @@ export const ChatLayout = ({ isModerated }: ChatLayoutProps) => {
               }}
             />
           ) : (
-            <JoinChatButton
+            <Button
+              fullWidth
               disabled={!hasReceivedMessageHistory}
-              handleClick={handleJoinChatButton}
-            />
+              onClick={handleJoinChatButton}
+              color="secondary"
+            >
+              {intl.formatMessage(messages.joinChatButton)}
+            </Button>
           )}
         </Box>
       )}

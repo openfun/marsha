@@ -1,4 +1,5 @@
-import { Box, Button } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
+import { Box } from 'grommet';
 import {
   PlusSVG,
   Text,
@@ -142,7 +143,7 @@ export const UploadFiles = () => {
           size: 'small',
           color: 'blue-active',
         }}
-        margin={{ bottom: 'large' }}
+        margin={{ bottom: 'medium' }}
         round="small"
       >
         {uploadsInProgress.length > 0 && (
@@ -213,6 +214,7 @@ export const UploadFiles = () => {
                   direction={filesToUpload.length === 0 ? 'column' : 'row'}
                   align="center"
                   gap="medium"
+                  style={{ cursor: 'pointer' }}
                 >
                   {filesToUpload.length === 0 ? (
                     <PlusSVG iconColor="#75A7E5" height="100px" width="100px" />
@@ -235,14 +237,19 @@ export const UploadFiles = () => {
       </Box>
 
       <Button
-        primary
+        className="mb-s p-b"
         onClick={() => {
           void uploadFiles();
         }}
-        label={intl.formatMessage(messages.uploadButtonLabel)}
-        margin={{ bottom: 'large' }}
+        aria-label={intl.formatMessage(messages.uploadButtonLabel)}
         disabled={filesToUpload.length === 0}
-      />
+        style={{
+          alignSelf: 'center',
+        }}
+        fullWidth
+      >
+        {intl.formatMessage(messages.uploadButtonLabel)}
+      </Button>
     </Box>
   );
 };

@@ -117,6 +117,33 @@
 	--c--components--forms-checkbox--font-size: var(--c--theme--font--sizes--ml);
 	--c--components--forms-labelledbox--label-color--small: var(--c--theme--colors--primary-500);
 	--c--components--forms-switch--accent-color: var(--c--theme--colors--primary-400);
+	--c--components--button--border-radius--active: var(--c--components--button--border-radius);
+	--c--components--button--success--color: white;
+	--c--components--button--success--color-disabled: white;
+	--c--components--button--success--color-hover: white;
+	--c--components--button--success--background--color: var(--c--theme--colors--success-600);
+	--c--components--button--success--background--color-disabled: var(--c--theme--colors--greyscale-300);
+	--c--components--button--success--background--color-hover: var(--c--theme--colors--success-800);
+	--c--components--button--danger--color-hover: white;
+	--c--components--button--danger--background--color: var(--c--theme--colors--danger-400);
+	--c--components--button--danger--background--color-hover: var(--c--theme--colors--danger-500);
+	--c--components--button--danger--background--color-disabled: var(--c--theme--colors--danger-100);
+	--c--components--button--primary--color: var(--c--theme--colors--primary-text);
+	--c--components--button--primary--color-active: var(--c--theme--colors--primary-text);
+	--c--components--button--primary--background--color: var(--c--theme--colors--primary-400);
+	--c--components--button--primary--background--color-active: var(--c--theme--colors--primary-500);
+	--c--components--button--primary--border--color-active: transparent;
+	--c--components--button--secondary--color: var(--c--theme--colors--primary-500);
+	--c--components--button--secondary--color-hover: var(--c--theme--colors--primary-text);
+	--c--components--button--secondary--background--color: white;
+	--c--components--button--secondary--background--color-hover: var(--c--theme--colors--primary-700);
+	--c--components--button--secondary--border--color: var(--c--theme--colors--primary-200);
+	--c--components--button--tertiary--color: var(--c--theme--colors--primary-500);
+	--c--components--button--tertiary--color-disabled: var(--c--theme--colors--greyscale-600);
+	--c--components--button--tertiary--background--color-hover: var(--c--theme--colors--primary-100);
+	--c--components--button--tertiary--background--color-disabled: var(--c--theme--colors--greyscale-200);
+	--c--components--button--disabled--color: white;
+	--c--components--button--disabled--background--color: #b3cef0;
 } .clr-primary-text { color: var(--c--theme--colors--primary-text); }
 .clr-primary-100 { color: var(--c--theme--colors--primary-100); }
 .clr-primary-200 { color: var(--c--theme--colors--primary-200); }

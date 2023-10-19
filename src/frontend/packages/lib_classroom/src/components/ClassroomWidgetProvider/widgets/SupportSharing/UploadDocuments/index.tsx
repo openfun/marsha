@@ -1,4 +1,5 @@
-import { Box, Button } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
+import { Box } from 'grommet';
 import { Nullable } from 'lib-common';
 import {
   Classroom,
@@ -60,11 +61,6 @@ const messages = defineMessages({
     defaultMessage: 'Default document',
     description: 'Helper message for default document.',
     id: 'apps.classroom.components.DashboardStudent.UploadFiles.isDefaultDocument',
-  },
-  setDefaultDocument: {
-    defaultMessage: 'Click to set as default document',
-    description: 'Button helper message for setting a document as default.',
-    id: 'apps.classroom.components.DashboardStudent.UploadFiles.setDefaultDocument',
   },
   downloadButtonLabel: {
     defaultMessage: 'Download',
@@ -182,15 +178,15 @@ export const UploadDocuments = ({ classroomId }: UploadDocumentsProps) => {
       <Box
         align="center"
         background="blue-message"
-        fill
         border={{
           style: filesToUpload.length === 0 ? 'dashed' : 'solid',
           size: 'xsmall',
           color: 'blue-active',
         }}
-        margin={{ top: 'small' }}
-        pad={{ vertical: 'small' }}
+        margin={{ top: 'xsmall' }}
+        pad={{ vertical: 'small', horizontal: 'small' }}
         round="xsmall"
+        justify="center"
       >
         {classroomDocuments?.results
           .filter(
@@ -215,7 +211,7 @@ export const UploadDocuments = ({ classroomId }: UploadDocumentsProps) => {
           <Text key={`${file.name}_${index}`}>{file.name}</Text>
         ))}
 
-        <Box fill align="center" pad="small">
+        <Box align="center" justify="center" height={{ min: 'xxsmall' }}>
           <Dropzone onDrop={onDrop} accept={{ 'application/pdf': ['.pdf'] }}>
             {({ getRootProps, getInputProps }) => (
               <div {...getRootProps()}>
@@ -238,14 +234,15 @@ export const UploadDocuments = ({ classroomId }: UploadDocumentsProps) => {
 
       {filesToUpload.length > 0 && (
         <Button
-          primary
           onClick={() => {
-            void uploadFiles();
+            uploadFiles();
           }}
-          label={intl.formatMessage(messages.uploadButtonLabel)}
-          color="blue-active"
-          margin={{ top: 'small' }}
-        />
+          aria-label={intl.formatMessage(messages.uploadButtonLabel)}
+          fullWidth
+          className="mt-s"
+        >
+          {intl.formatMessage(messages.uploadButtonLabel)}
+        </Button>
       )}
     </Box>
   );

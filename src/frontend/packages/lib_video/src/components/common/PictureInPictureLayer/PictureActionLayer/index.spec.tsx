@@ -1,6 +1,6 @@
+import { Button } from '@openfun/cunningham-react';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Button } from 'grommet';
 import { render } from 'lib-tests';
 
 import { PictureActionLayer } from '.';
@@ -9,7 +9,7 @@ describe('<PictureActionLayer />', () => {
   it('renders all actions', () => {
     render(
       <PictureActionLayer
-        actions={[<Button key="button" label="do some stuff" />]}
+        actions={[<Button key="button">do some stuff</Button>]}
         pictureWidth={500}
       />,
     );
@@ -22,7 +22,7 @@ describe('<PictureActionLayer />', () => {
   it('renders only more options action', async () => {
     render(
       <PictureActionLayer
-        actions={[<Button key="button" label="do some stuff" />]}
+        actions={[<Button key="button">do some stuff</Button>]}
         pictureWidth={5}
       />,
     );

@@ -1,4 +1,5 @@
-import { Box, Button } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
+import { Box } from 'grommet';
 import React, { ReactNode } from 'react';
 
 interface LiveModaleAction {
@@ -29,12 +30,13 @@ export const LiveModale = ({ content, actions }: LiveModaleProps) => {
           <Button
             key={`live-modale-button-${index}`}
             title={action.title ?? action.label}
-            a11yTitle={action.title ?? action.label}
-            label={action.label}
-            margin={{ vertical: 'small' }}
+            aria-label={action.title ?? action.label}
             onClick={action.action}
-            primary
-          />
+            fullWidth
+            className="mt-s mb-s"
+          >
+            {action.label}
+          </Button>
         ))}
       </Box>
     </Box>

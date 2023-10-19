@@ -1,5 +1,5 @@
-import { Select } from '@openfun/cunningham-react';
-import { Box, Button } from 'grommet';
+import { Button, Select } from '@openfun/cunningham-react';
+import { Box } from 'grommet';
 import {
   FoldableItem,
   ToggleInput,
@@ -10,7 +10,6 @@ import {
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
-import styled from 'styled-components';
 
 import { useUpdateVideo } from '@lib-video/api/useUpdateVideo';
 import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
@@ -70,14 +69,6 @@ const messages = defineMessages({
     id: 'components.DownloadVideo.allowDownloadToggleFail',
   },
 });
-
-const StyledAnchorButton = styled(Button)`
-  height: 50px;
-  font-family: 'Roboto-Medium';
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
 
 interface DownloadVideoProps {
   isTeacher: boolean;
@@ -188,22 +179,21 @@ export const DownloadVideo = ({ isTeacher }: DownloadVideoProps) => {
           clearable={false}
           text={intl.formatMessage(messages.selectQualityInfo)}
         />
-        <StyledAnchorButton
-          a11yTitle={intl.formatMessage(messages.downloadButtonLabel)}
-          download
+        <Button
+          fullWidth
+          aria-label={intl.formatMessage(messages.downloadButtonLabel)}
           disabled={isResolutionsEmpty}
-          fill="horizontal"
-          label={intl.formatMessage(messages.downloadButtonLabel)}
-          href={
-            video.urls
-              ? video.urls.mp4[Number(selectedQuality) as videoSize]
-              : undefined
-          }
-          target="_blank"
-          rel="noopener noreferrer"
-          primary
-          title={intl.formatMessage(messages.downloadButtonLabel)}
-        />
+          onClick={() => {
+            window.open(
+              video.urls
+                ? video.urls.mp4[Number(selectedQuality) as videoSize]
+                : undefined,
+              '_blank',
+            );
+          }}
+        >
+          {intl.formatMessage(messages.downloadButtonLabel)}
+        </Button>
       </Box>
     </FoldableItem>
   );

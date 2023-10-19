@@ -1,5 +1,6 @@
-import { Box, Button, Grid } from 'grommet';
-import { AddCircle, DocumentStore } from 'grommet-icons';
+import { Button } from '@openfun/cunningham-react';
+import { Box, Grid } from 'grommet';
+import { DocumentStore } from 'grommet-icons';
 import { Nullable } from 'lib-common';
 import { ContentCard, FileDepository, Text } from 'lib-components';
 import React from 'react';
@@ -84,11 +85,12 @@ export const SelectContentSection = ({
     <Box>
       <Box margin={{ vertical: 'medium' }}>
         <Button
-          icon={<AddCircle />}
-          secondary
-          label={intl.formatMessage(messages.addFileDepository)}
+          icon={<span className="material-icons">add_circle</span>}
           onClick={addAndSelectContent}
-        />
+          style={{ alignSelf: 'start' }}
+        >
+          {intl.formatMessage(messages.addFileDepository)}
+        </Button>
       </Box>
       <Grid columns="small" gap="small">
         {items?.map((item: FileDepository) => (

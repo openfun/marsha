@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   FormField,
   FormFieldExtendedProps,
   Select,
@@ -71,7 +70,7 @@ const useSelectPlaylist = ({
   const selectPlaylist = useMemo(
     () => (
       <Box
-        direction="row-responsive"
+        direction="row"
         pad={withPlaylistCreation ? { bottom: 'small' } : {}}
         gap="small"
       >
@@ -113,13 +112,19 @@ const useSelectPlaylist = ({
           />
         </FormField>
         {withPlaylistCreation && (
-          <Link to={routes.PLAYLIST.subRoutes.CREATE.path}>
-            <Button
-              a11yTitle={intl.formatMessage(messages.createPlaylist)}
-              icon={<PlusSVG iconColor="#055fd2" height="35px" width="35px" />}
-              style={{
-                border: 'transparent',
-              }}
+          <Link
+            to={routes.PLAYLIST.subRoutes.CREATE.path}
+            className="ml-b mr-b"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <PlusSVG
+              aria-label={intl.formatMessage(messages.createPlaylist)}
+              iconColor="#055fd2"
+              height="35px"
+              width="35px"
             />
           </Link>
         )}

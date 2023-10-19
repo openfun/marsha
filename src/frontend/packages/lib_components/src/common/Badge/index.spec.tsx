@@ -10,13 +10,10 @@ describe('<Badge />', () => {
     screen.getByText('24');
 
     const badge = screen.getByTestId('badge_container');
-    expect(badge).toHaveStyle('background-color: #ffffff;');
-    expect(badge).toHaveStyle('border: 1px solid #031963;');
-    expect(badge).toHaveStyle('border-radius: 6px;');
-    expect(badge).toHaveStyle('bottom: 0px;');
-    expect(badge).toHaveStyle('color: #031963;');
-    expect(badge).toHaveStyle('padding: 1px 3px;');
+    expect(badge).toHaveStyle('background-color: rgb(5, 95, 210);');
+    expect(badge).toHaveStyle('border-radius: 60px;');
     expect(badge).toHaveStyle('position: absolute;');
-    expect(badge).toHaveStyle('right: -8px;');
+    expect(badge).toHaveStyle('top: 0px;');
+    expect(badge).toHaveStyle('right: 0px;');
   });
 });

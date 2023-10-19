@@ -1,4 +1,5 @@
-import { Box, Button } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
+import { Box } from 'grommet';
 import { SwitchToDocumentSVG, SwitchToPlayerSVG } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -21,15 +22,6 @@ const messages = defineMessages({
   },
 });
 
-const StyledButton = styled(Button)`
-  padding: 0px;
-  height: 100%;
-  width: 100%;
-  max-height: 80px;
-  max-width: 80px;
-  margin: auto;
-`;
-
 const ContainerStyle = styled(Box)`
   margin: auto;
   max-height: 35px;
@@ -41,12 +33,13 @@ export const PictureInPictureSwitchAction = () => {
   const [pipState, setPipState] = usePictureInPicture();
 
   return (
-    <StyledButton
-      a11yTitle={intl.formatMessage(
+    <Button
+      className="c__button-no-bg"
+      aria-label={intl.formatMessage(
         pipState.reversed ? messages.documentActive : messages.playerActive,
       )}
-      plain
-      label={
+      color="tertiary"
+      icon={
         <ContainerStyle>
           {pipState.reversed ? (
             <SwitchToPlayerSVG iconColor="white" height="100%" width="100%" />

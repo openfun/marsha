@@ -1,4 +1,4 @@
-import { Box, Button } from 'grommet';
+import { Box } from 'grommet';
 import {
   FoldableItem,
   TimedText,
@@ -84,20 +84,19 @@ export const Transcripts = () => {
           marginBottom: '0.75rem',
         }}
       >
-        <Button
-          a11yTitle={intl.formatMessage(messages.transcriptDownload)}
+        <a
+          className="c__button c__button--primary c__button--medium"
+          aria-label={intl.formatMessage(messages.transcriptDownload)}
           download
-          disabled={!selectedTranscript}
-          label={intl.formatMessage(messages.transcriptDownload)}
           href={
             (selectedTranscript && selectedTranscript.source_url) ?? undefined
           }
           target="_blank"
           rel="noopener noreferrer"
-          primary
           title={intl.formatMessage(messages.transcriptDownload)}
-          style={{ height: '50px' }}
-        />
+        >
+          {intl.formatMessage(messages.transcriptDownload)}
+        </a>
       </Box>
       {selectedTranscript && (
         <Box>

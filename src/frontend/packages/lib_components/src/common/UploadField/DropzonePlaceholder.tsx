@@ -1,4 +1,5 @@
-import { Box, Button } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
+import { Box } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
 import * as React from 'react';
@@ -62,12 +63,9 @@ export const DropzonePlaceholder = () => (
     <DropzoneDashBox />
     <DropzoneIcon />
     <DropzoneTextBox direction="row">
-      <Button
-        alignSelf="center"
-        color="brand"
-        label={<FormattedMessage {...messages.dropzoneButtonPick} />}
-        primary={true}
-      />
+      <Button>
+        <FormattedMessage {...messages.dropzoneButtonPick} />
+      </Button>
       <DropzoneHelpText>
         <FormattedMessage {...messages.dropzoneDragText} />
       </DropzoneHelpText>

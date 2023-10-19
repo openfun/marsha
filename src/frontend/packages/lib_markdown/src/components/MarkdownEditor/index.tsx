@@ -1,6 +1,6 @@
-import { Input } from '@openfun/cunningham-react';
+import { Button, Input } from '@openfun/cunningham-react';
 import { useQueryClient } from '@tanstack/react-query';
-import { Anchor, Box, Button, Footer } from 'grommet';
+import { Anchor, Box, Footer } from 'grommet';
 import { Nullable } from 'lib-common';
 import {
   BoxLoader,
@@ -265,6 +265,7 @@ export const MarkdownEditor = ({ markdownDocumentId }: MarkdownEditorProps) => {
             width="100%"
             pad={{ bottom: 'xsmall' }}
             gap="small"
+            align="center"
           >
             <Input
               aria-label={intl.formatMessage(messages.title)}
@@ -282,20 +283,20 @@ export const MarkdownEditor = ({ markdownDocumentId }: MarkdownEditorProps) => {
             />
 
             <Button
-              primary
               onClick={() => publishDocument()}
-              label={intl.formatMessage(messages.publish)}
               disabled={
                 !canSaveDocument() || contentChanged.current || !localIsDraft
               }
-            />
+            >
+              {intl.formatMessage(messages.publish)}
+            </Button>
 
             <Button
-              primary
               onClick={() => saveDocument()}
-              label={intl.formatMessage(messages.save)}
               disabled={!canSaveDocument() || !contentChanged.current}
-            />
+            >
+              {intl.formatMessage(messages.save)}
+            </Button>
           </Box>
 
           <Box direction="row" align="center">

@@ -1,6 +1,5 @@
-import { Button } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
 import {
-  ButtonLoaderStyle,
   FoldableItem,
   Heading,
   Modal,
@@ -14,7 +13,6 @@ import { useRef } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
 
 import { useDeleteVideo } from '@lib-video/api/useDeleteVideo';
 import { useCurrentVideo } from '@lib-video/hooks';
@@ -90,14 +88,6 @@ const messages = defineMessages({
   },
 });
 
-const StyledAnchorButton = styled(Button)`
-  height: 50px;
-  font-family: 'Roboto-Medium';
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
 export const DeleteVideo = () => {
   const intl = useIntl();
   const [context] = useCurrentResourceContext();
@@ -151,29 +141,30 @@ export const DeleteVideo = () => {
             : intl.formatMessage(messages.confirmDeleteVideoText)}
         </Text>
         <ModalButton
-          label={
+          aria-label={
             video.is_live
               ? intl.formatMessage(messages.confirmDeleteLiveTitle)
               : intl.formatMessage(messages.confirmDeleteVideoTitle)
           }
           onClickCancel={() => modalActions.current?.close()}
           onClickSubmit={() => deleteVideo.mutate(video.id)}
-          style={ButtonLoaderStyle.DESTRUCTIVE}
-        />
+          color="danger"
+        >
+          {video.is_live
+            ? intl.formatMessage(messages.confirmDeleteLiveTitle)
+            : intl.formatMessage(messages.confirmDeleteVideoTitle)}
+        </ModalButton>
       </Modal>
-      <StyledAnchorButton
-        a11yTitle={intl.formatMessage(messages.deleteButtonText)}
-        download
+      <Button
         disabled={!context.permissions.can_update}
-        fill="horizontal"
-        label={intl.formatMessage(messages.deleteButtonText)}
-        target="_blank"
-        rel="noopener noreferrer"
-        primary
+        aria-label={intl.formatMessage(messages.deleteButtonText)}
+        fullWidth
         title={intl.formatMessage(messages.deleteButtonText)}
         onClick={() => modalActions.current?.open()}
-        color="action-danger"
-      />
+        color="danger"
+      >
+        {intl.formatMessage(messages.deleteButtonText)}
+      </Button>
     </FoldableItem>
   );
 };

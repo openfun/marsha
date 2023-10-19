@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { JoinDiscussionSVG, Button as StudentButton } from 'lib-components';
+import { Button } from '@openfun/cunningham-react';
+import { JoinDiscussionSVG } from 'lib-components';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -98,11 +97,13 @@ export const StudentJoinDiscussionButton = () => {
   ]);
 
   return (
-    <StudentButton
-      label={intl.formatMessage(messages.askInstructor)}
-      Icon={JoinDiscussionSVG}
+    <Button
+      icon={<JoinDiscussionSVG iconColor="white" width="30" />}
+      aria-label={intl.formatMessage(messages.askInstructor)}
       onClick={askToJoinDiscussion}
       title={intl.formatMessage(messages.askInstructor)}
-    />
+    >
+      {intl.formatMessage(messages.askInstructor)}
+    </Button>
   );
 };

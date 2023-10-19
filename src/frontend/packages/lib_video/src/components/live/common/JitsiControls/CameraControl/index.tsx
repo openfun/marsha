@@ -1,4 +1,5 @@
-import { Box, Button } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
+import { Box } from 'grommet';
 import { Nullable } from 'lib-common';
 import { CameraOffSVG, CameraOnSVG } from 'lib-components';
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
@@ -19,15 +20,6 @@ const messages = defineMessages({
     id: 'JitsiControls.CameraControl.enableTitle',
   },
 });
-
-const StyledButton = styled(Button)`
-  padding: 0px;
-  height: 100%;
-  width: 100%;
-  max-height: 80px;
-  max-width: 80px;
-  margin: auto;
-`;
 
 const ContainerStyle = styled(Box)`
   margin: auto;
@@ -72,12 +64,13 @@ export const CameraControl = () => {
   }
 
   return (
-    <StyledButton
-      a11yTitle={intl.formatMessage(
+    <Button
+      className="c__button-no-bg"
+      color="tertiary"
+      aria-label={intl.formatMessage(
         isCameraOn ? messages.enableTitle : messages.disableTitle,
       )}
-      plain
-      label={
+      icon={
         <ContainerStyle>
           {isCameraOn ? (
             <CameraOnSVG iconColor="white" height="100%" width="100%" />

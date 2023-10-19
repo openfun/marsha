@@ -1,3 +1,4 @@
+import { Button } from '@openfun/cunningham-react';
 import {
   screen,
   waitFor,
@@ -5,7 +6,6 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { Button } from 'grommet';
 import { Deferred, render } from 'lib-tests';
 
 import { PlaylistForm } from './PlaylistForm';
@@ -31,7 +31,7 @@ describe('<PlaylistForm />', () => {
         onCancel={jest.fn()}
         submitTitle="Save"
         isSubmitting={false}
-        actions={<Button label="Edit" />}
+        actions={<Button>Edit</Button>}
       />,
     );
 
@@ -85,7 +85,7 @@ describe('<PlaylistForm />', () => {
         onCancel={jest.fn()}
         submitTitle="Save"
         isSubmitting={false}
-        actions={<Button label="Edit" />}
+        actions={<Button>Edit</Button>}
       />,
     );
 
@@ -125,7 +125,7 @@ describe('<PlaylistForm />', () => {
         onCancel={jest.fn()}
         submitTitle="Save"
         isSubmitting={false}
-        actions={<Button label="Edit" />}
+        actions={<Button>Edit</Button>}
         initialValues={{
           name: 'some initial name',
           organizationId: 'second id',
@@ -169,7 +169,7 @@ describe('<PlaylistForm />', () => {
         onCancel={jest.fn()}
         submitTitle="Save"
         isSubmitting={false}
-        actions={<Button label="Edit" />}
+        actions={<Button>Edit</Button>}
         initialValues={{
           name: 'some initial name',
           organizationId: 'third id',
@@ -214,7 +214,7 @@ describe('<PlaylistForm />', () => {
         onCancel={jest.fn()}
         submitTitle="Save"
         isSubmitting={false}
-        actions={<Button label="Edit" />}
+        actions={<Button>Edit</Button>}
         initialValues={{
           name: 'some initial name',
           organizationId: 'third id',
@@ -261,7 +261,7 @@ describe('<PlaylistForm />', () => {
         onCancel={mockedOnCancel}
         submitTitle="Save"
         isSubmitting={false}
-        actions={<Button label="Edit" />}
+        actions={<Button>Edit</Button>}
         initialValues={{
           name: 'some initial name',
           organizationId: 'third id',
@@ -300,7 +300,7 @@ describe('<PlaylistForm />', () => {
         onCancel={jest.fn()}
         submitTitle="Save"
         isSubmitting={false}
-        actions={<Button label="Edit" />}
+        actions={<Button>Edit</Button>}
         initialValues={{
           name: 'some initial name',
           organizationId: 'third id',
@@ -348,7 +348,7 @@ describe('<PlaylistForm />', () => {
         onCancel={mockedOnCancel}
         submitTitle="Save"
         isSubmitting={false}
-        actions={<Button label="Edit" />}
+        actions={<Button>Edit</Button>}
         initialValues={{
           name: 'some initial name',
           organizationId: 'first id',
@@ -414,7 +414,7 @@ describe('<PlaylistForm />', () => {
         onCancel={jest.fn()}
         submitTitle="Save"
         isSubmitting={false}
-        actions={<Button label="Edit" />}
+        actions={<Button>Edit</Button>}
         playlistId="123"
       />,
     );
@@ -449,7 +449,7 @@ describe('<PlaylistForm />', () => {
         onCancel={jest.fn()}
         submitTitle="Save"
         isSubmitting={false}
-        actions={<Button label="Edit" />}
+        actions={<Button>Edit</Button>}
         playlistId="123"
       />,
     );
@@ -494,7 +494,7 @@ describe('<PlaylistForm />', () => {
         onCancel={jest.fn()}
         submitTitle="Save"
         isSubmitting={false}
-        actions={<Button label="Edit" />}
+        actions={<Button>Edit</Button>}
         playlistId="123"
       />,
     );
@@ -536,7 +536,7 @@ describe('<PlaylistForm />', () => {
         onCancel={jest.fn()}
         submitTitle="Save"
         isSubmitting={false}
-        actions={<Button label="Edit" />}
+        actions={<Button>Edit</Button>}
         playlistId="123"
       />,
     );

@@ -1,5 +1,12 @@
 import { Box } from 'grommet';
-import { Button, ChatSVG, ViewersSVG, WebinarSVG } from 'lib-components';
+import {
+  Badge,
+  ButtonBox,
+  ChatSVG,
+  Text,
+  ViewersSVG,
+  WebinarSVG,
+} from 'lib-components';
 import React, { useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
@@ -151,47 +158,72 @@ export const TabPanelWebinar = () => {
         active3={isPanelVisible && currentItem === LivePanelItem.VIEWERS_LIST}
       />
       <TabBox height="100%">
-        <Button
-          label={intl.formatMessage(messages.webinar)}
-          Icon={WebinarSVG}
+        <ButtonBox
           onClick={() => {
             setPanelVisibility(false);
           }}
+          fill
+          direction="row"
+          align="center"
+          justify="center"
+          gap="xsmall"
+          aria-label={intl.formatMessage(messages.showWebinar)}
           title={intl.formatMessage(messages.showWebinar)}
-          disabledHover
-        />
+        >
+          <WebinarSVG iconColor="blue-focus" height="30px" />{' '}
+          <Text size="small">{intl.formatMessage(messages.webinar)}</Text>
+        </ButtonBox>
       </TabBox>
 
       {availableItems.includes(LivePanelItem.CHAT) && (
         <TabBox height="100%">
-          <Button
-            label={intl.formatMessage(messages.chat)}
-            Icon={ChatSVG}
+          <ButtonBox
             onClick={() => {
               setPanelVisibility(true, LivePanelItem.CHAT);
             }}
+            fill
+            direction="row"
+            align="center"
+            justify="center"
+            gap="xsmall"
+            aria-label={intl.formatMessage(messages.showChat)}
             title={intl.formatMessage(messages.showChat)}
-            disabledHover
-          />
+          >
+            <ChatSVG iconColor="blue-focus" height="30px" />{' '}
+            <Text size="small">{intl.formatMessage(messages.chat)}</Text>
+          </ButtonBox>
         </TabBox>
       )}
 
       {availableItems.includes(LivePanelItem.VIEWERS_LIST) && (
         <TabBox height="100%">
-          <Button
-            badge={
-              nbrOfOnStageRequests !== 0
-                ? nbrOfOnStageRequests?.toString()
-                : undefined
-            }
-            label={intl.formatMessage(messages.viewers)}
-            Icon={ViewersSVG}
+          <ButtonBox
             onClick={() => {
               setPanelVisibility(true, LivePanelItem.VIEWERS_LIST);
             }}
+            fill
+            direction="row"
+            align="center"
+            justify="center"
+            gap="small"
+            aria-label={intl.formatMessage(messages.showViewers)}
             title={intl.formatMessage(messages.showViewers)}
-            disabledHover
-          />
+          >
+            <Box style={{ position: 'relative' }}>
+              <ViewersSVG iconColor="blue-focus" height="30px" />{' '}
+              {nbrOfOnStageRequests !== 0 && (
+                <Badge
+                  value={nbrOfOnStageRequests?.toString()}
+                  position={{
+                    top: '-4px',
+                    right: '-6px',
+                  }}
+                  size="small"
+                />
+              )}
+            </Box>
+            <Text size="small">{intl.formatMessage(messages.viewers)}</Text>
+          </ButtonBox>
         </TabBox>
       )}
     </Box>

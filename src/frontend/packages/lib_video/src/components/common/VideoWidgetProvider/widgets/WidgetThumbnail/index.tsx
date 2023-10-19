@@ -1,11 +1,10 @@
-import { Box, Button, Stack } from 'grommet';
-import { normalizeColor } from 'grommet/utils';
-import { Nullable, theme } from 'lib-common';
+import { Button } from '@openfun/cunningham-react';
+import { Box, Stack } from 'grommet';
+import { Nullable } from 'lib-common';
 import {
   BoxLoader,
   FoldableItem,
   PictureSVG,
-  Text,
   ThumbnailDisplayer,
   UploadManagerStatus,
   formatSizeErrorScale,
@@ -185,36 +184,17 @@ export const WidgetThumbnail = ({ isLive = true }: WidgetThumbnailProps) => {
             type="file"
           />
           <Button
-            color="blue-off"
-            label={
-              <Box
-                align="center"
-                direction="row"
-                justify="between"
-                pad="small"
-                round="xsmall"
-              >
-                <Text size="large" weight="medium" truncate>
-                  {intl.formatMessage(messages.uploadThumbnailButtonLabel)}
-                </Text>
-                <PictureSVG
-                  height="24px"
-                  width="24px"
-                  iconColor="blue-active"
-                />
-              </Box>
-            }
+            fullWidth
             onClick={() => {
               if (hiddenFileInputRef.current !== null) {
                 hiddenFileInputRef.current.click();
               }
             }}
-            secondary
-            style={{
-              background: normalizeColor('bg-select', theme),
-              padding: '0px',
-            }}
-          />
+            icon={<PictureSVG height="24px" width="24px" iconColor="white" />}
+            iconPosition="right"
+          >
+            {intl.formatMessage(messages.uploadThumbnailButtonLabel)}
+          </Button>
         </Box>
       )}
     </FoldableItem>

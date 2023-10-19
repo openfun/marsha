@@ -1,5 +1,5 @@
-import { Input } from '@openfun/cunningham-react';
-import { Button, Form } from 'grommet';
+import { Button, Input } from '@openfun/cunningham-react';
+import { Form } from 'grommet';
 import { Maybe } from 'lib-common';
 import {
   Document,
@@ -83,12 +83,9 @@ export const DashboardDocumentTitleForm = ({
           state={error ? 'error' : undefined}
           text={error}
         />
-        <Button
-          type="submit"
-          primary
-          label="Submit"
-          margin={{ top: 'small' }}
-        />
+        <Button type="submit" className="mt-t">
+          Submit
+        </Button>
         {udpated && (
           <Text
             color="var(--c--theme--colors--success-500)"

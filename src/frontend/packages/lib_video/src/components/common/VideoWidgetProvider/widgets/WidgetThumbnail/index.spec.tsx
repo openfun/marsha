@@ -81,7 +81,9 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
         name: 'Delete thumbnail',
       }),
     ).toEqual(null);
-    const img = await screen.findByRole('img');
+    const img = await screen.findByRole('img', {
+      name: 'Live video thumbnail',
+    });
     expect(img.getAttribute('src')).toEqual('path/to/image.png');
     screen.getByRole('button', { name: 'Upload an image' });
   });
@@ -320,7 +322,9 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
         name: 'Delete thumbnail',
       }),
     ).toEqual(null);
-    const img = screen.getByRole('img');
+    const img = await screen.findByRole('img', {
+      name: 'Live video thumbnail',
+    });
     expect(img.getAttribute('src')).toEqual('path/to/image.png');
     expect(
       screen.queryByRole('button', {
@@ -361,7 +365,9 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
         name: 'Delete thumbnail',
       }),
     ).toEqual(null);
-    const img = await screen.findByRole('img');
+    const img = await screen.findByRole('img', {
+      name: 'Live video thumbnail',
+    });
     expect(img.getAttribute('src')).toEqual('path/to/image.png');
     screen.getByRole('button', { name: 'Upload an image' });
   });

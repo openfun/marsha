@@ -1,5 +1,5 @@
-import { Input } from '@openfun/cunningham-react';
-import { Box, Button } from 'grommet';
+import { Button, Input } from '@openfun/cunningham-react';
+import { Box } from 'grommet';
 import { Breakpoints, Nullable } from 'lib-common';
 import {
   Text,
@@ -202,21 +202,24 @@ export const CreateVOD = ({
           direction="row"
           justify="between"
           margin={{ horizontal: 'small', top: 'medium' }}
+          gap="small"
         >
           <Button
-            a11yTitle={intl.formatMessage(messages.goBackButtonLabel)}
+            aria-label={intl.formatMessage(messages.goBackButtonLabel)}
             disabled={formState !== FormState.WAITING_FOR_SUBMIT}
-            label={intl.formatMessage(messages.goBackButtonLabel)}
-            secondary
-            style={{ minHeight: '50px', fontFamily: 'Roboto-Medium' }}
+            color="secondary"
+            fullWidth
+            style={{ flex: 1 }}
             title={intl.formatMessage(messages.goBackButtonLabel)}
             onClick={onPreviousButtonClick}
-          />
+          >
+            {intl.formatMessage(messages.goBackButtonLabel)}
+          </Button>
 
           <Button
-            a11yTitle={intl.formatMessage(messages.createVideoButtonLabel)}
+            aria-label={intl.formatMessage(messages.createVideoButtonLabel)}
             disabled={!canValid || formState !== FormState.WAITING_FOR_SUBMIT}
-            label={intl.formatMessage(messages.createVideoButtonLabel)}
+            fullWidth
             onClick={() => {
               setFormState(FormState.UPDATING_METADATA);
 
@@ -225,10 +228,11 @@ export const CreateVOD = ({
                 license: wizardedVideo.license,
               });
             }}
-            primary
-            style={{ minHeight: '50px', fontFamily: 'Roboto-Medium' }}
+            style={{ flex: 2 }}
             title={intl.formatMessage(messages.createVideoButtonLabel)}
-          />
+          >
+            {intl.formatMessage(messages.createVideoButtonLabel)}
+          </Button>
         </Box>
       </WhiteCard>
     </CurrentVideoProvider>

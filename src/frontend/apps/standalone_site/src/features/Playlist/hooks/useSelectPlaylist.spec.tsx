@@ -66,7 +66,7 @@ describe('<useSelectPlaylist />', () => {
     );
 
     expect(
-      screen.queryByRole('button', { name: 'Create a new playlist' }),
+      screen.queryByRole('link', { name: 'Create a new playlist' }),
     ).not.toBeInTheDocument();
 
     await userEvent.click(
@@ -130,7 +130,7 @@ describe('<useSelectPlaylist />', () => {
     );
 
     expect(
-      screen.getByRole('button', { name: 'Create a new playlist' }),
+      screen.getByRole('link', { name: 'Create a new playlist' }),
     ).toBeInTheDocument();
 
     await userEvent.click(
@@ -203,7 +203,7 @@ describe('<useSelectPlaylist />', () => {
       },
     );
 
-    const createPlaylistButton = screen.getByRole('button', {
+    const createPlaylistButton = screen.getByRole('link', {
       name: 'Create a new playlist',
     });
     expect(createPlaylistButton).toBeInTheDocument();

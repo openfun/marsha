@@ -1,6 +1,5 @@
-import { Button } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
 import {
-  ButtonLoaderStyle,
   FoldableItem,
   Heading,
   Modal,
@@ -13,7 +12,6 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
 
 import { useDeleteClassroom } from '@lib-classroom/data/queries';
 import { useCurrentClassroom } from '@lib-classroom/hooks/useCurrentClassroom';
@@ -63,14 +61,6 @@ const messages = defineMessages({
   },
 });
 
-const StyledAnchorButton = styled(Button)`
-  height: 50px;
-  font-family: 'Roboto-Medium';
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
 export const DeleteClassroom = () => {
   const intl = useIntl();
   const [context] = useCurrentResourceContext();
@@ -110,28 +100,27 @@ export const DeleteClassroom = () => {
           {intl.formatMessage(messages.confirmDeleteText)}
         </Text>
         <ModalButton
-          label={intl.formatMessage(messages.confirmDeleteTitle)}
+          aria-label={intl.formatMessage(messages.confirmDeleteTitle)}
           onClickCancel={() => setIsModalOpen(false)}
           onClickSubmit={() => {
             setIsModalOpen(false);
             deleteClassroom.mutate(classroom.id);
           }}
-          style={ButtonLoaderStyle.DESTRUCTIVE}
-        />
+          color="danger"
+        >
+          {intl.formatMessage(messages.confirmDeleteTitle)}
+        </ModalButton>
       </Modal>
-      <StyledAnchorButton
-        a11yTitle={intl.formatMessage(messages.deleteButtonText)}
-        download
+      <Button
         disabled={!context.permissions.can_update}
-        fill="horizontal"
-        label={intl.formatMessage(messages.deleteButtonText)}
-        target="_blank"
-        rel="noopener noreferrer"
-        primary
+        fullWidth
+        aria-label={intl.formatMessage(messages.deleteButtonText)}
         title={intl.formatMessage(messages.deleteButtonText)}
         onClick={() => setIsModalOpen(true)}
-        color="action-danger"
-      />
+        color="danger"
+      >
+        {intl.formatMessage(messages.deleteButtonText)}
+      </Button>
     </FoldableItem>
   );
 };

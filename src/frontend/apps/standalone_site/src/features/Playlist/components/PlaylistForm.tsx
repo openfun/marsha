@@ -1,9 +1,8 @@
-import { Input, Select } from '@openfun/cunningham-react';
-import { Box, Button, ThemeContext } from 'grommet';
+import { Button, Input, Select } from '@openfun/cunningham-react';
+import { Box, ThemeContext } from 'grommet';
 import { Nullable } from 'lib-common';
 import {
   BoxLoader,
-  ButtonLoaderStyle,
   FetchResponseError,
   Form,
   Heading,
@@ -17,7 +16,6 @@ import { ReactNode, useLayoutEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
 
 import { useOrganizations } from 'api/useOrganizations';
 import { ITEM_PER_PAGE } from 'conf/global';
@@ -135,14 +133,6 @@ const messages = defineMessages({
     id: 'components.Playlist.PlaylistForm.deleteModalTitle',
   },
 });
-
-const StyledAnchorButton = styled(Button)`
-  height: 50px;
-  font-family: 'Roboto-Medium';
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
 
 interface PlaylistFormValues {
   organizationId?: string;
@@ -324,9 +314,9 @@ export const PlaylistForm = ({
             onClick={() => {
               refetch();
             }}
-            primary
-            label={intl.formatMessage(messages.retryOrganizations)}
-          />
+          >
+            {intl.formatMessage(messages.retryOrganizations)}
+          </Button>
         </Box>
       </Box>
     );
@@ -425,7 +415,7 @@ export const PlaylistForm = ({
         </Box>
         <Box gap="xsmall">
           <ModalButton
-            label={submitTitle}
+            aria-label={submitTitle}
             onClickCancel={
               onCancel
                 ? () => {
@@ -440,20 +430,19 @@ export const PlaylistForm = ({
             }
             isSubmitting={isSubmitting}
             isDisabled={!formValues.name || !formValues.organizationId}
-          />
+          >
+            {submitTitle}
+          </ModalButton>
           {playlistId && (
-            <StyledAnchorButton
-              a11yTitle={intl.formatMessage(messages.DeleteButtonText)}
-              download
-              fill="horizontal"
-              label={intl.formatMessage(messages.DeleteButtonText)}
-              target="_blank"
-              rel="noopener noreferrer"
-              primary
-              title={intl.formatMessage(messages.DeleteButtonText)}
+            <Button
+              fullWidth
               onClick={() => setIsModalOpen(true)}
-              color="action-danger"
-            />
+              color="danger"
+              aria-label={intl.formatMessage(messages.DeleteButtonText)}
+              type="button"
+            >
+              {intl.formatMessage(messages.DeleteButtonText)}
+            </Button>
           )}
           {playlistId && (
             <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
@@ -462,14 +451,16 @@ export const PlaylistForm = ({
               </Heading>
               <Text>{intl.formatMessage(messages.confirmDeleteText)}</Text>
               <ModalButton
-                label={intl.formatMessage(messages.confirmDeleteTitle)}
+                aria-label={intl.formatMessage(messages.confirmDeleteTitle)}
                 onClickCancel={() => setIsModalOpen(false)}
                 onClickSubmit={() => {
                   setIsModalOpen(false);
                   deletePlaylist.mutate(playlistId);
                 }}
-                style={ButtonLoaderStyle.DESTRUCTIVE}
-              />
+                color="danger"
+              >
+                {intl.formatMessage(messages.confirmDeleteTitle)}
+              </ModalButton>
             </Modal>
           )}
         </Box>

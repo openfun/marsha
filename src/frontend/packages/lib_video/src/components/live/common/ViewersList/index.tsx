@@ -1,4 +1,5 @@
-import { Box, Button } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
+import { Box } from 'grommet';
 import { AddCircle } from 'grommet-icons';
 import { JoinMode, List, Text } from 'lib-components';
 import React, { ReactNode, useMemo } from 'react';
@@ -15,7 +16,6 @@ import { converse } from '@lib-video/utils/window';
 import { ViewersListHeader } from './components/ViewersListHeader';
 import { ViewersListItem } from './components/ViewersListItem';
 import { ViewersListItemContainer } from './components/ViewersListItemContainer';
-import { ViewersListTextButton } from './components/ViewersListTextButton';
 import {
   generateSimpleViewersMessage,
   sortParticipantNotOnStage,
@@ -197,19 +197,22 @@ export const ViewersList = ({ isInstructor }: ViewersListProps) => {
           {(item: ParticipantType) => (
             <Box direction="row" align="center" gap="small">
               <Button
+                className="c__button-no-bg"
+                color="tertiary"
                 icon={<AddCircle color="red-active" size="20px" />}
                 onClick={() => {
                   converse.rejectParticipantToJoin(item);
                 }}
-                plain
                 style={{ padding: '0px', transform: 'rotate(45deg)' }}
               />
-              <ViewersListTextButton
+              <Button
+                size="small"
                 onClick={() => {
                   converse.acceptParticipantToJoin(item, video);
                 }}
-                text={intl.formatMessage(messages.acceptButton)}
-              />
+              >
+                {intl.formatMessage(messages.acceptButton)}
+              </Button>
             </Box>
           )}
         </Section>
@@ -223,12 +226,14 @@ export const ViewersList = ({ isInstructor }: ViewersListProps) => {
           isInstructor &&
           !item.isInstructor &&
           video.join_mode !== JoinMode.FORCED && (
-            <ViewersListTextButton
+            <Button
+              size="small"
               onClick={() => {
                 converse.kickParticipant(item);
               }}
-              text={intl.formatMessage(messages.endOnStageButton)}
-            />
+            >
+              {intl.formatMessage(messages.endOnStageButton)}
+            </Button>
           )
         }
       </Section>

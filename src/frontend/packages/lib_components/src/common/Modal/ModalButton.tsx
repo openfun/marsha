@@ -1,9 +1,9 @@
-import { Box, BoxProps, Button } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
+import { Box, BoxProps } from 'grommet';
 import { PropsWithChildren } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import styled from 'styled-components';
 
-import { ButtonLoader, ButtonLoaderStyle } from '@lib-components/common/';
+import { ButtonLoader, ButtonLoaderProps } from '@lib-components/common/';
 
 export const ModalButtonContainer = ({
   children,
@@ -30,21 +30,9 @@ const messages = defineMessages({
   },
 });
 
-interface ButtonModalProps {
-  flex?: string | number;
-}
-const ButtonModal = styled(Button)<ButtonModalProps>`
-  flex: ${({ flex }) => flex && `${flex}`};
-`;
-
-interface ModalButtonProps {
-  label: string;
+interface ModalButtonProps extends ButtonLoaderProps {
   labelCancel?: string;
-  isDisabled?: boolean;
-  isSubmitting?: boolean;
-  onClickSubmit?: () => void;
   onClickCancel?: () => void;
-  style?: ButtonLoaderStyle;
 }
 
 /**
@@ -64,11 +52,17 @@ const ModalButton = ({
   return (
     <ModalButtonContainer>
       {onClickCancel && (
-        <ButtonModal
-          label={labelCancel || intl.formatMessage(messages.ButtonCancelModal)}
+        <Button
+          aria-label={
+            labelCancel || intl.formatMessage(messages.ButtonCancelModal)
+          }
+          color="secondary"
           onClick={onClickCancel}
-          flex={1}
-        />
+          style={{ flex: '1' }}
+          fullWidth
+        >
+          {labelCancel || intl.formatMessage(messages.ButtonCancelModal)}
+        </Button>
       )}
       <ButtonLoader {...buttonLabelProps} />
     </ModalButtonContainer>

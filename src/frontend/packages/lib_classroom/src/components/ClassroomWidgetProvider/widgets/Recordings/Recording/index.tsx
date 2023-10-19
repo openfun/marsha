@@ -1,4 +1,5 @@
-import { Anchor, Box, Button } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
+import { Anchor, Box } from 'grommet';
 import { createVOD, useClassroom } from 'lib-classroom';
 import { Nullable } from 'lib-common';
 import {
@@ -154,7 +155,7 @@ const VodNotReady = ({
         <Text>{recording.vod.upload_state}</Text>
       ) : (
         <Button
-          a11yTitle={
+          aria-label={
             conversionEnabled
               ? intl.formatMessage(messages.convertVODTitle, {
                   recordingTitle: buildRecordingTitle(recording, intl),
@@ -168,11 +169,12 @@ const VodNotReady = ({
                 })
               : intl.formatMessage(messages.conversionDisabled)
           }
-          label={intl.formatMessage(messages.convertVODLabel)}
           onClick={() => convertVOD(recording)}
-          size="xsmall"
+          size="small"
           disabled={!conversionEnabled || converting}
-        />
+        >
+          {intl.formatMessage(messages.convertVODLabel)}
+        </Button>
       )}
     </Box>
   );

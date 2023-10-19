@@ -45,7 +45,7 @@ describe('<ClassRoomCreateForm />', () => {
       screen.getByRole('textbox', { name: /playlist/i }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: 'Create a new playlist' }),
+      screen.getByRole('link', { name: 'Create a new playlist' }),
     ).toBeInTheDocument();
     expect(
       screen.getByRole('textbox', { name: /description/i }),
@@ -61,7 +61,7 @@ describe('<ClassRoomCreateForm />', () => {
     deferred.resolve(playlistsResponse);
 
     expect(
-      screen.getByRole('button', { name: 'Create a new playlist' }),
+      screen.getByRole('link', { name: 'Create a new playlist' }),
     ).toBeInTheDocument();
 
     const button = screen.getByRole('button', { name: /Add Classroom/i });
@@ -104,7 +104,7 @@ describe('<ClassRoomCreateForm />', () => {
     deferred.resolve(playlistsResponse);
 
     expect(
-      screen.getByRole('button', { name: 'Create a new playlist' }),
+      screen.getByRole('link', { name: 'Create a new playlist' }),
     ).toBeInTheDocument();
 
     fireEvent.change(screen.getByRole('textbox', { name: /title/i }), {
@@ -160,7 +160,7 @@ describe('<ClassRoomCreateForm />', () => {
     deferred.resolve(playlistsResponse);
 
     expect(
-      screen.getByRole('button', { name: 'Create a new playlist' }),
+      screen.getByRole('link', { name: 'Create a new playlist' }),
     ).toBeInTheDocument();
 
     fireEvent.change(screen.getByRole('textbox', { name: /title/i }), {
@@ -207,7 +207,7 @@ describe('<ClassRoomCreateForm />', () => {
     deferred.resolve(playlistsResponse);
 
     expect(
-      screen.getByRole('button', { name: 'Create a new playlist' }),
+      screen.getByRole('link', { name: 'Create a new playlist' }),
     ).toBeInTheDocument();
 
     fireEvent.change(screen.getByRole('textbox', { name: /title/i }), {
@@ -258,7 +258,7 @@ describe('<ClassRoomCreateForm />', () => {
       screen.getByRole('textbox', { name: /playlist/i }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: 'Create a new playlist' }),
+      screen.getByRole('link', { name: 'Create a new playlist' }),
     ).toBeInTheDocument();
     expect(
       screen.getByRole('textbox', { name: /description/i }),

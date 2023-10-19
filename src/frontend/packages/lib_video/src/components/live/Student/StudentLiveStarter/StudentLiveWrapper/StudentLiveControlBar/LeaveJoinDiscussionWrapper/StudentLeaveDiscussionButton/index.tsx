@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { Button, JoinDiscussionSVG } from 'lib-components';
+import { Button } from '@openfun/cunningham-react';
+import { JoinDiscussionSVG } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -26,11 +25,12 @@ export const StudentLeaveDiscussionButton = () => {
 
   return (
     <Button
-      label={intl.formatMessage(messages.leaveDiscussion)}
-      Icon={JoinDiscussionSVG}
+      icon={<JoinDiscussionSVG iconColor="white" width="30" />}
+      aria-label={intl.formatMessage(messages.leaveDiscussion)}
       onClick={leaveDiscussion}
-      reversed
       title={intl.formatMessage(messages.leaveDiscussion)}
-    />
+    >
+      {intl.formatMessage(messages.leaveDiscussion)}
+    </Button>
   );
 };

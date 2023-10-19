@@ -1,6 +1,6 @@
+import { Button } from '@openfun/cunningham-react';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Button } from 'grommet';
 import { render } from 'lib-tests';
 
 import { PictureInPictureElement } from '.';
@@ -9,7 +9,7 @@ describe('<PictureInPictureElement />', () => {
   it('renders component when not in picture mode', async () => {
     const onButtonClick = jest.fn();
     const Compo = () => (
-      <Button label="my button label" onClick={onButtonClick} />
+      <Button onClick={onButtonClick}>my button label</Button>
     );
 
     render(
@@ -27,7 +27,7 @@ describe('<PictureInPictureElement />', () => {
   it('renders component when in picture mode', async () => {
     const onButtonClick = jest.fn();
     const Compo = () => (
-      <Button label="my button label" onClick={onButtonClick} />
+      <Button onClick={onButtonClick}>my button label</Button>
     );
 
     render(
@@ -45,8 +45,8 @@ describe('<PictureInPictureElement />', () => {
   });
 
   it('does not render actions when not in picture mode', () => {
-    const Compo = () => <Button label="my button label" />;
-    const Action = () => <Button label="my action" />;
+    const Compo = () => <Button>my button label</Button>;
+    const Action = () => <Button>my action</Button>;
 
     render(
       <PictureInPictureElement pictureLayer={<Action />}>
@@ -60,8 +60,8 @@ describe('<PictureInPictureElement />', () => {
   });
 
   it('renders actions when in picture mode', () => {
-    const Compo = () => <Button label="my button label" />;
-    const Action = () => <Button label="some action" />;
+    const Compo = () => <Button>my button label</Button>;
+    const Action = () => <Button>some action</Button>;
 
     render(
       <PictureInPictureElement isPicture pictureLayer={<Action />}>

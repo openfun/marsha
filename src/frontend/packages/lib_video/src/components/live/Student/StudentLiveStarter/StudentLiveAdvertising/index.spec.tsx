@@ -280,7 +280,9 @@ describe('<StudentLiveAdvertising />', () => {
 
     render(wrapInVideo(<StudentLiveAdvertising />, video));
 
-    const img = screen.getByRole('img');
+    const img = screen.getByRole('img', {
+      name: 'Live video thumbnail',
+    });
     expect(img.getAttribute('src')).toEqual('path/to/image.png');
     screen.getByText('Add to my calendar');
   });

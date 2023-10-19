@@ -1,21 +1,18 @@
-import { Button, ButtonExtendedProps, Stack } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
+import { Stack } from 'grommet';
 
 import {
   BoxLoader,
   BoxLoaderProps,
 } from '@lib-components/common/Loader/BoxLoader';
 
-export enum ButtonLoaderStyle {
-  DEFAULT = 'DEFAULT',
-  DESTRUCTIVE = 'red-active',
-}
+type ButtonProps = React.ComponentPropsWithRef<typeof Button>;
 
-interface ButtonLoaderProps {
+export interface ButtonLoaderProps extends ButtonProps {
   isDisabled?: boolean;
   isSubmitting?: boolean;
   onClickSubmit?: () => void;
   spinnerProps?: BoxLoaderProps;
-  style?: ButtonLoaderStyle;
 }
 
 /**
@@ -29,25 +26,21 @@ export const ButtonLoader = ({
   isDisabled,
   isSubmitting,
   onClickSubmit,
-  style,
   spinnerProps,
+  children,
   ...buttonProps
-}: ButtonLoaderProps & ButtonExtendedProps) => {
+}: ButtonLoaderProps) => {
   return (
     <Stack style={{ flex: '3' }} guidingChild="first" interactiveChild="first">
       <Button
         type={onClickSubmit ? 'button' : 'submit'}
         disabled={isDisabled || isSubmitting}
-        primary
         onClick={onClickSubmit}
-        fill="horizontal"
-        color={
-          style === ButtonLoaderStyle.DESTRUCTIVE
-            ? ButtonLoaderStyle.DESTRUCTIVE
-            : undefined
-        }
+        fullWidth
         {...buttonProps}
-      />
+      >
+        {children}
+      </Button>
       {isSubmitting && <BoxLoader {...spinnerProps} />}
     </Stack>
   );

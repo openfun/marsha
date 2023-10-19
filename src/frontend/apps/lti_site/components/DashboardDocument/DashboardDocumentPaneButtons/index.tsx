@@ -1,6 +1,6 @@
+import { Button } from '@openfun/cunningham-react';
 import { Box } from 'grommet';
 import {
-  DashboardButton,
   Document,
   builderUploadFormRoute,
   modelName,
@@ -12,7 +12,7 @@ import { FormattedMessage, defineMessages } from 'react-intl';
 
 import { PLAYER_ROUTE } from 'components/routes';
 
-const DashboardButtonWithLink = withLink(DashboardButton);
+const ButtonWithLink = withLink(Button);
 
 const messages = defineMessages({
   btnPlay: {
@@ -56,24 +56,20 @@ export const DashboardDocumentPaneButtons = ({
       justify={displayWatchBtn ? 'center' : 'end'}
       margin="small"
     >
-      <DashboardButtonWithLink
-        label={
-          <FormattedMessage
-            {...(document.upload_state === uploadState.PENDING &&
-            !uploadManagerState[document.id]
-              ? messages.btnUploadFirst
-              : messages.btnReplace)}
-          />
-        }
-        primary={!displayWatchBtn}
+      <ButtonWithLink
         to={builderUploadFormRoute(modelName.DOCUMENTS, document.id)}
-      />
-      {displayWatchBtn && (
-        <DashboardButtonWithLink
-          label={<FormattedMessage {...messages.btnPlay} />}
-          primary={displayWatchBtn}
-          to={`/${PLAYER_ROUTE.base}/${PLAYER_ROUTE.documents}`}
+      >
+        <FormattedMessage
+          {...(document.upload_state === uploadState.PENDING &&
+          !uploadManagerState[document.id]
+            ? messages.btnUploadFirst
+            : messages.btnReplace)}
         />
+      </ButtonWithLink>
+      {displayWatchBtn && (
+        <ButtonWithLink to={`/${PLAYER_ROUTE.base}/${PLAYER_ROUTE.documents}`}>
+          <FormattedMessage {...messages.btnPlay} />
+        </ButtonWithLink>
       )}
     </Box>
   );
