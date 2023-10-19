@@ -1,6 +1,6 @@
 import { ThemeContext } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
-import React, { PropsWithChildren, useContext } from 'react';
+import React, { PropsWithChildren, SVGProps, useContext } from 'react';
 import styled, { CSSProperties } from 'styled-components';
 
 interface ComponentWithTheme {
@@ -28,13 +28,11 @@ const StyledSVG = styled.svg<StyledSVGProps>`
   }
 `;
 
-export interface SvgProps extends SVGInternalProps, RectInternalProps {
+export interface SvgProps
+  extends SVGInternalProps,
+    RectInternalProps,
+    Omit<SVGProps<SVGSVGElement>, 'viewBox' | 'ref'> {
   containerStyle?: CSSProperties;
-  height?: string | number;
-  width?: string | number;
-}
-
-interface SVGIconProps extends SvgProps {
   viewBox?: {
     x: number;
     y: number;
@@ -49,26 +47,30 @@ export const SVGIcon = ({
   focusColor,
   children,
   containerStyle,
-  height,
-  iconColor,
   viewBox,
-  width,
-}: PropsWithChildren<SVGIconProps>) => {
+  onClick,
+  style,
+  ...props
+}: PropsWithChildren<SvgProps>) => {
   const theme = useContext(ThemeContext);
 
   return (
     <StyledSVG
-      height={height}
-      width={width}
-      iconColor={iconColor}
       grommetTheme={theme}
-      style={containerStyle}
+      role={onClick ? 'button' : 'img'}
+      style={{
+        ...containerStyle,
+        cursor: onClick ? 'pointer' : undefined,
+        ...style,
+      }}
+      onClick={onClick}
       viewBox={
         viewBox
           ? `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`
           : undefined
       }
       xmlns="http://www.w3.org/2000/svg"
+      {...props}
     >
       {viewBox && (
         <StyledRect
