@@ -1,5 +1,5 @@
-import { Input, Loader } from '@openfun/cunningham-react';
-import { Box, Button } from 'grommet';
+import { Button, Input, Loader } from '@openfun/cunningham-react';
+import { Box } from 'grommet';
 import { AddCircle, Trash } from 'grommet-icons';
 import {
   CopyClipboard,
@@ -109,11 +109,11 @@ export const PlaylistPortabilityList = ({
           pad={{ left: 'small', right: 'none' }}
           action={(item, index) => (
             <Button
+              color="tertiary"
               aria-label={intl.formatMessage(messages.removePortability, {
                 title: item.title,
               })}
               key={index}
-              plain
               icon={<Trash />}
               onClick={() => {
                 removePlaylistPortability(item.id);

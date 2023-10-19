@@ -1,4 +1,4 @@
-import { Button } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
 import { NoDownloadSVG, SharedLiveMedia, report } from 'lib-components';
 import React from 'react';
 import toast from 'react-hot-toast';
@@ -61,17 +61,15 @@ export const DisallowedDownloadButton = ({
 
   return (
     <Button
-      a11yTitle={intl.formatMessage(messages.buttonLabel)}
+      aria-label={intl.formatMessage(messages.buttonLabel)}
       onClick={() =>
         sharedLiveMediaMutation.mutate({
           show_download: true,
         })
       }
-      plain
-      style={{ display: 'flex', padding: 0 }}
       title={intl.formatMessage(messages.buttonLabel)}
-    >
-      <NoDownloadSVG iconColor="blue-off" width="24px" height="24px" />
-    </Button>
+      color="tertiary"
+      icon={<NoDownloadSVG iconColor="blue-off" width="24px" height="24px" />}
+    />
   );
 };

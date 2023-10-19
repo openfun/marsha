@@ -1,10 +1,12 @@
 import { screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { LiveModeType, liveState, videoMockFactory } from 'lib-components';
 import { render } from 'lib-tests';
 
 import * as pollForLiveModule from '@lib-video/api/pollForLive';
 import { LiveFeedbackProvider } from '@lib-video/hooks/useLiveFeedback';
+import { useLiveStateStarted } from '@lib-video/hooks/useLiveStateStarted';
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
 import { TeacherLiveControlBar } from '.';
@@ -12,17 +14,13 @@ import { TeacherLiveControlBar } from '.';
 const spyedPollForLive = jest.spyOn(pollForLiveModule, 'pollForLive');
 
 describe('<TeacherLiveControlBar />', () => {
-  beforeEach(() => {
-    jest.useFakeTimers();
-  });
-
   afterEach(() => {
     jest.clearAllMocks();
     fetchMock.restore();
-    jest.useRealTimers();
   });
 
   it('polls for live when live is running and show live feedback button', async () => {
+    jest.useFakeTimers();
     fetchMock.get('https://testing.m3u8', 404);
 
     const mockedVideo = videoMockFactory({
@@ -44,15 +42,7 @@ describe('<TeacherLiveControlBar />', () => {
       ),
     );
 
-    expect(
-      screen.queryByRole('button', { name: 'Show live feedback' }),
-    ).not.toBeInTheDocument();
-
     await waitFor(() => expect(spyedPollForLive).toHaveBeenCalled());
-
-    expect(
-      screen.queryByRole('button', { name: 'Show live feedback' }),
-    ).not.toBeInTheDocument();
 
     fetchMock.get(
       'https://testing.m3u8',
@@ -85,10 +75,43 @@ describe('<TeacherLiveControlBar />', () => {
 
     expect(
       await screen.findByRole(
-        'button',
-        { name: 'Show live feedback' },
+        'checkbox',
+        { name: 'Live feedback', checked: false },
         { timeout: 5000 },
       ),
     ).toBeInTheDocument();
+
+    jest.useRealTimers();
+  });
+
+  it('renders actions and switch on click', async () => {
+    const mockedVideo = videoMockFactory({
+      live_type: LiveModeType.RAW,
+    });
+
+    useLiveStateStarted.setState({ isStarted: true });
+
+    render(
+      wrapInVideo(
+        <LiveFeedbackProvider value={false}>
+          <TeacherLiveControlBar />
+        </LiveFeedbackProvider>,
+        mockedVideo,
+      ),
+    );
+
+    const checkbox = await screen.findByRole('checkbox', {
+      name: 'Live feedback',
+    });
+
+    await userEvent.click(checkbox);
+
+    expect(checkbox).toBeChecked();
+
+    await userEvent.click(
+      screen.getByRole('checkbox', { name: 'Live feedback', checked: true }),
+    );
+
+    expect(checkbox).not.toBeChecked();
   });
 });

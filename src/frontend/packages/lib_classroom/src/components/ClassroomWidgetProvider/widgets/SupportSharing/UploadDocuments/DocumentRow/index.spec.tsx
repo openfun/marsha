@@ -70,7 +70,7 @@ describe('<DocumentRow />', () => {
       }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: 'Click to set as default document' }),
+      screen.getByRole('row', { name: 'Click to set as default document' }),
     ).toBeEnabled();
   });
 
@@ -102,7 +102,7 @@ describe('<DocumentRow />', () => {
     );
 
     await userEvent.click(
-      screen.getByRole('button', { name: 'Click to set as default document' }),
+      screen.getByRole('row', { name: 'Click to set as default document' }),
     );
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
   });
@@ -135,7 +135,7 @@ describe('<DocumentRow />', () => {
       }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: 'Click to set as default document' }),
+      screen.getByRole('row', { name: 'Click to set as default document' }),
     ).toBeDisabled();
   });
 
@@ -166,7 +166,7 @@ describe('<DocumentRow />', () => {
       }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: 'Click to set as default document' }),
+      screen.getByRole('row', { name: 'Click to set as default document' }),
     ).toBeDisabled();
   });
 });

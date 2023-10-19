@@ -19,10 +19,11 @@ describe('<AppsWrapper />', () => {
 
     render(<AppsWrapper />);
 
-    screen.getByRole('button', { name: 'Show apps' });
     expect(
-      screen.queryByRole('button', { name: 'Hide apps' }),
-    ).not.toBeInTheDocument();
+      screen.getByRole('checkbox', {
+        name: 'Show apps',
+      }),
+    ).not.toBeChecked();
   });
 
   it('renders <StudentShowAppsButton /> when panel is closed and apps is selected', () => {
@@ -34,10 +35,11 @@ describe('<AppsWrapper />', () => {
 
     render(<AppsWrapper />);
 
-    screen.getByRole('button', { name: 'Show apps' });
     expect(
-      screen.queryByRole('button', { name: 'Hide apps' }),
-    ).not.toBeInTheDocument();
+      screen.getByRole('checkbox', {
+        name: 'Show apps',
+      }),
+    ).not.toBeChecked();
   });
 
   it('renders <StudentShowAppsButton /> when panel is opened but not selecting apps', () => {
@@ -49,10 +51,11 @@ describe('<AppsWrapper />', () => {
 
     render(<AppsWrapper />);
 
-    screen.getByRole('button', { name: 'Show apps' });
     expect(
-      screen.queryByRole('button', { name: 'Hide apps' }),
-    ).not.toBeInTheDocument();
+      screen.getByRole('checkbox', {
+        name: 'Show apps',
+      }),
+    ).not.toBeChecked();
   });
 
   it('renders <StudentShowAppsButton /> when panel is opened and apps is selected', () => {
@@ -65,8 +68,9 @@ describe('<AppsWrapper />', () => {
     render(<AppsWrapper />);
 
     expect(
-      screen.queryByRole('button', { name: 'Show apps' }),
-    ).not.toBeInTheDocument();
-    screen.getByRole('button', { name: 'Hide apps' });
+      screen.getByRole('checkbox', {
+        name: 'Show apps',
+      }),
+    ).toBeChecked();
   });
 });

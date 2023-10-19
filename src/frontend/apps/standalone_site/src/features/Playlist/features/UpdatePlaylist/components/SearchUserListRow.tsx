@@ -1,7 +1,7 @@
 import { Box } from 'grommet';
 import { Text } from 'lib-components';
 import { PropsWithChildren } from 'react';
-import { defineMessages, useIntl } from 'react-intl';
+import { IntlShape, defineMessages, useIntl } from 'react-intl';
 
 import { UserLite } from '../api/useSearchUsers';
 
@@ -14,20 +14,7 @@ const messages = defineMessages({
   },
 });
 
-interface SearchUserListRowProps {
-  hover?: boolean;
-  focus?: boolean;
-  user: UserLite;
-}
-
-export const SearchUserListRow = ({
-  hover,
-  focus,
-  user,
-  children,
-}: PropsWithChildren<SearchUserListRowProps>) => {
-  const intl = useIntl();
-
+export const formatUsername = (user: UserLite, intl: IntlShape) => {
   let userLabel = intl.formatMessage(messages.anonymous, { id: user.id });
   if (user.full_name && user.email) {
     userLabel = `${user.full_name} (${user.email})`;
@@ -37,12 +24,26 @@ export const SearchUserListRow = ({
     userLabel = user.email;
   }
 
+  return userLabel;
+};
+
+interface SearchUserListRowProps {
+  user: UserLite;
+}
+
+export const SearchUserListRow = ({
+  user,
+  children,
+}: PropsWithChildren<SearchUserListRowProps>) => {
+  const intl = useIntl();
+  const userLabel = formatUsername(user, intl);
+
   return (
     <Box
       direction="row"
       fill
       background={{
-        color: hover || focus ? 'blue-hover-light' : '#f2f7fd',
+        color: '#f2f7fd',
       }}
       pad="small"
       round="xsmall"

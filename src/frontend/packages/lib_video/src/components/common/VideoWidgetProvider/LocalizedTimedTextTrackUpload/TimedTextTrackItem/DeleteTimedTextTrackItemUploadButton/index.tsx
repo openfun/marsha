@@ -1,4 +1,4 @@
-import { Button } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
 import { BinSVG, TimedText } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -26,12 +26,10 @@ export const DeleteTimedTextTrackItemUploadButton = ({
 
   return (
     <Button
-      a11yTitle={intl.formatMessage(messages.buttonLabel)}
+      aria-label={intl.formatMessage(messages.buttonLabel)}
       onClick={() => setDeleteTimedTextTrackUploadModal(timedTextTrack)}
-      plain
-      style={{ display: 'flex', padding: 0 }}
-    >
-      <BinSVG height="18px" iconColor="blue-active" width="14px" />
-    </Button>
+      color="tertiary"
+      icon={<BinSVG height="18px" iconColor="blue-active" width="14px" />}
+    />
   );
 };

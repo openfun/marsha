@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Replace grommet Button (#2453)
+
 ## [4.7.0] - 2023-10-19
 
 ### Added

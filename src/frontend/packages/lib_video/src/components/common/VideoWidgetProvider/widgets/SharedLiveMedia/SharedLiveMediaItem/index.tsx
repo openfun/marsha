@@ -56,7 +56,7 @@ export const SharedLiveMediaItem = ({
       align="center"
       fill="horizontal"
       height="60px"
-      gap="medium"
+      gap="small"
       pad={{ horizontal: 'small', vertical: 'small' }}
     >
       {isTeacher &&

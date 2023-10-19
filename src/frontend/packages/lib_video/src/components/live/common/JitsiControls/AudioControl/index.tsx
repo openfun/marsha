@@ -1,4 +1,5 @@
-import { Box, Button } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
+import { Box } from 'grommet';
 import { Nullable } from 'lib-common';
 import { MicrophoneOffSVG, MicrophoneOnSVG } from 'lib-components';
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
@@ -20,14 +21,14 @@ const messages = defineMessages({
   },
 });
 
-const StyledButton = styled(Button)`
-  padding: 0px;
-  height: 100%;
-  width: 100%;
-  max-height: 80px;
-  max-width: 80px;
-  margin: auto;
-`;
+// const StyledButton = styled(Button)`
+//   padding: 0px;
+//   height: 100%;
+//   width: 100%;
+//   max-height: 80px;
+//   max-width: 80px;
+//   margin: auto;
+// `;
 
 const ContainerStyle = styled(Box)`
   margin: auto;
@@ -72,12 +73,13 @@ export const AudioControl = () => {
   }
 
   return (
-    <StyledButton
-      a11yTitle={intl.formatMessage(
+    <Button
+      className="c__button-no-bg"
+      aria-label={intl.formatMessage(
         isAudioOn ? messages.enableTitle : messages.disableTitle,
       )}
-      plain
-      label={
+      color="tertiary"
+      icon={
         <ContainerStyle>
           {isAudioOn ? (
             <MicrophoneOnSVG iconColor="white" height="100%" width="100%" />

@@ -1,6 +1,7 @@
-import { Box, Button, ButtonProps } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
+import { Box } from 'grommet';
 import React, {
-  CSSProperties,
+  ComponentPropsWithRef,
   Dispatch,
   SetStateAction,
   useCallback,
@@ -11,6 +12,8 @@ import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { BoxLoader } from '..';
+
+type ButtonProps = ComponentPropsWithRef<typeof Button>;
 
 const messages = defineMessages({
   defaultErrorMessage: {
@@ -28,9 +31,8 @@ type Status =
 
 type ErrorCallback = string | ((error: unknown) => string);
 
-interface FetchButtonProps extends Omit<ButtonProps, 'label' | 'children'> {
+interface FetchButtonProps extends Omit<ButtonProps, 'children'> {
   label: string;
-  style?: CSSProperties;
 }
 
 export const useFetchButton = (
@@ -43,38 +45,28 @@ export const useFetchButton = (
   const intl = useIntl();
   const [state, setState] = useState<Status>({ type: 'idle' });
   const memoButton = useCallback(
-    ({ label, style, ...props }: FetchButtonProps) => (
+    ({ label, ...props }: FetchButtonProps) => (
       <Button
         disabled={state.type === 'loading'}
-        primary
-        label={
-          <Box>
-            <Box
-              direction="row"
-              flex
-              margin="auto"
-              style={{ whiteSpace: 'nowrap' }}
-              align="center"
-            >
-              {label}
-              {state.type === 'loading' && (
-                <BoxLoader
-                  whiteBackground
-                  size="small"
-                  boxProps={{
-                    margin: { left: 'small' },
-                  }}
-                />
-              )}
-            </Box>
-          </Box>
-        }
+        fullWidth
         onClick={() => {
           setState({ type: 'loading' });
         }}
-        style={style}
         {...props}
-      />
+      >
+        <Box direction="row" align="center">
+          {label}
+          {state.type === 'loading' && (
+            <BoxLoader
+              whiteBackground
+              size="small"
+              boxProps={{
+                margin: { left: 'small' },
+              }}
+            />
+          )}
+        </Box>
+      </Button>
     ),
     [state],
   );

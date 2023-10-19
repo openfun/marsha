@@ -10,8 +10,8 @@
 .c__field {
   line-height: initial;
 }
-.c__button--tertiary {
-  color: var(--c--theme--colors--primary-400);
+.labelled-box label {
+  color: var(--c--theme--colors--primary-500);
 }
 .labelled-box label.placeholder {
   top: 50%;
@@ -129,4 +129,69 @@ input:-webkit-autofill:focus {
 }
 .c__checkbox {
   transition: all 0.8s ease-in-out;
+}
+/**
+ * Button
+*/
+.c__button {
+  text-decoration: none;
+}
+.c__button:hover.c__button-no-bg, .c__button.c__button-no-bg, .c__button:disabled.c__button-no-bg {
+  background-color: transparent;
+}
+.c__button--primary {
+  background-color: var(--c--components--button--primary--background--color);
+  color: var(--c--components--button--primary--color);
+}
+.c__button--primary:active, .c__button--primary.c__button--active {
+  background-color: var(--c--components--button--primary--background--color-active);
+  color: var(--c--components--button--primary--color-active);
+  border-color: var(--c--components--button--primary--border--color-active);
+}
+.c__button:disabled {
+  background-color: var(--c--components--button--disabled--background--color);
+  color: var(--c--components--button--disabled--color);
+}
+.c__button--success{
+  background-color: var(--c--components--button--success--background--color);
+  color: var(--c--components--button--success--color);
+}
+.c__button--success:hover, .c__button--success:focus-visible {
+  background-color: var(--c--components--button--success--background--color-hover);
+  color: var(--c--components--button--success--color-hover);
+}
+.c__button--success:disabled{
+  background-color: var(--c--components--button--success--background--color-disabled);
+  color: var(--c--components--button--success--color-disabled);
+}
+.c__button--secondary {
+  background-color: var(--c--components--button--secondary--background--color);
+  color: var(--c--components--button--secondary--color);
+  border: 1px solid  var(--c--components--button--secondary--border--color);
+}
+.c__button--secondary:hover, .c__button--secondary:focus-visible {
+  background-color: var(--c--components--button--secondary--background--color-hover);
+  color: var(--c--components--button--secondary--color-hover);
+}
+.c__button--tertiary {
+  color: var(--c--components--button--tertiary--color);
+  border: none;
+}
+.c__button--tertiary:hover, .c__button--tertiary:focus-visible {
+  background-color: var(--c--components--button--tertiary--background--color-hover);
+  color: var(--c--components--button--tertiary--color);
+}
+.c__button--tertiary:disabled {
+  background-color: var(--c--components--button--tertiary--background--color-disabled);
+  color: var(--c--components--button--tertiary--color-disabled);
+}
+.c__button--danger {
+  background-color: var(--c--components--button--danger--background--color);
+}
+.c__button--danger:hover, .c__button--danger:focus-visible {
+  background-color: var(--c--components--button--danger--background--color-hover);
+  color: var(--c--components--button--danger--color-hover);
+}
+.c__button--danger:disabled {
+  background-color: var(--c--components--button--danger--background--color-disabled);
 }

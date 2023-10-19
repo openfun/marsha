@@ -1,4 +1,4 @@
-import { Button } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
 import { BinSVG, SharedLiveMedia } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -25,11 +25,10 @@ export const DeleteSharedLiveMediaButton = ({
 
   return (
     <Button
-      a11yTitle={intl.formatMessage(messages.buttonLabel)}
+      aria-label={intl.formatMessage(messages.buttonLabel)}
       onClick={() => setDeleteSharedLiveMediaModal(sharedLiveMedia)}
-      style={{ display: 'flex' }}
-    >
-      <BinSVG height="18px" iconColor="blue-active" width="14px" />
-    </Button>
+      color="tertiary"
+      icon={<BinSVG height="18px" iconColor="blue-active" width="14px" />}
+    />
   );
 };

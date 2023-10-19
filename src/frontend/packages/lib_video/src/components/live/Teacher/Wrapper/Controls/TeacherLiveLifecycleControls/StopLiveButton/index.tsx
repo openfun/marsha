@@ -1,6 +1,4 @@
-import { Box, Button, ButtonProps } from 'grommet';
-import { normalizeColor } from 'grommet/utils';
-import { theme } from 'lib-common';
+import { Button } from '@openfun/cunningham-react';
 import {
   BoxLoader,
   Heading,
@@ -9,7 +7,12 @@ import {
   Video,
   useVideo,
 } from 'lib-components';
-import React, { Fragment, useEffect, useState } from 'react';
+import React, {
+  ComponentPropsWithRef,
+  Fragment,
+  useEffect,
+  useState,
+} from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -57,11 +60,16 @@ type EndLiveStatus =
   | { type: 'loading' }
   | { type: 'error'; error: unknown };
 
+type ButtonProps = ComponentPropsWithRef<typeof Button>;
 interface StopLiveButtonProps extends ButtonProps {
   video: Video;
 }
 
-export const StopLiveButton = ({ video, ...props }: StopLiveButtonProps) => {
+export const StopLiveButton = ({
+  video,
+  style,
+  ...props
+}: StopLiveButtonProps) => {
   const intl = useIntl();
   const [liveModaleConfiguration, setLiveModaleConfiguration] =
     useLiveModaleConfiguration();
@@ -122,33 +130,8 @@ export const StopLiveButton = ({ video, ...props }: StopLiveButtonProps) => {
 
   return (
     <Button
-      primary
-      color={normalizeColor('red-active', theme)}
+      color="danger"
       disabled={!!liveModaleConfiguration || status.type === 'loading'}
-      label={
-        <Box
-          flex
-          direction="row"
-          style={{ whiteSpace: 'nowrap', color: 'white' }}
-        >
-          {intl.formatMessage(messages.title)}
-          {status.type !== 'loading' && (
-            <StopSVG
-              iconColor="white"
-              height="25px"
-              width="25px"
-              containerStyle={{ margin: 'auto', marginLeft: '8px' }}
-            />
-          )}
-          {status.type === 'loading' && (
-            <BoxLoader
-              whiteBackground
-              size="small"
-              boxProps={{ margin: { left: 'small' } }}
-            />
-          )}
-        </Box>
-      }
       onClick={() =>
         setLiveModaleConfiguration({
           content: modaleContent,
@@ -169,7 +152,27 @@ export const StopLiveButton = ({ video, ...props }: StopLiveButtonProps) => {
           ],
         })
       }
+      iconPosition="right"
+      icon={
+        status.type !== 'loading' ? (
+          <StopSVG
+            iconColor="white"
+            height="25px"
+            width="25px"
+            containerStyle={{ margin: 'auto', marginLeft: '8px' }}
+          />
+        ) : (
+          <BoxLoader
+            whiteBackground
+            size="small"
+            boxProps={{ margin: { left: 'small' } }}
+          />
+        )
+      }
+      style={{ whiteSpace: 'nowrap', ...style }}
       {...props}
-    />
+    >
+      {intl.formatMessage(messages.title)}
+    </Button>
   );
 };

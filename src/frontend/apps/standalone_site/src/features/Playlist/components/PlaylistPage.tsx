@@ -1,10 +1,11 @@
 import {
+  Button,
   Button as ButtonCunningham,
   DataGrid,
   SortModel,
   usePagination,
 } from '@openfun/cunningham-react';
-import { Box, Button } from 'grommet';
+import { Box } from 'grommet';
 import { Breakpoints, Maybe } from 'lib-common';
 import { Heading, Modal, Playlist, Text, useResponsive } from 'lib-components';
 import { Fragment, useEffect, useMemo, useState } from 'react';
@@ -178,13 +179,13 @@ export const PlaylistPage = () => {
                 direction="row"
               >
                 <Button
-                  primary
-                  a11yTitle={intl.formatMessage(messages.create)}
+                  aria-label={intl.formatMessage(messages.create)}
                   onClick={() => {
                     navigate(playlistCreatePath);
                   }}
-                  label={intl.formatMessage(messages.create)}
-                />
+                >
+                  {intl.formatMessage(messages.create)}
+                </Button>
               </Box>
             )}
           </Box>
@@ -199,13 +200,13 @@ export const PlaylistPage = () => {
                 <Text>{intl.formatMessage(messages.error)}</Text>
                 <Box margin={{ horizontal: 'auto', top: 'medium' }}>
                   <Button
-                    a11yTitle={intl.formatMessage(messages.retry)}
+                    aria-label={intl.formatMessage(messages.retry)}
                     onClick={() => {
                       refetch();
                     }}
-                    primary
-                    label={intl.formatMessage(messages.retry)}
-                  />
+                  >
+                    {intl.formatMessage(messages.retry)}
+                  </Button>
                 </Box>
               </Box>
             )}
@@ -222,8 +223,9 @@ export const PlaylistPage = () => {
                     onClick={() => {
                       navigate(playlistCreatePath);
                     }}
-                    label={intl.formatMessage(messages.create)}
-                  />
+                  >
+                    {intl.formatMessage(messages.create)}
+                  </Button>
                 </Box>
               </Box>
             )}

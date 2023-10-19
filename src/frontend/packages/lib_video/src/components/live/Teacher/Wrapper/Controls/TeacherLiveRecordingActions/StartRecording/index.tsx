@@ -1,6 +1,5 @@
-import { Box, Button, Clock, Stack } from 'grommet';
-import { normalizeColor } from 'grommet/utils';
-import { theme } from 'lib-common';
+import { Button } from '@openfun/cunningham-react';
+import { Clock } from 'grommet';
 import { BoxLoader, RecordSVG } from 'lib-components';
 import React from 'react';
 import toast from 'react-hot-toast';
@@ -33,40 +32,32 @@ export const StartRecording = () => {
 
   return (
     <Button
-      color={normalizeColor('red-active', theme)}
+      color="danger"
       data-testid="start-recording"
       disabled={isLoading}
-      margin="auto"
       onClick={() => mutate()}
-      primary
-      label={
-        <Stack>
-          <Box direction="row" flex style={{ whiteSpace: 'nowrap' }}>
-            {isLoading ? (
-              <BoxLoader
-                size="small"
-                boxProps={{ margin: { right: 'small' } }}
-              />
-            ) : (
-              <RecordSVG
-                iconColor="white"
-                width="25px"
-                height="25px"
-                containerStyle={{ margin: 'auto', marginRight: '8px' }}
-              />
-            )}
-
-            {intl.formatMessage(messages.title)}
-            <Clock
-              type="digital"
-              margin={{ left: 'small' }}
-              run={false}
-              time={formatSecToTimeStamp(video.recording_time, intl.locale)}
-            />
-          </Box>
-        </Stack>
+      className="m-auto pl-s pr-s"
+      style={{ borderRadius: '25px', whiteSpace: 'nowrap' }}
+      icon={
+        isLoading ? (
+          <BoxLoader size="small" boxProps={{ margin: { right: 'small' } }} />
+        ) : (
+          <RecordSVG
+            iconColor="white"
+            width="25px"
+            height="25px"
+            containerStyle={{ margin: 'auto', marginRight: '8px' }}
+          />
+        )
       }
-      style={{ borderRadius: '25px' }}
-    />
+    >
+      {intl.formatMessage(messages.title)}
+      <Clock
+        type="digital"
+        margin={{ left: 'small' }}
+        run={false}
+        time={formatSecToTimeStamp(video.recording_time, intl.locale)}
+      />
+    </Button>
   );
 };

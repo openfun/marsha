@@ -1,5 +1,4 @@
-import { Input } from '@openfun/cunningham-react';
-import { Button } from 'grommet';
+import { Button, Input } from '@openfun/cunningham-react';
 import { ComponentPropsWithRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -43,13 +42,14 @@ export const PrivateTextInputField = ({
       required
       rightIcon={
         <Button
-          a11yTitle={
+          type="button"
+          className="c__button-no-bg"
+          color="tertiary"
+          aria-label={
             isHidden
               ? revealButtonLabel || intl.formatMessage(messages.revealPassword)
               : hideButtonLabel || intl.formatMessage(messages.hidePassword)
           }
-          plain
-          style={{ margin: '0 1rem' }}
           icon={isHidden ? <ShowContent /> : <HideContent />}
           onClick={() => setIsHidden(!isHidden)}
         />

@@ -1,4 +1,4 @@
-import { Box, Button } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
 import { DownArrowSVG } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -17,9 +17,13 @@ const messages = defineMessages({
 });
 
 const StyledBytton = styled(Button)`
-  border-radius: 50%;
   transform: rotate(90deg);
   padding: 10px;
+  &,
+  &:hover,
+  &:active {
+    border-radius: 50%;
+  }
 `;
 
 export const PreviousPageButton = () => {
@@ -29,14 +33,9 @@ export const PreviousPageButton = () => {
 
   return (
     <StyledBytton
-      a11yTitle={intl.formatMessage(messages.title)}
+      aria-label={intl.formatMessage(messages.title)}
       disabled={currentPage.page <= 1}
-      primary
-      label={
-        <Box height="30px" width="30px">
-          <DownArrowSVG iconColor="white" width="100%" height="100%" />
-        </Box>
-      }
+      icon={<DownArrowSVG iconColor="white" height="30px" width="30px" />}
       onClick={() => {
         navigateSharingDoc(video, currentPage.page - 1);
       }}

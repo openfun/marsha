@@ -144,11 +144,13 @@ const ClassroomCreateForm = () => {
         </FormField>
 
         <ModalButton
-          label={intl.formatMessage(messages.submitLabel)}
+          aria-label={intl.formatMessage(messages.submitLabel)}
           onClickCancel={() => navigate('..')}
           isSubmitting={isCreating}
           isDisabled={!classroom.title || !classroom.playlist}
-        />
+        >
+          {intl.formatMessage(messages.submitLabel)}
+        </ModalButton>
       </Form>
     </Fragment>
   );

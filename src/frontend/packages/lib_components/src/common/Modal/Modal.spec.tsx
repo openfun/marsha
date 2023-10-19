@@ -1,6 +1,7 @@
+import { Button } from '@openfun/cunningham-react';
 import { screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Box, Button } from 'grommet';
+import { Box } from 'grommet';
 import { render } from 'lib-tests';
 import { createRef } from 'react';
 

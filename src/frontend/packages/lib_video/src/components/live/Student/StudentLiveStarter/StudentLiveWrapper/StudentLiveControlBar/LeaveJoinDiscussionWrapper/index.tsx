@@ -1,6 +1,5 @@
-import { normalizeColor } from 'grommet/utils';
-import { theme } from 'lib-common';
-import { ButtonLayout, WaitingJoinDiscussionSVG } from 'lib-components';
+import { Loader } from '@openfun/cunningham-react';
+import { Text } from 'lib-components';
 import React, { useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -45,13 +44,13 @@ export const LeaveJoinDiscussionWrapper = () => {
 
   if (asked) {
     return (
-      <ButtonLayout
-        Icon={WaitingJoinDiscussionSVG}
-        label={intl.formatMessage(messages.waitingInstructor)}
-        reversedColor={normalizeColor('white', theme)}
-        tintColor={normalizeColor('blue-active', theme)}
-        textColor="clr-primary-500"
-      />
+      <Text
+        type="div"
+        style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+      >
+        <Loader size="small" />
+        {intl.formatMessage(messages.waitingInstructor)}
+      </Text>
     );
   } else if (accepted) {
     return <StudentLeaveDiscussionButton />;

@@ -1,6 +1,6 @@
-import { Checkbox, Input } from '@openfun/cunningham-react';
+import { Button, Checkbox, Input } from '@openfun/cunningham-react';
 import { Box } from 'grommet';
-import { Classroom, DashboardButton, Text } from 'lib-components';
+import { Classroom, Text } from 'lib-components';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -119,12 +119,14 @@ export const DashboardClassroomAskUsernameStudent = ({
         )}
       </Box>
       <Box direction="row" justify="center" margin={{ top: 'medium' }}>
-        <DashboardButton
-          label={intl.formatMessage(messages.join)}
+        <Button
+          fullWidth
+          aria-label={intl.formatMessage(messages.join)}
           onClick={onJoin}
-          primary={true}
           disabled={!isStudentConsentRecord || !userFullname}
-        />
+        >
+          {intl.formatMessage(messages.join)}
+        </Button>
       </Box>
     </DashboardClassroomAskUsernameWrapper>
   );
@@ -145,17 +147,20 @@ export const DashboardClassroomAskUsername = ({
     >
       <Box direction="row" justify="center" margin={{ top: 'medium' }}>
         {onCancel && (
-          <DashboardButton
-            label={intl.formatMessage(messages.cancel)}
+          <Button
+            aria-label={intl.formatMessage(messages.cancel)}
             onClick={onCancel}
-          />
+          >
+            {intl.formatMessage(messages.cancel)}
+          </Button>
         )}
-        <DashboardButton
-          label={intl.formatMessage(messages.join)}
+        <Button
+          aria-label={intl.formatMessage(messages.join)}
           onClick={onJoin}
-          primary={true}
           disabled={!userFullname}
-        />
+        >
+          {intl.formatMessage(messages.join)}
+        </Button>
       </Box>
     </DashboardClassroomAskUsernameWrapper>
   );

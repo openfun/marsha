@@ -1,5 +1,5 @@
-import { Box, Button, Grid } from 'grommet';
-import { AddCircle } from 'grommet-icons';
+import { Button } from '@openfun/cunningham-react';
+import { Box, Grid } from 'grommet';
 import { Nullable } from 'lib-common';
 import { Classroom, ClassroomSVG, ContentCard, Text } from 'lib-components';
 import React from 'react';
@@ -82,11 +82,12 @@ export const SelectContentSection = ({
     <Box>
       <Box margin={{ vertical: 'medium' }}>
         <Button
-          icon={<AddCircle />}
-          secondary
-          label={intl.formatMessage(messages.addClassroom)}
+          icon={<span className="material-icons">add_circle</span>}
           onClick={addAndSelectContent}
-        />
+          style={{ alignSelf: 'start' }}
+        >
+          {intl.formatMessage(messages.addClassroom)}
+        </Button>
       </Box>
       <Grid columns="small" gap="small">
         {items?.map((item: Classroom) => {

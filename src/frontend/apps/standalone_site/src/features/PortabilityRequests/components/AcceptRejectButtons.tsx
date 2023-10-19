@@ -1,4 +1,5 @@
-import { Box, Button } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
+import { Box } from 'grommet';
 import { FormCheckmark, FormClose } from 'grommet-icons';
 import { BoxLoader, PortabilityRequest } from 'lib-components';
 import { Fragment, useEffect, useState } from 'react';
@@ -83,20 +84,15 @@ export const AcceptRejectButtons = ({
   return (
     <Box direction="row" gap="small">
       <Button
-        primary
-        pad={{ horizontal: 'small', vertical: 'xsmall' }}
-        alignSelf="center"
-        a11yTitle={intl.formatMessage(messages.acceptPortabilityRequest)}
-        color="status-ok"
+        aria-label={intl.formatMessage(messages.acceptPortabilityRequest)}
+        color="primary"
         icon={<FormCheckmark color="white" />}
         onClick={() => mutateAcceptPortabilityRequest({})}
+        className="c__button--success"
       />
       <Button
-        primary
-        pad={{ horizontal: 'small', vertical: 'xsmall' }}
-        alignSelf="center"
-        a11yTitle={intl.formatMessage(messages.rejectPortabilityRequest)}
-        color="status-error"
+        aria-label={intl.formatMessage(messages.rejectPortabilityRequest)}
+        color="danger"
         icon={<FormClose color="white" />}
         onClick={() => mutateRejectPortabilityRequest({})}
       />

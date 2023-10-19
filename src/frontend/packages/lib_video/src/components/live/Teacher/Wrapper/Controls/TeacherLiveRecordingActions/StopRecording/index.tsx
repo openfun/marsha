@@ -1,6 +1,5 @@
-import { Box, Button, Clock, Stack } from 'grommet';
-import { normalizeColor } from 'grommet/utils';
-import { theme } from 'lib-common';
+import { Button } from '@openfun/cunningham-react';
+import { Box, Clock } from 'grommet';
 import { BoxLoader, RecordSVG } from 'lib-components';
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -74,44 +73,33 @@ export const StopRecording = () => {
 
   return (
     <Button
-      color={normalizeColor('red-active', theme)}
+      color="danger"
       data-testid="stop-recording"
       disabled={isLoading || !recordingActionEnabled}
-      margin="auto"
       onClick={() => mutate()}
-      primary
-      label={
-        <Stack>
-          <Box direction="row" flex style={{ whiteSpace: 'nowrap' }}>
-            {isLoading ? (
-              <BoxLoader
-                size="small"
-                boxProps={{ margin: { right: 'small' } }}
-              />
-            ) : (
-              <BlinkedBox>
-                <RecordSVG
-                  iconColor="white"
-                  width="25px"
-                  height="25px"
-                  containerStyle={{ margin: 'auto', marginRight: '8px' }}
-                />
-              </BlinkedBox>
-            )}
-            {intl.formatMessage(messages.title)}
-            <Clock
-              type="digital"
-              margin={{ left: 'small' }}
-              time={formatSecToTimeStamp(video.recording_time, intl.locale)}
+      className="m-auto pl-s pr-s"
+      style={{ borderRadius: '25px', whiteSpace: 'nowrap' }}
+      icon={
+        isLoading ? (
+          <BoxLoader size="small" boxProps={{ margin: { right: 'small' } }} />
+        ) : (
+          <BlinkedBox>
+            <RecordSVG
+              iconColor="white"
+              width="25px"
+              height="25px"
+              containerStyle={{ margin: 'auto', marginRight: '8px' }}
             />
-          </Box>
-        </Stack>
+          </BlinkedBox>
+        )
       }
-      style={{
-        borderRadius: '25px',
-        //  force text color to white because a disabled button uses the color props for the text color
-        color: 'white',
-      }}
-    />
+    >
+      {intl.formatMessage(messages.title)}
+      <Clock
+        type="digital"
+        margin={{ left: 'small' }}
+        time={formatSecToTimeStamp(video.recording_time, intl.locale)}
+      />
+    </Button>
   );
 };

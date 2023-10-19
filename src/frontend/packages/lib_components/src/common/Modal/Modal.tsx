@@ -113,6 +113,7 @@ const Modal = forwardRef<
       >
         <FormCloseIcon
           color="white"
+          role="button"
           onClick={handleClose}
           a11yTitle={intl.formatMessage(messages.closeButtonTitle)}
         />

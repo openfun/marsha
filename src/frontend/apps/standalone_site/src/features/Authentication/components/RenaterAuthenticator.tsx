@@ -88,11 +88,16 @@ export const RenaterAuthenticator = () => {
         <ClosingCard
           message={
             <Fragment>
-              <Text size="small" weight="bold">
+              <Text size="small" weight="bold" color="white">
                 {intl.formatMessage(messages.errorMessage)}
               </Text>
               {messageErrorQuery && (
-                <Text size="small" weight="bold" className="mt-st">
+                <Text
+                  size="small"
+                  weight="bold"
+                  className="mt-st"
+                  color="white"
+                >
                   {messageErrorQuery}
                 </Text>
               )}

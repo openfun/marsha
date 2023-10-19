@@ -1,9 +1,8 @@
-import { Button } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
 import { SharedLiveMedia, report } from 'lib-components';
 import React from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
-import styled from 'styled-components';
 
 import { useStartSharingMedia } from '@lib-video/api/useStartSharingMedia';
 import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
@@ -27,12 +26,6 @@ const messages = defineMessages({
     id: 'component.StartSharingButton.publishSharedLiveMediaBtn',
   },
 });
-
-const StyledButton = styled(Button)`
-  font-family: Roboto-Medium;
-  font-size: 0.7rem;
-  margin: 0px;
-`;
 
 interface StartSharingButtonProps {
   sharedLiveMediaId: SharedLiveMedia['id'];
@@ -58,18 +51,18 @@ export const StartSharingButton = ({
   });
 
   return (
-    <StyledButton
-      a11yTitle={intl.formatMessage(messages.publishSharedLiveMediaBtn)}
+    <Button
       disabled={!!video.active_shared_live_media}
-      label={intl.formatMessage(messages.publishSharedLiveMediaBtn)}
+      aria-label={intl.formatMessage(messages.publishSharedLiveMediaBtn)}
       onClick={() =>
         shareMediaStart.mutate({
           sharedlivemedia: sharedLiveMediaId,
         })
       }
-      primary
       title={intl.formatMessage(messages.publishSharedLiveMediaBtn)}
-      pad={{ horizontal: 'small', vertical: 'xsmall' }}
-    />
+      size="small"
+    >
+      {intl.formatMessage(messages.publishSharedLiveMediaBtn)}
+    </Button>
   );
 };

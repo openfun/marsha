@@ -190,13 +190,15 @@ const VideoCreateForm = () => {
         </Box>
 
         <ModalButton
-          label={intl.formatMessage(messages.submitLabel)}
+          aria-label={intl.formatMessage(messages.submitLabel)}
           onClickCancel={() => {
             navigate('..');
           }}
           isSubmitting={isCreating}
           isDisabled={!video.videoFile || isUploading}
-        />
+        >
+          {intl.formatMessage(messages.submitLabel)}
+        </ModalButton>
       </Form>
     </Fragment>
   );

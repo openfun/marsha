@@ -1,6 +1,17 @@
-import { DataGrid, SortModel, usePagination } from '@openfun/cunningham-react';
-import { Box, Button } from 'grommet';
-import { BoxLoader, Heading, PortabilityRequest, Text } from 'lib-components';
+import {
+  Button,
+  DataGrid,
+  SortModel,
+  usePagination,
+} from '@openfun/cunningham-react';
+import { Box } from 'grommet';
+import {
+  BoxError,
+  BoxLoader,
+  Heading,
+  PortabilityRequest,
+  Text,
+} from 'lib-components';
 import { useEffect, useMemo, useState } from 'react';
 import { IntlShape, defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
@@ -208,24 +219,18 @@ export const PortabilityRequests = ({
         </Box>
         {isLoading && <BoxLoader />}
         {isError && (
-          <Box
-            background="content-background"
-            margin="auto"
-            pad="medium"
-            round="small"
-          >
-            <Text size="large">{intl.formatMessage(messages.error)}</Text>
-            <Box margin={{ horizontal: 'auto', top: 'medium' }}>
-              <Button
-                a11yTitle={intl.formatMessage(messages.retry)}
-                onClick={() => {
-                  refetch();
-                }}
-                primary
-                label={intl.formatMessage(messages.retry)}
-              />
-            </Box>
-          </Box>
+          <BoxError message={intl.formatMessage(messages.error)}>
+            <Button
+              aria-label={intl.formatMessage(messages.retry)}
+              onClick={() => {
+                refetch();
+              }}
+              style={{ alignSelf: 'center' }}
+              className="mt-s"
+            >
+              {intl.formatMessage(messages.retry)}
+            </Button>
+          </BoxError>
         )}
         {hasNoResult && (
           <Box

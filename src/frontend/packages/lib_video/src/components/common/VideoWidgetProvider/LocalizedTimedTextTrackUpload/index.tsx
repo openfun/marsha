@@ -1,4 +1,5 @@
-import { Box, Button } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
+import { Box } from 'grommet';
 import { Maybe, Nullable } from 'lib-common';
 import {
   ItemList,
@@ -208,20 +209,19 @@ export const LocalizedTimedTextTrackUpload = ({
         type="file"
       />
       <Button
-        a11yTitle={intl.formatMessage(messages.uploadButtonLabel)}
-        fill="horizontal"
-        label={intl.formatMessage(messages.uploadButtonLabel)}
+        aria-label={intl.formatMessage(messages.uploadButtonLabel)}
         onClick={() => {
           if (hiddenFileInput.current) {
             retryUploadIdRef.current = null;
             hiddenFileInput.current.click();
           }
         }}
-        primary
-        style={{ height: '50px', fontFamily: 'Roboto-Medium' }}
+        fullWidth
         title={intl.formatMessage(messages.uploadButtonLabel)}
         disabled={!selectedLanguage}
-      />
+      >
+        {intl.formatMessage(messages.uploadButtonLabel)}
+      </Button>
     </Box>
   );
 };

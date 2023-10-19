@@ -1,7 +1,6 @@
 import {
   BinSVG,
   ButtonLoader,
-  ButtonLoaderStyle,
   ClassroomRecording,
   Heading,
   Modal,
@@ -83,7 +82,7 @@ export const DeleteClassroomRecordingButton = ({
           {intl.formatMessage(messages.confirmDeleteText)}
         </Text>
         <ModalButton
-          label={intl.formatMessage(messages.confirmDeleteTitle)}
+          aria-label={intl.formatMessage(messages.confirmDeleteTitle)}
           onClickCancel={() => setIsModalOpen(false)}
           onClickSubmit={() => {
             setIsModalOpen(false);
@@ -92,11 +91,13 @@ export const DeleteClassroomRecordingButton = ({
               classroomRecordingId: recording.id,
             });
           }}
-          style={ButtonLoaderStyle.DESTRUCTIVE}
-        />
+          color="danger"
+        >
+          {intl.formatMessage(messages.confirmDeleteTitle)}
+        </ModalButton>
       </Modal>
       <ButtonLoader
-        a11yTitle={intl.formatMessage(messages.buttonLabel)}
+        aria-label={intl.formatMessage(messages.buttonLabel)}
         spinnerProps={{ size: 'small' }}
         onClickSubmit={() => setIsModalOpen(true)}
         isSubmitting={deleteClassroomRecording.isLoading}

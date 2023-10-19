@@ -48,7 +48,9 @@ describe('<InstructorDownloadVideo />', () => {
     });
     within(button).getByText('1080 p');
 
-    expect(screen.getByRole('link', { name: 'Download' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Download' }),
+    ).toBeInTheDocument();
   });
 
   it('selects the lowest quality', async () => {
@@ -96,12 +98,15 @@ describe('<InstructorDownloadVideo />', () => {
     );
 
     screen.getByText('1080 p');
-    const downloadButton = screen.getByRole('link', { name: 'Download' });
-    expect(downloadButton).toHaveAttribute(
-      'href',
-      'https://example.com/mp4/1080',
-    );
+    const downloadButton = screen.getByRole('button', { name: 'Download' });
+    global.open = jest.fn();
+
     await userEvent.click(downloadButton);
+
+    expect(global.open).toBeCalledWith(
+      'https://example.com/mp4/1080',
+      '_blank',
+    );
   });
 
   it("renders the component when there aren't any resolutions available", () => {

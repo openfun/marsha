@@ -1,7 +1,8 @@
-import { Meter } from 'grommet';
-import { DashboardButton, Text, liveState } from 'lib-components';
+import { Button } from '@openfun/cunningham-react';
+import { Box, Meter } from 'grommet';
+import { Text, liveState } from 'lib-components';
 import React, { useEffect, useState } from 'react';
-import { FormattedMessage, defineMessages } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 
 import { usePairingVideo } from '@lib-video/api/usePairingVideo';
 import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
@@ -34,11 +35,11 @@ export const LivePairingButton = () => {
   const reset = -3;
 
   const video = useCurrentVideo();
-  const [buttonColor, setButtonColor] = useState('brand');
   const [secret, setSecret] = useState('');
   const [expiresIn, setExpiresIn] = useState(0);
   const [secondsLeft, setSecondsLeft] = useState(0);
   const [expired, setExpired] = useState(false);
+  const intl = useIntl();
 
   const usePairingVideoMutation = usePairingVideo(video.id, {
     onSuccess: (data) => {
@@ -46,7 +47,6 @@ export const LivePairingButton = () => {
       setExpiresIn(data.expires_in);
       setSecondsLeft(data.expires_in);
       setExpired(false);
-      setButtonColor('status-ok');
     },
   });
 
@@ -62,12 +62,10 @@ export const LivePairingButton = () => {
         case expiration:
           // the secret is expired, set states to display an expiration message
           setExpired(true);
-          setButtonColor('status-warning');
           break;
         case reset:
           // the secret expired 3 seconds ago, set states to display initial label
           setSecret('');
-          setButtonColor('brand');
           break;
         default:
           break;
@@ -85,56 +83,47 @@ export const LivePairingButton = () => {
     };
   }, [secondsLeft, secret, reset]);
 
-  let content: JSX.Element;
-
-  if (!secret) {
+  if (!secret || expired) {
     // no secret yet, initial state
-    content = (
-      <Text textAlign="center" color="white">
-        <FormattedMessage {...messages.pairingSecretLabel} />
-      </Text>
+    return (
+      <Button
+        fullWidth
+        onClick={pairVideoAction}
+        disabled={video.live_state === liveState.STOPPED}
+      >
+        {intl.formatMessage(
+          !secret
+            ? messages.pairingSecretLabel
+            : messages.pairingSecretCountdownExpired,
+        )}
+      </Button>
     );
-  } else {
-    if (!expired) {
-      // secret exists and is not expired yet
-      content = (
-        <React.Fragment>
-          <Text textAlign="center" size="large" color="white">
-            <FormattedMessage
-              {...messages.pairingSecretDisplay}
-              values={{ secret }}
-            />
-          </Text>
-          <Meter
-            type="bar"
-            color="light-1"
-            background={{ color: 'light-1', opacity: 'medium' }}
-            value={(secondsLeft * 100) / expiresIn}
-            alignSelf="center"
-            size="full"
-            thickness="xsmall"
-            margin={{ top: 'small' }}
-          />
-        </React.Fragment>
-      );
-    } else {
-      // secret has expired
-      content = (
-        <Text textAlign="center" color="white">
-          <FormattedMessage {...messages.pairingSecretCountdownExpired} />
-        </Text>
-      );
-    }
   }
 
+  // secret exists and is not expired yet
   return (
-    <DashboardButton
-      primary
-      color={buttonColor}
-      onClick={pairVideoAction}
-      label={content}
-      style={{ margin: 0, maxWidth: '100%' }}
-      disabled={video.live_state === liveState.STOPPED}
-    />
+    <Box
+      background={'var(--c--theme--colors--info-100)'}
+      round="xsmall"
+      pad={{ bottom: 'medium', horizontal: 'medium' }}
+    >
+      <Text type="p" textAlign="center" size="large" weight="medium">
+        {intl.formatMessage(messages.pairingSecretDisplay, {
+          secret,
+        })}
+      </Text>
+      <Meter
+        type="bar"
+        color="var(--c--theme--colors--info-400)"
+        background={{
+          color: 'var(--c--theme--colors--info-200)',
+          opacity: 'medium',
+        }}
+        value={(secondsLeft * 100) / expiresIn}
+        alignSelf="center"
+        size="full"
+        thickness="xsmall"
+      />
+    </Box>
   );
 };

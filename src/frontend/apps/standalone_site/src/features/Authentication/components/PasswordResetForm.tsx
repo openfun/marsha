@@ -1,5 +1,5 @@
-import { Input } from '@openfun/cunningham-react';
-import { Box, Button } from 'grommet';
+import { Button, Input } from '@openfun/cunningham-react';
+import { Box } from 'grommet';
 import { Alert } from 'grommet-icons';
 import { Text } from 'lib-components';
 import { useState } from 'react';
@@ -106,12 +106,9 @@ export const PasswordResetForm = () => {
         </Box>
       )}
       <Box flex={false} margin={{ top: 'medium' }}>
-        <Button
-          type="submit"
-          label={intl.formatMessage(messages.labelSubmit)}
-          primary
-          fill
-        />
+        <Button type="submit" fullWidth>
+          {intl.formatMessage(messages.labelSubmit)}
+        </Button>
       </Box>
     </form>
   );

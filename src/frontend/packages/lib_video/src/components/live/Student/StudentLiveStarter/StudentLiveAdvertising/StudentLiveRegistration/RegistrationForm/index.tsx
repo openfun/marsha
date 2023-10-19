@@ -1,5 +1,5 @@
-import { Input } from '@openfun/cunningham-react';
-import { Button, ThemeContext } from 'grommet';
+import { Button, Input } from '@openfun/cunningham-react';
+import { ThemeContext } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { Maybe, theme } from 'lib-common';
 import {
@@ -275,12 +275,13 @@ export const RegistrationForm = ({
         )}
 
         <Button
-          fill="horizontal"
-          label={intl.formatMessage(messages.formSubmitTitle)}
-          margin={{ top: 'medium' }}
-          primary
+          aria-label={intl.formatMessage(messages.formSubmitTitle)}
+          className="mt-s"
+          fullWidth
           type="submit"
-        />
+        >
+          {intl.formatMessage(messages.formSubmitTitle)}
+        </Button>
 
         {ltiUserError && (
           <Text

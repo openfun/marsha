@@ -1,4 +1,5 @@
-import { Box, Button } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
+import { Box } from 'grommet';
 import { Clock } from 'grommet-icons';
 import {
   DecodedJwtLTI,
@@ -117,11 +118,9 @@ export const PortabilityRequest = ({
           <Text type="p" className="mt-s">
             <FormattedMessage {...messages.pleaseMakeRequest} />
           </Text>
-          <Button
-            label={intl.formatMessage(messages.requestBtnLabel)}
-            onClick={onRequestBtnClick}
-            primary
-          />
+          <Button onClick={onRequestBtnClick}>
+            {intl.formatMessage(messages.requestBtnLabel)}
+          </Button>
         </React.Fragment>
       )}
     </Box>

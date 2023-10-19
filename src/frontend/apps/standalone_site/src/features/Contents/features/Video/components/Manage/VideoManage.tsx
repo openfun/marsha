@@ -1,19 +1,19 @@
-import { Box, Button } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
+import { Box } from 'grommet';
 import {
-  ButtonLoaderStyle,
   Heading,
   Modal,
   ModalButton,
   Text,
   UploadManager,
   report,
+  withLink,
 } from 'lib-components';
 import { useDeleteVideos } from 'lib-video';
 import { Fragment, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { ContentsHeader } from 'features/Contents';
 import { useSelectFeatures } from 'features/Contents/store/selectionStore';
@@ -75,9 +75,7 @@ const messages = defineMessages({
   },
 });
 
-const ButtonStyled = styled(Button)`
-  color: white;
-`;
+const ButtonWithLink = withLink(Button);
 
 const VideoManage = () => {
   const intl = useIntl();
@@ -134,37 +132,42 @@ const VideoManage = () => {
         {!isSelectionEnabled && (
           <Box direction="row" gap="small">
             <Button
-              secondary
-              label={intl.formatMessage(messages.SelectButtonLabel)}
+              color="secondary"
+              aria-label={intl.formatMessage(messages.SelectButtonLabel)}
               onClick={switchSelectEnabled}
-            />
+            >
+              {intl.formatMessage(messages.SelectButtonLabel)}
+            </Button>
 
-            <Link to={videoCreatePath}>
-              <Button
-                primary
-                label={intl.formatMessage(messages.CreateVideoLabel)}
-                disabled={isSelectionEnabled}
-              />
-            </Link>
+            <ButtonWithLink
+              to={videoCreatePath}
+              aria-label={intl.formatMessage(messages.CreateVideoLabel)}
+            >
+              {intl.formatMessage(messages.CreateVideoLabel)}
+            </ButtonWithLink>
           </Box>
         )}
         {isSelectionEnabled && (
           <Box direction="row" gap="small">
             <Button
-              secondary
-              label={intl.formatMessage(messages.CancelSelectionLabel)}
+              color="secondary"
+              aria-label={intl.formatMessage(messages.CancelSelectionLabel)}
               onClick={switchSelectEnabled}
-            />
-
-            <ButtonStyled
-              primary
-              color="action-danger"
-              label={intl.formatMessage(messages.DeleteButtonLabel, {
+            >
+              {intl.formatMessage(messages.CancelSelectionLabel)}
+            </Button>
+            <Button
+              color="danger"
+              aria-label={intl.formatMessage(messages.DeleteButtonLabel, {
                 item_count: selectedItems.length,
               })}
               disabled={selectedItems.length < 1}
               onClick={() => setIsDeleteModalOpen(true)}
-            />
+            >
+              {intl.formatMessage(messages.DeleteButtonLabel, {
+                item_count: selectedItems.length,
+              })}
+            </Button>
           </Box>
         )}
       </ContentsHeader>
@@ -200,7 +203,7 @@ const VideoManage = () => {
           })}
         </Text>
         <ModalButton
-          label={intl.formatMessage(messages.confirmDeleteVideosTitle, {
+          aria-label={intl.formatMessage(messages.confirmDeleteVideosTitle, {
             item_count: selectedItems.length,
           })}
           onClickCancel={() => {
@@ -211,8 +214,12 @@ const VideoManage = () => {
             setIsDeleteModalOpen(false);
             switchSelectEnabled();
           }}
-          style={ButtonLoaderStyle.DESTRUCTIVE}
-        />
+          color="danger"
+        >
+          {intl.formatMessage(messages.confirmDeleteVideosTitle, {
+            item_count: selectedItems.length,
+          })}
+        </ModalButton>
       </Modal>
     </Fragment>
   );

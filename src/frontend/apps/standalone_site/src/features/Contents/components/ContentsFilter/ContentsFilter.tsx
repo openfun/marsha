@@ -1,7 +1,7 @@
-import { Box, Button } from 'grommet';
+import { Box } from 'grommet';
 import { Filter } from 'grommet-icons';
 import { Breakpoints } from 'lib-common';
-import { Playlist, Text, useResponsive } from 'lib-components';
+import { Badge, Playlist, Text, useResponsive } from 'lib-components';
 import { Fragment, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
@@ -31,13 +31,14 @@ interface ButtonFilterProps {
   active: boolean;
 }
 
-const ButtonFilter = styled(Button)<ButtonFilterProps>`
+const ButtonFilter = styled(Box)<ButtonFilterProps>`
   box-shadow:
     inset 0px 0px 0px 0px rgba(2, 117, 180, 0.3),
     rgba(2, 117, 180, 0.3) 2px 2px 3px 0px;
   border-radius: 25px;
   border: none;
   display: flex;
+  position: relative;
   padding: 7px 13px;
   transition: all 0.3s ease-in-out;
   background: #fff;
@@ -123,16 +124,24 @@ const ContentsFilter = ({ setFilter, filter }: ContentsFilterProps) => {
         }}
       >
         <ButtonFilter
-          label={
-            <Text>
-              <Filter color="blue-active" size="20px" />
-              {intl.formatMessage(messages.labelFilter)}
-            </Text>
-          }
+          role="button"
           onClick={() => setShowFilter(!showFilter)}
           active={showFilter}
-          badge={badgeCounter}
-        />
+        >
+          <Text>
+            <Filter color="blue-active" size="20px" />
+            {intl.formatMessage(messages.labelFilter)}
+          </Text>
+          {badgeCounter > 0 && (
+            <Badge
+              value={badgeCounter.toString()}
+              position={{
+                top: '-8px',
+                right: '-8px',
+              }}
+            />
+          )}
+        </ButtonFilter>
       </Box>
       <WhiteCard
         pad={showFilter ? 'medium' : '0px'}

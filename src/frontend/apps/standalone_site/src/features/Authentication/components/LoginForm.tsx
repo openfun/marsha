@@ -130,9 +130,11 @@ export const LoginForm = () => {
       )}
       <Box flex={false} margin={{ top: 'medium' }}>
         <ButtonLoader
-          label={intl.formatMessage(messages.labelSubmit)}
+          aria-label={intl.formatMessage(messages.labelSubmit)}
           isSubmitting={isLoading}
-        />
+        >
+          {intl.formatMessage(messages.labelSubmit)}
+        </ButtonLoader>
       </Box>
     </form>
   );

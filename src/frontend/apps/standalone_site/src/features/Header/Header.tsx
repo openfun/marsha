@@ -1,4 +1,5 @@
-import { Box, Button, DropButton } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
+import { Box, DropButton } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { Breakpoints, Nullable, theme } from 'lib-common';
 import {
@@ -21,30 +22,6 @@ import { logout } from 'features/Authentication';
 import { LanguagePicker } from 'features/Language/';
 import { Burger } from 'features/Menu';
 import { routes } from 'routes/routes';
-
-const styleItem = `
-  text-decoration: none;
-  color: ${normalizeColor('blue-active', theme)};
-  display: flex;
-  gap: 1rem;
-  align-items: left;
-  padding: 6px 12px;
-  border-radius: 6px;
-  transition: background-color 0.2s ease-in-out;
-  &:hover,
-  &.hover {
-    background-color: ${normalizeColor('bg-menu-hover', theme)};
-  }
-  align-items: center;
-`;
-
-const NavLinkStyled = styled(NavLink)`
-  ${styleItem}
-`;
-
-const ButtonStyled = styled(Button)`
-  ${styleItem}
-`;
 
 const colorMenu = normalizeColor('blue-active', theme);
 
@@ -208,7 +185,8 @@ const Header = forwardRef<Nullable<HTMLDivElement>>((_props, ref) => {
           dropAlign={{ top: 'bottom', right: 'right' }}
           dropContent={
             <Box direction="column" margin="small" gap="xsmall">
-              <NavLinkStyled
+              <NavLink
+                className="c__button c__button--tertiary c__button--medium  c__button--with-icon--left"
                 to={routes.PROFILE.path}
                 onClick={() => {
                   setIsDropOpen(false);
@@ -216,9 +194,9 @@ const Header = forwardRef<Nullable<HTMLDivElement>>((_props, ref) => {
               >
                 <AvatarIcon />
                 <Text>{intl.formatMessage(messages.profile)}</Text>
-              </NavLinkStyled>
-
-              <NavLinkStyled
+              </NavLink>
+              <NavLink
+                className="c__button c__button--tertiary c__button--medium  c__button--with-icon--left"
                 to={routes.PROFILE.subRoutes.PROFILE_SETTINGS.path}
                 onClick={() => {
                   setIsDropOpen(false);
@@ -226,17 +204,16 @@ const Header = forwardRef<Nullable<HTMLDivElement>>((_props, ref) => {
               >
                 <SettingsIcon />{' '}
                 <Text>{intl.formatMessage(messages.settings)}</Text>
-              </NavLinkStyled>
-
-              <ButtonStyled
-                plain
+              </NavLink>
+              <Button
                 onClick={() => {
                   logout();
                 }}
+                icon={<LogoutIcon />}
+                color="tertiary"
               >
-                <LogoutIcon />
                 <Text>{intl.formatMessage(messages.logout)}</Text>
-              </ButtonStyled>
+              </Button>
             </Box>
           }
           dropProps={{

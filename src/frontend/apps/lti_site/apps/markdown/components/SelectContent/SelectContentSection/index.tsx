@@ -1,5 +1,6 @@
-import { Box, Button, Grid } from 'grommet';
-import { AddCircle, DocumentText } from 'grommet-icons';
+import { Button } from '@openfun/cunningham-react';
+import { Box, Grid } from 'grommet';
+import { DocumentText } from 'grommet-icons';
 import { Nullable } from 'lib-common';
 import {
   ContentCard,
@@ -96,11 +97,12 @@ export const SelectContentSection = ({
     <Box>
       <Box margin={{ vertical: 'medium' }}>
         <Button
-          icon={<AddCircle />}
-          secondary
-          label={intl.formatMessage(messages.addDocument)}
+          icon={<span className="material-icons">add_circle</span>}
           onClick={addAndSelectContent}
-        />
+          style={{ alignSelf: 'start' }}
+        >
+          {intl.formatMessage(messages.addDocument)}
+        </Button>
       </Box>
       <Grid columns="small" gap="small">
         {items?.map((item: MarkdownDocument) => {

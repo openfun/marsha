@@ -1,4 +1,5 @@
-import { Box, BoxTypes, Button, CardBody, Card as GrommetCard } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
+import { Box, BoxTypes, CardBody, Card as GrommetCard } from 'grommet';
 import { FormClose } from 'grommet-icons';
 import { PropsWithChildren, ReactNode, useState } from 'react';
 import styled from 'styled-components';
@@ -42,9 +43,13 @@ export const ClosingCard = ({
       <CardBody pad={{ left: 'medium', vertical: 'xsmall', right: 'small' }}>
         <Box direction="row" justify="between" align="center">
           <Box>{message}</Box>
-          <Button onClick={() => setDisplay(false)} style={{ display: 'flex' }}>
-            <FormClose aria-label="close" color="white" />
-          </Button>
+          <Button
+            className="c__button-no-bg"
+            color="tertiary"
+            icon={<FormClose color="white" />}
+            onClick={() => setDisplay(false)}
+            aria-label="close"
+          />
         </Box>
         {children && (
           <Box

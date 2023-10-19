@@ -1,9 +1,7 @@
-import { Select } from '@openfun/cunningham-react';
-import { Box, Button } from 'grommet';
+import { Button, Select } from '@openfun/cunningham-react';
 import {
   AnonymousUser,
   BinSVG,
-  ButtonLoaderStyle,
   Modal,
   ModalButton,
   ModalControlMethods,
@@ -177,24 +175,30 @@ export const UserDeleteColumn = ({
           {intl.formatMessage(messages.deleteUserDescription)}
         </Text>
         <ModalButton
-          label={intl.formatMessage(messages.deleteUserConfirmButtonTitle)}
+          aria-label={intl.formatMessage(messages.deleteUserConfirmButtonTitle)}
           onClickCancel={() => modalActions.current?.close()}
           onClickSubmit={() => deleteMutation(playlistAccessId)}
-          style={ButtonLoaderStyle.DESTRUCTIVE}
-        />
+          color="danger"
+        >
+          {intl.formatMessage(messages.deleteUserConfirmButtonTitle)}
+        </ModalButton>
       </Modal>
 
       <Button
-        plain
-        margin={{ left: 'medium' }}
+        color="tertiary"
         onClick={() => modalActions.current?.open()}
         disabled={userId === idUser}
-        a11yTitle={intl.formatMessage(messages.deleteUserLabel)}
-      >
-        <Box pad="xxsmall">
-          <BinSVG iconColor="blue-active" width="18px" height="18px" />
-        </Box>
-      </Button>
+        aria-label={intl.formatMessage(messages.deleteUserLabel)}
+        icon={
+          <BinSVG
+            iconColor={userId === idUser ? 'grey' : 'blue-active'}
+            width="18px"
+            height="18px"
+          />
+        }
+        style={{ alignSelf: 'center' }}
+        className="m-auto"
+      />
     </Fragment>
   );
 };

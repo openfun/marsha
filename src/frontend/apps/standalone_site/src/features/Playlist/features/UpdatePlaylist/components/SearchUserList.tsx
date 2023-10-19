@@ -1,12 +1,13 @@
-import { Box, Button } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
+import { Box } from 'grommet';
 import { Nullable } from 'lib-common';
-import { BoxLoader, Text } from 'lib-components';
+import { BoxError, BoxLoader, Text } from 'lib-components';
 import { Dispatch, SetStateAction } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { UserLite, useSearchUsers } from '../api/useSearchUsers';
 
-import { SearchUserListRow } from './SearchUserListRow';
+import { formatUsername } from './SearchUserListRow';
 
 const messages = defineMessages({
   noResults: {
@@ -61,16 +62,14 @@ export const SearchUserList = ({
           {users.results.map((user, index) => (
             <Button
               key={`user_${index}`}
-              a11yTitle={intl.formatMessage(messages.selectUserLabel, {
+              aria-label={intl.formatMessage(messages.selectUserLabel, {
                 user: user.full_name,
               })}
-              plain
               onClick={() => setSelectedUser(user)}
               style={{ textAlign: 'start' }}
+              color="secondary"
             >
-              {({ hover, focus }) => (
-                <SearchUserListRow hover={hover} focus={focus} user={user} />
-              )}
+              {formatUsername(user, intl)}
             </Button>
           ))}
         </Box>
@@ -81,13 +80,16 @@ export const SearchUserList = ({
       )}
       {isError && (
         <Box>
-          <Text type="p">{intl.formatMessage(messages.error)}</Text>
+          <BoxError message={intl.formatMessage(messages.error)} />
           <Button
-            label={intl.formatMessage(messages.retry)}
+            aria-label={intl.formatMessage(messages.retry)}
             onClick={() => {
               refetch();
             }}
-          />
+            style={{ alignSelf: 'center' }}
+          >
+            {intl.formatMessage(messages.retry)}
+          </Button>
         </Box>
       )}
     </Box>

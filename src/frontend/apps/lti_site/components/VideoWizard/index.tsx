@@ -1,4 +1,5 @@
-import { Box, Button } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
+import { Box } from 'grommet';
 import { Breakpoints } from 'lib-common';
 import {
   ErrorComponents,
@@ -97,17 +98,15 @@ const VideoWizard = () => {
                 </Text>
 
                 <CreateVODButton
-                  a11yTitle={intl.formatMessage(
+                  aria-label={intl.formatMessage(
                     messages.createVideoButtonLabel,
                   )}
-                  color="blue-active"
-                  fill="horizontal"
-                  label={intl.formatMessage(messages.createVideoButtonLabel)}
-                  primary
-                  style={{ minHeight: '50px', fontFamily: 'Roboto-Medium' }}
+                  fullWidth
                   title={intl.formatMessage(messages.createVideoButtonLabel)}
                   to={builderVideoWizzardRoute(VideoWizzardSubPage.createVideo)}
-                />
+                >
+                  {intl.formatMessage(messages.createVideoButtonLabel)}
+                </CreateVODButton>
 
                 <ConfigureLiveButton
                   video={video}

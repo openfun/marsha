@@ -1,12 +1,13 @@
-import { Box, Button, Collapsible } from 'grommet';
+import { Box, Collapsible } from 'grommet';
 import React, { useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { DownArrowSVG } from '@lib-components/common/SVGIcons/DownArrowSVG';
-import { InfoCircleSVG } from '@lib-components/common/SVGIcons/InfoCircleSVG';
 import { useInfoWidgetModal } from '@lib-components/hooks/stores/useInfoWidgetModal';
 
+import { ButtonBox } from '../Button/ButtonBox';
 import { Heading } from '../Headings';
+import { InfoCircleSVG } from '../SVGIcons/InfoCircleSVG';
 
 const messages = defineMessages({
   helpButtonTitle: {
@@ -53,33 +54,30 @@ export const FoldableItem = ({
       margin="small"
     >
       {infoText && (
-        <Box pad={{ horizontal: '6px', top: '6px' }}>
-          <Button
-            margin={{ left: 'auto' }}
-            onClick={() => {
-              if (!infoText) {
-                //  this should not happen since button is disabled
-                return;
-              }
+        <InfoCircleSVG
+          height="17px"
+          width="17px"
+          iconColor="blue-active"
+          onClick={() => {
+            if (!infoText) {
+              //  this should not happen since button is disabled
+              return;
+            }
 
-              setInfoWidgetModalProvider({
-                text: infoText,
-                title,
-                refWidget: refWidget.current,
-              });
-            }}
-            plain
-            style={{ display: 'flex', padding: 0 }}
-            a11yTitle={intl.formatMessage(messages.helpButtonTitle)}
-            title={intl.formatMessage(messages.helpButtonTitle)}
-          >
-            <InfoCircleSVG height="17px" iconColor="blue-active" width="17px" />
-          </Button>
-        </Box>
+            setInfoWidgetModalProvider({
+              text: infoText,
+              title,
+              refWidget: refWidget.current,
+            });
+          }}
+          className="ml-auto pt-t pl-t pr-t"
+          style={{ display: 'flex' }}
+          aria-label={intl.formatMessage(messages.helpButtonTitle)}
+        />
       )}
 
       <Box pad={{ horizontal: '20px' }}>
-        <Button onClick={() => setOpen(!open)} plain style={{ padding: 0 }}>
+        <ButtonBox onClick={() => setOpen(!open)} style={{ padding: 0 }}>
           <Box align="center" direction="row" gap="25px">
             <Box>
               <DownArrowSVG
@@ -98,7 +96,7 @@ export const FoldableItem = ({
               </Heading>
             </Box>
           </Box>
-        </Button>
+        </ButtonBox>
       </Box>
 
       <Collapsible open={open}>

@@ -109,7 +109,7 @@ export const AddUserAccessForm = ({
             />
           </SearchUserListRow>
           <ModalButton
-            label={intl.formatMessage(messages.addMember)}
+            aria-label={intl.formatMessage(messages.addMember)}
             onClickSubmit={() => {
               if (selectedUser && roleValue) {
                 createPlaylistAccess({
@@ -123,7 +123,9 @@ export const AddUserAccessForm = ({
             onClickCancel={() => {
               setSelectedUser(null);
             }}
-          />
+          >
+            {intl.formatMessage(messages.addMember)}
+          </ModalButton>
         </Box>
       )}
       {!selectedUser && (

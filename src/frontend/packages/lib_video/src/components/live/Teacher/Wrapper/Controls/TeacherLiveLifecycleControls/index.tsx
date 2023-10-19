@@ -65,13 +65,14 @@ export const TeacherLiveLifecycleControls = ({
   }
 
   const firstItemMargin = { left: 'auto', right: 'none', vertical: 'auto' };
+  const firstItemMarginClassname = 'mt-auto mb-auto ml-auto mr-0';
   let content;
   if (!canStartStreaming) {
     content = (
       <Text
         style={{ minWidth: '9.5rem' }}
         textAlign="center"
-        className="mt-auto mb-auto ml-auto mr-0"
+        className={firstItemMarginClassname}
       >
         {intl.formatMessage(messages.joinTheRoom)}
       </Text>
@@ -81,7 +82,7 @@ export const TeacherLiveLifecycleControls = ({
       <Text
         style={{ minWidth: '11rem' }}
         textAlign="center"
-        className="mt-auto mb-auto ml-auto mr-0"
+        className={firstItemMarginClassname}
       >
         {intl.formatMessage(messages.notAnAdministrator)}
       </Text>
@@ -91,7 +92,9 @@ export const TeacherLiveLifecycleControls = ({
       video.live_state,
     )
   ) {
-    content = <StartLiveButton video={video} margin={firstItemMargin} />;
+    content = (
+      <StartLiveButton video={video} className={firstItemMarginClassname} />
+    );
   } else if (video.live_state === liveState.STARTING) {
     content = (
       <Box
@@ -105,7 +108,9 @@ export const TeacherLiveLifecycleControls = ({
       </Box>
     );
   } else if (video.live_state === liveState.RUNNING) {
-    content = <StopLiveButton video={video} margin={firstItemMargin} />;
+    content = (
+      <StopLiveButton video={video} className={firstItemMarginClassname} />
+    );
   } else if (video.live_state === liveState.STOPPING) {
     content = (
       <Box
