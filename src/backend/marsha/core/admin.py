@@ -291,6 +291,7 @@ class VideoAdmin(BaseFileAdmin):
         "retention_date",
         "tags",
         "license",
+        "transcode_pipeline",
     )
     list_display = BaseFileAdmin.list_display + (
         "starting_at",
@@ -302,6 +303,7 @@ class VideoAdmin(BaseFileAdmin):
         "recording_slices",
         "live_info",
         "join_mode",
+        "transcode_pipeline",
     )
     inlines = [AudioTrackInline, TimedTextTrackInline, SignTrackInline]
     verbose_name = _("Video")

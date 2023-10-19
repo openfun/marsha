@@ -6,7 +6,7 @@ from unittest import mock
 
 from django.test import TestCase, override_settings
 
-from marsha.core import factories, models
+from marsha.core import defaults, factories, models
 from marsha.core.api import timezone
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
@@ -108,6 +108,7 @@ class VideoInitiateUploadAPITest(TestCase):
         # The upload state of the timed text track should have been reset
         video.refresh_from_db()
         self.assertEqual(video.upload_state, "pending")
+        self.assertEqual(video.transcode_pipeline, "AWS")
 
         # Check that the other timed text tracks are not reset
         other_video.refresh_from_db()
@@ -178,6 +179,7 @@ class VideoInitiateUploadAPITest(TestCase):
         # The upload state of the video has not changed
         video.refresh_from_db()
         self.assertEqual(video.upload_state, "ready")
+        self.assertEqual(video.transcode_pipeline, None)
 
     def test_api_video_initiate_upload_by_organization_admin(self):
         """Organization admins can retrieve an upload policy."""
@@ -242,6 +244,7 @@ class VideoInitiateUploadAPITest(TestCase):
         # The upload state of the video has been reset
         video.refresh_from_db()
         self.assertEqual(video.upload_state, "pending")
+        self.assertEqual(video.transcode_pipeline, defaults.AWS_PIPELINE)
 
     def test_api_video_initiate_upload_by_playlist_instructor(self):
         """Playlist instructors cannot retrieve an upload policy."""
@@ -305,6 +308,7 @@ class VideoInitiateUploadAPITest(TestCase):
         # The upload state of the video has been reset
         video.refresh_from_db()
         self.assertEqual(video.upload_state, "pending")
+        self.assertEqual(video.transcode_pipeline, "AWS")
 
     def test_api_video_initiate_upload_by_playlist_admin(self):
         """Playlist admins can retrieve an upload policy."""
@@ -367,6 +371,7 @@ class VideoInitiateUploadAPITest(TestCase):
         # The upload state of the video has been reset
         video.refresh_from_db()
         self.assertEqual(video.upload_state, "pending")
+        self.assertEqual(video.transcode_pipeline, "AWS")
 
     def test_api_video_initiate_upload_file_without_size(self):
         "With no size field provided, the request should fail"

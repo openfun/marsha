@@ -138,3 +138,9 @@ RESOURCES_CHOICES = (
 )
 
 FEATURES_CHOICES = ((VOD_CONVERT, _("VOD conversion")),)
+
+# Transcode pipelines
+
+AWS_PIPELINE = "AWS"
+
+TRANSCODE_PIPELINE_CHOICES = ((AWS_PIPELINE, _("AWS")),)

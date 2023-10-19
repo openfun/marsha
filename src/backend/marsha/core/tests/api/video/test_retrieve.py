@@ -143,6 +143,7 @@ class VideoRetrieveAPITest(TestCase):
         resolutions = [144, 240, 480, 720, 1080]
         video = factories.VideoFactory(
             pk="a2f27fde-973a-4e89-8dca-cc59e01d255c",
+            transcode_pipeline="AWS",
             uploaded_on=datetime(2018, 8, 8, tzinfo=baseTimezone.utc),
             upload_state="ready",
             resolutions=resolutions,
@@ -348,6 +349,7 @@ class VideoRetrieveAPITest(TestCase):
         video = factories.VideoFactory(
             id="d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb",
             uploaded_on=datetime(2018, 8, 8, tzinfo=baseTimezone.utc),
+            transcode_pipeline="AWS",
             upload_state="ready",
             resolutions=resolutions,
             playlist__title="foo bar",
@@ -567,6 +569,7 @@ class VideoRetrieveAPITest(TestCase):
         video = factories.VideoFactory(
             id="d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb",
             uploaded_on=datetime(2018, 8, 8, tzinfo=baseTimezone.utc),
+            transcode_pipeline="AWS",
             upload_state="ready",
             resolutions=resolutions,
             playlist__title="foo bar",
@@ -996,6 +999,7 @@ class VideoRetrieveAPITest(TestCase):
         video = factories.VideoFactory(
             pk="a2f27fde-973a-4e89-8dca-cc59e01d255c",
             uploaded_on=datetime(2018, 8, 8, tzinfo=baseTimezone.utc),
+            transcode_pipeline="AWS",
             upload_state="ready",
             resolutions=[144],
             playlist__title="foo",
@@ -1267,6 +1271,7 @@ class VideoRetrieveAPITest(TestCase):
             pk="38a91911-9aee-41e2-94dd-573abda6f48f",
             uploaded_on=datetime(2018, 8, 8, tzinfo=baseTimezone.utc),
             upload_state="ready",
+            transcode_pipeline="AWS",
             resolutions=[144, 240, 480, 720, 1080],
         )
         thumbnail = factories.ThumbnailFactory(

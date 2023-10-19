@@ -11,6 +11,7 @@ from django.utils.text import slugify
 from rest_framework import serializers
 
 from ..defaults import (
+    AWS_PIPELINE,
     ENDED,
     HARVESTED,
     IDLE,
@@ -170,33 +171,52 @@ class VideoBaseSerializer(serializers.ModelSerializer):
 
         filename = f"{slugify(obj.playlist.title)}_{stamp}.mp4"
         content_disposition = quote_plus(f"attachment; filename={filename}")
-        for resolution in obj.resolutions:
-            # MP4
-            mp4_url = (
-                f"{base}/mp4/{stamp}_{resolution}.mp4"
-                f"?response-content-disposition={content_disposition}"
-            )
+        if obj.transcode_pipeline == AWS_PIPELINE:
+            for resolution in obj.resolutions:
+                # MP4
+                mp4_url = (
+                    f"{base}/mp4/{stamp}_{resolution}.mp4"
+                    f"?response-content-disposition={content_disposition}"
+                )
 
-            # Thumbnails
-            urls["thumbnails"][resolution] = thumbnail_urls.get(
-                resolution,
-                f"{base}/thumbnails/{stamp}_{resolution}.0000000.jpg",
-            )
+                # Thumbnails
+                urls["thumbnails"][resolution] = thumbnail_urls.get(
+                    resolution,
+                    f"{base}/thumbnails/{stamp}_{resolution}.0000000.jpg",
+                )
 
-            # Sign the urls of mp4 videos only if the functionality is activated
-            if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
-                mp4_url = cloudfront_utils.build_signed_url(mp4_url, params)
+                # Sign the urls of mp4 videos only if the functionality is activated
+                if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
+                    mp4_url = cloudfront_utils.build_signed_url(mp4_url, params)
 
-            urls["mp4"][resolution] = mp4_url
+                urls["mp4"][resolution] = mp4_url
 
-        if obj.live_state != HARVESTED:
-            # Adaptive Bit Rate manifests
-            urls["manifests"] = {
-                "hls": f"{base}/cmaf/{stamp}.m3u8",
-            }
+            if obj.live_state != HARVESTED:
+                # Adaptive Bit Rate manifests
+                urls["manifests"] = {
+                    "hls": f"{base}/cmaf/{stamp}.m3u8",
+                }
 
-            # Previews
-            urls["previews"] = f"{base}/previews/{stamp}_100.jpg"
+                # Previews
+                urls["previews"] = f"{base}/previews/{stamp}_100.jpg"
+        else:
+            for resolution in obj.resolutions:
+                # MP4
+                mp4_url = (
+                    f"{base}/{stamp}/{stamp}-{resolution}-fragmented.mp4"
+                    f"?response-content-disposition={content_disposition}"
+                )
+                # Sign the urls of mp4 videos only if the functionality is activated
+                if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
+                    mp4_url = cloudfront_utils.build_signed_url(mp4_url, params)
+
+                urls["mp4"][resolution] = mp4_url
+
+                urls["thumbnails"][resolution] = f"{base}/{stamp}/thumbnail.jpg"
+                urls["previews"] = f"{base}/{stamp}/thumbnail.jpg"
+                urls["manifests"] = {
+                    "hls": f"{base}/{stamp}/master.m3u8",
+                }
 
         return urls
 

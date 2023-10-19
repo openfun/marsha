@@ -17,6 +17,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Display LTI warning message for generic urls regarding course copy
 - configure homepage banner using SiteConfig model
 - setting BBB_INVITE_TOKEN_BANNED_LIST
+- Add transcode_pipeline property to video model
 
 ### Changed
 

@@ -388,7 +388,9 @@ class VideoViewSet(
 
         # Reset the upload state of the video (don't use get_object()
         # as it does not lock the row)
-        Video.objects.filter(pk=pk).update(upload_state=defaults.PENDING)
+        Video.objects.filter(pk=pk).update(
+            upload_state=defaults.PENDING, transcode_pipeline=defaults.AWS_PIPELINE
+        )
 
         return Response(response)
 
@@ -631,6 +633,7 @@ class VideoViewSet(
         try:
             create_mediapackage_harvest_job(video)
             video.live_state = defaults.HARVESTING
+            video.transcode_pipeline = defaults.AWS_PIPELINE
         except ManifestMissingException:
             delete_mediapackage_channel(video.get_mediapackage_channel().get("id"))
             video.upload_state = defaults.PENDING
