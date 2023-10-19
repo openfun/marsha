@@ -163,6 +163,7 @@ class VideoLivetoVodAPITest(TestCase):
             live_type=JITSI,
             upload_state=PENDING,
             uploaded_on="2019-09-24 07:24:40+00",
+            transcode_pipeline="AWS",
             resolutions=[240, 480, 720],
         )
         jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)

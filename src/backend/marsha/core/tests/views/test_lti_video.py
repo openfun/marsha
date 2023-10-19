@@ -1205,6 +1205,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
             upload_state=random.choice(
                 [s[0] for s in STATE_CHOICES if s[0] not in [DELETED, HARVESTED]]
             ),
+            transcode_pipeline="AWS",
             uploaded_on="2019-09-24 07:24:40+00",
             resolutions=[144, 240, 480, 720, 1080],
         )
@@ -1338,6 +1339,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
             upload_state=random.choice(
                 [s[0] for s in STATE_CHOICES if s[0] not in [DELETED, HARVESTED]]
             ),
+            transcode_pipeline="AWS",
             uploaded_on="2019-09-24 07:24:40+00",
             resolutions=[144, 240, 480],
         )
@@ -1593,6 +1595,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
             live_type=JITSI,
             upload_state=PENDING,
             uploaded_on="2019-09-24 07:24:40+00",
+            transcode_pipeline="AWS",
             resolutions=[240, 480, 720],
         )
         data = {
@@ -1735,6 +1738,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
                 [s[0] for s in STATE_CHOICES if s[0] not in [DELETED, HARVESTED]]
             ),
             uploaded_on="2019-09-24 07:24:40+00",
+            transcode_pipeline="AWS",
             resolutions=[144, 240, 480, 720, 1080],
         )
         data = {
@@ -1885,6 +1889,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
                 [s[0] for s in STATE_CHOICES if s[0] not in [DELETED, HARVESTED]]
             ),
             uploaded_on="2019-09-24 07:24:40+00",
+            transcode_pipeline="AWS",
             resolutions=[144, 240, 480, 720, 1080],
         )
         data = {

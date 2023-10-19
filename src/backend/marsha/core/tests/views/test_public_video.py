@@ -48,6 +48,7 @@ class VideoPublicViewTestCase(TestCase):
             playlist__consumer_site__domain="trusted_domain.com",
             is_public=True,
             resolutions=[144, 240, 480, 720, 1080],
+            transcode_pipeline="AWS",
             upload_state=random.choice(
                 [s[0] for s in STATE_CHOICES if s[0] not in [DELETED, HARVESTED]]
             ),
@@ -570,6 +571,7 @@ class VideoPublicViewTestCase(TestCase):
             upload_state=random.choice(
                 [s[0] for s in STATE_CHOICES if s[0] not in [DELETED, HARVESTED]]
             ),
+            transcode_pipeline="AWS",
             uploaded_on="2019-09-24 07:24:40+00",
         )
 

@@ -176,6 +176,7 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
             )
 
         self.assertEqual(Video.objects.count(), 1)
+        self.assertEqual(Video.objects.first().transcode_pipeline, "AWS")
         self.assertEqual(response.status_code, 201)
 
         recording.refresh_from_db()
@@ -328,6 +329,8 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
             )
 
         self.assertEqual(response.status_code, 201)
+        self.assertEqual(Video.objects.count(), 1)
+        self.assertEqual(Video.objects.first().transcode_pipeline, "AWS")
 
     @responses.activate
     def test_api_classroom_recording_create_vod_from_standalone_site_no_consumer_site(
@@ -405,6 +408,8 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
             )
 
         self.assertEqual(response.status_code, 201)
+        self.assertEqual(Video.objects.count(), 1)
+        self.assertEqual(Video.objects.first().transcode_pipeline, "AWS")
 
     def test_api_classroom_recording_create_vod_from_standalone_site_inactive_conversion(
         self,
@@ -503,6 +508,8 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
             )
 
         self.assertEqual(response.status_code, 201)
+        self.assertEqual(Video.objects.count(), 1)
+        self.assertEqual(Video.objects.first().transcode_pipeline, "AWS")
 
     @responses.activate
     def test_api_classroom_recording_create_vod_user_access_token_playlist_instructor(
@@ -575,6 +582,8 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
             )
 
         self.assertEqual(response.status_code, 201)
+        self.assertEqual(Video.objects.count(), 1)
+        self.assertEqual(Video.objects.first().transcode_pipeline, "AWS")
 
     def test_api_classroom_recording_create_vod_user_access_token_playlist_student(
         self,

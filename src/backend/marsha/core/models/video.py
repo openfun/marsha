@@ -31,6 +31,7 @@ from ..defaults import (
     PENDING,
     RUNNING,
     STOPPING,
+    TRANSCODE_PIPELINE_CHOICES,
 )
 from ..utils.api_utils import generate_salted_hmac
 from ..utils.time_utils import to_timestamp
@@ -234,6 +235,14 @@ class Video(BaseFile, RetentionDateObjectMixin):
         verbose_name=_("licenses"),
         help_text=_("License for this video"),
         choices=LICENCES_CHOICES,
+        null=True,
+        blank=True,
+    )
+    transcode_pipeline = models.CharField(
+        max_length=255,
+        verbose_name=_("transcode pipeline"),
+        help_text=_("Transcode pipeline for this video"),
+        choices=TRANSCODE_PIPELINE_CHOICES,
         null=True,
         blank=True,
     )

@@ -94,6 +94,8 @@ class VideoHarvestLiveAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
 
+        video.refresh_from_db()
+        self.assertEqual(video.transcode_pipeline, "AWS")
         self.assertEqual(content["live_state"], HARVESTING)
 
     def test_api_video_harvest_live_anonymous_user(self):
@@ -393,6 +395,7 @@ class VideoHarvestLiveAPITest(TestCase):
                 }
             ],
         )
+        self.assertEqual(video.transcode_pipeline, "AWS")
 
     @override_settings(LIVE_CHAT_ENABLED=True)
     @override_settings(XMPP_BOSH_URL="https://xmpp-server.com/http-bind")
@@ -586,6 +589,7 @@ class VideoHarvestLiveAPITest(TestCase):
                 "stopped_at": "1533686400",
             },
         )
+        self.assertEqual(video.transcode_pipeline, None)
 
     def test_api_video_instructor_harvest_live_wrong_live_state(self):
         """An instructor can not harvest a live not in STOPPED state."""
