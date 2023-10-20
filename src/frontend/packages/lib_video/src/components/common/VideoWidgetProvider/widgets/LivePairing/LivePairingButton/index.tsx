@@ -1,5 +1,6 @@
 import { Button } from '@openfun/cunningham-react';
 import { Box, Meter } from 'grommet';
+import { colorsTokens } from 'lib-common';
 import { Text, liveState } from 'lib-components';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -103,7 +104,7 @@ export const LivePairingButton = () => {
   // secret exists and is not expired yet
   return (
     <Box
-      background={'var(--c--theme--colors--info-100)'}
+      background={colorsTokens['info-100']}
       round="xsmall"
       pad={{ bottom: 'medium', horizontal: 'medium' }}
     >
@@ -114,9 +115,9 @@ export const LivePairingButton = () => {
       </Text>
       <Meter
         type="bar"
-        color="var(--c--theme--colors--info-400)"
+        color={colorsTokens['info-400']}
         background={{
-          color: 'var(--c--theme--colors--info-200)',
+          color: colorsTokens['info-200'],
           opacity: 'medium',
         }}
         value={(secondsLeft * 100) / expiresIn}

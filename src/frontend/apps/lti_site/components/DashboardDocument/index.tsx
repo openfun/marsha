@@ -1,4 +1,5 @@
 import { Box } from 'grommet';
+import { colorsTokens } from 'lib-common';
 import {
   Document,
   Heading,
@@ -65,7 +66,7 @@ const CommonStatusLine = ({
     <Heading
       level={5}
       style={{ margin: 0, paddingRight: '1rem' }}
-      color="var(--c--theme--colors--secondary-text)"
+      color={colorsTokens['secondary-text']}
     >
       <FormattedMessage {...messages.title} />
     </Heading>
@@ -112,7 +113,7 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
               <Heading
                 level={5}
                 style={{ margin: 0, paddingRight: '1rem' }}
-                color="var(--c--theme--colors--secondary-text)"
+                color={colorsTokens['secondary-text']}
               >
                 {intl.formatMessage(messages.filename)}
               </Heading>

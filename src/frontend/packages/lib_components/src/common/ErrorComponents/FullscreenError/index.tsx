@@ -1,4 +1,5 @@
 import { Box } from 'grommet';
+import { colorsTokens } from 'lib-common';
 import React from 'react';
 import { FormattedMessage, defineMessages } from 'react-intl';
 import styled from 'styled-components';
@@ -205,7 +206,7 @@ export const ErrorMessage: React.FC<ErrorComponentsProps> = ({ code }) => (
 export const FullScreenError: React.FC<ErrorComponentsProps> = ({ code }) => (
   <FullScreenErrorStyled>
     <ErrorContent>
-      <Heading level={2} color="var(--c--theme--colors--greyscale-800)">
+      <Heading level={2} color={colorsTokens['greyscale-800']}>
         <FormattedMessage {...messages[code].title} />
       </Heading>
       <Text type="p">

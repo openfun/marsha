@@ -1,7 +1,7 @@
 import { Input } from '@openfun/cunningham-react';
 import { Box } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
-import { Nullable, theme } from 'lib-common';
+import { Nullable, colorsTokens, theme } from 'lib-common';
 import { EditionSVG, Heading, Text, report } from 'lib-components';
 import { DateTime } from 'luxon';
 import React, {
@@ -21,7 +21,7 @@ import { useParticipantsStore } from '@lib-video/hooks/useParticipantsStore';
 
 const StyledBoxInput = styled(Box)`
   & .c__input__wrapper {
-    border-color: var(--c--theme--colors--primary-100);
+    border-color: ${colorsTokens['primary-100']};
   }
 `;
 
