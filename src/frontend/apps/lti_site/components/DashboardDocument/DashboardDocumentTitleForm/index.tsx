@@ -1,6 +1,6 @@
 import { Button, Input } from '@openfun/cunningham-react';
 import { Form } from 'grommet';
-import { Maybe } from 'lib-common';
+import { Maybe, colorsTokens } from 'lib-common';
 import {
   Document,
   Text,
@@ -88,7 +88,7 @@ export const DashboardDocumentTitleForm = ({
         </Button>
         {udpated && (
           <Text
-            color="var(--c--theme--colors--success-500)"
+            color={colorsTokens['success-500']}
             className="ml-s"
             weight="bold"
           >

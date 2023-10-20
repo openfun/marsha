@@ -1,5 +1,5 @@
 import { Box, BoxExtendedProps } from 'grommet';
-import { tokens } from 'lib-common';
+import { colorsTokens } from 'lib-common';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -9,7 +9,7 @@ const StyledBadge = styled(Box)`
   position: absolute;
   top: 0px;
   right: 0px;
-  background-color: ${tokens.theme.colors['primary-500']};
+  background-color: ${colorsTokens['primary-500']};
   border-radius: 60px;
   height: 22px;
   width: 22px;

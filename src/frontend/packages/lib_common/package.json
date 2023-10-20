@@ -15,7 +15,7 @@
     "lint:fix": "yarn run lint --fix",
     "test": "cross-env TZ=UTC jest --passWithNoTests",
     "prettier": "prettier --list-different '**/*.+(ts|tsx|json|js|jsx)' --ignore-path ../../../.prettierignore",
-    "build-theme": "cunningham -g css -o src/cunningham --utility-classes"
+    "build-theme": "cunningham -g css,ts -o src/cunningham --utility-classes"
   },
   "peerDependencies": {
     "@openfun/cunningham-react": "*",

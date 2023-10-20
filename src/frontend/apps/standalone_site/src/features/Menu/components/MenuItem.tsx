@@ -1,5 +1,5 @@
 import { normalizeColor } from 'grommet/utils';
-import { theme } from 'lib-common';
+import { colorsTokens, theme } from 'lib-common';
 import { Text } from 'lib-components';
 import { Fragment, PropsWithChildren } from 'react';
 import { NavLink } from 'react-router-dom';
@@ -21,7 +21,7 @@ const NavLinkStyled = styled(NavLink)`
     background-color: ${normalizeColor('bg-menu-hover', theme)};
   }
   &:hover {
-    background-color: var(--c--theme--colors--info-100);
+    background-color: ${colorsTokens['info-100']};
   }
 `;
 

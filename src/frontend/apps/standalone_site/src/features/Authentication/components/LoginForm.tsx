@@ -1,6 +1,7 @@
 import { Field, Input } from '@openfun/cunningham-react';
 import { Box } from 'grommet';
 import { Alert } from 'grommet-icons';
+import { colorsTokens } from 'lib-common';
 import { ButtonLoader, Text } from 'lib-components';
 import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -112,7 +113,7 @@ export const LoginForm = () => {
       </Field>
       <Link
         to={routes.PASSWORD_RESET.path}
-        style={{ color: 'var(--c--theme--colors--primary-500)' }}
+        style={{ color: colorsTokens['primary-500'] }}
       >
         <Text size="small">{intl.formatMessage(messages.passwordLost)}</Text>
       </Link>

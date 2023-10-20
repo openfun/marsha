@@ -1,4 +1,4 @@
-import { Maybe } from 'lib-common';
+import { Maybe, colorsTokens } from 'lib-common';
 import { useEffect, useState } from 'react';
 import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
 import { Link, Navigate } from 'react-router-dom';
@@ -192,7 +192,7 @@ export const UploadForm = ({
             <Heading
               level={2}
               textAlign="center"
-              color="var(--c--theme--colors--greyscale-800)"
+              color={colorsTokens['greyscale-800']}
             >
               <FormattedMessage
                 {...(objectType === modelName.TIMEDTEXTTRACKS
