@@ -10,8 +10,9 @@ from safedelete import HARD_DELETE
 from safedelete.managers import SafeDeleteManager
 from safedelete.queryset import SafeDeleteQueryset
 
-from . import ADMINISTRATOR, ConsumerSite, Playlist, User
+from .account import ADMINISTRATOR, ConsumerSite, User
 from .base import BaseModel
+from .playlist import Playlist
 
 
 class PortabilityRequestState(models.TextChoices):

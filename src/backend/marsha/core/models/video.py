@@ -17,7 +17,8 @@ from safedelete import HARD_DELETE_NOCASCADE
 from safedelete.managers import SafeDeleteManager
 from safedelete.queryset import SafeDeleteQueryset
 
-from . import ADMINISTRATOR, INSTRUCTOR, OrganizationAccess, PlaylistAccess
+from marsha.core.models.account import ADMINISTRATOR, INSTRUCTOR, OrganizationAccess
+
 from ..defaults import (
     APPROVAL,
     DELETED,
@@ -37,7 +38,7 @@ from ..utils.api_utils import generate_salted_hmac
 from ..utils.time_utils import to_timestamp
 from .base import BaseModel
 from .file import AbstractImage, BaseFile, UploadableFileMixin
-from .playlist import RetentionDateObjectMixin
+from .playlist import PlaylistAccess, RetentionDateObjectMixin
 
 
 # pylint: disable=too-many-lines

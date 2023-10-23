@@ -1,5 +1,5 @@
 """Utils to create MediaLive configuration."""
-from . import medialive_client, mediapackage_client
+from .medialive_client_utils import medialive_client, mediapackage_client
 
 
 def _get_items(  # nosec
