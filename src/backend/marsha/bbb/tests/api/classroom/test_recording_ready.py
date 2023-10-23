@@ -10,6 +10,9 @@ from marsha.bbb.models import ClassroomRecording
 from marsha.core.tests.testing_utils import reload_urlconf
 
 
+#  pylint: disable=duplicate-code
+
+
 ALG = "HS256"
 
 

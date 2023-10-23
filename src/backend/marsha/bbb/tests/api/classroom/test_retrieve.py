@@ -28,7 +28,7 @@ from marsha.core.tests.testing_utils import reload_urlconf
 
 
 # We don't enforce arguments documentation in tests
-# pylint: disable=unused-argument,too-many-lines
+# pylint: disable=unused-argument,too-many-lines,duplicate-code
 
 
 @override_settings(BBB_API_ENDPOINT="https://10.7.7.1/bigbluebutton/api")

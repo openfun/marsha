@@ -25,6 +25,9 @@ from marsha.core.simple_jwt.factories import (
 from marsha.core.utils.time_utils import to_timestamp
 
 
+#  pylint: disable=duplicate-code
+
+
 class ApiVideoStartRecordingTestCase(TestCase):
     """Tests for the Video start recording API."""
 

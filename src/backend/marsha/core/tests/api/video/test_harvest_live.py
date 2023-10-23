@@ -18,6 +18,9 @@ from marsha.core.utils.medialive_utils import ManifestMissingException
 from marsha.core.utils.time_utils import to_timestamp
 
 
+#  pylint: disable=duplicate-code
+
+
 class VideoHarvestLiveAPITest(TestCase):
     """Test the "harvest live" API of the video object."""
 
