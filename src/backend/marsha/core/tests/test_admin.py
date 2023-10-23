@@ -3,9 +3,12 @@ from django.db import models
 from django.test import TestCase
 from django.urls import NoReverseMatch
 
-from ..admin import link_field
-from ..factories import ConsumerSiteLTIPassportFactory, PlaylistLTIPassportFactory
-from ..models import BaseModel
+from marsha.core.admin import link_field
+from marsha.core.factories import (
+    ConsumerSiteLTIPassportFactory,
+    PlaylistLTIPassportFactory,
+)
+from marsha.core.models import BaseModel
 
 
 # We don't enforce arguments documentation in tests

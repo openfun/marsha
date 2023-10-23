@@ -4,9 +4,9 @@ import random
 
 from django.test import TestCase, override_settings
 
-from ..defaults import HARVESTED, PENDING
-from ..factories import VideoFactory
-from ..utils.api_utils import generate_hash
+from marsha.core.defaults import HARVESTED, PENDING
+from marsha.core.factories import VideoFactory
+from marsha.core.utils.api_utils import generate_hash
 
 
 class RecordSlicesManifestAPITest(TestCase):

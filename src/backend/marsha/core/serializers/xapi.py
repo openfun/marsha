@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 
 from rest_framework import serializers
 
-from .base import UUID_REGEX
+from marsha.core.serializers.base import UUID_REGEX
 
 
 class ExtensionSerializer(serializers.Serializer):

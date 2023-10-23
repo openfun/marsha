@@ -11,8 +11,7 @@ from marsha.core.tests.testing_utils import (
     clear_select_resource_cache_and_reload_urlconf,
     generate_passport_and_signed_lti_parameters,
 )
-
-from ..factories import MarkdownDocumentFactory
+from marsha.markdown.factories import MarkdownDocumentFactory
 
 
 class SelectLTIViewTestCase(TestCase):

@@ -4,8 +4,7 @@ import factory
 from factory.django import DjangoModelFactory
 
 from marsha.core.factories import PlaylistFactory
-
-from . import models
+from marsha.deposit import models
 
 
 # usage of format function here is wanted in this file

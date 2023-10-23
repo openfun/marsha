@@ -17,13 +17,12 @@ from marsha.core.factories import (
     UserFactory,
 )
 from marsha.core.lti import LTI
+from marsha.core.models import ADMINISTRATOR
 from marsha.core.simple_jwt.tokens import PlaylistAccessToken
 from marsha.core.tests.testing_utils import reload_urlconf
 from marsha.core.tests.views.test_lti_base import BaseLTIViewForPortabilityTestCase
 from marsha.core.utils.lti_select_utils import get_lti_select_resources
-
-from ...core.models import ADMINISTRATOR
-from ..factories import FileDepositoryFactory
+from marsha.deposit.factories import FileDepositoryFactory
 
 
 # We don't enforce arguments documentation in tests

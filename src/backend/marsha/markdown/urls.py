@@ -4,8 +4,8 @@ from django.urls import include, path
 
 from rest_framework.routers import DefaultRouter
 
-from .api import MarkdownDocumentViewSet, MarkdownImageViewSet
-from .views import MarkdownDocumentView
+from marsha.markdown.api import MarkdownDocumentViewSet, MarkdownImageViewSet
+from marsha.markdown.views import MarkdownDocumentView
 
 
 app_name = "markdown"

@@ -35,15 +35,7 @@ from rest_framework.views import exception_handler as drf_exception_handler
 from rest_framework_simplejwt.exceptions import TokenError
 from waffle import mixins, switch_is_active
 
-from marsha.core.lti.user_association import get_user_from_lti
-from marsha.core.simple_jwt.tokens import (
-    LTISelectFormAccessToken,
-    LTIUserToken,
-    PlaylistRefreshToken,
-)
-from marsha.core.utils.lti_select_utils import get_lti_select_resources
-
-from .defaults import (
+from marsha.core.defaults import (
     APP_DATA_STATE_ERROR,
     APP_DATA_STATE_PORTABILITY,
     APP_DATA_STATE_SUCCESS,
@@ -57,17 +49,34 @@ from .defaults import (
     VIDEO,
     WEBINAR,
 )
-from .lti import LTI
-from .lti.utils import (
+from marsha.core.lti import LTI
+from marsha.core.lti.user_association import get_user_from_lti
+from marsha.core.lti.utils import (
     PortabilityError,
     ResourceException,
     get_or_create_resource,
     get_resource_closest_owners_and_playlist,
     get_selectable_resources,
 )
-from .models import Document, LiveSession, Playlist, PortabilityRequest, Video
-from .models.account import LTIPassport
-from .serializers import DocumentSerializer, PlaylistLiteSerializer, VideoSerializer
+from marsha.core.models import (
+    Document,
+    LiveSession,
+    LTIPassport,
+    Playlist,
+    PortabilityRequest,
+    Video,
+)
+from marsha.core.serializers import (
+    DocumentSerializer,
+    PlaylistLiteSerializer,
+    VideoSerializer,
+)
+from marsha.core.simple_jwt.tokens import (
+    LTISelectFormAccessToken,
+    LTIUserToken,
+    PlaylistRefreshToken,
+)
+from marsha.core.utils.lti_select_utils import get_lti_select_resources
 
 
 # pylint: disable=too-many-lines,too-many-locals

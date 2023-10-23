@@ -4,8 +4,8 @@ from django.conf import settings
 import django_filters
 from rest_framework import filters, mixins, permissions, viewsets
 
-from . import serializers
-from .models import Page
+from marsha.page import serializers
+from marsha.page.models import Page
 
 
 class PageViewSet(

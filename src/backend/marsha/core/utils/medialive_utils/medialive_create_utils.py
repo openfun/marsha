@@ -7,8 +7,11 @@ from django.conf import settings
 import requests
 
 from marsha.core.defaults import PROCESSING
-
-from .medialive_client_utils import medialive_client, mediapackage_client, ssm_client
+from marsha.core.utils.medialive_utils.medialive_client_utils import (
+    medialive_client,
+    mediapackage_client,
+    ssm_client,
+)
 
 
 class ManifestMissingException(Exception):

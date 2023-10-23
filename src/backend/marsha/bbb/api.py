@@ -17,6 +17,11 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle
 
+from marsha.bbb import permissions, serializers
+from marsha.bbb.defaults import LTI_ROUTE
+from marsha.bbb.forms import ClassroomForm
+from marsha.bbb.metadata import ClassroomDocumentMetadata
+from marsha.bbb.models import Classroom, ClassroomDocument, ClassroomRecording
 from marsha.bbb.utils.bbb_utils import (
     ApiMeetingException,
     create,
@@ -27,20 +32,14 @@ from marsha.bbb.utils.bbb_utils import (
     join,
     process_recordings,
 )
+from marsha.bbb.utils.tokens import create_classroom_stable_invite_jwt
 from marsha.core import defaults, permissions as core_permissions
 from marsha.core.api import APIViewMixin, BulkDestroyModelMixin, ObjectPkMixin
-
-from . import permissions, serializers
-from ..core.defaults import VOD_CONVERT
-from ..core.models import ADMINISTRATOR, INSTRUCTOR, Video
-from ..core.utils.convert_lambda_utils import invoke_lambda_convert
-from ..core.utils.s3_utils import create_presigned_post
-from ..core.utils.time_utils import to_timestamp
-from .defaults import LTI_ROUTE
-from .forms import ClassroomForm
-from .metadata import ClassroomDocumentMetadata
-from .models import Classroom, ClassroomDocument, ClassroomRecording
-from .utils.tokens import create_classroom_stable_invite_jwt
+from marsha.core.defaults import VOD_CONVERT
+from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, Video
+from marsha.core.utils.convert_lambda_utils import invoke_lambda_convert
+from marsha.core.utils.s3_utils import create_presigned_post
+from marsha.core.utils.time_utils import to_timestamp
 
 
 class ObjectClassroomRelatedMixin:

@@ -1,10 +1,9 @@
 """Views of the ``bbb`` app of the Marsha project."""
 from django.templatetags.static import static
 
+from marsha.bbb.models import Classroom
+from marsha.bbb.serializers import ClassroomSerializer
 from marsha.core.views import BaseLTIView
-
-from .models import Classroom
-from .serializers import ClassroomSerializer
 
 
 class ClassroomLTIView(BaseLTIView):

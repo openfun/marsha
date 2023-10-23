@@ -13,10 +13,9 @@ from safedelete import HARD_DELETE
 from safedelete.managers import SafeDeleteManager
 from safedelete.queryset import SafeDeleteQueryset
 
+from marsha.core.models.account import ADMINISTRATOR, INSTRUCTOR, ROLE_CHOICES
+from marsha.core.models.base import BaseModel
 from marsha.core.utils import s3_utils
-
-from .account import ADMINISTRATOR, INSTRUCTOR, ROLE_CHOICES
-from .base import BaseModel
 
 
 logger = logging.getLogger(__name__)

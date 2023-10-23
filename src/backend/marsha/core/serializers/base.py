@@ -11,7 +11,7 @@ from django.utils.text import slugify
 from rest_framework import serializers
 from rest_framework.fields import empty
 
-from ..defaults import (
+from marsha.core.defaults import (
     COPYING,
     ERROR,
     HARVESTED,
@@ -21,9 +21,9 @@ from ..defaults import (
     SCANNING,
     STATE_CHOICES,
 )
-from ..models import TimedTextTrack
-from ..utils import cloudfront_utils, time_utils
-from ..utils.api_utils import get_uploadable_models_s3_mapping
+from marsha.core.models import TimedTextTrack
+from marsha.core.utils import cloudfront_utils, time_utils
+from marsha.core.utils.api_utils import get_uploadable_models_s3_mapping
 
 
 UUID_REGEX = (

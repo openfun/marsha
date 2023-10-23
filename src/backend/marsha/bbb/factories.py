@@ -4,9 +4,8 @@ from datetime import timezone
 import factory
 from factory.django import DjangoModelFactory
 
+from marsha.bbb import models
 from marsha.core.factories import PlaylistFactory
-
-from . import models
 
 
 # usage of format function here is wanted in this file

@@ -7,11 +7,12 @@ from django.test import TestCase
 
 import requests
 
-# We don't enforce arguments documentation in tests
-# pylint: disable=unused-argument
+from marsha.core.factories import DocumentFactory, VideoFactory
 from marsha.core.simple_jwt.factories import StudentLtiTokenFactory
 
-from ..factories import DocumentFactory, VideoFactory
+
+# We don't enforce arguments documentation in tests
+# pylint: disable=unused-argument
 
 
 class XAPIStatementApiTest(TestCase):

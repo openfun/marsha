@@ -4,10 +4,9 @@ from django.db.models import Q
 import django_filters
 from rest_framework import filters, viewsets
 
-from .. import permissions, serializers
-from ..models import ADMINISTRATOR, INSTRUCTOR, PlaylistAccess
-from ..permissions import IsParamsPlaylistAdminThroughOrganization
-from .base import APIViewMixin, ObjectPkMixin
+from marsha.core import permissions, serializers
+from marsha.core.api.base import APIViewMixin, ObjectPkMixin
+from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, PlaylistAccess
 
 
 class PlaylistAccessFilter(django_filters.FilterSet):
@@ -46,7 +45,7 @@ class PlaylistAccessViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         elif self.action in ["create"]:
             permission_classes = [
                 permissions.IsParamsPlaylistAdmin
-                | IsParamsPlaylistAdminThroughOrganization
+                | permissions.IsParamsPlaylistAdminThroughOrganization
             ]
         elif self.action in ["destroy", "partial_update", "update"]:
             permission_classes = [

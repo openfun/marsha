@@ -2,8 +2,7 @@
 
 from marsha.core.factories import AnonymousLiveSessionFactory, LiveSessionFactory
 from marsha.core.simple_jwt.factories import LiveSessionLtiTokenFactory
-
-from .base import LiveSessionApiTestCase
+from marsha.core.tests.api.live_sessions.base import LiveSessionApiTestCase
 
 
 class LiveSessionDeleteApiTest(LiveSessionApiTestCase):

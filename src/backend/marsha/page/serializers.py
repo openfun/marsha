@@ -2,7 +2,7 @@
 
 from rest_framework import serializers
 
-from .models import Page
+from marsha.page.models import Page
 
 
 class PageSerializer(serializers.ModelSerializer):

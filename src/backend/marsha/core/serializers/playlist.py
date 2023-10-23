@@ -7,9 +7,18 @@ from django.utils.translation import gettext_lazy as _
 
 from rest_framework import serializers
 
-from ..models import ADMINISTRATOR, ConsumerSite, Organization, Playlist, PlaylistAccess
-from .account import ConsumerSiteSerializer, OrganizationLiteSerializer
-from .base import ReadWritePrimaryKeyRelatedField
+from marsha.core.models import (
+    ADMINISTRATOR,
+    ConsumerSite,
+    Organization,
+    Playlist,
+    PlaylistAccess,
+)
+from marsha.core.serializers.account import (
+    ConsumerSiteSerializer,
+    OrganizationLiteSerializer,
+)
+from marsha.core.serializers.base import ReadWritePrimaryKeyRelatedField
 
 
 class PlaylistSerializer(serializers.ModelSerializer):

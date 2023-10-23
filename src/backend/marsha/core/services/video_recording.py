@@ -2,8 +2,8 @@
 from django.conf import settings
 from django.utils import timezone
 
-from ..defaults import PENDING, RUNNING
-from ..utils.time_utils import to_datetime, to_timestamp
+from marsha.core.defaults import PENDING, RUNNING
+from marsha.core.utils.time_utils import to_datetime, to_timestamp
 
 
 class VideoRecordingError(Exception):

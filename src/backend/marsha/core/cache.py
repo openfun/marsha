@@ -14,7 +14,7 @@ from django.core.cache.backends.base import BaseCache
 
 from django_redis.cache import RedisCache
 
-from .utils.throttle import throttle
+from marsha.core.utils.throttle import throttle
 
 
 FALLBACK_CACHE_INVALIDATION_INTERVAL = 60  # seconds

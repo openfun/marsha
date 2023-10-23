@@ -8,6 +8,7 @@ from django.urls import reverse
 
 from rest_framework import serializers
 
+from marsha.core.models import User
 from marsha.core.serializers import (
     BaseInitiateUploadSerializer,
     UploadableFileWithExtensionSerializerMixin,
@@ -15,9 +16,7 @@ from marsha.core.serializers import (
 )
 from marsha.core.serializers.playlist import PlaylistLiteSerializer
 from marsha.core.utils import cloudfront_utils, time_utils
-
-from ..core.models import User
-from .models import DepositedFile, FileDepository
+from marsha.deposit.models import DepositedFile, FileDepository
 
 
 class DepositedFileSerializer(

@@ -29,8 +29,7 @@ from marsha.core.simple_jwt.factories import (
     PlaylistAccessTokenFactory,
     UserAccessTokenFactory,
 )
-
-from .base import LiveSessionApiTestCase
+from marsha.core.tests.api.live_sessions.base import LiveSessionApiTestCase
 
 
 # pylint: disable=too-many-lines

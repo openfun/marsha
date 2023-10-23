@@ -4,7 +4,7 @@ from django.apps import AppConfig
 from django.core import checks as django_checks
 from django.utils.translation import gettext_lazy as _
 
-from . import checks
+from marsha.account import checks
 
 
 class AccountConfig(AppConfig):

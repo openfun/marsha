@@ -3,14 +3,13 @@ from django.core.exceptions import FieldDoesNotExist, ValidationError
 from django.db.models import Q
 from django.utils.translation import gettext as _
 
-from ..defaults import PENDING
-from ..models import (
+from marsha.core.defaults import PENDING
+from marsha.core.models.account import (
     ADMINISTRATOR,
     ConsumerSiteAccess,
     OrganizationAccess,
-    Playlist,
-    PlaylistAccess,
 )
+from marsha.core.models.playlist import Playlist, PlaylistAccess
 
 
 class ResourceException(BaseException):

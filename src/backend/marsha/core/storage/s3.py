@@ -2,9 +2,9 @@
 from django.conf import settings
 from django.utils import timezone
 
-from ..models import Document, Video
-from ..utils.s3_utils import create_presigned_post
-from ..utils.time_utils import to_timestamp
+from marsha.core.models import Document, Video
+from marsha.core.utils.s3_utils import create_presigned_post
+from marsha.core.utils.time_utils import to_timestamp
 
 
 # pylint: disable=unused-argument

@@ -20,12 +20,11 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import APIException, MethodNotAllowed
 from rest_framework.response import Response
 
+from marsha.core import defaults, forms, permissions, serializers, storage
+from marsha.core.api.base import APIViewMixin, BulkDestroyModelMixin, ObjectPkMixin
 from marsha.core.defaults import ENDED, JITSI
-from marsha.websocket.utils import channel_layers_utils
-
-from .. import defaults, forms, permissions, serializers, storage
-from ..metadata import VideoMetadata
-from ..models import (
+from marsha.core.metadata import VideoMetadata
+from marsha.core.models import (
     ADMINISTRATOR,
     INSTRUCTOR,
     LivePairing,
@@ -33,21 +32,21 @@ from ..models import (
     SharedLiveMedia,
     Video,
 )
-from ..services.video_participants import (
+from marsha.core.services.video_participants import (
     VideoParticipantsException,
     add_participant_asking_to_join,
     move_participant_to_discussion,
     remove_participant_asking_to_join,
     remove_participant_from_discussion,
 )
-from ..services.video_recording import (
+from marsha.core.services.video_recording import (
     VideoRecordingError,
     start_recording,
     stop_recording,
 )
-from ..utils import jitsi_utils, time_utils
-from ..utils.api_utils import validate_signature
-from ..utils.medialive_utils import (
+from marsha.core.utils import jitsi_utils
+from marsha.core.utils.api_utils import validate_signature
+from marsha.core.utils.medialive_utils import (
     ManifestMissingException,
     create_live_stream,
     create_mediapackage_harvest_job,
@@ -58,13 +57,13 @@ from ..utils.medialive_utils import (
     update_id3_tags,
     wait_medialive_channel_is_created,
 )
-from ..utils.send_emails import (
+from marsha.core.utils.send_emails import (
     send_ready_to_convert_notification,
     send_vod_ready_notification,
 )
-from ..utils.time_utils import to_timestamp
-from ..utils.xmpp_utils import close_room, create_room, reopen_room_for_vod
-from .base import APIViewMixin, BulkDestroyModelMixin, ObjectPkMixin
+from marsha.core.utils.time_utils import to_datetime, to_timestamp
+from marsha.core.utils.xmpp_utils import close_room, create_room, reopen_room_for_vod
+from marsha.websocket.utils import channel_layers_utils
 
 
 # pylint: disable=too-many-public-methods
@@ -769,7 +768,7 @@ class VideoViewSet(
                 "started_at": video.live_info.get("started_at"),
                 "stopped_at": video.live_info.get("stopped_at"),
             }
-            video.uploaded_on = time_utils.to_datetime(
+            video.uploaded_on = to_datetime(
                 serializer.validated_data["extraParameters"].get("uploaded_on")
             )
             send_vod_ready_notification(video)

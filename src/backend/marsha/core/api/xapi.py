@@ -13,11 +13,10 @@ import requests
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from marsha.core import permissions, serializers
+from marsha.core.api.base import APIViewMixin
 from marsha.core.defaults import XAPI_STATEMENT_ID_CACHE
-
-from .. import permissions, serializers
-from ..xapi import XAPI, get_xapi_statement
-from .base import APIViewMixin
+from marsha.core.xapi import XAPI, get_xapi_statement
 
 
 logger = logging.getLogger(__name__)

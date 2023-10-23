@@ -3,8 +3,7 @@ import datetime
 import json
 
 from marsha.core.serializers import VideoId3TagsSerializer
-
-from .medialive_client_utils import medialive_client
+from marsha.core.utils.medialive_utils.medialive_client_utils import medialive_client
 
 
 def start_live_channel(channel_id):

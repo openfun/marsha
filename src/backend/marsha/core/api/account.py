@@ -9,10 +9,20 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 
-from .. import permissions, serializers
-from ..models import ADMINISTRATOR, INSTRUCTOR, Organization, OrganizationAccess
-from ..serializers import ChallengeTokenSerializer
-from .base import APIViewMixin, ObjectPkMixin
+from marsha.core import permissions
+from marsha.core.api.base import APIViewMixin, ObjectPkMixin
+from marsha.core.models import (
+    ADMINISTRATOR,
+    INSTRUCTOR,
+    Organization,
+    OrganizationAccess,
+)
+from marsha.core.serializers import (
+    ChallengeTokenSerializer,
+    OrganizationSerializer,
+    UserLiteSerializer,
+    UserSerializer,
+)
 
 
 User = get_user_model()
@@ -95,7 +105,7 @@ class UserViewSet(
         "organization_accesses",
         "organization_accesses__organization",
     )
-    serializer_class = serializers.UserSerializer
+    serializer_class = UserSerializer
     filter_backends = [
         filters.OrderingFilter,
         django_filters.rest_framework.DjangoFilterBackend,
@@ -156,7 +166,7 @@ class UserViewSet(
         For all other actions (including `whoami`), it returns the default full serializer.
         """
         if self.action in ["list"]:
-            return serializers.UserLiteSerializer
+            return UserLiteSerializer
 
         return super().get_serializer_class()
 
@@ -190,7 +200,7 @@ class OrganizationViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
 
     permission_classes = [permissions.NotAllowed]
     queryset = Organization.objects.all()
-    serializer_class = serializers.OrganizationSerializer
+    serializer_class = OrganizationSerializer
 
     def get_permissions(self):
         """

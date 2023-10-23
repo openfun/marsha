@@ -1,9 +1,12 @@
 """Module dedicated to lti select feature for core."""
 from django.db.models import Q
 
-from .defaults import ENDED, LTI_DOCUMENT_ROUTE, LTI_VIDEO_ROUTE
-from .models import Document, Video
-from .serializers import DocumentSelectLTISerializer, VideoSelectLTISerializer
+from marsha.core.defaults import ENDED, LTI_DOCUMENT_ROUTE, LTI_VIDEO_ROUTE
+from marsha.core.models import Document, Video
+from marsha.core.serializers import (
+    DocumentSelectLTISerializer,
+    VideoSelectLTISerializer,
+)
 
 
 def get_lti_select_config():

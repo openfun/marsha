@@ -2,10 +2,10 @@
 
 from rest_framework import serializers
 
-from ..models import Playlist, PlaylistAccess, User
-from .account import UserSerializer
-from .base import ReadWritePrimaryKeyRelatedField
-from .playlist import PlaylistLiteSerializer
+from marsha.core.models import Playlist, PlaylistAccess, User
+from marsha.core.serializers.account import UserSerializer
+from marsha.core.serializers.base import ReadWritePrimaryKeyRelatedField
+from marsha.core.serializers.playlist import PlaylistLiteSerializer
 
 
 class PlaylistAccessSerializer(serializers.ModelSerializer):

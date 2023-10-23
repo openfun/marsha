@@ -4,8 +4,13 @@ from django.conf import settings
 from botocore.exceptions import WaiterError
 from sentry_sdk import capture_exception
 
-from .medialive_client_utils import medialive_client, mediapackage_client
-from .medialive_list_utils import list_mediapackage_channel_origin_endpoints
+from marsha.core.utils.medialive_utils.medialive_client_utils import (
+    medialive_client,
+    mediapackage_client,
+)
+from marsha.core.utils.medialive_utils.medialive_list_utils import (
+    list_mediapackage_channel_origin_endpoints,
+)
 
 
 def delete_aws_element_stack(video):

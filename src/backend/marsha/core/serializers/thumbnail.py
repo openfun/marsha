@@ -4,9 +4,9 @@ from django.db.utils import IntegrityError
 
 from rest_framework import serializers
 
-from ..models import Thumbnail
-from ..utils import time_utils
-from .base import TimestampField
+from marsha.core.models import Thumbnail
+from marsha.core.serializers.base import TimestampField
+from marsha.core.utils import time_utils
 
 
 class ThumbnailSerializer(serializers.ModelSerializer):

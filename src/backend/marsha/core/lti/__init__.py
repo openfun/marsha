@@ -9,8 +9,14 @@ from django.utils.datastructures import MultiValueDictKeyError
 
 from pylti.common import LTIException, verify_request_common
 
-from ..models import ConsumerSite
-from ..models.account import ADMINISTRATOR, INSTRUCTOR, LTI_ROLES, STUDENT, LTIPassport
+from marsha.core.models.account import (
+    ADMINISTRATOR,
+    INSTRUCTOR,
+    LTI_ROLES,
+    STUDENT,
+    ConsumerSite,
+    LTIPassport,
+)
 
 
 class LTI:

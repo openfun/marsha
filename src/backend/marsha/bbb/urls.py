@@ -2,10 +2,13 @@
 
 from django.urls import include, path
 
+from marsha.bbb.api import (
+    ClassroomDocumentViewSet,
+    ClassroomRecordingViewSet,
+    ClassroomViewSet,
+)
+from marsha.bbb.views import ClassroomLTIView
 from marsha.core.routers import MarshaDefaultRouter
-
-from .api import ClassroomDocumentViewSet, ClassroomRecordingViewSet, ClassroomViewSet
-from .views import ClassroomLTIView
 
 
 app_name = "classroom"

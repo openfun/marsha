@@ -12,10 +12,13 @@ from django.utils import timezone
 from botocore.signers import CloudFrontSigner
 from rest_framework import serializers
 
-from ..models import Document
-from ..utils import cloudfront_utils, time_utils
-from .base import TimestampField, UploadableFileWithExtensionSerializerMixin
-from .playlist import PlaylistLiteSerializer
+from marsha.core.models import Document
+from marsha.core.serializers.base import (
+    TimestampField,
+    UploadableFileWithExtensionSerializerMixin,
+)
+from marsha.core.serializers.playlist import PlaylistLiteSerializer
+from marsha.core.utils import cloudfront_utils, time_utils
 
 
 class DocumentSerializer(

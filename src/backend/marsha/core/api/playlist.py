@@ -9,16 +9,16 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
-from .. import permissions, serializers
-from ..lti.user_association import clean_lti_user_id
-from ..models import (
+from marsha.core import permissions, serializers
+from marsha.core.api.base import APIViewMixin, ObjectPkMixin
+from marsha.core.lti.user_association import clean_lti_user_id
+from marsha.core.models import (
     ADMINISTRATOR,
     INSTRUCTOR,
     LtiUserAssociation,
     Playlist,
     PlaylistAccess,
 )
-from .base import APIViewMixin, ObjectPkMixin
 
 
 class PlaylistFilter(django_filters.FilterSet):

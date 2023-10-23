@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils.html import escape
 
-from ..factories import PlaylistLTIPassportFactory, UserFactory
+from marsha.core.factories import PlaylistLTIPassportFactory, UserFactory
 
 
 # We don't enforce arguments documentation in tests

@@ -2,7 +2,7 @@
 import factory
 from factory.django import DjangoModelFactory
 
-from . import models
+from marsha.page import models
 
 
 # usage of format function here is wanted in this file

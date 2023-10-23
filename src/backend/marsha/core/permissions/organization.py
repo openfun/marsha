@@ -5,9 +5,8 @@ from django.core.exceptions import ImproperlyConfigured
 
 from rest_framework import permissions
 
-from .. import models
-from ..models.account import ADMINISTRATOR
-from .base import (
+from marsha.core import models
+from marsha.core.permissions.base import (
     HasAdminOrInstructorRoleMixIn,
     HasAdminRoleMixIn,
     HasInstructorRoleMixIn,
@@ -125,7 +124,7 @@ class IsParamsPlaylistAdminThroughOrganization(permissions.BasePermission):
             "playlist"
         )
         return models.OrganizationAccess.objects.filter(
-            role=ADMINISTRATOR,
+            role=models.ADMINISTRATOR,
             organization__playlists__id=playlist_id,
             user__id=request.user.id,
         ).exists()
@@ -175,7 +174,7 @@ class IsParamsVideoAdminThroughOrganization(permissions.BasePermission):
         """
         video_id = view.get_related_video_id()
         return models.OrganizationAccess.objects.filter(
-            role=ADMINISTRATOR,
+            role=models.ADMINISTRATOR,
             organization__playlists__videos__id=video_id,
             user__id=request.user.id,
         ).exists()
