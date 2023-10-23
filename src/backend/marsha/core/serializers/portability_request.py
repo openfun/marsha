@@ -4,12 +4,9 @@ from rest_framework import serializers
 from marsha.core.lti.user_association import get_user_from_lti_user_id_and_consumer_site
 from marsha.core.models import ConsumerSite, Playlist, User
 from marsha.core.models.portability_request import PortabilityRequest
-from marsha.core.serializers import (
-    ConsumerSiteSerializer,
-    PlaylistLiteSerializer,
-    ReadWritePrimaryKeyRelatedField,
-    UserSerializer,
-)
+from marsha.core.serializers.account import ConsumerSiteSerializer, UserSerializer
+from marsha.core.serializers.base import ReadWritePrimaryKeyRelatedField
+from marsha.core.serializers.playlist import PlaylistLiteSerializer
 
 
 class PortabilityRequestSerializer(serializers.ModelSerializer):

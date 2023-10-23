@@ -15,9 +15,9 @@ from rest_framework.views import APIView
 
 from marsha.core.defaults import XAPI_STATEMENT_ID_CACHE
 
-from . import APIViewMixin
 from .. import permissions, serializers
 from ..xapi import XAPI, get_xapi_statement
+from .base import APIViewMixin
 
 
 logger = logging.getLogger(__name__)

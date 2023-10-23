@@ -11,7 +11,7 @@ from rest_framework.status import (
 from rest_framework.viewsets import GenericViewSet
 
 from marsha.core import permissions
-from marsha.core.api import APIViewMixin
+from marsha.core.api.base import APIViewMixin
 from marsha.core.lti.user_association import create_user_association
 from marsha.core.models import LtiUserAssociation
 from marsha.core.serializers import LTIUserAssociationCreationSerializer
