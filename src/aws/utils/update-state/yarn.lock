@@ -932,10 +932,10 @@
   dependencies:
     "@types/istanbul-lib-report" "*"
 
-"@types/jest@29.5.5":
-  version "29.5.5"
-  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-29.5.5.tgz#727204e06228fe24373df9bae76b90f3e8236a2a"
-  integrity sha512-ebylz2hnsWR9mYvmBFbXJXr+33UPc4+ZdxyDXh5w0FlPBTfCVN3wPL+kuOiQt3xvrK419v7XWeAs+AeOksafXg==
+"@types/jest@29.5.6":
+  version "29.5.6"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-29.5.6.tgz#f4cf7ef1b5b0bfc1aa744e41b24d9cc52533130b"
+  integrity sha512-/t9NnzkOpXb4Nfvg17ieHE6EeSjDS2SGSpNYfoLbUAeL/EOueU/RSdOWFpfQTXBEM7BguYW1XQ0EbM+6RlIh6w==
   dependencies:
     expect "^29.0.0"
     pretty-format "^29.0.0"
@@ -945,10 +945,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.0.9.tgz#43896ab87fc82bda1dfd600cdf44a0c8a64e11d2"
   integrity sha512-0sCTiXKXELOBxvZLN4krQ0FPOAA7ij+6WwvD0k/PHd9/KAkr4dXel5J9fh6F4x1FwAQILqAWkmpeuS6mjf1iKA==
 
-"@types/request-promise-native@1.0.19":
-  version "1.0.19"
-  resolved "https://registry.yarnpkg.com/@types/request-promise-native/-/request-promise-native-1.0.19.tgz#8c9cd669f069a3aa309ef486aec16d5f37e708de"
-  integrity sha512-i17J9k5KP2PAMEhoYnoDpHzJHS91aIV1lG0gOqNX1G5mm/48Qm01sIb8gCJMQpddwapXM9KpxdWGSggZNMLKDw==
+"@types/request-promise-native@1.0.20":
+  version "1.0.20"
+  resolved "https://registry.yarnpkg.com/@types/request-promise-native/-/request-promise-native-1.0.20.tgz#c3f242eb4e7cb091f759679e9a8703f99b402d02"
+  integrity sha512-1dfdWY0u6mNkAheZ5UqBGY/ARpDXE5xJ+npN3COoTfrQTt4FmHrwp8548zU6F1LniUK75qk06HoOvCG+hS/8Zw==
   dependencies:
     "@types/request" "*"
 
