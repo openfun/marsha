@@ -22,6 +22,9 @@ from marsha.core.simple_jwt.factories import (
 )
 
 
+#  pylint: disable=duplicate-code
+
+
 class VideoParticipantsJoinedAPITest(TestCase):
     """Tests API for persisting the list of participants who have joined a live."""
 

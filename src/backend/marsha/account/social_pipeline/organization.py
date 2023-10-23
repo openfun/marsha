@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 @atomic()
-def create_organization_from_saml(
+def create_organization_from_saml(  # pylint:disable=too-many-arguments
     strategy,  # pylint:disable=unused-argument
     details,
     backend,

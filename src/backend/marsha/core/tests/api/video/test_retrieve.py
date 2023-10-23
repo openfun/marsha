@@ -27,7 +27,7 @@ from marsha.core.tests.testing_utils import RSA_KEY_MOCK
 
 
 # This test module is quite long...
-# pylint: disable=too-many-lines
+# pylint: disable=too-many-lines,duplicate-code
 
 
 class VideoRetrieveAPITest(TestCase):

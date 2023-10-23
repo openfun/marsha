@@ -8,7 +8,7 @@ from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, Playlist, PlaylistAcce
 
 
 @atomic()
-def create_playlist_from_saml(
+def create_playlist_from_saml(  # pylint:disable=too-many-arguments
     strategy,  # pylint:disable=unused-argument
     details,
     backend,

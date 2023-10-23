@@ -13,6 +13,9 @@ from marsha.bbb.models import ClassroomRecording
 from marsha.core.factories import VideoFactory
 
 
+#  pylint: disable=duplicate-code
+
+
 @override_settings(BBB_API_ENDPOINT="https://10.7.7.1/bigbluebutton/api")
 @override_settings(BBB_API_SECRET="SuperSecret")
 @override_settings(BBB_API_CALLBACK_SECRET="OtherSuperSecret")
