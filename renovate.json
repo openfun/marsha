@@ -11,6 +11,9 @@
       ],
       "matchPackageNames": [
         "@converse/headless",
+        "@tanstack/eslint-plugin-query",
+        "@tanstack/react-query-devtools",
+        "@tanstack/react-query",
         "@testing-library/react",
         "@testing-library/user-event",
         "@types/faker",
@@ -24,7 +27,6 @@
         "react",
         "react-dom",
         "react-intl",
-        "react-query",
         "react-router-dom",
         "react-test-renderer",
         "rehype-katex",
