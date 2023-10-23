@@ -3,11 +3,10 @@ from unittest import mock
 
 from django.test import TestCase, override_settings
 
+from marsha.core.defaults import ENDED, RAW, READY, RUNNING
+from marsha.core.factories import DocumentFactory, VideoFactory
 from marsha.core.simple_jwt.factories import LTIPlaylistAccessTokenFactory
-
-from ..defaults import ENDED, RAW, READY, RUNNING
-from ..factories import DocumentFactory, VideoFactory
-from ..xapi import (
+from marsha.core.xapi import (
     XAPI,
     XAPIDocumentStatement,
     XAPIVideoStatement,

@@ -1,9 +1,9 @@
 """Module dedicated to lti select feature for BBB."""
 from django.conf import settings
 
-from .defaults import LTI_ROUTE
-from .models import Classroom
-from .serializers import ClassroomSelectLTISerializer
+from marsha.bbb.defaults import LTI_ROUTE
+from marsha.bbb.models import Classroom
+from marsha.bbb.serializers import ClassroomSelectLTISerializer
 
 
 def get_lti_select_config():

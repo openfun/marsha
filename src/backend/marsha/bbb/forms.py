@@ -1,7 +1,7 @@
 """Marsha forms module."""
 from django.forms import ModelForm
 
-from . import models
+from marsha.bbb import models
 
 
 class ClassroomForm(ModelForm):

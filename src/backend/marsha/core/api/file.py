@@ -6,10 +6,10 @@ from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from .. import defaults, permissions, serializers, storage
-from ..forms import DocumentForm
-from ..models import Document
-from .base import APIViewMixin, ObjectPkMixin
+from marsha.core import defaults, permissions, serializers, storage
+from marsha.core.api.base import APIViewMixin, ObjectPkMixin
+from marsha.core.forms import DocumentForm
+from marsha.core.models import Document
 
 
 class DocumentViewSet(

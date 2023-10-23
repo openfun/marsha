@@ -8,7 +8,7 @@ from django.test import TestCase, override_settings
 
 from django_redis.cache import RedisCache
 
-from ..cache import RedisCacheWithFallback
+from marsha.core.cache import RedisCacheWithFallback
 
 
 class RedisCacheWithFallbackTestCase(TestCase):

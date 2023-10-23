@@ -8,12 +8,15 @@ from rest_framework.exceptions import APIException
 from rest_framework.response import Response
 from waffle import switch_is_active
 
-from .. import defaults, serializers
-from ..defaults import SENTRY, VOD_CONVERT
-from ..models import SiteConfig, Video
-from ..signals import signal_object_uploaded
-from ..simple_jwt.tokens import PlaylistAccessToken
-from ..utils.api_utils import get_uploadable_models_s3_mapping, validate_signature
+from marsha.core import serializers
+from marsha.core.defaults import READY, SENTRY, VOD_CONVERT
+from marsha.core.models import SiteConfig, Video
+from marsha.core.signals import signal_object_uploaded
+from marsha.core.simple_jwt.tokens import PlaylistAccessToken
+from marsha.core.utils.api_utils import (
+    get_uploadable_models_s3_mapping,
+    validate_signature,
+)
 
 
 class ObjectPkMixin:
@@ -113,7 +116,7 @@ def update_state(request):
 
     extra_parameters = serializer.validated_data["extraParameters"]
     if (
-        serializer.validated_data["state"] == defaults.READY
+        serializer.validated_data["state"] == READY
         and hasattr(model, "extension")
         and "extension" not in extra_parameters
     ):
@@ -131,12 +134,12 @@ def update_state(request):
     object_instance.update_upload_state(
         upload_state=new_upload_state,
         uploaded_on=key_elements.get("uploaded_on")
-        if new_upload_state == defaults.READY
+        if new_upload_state == READY
         else None,
         **extra_parameters,
     )
     # send a signal when upload is finished
-    if old_upload_state != new_upload_state and new_upload_state == defaults.READY:
+    if old_upload_state != new_upload_state and new_upload_state == READY:
         signal_object_uploaded.send(
             sender="update_state", model=model, instance=object_instance
         )

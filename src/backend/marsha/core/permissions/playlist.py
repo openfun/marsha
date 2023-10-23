@@ -5,10 +5,8 @@ from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 
 from rest_framework import permissions
 
-from .. import models
-from ..models import Playlist, PlaylistAccess, PortabilityRequest
-from ..models.account import ADMINISTRATOR, ConsumerSiteAccess, OrganizationAccess
-from .base import (
+from marsha.core import models
+from marsha.core.permissions.base import (
     HasAdminOrInstructorRoleMixIn,
     HasAdminRoleMixIn,
     HasInstructorRoleMixIn,
@@ -147,7 +145,7 @@ class IsParamsPlaylistAdminThroughOrganization(permissions.BasePermission):
             "playlist"
         )
         return models.OrganizationAccess.objects.filter(
-            role=ADMINISTRATOR,
+            role=models.ADMINISTRATOR,
             organization__playlists__id=playlist_id,
             user__id=request.user.id,
         ).exists()
@@ -171,7 +169,7 @@ class IsParamsVideoAdminThroughOrganization(permissions.BasePermission):
         """
         video_id = view.get_related_video_id()
         return models.OrganizationAccess.objects.filter(
-            role=ADMINISTRATOR,
+            role=models.ADMINISTRATOR,
             organization__playlists__videos__id=video_id,
             user__id=request.user.id,
         ).exists()
@@ -374,7 +372,7 @@ class BasePortabilityRequestAdministratorAccessPermission(BaseObjectPermission):
         """
         portability_request = obj
         return self.access_model.objects.filter(
-            role=ADMINISTRATOR,
+            role=models.ADMINISTRATOR,
             user_id=request.user.id,
             **{self.playlist_lookup: portability_request.for_playlist_id},
         ).exists()
@@ -385,7 +383,7 @@ class HasPlaylistAdministratorAccess(
 ):
     """Allow access when the user has administrative role on playlist."""
 
-    access_model = PlaylistAccess
+    access_model = models.PlaylistAccess
     playlist_lookup = "playlist_id"
 
 
@@ -397,7 +395,7 @@ class HasPlaylistConsumerSiteAdministratorAccess(
     related to the playlist.
     """
 
-    access_model = ConsumerSiteAccess
+    access_model = models.ConsumerSiteAccess
     playlist_lookup = "consumer_site__playlists__id"
 
 
@@ -408,7 +406,7 @@ class HasPlaylistOrganizationAdministratorAccess(
     Allow access when the user has administrative role on the organization owning the playlist.
     """
 
-    access_model = OrganizationAccess
+    access_model = models.OrganizationAccess
     playlist_lookup = "organization__playlists__id"
 
 
@@ -418,7 +416,7 @@ class IsPlaylistOwner(BaseObjectPermission):
     def has_object_permission(self, request, view, obj):
         """Determine permission for a specific playlist"""
         portability_request = obj
-        return Playlist.objects.filter(
+        return models.Playlist.objects.filter(
             created_by_id=request.user.id,
             pk=portability_request.for_playlist_id,
         ).exists()
@@ -429,7 +427,7 @@ class IsPortabilityRequestOwner(BaseObjectPermission):
 
     def has_object_permission(self, request, view, obj):
         """Determine permission for a specific portability request"""
-        return PortabilityRequest.objects.filter(
+        return models.PortabilityRequest.objects.filter(
             from_user_id=request.user.id,
             pk=view.get_object_pk(),
         ).exists()

@@ -4,9 +4,8 @@ from uuid import uuid4
 
 from django.test import TestCase
 
+from marsha.core import factories
 from marsha.core.simple_jwt.factories import InstructorOrAdminLtiTokenFactory
-
-from .. import factories
 
 
 class PlaylistPortabilityAPITest(TestCase):

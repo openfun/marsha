@@ -7,7 +7,7 @@ from django.test import TestCase
 
 from safedelete.models import SOFT_DELETE_CASCADE
 
-from ..factories import ClassroomFactory, ClassroomRecordingFactory
+from marsha.bbb.factories import ClassroomFactory, ClassroomRecordingFactory
 
 
 class ClassroomModelsTestCase(TestCase):

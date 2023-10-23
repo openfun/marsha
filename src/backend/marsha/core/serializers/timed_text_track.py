@@ -6,9 +6,9 @@ from django.utils.text import slugify
 
 from rest_framework import serializers
 
-from ..models import TimedTextTrack
-from ..utils import cloudfront_utils, time_utils
-from .base import TimestampField, get_video_cloudfront_url_params
+from marsha.core.models import TimedTextTrack
+from marsha.core.serializers.base import TimestampField, get_video_cloudfront_url_params
+from marsha.core.utils import cloudfront_utils, time_utils
 
 
 class TimedTextTrackSerializer(serializers.ModelSerializer):

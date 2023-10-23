@@ -8,8 +8,8 @@ from django.http import HttpRequest
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from ..core.models import Document, Video
-from ..core.utils import time_utils
+from marsha.core.models import Document, Video
+from marsha.core.utils import time_utils
 
 
 logger = logging.getLogger(__name__)

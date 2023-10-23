@@ -3,7 +3,7 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
-from .models import Page
+from marsha.page.models import Page
 
 
 @admin.register(Page)

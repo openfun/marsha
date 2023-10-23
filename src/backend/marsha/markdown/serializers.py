@@ -16,8 +16,7 @@ from marsha.core.serializers import (
 )
 from marsha.core.serializers.playlist import PlaylistLiteSerializer
 from marsha.core.utils import cloudfront_utils, time_utils
-
-from .models import MarkdownDocument, MarkdownImage
+from marsha.markdown.models import MarkdownDocument, MarkdownImage
 
 
 class MarkdownImageSerializer(

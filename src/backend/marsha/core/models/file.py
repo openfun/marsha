@@ -2,11 +2,11 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from ..defaults import PENDING, STATE_CHOICES
-from ..utils.time_utils import to_timestamp
-from .account import User
-from .base import BaseModel
-from .playlist import Playlist
+from marsha.core.defaults import PENDING, STATE_CHOICES
+from marsha.core.models.account import User
+from marsha.core.models.base import BaseModel
+from marsha.core.models.playlist import Playlist
+from marsha.core.utils.time_utils import to_timestamp
 
 
 class UploadableFileMixin(models.Model):

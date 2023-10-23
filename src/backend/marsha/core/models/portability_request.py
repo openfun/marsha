@@ -10,9 +10,9 @@ from safedelete import HARD_DELETE
 from safedelete.managers import SafeDeleteManager
 from safedelete.queryset import SafeDeleteQueryset
 
-from .account import ADMINISTRATOR, ConsumerSite, User
-from .base import BaseModel
-from .playlist import Playlist
+from marsha.core.models.account import ADMINISTRATOR, ConsumerSite, User
+from marsha.core.models.base import BaseModel
+from marsha.core.models.playlist import Playlist
 
 
 class PortabilityRequestState(models.TextChoices):

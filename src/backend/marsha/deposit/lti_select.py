@@ -1,9 +1,9 @@
 """Module dedicated to lti select feature for deposit."""
 from django.conf import settings
 
-from .defaults import LTI_ROUTE
-from .models import FileDepository
-from .serializers import FileDepositorySelectLTISerializer
+from marsha.deposit.defaults import LTI_ROUTE
+from marsha.deposit.models import FileDepository
+from marsha.deposit.serializers import FileDepositorySelectLTISerializer
 
 
 def get_lti_select_config():

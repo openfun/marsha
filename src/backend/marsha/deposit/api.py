@@ -10,19 +10,14 @@ from rest_framework.response import Response
 
 from marsha.core import defaults, permissions as core_permissions
 from marsha.core.api import APIViewMixin, ObjectPkMixin, ObjectRelatedMixin
+from marsha.core.models import ADMINISTRATOR, LTI_ROLES, STUDENT
 from marsha.core.utils.s3_utils import create_presigned_post
 from marsha.core.utils.time_utils import to_timestamp
-
-from . import permissions, serializers
-from ..core.models import ADMINISTRATOR, LTI_ROLES, STUDENT
-from .defaults import LTI_ROUTE
-from .forms import FileDepositoryForm
-from .metadata import DepositedFileMetadata
-from .models import DepositedFile, FileDepository
-from .permissions import (
-    IsFileDepositoryPlaylistOrOrganizationAdmin,
-    IsRelatedFileDepositoryPlaylistOrOrganizationAdmin,
-)
+from marsha.deposit import permissions, serializers
+from marsha.deposit.defaults import LTI_ROUTE
+from marsha.deposit.forms import FileDepositoryForm
+from marsha.deposit.metadata import DepositedFileMetadata
+from marsha.deposit.models import DepositedFile, FileDepository
 
 
 class ObjectFileDepositoryRelatedMixin:
@@ -113,7 +108,7 @@ class FileDepositoryViewSet(
                     | core_permissions.IsTokenAdmin
                     | core_permissions.IsTokenStudent
                 )
-                | IsFileDepositoryPlaylistOrOrganizationAdmin
+                | permissions.IsFileDepositoryPlaylistOrOrganizationAdmin
             ]
         elif self.action in ["update", "partial_update", "destroy"]:
             permission_classes = [
@@ -124,7 +119,7 @@ class FileDepositoryViewSet(
                         | core_permissions.IsTokenAdmin
                     )
                 )
-                | IsFileDepositoryPlaylistOrOrganizationAdmin
+                | permissions.IsFileDepositoryPlaylistOrOrganizationAdmin
             ]
         elif self.action in ["list"]:
             permission_classes = [core_permissions.UserIsAuthenticated]
@@ -248,13 +243,13 @@ class DepositedFileViewSet(
                 core_permissions.IsTokenInstructor
                 | core_permissions.IsTokenAdmin
                 | core_permissions.IsTokenStudent
-                | IsRelatedFileDepositoryPlaylistOrOrganizationAdmin,
+                | permissions.IsRelatedFileDepositoryPlaylistOrOrganizationAdmin,
             ]
         elif self.action in ["update", "partial_update", "destroy"]:
             permission_classes = [
                 core_permissions.IsTokenInstructor
                 | core_permissions.IsTokenAdmin
-                | IsRelatedFileDepositoryPlaylistOrOrganizationAdmin
+                | permissions.IsRelatedFileDepositoryPlaylistOrOrganizationAdmin
             ]
         else:
             permission_classes = self.permission_classes

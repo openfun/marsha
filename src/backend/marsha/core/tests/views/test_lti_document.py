@@ -25,8 +25,7 @@ from marsha.core.factories import (
 from marsha.core.lti import LTI
 from marsha.core.models import ADMINISTRATOR
 from marsha.core.simple_jwt.tokens import PlaylistAccessToken, PlaylistRefreshToken
-
-from .test_lti_base import BaseLTIViewForPortabilityTestCase
+from marsha.core.tests.views.test_lti_base import BaseLTIViewForPortabilityTestCase
 
 
 # We don't enforce arguments documentation in tests

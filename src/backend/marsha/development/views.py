@@ -12,11 +12,10 @@ from django.views.generic.base import TemplateView
 
 from faker import Faker
 
-from ..bbb.models import Classroom
-from ..core.models import Document, Playlist, Video
-from ..core.models.account import ConsumerSite, LTIPassport
-from ..deposit.models import FileDepository
-from ..markdown.models import MarkdownDocument
+from marsha.bbb.models import Classroom
+from marsha.core.models import ConsumerSite, Document, LTIPassport, Playlist, Video
+from marsha.deposit.models import FileDepository
+from marsha.markdown.models import MarkdownDocument
 
 
 logger = getLogger(__name__)

@@ -22,9 +22,8 @@ from marsha.core.simple_jwt.factories import (
     PlaylistAccessTokenFactory,
     UserAccessTokenFactory,
 )
+from marsha.core.tests.api.live_sessions.base import LiveSessionApiTestCase
 from marsha.core.utils.time_utils import to_timestamp
-
-from .base import LiveSessionApiTestCase
 
 
 class LiveSessionPushAttendanceApiTest(LiveSessionApiTestCase):

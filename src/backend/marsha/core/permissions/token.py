@@ -3,8 +3,7 @@ from django.core.exceptions import FieldError, ObjectDoesNotExist
 
 from rest_framework import permissions
 
-from .. import models
-from ..models.account import ADMINISTRATOR, INSTRUCTOR, LTI_ROLES, STUDENT
+from marsha.core import models
 
 
 class BaseTokenRolePermission(permissions.BasePermission):
@@ -18,7 +17,7 @@ class BaseTokenRolePermission(permissions.BasePermission):
 
     def check_role(self, token):
         """Check if the required role is in the token and if can_update is granted."""
-        return LTI_ROLES[self.__class__.role] & set(
+        return models.LTI_ROLES[self.__class__.role] & set(
             token.payload.get("roles", [])
         ) and token.payload.get("permissions", {}).get("can_update", False)
 
@@ -45,13 +44,13 @@ class BaseTokenRolePermission(permissions.BasePermission):
 class IsTokenInstructor(BaseTokenRolePermission):
     """Class dedicated to instructor users."""
 
-    role = INSTRUCTOR
+    role = models.INSTRUCTOR
 
 
 class IsTokenAdmin(BaseTokenRolePermission):
     """Class dedicated to administrator users."""
 
-    role = ADMINISTRATOR
+    role = models.ADMINISTRATOR
 
 
 class IsTokenStudent(BaseTokenRolePermission):
@@ -59,7 +58,9 @@ class IsTokenStudent(BaseTokenRolePermission):
 
     def check_role(self, token):
         """Check if the student role is in the token."""
-        return bool(LTI_ROLES[STUDENT] & set(token.payload.get("roles", [])))
+        return bool(
+            models.LTI_ROLES[models.STUDENT] & set(token.payload.get("roles", []))
+        )
 
 
 class IsTokenPlaylistRouteObject(permissions.BasePermission):

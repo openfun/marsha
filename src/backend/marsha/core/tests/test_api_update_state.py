@@ -9,20 +9,19 @@ from django.test import TestCase, override_settings
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 
-from marsha.websocket.defaults import VIDEO_ADMIN_ROOM_NAME, VIDEO_ROOM_NAME
-from marsha.websocket.utils import channel_layers_utils
-
-from ...bbb.factories import ClassroomDocumentFactory
-from ...deposit.factories import DepositedFileFactory
-from ..defaults import COPYING, ERROR, INFECTED, READY, SCANNING
-from ..factories import (
+from marsha.bbb.factories import ClassroomDocumentFactory
+from marsha.core.defaults import COPYING, ERROR, INFECTED, READY, SCANNING
+from marsha.core.factories import (
     DocumentFactory,
     SharedLiveMediaFactory,
     ThumbnailFactory,
     TimedTextTrackFactory,
     VideoFactory,
 )
-from ..utils.api_utils import generate_hash
+from marsha.core.utils.api_utils import generate_hash
+from marsha.deposit.factories import DepositedFileFactory
+from marsha.websocket.defaults import VIDEO_ADMIN_ROOM_NAME, VIDEO_ROOM_NAME
+from marsha.websocket.utils import channel_layers_utils
 
 
 class UpdateStateAPITest(TestCase):

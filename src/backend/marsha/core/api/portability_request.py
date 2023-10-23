@@ -8,15 +8,9 @@ from rest_framework.exceptions import APIException
 from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
 
+from marsha.core.api.base import APIViewMixin, ObjectPkMixin
 from marsha.core.models import PortabilityRequest
-from marsha.core.utils.portability_request_utils import (
-    PortabilityTransitionException,
-    accept_portability_request,
-    destroy_portability_request,
-    reject_portability_request,
-)
-
-from ..permissions import (
+from marsha.core.permissions import (
     HasPlaylistAdministratorAccess,
     HasPlaylistConsumerSiteAdministratorAccess,
     HasPlaylistOrganizationAdministratorAccess,
@@ -26,8 +20,13 @@ from ..permissions import (
     PortToPlaylistExists,
     UserIsAuthenticated,
 )
-from ..serializers import PortabilityRequestSerializer
-from .base import APIViewMixin, ObjectPkMixin
+from marsha.core.serializers import PortabilityRequestSerializer
+from marsha.core.utils.portability_request_utils import (
+    PortabilityTransitionException,
+    accept_portability_request,
+    destroy_portability_request,
+    reject_portability_request,
+)
 
 
 class PortabilityTransitionUnallowedException(APIException):

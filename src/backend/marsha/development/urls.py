@@ -4,7 +4,7 @@ from django.urls import path
 
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
-from .views import DevelopmentLTIView
+from marsha.development.views import DevelopmentLTIView
 
 
 app_name = "development"

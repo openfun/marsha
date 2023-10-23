@@ -4,8 +4,7 @@ from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
 from marsha.core.admin import link_field
-
-from .models import DepositedFile, FileDepository
+from marsha.deposit.models import DepositedFile, FileDepository
 
 
 class DepositedFilesInline(admin.TabularInline):

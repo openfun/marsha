@@ -6,8 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from parler.admin import TranslatableAdmin
 
 from marsha.core.admin import link_field
-
-from .models import MarkdownDocument, MarkdownImage
+from marsha.markdown.models import MarkdownDocument, MarkdownImage
 
 
 @admin.register(MarkdownDocument)

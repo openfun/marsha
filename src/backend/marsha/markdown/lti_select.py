@@ -1,9 +1,9 @@
 """Module dedicated to lti select feature for Markdown."""
 from django.conf import settings
 
-from .defaults import LTI_ROUTE
-from .models import MarkdownDocument
-from .serializers import MarkdownDocumentSelectLTISerializer
+from marsha.markdown.defaults import LTI_ROUTE
+from marsha.markdown.models import MarkdownDocument
+from marsha.markdown.serializers import MarkdownDocumentSelectLTISerializer
 
 
 def get_lti_select_config():

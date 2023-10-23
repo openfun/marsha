@@ -3,7 +3,7 @@ from django.urls import include, path
 
 from rest_framework.routers import DefaultRouter
 
-from .api import PageViewSet
+from marsha.page.api import PageViewSet
 
 
 app_name = "page"

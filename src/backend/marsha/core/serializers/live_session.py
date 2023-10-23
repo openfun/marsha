@@ -8,14 +8,13 @@ from django.utils import timezone
 
 from rest_framework import serializers
 
+from marsha.core.models import ADMINISTRATOR, ConsumerSite, LiveSession, Video
 from marsha.core.permissions import (
     IsTokenAdmin,
     IsTokenInstructor,
     playlist_role_exists,
 )
-
-from ..models import ADMINISTRATOR, ConsumerSite, LiveSession, Video
-from ..services.live_session import is_lti_token, is_public_token
+from marsha.core.services.live_session import is_lti_token, is_public_token
 
 
 class LiveSessionDisplayUsernameSerializer(serializers.ModelSerializer):

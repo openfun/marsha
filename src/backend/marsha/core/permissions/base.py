@@ -3,7 +3,7 @@
 from rest_framework import permissions
 from rest_framework.permissions import IsAuthenticated
 
-from ..models.account import ADMINISTRATOR, INSTRUCTOR
+from marsha.core.models.account import ADMINISTRATOR, INSTRUCTOR
 
 
 class NotAllowed(permissions.BasePermission):

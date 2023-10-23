@@ -6,14 +6,13 @@ from unittest import mock
 
 from django.test import TestCase, override_settings
 
+from marsha.core.api import timezone
+from marsha.core.factories import DocumentFactory, PlaylistFactory
+from marsha.core.models import Document
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     StudentLtiTokenFactory,
 )
-
-from ..api import timezone
-from ..factories import DocumentFactory, PlaylistFactory
-from ..models import Document
 
 
 # We don't enforce arguments documentation in tests

@@ -10,7 +10,7 @@ from django.utils.text import slugify
 
 from rest_framework import serializers
 
-from ..defaults import (
+from marsha.core.defaults import (
     AWS_PIPELINE,
     ENDED,
     HARVESTED,
@@ -21,16 +21,16 @@ from ..defaults import (
     RUNNING,
     STOPPED,
 )
-from ..models import TimedTextTrack, Video
-from ..utils import cloudfront_utils, jitsi_utils, time_utils, xmpp_utils
-from .base import TimestampField, get_video_cloudfront_url_params
-from .playlist import PlaylistLiteSerializer
-from .shared_live_media import (
+from marsha.core.models import TimedTextTrack, Video
+from marsha.core.serializers.base import TimestampField, get_video_cloudfront_url_params
+from marsha.core.serializers.playlist import PlaylistLiteSerializer
+from marsha.core.serializers.shared_live_media import (
     SharedLiveMediaId3TagsSerializer,
     SharedLiveMediaSerializer,
 )
-from .thumbnail import ThumbnailSerializer
-from .timed_text_track import TimedTextTrackSerializer
+from marsha.core.serializers.thumbnail import ThumbnailSerializer
+from marsha.core.serializers.timed_text_track import TimedTextTrackSerializer
+from marsha.core.utils import cloudfront_utils, jitsi_utils, time_utils, xmpp_utils
 
 
 MAX_DATETIME = timezone.datetime.max.replace(tzinfo=datetime.timezone.utc)

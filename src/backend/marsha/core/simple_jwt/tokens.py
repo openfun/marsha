@@ -9,10 +9,9 @@ from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken, Token
 
 from marsha.core.models import NONE, STUDENT
+from marsha.core.simple_jwt.permissions import PlaylistAccessPermissions
 from marsha.core.simple_jwt.utils import define_locales
 from marsha.core.utils.react_locales_utils import react_locale
-
-from .permissions import PlaylistAccessPermissions
 
 
 class MarshaRefreshToken(RefreshToken):

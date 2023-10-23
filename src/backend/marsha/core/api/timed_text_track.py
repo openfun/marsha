@@ -8,17 +8,17 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.response import Response
 
-from .. import defaults, permissions, serializers
-from ..metadata import TimedTextMetadata
-from ..models import TimedTextTrack
-from ..utils.s3_utils import create_presigned_post
-from ..utils.time_utils import to_timestamp
-from .base import (
+from marsha.core import defaults, permissions, serializers
+from marsha.core.api.base import (
     APIViewMixin,
     ObjectPkMixin,
     ObjectRelatedMixin,
     ObjectVideoRelatedMixin,
 )
+from marsha.core.metadata import TimedTextMetadata
+from marsha.core.models import TimedTextTrack
+from marsha.core.utils.s3_utils import create_presigned_post
+from marsha.core.utils.time_utils import to_timestamp
 
 
 class TimedTextTrackFilter(django_filters.FilterSet):

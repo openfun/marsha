@@ -20,21 +20,20 @@ from rest_framework.response import Response
 from rest_framework.throttling import SimpleRateThrottle
 from sentry_sdk import capture_exception
 
-from marsha.core.defaults import VIDEO_ATTENDANCE_KEY_CACHE
-
-from .. import permissions, serializers
-from ..models import ConsumerSite, LiveSession, Video
-from ..services.live_session import (
-    get_livesession_from_anonymous_id,
-    get_livesession_from_lti,
-    get_livesession_from_user_id,
-    is_lti_token,
-)
-from .base import (
+from marsha.core import permissions, serializers
+from marsha.core.api.base import (
     APIViewMixin,
     ObjectPkMixin,
     ObjectRelatedMixin,
     ObjectVideoRelatedMixin,
+)
+from marsha.core.defaults import VIDEO_ATTENDANCE_KEY_CACHE
+from marsha.core.models import ConsumerSite, LiveSession, Video
+from marsha.core.services.live_session import (
+    get_livesession_from_anonymous_id,
+    get_livesession_from_lti,
+    get_livesession_from_user_id,
+    is_lti_token,
 )
 
 

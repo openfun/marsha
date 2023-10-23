@@ -6,9 +6,9 @@ from django.test import TestCase
 from requests import HTTPError, RequestException
 import responses
 
-from .. import stats
-from ..factories import VideoFactory
-from ..stats import dummy_backend, grafana_xapi_fun_backend
+from marsha.core import stats
+from marsha.core.factories import VideoFactory
+from marsha.core.stats import dummy_backend, grafana_xapi_fun_backend
 
 
 class StatsTestCase(TestCase):

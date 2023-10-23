@@ -11,16 +11,17 @@ from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 
 from marsha.core import defaults, permissions as core_permissions
 from marsha.core.api import APIViewMixin, ObjectPkMixin, ObjectRelatedMixin
+from marsha.core.models import ADMINISTRATOR
+from marsha.core.utils.s3_utils import create_presigned_post
 from marsha.core.utils.time_utils import to_timestamp
-
-from . import permissions as markdown_permissions, serializers
-from ..core.models import ADMINISTRATOR
-from ..core.utils.s3_utils import create_presigned_post
-from .defaults import LTI_ROUTE
-from .forms import MarkdownDocumentForm
-from .models import MarkdownDocument, MarkdownImage
-from .permissions import IsRelatedMarkdownDocumentPlaylistOrOrganizationAdmin
-from .utils.converter import LatexConversionException, render_latex_to_image
+from marsha.markdown import permissions as markdown_permissions, serializers
+from marsha.markdown.defaults import LTI_ROUTE
+from marsha.markdown.forms import MarkdownDocumentForm
+from marsha.markdown.models import MarkdownDocument, MarkdownImage
+from marsha.markdown.utils.converter import (
+    LatexConversionException,
+    render_latex_to_image,
+)
 
 
 class ObjectMarkdownDocumentRelatedMixin:
@@ -305,13 +306,13 @@ class MarkdownImageViewSet(
             permission_classes = [
                 core_permissions.IsTokenInstructor
                 | core_permissions.IsTokenAdmin
-                | IsRelatedMarkdownDocumentPlaylistOrOrganizationAdmin
+                | markdown_permissions.IsRelatedMarkdownDocumentPlaylistOrOrganizationAdmin
             ]
         else:
             permission_classes = [
                 markdown_permissions.IsTokenResourceRouteObjectRelatedMarkdownDocument
                 & (core_permissions.IsTokenInstructor | core_permissions.IsTokenAdmin)
-                | IsRelatedMarkdownDocumentPlaylistOrOrganizationAdmin
+                | markdown_permissions.IsRelatedMarkdownDocumentPlaylistOrOrganizationAdmin
             ]
         return [permission() for permission in permission_classes]
 

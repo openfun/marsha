@@ -7,9 +7,9 @@ from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.serializers import TokenVerifySerializer
 from rest_framework_simplejwt.settings import api_settings
 
-from ..models import ConsumerSite, Organization, OrganizationAccess
-from ..simple_jwt.tokens import ChallengeToken, LTIUserToken, UserRefreshToken
-from .base import ReadOnlyModelSerializer
+from marsha.core.models import ConsumerSite, Organization, OrganizationAccess
+from marsha.core.serializers.base import ReadOnlyModelSerializer
+from marsha.core.simple_jwt.tokens import ChallengeToken, LTIUserToken, UserRefreshToken
 
 
 class ChallengeTokenSerializer(TokenVerifySerializer):

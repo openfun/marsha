@@ -3,7 +3,7 @@ from django.conf import settings
 
 from rest_framework import serializers
 
-from ..models import LivePairing
+from marsha.core.models import LivePairing
 
 
 class LivePairingSerializer(serializers.ModelSerializer):

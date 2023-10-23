@@ -3,9 +3,8 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
+from marsha.bbb.models import Classroom, ClassroomDocument
 from marsha.core.admin import link_field
-
-from .models import Classroom, ClassroomDocument
 
 
 class ClassroomDocumentInline(admin.TabularInline):

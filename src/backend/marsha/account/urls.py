@@ -15,8 +15,8 @@ from rest_framework_simplejwt.views import (
 )
 from social_edu_federation.django.views import EduFedMetadataView
 
-from .api import SamlFerIdpListAPIView
-from .views import RedirectToFrontendView
+from marsha.account.api import SamlFerIdpListAPIView
+from marsha.account.views import RedirectToFrontendView
 
 
 app_name = "account"

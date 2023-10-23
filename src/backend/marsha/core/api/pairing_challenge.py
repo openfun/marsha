@@ -6,10 +6,9 @@ from rest_framework.decorators import api_view, throttle_classes
 from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle
 
+from marsha.core import serializers
 from marsha.core.defaults import JITSI
-
-from .. import serializers
-from ..models import Device, LivePairing
+from marsha.core.models import Device, LivePairing
 
 
 class PairingChallengeThrottle(AnonRateThrottle):

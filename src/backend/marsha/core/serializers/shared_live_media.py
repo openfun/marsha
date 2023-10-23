@@ -5,13 +5,13 @@ from django.conf import settings
 
 from rest_framework import serializers
 
-from ..models import SharedLiveMedia
-from ..utils import cloudfront_utils, time_utils
-from .base import (
+from marsha.core.models import SharedLiveMedia
+from marsha.core.serializers.base import (
     TimestampField,
     UploadableFileWithExtensionSerializerMixin,
     get_video_cloudfront_url_params,
 )
+from marsha.core.utils import cloudfront_utils, time_utils
 
 
 class SharedLiveMediaSerializer(

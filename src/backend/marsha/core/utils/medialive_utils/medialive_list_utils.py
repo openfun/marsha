@@ -1,5 +1,8 @@
 """Utils to create MediaLive configuration."""
-from .medialive_client_utils import medialive_client, mediapackage_client
+from marsha.core.utils.medialive_utils.medialive_client_utils import (
+    medialive_client,
+    mediapackage_client,
+)
 
 
 def _get_items(  # nosec

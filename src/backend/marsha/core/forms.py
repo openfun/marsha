@@ -2,8 +2,8 @@
 from django.core.exceptions import ValidationError
 from django.forms import CharField, ModelForm
 
-from . import models
-from .defaults import INITIALIZED
+from marsha.core import models
+from marsha.core.defaults import INITIALIZED
 
 
 class DocumentForm(ModelForm):

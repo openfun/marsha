@@ -3,9 +3,9 @@ from django.contrib.sites.models import Site
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from ..defaults import FEATURES_CHOICES, RESOURCES_CHOICES
-from ..fields import InvertedArrayField
-from .base import BaseModel
+from marsha.core.defaults import FEATURES_CHOICES, RESOURCES_CHOICES
+from marsha.core.fields import InvertedArrayField
+from marsha.core.models.base import BaseModel
 
 
 class SiteConfig(BaseModel):

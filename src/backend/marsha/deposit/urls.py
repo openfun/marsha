@@ -4,8 +4,8 @@ from django.urls import include, path
 
 from rest_framework.routers import DefaultRouter
 
-from .api import DepositedFileViewSet, FileDepositoryViewSet
-from .views import FileDepositoryLTIView
+from marsha.deposit.api import DepositedFileViewSet, FileDepositoryViewSet
+from marsha.deposit.views import FileDepositoryLTIView
 
 
 app_name = "deposit"

@@ -2,7 +2,7 @@
 from django.core.checks import Warning as ChecksWarning
 from django.test import TestCase, override_settings
 
-from ..checks import teacher_role_setting_check
+from marsha.account.checks import teacher_role_setting_check
 
 
 class CheckTestCase(TestCase):
