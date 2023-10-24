@@ -23,6 +23,10 @@
 .typo-text:not([class*="clr-"]), .fs-h {
   color: var(--c--theme--colors--primary-500);
 }
+.typo-box{
+  display: flex;
+  box-sizing: border-box;
+}
 /**
  * Input
 */
@@ -38,6 +42,7 @@
 }
 .c__input__wrapper .c__input {
   color: var(--c--components--forms-input--color);
+  width: 100%;
 }
 input:-webkit-autofill,
 input:-webkit-autofill:focus {
