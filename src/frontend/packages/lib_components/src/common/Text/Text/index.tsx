@@ -1,4 +1,4 @@
-import { ReactHTML } from 'react';
+import { ReactElement, ReactHTML, Ref, forwardRef } from 'react';
 
 import { Typo, TypoProps } from '@lib-components/common/Typo';
 
@@ -49,20 +49,32 @@ export type TextProps<T extends keyof TextTypes> = TypoProps<
  * @See {@link Typo }
  * @returns Text component
  */
-export const Text = <T extends keyof TextTypes = 'span'>({
-  className,
-  size = 'medium-large',
-  type = 'span',
-  weight = 'regular',
-  ...props
-}: TextProps<T>) => {
-  return (
-    <Typo<keyof TextTypes>
-      type={type}
-      className={`typo-text ${TextWeights[weight]} ${TextSizes[size]} ${
-        className || ''
-      }`}
-      {...props}
-    />
-  );
-};
+const TextRef = forwardRef(
+  <T extends keyof TextTypes = 'span'>(
+    {
+      className,
+      size = 'medium-large',
+      type = 'span',
+      weight = 'regular',
+      ...props
+    }: TextProps<T>,
+    ref: Ref<HTMLElement>,
+  ) => {
+    return (
+      <Typo<keyof TextTypes>
+        ref={ref}
+        type={type}
+        className={`typo-text ${TextWeights[weight]} ${TextSizes[size]} ${
+          className || ''
+        }`}
+        {...props}
+      />
+    );
+  },
+);
+
+TextRef.displayName = 'Text';
+
+export const Text = TextRef as <T extends keyof TextTypes = 'span'>(
+  p: TextProps<T>,
+) => ReactElement;

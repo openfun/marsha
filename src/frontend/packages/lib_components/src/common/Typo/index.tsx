@@ -1,8 +1,11 @@
 import {
   CSSProperties,
   DetailedHTMLFactory,
+  ReactElement,
   ReactHTML,
+  Ref,
   createElement,
+  forwardRef,
 } from 'react';
 
 /**
@@ -23,6 +26,7 @@ export interface TypoPropsOnly {
   textAlign?: CSSProperties['textAlign'];
   color?: CSSProperties['color'];
   fontSize?: CSSProperties['fontSize'];
+  ref?: Ref<HTMLElement>;
   truncate?: boolean | number;
 }
 
@@ -66,54 +70,66 @@ export type TypoProps<
  *  - props - HTMLAttributes<T>
  * @returns Typo component
  */
-export const Typo = <T extends keyof ReactHTML = 'div'>({
-  children,
-  className,
-  color,
-  fontSize,
-  textAlign,
-  truncate,
-  type = 'div',
-  ...props
-}: TypoProps<T>) => {
-  let moreStyles = {};
-  if (truncate) {
-    moreStyles = {
-      textOverflow: 'ellipsis',
-      overflow: 'hidden',
-      whiteSpace: 'nowrap',
-    };
-
-    // truncate with number of lines
-    if (typeof truncate === 'number') {
-      moreStyles = {
-        overflow: 'hidden',
-        WebkitLineClamp: truncate,
-        WebkitBoxOrient: 'vertical',
-        display: '-webkit-box',
-      };
-    }
-  }
-
-  let colorClassname = '';
-  // if color is a classname
-  if (color && color.startsWith('clr-')) {
-    colorClassname = ` ${color}`;
-  }
-
-  return createElement(
-    type,
+const TypoRef = forwardRef(
+  <T extends keyof ReactHTML = 'div'>(
     {
-      className: `typo ${className || ''}${colorClassname}`,
-      ...props,
-      style: {
-        textAlign,
-        color: colorClassname ? undefined : color,
-        fontSize,
-        ...moreStyles,
-        ...props.style,
+      children,
+      className,
+      color,
+      fontSize,
+      textAlign,
+      truncate,
+      type = 'div',
+      ...props
+    }: TypoProps<T>,
+    ref: Ref<TypoProps<T>>,
+  ) => {
+    let moreStyles = {};
+    if (truncate) {
+      moreStyles = {
+        textOverflow: 'ellipsis',
+        overflow: 'hidden',
+        whiteSpace: 'nowrap',
+      };
+
+      // truncate with number of lines
+      if (typeof truncate === 'number') {
+        moreStyles = {
+          overflow: 'hidden',
+          WebkitLineClamp: truncate,
+          WebkitBoxOrient: 'vertical',
+          display: '-webkit-box',
+        };
+      }
+    }
+
+    let colorClassname = '';
+    // if color is a classname
+    if (color && color.startsWith('clr-')) {
+      colorClassname = ` ${color}`;
+    }
+
+    return createElement(
+      type,
+      {
+        className: `typo ${className || ''}${colorClassname}`,
+        ref,
+        ...props,
+        style: {
+          textAlign,
+          color: colorClassname ? undefined : color,
+          fontSize,
+          ...moreStyles,
+          ...props.style,
+        },
       },
-    },
-    children,
-  );
-};
+      children,
+    );
+  },
+);
+
+TypoRef.displayName = 'Typo';
+
+export const Typo = TypoRef as <T extends keyof ReactHTML = 'div'>(
+  p: TypoProps<T> & { ref?: Ref<HTMLElement> },
+) => ReactElement;
