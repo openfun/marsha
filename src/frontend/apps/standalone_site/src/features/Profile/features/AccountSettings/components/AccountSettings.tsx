@@ -1,11 +1,11 @@
 import { Button } from '@openfun/cunningham-react';
 import { useMutation } from '@tanstack/react-query';
-import { Box } from 'grommet';
-import { FetchResponseError, Heading } from 'lib-components';
+import { Box, FetchResponseError, Heading } from 'lib-components';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
+import { WhiteCard } from 'components/Cards';
 import { PrivateTextInputField } from 'components/Text/PrivateTextInputField';
 
 import { ResetPasswordError, resetPassword } from '../api/resetPassword';
@@ -137,12 +137,14 @@ export const AccountSettings = () => {
   return (
     <Box>
       <Heading level={1}>{intl.formatMessage(messages.header)}</Heading>
-      <Box width="large" margin={{ horizontal: 'auto' }}>
-        <Box
-          background="white"
-          pad={{ horizontal: 'medium', bottom: 'medium' }}
-          elevation="even"
-        >
+      <Box
+        width={{
+          max: 'large',
+          width: 'full',
+        }}
+        margin={{ horizontal: 'auto' }}
+      >
+        <WhiteCard>
           <Heading level={4}>{intl.formatMessage(messages.title)}</Heading>
           <Box margin={{ left: '30%' }}>
             <form
@@ -217,7 +219,7 @@ export const AccountSettings = () => {
               </Box>
             </form>
           </Box>
-        </Box>
+        </WhiteCard>
       </Box>
     </Box>
   );

@@ -1,8 +1,6 @@
-import { Box } from 'grommet';
-import { Heading, StyledLink, Text } from 'lib-components';
+import { Box, Heading, StyledLink, Text } from 'lib-components';
 import { Fragment } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import styled from 'styled-components';
 
 import { useContentFeatures } from '../../store/contentsStore';
 
@@ -13,10 +11,6 @@ const messages = defineMessages({
     id: 'features.Contents.SeeEverything',
   },
 });
-
-const BoxText = styled(Box)`
-  color: #002c84;
-`;
 
 interface ContentsProps {
   playlistId?: string;
@@ -32,11 +26,13 @@ const Contents = ({ playlistId }: ContentsProps) => {
   return (
     <Fragment>
       {samples.map((sample, index) => (
-        <Box margin={{ top: 'large' }} key={`content-sample-${index}`}>
-          <BoxText
+        <Box margin={{ top: 'medium' }} key={`content-sample-${index}`}>
+          <Box
+            color="#002c84"
             direction="row"
-            justify="between"
+            justify="space-between"
             margin={{ bottom: 'small' }}
+            align="center"
           >
             <Heading level={3} style={{ margin: '0' }}>
               {intl.formatMessage(sample.title)}
@@ -51,7 +47,7 @@ const Contents = ({ playlistId }: ContentsProps) => {
                 › {intl.formatMessage(messages.SeeEverything)}
               </StyledLink>
             </Text>
-          </BoxText>
+          </Box>
           {sample.component}
         </Box>
       ))}

@@ -1,7 +1,6 @@
 import { Checkbox } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
-import { ContentCard, StyledLink, Text, Video } from 'lib-components';
-import { Fragment, useEffect, useState } from 'react';
+import { Box, ContentCard, StyledLink, Text, Video } from 'lib-components';
+import { useEffect, useState } from 'react';
 
 import { ReactComponent as LiveIcon } from 'assets/svg/iko_live.svg';
 import { ReactComponent as VueListIcon } from 'assets/svg/iko_vuelistesvg.svg';
@@ -69,16 +68,12 @@ const Live = ({ live }: { live: Video }) => {
           </Box>
         }
         footer={
-          <Fragment>
-            <Box gap="small" align="center" direction="row">
-              <Box>
-                <VueListIcon width={20} height={20} color="blue-active" />
-              </Box>
-              <Text size="tiny" weight="bold">
-                {live.playlist.title}
-              </Text>
-            </Box>
-          </Fragment>
+          <Box gap="small" align="center" direction="row">
+            <VueListIcon width={20} height={20} color="blue-active" />
+            <Text size="tiny" weight="bold">
+              {live.playlist.title}
+            </Text>
+          </Box>
         }
         title={live.title || ''}
       >

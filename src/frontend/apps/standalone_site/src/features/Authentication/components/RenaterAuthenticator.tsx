@@ -1,5 +1,6 @@
-import { Box, FormField, Image, ThemeContext } from 'grommet';
-import { ClosingCard, Select, Text, useResponsive } from 'lib-components';
+import { FormField, Image, ThemeContext } from 'grommet';
+import { colorsTokens } from 'lib-common';
+import { Box, ClosingCard, Select, Text, useResponsive } from 'lib-components';
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useLocation } from 'react-router-dom';
@@ -75,14 +76,14 @@ export const RenaterAuthenticator = () => {
 
   return (
     <Box
-      background="bg-select"
+      background={colorsTokens['primary-150']}
       pad={{
         horizontal: isSmallerBreakpoint(breakpoint, 'medium')
           ? 'large'
           : 'xlarge',
-        vertical: 'medium',
+        vertical: 'small',
       }}
-      round="xsmall"
+      round="xxsmall"
     >
       {errorQuery && errorQuery === ERRORTOKEN && (
         <ClosingCard
@@ -109,7 +110,7 @@ export const RenaterAuthenticator = () => {
         />
       )}
       <Box
-        margin={{ bottom: 'medium' }}
+        margin={{ bottom: 'small' }}
         direction="row"
         justify="center"
         align="center"

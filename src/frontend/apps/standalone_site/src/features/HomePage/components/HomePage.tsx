@@ -1,5 +1,6 @@
-import { Box, Image } from 'grommet';
+import { Image } from 'grommet';
 import {
+  Box,
   Heading,
   StyledLink,
   Text,

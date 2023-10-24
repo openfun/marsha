@@ -5,9 +5,15 @@ import {
   SortModel,
   usePagination,
 } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
 import { Breakpoints, Maybe } from 'lib-common';
-import { Heading, Modal, Playlist, Text, useResponsive } from 'lib-components';
+import {
+  Box,
+  Heading,
+  Modal,
+  Playlist,
+  Text,
+  useResponsive,
+} from 'lib-components';
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { Route, Routes, useNavigate } from 'react-router-dom';
@@ -162,31 +168,24 @@ export const PlaylistPage = () => {
       </Routes>
 
       <Box pad="medium">
-        <WhiteCard direction="column">
+        <WhiteCard direction="column" pad="medium">
           <Box
-            flex="shrink"
             direction={isXxsmallDevice ? 'column' : 'row'}
-            align={isXxsmallDevice ? 'center' : 'initiale'}
+            align="center"
+            justify="space-between"
           >
-            <Box flex>
-              <Heading level={2}>{intl.formatMessage(messages.title)}</Heading>
-            </Box>
+            <Heading level={2} margin={{ top: 'none' }}>
+              {intl.formatMessage(messages.title)}
+            </Heading>
             {!shouldDisplayNoPlaylistYetMessage && (
-              <Box
-                flex="shrink"
-                margin={{ vertical: 'auto', left: 'small' }}
-                gap="small"
-                direction="row"
+              <Button
+                aria-label={intl.formatMessage(messages.create)}
+                onClick={() => {
+                  navigate(playlistCreatePath);
+                }}
               >
-                <Button
-                  aria-label={intl.formatMessage(messages.create)}
-                  onClick={() => {
-                    navigate(playlistCreatePath);
-                  }}
-                >
-                  {intl.formatMessage(messages.create)}
-                </Button>
-              </Box>
+                {intl.formatMessage(messages.create)}
+              </Button>
             )}
           </Box>
           <Fragment>

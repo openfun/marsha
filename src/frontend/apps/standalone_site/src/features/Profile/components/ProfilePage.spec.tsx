@@ -23,8 +23,8 @@ describe('<ProfilePage />', () => {
     render(<ProfilePage />);
 
     expect(screen.getByText('classrooms')).toBeInTheDocument();
-    expect(screen.getByText('No name provided')).toBeInTheDocument();
-    expect(screen.getByText('No email provided')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('No name provided')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('No email provided')).toBeInTheDocument();
   });
 
   it('only renders classrooms with anonymous user', () => {
@@ -35,8 +35,8 @@ describe('<ProfilePage />', () => {
     render(<ProfilePage />);
 
     expect(screen.getByText('classrooms')).toBeInTheDocument();
-    expect(screen.getByText('No name provided')).toBeInTheDocument();
-    expect(screen.getByText('No email provided')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('No name provided')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('No email provided')).toBeInTheDocument();
   });
 
   it('renders user infos when provided', () => {
@@ -47,7 +47,7 @@ describe('<ProfilePage />', () => {
     render(<ProfilePage />);
 
     expect(screen.getByText('classrooms')).toBeInTheDocument();
-    expect(screen.getByText('my full name')).toBeInTheDocument();
-    expect(screen.getByText('my-email@openfun.fr')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('my full name')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('my-email@openfun.fr')).toBeInTheDocument();
   });
 });

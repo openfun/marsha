@@ -1,5 +1,4 @@
-import { Box } from 'grommet';
-import { useResponsive } from 'lib-components';
+import { Box, useResponsive } from 'lib-components';
 import { PropsWithChildren, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';

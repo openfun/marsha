@@ -1,7 +1,6 @@
 import { Input, Select } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
 import { Nullable } from 'lib-common';
-import { Heading, ModalButton, Text } from 'lib-components';
+import { Box, Heading, ModalButton, Text } from 'lib-components';
 import { debounce } from 'lodash';
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';

@@ -1,6 +1,4 @@
-import { Box } from 'grommet';
-import { Alert } from 'grommet-icons';
-import { BoxLoader, Text } from 'lib-components';
+import { Box, BoxError, BoxLoader, Text } from 'lib-components';
 import { Fragment, PropsWithChildren, ReactElement } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -18,20 +16,6 @@ const messages = defineMessages({
     id: 'components.ManageAPIState.Error',
   },
 });
-
-const ContainerInfo = ({ children }: PropsWithChildren) => {
-  return (
-    <Box
-      direction="column"
-      align="center"
-      justify="center"
-      margin={{ top: 'medium' }}
-      gap="small"
-    >
-      {children}
-    </Box>
-  );
-};
 
 interface ManageAPIStateProps {
   isLoading: boolean;
@@ -52,14 +36,14 @@ const ManageAPIState = ({
   const intl = useIntl();
 
   let content = (
-    <ContainerInfo>
+    <Box margin={{ top: 'medium' }} align="center" justify="center" gap="small">
       <ContentsIcon width={60} height={60} />
       <Text weight="bold">
         {typeof nothingToDisplay === 'string'
           ? nothingToDisplay
           : intl.formatMessage(messages.NoThing)}
       </Text>
-    </ContainerInfo>
+    </Box>
   );
 
   if (nothingToDisplay && typeof nothingToDisplay !== 'string') {
@@ -71,14 +55,14 @@ const ManageAPIState = ({
       content = error;
     } else {
       content = (
-        <ContainerInfo>
-          <Alert size="large" color="#df8c00" />
-          <Text weight="bold">
-            {typeof error === 'string'
+        <BoxError
+          message={
+            typeof error === 'string'
               ? error
-              : intl.formatMessage(messages.Error)}
-          </Text>
-        </ContainerInfo>
+              : intl.formatMessage(messages.Error)
+          }
+          className="mt-b"
+        />
       );
     }
   } else if (isLoading) {

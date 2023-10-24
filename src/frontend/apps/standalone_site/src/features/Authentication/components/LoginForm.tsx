@@ -1,8 +1,7 @@
 import { Field, Input } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
 import { Alert } from 'grommet-icons';
 import { colorsTokens } from 'lib-common';
-import { ButtonLoader, Text } from 'lib-components';
+import { Box, ButtonLoader, Text } from 'lib-components';
 import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -122,14 +121,14 @@ export const LoginForm = () => {
           direction="row"
           align="center"
           justify="center"
-          margin={{ vertical: 'medium' }}
+          margin={{ vertical: 'small' }}
           gap="small"
         >
           <Alert size="medium" color="#df8c00" />
           <Text weight="bold">{error?.detail}</Text>
         </Box>
       )}
-      <Box flex={false} margin={{ top: 'medium' }}>
+      <Box margin={{ top: 'small' }}>
         <ButtonLoader
           aria-label={intl.formatMessage(messages.labelSubmit)}
           isSubmitting={isLoading}

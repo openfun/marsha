@@ -26,8 +26,8 @@ import { routes } from 'routes/routes';
 const colorMenu = normalizeColor('blue-active', theme);
 
 interface PropsExtended {
-  isScrollTop: boolean;
-  isDesktop: boolean;
+  $isScrollTop: boolean;
+  $isDesktop: boolean;
 }
 
 const HeaderBox = styled(Box)<PropsExtended>`
@@ -35,13 +35,14 @@ const HeaderBox = styled(Box)<PropsExtended>`
   color: ${colorMenu};
   transition: all 0.3s ease-in-out;
   ${(props) =>
-    props.isScrollTop && props.isDesktop
+    props.$isScrollTop && props.$isDesktop
       ? `background: transparent;`
       : `
         background: #fff;                                                                     
         box-shadow: 1px 1px 20px #cce4f3;
       `}
   z-index: 11;
+  height: auto;
 `;
 
 const messages = defineMessages({
@@ -100,11 +101,11 @@ const Header = forwardRef<Nullable<HTMLDivElement>>((_props, ref) => {
       ref={ref}
       role="menubar"
       direction="row"
-      width="100%"
+      fill
       justify="between"
       pad={{ horizontal: 'medium' }}
-      isScrollTop={isScrollTop}
-      isDesktop={isDesktop}
+      $isScrollTop={isScrollTop}
+      $isDesktop={isDesktop}
     >
       <Box
         direction="row"
@@ -184,7 +185,7 @@ const Header = forwardRef<Nullable<HTMLDivElement>>((_props, ref) => {
           }
           dropAlign={{ top: 'bottom', right: 'right' }}
           dropContent={
-            <Box direction="column" margin="small" gap="xsmall">
+            <Box direction="column" margin="small">
               <NavLink
                 className="c__button c__button--tertiary c__button--medium  c__button--with-icon--left"
                 to={routes.PROFILE.path}

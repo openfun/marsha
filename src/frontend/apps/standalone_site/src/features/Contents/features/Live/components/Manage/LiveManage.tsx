@@ -1,6 +1,6 @@
 import { Button } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
 import {
+  Box,
   Heading,
   Modal,
   ModalButton,

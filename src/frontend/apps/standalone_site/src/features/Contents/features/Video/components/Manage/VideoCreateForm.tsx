@@ -1,7 +1,8 @@
 import { Field, Input } from '@openfun/cunningham-react';
-import { Box, TextArea } from 'grommet';
+import { TextArea } from 'grommet';
 import { Nullable } from 'lib-common';
 import {
+  Box,
   BoxError,
   Form,
   FormField,

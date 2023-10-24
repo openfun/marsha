@@ -1,6 +1,5 @@
 import { Button, DataGrid, usePagination } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
-import { BoxLoader, Text } from 'lib-components';
+import { Box, BoxLoader, Text } from 'lib-components';
 import { useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 

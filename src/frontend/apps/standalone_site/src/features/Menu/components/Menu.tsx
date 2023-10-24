@@ -1,7 +1,6 @@
-import { Box } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
-import { Text, useResponsive } from 'lib-components';
+import { Box, Text, useResponsive } from 'lib-components';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
@@ -23,8 +22,8 @@ const colorMenu = normalizeColor('blue-active', theme);
 const sizeMenu = '18.75rem';
 
 interface PropsExtended {
-  isMenuOpen: boolean;
-  isDesktop: boolean;
+  $isMenuOpen: boolean;
+  $isDesktop: boolean;
 }
 
 const MenuBox = styled(Box)<PropsExtended>`
@@ -37,9 +36,9 @@ const MenuBox = styled(Box)<PropsExtended>`
     #ffffff 83%,
     #ffffff00 100%
   );
-  ${(props) => (props.isMenuOpen ? `` : `margin-left: -${sizeMenu};`)}
+  ${(props) => (props.$isMenuOpen ? `` : `margin-left: -${sizeMenu};`)}
   ${(props) =>
-    !props.isDesktop
+    !props.$isDesktop
       ? `
         position: fixed;
         background-color: white;
@@ -58,16 +57,17 @@ const Menu = () => {
 
   return (
     <MenuBox
+      pad={{
+        top: '6.75rem',
+        bottom: 'small',
+        left: 'small',
+        right: 'medium',
+      }}
       role="menu"
       width={sizeMenu}
-      pad={{
-        vertical: '0.625rem',
-        left: '0.825rem',
-        right: '3.75rem',
-        top: '6.75rem',
-      }}
-      isMenuOpen={isMenuOpen(isDesktop)}
-      isDesktop={isDesktop}
+      $isMenuOpen={isMenuOpen(isDesktop)}
+      $isDesktop={isDesktop}
+      style={{ flexShrink: 0 }}
     >
       <Box role="group">
         {topRoutes.map((route, index) => (
@@ -76,17 +76,17 @@ const Menu = () => {
       </Box>
       <Box
         height="1px"
-        background={{ color: `${colorMenu}26` }}
-        margin={{ vertical: 'medium', horizontal: 'xxsmall' }}
+        background={`${colorMenu}26`}
+        margin={{ vertical: 'medium', horizontal: 'small' }}
       />
       <Box role="group">
-        <Text weight="bold" className="ml-s">
+        <Text weight="bold" margin={{ bottom: 'xxsmall' }}>
           {intl.formatMessage(messages.menuTypeContentLabel)}
         </Text>
         {contents.map((content, index) => (
           <MenuItem key={`menuItemContent-${index}`} route={content}>
             {content.subRoutes && (
-              <Box margin={{ left: '2.6rem' }}>
+              <Box margin={{ left: 'xmedium' }}>
                 {Object.values(content.subRoutes)
                   .filter((subRoute) => !subRoute.hideSubRoute)
                   .map((subRoutes, subIndex) => (

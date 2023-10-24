@@ -1,7 +1,6 @@
 import { Pagination } from '@openfun/cunningham-react';
 import { UseQueryResult } from '@tanstack/react-query';
-import { Box } from 'grommet';
-import { APIList, ContentCards } from 'lib-components';
+import { APIList, Box, ContentCards } from 'lib-components';
 import { Fragment } from 'react';
 import styled from 'styled-components';
 
@@ -67,7 +66,7 @@ const ContentsWrapper = <ContentType,>({
             <Pagination
               pageSize={contentPerPage}
               page={currentPage}
-              pagesCount={(dataset?.count || 0) / contentPerPage}
+              pagesCount={Math.ceil((dataset?.count || 0) / contentPerPage)}
               onPageChange={(newPage) => {
                 setCurrentPage(newPage);
                 setTimeout(() => {

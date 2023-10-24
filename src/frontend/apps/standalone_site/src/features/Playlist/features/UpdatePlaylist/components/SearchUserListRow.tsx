@@ -1,5 +1,5 @@
-import { Box } from 'grommet';
-import { Text } from 'lib-components';
+import { colorsTokens } from 'lib-common';
+import { Box, Text } from 'lib-components';
 import { PropsWithChildren } from 'react';
 import { IntlShape, defineMessages, useIntl } from 'react-intl';
 
@@ -42,13 +42,11 @@ export const SearchUserListRow = ({
     <Box
       direction="row"
       fill
-      background={{
-        color: '#f2f7fd',
-      }}
+      background={colorsTokens['primary-100']}
       pad="small"
       round="xsmall"
       align="center"
-      justify="between"
+      justify="space-between"
       gap="small"
     >
       <Text truncate title={userLabel} style={{ flex: 1 }}>

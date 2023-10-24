@@ -1,19 +1,12 @@
-import { Box, BoxExtendedProps } from 'grommet';
+import { Box, BoxProps } from 'lib-components';
 import { PropsWithChildren } from 'react';
 
 export const WhiteCard = ({
   children,
   ...boxProps
-}: PropsWithChildren<BoxExtendedProps>) => {
+}: PropsWithChildren<BoxProps<'div'>>) => {
   return (
-    <Box
-      background="white"
-      elevation="even"
-      flex
-      round="small"
-      pad="medium"
-      {...boxProps}
-    >
+    <Box background="white" elevation round="small" pad="small" {...boxProps}>
       {children}
     </Box>
   );

@@ -1,7 +1,5 @@
 import { Button, Input } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
-import { Alert } from 'grommet-icons';
-import { Text } from 'lib-components';
+import { Box, BoxError, Text } from 'lib-components';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -76,15 +74,9 @@ export const PasswordResetForm = () => {
         }
       }}
     >
-      <Box
-        direction="row"
-        align="center"
-        justify="center"
-        margin={{ vertical: 'medium' }}
-        gap="small"
-      >
-        <Text weight="bold">{intl.formatMessage(messages.explainingText)}</Text>
-      </Box>
+      <Text type="p" weight="bold">
+        {intl.formatMessage(messages.explainingText)}
+      </Text>
       <Input
         aria-label={intl.formatMessage(messages.labelFieldEmail)}
         label={intl.formatMessage(messages.labelFieldEmail)}
@@ -93,19 +85,8 @@ export const PasswordResetForm = () => {
         fullWidth
         required
       />
-      {message && (
-        <Box
-          direction="row"
-          align="center"
-          justify="center"
-          margin={{ vertical: 'medium' }}
-          gap="small"
-        >
-          <Alert size="medium" color="#df8c00" />
-          <Text weight="bold">{message}</Text>
-        </Box>
-      )}
-      <Box flex={false} margin={{ top: 'medium' }}>
+      {message && <BoxError message={message} className="mt-s" />}
+      <Box margin={{ top: 'medium' }}>
         <Button type="submit" fullWidth>
           {intl.formatMessage(messages.labelSubmit)}
         </Button>
