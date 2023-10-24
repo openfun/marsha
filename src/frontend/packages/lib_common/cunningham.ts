@@ -4,6 +4,10 @@ const config = {
   themes: {
     default: {
       theme: {
+        colors: {
+          'primary-100': '#EDF5FA',
+          'primary-150': '#E5EEFA',
+        },
         font: {
           sizes: {
             ml: '0.938rem',
@@ -27,6 +31,26 @@ const config = {
           '0': '0',
           auto: 'auto',
           bx: '2.2rem',
+          sizes: {
+            none: '0',
+            small: '192px',
+            xsmedium: '240px',
+            medium: '384px',
+            xlmedium: '480px',
+            large: '768px',
+            xlarge: '1152px',
+            xxlarge: '1536px',
+            full: '100%',
+          },
+          none: '0',
+          xxsmall: 'var(--c--theme--spacings--st)',
+          xsmall: 'var(--c--theme--spacings--t)',
+          small: 'var(--c--theme--spacings--s)',
+          medium: 'var(--c--theme--spacings--b)',
+          xmedium: 'var(--c--theme--spacings--bx)',
+          large: 'var(--c--theme--spacings--l)',
+          xlarge: 'var(--c--theme--spacings--xl)',
+          full: '100%',
         },
       },
       components: {
