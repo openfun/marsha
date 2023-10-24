@@ -354,6 +354,21 @@ class Base(Configuration):
         }
     )
 
+    STORAGES = {
+        "s3": {
+            "BACKEND": values.Value(
+                "marsha.core.storage.s3.SourceStorage",
+                environ_name="STORAGES_S3_BACKEND",
+            )
+        },
+        "staticfiles": {
+            "BACKEND": values.Value(
+                "marsha.core.static.MarshaCompressedManifestStaticFilesStorage",
+                environ_name="STORAGES_STATICFILES_BACKEND",
+            )
+        },
+    }
+
     # AWS
     AWS_ACCESS_KEY_ID = values.SecretValue()
     AWS_SECRET_ACCESS_KEY = values.SecretValue()
@@ -395,6 +410,9 @@ class Base(Configuration):
         }
     )
     LTI_CONFIG_CONTACT_EMAIL = values.Value()
+
+    # Gladia
+    GLADIA_API_KEY = values.Value(None)
 
     # BBB
     BBB_ENABLED = values.BooleanValue(False)
@@ -856,12 +874,18 @@ class Build(Base):
     BBB_API_SECRET = values.Value("")
     SECRET_KEY = values.Value("DummyKey")
     STORAGES = {
+        # "s3": {
+        #     "BACKEND": values.Value(
+        #         "marsha.core.storage.s3.SourceStorage",
+        #         environ_name="STORAGES_S3_BACKEND",
+        #     )
+        # },
         "staticfiles": {
             "BACKEND": values.Value(
                 "marsha.core.static.MarshaCompressedManifestStaticFilesStorage",
                 environ_name="STORAGES_STATICFILES_BACKEND",
             )
-        }
+        },
     }
 
     STATIC_POSTPROCESS_IGNORE_REGEX = values.Value(
@@ -967,6 +991,16 @@ class Test(Base):
         "default": {"BACKEND": "channels.layers.InMemoryChannelLayer"},
     }
 
+    STORAGES = {
+        "s3": {"BACKEND": "django.core.files.storage.InMemoryStorage"},
+        "default": {
+            "BACKEND": "django.core.files.storage.InMemoryStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+    }
+
     # Development tools (we want to test them in tests)
     INSTALLED_APPS = Base.INSTALLED_APPS + ["marsha.development.apps.DevelopmentConfig"]
 
@@ -983,12 +1017,18 @@ class Production(Base):
     ALLOWED_HOSTS = values.ListValue(None)
 
     STORAGES = {
+        # "s3": {
+        #     "BACKEND": values.Value(
+        #         "marsha.core.storage.s3.SourceStorage",
+        #         environ_name="STORAGES_S3_BACKEND",
+        #     )
+        # },
         "staticfiles": {
             "BACKEND": values.Value(
                 "marsha.core.static.MarshaCompressedManifestStaticFilesStorage",
                 environ_name="STORAGES_STATICFILES_BACKEND",
             )
-        }
+        },
     }
     STATIC_POSTPROCESS_IGNORE_REGEX = values.Value(
         r"^js\/build\/.*[0-9]*\..*\.js(\.map)?$"

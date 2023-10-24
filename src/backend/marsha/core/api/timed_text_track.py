@@ -1,11 +1,15 @@
 """Declare API endpoints for videos with Django RestFramework viewsets."""
+import tempfile
+
 from django.conf import settings
+from django.core.files.storage import storages
 from django.utils import timezone
 
 import django_filters
 from rest_framework import filters, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import MethodNotAllowed
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from marsha.core import defaults, permissions, serializers
@@ -54,8 +58,8 @@ class TimedTextTrackViewSet(
 
     def get_permissions(self):
         """Instantiate and return the list of permissions that this view requires."""
-        if self.action == "metadata":
-            permission_classes = [permissions.UserOrPlaylistIsAuthenticated]
+        if self.action in ["metadata", "transcript_callback"]:
+            permission_classes = [AllowAny]
         elif self.action in ["create", "list"]:
             permission_classes = [
                 permissions.IsTokenInstructor
@@ -132,3 +136,29 @@ class TimedTextTrackViewSet(
         TimedTextTrack.objects.filter(pk=pk).update(upload_state=defaults.PENDING)
 
         return Response(presigned_post)
+
+    @action(methods=["post"], detail=True, url_path="transcript-callback")
+    # pylint: disable=unused-argument
+    def transcript_callback(self, request, pk=None, video_id=None):
+        """Handle callback from Gladia"""
+        s3_storage = storages["s3"]
+
+        print(request.data)
+        timed_text_track = self.get_object()
+        timed_text_track.mode = "st"
+        timed_text_track.extension = "tts"
+        timed_text_track.language = request.data["payload"]["prediction_raw"][
+            "transcription"
+        ][0]["language"]
+        now = timezone.now()
+        stamp = to_timestamp(now)
+        timed_text_track.uploaded_on = now
+        timed_text_track.save()
+
+        with tempfile.NamedTemporaryFile(mode="w+t") as temp_file:
+            content = request.data["payload"]["prediction"]
+            temp_file.write(content)
+            temp_file.flush()
+            s3_storage.save(timed_text_track.get_source_s3_key(), temp_file)
+
+        return Response(status=200)

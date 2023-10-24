@@ -6,6 +6,14 @@ from marsha.core.models import Document, Video
 from marsha.core.utils.s3_utils import create_presigned_post
 from marsha.core.utils.time_utils import to_timestamp
 
+from storages.backends.s3 import S3Storage
+
+
+class SourceStorage(S3Storage):
+    """Source bucket S3 storage"""
+
+    bucket_name = settings.AWS_SOURCE_BUCKET_NAME
+
 
 # pylint: disable=unused-argument
 def initiate_video_upload(request, pk):

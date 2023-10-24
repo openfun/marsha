@@ -1,9 +1,10 @@
-import { FoldableItem, timedTextMode } from 'lib-components';
+import { FoldableItem, Text, timedTextMode } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { LocalizedTimedTextTrackUpload } from '../../LocalizedTimedTextTrackUpload';
 
+import { GenerateTranscript } from './GenerateTranscript';
 import { ToggleSubtitlesAsTranscript } from './ToggleSubtitlesAsTranscript';
 
 const messages = defineMessages({
@@ -38,6 +39,10 @@ export const UploadSubtitles = () => {
       <LocalizedTimedTextTrackUpload
         timedTextModeWidget={timedTextMode.SUBTITLE}
       />
+      <Text type="p" textAlign="center" className="mt-b">
+        Or
+      </Text>
+      <GenerateTranscript />
     </FoldableItem>
   );
 };

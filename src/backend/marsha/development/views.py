@@ -141,4 +141,6 @@ class DevelopmentLTIView(TemplateView):
             generated from applying the data to the template
 
         """
+        print(storages.backends)
+        s3_storage = storages["s3"]
         return self.render_to_response({"content_selected": self.request.POST})

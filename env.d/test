@@ -16,6 +16,7 @@ DJANGO_AWS_MEDIAPACKAGE_HARVEST_JOB_ARN=aws:mediapackage:arn:role
 # AWS
 DJANGO_CLOUDFRONT_DOMAIN=abc.cloudfront.net
 DJANGO_UPDATE_STATE_SHARED_SECRETS=dummy,secret
+DJANGO_STORAGES_S3_BACKEND=django.core.files.storage.InMemoryStorage
 
 # BBB
 DJANGO_BBB_ENABLED=False

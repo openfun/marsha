@@ -29,6 +29,7 @@ from marsha.core.defaults import (
     LIVE_TYPE_CHOICES,
     PENDING,
     RUNNING,
+    STATE_CHOICES,
     STOPPING,
     TRANSCODE_PIPELINE_CHOICES,
 )
@@ -495,6 +496,7 @@ class BaseTrack(UploadableFileMixin, BaseModel):
         choices=lazy(lambda: settings.ALL_LANGUAGES, tuple)(),
         verbose_name=_("language"),
         help_text=_("language of this track"),
+        blank=True,
     )
 
     class Meta:

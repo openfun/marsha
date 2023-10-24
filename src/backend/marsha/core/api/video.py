@@ -10,6 +10,7 @@ from django.db import OperationalError, transaction
 from django.db.models import F, Func, Q, Value
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.module_loading import import_string
 
@@ -30,6 +31,7 @@ from marsha.core.models import (
     LivePairing,
     LiveSession,
     SharedLiveMedia,
+    TimedTextTrack,
     Video,
 )
 from marsha.core.services.video_participants import (
@@ -44,7 +46,7 @@ from marsha.core.services.video_recording import (
     start_recording,
     stop_recording,
 )
-from marsha.core.utils import jitsi_utils
+from marsha.core.utils import jitsi_utils, gladia_utils
 from marsha.core.utils.api_utils import validate_signature
 from marsha.core.utils.medialive_utils import (
     ManifestMissingException,
@@ -197,6 +199,7 @@ class VideoViewSet(
             "stop_recording",
             "stats",
             "jitsi_info",
+            "transcript",
         ]:
             permission_classes = [
                 # With LTI: playlist admin or instructor admin can access
@@ -1138,3 +1141,31 @@ class VideoViewSet(
         )
 
         return Response(jitsi_info)
+
+    @action(methods=["get"], detail=True, url_path="transcript")
+    # pylint: disable=unused-argument
+    def transcript(self, request, pk=None):
+        """Call Gladia api with the highest video url to get the transcript."""
+        video = self.get_object()
+        if not video.is_ready_to_show:
+            return Response({"detail": "not a ready video"}, status=400)
+
+        timed_text_track, _ = TimedTextTrack.objects.get_or_create(
+            video=video,
+            upload_state=defaults.PROCESSING,
+        )
+        video.refresh_from_db()
+        serializer = self.get_serializer(video)
+        high_resolution_url = list(serializer.data.get("urls").get("mp4").values())[-1]
+        callback_url = request.build_absolute_uri(
+            reverse(
+                "timed_text_tracks-transcript-callback",
+                kwargs={
+                    "video_id": video.pk,
+                    "pk": timed_text_track.pk,
+                },
+            )
+        )
+        response = gladia_utils.get_transcript(high_resolution_url, callback_url)
+
+        return Response(response)
