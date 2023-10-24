@@ -1,5 +1,6 @@
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import { render } from 'lib-tests';
+import { createRef } from 'react';
 
 import { Typo } from './';
 
@@ -68,5 +69,29 @@ describe('<Typo />', () => {
 
     expect(screen.getByText('My Link').tagName).toBe('A');
     expect(screen.getByText('My Link')).toHaveAttribute('href', 'my-href');
+  });
+
+  it('can forward the ref', async () => {
+    const originalOffsetHeight = Object.getOwnPropertyDescriptor(
+      HTMLElement.prototype,
+      'offsetHeight',
+    );
+    Object.defineProperty(HTMLElement.prototype, 'offsetHeight', {
+      configurable: true,
+      value: 500,
+    });
+
+    const ref = createRef<HTMLDivElement>();
+    render(<Typo ref={ref}>My Typo</Typo>);
+
+    await waitFor(() => expect(ref.current?.offsetHeight).toBe(500));
+
+    if (originalOffsetHeight) {
+      Object.defineProperty(
+        HTMLElement.prototype,
+        'offsetHeight',
+        originalOffsetHeight,
+      );
+    }
   });
 });
