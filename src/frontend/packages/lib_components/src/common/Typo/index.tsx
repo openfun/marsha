@@ -8,6 +8,19 @@ import {
   forwardRef,
 } from 'react';
 
+import {
+  Height,
+  MarginPadding,
+  Width,
+  stylesHeight,
+  stylesMargin,
+  stylesPad,
+  stylesTruncate,
+  stylesWidth,
+} from './styleBuilder';
+
+export * from './styleBuilder';
+
 /**
  * @description Obtain HTML props from {@link ReactHTML}
  * @param T -ReactHTML[keyof ReactHTML]
@@ -23,11 +36,19 @@ export type ObtainHTMLProps<T extends ReactHTML[keyof ReactHTML]> =
  * @returns TypoPropsOnly
  */
 export interface TypoPropsOnly {
-  textAlign?: CSSProperties['textAlign'];
+  align?: CSSProperties['alignItems'];
+  background?: CSSProperties['background'];
   color?: CSSProperties['color'];
+  fill?: boolean;
   fontSize?: CSSProperties['fontSize'];
+  height?: Height;
+  justify?: CSSProperties['justifyContent'];
+  margin?: MarginPadding;
+  pad?: MarginPadding;
   ref?: Ref<HTMLElement>;
+  textAlign?: CSSProperties['textAlign'];
   truncate?: boolean | number;
+  width?: Width;
 }
 
 /**
@@ -73,13 +94,21 @@ export type TypoProps<
 const TypoRef = forwardRef(
   <T extends keyof ReactHTML = 'div'>(
     {
+      align = 'normal',
+      background,
       children,
       className,
       color,
+      fill,
       fontSize,
+      height,
+      justify = 'normal',
+      margin,
+      pad,
       textAlign,
       truncate,
       type = 'div',
+      width,
       ...props
     }: TypoProps<T>,
     ref: Ref<TypoProps<T>>,
@@ -87,20 +116,37 @@ const TypoRef = forwardRef(
     let moreStyles = {};
     if (truncate) {
       moreStyles = {
-        textOverflow: 'ellipsis',
-        overflow: 'hidden',
-        whiteSpace: 'nowrap',
+        ...moreStyles,
+        ...stylesTruncate(truncate),
       };
+    }
 
-      // truncate with number of lines
-      if (typeof truncate === 'number') {
-        moreStyles = {
-          overflow: 'hidden',
-          WebkitLineClamp: truncate,
-          WebkitBoxOrient: 'vertical',
-          display: '-webkit-box',
-        };
-      }
+    if (pad) {
+      moreStyles = {
+        ...moreStyles,
+        ...stylesPad(pad),
+      };
+    }
+
+    if (margin) {
+      moreStyles = {
+        ...moreStyles,
+        ...stylesMargin(margin),
+      };
+    }
+
+    if (width) {
+      moreStyles = {
+        ...moreStyles,
+        ...stylesWidth(width),
+      };
+    }
+
+    if (height) {
+      moreStyles = {
+        ...moreStyles,
+        ...stylesHeight(height),
+      };
     }
 
     let colorClassname = '';
@@ -109,16 +155,30 @@ const TypoRef = forwardRef(
       colorClassname = ` ${color}`;
     }
 
+    let bgClassname = '';
+    // if color is a classname
+    if (
+      background &&
+      typeof background === 'string' &&
+      background.startsWith('bg-')
+    ) {
+      bgClassname = ` ${background}`;
+    }
+
     return createElement(
       type,
       {
-        className: `typo ${className || ''}${colorClassname}`,
+        className: `typo ${className || ''}${colorClassname}${bgClassname}`,
         ref,
         ...props,
         style: {
-          textAlign,
+          alignItems: align,
+          background: bgClassname ? undefined : background,
           color: colorClassname ? undefined : color,
           fontSize,
+          justifyContent: justify,
+          textAlign,
+          width: fill ? '100%' : undefined,
           ...moreStyles,
           ...props.style,
         },

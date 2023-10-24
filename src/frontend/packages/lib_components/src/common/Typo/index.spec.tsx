@@ -12,6 +12,9 @@ describe('<Typo />', () => {
     expect(typo).toBeInTheDocument();
     expect(typo).toHaveClass('typo');
     expect(typo.tagName).toBe('DIV');
+    expect(typo).toHaveStyle(`
+      justifyContent: normal;
+      alignItems: normal;`);
   });
 
   it('has the classname from the prop', () => {
@@ -50,17 +53,87 @@ describe('<Typo />', () => {
     expect(screen.getByText('My Typo')).toHaveStyle('text-overflow: ellipsis');
   });
 
-  it('has canvas tag', () => {
+  it('has the padding from prop', () => {
+    const { unmount } = render(<Typo pad="10px">My Typo</Typo>);
+    expect(screen.getByText('My Typo')).toHaveStyle('padding: 10px');
+
+    unmount();
+
     render(
-      <Typo type="canvas" height={10}>
-        My Canvas
+      <Typo pad={{ horizontal: '20px', vertical: '5px', bottom: '2px' }}>
+        My Typo
       </Typo>,
     );
 
-    expect(screen.getByText('My Canvas').tagName).toBe('CANVAS');
+    expect(screen.getByText('My Typo')).toHaveStyle(`
+      padding-left: 20px;
+      padding-right: 20px;
+      padding-top: 5px;
+      padding-bottom: 2px;`);
   });
 
-  it('has link tag', () => {
+  it('has the margin from prop', () => {
+    const { unmount } = render(<Typo margin="10px">My Typo</Typo>);
+    expect(screen.getByText('My Typo')).toHaveStyle('margin: 10px');
+
+    unmount();
+
+    render(
+      <Typo margin={{ horizontal: '20px', vertical: '5px', bottom: '2px' }}>
+        My Typo
+      </Typo>,
+    );
+
+    expect(screen.getByText('My Typo')).toHaveStyle(`
+      margin-left: 20px;
+      margin-right: 20px;
+      margin-top: 5px;
+      margin-bottom: 2px;`);
+  });
+
+  it('has the width from prop', () => {
+    const { unmount } = render(<Typo width="10px">My Typo</Typo>);
+    expect(screen.getByText('My Typo')).toHaveStyle('width: 10px');
+
+    unmount();
+
+    render(
+      <Typo width={{ max: '20px', min: '5px', width: '2px' }}>My Typo</Typo>,
+    );
+
+    expect(screen.getByText('My Typo')).toHaveStyle(`
+      max-width: 20px;
+      min-width: 5px;
+      width: 2px;`);
+  });
+
+  it('has the height from prop', () => {
+    const { unmount } = render(<Typo height="10px">My Typo</Typo>);
+    expect(screen.getByText('My Typo')).toHaveStyle('height: 10px');
+
+    unmount();
+
+    render(
+      <Typo height={{ max: '20px', min: '5px', height: '2px' }}>My Typo</Typo>,
+    );
+
+    expect(screen.getByText('My Typo')).toHaveStyle(`
+      max-height: 20px;
+      min-height: 5px;
+      height: 2px;`);
+  });
+
+  it('has del tag with its specific properties', () => {
+    render(
+      <Typo type="del" dateTime="anything">
+        My Del
+      </Typo>,
+    );
+
+    expect(screen.getByText('My Del').tagName).toBe('DEL');
+  });
+
+  it('has a tag with its specific properties', () => {
     render(
       <Typo type="a" href="my-href">
         My Link

@@ -1,5 +1,5 @@
 import { Box, BoxProps } from 'grommet';
-import { Nullable } from 'lib-common';
+import { Nullable, colorsTokens } from 'lib-common';
 import React, {
   ForwardRefExoticComponent,
   RefAttributes,
@@ -48,11 +48,7 @@ const MainLayout = ({
   }, []);
 
   return (
-    <Box
-      background={{ color: 'bg-marsha' }}
-      color="blue-active"
-      height={{ min: '100vh' }}
-    >
+    <Box background={colorsTokens['primary-100']} height={{ min: '100vh' }}>
       <Box direction="row" {...boxProps} height={{ min: '75vh' }}>
         <Header ref={headerBoxRef} />
         {menu}
