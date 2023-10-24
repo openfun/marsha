@@ -1,7 +1,12 @@
 import { Checkbox } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
 import { FormSchedule, InProgress } from 'grommet-icons';
-import { ClassroomLite, ContentCard, StyledLink, Text } from 'lib-components';
+import {
+  Box,
+  ClassroomLite,
+  ContentCard,
+  StyledLink,
+  Text,
+} from 'lib-components';
 import { Fragment, useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 
@@ -45,11 +50,11 @@ const ClassRoom = ({ classroom }: { classroom: ClassroomLite }) => {
         onClick={() => selectItem(classroom.id, isClassroomSelected)}
         header={
           <Box
-            width="100%"
+            fill
             height="150px"
             align="center"
             justify="center"
-            background="radial-gradient(ellipse at center, #8682bc 0%,#6460c3 100%);"
+            background="radial-gradient(ellipse at center, #8682bc 0%,#6460c3 100%)"
             style={{ position: 'relative' }}
           >
             <Box
@@ -78,9 +83,7 @@ const ClassRoom = ({ classroom }: { classroom: ClassroomLite }) => {
           <Fragment>
             {classroom.starting_at && (
               <Box gap="small" align="center" direction="row">
-                <Box>
-                  <FormSchedule size="medium" color="blue-active" />
-                </Box>
+                <FormSchedule size="medium" color="blue-active" />
                 <Text size="tiny" weight="bold">
                   {localDate(classroom.starting_at, intl.locale)}
                 </Text>
@@ -88,18 +91,14 @@ const ClassRoom = ({ classroom }: { classroom: ClassroomLite }) => {
             )}
             {classroom.estimated_duration && (
               <Box gap="small" align="center" direction="row">
-                <Box>
-                  <InProgress color="blue-active" style={{ height: '20px' }} />
-                </Box>
+                <InProgress color="blue-active" style={{ height: '20px' }} />
                 <Text size="tiny" weight="bold">
                   {classroom.estimated_duration}
                 </Text>
               </Box>
             )}
             <Box gap="small" align="center" direction="row">
-              <Box>
-                <VueListIcon width={20} height={20} color="blue-active" />
-              </Box>
+              <VueListIcon width={20} height={20} color="blue-active" />
               <Text size="tiny" weight="bold">
                 {classroom.playlist.title}
               </Text>

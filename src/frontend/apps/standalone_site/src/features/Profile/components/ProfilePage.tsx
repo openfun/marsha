@@ -1,14 +1,8 @@
-import { Box } from 'grommet';
-import { Nullable } from 'lib-common';
-import {
-  AnonymousUser,
-  Heading,
-  Text,
-  useCurrentUser,
-  useResponsive,
-} from 'lib-components';
+import { Input } from '@openfun/cunningham-react';
+import { AnonymousUser, Box, Heading, useCurrentUser } from 'lib-components';
 import { defineMessages, useIntl } from 'react-intl';
 
+import { WhiteCard } from 'components/Cards';
 import { Contents } from 'features/Contents';
 
 const messages = defineMessages({
@@ -17,31 +11,30 @@ const messages = defineMessages({
     description: "Profile page's title.",
     id: 'feature.Profile.ProfilePage.header',
   },
+  noName: {
+    defaultMessage: 'No name provided',
+    description: "Profile page's when no name is provided.",
+    id: 'feature.Profile.ProfilePage.noName',
+  },
+  noEmail: {
+    defaultMessage: 'No email provided',
+    description: "Profile page's when no email is provided.",
+    id: 'feature.Profile.ProfilePage.noEmail',
+  },
+  inputLabelName: {
+    defaultMessage: 'Your name',
+    description: "Profile page's input label name.",
+    id: 'feature.Profile.ProfilePage.inputLabelName',
+  },
+  inputLabelEmail: {
+    defaultMessage: 'Your Email',
+    description: "Profile page's input label email.",
+    id: 'feature.Profile.ProfilePage.inputLabelEmail',
+  },
 });
-
-interface FieldProps {
-  value: Nullable<string>;
-  defaultMessage: string;
-}
-
-const Field = ({ value, defaultMessage }: FieldProps) => {
-  return (
-    <Box
-      flex
-      pad={{ vertical: 'xsmall', horizontal: 'medium' }}
-      background="#edf5fa"
-      round="8px"
-    >
-      <Text color={value === null ? 'clr-greyscale-400' : undefined}>
-        {value || defaultMessage}
-      </Text>
-    </Box>
-  );
-};
 
 export const ProfilePage = () => {
   const { currentUser } = useCurrentUser();
-  const { breakpoint } = useResponsive();
   const intl = useIntl();
 
   const userWithData =
@@ -50,34 +43,22 @@ export const ProfilePage = () => {
   return (
     <Box>
       <Heading level={1}>{intl.formatMessage(messages.header)}</Heading>
-      <Box
-        background="#daeeff"
-        margin={{ vertical: 'small' }}
-        pad="medium"
-        round="8px"
-      >
-        <Box
-          background="white"
-          direction="column"
-          pad="medium"
-          round="8px"
-          elevation="even"
-        >
-          <Box
-            direction={breakpoint === 'large' ? 'row' : 'column'}
-            gap="medium"
-          >
-            <Field
-              value={userWithData?.full_name || null}
-              defaultMessage="No name provided"
-            />
-            <Field
-              value={userWithData?.email || null}
-              defaultMessage="No email provided"
-            />
-          </Box>
-        </Box>
-      </Box>
+      <WhiteCard gap="small" direction="row">
+        <Input
+          className="border-none"
+          value={userWithData?.full_name || intl.formatMessage(messages.noName)}
+          readOnly
+          icon={<span className="material-icons">person</span>}
+          label={intl.formatMessage(messages.inputLabelName)}
+        />
+        <Input
+          className="border-none"
+          value={userWithData?.email || intl.formatMessage(messages.noEmail)}
+          readOnly
+          icon={<span className="material-icons">mail</span>}
+          label={intl.formatMessage(messages.inputLabelEmail)}
+        />
+      </WhiteCard>
       <Contents />
     </Box>
   );

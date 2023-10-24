@@ -1,7 +1,12 @@
-import { Box } from 'grommet';
 import { Facebook, Github, Linkedin, Mail, Twitter } from 'grommet-icons';
 import { Breakpoints } from 'lib-common';
-import { StyledLink, Text, useResponsive, useSiteConfig } from 'lib-components';
+import {
+  Box,
+  StyledLink,
+  Text,
+  useResponsive,
+  useSiteConfig,
+} from 'lib-components';
 import React from 'react';
 
 import { usePagesApi } from 'features/PagesApi';
@@ -30,27 +35,26 @@ const Footer = () => {
   const defaultFooterCopyright = '© 2023 Marsha Education';
 
   return (
-    <Box margin={{ top: 'auto' }} color="white">
+    <Box type="footer" margin={{ top: 'auto' }} color="white" fill>
       <WaveIcon color={theme.color} height="4vw" style={{ zIndex: 2 }} />
       <Box
-        background={{ color: theme.color }}
-        pad={{ horizontal: 'medium' }}
-        margin={{ top: '-1px' }}
+        background={theme.color}
+        pad={{
+          horizontal: 'small',
+        }}
+        margin={{
+          top: '-1px',
+        }}
       >
         <Box
           direction="row"
           align="center"
-          flex
           margin={{
-            top: isSmallerBreakpoint(breakpoint, Breakpoints.xsmedium)
+            vertical: isSmallerBreakpoint(breakpoint, Breakpoints.xsmedium)
               ? 'medium'
               : 'small',
-            bottom: 'small',
           }}
-          wrap
-          style={{
-            gap: '0.5rem 1.5rem',
-          }}
+          gap="0.5rem 1.5rem"
         >
           {pagesApi.map((page) => (
             <StyledLink
@@ -70,7 +74,7 @@ const Footer = () => {
         />
         <Box
           margin={{ bottom: 'small' }}
-          justify="between"
+          justify="space-between"
           direction="row"
           align="center"
         >
@@ -85,40 +89,40 @@ const Footer = () => {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  <Twitter />
+                  <Twitter color="white" />
                 </a>
                 <a
                   href="https://www.facebook.com/france.universite.numerique/"
                   target="_blank"
                   rel="noreferrer"
                 >
-                  <Facebook />
+                  <Facebook color="white" />
                 </a>
                 <a
                   href="https://www.linkedin.com/school/franceuniversitenumerique/"
                   target="_blank"
                   rel="noreferrer"
                 >
-                  <Linkedin />
+                  <Linkedin color="white" />
                 </a>
                 <a
                   href="https://github.com/openfun"
                   target="_blank"
                   rel="noreferrer"
                 >
-                  <Github />
+                  <Github color="white" />
                 </a>
                 <a
                   href="mailto:communication@fun-mooc.fr"
                   target="_blank"
                   rel="noreferrer"
                 >
-                  <Mail />
+                  <Mail color="white" />
                 </a>
               </Box>
             </React.Fragment>
           ) : (
-            <Text size="small">
+            <Text size="small" color="white">
               {siteConfig.footer_copyright || defaultFooterCopyright}
             </Text>
           )}

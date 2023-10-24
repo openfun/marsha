@@ -1,7 +1,7 @@
-import { Box, Image } from 'grommet';
+import { Image } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { Nullable, theme } from 'lib-common';
-import { useSiteConfig } from 'lib-components';
+import { Box, useSiteConfig } from 'lib-components';
 import { forwardRef } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -63,7 +63,7 @@ export const HeaderLight = forwardRef<
       ref={ref}
       role="menubar"
       pad="small"
-      background={{ color: bgcolor || 'bg-marsha' }}
+      background={bgcolor || 'bg-marsha'}
     >
       {Logo}
     </Box>

@@ -1,7 +1,6 @@
 import { Button } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
 import { FormCheckmark, FormClose } from 'grommet-icons';
-import { BoxLoader, PortabilityRequest } from 'lib-components';
+import { Box, BoxLoader, PortabilityRequest } from 'lib-components';
 import { Fragment, useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';

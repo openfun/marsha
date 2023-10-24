@@ -1,5 +1,5 @@
-import { Box } from 'grommet';
-import { useResponsive, useSiteConfig } from 'lib-components';
+import { colorsTokens } from 'lib-common';
+import { Box, useResponsive, useSiteConfig } from 'lib-components';
 import React, { Fragment, PropsWithChildren, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -47,12 +47,7 @@ const ResponsiveBox = ({ children }: PropsWithChildren) => {
     return (
       <Box height="87vh" background={backgroundImage('30%', '80%')}>
         <HeaderLight bgcolor="transparent" color="white" />
-        <WhiteCard
-          width="90%"
-          margin="auto"
-          flex={false}
-          pad={{ vertical: 'xlarge' }}
-        >
+        <WhiteCard width="90%" margin="auto" pad={{ vertical: 'large' }}>
           {children}
         </WhiteCard>
       </Box>
@@ -76,9 +71,9 @@ const ResponsiveBox = ({ children }: PropsWithChildren) => {
           />
         ) : (
           <Box
-            width="large"
+            width="80%"
             margin="auto"
-            pad={{ vertical: 'small', horizontal: 'medium' }}
+            pad={{ vertical: 'small' }}
             align="center"
           >
             <div
@@ -104,7 +99,7 @@ export const BaseAuthenticationPage = ({
     <Box
       direction={isSmallerXsmedium ? 'column' : 'row'}
       height="100vh"
-      background="bg-lightgrey2"
+      background={colorsTokens['secondary-100']}
     >
       <ResponsiveBox>
         <Box style={{ flex: '1' }} align="center" justify="center">

@@ -1,7 +1,12 @@
 import { Checkbox } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
-import { ContentCard, Video as IVideo, StyledLink, Text } from 'lib-components';
-import { Fragment, useEffect, useState } from 'react';
+import {
+  Box,
+  ContentCard,
+  Video as IVideo,
+  StyledLink,
+  Text,
+} from 'lib-components';
+import { useEffect, useState } from 'react';
 
 import { ReactComponent as VideoIcon } from 'assets/svg/iko_next.svg';
 import { ReactComponent as VueListIcon } from 'assets/svg/iko_vuelistesvg.svg';
@@ -70,16 +75,12 @@ const Video = ({ video }: { video: IVideo }) => {
           </Box>
         }
         footer={
-          <Fragment>
-            <Box gap="small" align="center" direction="row">
-              <Box>
-                <VueListIcon width={20} height={20} color="blue-active" />
-              </Box>
-              <Text size="tiny" weight="bold">
-                {video.playlist.title}
-              </Text>
-            </Box>
-          </Fragment>
+          <Box gap="small" align="center" direction="row">
+            <VueListIcon width={20} height={20} color="blue-active" />
+            <Text size="tiny" weight="bold">
+              {video.playlist.title}
+            </Text>
+          </Box>
         }
         title={video.title || ''}
       >

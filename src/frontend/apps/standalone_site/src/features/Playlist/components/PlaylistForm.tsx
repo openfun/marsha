@@ -1,7 +1,8 @@
 import { Button, Input, Select } from '@openfun/cunningham-react';
-import { Box, ThemeContext } from 'grommet';
+import { ThemeContext } from 'grommet';
 import { Nullable } from 'lib-common';
 import {
+  Box,
   BoxLoader,
   FetchResponseError,
   Form,

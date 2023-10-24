@@ -1,5 +1,4 @@
 import { Button } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
 import { Modal } from 'lib-components';
 import { Fragment, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -43,16 +42,14 @@ export const AddUserAccessButton = ({
         />
       </Modal>
 
-      <Box margin={{ left: 'auto', vertical: 'small' }}>
-        <Button
-          aria-label={intl.formatMessage(messages.buttonLabel)}
-          onClick={() => {
-            setIsModalOpen(true);
-          }}
-        >
-          {intl.formatMessage(messages.buttonLabel)}
-        </Button>
-      </Box>
+      <Button
+        aria-label={intl.formatMessage(messages.buttonLabel)}
+        onClick={() => {
+          setIsModalOpen(true);
+        }}
+      >
+        {intl.formatMessage(messages.buttonLabel)}
+      </Button>
     </Fragment>
   );
 };

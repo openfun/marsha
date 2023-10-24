@@ -1,7 +1,6 @@
-import { Box } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
-import { theme } from 'lib-common';
-import { BoxLoader, Heading } from 'lib-components';
+import { sizesTokens, theme } from 'lib-common';
+import { Box, BoxLoader, Heading } from 'lib-components';
 import ReactMarkdown from 'react-markdown';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
@@ -31,11 +30,16 @@ const PagesApi = () => {
         <BoxLoader boxProps={{ margin: { vertical: 'large' } }} />
       ) : (
         <BoxMarkdown
-          width="large"
+          width={{
+            max: sizesTokens.large,
+          }}
           background="#fff"
-          margin="auto"
-          pad={{ vertical: 'small', horizontal: 'medium' }}
           round="small"
+          margin="auto"
+          pad={{
+            horizontal: 'medium',
+            vertical: 'small',
+          }}
         >
           <Heading className="mt-sl">{data?.name || ''}</Heading>
           <ReactMarkdown>{data?.content || ''}</ReactMarkdown>

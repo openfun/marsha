@@ -1,8 +1,8 @@
-import { Box } from 'grommet';
 import { DashboardClassroom } from 'lib-classroom';
 import {
   AppConfig,
   AppConfigProvider,
+  Box,
   CurrentResourceContextProvider,
   ResourceContext,
   isDecodedJwtLTI,
@@ -29,11 +29,11 @@ const appConfig = {
 } as AppConfig;
 
 interface DashboardClassroomStyledProps {
-  isSmallerBreakpoint: (
+  $isSmallerBreakpoint: (
     breakpointSmaller: string,
     breakpointBigger: string,
   ) => boolean;
-  breakpoint: string;
+  $breakpoint: string;
 }
 
 const DashboardClassroomStyled = styled(Box)<DashboardClassroomStyledProps>`
@@ -50,8 +50,8 @@ const DashboardClassroomStyled = styled(Box)<DashboardClassroomStyledProps>`
     padding: 1rem;
     line-height: 1.6rem;
   }
-  ${({ isSmallerBreakpoint, breakpoint }) =>
-    isSmallerBreakpoint(breakpoint, 'smedium') &&
+  ${({ $isSmallerBreakpoint, $breakpoint }) =>
+    $isSmallerBreakpoint($breakpoint, 'smedium') &&
     `
       & .DashboardClassroomLayout > div {
         display: flex;
@@ -62,8 +62,8 @@ const DashboardClassroomStyled = styled(Box)<DashboardClassroomStyledProps>`
         margin: auto;
       }
     `}
-  ${({ isSmallerBreakpoint, breakpoint }) =>
-    isSmallerBreakpoint(breakpoint, 'xsmall') &&
+  ${({ $isSmallerBreakpoint, $breakpoint }) =>
+    $isSmallerBreakpoint($breakpoint, 'xsmall') &&
     `
       & .DashboardClassroomInfos span {
         font-size: 12px;
@@ -130,8 +130,8 @@ const ClassRoomDashboard = ({
 
   return (
     <DashboardClassroomStyled
-      isSmallerBreakpoint={isSmallerBreakpoint}
-      breakpoint={breakpoint}
+      $isSmallerBreakpoint={isSmallerBreakpoint}
+      $breakpoint={breakpoint}
     >
       <DashboardClassroom classroomId={classroomId} />
     </DashboardClassroomStyled>

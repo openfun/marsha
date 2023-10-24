@@ -1,5 +1,4 @@
-import { Box } from 'grommet';
-import { BoxLoader, Heading, report } from 'lib-components';
+import { Box, BoxLoader, Heading, report } from 'lib-components';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -66,12 +65,12 @@ export const UpdatePlaylistPage = ({ playlistId }: UpdatePlaylistPageProps) => {
 
   return (
     <Box gap="medium">
-      <WhiteCard height={{ min: 'auto' }}>
+      <WhiteCard height={{ min: 'auto' }} pad="medium">
         <Heading level={2} style={{ marginTop: '0' }}>
           {intl.formatMessage(messages.mainInfoTitle)}
         </Heading>
         <Box
-          width={{ max: '100%', width: 'large' }}
+          width={{ max: 'full', width: 'large' }}
           margin={{ horizontal: 'auto' }}
         >
           <PlaylistForm
@@ -107,14 +106,21 @@ export const UpdatePlaylistPage = ({ playlistId }: UpdatePlaylistPageProps) => {
         </Box>
       </WhiteCard>
 
-      <WhiteCard height={{ min: 'auto' }}>
-        <Heading level={2} style={{ marginTop: '0' }}>
-          {intl.formatMessage(messages.accessTitle)}
-        </Heading>
-        <AddUserAccessButton
-          playlistId={playlistId}
-          excludedUsers={playlist.users}
-        />
+      <WhiteCard height={{ min: 'auto' }} pad="medium">
+        <Box
+          justify="space-between"
+          direction="row"
+          align="center"
+          margin={{ bottom: 'small' }}
+        >
+          <Heading level={2} style={{ margin: '0' }}>
+            {intl.formatMessage(messages.accessTitle)}
+          </Heading>
+          <AddUserAccessButton
+            playlistId={playlistId}
+            excludedUsers={playlist.users}
+          />
+        </Box>
         <PlaylistUserList playlistId={playlistId} />
       </WhiteCard>
       <Contents playlistId={playlistId} />

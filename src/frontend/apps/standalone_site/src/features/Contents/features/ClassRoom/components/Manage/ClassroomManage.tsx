@@ -1,7 +1,7 @@
 import { Button } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
 import { useDeleteClassrooms } from 'lib-classroom';
 import {
+  Box,
   Heading,
   Modal,
   ModalButton,

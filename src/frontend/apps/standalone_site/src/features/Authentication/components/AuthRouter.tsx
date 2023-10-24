@@ -1,4 +1,4 @@
-import { Box } from 'grommet';
+import { Box } from 'lib-components';
 import { Fragment } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
@@ -25,7 +25,7 @@ const AuthRouter = () => {
           <Route path="*" element={<Login />} />
         </Routes>
       </BaseAuthenticationPage>
-      <Box style={{ position: 'absolute', bottom: '0' }} width="100%">
+      <Box style={{ position: 'absolute', bottom: '0' }} fill>
         <Footer />
       </Box>
     </Fragment>

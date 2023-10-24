@@ -1,7 +1,6 @@
-import { Box } from 'grommet';
 import { Filter } from 'grommet-icons';
 import { Breakpoints } from 'lib-common';
-import { Badge, Playlist, Text, useResponsive } from 'lib-components';
+import { Badge, Box, Playlist, Text, useResponsive } from 'lib-components';
 import { Fragment, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
@@ -28,28 +27,23 @@ const messages = defineMessages({
 });
 
 interface ButtonFilterProps {
-  active: boolean;
+  $active: boolean;
 }
 
 const ButtonFilter = styled(Box)<ButtonFilterProps>`
   box-shadow:
     inset 0px 0px 0px 0px rgba(2, 117, 180, 0.3),
     rgba(2, 117, 180, 0.3) 2px 2px 3px 0px;
-  border-radius: 25px;
-  border: none;
-  display: flex;
-  position: relative;
-  padding: 7px 13px;
   transition: all 0.3s ease-in-out;
-  background: #fff;
+  cursor: pointer;
   & > span {
     align-items: center;
     display: flex;
     gap: 10px;
     justify-content: center;
   }
-  ${({ active }) =>
-    active
+  ${({ $active }) =>
+    $active
       ? `
     &, &:focus:not(:focus-visible), &[tabindex] {
       box-shadow: inset 2px 2px 3px 0px rgba(2, 117, 180, 0.3),
@@ -112,39 +106,39 @@ const ContentsFilter = ({ setFilter, filter }: ContentsFilterProps) => {
 
   return (
     <Fragment>
-      <Box
+      <ButtonFilter
+        role="button"
+        onClick={() => setShowFilter(!showFilter)}
+        $active={showFilter}
         width="fit-content"
-        margin={{
+        pad={{
+          vertical: 'xsmall',
           horizontal: 'small',
-          top: '1rem',
-          bottom: showFilter ? 'small' : '0px',
         }}
-        style={{
-          transition: 'all 0.3s ease-in-out',
+        margin={{
+          bottom: showFilter ? 'small' : 'none',
+          horizontal: 'small',
+          top: 'small',
         }}
+        background="#fff"
+        round="xlarge"
       >
-        <ButtonFilter
-          role="button"
-          onClick={() => setShowFilter(!showFilter)}
-          active={showFilter}
-        >
-          <Text>
-            <Filter color="blue-active" size="20px" />
-            {intl.formatMessage(messages.labelFilter)}
-          </Text>
-          {badgeCounter > 0 && (
-            <Badge
-              value={badgeCounter.toString()}
-              position={{
-                top: '-8px',
-                right: '-8px',
-              }}
-            />
-          )}
-        </ButtonFilter>
-      </Box>
+        <Text>
+          <Filter color="blue-active" size="20px" />
+          {intl.formatMessage(messages.labelFilter)}
+        </Text>
+        {badgeCounter > 0 && (
+          <Badge
+            value={badgeCounter.toString()}
+            position={{
+              top: '-8px',
+              right: '-8px',
+            }}
+          />
+        )}
+      </ButtonFilter>
       <WhiteCard
-        pad={showFilter ? 'medium' : '0px'}
+        pad={showFilter ? 'small' : 'none'}
         height={{ max: showFilter ? '300px' : '0px' }}
         style={{
           transform: showFilter ? 'scaleY(1)' : 'scaleY(0)',
@@ -156,6 +150,7 @@ const ContentsFilter = ({ setFilter, filter }: ContentsFilterProps) => {
         margin={{
           bottom: 'medium',
           horizontal: 'small',
+          top: 'none',
         }}
       >
         {selectPlaylist}

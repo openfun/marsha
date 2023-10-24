@@ -8,12 +8,10 @@ const ContentsHeader = ({ children }: PropsWithChildren<unknown>) => {
 
   return (
     <WhiteCard
-      flex="shrink"
       direction={breakpoint === 'xxsmall' ? 'column' : 'row'}
       gap={breakpoint === 'xxsmall' ? 'small' : 'none'}
-      justify="between"
+      justify="space-between"
       align="center"
-      height={{ min: '5rem' }}
     >
       {children}
     </WhiteCard>

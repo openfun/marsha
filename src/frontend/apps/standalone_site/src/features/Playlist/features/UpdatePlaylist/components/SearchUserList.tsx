@@ -1,7 +1,6 @@
 import { Button } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
 import { Nullable } from 'lib-common';
-import { BoxError, BoxLoader, Text } from 'lib-components';
+import { Box, BoxError, BoxLoader, Text } from 'lib-components';
 import { Dispatch, SetStateAction } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -58,7 +57,7 @@ export const SearchUserList = ({
   return (
     <Box margin={{ top: 'small' }}>
       {users && users.count > 0 && (
-        <Box gap="small">
+        <Box gap="xsmall">
           {users.results.map((user, index) => (
             <Button
               key={`user_${index}`}

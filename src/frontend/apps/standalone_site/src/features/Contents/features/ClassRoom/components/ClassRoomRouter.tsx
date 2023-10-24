@@ -1,4 +1,4 @@
-import { Box } from 'grommet';
+import { Box } from 'lib-components';
 import { Fragment } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 

@@ -4,8 +4,8 @@ import {
   SortModel,
   usePagination,
 } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
 import {
+  Box,
   BoxError,
   BoxLoader,
   Heading,
@@ -211,12 +211,10 @@ export const PortabilityRequests = ({
 
   return (
     <Box pad="medium">
-      <WhiteCard direction="column">
-        <Box flex="shrink" direction="row">
-          <Box flex>
-            <Heading level={2}>{intl.formatMessage(messages.title)}</Heading>
-          </Box>
-        </Box>
+      <WhiteCard direction="column" pad="medium">
+        <Heading level={2} margin={{ top: 'none' }}>
+          {intl.formatMessage(messages.title)}
+        </Heading>
         {isLoading && <BoxLoader />}
         {isError && (
           <BoxError message={intl.formatMessage(messages.error)}>
