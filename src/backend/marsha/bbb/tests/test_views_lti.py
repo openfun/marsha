@@ -46,7 +46,6 @@ class ClassroomLTIViewTestCase(TestCase):
         # Force URLs reload to use BBB_ENABLED
         reload_urlconf()
 
-    @responses.activate
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
     def test_views_lti_classroom_student(self, mock_get_consumer_site, mock_verify):
@@ -68,26 +67,6 @@ class ClassroomLTIViewTestCase(TestCase):
         }
 
         mock_get_consumer_site.return_value = passport.consumer_site
-
-        responses.add(
-            responses.GET,
-            "https://10.7.7.1/bigbluebutton/api/getMeetingInfo",
-            match=[
-                responses.matchers.query_param_matcher(
-                    {
-                        "meetingID": "7a567d67-29d3-4547-96f3-035733a4dfaa",
-                        "checksum": "7f13332ec54e7df0a02d07904746cb5b8b330498",
-                    }
-                )
-            ],
-            body="""
-            <response>
-                <returncode>SUCCESS</returncode>
-                <running>true</running>
-            </response>
-            """,
-            status=200,
-        )
 
         response = self.client.post(f"/lti/classrooms/{classroom.id}", data)
         self.assertEqual(response.status_code, 200)
@@ -132,7 +111,6 @@ class ClassroomLTIViewTestCase(TestCase):
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
 
-    @responses.activate
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
     def test_views_lti_classroom_instructor_no_classroom(
@@ -149,18 +127,6 @@ class ClassroomLTIViewTestCase(TestCase):
             "lis_person_sourcedid": "jane_doe",
         }
         mock_get_consumer_site.return_value = passport.consumer_site
-
-        responses.add(
-            responses.GET,
-            "https://10.7.7.1/bigbluebutton/api/getMeetingInfo",
-            body="""
-            <response>
-                <returncode>SUCCESS</returncode>
-                <running>true</running>
-            </response>
-            """,
-            status=200,
-        )
 
         response = self.client.post(f"/lti/classrooms/{uuid.uuid4()}", data)
         self.assertEqual(response.status_code, 200)
@@ -195,7 +161,6 @@ class ClassroomLTIViewTestCase(TestCase):
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
 
-    @responses.activate
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
     def test_views_lti_classroom_instructor_no_classroom_generic(
@@ -212,18 +177,6 @@ class ClassroomLTIViewTestCase(TestCase):
             "lis_person_sourcedid": "jane_doe",
         }
         mock_get_consumer_site.return_value = passport.consumer_site
-
-        responses.add(
-            responses.GET,
-            "https://10.7.7.1/bigbluebutton/api/getMeetingInfo",
-            body="""
-            <response>
-                <returncode>SUCCESS</returncode>
-                <running>true</running>
-            </response>
-            """,
-            status=200,
-        )
 
         response = self.client.post(
             "/lti/classrooms/",
@@ -281,7 +234,6 @@ class ClassroomLTIViewTestCase(TestCase):
         classroom2 = Classroom.objects.get(pk=context.get("resource").get("id"))
         self.assertEqual(classroom1, classroom2)
 
-    @responses.activate
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
     def test_views_lti_classroom_instructor_same_playlist(
@@ -360,7 +312,7 @@ class ClassroomLTIViewTestCase(TestCase):
         self.assertEqual(
             {
                 "id": str(classroom.id),
-                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "infos": None,
                 "lti_id": str(classroom.lti_id),
                 "meeting_id": str(classroom.meeting_id),
                 "playlist": {
@@ -409,36 +361,6 @@ class ClassroomLTIViewTestCase(TestCase):
         )
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
-        self.assertEqual(mock_verify.call_count, 1)
-
-    @responses.activate
-    @mock.patch.object(LTI, "verify")
-    @mock.patch.object(LTI, "get_consumer_site")
-    def test_views_lti_classroom_connection_error(
-        self, mock_get_consumer_site, mock_verify
-    ):
-        """Validate the response returned for an instructor request when there is no file."""
-        passport = ConsumerSiteLTIPassportFactory()
-        data = {
-            "resource_link_id": "example.com-123",
-            "context_id": "course-v1:ufr+mathematics+00001",
-            "roles": "instructor",
-            "oauth_consumer_key": passport.oauth_consumer_key,
-            "user_id": "56255f3807599c377bf0e5bf072359fd",
-            "lis_person_sourcedid": "jane_doe",
-        }
-        mock_get_consumer_site.return_value = passport.consumer_site
-        # mock_create_request.side_effect = ConnectionError
-
-        responses.add(
-            responses.GET,
-            "https://10.7.7.1/bigbluebutton/api/getMeetingInfo",
-            body=ConnectionError(),
-            status=200,
-        )
-
-        with self.assertRaises(ConnectionError):
-            self.client.post(f"/lti/classrooms/{uuid.uuid4()}", data)
         self.assertEqual(mock_verify.call_count, 1)
 
     def test_views_lti_classroom_get_request(
@@ -700,7 +622,7 @@ class MeetingLTIViewTestCase(TestCase):
         self.assertEqual(
             {
                 "id": str(classroom.id),
-                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "infos": None,
                 "lti_id": str(classroom.lti_id),
                 "meeting_id": str(classroom.meeting_id),
                 "playlist": {
@@ -749,36 +671,6 @@ class MeetingLTIViewTestCase(TestCase):
         )
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
-        self.assertEqual(mock_verify.call_count, 1)
-
-    @responses.activate
-    @mock.patch.object(LTI, "verify")
-    @mock.patch.object(LTI, "get_consumer_site")
-    def test_views_lti_classroom_connection_error(
-        self, mock_get_consumer_site, mock_verify
-    ):
-        """Validate the response returned for an instructor request when there is no file."""
-        passport = ConsumerSiteLTIPassportFactory()
-        data = {
-            "resource_link_id": "example.com-123",
-            "context_id": "course-v1:ufr+mathematics+00001",
-            "roles": "instructor",
-            "oauth_consumer_key": passport.oauth_consumer_key,
-            "user_id": "56255f3807599c377bf0e5bf072359fd",
-            "lis_person_sourcedid": "jane_doe",
-        }
-        mock_get_consumer_site.return_value = passport.consumer_site
-        # mock_create_request.side_effect = ConnectionError
-
-        responses.add(
-            responses.GET,
-            "https://10.7.7.1/bigbluebutton/api/getMeetingInfo",
-            body=ConnectionError(),
-            status=200,
-        )
-
-        with self.assertRaises(ConnectionError):
-            self.client.post(f"/lti/meetings/{uuid.uuid4()}", data)
         self.assertEqual(mock_verify.call_count, 1)
 
     def test_views_lti_classroom_get_request(

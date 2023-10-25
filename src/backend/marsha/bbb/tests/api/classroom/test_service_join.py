@@ -4,7 +4,7 @@ from unittest import mock
 
 from django.test import TestCase, override_settings
 
-from marsha.bbb import api, serializers
+from marsha.bbb import api
 from marsha.bbb.factories import ClassroomFactory
 from marsha.core import factories as core_factories
 from marsha.core.factories import (
@@ -41,10 +41,7 @@ class ClassroomServiceJoinAPITest(TestCase):
         reload_urlconf()
 
     @mock.patch.object(api, "join")
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_bbb_join_classroom_anonymous(
-        self, mock_get_meeting_infos, mock_join_request
-    ):
+    def test_api_bbb_join_classroom_anonymous(self, mock_join_request):
         """An anonymous should not be able to join a classroom."""
         classroom = ClassroomFactory()
 
@@ -52,7 +49,6 @@ class ClassroomServiceJoinAPITest(TestCase):
             f"/api/classrooms/{classroom.id}/join/",
         )
         self.assertEqual(response.status_code, 401)
-        mock_get_meeting_infos.assert_not_called()
         mock_join_request.assert_not_called()
 
     @mock.patch.object(api, "join")

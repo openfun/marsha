@@ -95,6 +95,13 @@ class Classroom(BaseModel, RetentionDateObjectMixin):
     started = models.BooleanField(default=False)
     ended = models.BooleanField(default=False)
 
+    infos = models.JSONField(
+        verbose_name=_("BBB meeting infos"),
+        help_text=_("BBB meeting infos"),
+        null=True,
+        blank=True,
+    )
+
     starting_at = models.DateTimeField(
         blank=True,
         verbose_name=_("starting at date and time"),

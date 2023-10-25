@@ -7,7 +7,6 @@ import zoneinfo
 from django.test import TestCase, override_settings
 from django.utils import timezone
 
-from marsha.bbb import serializers
 from marsha.bbb.factories import ClassroomFactory
 from marsha.bbb.models import Classroom
 from marsha.core import factories as core_factories
@@ -94,15 +93,9 @@ class ClassroomUpdateAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 403)
 
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_classroom_update_instructor(self, mock_get_meeting_infos):
+    def test_api_classroom_update_instructor(self):
         """An instructor should be able to update a classroom."""
         classroom = ClassroomFactory()
-
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
 
         jwt_token = InstructorOrAdminLtiTokenFactory(playlist=classroom.playlist)
         data = {"title": "new title", "welcome_text": "Hello"}
@@ -119,15 +112,9 @@ class ClassroomUpdateAPITest(TestCase):
         self.assertEqual("new title", classroom.title)
         self.assertEqual("Hello", classroom.welcome_text)
 
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_classroom_update_instructor_scheduling(self, mock_get_meeting_infos):
+    def test_api_classroom_update_instructor_scheduling(self):
         """Update a classroom to be scheduled."""
         classroom = ClassroomFactory()
-
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
 
         jwt_token = InstructorOrAdminLtiTokenFactory(playlist=classroom.playlist)
 
@@ -154,7 +141,7 @@ class ClassroomUpdateAPITest(TestCase):
         self.assertDictEqual(
             {
                 "id": str(classroom.id),
-                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "infos": None,
                 "lti_id": str(classroom.lti_id),
                 "title": classroom.title,
                 "description": classroom.description,
@@ -192,17 +179,9 @@ class ClassroomUpdateAPITest(TestCase):
         self.assertEqual(starting_at, classroom.starting_at)
         self.assertEqual(estimated_duration, classroom.estimated_duration)
 
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_classroom_update_instructor_scheduling_past_date(
-        self, mock_get_meeting_infos
-    ):
+    def test_api_classroom_update_instructor_scheduling_past_date(self):
         """Scheduling a classroom in the pash is not allowed."""
         classroom = ClassroomFactory()
-
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
 
         jwt_token = InstructorOrAdminLtiTokenFactory(playlist=classroom.playlist)
 
@@ -239,17 +218,9 @@ class ClassroomUpdateAPITest(TestCase):
             classroom.estimated_duration, updated_classroom.estimated_duration
         )
 
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_classroom_update_put_instructor_scheduling(
-        self, mock_get_meeting_infos
-    ):
+    def test_api_classroom_update_put_instructor_scheduling(self):
         """Update a classroom to be scheduled."""
         classroom = ClassroomFactory()
-
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
 
         jwt_token = InstructorOrAdminLtiTokenFactory(playlist=classroom.playlist)
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
@@ -278,7 +249,7 @@ class ClassroomUpdateAPITest(TestCase):
         self.assertDictEqual(
             {
                 "id": str(classroom.id),
-                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "infos": None,
                 "lti_id": str(classroom.lti_id),
                 "title": classroom.title,
                 "description": classroom.description,
@@ -313,15 +284,9 @@ class ClassroomUpdateAPITest(TestCase):
         self.assertEqual(starting_at, classroom.starting_at)
         self.assertEqual(estimated_duration, classroom.estimated_duration)
 
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_classroom_update_starting_at_ended(self, mock_get_meeting_infos):
+    def test_api_classroom_update_starting_at_ended(self):
         """Updating starting at of a classroom sets ended to false."""
         classroom = ClassroomFactory(ended=True)
-
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
 
         jwt_token = InstructorOrAdminLtiTokenFactory(playlist=classroom.playlist)
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
@@ -340,17 +305,9 @@ class ClassroomUpdateAPITest(TestCase):
         classroom.refresh_from_db()
         self.assertFalse(classroom.ended)
 
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_classroom_update_estimated_duration_ended(
-        self, mock_get_meeting_infos
-    ):
+    def test_api_classroom_update_estimated_duration_ended(self):
         """Updating estimated duration of a classroom sets ended to false."""
         classroom = ClassroomFactory(ended=True)
-
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
 
         jwt_token = InstructorOrAdminLtiTokenFactory(playlist=classroom.playlist)
 
@@ -367,16 +324,11 @@ class ClassroomUpdateAPITest(TestCase):
         classroom.refresh_from_db()
         self.assertFalse(classroom.ended)
 
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_classroom_update_user_access_token(self, mock_get_meeting_infos):
+    def test_api_classroom_update_user_access_token(self):
         """A user with UserAccessToken should not be able to update a classroom."""
         organization_access = OrganizationAccessFactory()
         playlist = PlaylistFactory(organization=organization_access.organization)
         classroom = ClassroomFactory(playlist=playlist)
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
 
         jwt_token = UserAccessTokenFactory(user=organization_access.user)
         data = {"title": "new title", "welcome_text": "Hello"}
@@ -389,18 +341,11 @@ class ClassroomUpdateAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 403)
 
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_classroom_update_user_access_token_organization_admin(
-        self, mock_get_meeting_infos
-    ):
+    def test_api_classroom_update_user_access_token_organization_admin(self):
         """An organization administrator should be able to update a classroom."""
         organization_access = OrganizationAccessFactory(role=ADMINISTRATOR)
         playlist = PlaylistFactory(organization=organization_access.organization)
         classroom = ClassroomFactory(playlist=playlist)
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
 
         jwt_token = UserAccessTokenFactory(user=organization_access.user)
         data = {"title": "new title", "welcome_text": "Hello"}
@@ -417,17 +362,10 @@ class ClassroomUpdateAPITest(TestCase):
         self.assertEqual("new title", classroom.title)
         self.assertEqual("Hello", classroom.welcome_text)
 
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_classroom_update_user_access_token_playlist_admin(
-        self, mock_get_meeting_infos
-    ):
+    def test_api_classroom_update_user_access_token_playlist_admin(self):
         """A playlist administrator should be able to update a classroom."""
         playlist_access = PlaylistAccessFactory(role=ADMINISTRATOR)
         classroom = ClassroomFactory(playlist=playlist_access.playlist)
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
 
         jwt_token = UserAccessTokenFactory(user=playlist_access.user)
         data = {"title": "new title", "welcome_text": "Hello"}
