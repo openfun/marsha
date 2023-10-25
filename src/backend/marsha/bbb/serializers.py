@@ -20,12 +20,7 @@ from marsha.bbb.models import (
     ClassroomRecording,
     ClassroomSession,
 )
-from marsha.bbb.utils.bbb_utils import (
-    ApiMeetingException,
-    get_meeting_infos,
-    get_recording_url,
-    get_url as get_document_url,
-)
+from marsha.bbb.utils.bbb_utils import get_recording_url, get_url as get_document_url
 from marsha.core.defaults import CLASSROOM_RECORDINGS_KEY_CACHE, VOD_CONVERT
 from marsha.core.serializers import (
     BaseInitiateUploadSerializer,
@@ -165,18 +160,11 @@ class ClassroomSerializer(serializers.ModelSerializer):
 
     playlist = PlaylistLiteSerializer(read_only=True)
     sessions = serializers.SerializerMethodField()
-    infos = serializers.SerializerMethodField()
+    infos = serializers.JSONField(read_only=True)
     public_token = serializers.SerializerMethodField()
     instructor_token = serializers.SerializerMethodField()
     recordings = serializers.SerializerMethodField()
     vod_conversion_enabled = serializers.SerializerMethodField()
-
-    def get_infos(self, obj):
-        """Meeting infos from BBB server."""
-        try:
-            return get_meeting_infos(classroom=obj)
-        except ApiMeetingException:
-            return None
 
     def get_public_token(self, obj):
         """Get the invite token for the classroom."""

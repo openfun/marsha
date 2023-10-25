@@ -1,7 +1,6 @@
 """Tests for the classroom retrieve API."""
 from datetime import datetime, timedelta
 import json
-from unittest import mock
 import zoneinfo
 
 from django.core.cache import cache
@@ -10,7 +9,6 @@ from django.utils import timezone
 
 import responses
 
-from marsha.bbb import serializers
 from marsha.bbb.factories import (
     ClassroomFactory,
     ClassroomRecordingFactory,
@@ -61,14 +59,9 @@ class ClassroomRetrieveAPITest(TestCase):
 
         cache.clear()
 
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_classroom_fetch_student(self, mock_get_meeting_infos):
+    def test_api_classroom_fetch_student(self):
         """A student should be allowed to fetch a classroom."""
         classroom = ClassroomFactory()
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
 
         jwt_token = StudentLtiTokenFactory(playlist=classroom.playlist)
 
@@ -81,7 +74,7 @@ class ClassroomRetrieveAPITest(TestCase):
         self.assertDictEqual(
             {
                 "id": str(classroom.id),
-                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "infos": None,
                 "lti_id": str(classroom.lti_id),
                 "title": classroom.title,
                 "description": classroom.description,
@@ -112,8 +105,7 @@ class ClassroomRetrieveAPITest(TestCase):
             content,
         )
 
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_classroom_fetch_student_with_recordings(self, mock_get_meeting_infos):
+    def test_api_classroom_fetch_student_with_recordings(self):
         """Existing recordings should not be retrieved by students."""
         classroom = ClassroomFactory()
         ClassroomRecordingFactory(
@@ -124,10 +116,6 @@ class ClassroomRetrieveAPITest(TestCase):
             classroom=classroom,
             started_at="2019-08-21T11:00:02Z",
         )
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
 
         jwt_token = StudentLtiTokenFactory(playlist=classroom.playlist)
 
@@ -141,7 +129,7 @@ class ClassroomRetrieveAPITest(TestCase):
         self.assertDictEqual(
             {
                 "id": str(classroom.id),
-                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "infos": None,
                 "lti_id": str(classroom.lti_id),
                 "title": classroom.title,
                 "description": classroom.description,
@@ -172,8 +160,7 @@ class ClassroomRetrieveAPITest(TestCase):
             content,
         )
 
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_classroom_fetch_student_with_sessions(self, mock_get_meeting_infos):
+    def test_api_classroom_fetch_student_with_sessions(self):
         """Existing sessions should not be retrieved by students."""
         classroom = ClassroomFactory()
         ClassroomSessionFactory(
@@ -181,10 +168,6 @@ class ClassroomRetrieveAPITest(TestCase):
             cookie=json.dumps({"SESSION_ID": "123"}),
             bbb_learning_analytics_url="https://bbb.learning-analytics.info",
         )
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
 
         jwt_token = StudentLtiTokenFactory(playlist=classroom.playlist)
 
@@ -197,7 +180,7 @@ class ClassroomRetrieveAPITest(TestCase):
         self.assertDictEqual(
             {
                 "id": str(classroom.id),
-                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "infos": None,
                 "lti_id": str(classroom.lti_id),
                 "title": classroom.title,
                 "description": classroom.description,
@@ -243,8 +226,7 @@ class ClassroomRetrieveAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 403)
 
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_classroom_fetch_student_scheduled(self, mock_get_meeting_infos):
+    def test_api_classroom_fetch_student_scheduled(self):
         """A student should be allowed to fetch a scheduled classroom."""
         now = datetime(2018, 8, 8, tzinfo=zoneinfo.ZoneInfo("Europe/Paris"))
 
@@ -255,10 +237,6 @@ class ClassroomRetrieveAPITest(TestCase):
         classroom = ClassroomFactory(
             starting_at=starting_at, estimated_duration=estimated_duration
         )
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
 
         jwt_token = StudentLtiTokenFactory(playlist=classroom.playlist)
 
@@ -271,7 +249,7 @@ class ClassroomRetrieveAPITest(TestCase):
         self.assertDictEqual(
             {
                 "id": str(classroom.id),
-                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "infos": None,
                 "lti_id": str(classroom.lti_id),
                 "title": classroom.title,
                 "description": classroom.description,
@@ -302,14 +280,9 @@ class ClassroomRetrieveAPITest(TestCase):
             content,
         )
 
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_classroom_fetch_instructor(self, mock_get_meeting_infos):
+    def test_api_classroom_fetch_instructor(self):
         """An instructor should be able to fetch a classroom."""
         classroom = ClassroomFactory()
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
 
         jwt_token = InstructorOrAdminLtiTokenFactory(playlist=classroom.playlist)
 
@@ -322,7 +295,7 @@ class ClassroomRetrieveAPITest(TestCase):
         self.assertDictEqual(
             {
                 "id": str(classroom.id),
-                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "infos": None,
                 "lti_id": str(classroom.lti_id),
                 "title": classroom.title,
                 "description": classroom.description,
@@ -353,16 +326,11 @@ class ClassroomRetrieveAPITest(TestCase):
             response.json(),
         )
 
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_classroom_fetch_user_access_token(self, mock_get_meeting_infos):
+    def test_api_classroom_fetch_user_access_token(self):
         """A user with UserAccessToken should not be able to fetch a classroom."""
         organization_access = OrganizationAccessFactory()
         playlist = PlaylistFactory(organization=organization_access.organization)
         classroom = ClassroomFactory(playlist=playlist)
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
 
         jwt_token = UserAccessTokenFactory(user=organization_access.user)
 
@@ -372,18 +340,11 @@ class ClassroomRetrieveAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 403)
 
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_classroom_fetch_user_access_token_organization_admin(
-        self, mock_get_meeting_infos
-    ):
+    def test_api_classroom_fetch_user_access_token_organization_admin(self):
         """An organization administrator should be able to fetch a classroom."""
         organization_access = OrganizationAccessFactory(role=ADMINISTRATOR)
         playlist = PlaylistFactory(organization=organization_access.organization)
         classroom = ClassroomFactory(playlist=playlist)
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
 
         jwt_token = UserAccessTokenFactory(user=organization_access.user)
 
@@ -397,7 +358,7 @@ class ClassroomRetrieveAPITest(TestCase):
         self.assertDictEqual(
             {
                 "id": str(classroom.id),
-                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "infos": None,
                 "lti_id": str(classroom.lti_id),
                 "title": classroom.title,
                 "description": classroom.description,
@@ -428,17 +389,10 @@ class ClassroomRetrieveAPITest(TestCase):
             content,
         )
 
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_classroom_fetch_user_access_token_playlist_admin(
-        self, mock_get_meeting_infos
-    ):
+    def test_api_classroom_fetch_user_access_token_playlist_admin(self):
         """A playlist administrator should be able to fetch a classroom."""
         playlist_access = PlaylistAccessFactory(role=ADMINISTRATOR)
         classroom = ClassroomFactory(playlist=playlist_access.playlist)
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
 
         jwt_token = UserAccessTokenFactory(user=playlist_access.user)
 
@@ -452,7 +406,7 @@ class ClassroomRetrieveAPITest(TestCase):
         self.assertDictEqual(
             {
                 "id": str(classroom.id),
-                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "infos": None,
                 "lti_id": str(classroom.lti_id),
                 "title": classroom.title,
                 "description": classroom.description,
@@ -483,17 +437,10 @@ class ClassroomRetrieveAPITest(TestCase):
             content,
         )
 
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_classroom_fetch_user_access_token_playlist_instructor(
-        self, mock_get_meeting_infos
-    ):
+    def test_api_classroom_fetch_user_access_token_playlist_instructor(self):
         """A playlist instructor should be able to fetch a classroom."""
         playlist_access = PlaylistAccessFactory(role=INSTRUCTOR)
         classroom = ClassroomFactory(playlist=playlist_access.playlist)
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
 
         jwt_token = UserAccessTokenFactory(user=playlist_access.user)
 
@@ -507,7 +454,7 @@ class ClassroomRetrieveAPITest(TestCase):
         self.assertDictEqual(
             {
                 "id": str(classroom.id),
-                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "infos": None,
                 "lti_id": str(classroom.lti_id),
                 "title": classroom.title,
                 "description": classroom.description,
@@ -539,8 +486,7 @@ class ClassroomRetrieveAPITest(TestCase):
         )
 
     @responses.activate
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_classroom_fetch_with_recordings(self, mock_get_meeting_infos):
+    def test_api_classroom_fetch_with_recordings(self):
         """Existing recordings should be retrieved."""
         classroom = ClassroomFactory()
         classroom_recording_1 = ClassroomRecordingFactory(
@@ -553,10 +499,6 @@ class ClassroomRetrieveAPITest(TestCase):
             classroom=classroom,
             started_at="2019-08-21T11:00:02Z",
         )
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
 
         responses.add(
             responses.GET,
@@ -674,7 +616,7 @@ class ClassroomRetrieveAPITest(TestCase):
         self.assertDictEqual(
             {
                 "id": str(classroom.id),
-                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "infos": None,
                 "lti_id": str(classroom.lti_id),
                 "title": classroom.title,
                 "description": classroom.description,
@@ -729,10 +671,7 @@ class ClassroomRetrieveAPITest(TestCase):
         )
 
     @responses.activate
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_classroom_fetch_with_recordings_existing_lti_user_id(
-        self, mock_get_meeting_infos
-    ):
+    def test_api_classroom_fetch_with_recordings_existing_lti_user_id(self):
         """Existing recordings should be retrieved and set in cache when the LTI user id exists."""
         classroom = ClassroomFactory()
         classroom_recording_1 = ClassroomRecordingFactory(
@@ -745,10 +684,6 @@ class ClassroomRetrieveAPITest(TestCase):
             classroom=classroom,
             started_at="2019-08-21T11:00:02Z",
         )
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
             playlist=classroom.playlist,
@@ -869,7 +804,7 @@ class ClassroomRetrieveAPITest(TestCase):
         self.assertDictEqual(
             {
                 "id": str(classroom.id),
-                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "infos": None,
                 "lti_id": str(classroom.lti_id),
                 "title": classroom.title,
                 "description": classroom.description,
@@ -937,10 +872,7 @@ class ClassroomRetrieveAPITest(TestCase):
         )
 
     @responses.activate
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_classroom_fetch_with_recordings_playlist_instructor(
-        self, mock_get_meeting_infos
-    ):
+    def test_api_classroom_fetch_with_recordings_playlist_instructor(self):
         """Existing recordings should be retrieved and set in cache when the LTI user id exists."""
         playlist_access = PlaylistAccessFactory(role=INSTRUCTOR)
         classroom = ClassroomFactory(playlist=playlist_access.playlist)
@@ -955,10 +887,6 @@ class ClassroomRetrieveAPITest(TestCase):
             classroom=classroom,
             started_at="2019-08-21T11:00:02Z",
         )
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
 
         jwt_token = UserAccessTokenFactory(user=playlist_access.user)
 
@@ -1076,7 +1004,7 @@ class ClassroomRetrieveAPITest(TestCase):
         self.assertDictEqual(
             {
                 "id": str(classroom.id),
-                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "infos": None,
                 "lti_id": str(classroom.lti_id),
                 "title": classroom.title,
                 "description": classroom.description,
@@ -1155,8 +1083,7 @@ class ClassroomRetrieveAPITest(TestCase):
             ),
         )
 
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_classroom_fetch_with_sessions(self, mock_get_meeting_infos):
+    def test_api_classroom_fetch_with_sessions(self):
         """An instructor should be able to fetch classroom sessions."""
         entered_at_1 = datetime(2021, 10, 29, 13, 32, 27, tzinfo=timezone.utc)
         leaved_at_1 = datetime(2021, 10, 29, 13, 42, 27, tzinfo=timezone.utc)
@@ -1352,10 +1279,6 @@ class ClassroomRetrieveAPITest(TestCase):
                 }
             ),
         )
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
 
         jwt_token = InstructorOrAdminLtiTokenFactory(playlist=classroom.playlist)
 
@@ -1368,7 +1291,7 @@ class ClassroomRetrieveAPITest(TestCase):
         self.assertDictEqual(
             {
                 "id": str(classroom.id),
-                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "infos": None,
                 "lti_id": str(classroom.lti_id),
                 "title": classroom.title,
                 "description": classroom.description,
@@ -1456,18 +1379,11 @@ class ClassroomRetrieveAPITest(TestCase):
             response.json(),
         )
 
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_classroom_fetch_from_LTI_inactive_conversion(
-        self, mock_get_meeting_infos
-    ):
+    def test_api_classroom_fetch_from_LTI_inactive_conversion(self):
         """When consumer site has inactive VOD conversion, it should appear from LTI."""
         classroom = ClassroomFactory(
             playlist__consumer_site__inactive_features=["vod_convert"],
         )
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
 
         jwt_token = InstructorOrAdminLtiTokenFactory(playlist=classroom.playlist)
 
@@ -1479,10 +1395,7 @@ class ClassroomRetrieveAPITest(TestCase):
 
         self.assertFalse(response.json()["vod_conversion_enabled"])
 
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_classroom_fetch_from_standalone_site_inactive_conversion(
-        self, mock_get_meeting_infos
-    ):
+    def test_api_classroom_fetch_from_standalone_site_inactive_conversion(self):
         """When organization has inactive VOD conversion, it should appear from standalone site."""
         organization_access = OrganizationAccessFactory(
             role=ADMINISTRATOR,
@@ -1494,10 +1407,6 @@ class ClassroomRetrieveAPITest(TestCase):
             lti_id=None,
         )
         classroom = ClassroomFactory(playlist=playlist)
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
 
         jwt_token = UserAccessTokenFactory(user=organization_access.user)
 
@@ -1509,14 +1418,9 @@ class ClassroomRetrieveAPITest(TestCase):
 
         self.assertFalse(response.json()["vod_conversion_enabled"])
 
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_classroom_fetch_public_invite(self, mock_get_meeting_infos):
+    def test_api_classroom_fetch_public_invite(self):
         """A public invited user should be allowed to fetch a classroom."""
         classroom = ClassroomFactory()
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
 
         jwt_token = create_classroom_stable_invite_jwt(classroom)
 
@@ -1529,7 +1433,7 @@ class ClassroomRetrieveAPITest(TestCase):
         self.assertDictEqual(
             {
                 "id": str(classroom.id),
-                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "infos": None,
                 "lti_id": str(classroom.lti_id),
                 "title": classroom.title,
                 "description": classroom.description,
@@ -1560,14 +1464,9 @@ class ClassroomRetrieveAPITest(TestCase):
             content,
         )
 
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_classroom_fetch_moderator_invite(self, mock_get_meeting_infos):
+    def test_api_classroom_fetch_moderator_invite(self):
         """A moderator invited user should be allowed to fetch a classroom."""
         classroom = ClassroomFactory()
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
 
         jwt_token = create_classroom_stable_invite_jwt(
             classroom,
@@ -1587,7 +1486,7 @@ class ClassroomRetrieveAPITest(TestCase):
         self.assertDictEqual(
             {
                 "id": str(classroom.id),
-                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "infos": None,
                 "lti_id": str(classroom.lti_id),
                 "title": classroom.title,
                 "description": classroom.description,

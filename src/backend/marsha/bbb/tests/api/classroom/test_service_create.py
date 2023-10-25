@@ -3,7 +3,7 @@ from unittest import mock
 
 from django.test import TestCase, override_settings
 
-from marsha.bbb import api, serializers
+from marsha.bbb import api
 from marsha.bbb.factories import ClassroomFactory
 from marsha.bbb.utils.bbb_utils import ApiMeetingException
 from marsha.core import factories as core_factories
@@ -77,13 +77,9 @@ class ClassroomServiceCreateAPITest(TestCase):
         mock_create_request.assert_not_called()
 
     @mock.patch.object(api, "create")
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_bbb_create_new_classroom(
-        self, mock_get_meeting_infos, mock_create_request
-    ):
+    def test_api_bbb_create_new_classroom(self, mock_create_request):
         """Starting a classroom with parameters should store them."""
         classroom = ClassroomFactory()
-        mock_get_meeting_infos.return_value = {"returncode": "SUCCESS"}
         mock_create_request.return_value = {"returncode": "SUCCESS"}
 
         jwt_token = InstructorOrAdminLtiTokenFactory(playlist=classroom.playlist)
@@ -111,17 +107,13 @@ class ClassroomServiceCreateAPITest(TestCase):
         )
 
     @mock.patch.object(api, "create")
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_bbb_create_existing_classroom(
-        self, mock_get_meeting_infos, mock_create_request
-    ):
+    def test_api_bbb_create_existing_classroom(self, mock_create_request):
         """No new classroom should be started if a BBB classroom exists for the same id."""
         classroom = ClassroomFactory(
             meeting_id="21e6634f-ab6f-4c77-a665-4229c61b479a",
             title="Classroom 1",
         )
 
-        mock_get_meeting_infos.return_value = {"returncode": "SUCCESS"}
         mock_create_request.side_effect = ApiMeetingException(
             {"message": "A classroom already exists with that classroom ID."}
         )
@@ -146,18 +138,11 @@ class ClassroomServiceCreateAPITest(TestCase):
         )
 
     @mock.patch.object(api, "create")
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_bbb_create_user_access_token(
-        self, mock_get_meeting_infos, mock_create_request
-    ):
+    def test_api_bbb_create_user_access_token(self, mock_create_request):
         """A user with UserAccessToken should not be able to start a classroom."""
         organization_access = OrganizationAccessFactory()
         playlist = PlaylistFactory(organization=organization_access.organization)
         classroom = ClassroomFactory(playlist=playlist)
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
 
         jwt_token = UserAccessTokenFactory(user=organization_access.user)
 
@@ -169,15 +154,13 @@ class ClassroomServiceCreateAPITest(TestCase):
         mock_create_request.assert_not_called()
 
     @mock.patch.object(api, "create")
-    @mock.patch.object(serializers, "get_meeting_infos")
     def test_api_bbb_create_user_access_token_organization_admin(
-        self, mock_get_meeting_infos, mock_create_request
+        self, mock_create_request
     ):
         """An organization administrator should be able to start a classroom."""
         organization_access = OrganizationAccessFactory(role=ADMINISTRATOR)
         playlist = PlaylistFactory(organization=organization_access.organization)
         classroom = ClassroomFactory(playlist=playlist)
-        mock_get_meeting_infos.return_value = {"returncode": "SUCCESS"}
         mock_create_request.return_value = {"returncode": "SUCCESS"}
 
         jwt_token = UserAccessTokenFactory(user=organization_access.user)
@@ -200,14 +183,10 @@ class ClassroomServiceCreateAPITest(TestCase):
         )
 
     @mock.patch.object(api, "create")
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_bbb_create_user_access_token_playlist_admin(
-        self, mock_get_meeting_infos, mock_create_request
-    ):
+    def test_api_bbb_create_user_access_token_playlist_admin(self, mock_create_request):
         """A playlist administrator should be able to start a classroom."""
         playlist_access = PlaylistAccessFactory(role=ADMINISTRATOR)
         classroom = ClassroomFactory(playlist=playlist_access.playlist)
-        mock_get_meeting_infos.return_value = {"returncode": "SUCCESS"}
         mock_create_request.return_value = {"returncode": "SUCCESS"}
 
         jwt_token = UserAccessTokenFactory(user=playlist_access.user)

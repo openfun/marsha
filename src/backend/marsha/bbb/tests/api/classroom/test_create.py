@@ -1,9 +1,6 @@
 """Tests for the classroom API."""
-from unittest import mock
-
 from django.test import TestCase, override_settings
 
-from marsha.bbb import serializers
 from marsha.bbb.factories import ClassroomFactory
 from marsha.bbb.models import Classroom
 from marsha.core import factories as core_factories
@@ -59,15 +56,9 @@ class ClassroomCreateAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 403)
 
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_classroom_create_instructor(self, mock_get_meeting_infos):
+    def test_api_classroom_create_instructor(self):
         """An instructor should be able to create a classroom."""
         playlist = core_factories.PlaylistFactory()
-
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
 
         jwt_token = InstructorOrAdminLtiTokenFactory(playlist=playlist)
 
@@ -93,7 +84,7 @@ class ClassroomCreateAPITest(TestCase):
                 "ended": False,
                 "estimated_duration": None,
                 "id": str(classroom.id),
-                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "infos": None,
                 "lti_id": "classroom_one",
                 "meeting_id": str(classroom.meeting_id),
                 "playlist": {
@@ -120,14 +111,9 @@ class ClassroomCreateAPITest(TestCase):
             },
         )
 
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_classroom_create_user_access_token(self, mock_get_meeting_infos):
+    def test_api_classroom_create_user_access_token(self):
         """A user with UserAccessToken should not be able to create a classroom."""
         organization_access = OrganizationAccessFactory()
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
 
         jwt_token = UserAccessTokenFactory(user=organization_access.user)
 
@@ -137,17 +123,10 @@ class ClassroomCreateAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 403)
 
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_classroom_create_user_access_token_organization_admin(
-        self, mock_get_meeting_infos
-    ):
+    def test_api_classroom_create_user_access_token_organization_admin(self):
         """An organization administrator should be able to create a classroom."""
         organization_access = OrganizationAccessFactory(role=ADMINISTRATOR)
         playlist = PlaylistFactory(organization=organization_access.organization)
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
 
         jwt_token = UserAccessTokenFactory(user=organization_access.user)
 
@@ -173,7 +152,7 @@ class ClassroomCreateAPITest(TestCase):
                 "ended": False,
                 "estimated_duration": None,
                 "id": str(classroom.id),
-                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "infos": None,
                 "lti_id": "classroom_one",
                 "meeting_id": str(classroom.meeting_id),
                 "playlist": {
@@ -219,7 +198,7 @@ class ClassroomCreateAPITest(TestCase):
                 "ended": False,
                 "estimated_duration": None,
                 "id": str(classroom2.id),
-                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "infos": None,
                 "lti_id": "classroom_two",
                 "meeting_id": str(classroom2.meeting_id),
                 "playlist": {
@@ -246,16 +225,9 @@ class ClassroomCreateAPITest(TestCase):
             },
         )
 
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_classroom_create_user_access_token_playlist_admin(
-        self, mock_get_meeting_infos
-    ):
+    def test_api_classroom_create_user_access_token_playlist_admin(self):
         """A playlist administrator should be able to create a classroom."""
         playlist_access = PlaylistAccessFactory(role=ADMINISTRATOR)
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
 
         jwt_token = UserAccessTokenFactory(user=playlist_access.user)
 
@@ -281,7 +253,7 @@ class ClassroomCreateAPITest(TestCase):
                 "ended": False,
                 "estimated_duration": None,
                 "id": str(classroom.id),
-                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "infos": None,
                 "lti_id": "classroom_one",
                 "meeting_id": str(classroom.meeting_id),
                 "playlist": {
@@ -327,7 +299,7 @@ class ClassroomCreateAPITest(TestCase):
                 "ended": False,
                 "estimated_duration": None,
                 "id": str(classroom2.id),
-                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "infos": None,
                 "lti_id": "classroom_two",
                 "meeting_id": str(classroom2.meeting_id),
                 "playlist": {
@@ -354,16 +326,9 @@ class ClassroomCreateAPITest(TestCase):
             },
         )
 
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_classroom_create_user_access_token_playlist_instructor(
-        self, mock_get_meeting_infos
-    ):
+    def test_api_classroom_create_user_access_token_playlist_instructor(self):
         """A playlist instructor should be able to create a classroom."""
         playlist_access = PlaylistAccessFactory(role=INSTRUCTOR)
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
 
         jwt_token = UserAccessTokenFactory(user=playlist_access.user)
 
@@ -389,7 +354,7 @@ class ClassroomCreateAPITest(TestCase):
                 "ended": False,
                 "estimated_duration": None,
                 "id": str(classroom.id),
-                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "infos": None,
                 "lti_id": "classroom_one",
                 "meeting_id": str(classroom.meeting_id),
                 "playlist": {
@@ -435,7 +400,7 @@ class ClassroomCreateAPITest(TestCase):
                 "ended": False,
                 "estimated_duration": None,
                 "id": str(classroom2.id),
-                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "infos": None,
                 "lti_id": "classroom_two",
                 "meeting_id": str(classroom2.meeting_id),
                 "playlist": {

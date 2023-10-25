@@ -145,6 +145,7 @@ class ClassroomServiceTestCase(TestCase):
         )
         classroom.refresh_from_db()
         self.assertEqual(classroom.started, True)
+        self.assertDictEqual(classroom.infos, api_response)
 
     @responses.activate
     def test_infos_one_attendee(self):

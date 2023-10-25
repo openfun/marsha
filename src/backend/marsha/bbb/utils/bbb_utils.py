@@ -304,12 +304,15 @@ def get_meeting_infos(classroom: Classroom):
             else:
                 api_response["attendees"] = [attendees]
 
-        classroom.save(update_fields=["started"])
+        classroom.infos = api_response
+        classroom.save(update_fields=["started", "infos"])
         return api_response
     except MeetingNotFoundException as exception:
         end_session(classroom)
         classroom.started = False
-        classroom.save(update_fields=["started"])
+        classroom.ended = True
+        classroom.infos = None
+        classroom.save(update_fields=["ended", "started", "infos"])
         raise exception
 
 
