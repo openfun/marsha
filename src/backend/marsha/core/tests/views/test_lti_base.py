@@ -201,7 +201,6 @@ class BaseLTIViewForPortabilityTestCase(TestCase):
 
         initial_playlist_count = Playlist.objects.all().count()
         lti_data = self._get_lti_data(resource, lti_role)
-        # breakpoint()
         response = self._client_post_on_resource_lti_view(resource, lti_data)
         context = self._get_context_from_response(response)
 

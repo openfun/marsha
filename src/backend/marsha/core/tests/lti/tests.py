@@ -4,14 +4,12 @@ import uuid
 
 from django.test import RequestFactory, TestCase, override_settings
 
-import oauth2
-from pylti.common import LTIException, LTIOAuthServer
-
+from marsha.core import lti as lti_module
 from marsha.core.factories import (
     ConsumerSiteLTIPassportFactory,
     PlaylistLTIPassportFactory,
 )
-from marsha.core.lti import LTI
+from marsha.core.lti import LTI, LTIException
 from marsha.core.lti.utils import get_or_create_resource
 from marsha.core.models import Video
 from marsha.core.tests.testing_utils import generate_passport_and_signed_lti_parameters
@@ -107,7 +105,7 @@ class LTITestCase(TestCase):
             lti = LTI(request, uuid.uuid4())
             self.assertFalse(lti.is_instructor)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_passport_unknown(self, mock_verify):
         """Launch request for an unknown passport.
 
@@ -126,7 +124,7 @@ class LTITestCase(TestCase):
         self.assertFalse(mock_verify.called)
 
     @override_settings(ALLOWED_HOSTS=["testserver"])
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_passport_mismatched_referer(self, *_):
         """Launch request with a referer that differs from the consumer_site should fail."""
         ConsumerSiteLTIPassportFactory(
@@ -151,7 +149,7 @@ class LTITestCase(TestCase):
             "Host domain (not-example.com) does not match registered passport (example.com).",
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_passport_subdomain(self, *_):
         """Launch request with a referer that is a subdomain of consumer_site should succeed."""
         ConsumerSiteLTIPassportFactory(
@@ -173,7 +171,7 @@ class LTITestCase(TestCase):
         lti.verify()
 
     @override_settings(ALLOWED_HOSTS=[".example.com", "testserver"])
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_passport_allowed_host(self, *_):
         """Launch request with a referer matching ALLOWED_HOSTS should succeed.
 
@@ -198,7 +196,7 @@ class LTITestCase(TestCase):
         # We just have to make sure verification does not raise an exception
         lti.verify()
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_passport_consumer_site(self, mock_verify):
         """Authenticating an LTI launch request with a passport related to a consumer site."""
         passport = ConsumerSiteLTIPassportFactory(
@@ -218,7 +216,7 @@ class LTITestCase(TestCase):
         self.assertEqual(lti.get_consumer_site(), passport.consumer_site)
         self.assertEqual(mock_verify.call_count, 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_passport_consumer_site_video_show_download_default_False(
         self, mock_verify
     ):
@@ -246,7 +244,7 @@ class LTITestCase(TestCase):
         video = get_or_create_resource(Video, lti)
         self.assertFalse(video.show_download)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_passport_consumer_site_video_show_download_default_True(
         self, mock_verify
     ):
@@ -274,7 +272,7 @@ class LTITestCase(TestCase):
         video = get_or_create_resource(Video, lti)
         self.assertTrue(video.show_download)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_passport_playlist(self, mock_verify):
         """Authenticating an LTI launch request with a passport related to a playlist."""
         passport = PlaylistLTIPassportFactory(
@@ -294,7 +292,7 @@ class LTITestCase(TestCase):
         self.assertEqual(lti.get_consumer_site(), passport.playlist.consumer_site)
         self.assertEqual(mock_verify.call_count, 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", side_effect=oauth2.Error)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=False)
     def test_lti_verify_request_flush_on_error(self, mock_verify):
         """When an LTI launch request fails to verify."""
         # mock_verify is forced to raise an oauth2 Error upon verification
@@ -315,7 +313,7 @@ class LTITestCase(TestCase):
             lti.verify()
         self.assertEqual(mock_verify.call_count, 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     @override_settings(SECURE_PROXY_SSL_HEADER=("HTTP_X_FORWARDED_PROTO", "https"))
     def test_lti_behind_tls_termination_proxy(self, mock_verify):
         """The launch url should be corrected when placed behind a tls termination proxy."""
@@ -338,9 +336,7 @@ class LTITestCase(TestCase):
         self.assertEqual(request.build_absolute_uri(), "https://testserver/lti/videos/")
         lti = LTI(request, uuid.uuid4())
         lti.verify()
-        self.assertEqual(
-            mock_verify.call_args[0][0].url, "https://testserver/lti/videos/"
-        )
+        self.assertEqual(mock_verify.call_args[0][0], "https://testserver/lti/videos/")
 
     def test_lti_is_edx_format(self):
         """Check if the LTI request comes from an edx instance."""
@@ -544,7 +540,7 @@ class LTITestCase(TestCase):
         with self.assertRaises(RuntimeError):
             lti.get_consumer_site()
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_get_consumer_site_verified(self, mock_verify):
         """Authenticating an LTI launch request with a passport related to a consumer site."""
         passport = ConsumerSiteLTIPassportFactory(

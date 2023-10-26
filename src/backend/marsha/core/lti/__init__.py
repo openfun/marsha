@@ -7,8 +7,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.http.request import validate_host
 from django.utils.datastructures import MultiValueDictKeyError
 
-from pylti.common import LTIException, verify_request_common
-
+from marsha.core.lti.common import LTIException, verify_request_common
 from marsha.core.models.account import (
     ADMINISTRATOR,
     INSTRUCTOR,
@@ -98,9 +97,6 @@ class LTI:
             return True
 
         passport = self.get_passport()
-        consumers = {
-            str(passport.oauth_consumer_key): {"secret": str(passport.shared_secret)}
-        }
 
         # The LTI signature is computed using the url of the LTI launch request. But when Marsha
         # is behind a TLS termination proxy, the url as seen by Django is changed and starts with
@@ -114,7 +110,6 @@ class LTI:
         # we can further check that it returns True.
         if (
             verify_request_common(
-                consumers,
                 url,
                 self.request.method,
                 self.request.META,

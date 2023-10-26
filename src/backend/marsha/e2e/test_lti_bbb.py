@@ -4,6 +4,7 @@ import json
 import random
 import uuid
 
+from django.core.cache import cache
 from django.test import override_settings
 
 from playwright.sync_api import Page
@@ -187,6 +188,8 @@ def test_lti_select_bbb_enabled(page: Page, live_server: LiveServer, settings):
     assert classroom_content_items in lti_select_iframe.content()
 
     # Select a new classroom
+    # clear cache to allow the same nonce in the request
+    cache.clear()
     page.click('#lti_select input[type="submit"]')
 
     lti_select_iframe.click('button[role="tab"]:has-text("Classrooms")')

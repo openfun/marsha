@@ -7,9 +7,7 @@ import uuid
 from django.test import RequestFactory, TestCase
 from django.utils import timezone
 
-from pylti.common import LTIOAuthServer
-
-from marsha.core import factories, models
+from marsha.core import factories, lti as lti_module, models
 from marsha.core.defaults import IDLE, LIVE_CHOICES, RAW, RUNNING, STATE_CHOICES
 from marsha.core.lti import LTI
 from marsha.core.lti.utils import (
@@ -134,7 +132,7 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(models.Playlist.objects.count(), 1)
         self.assertEqual(model.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_same_playlist_same_site_instructor(self, mock_verify):
         """Above case 1-1-1.
 
@@ -149,7 +147,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_live_same_playlist_same_site_instructor(self, mock_verify):
         """Above case 1-1-1.
 
@@ -165,7 +163,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_same_playlist_same_site_instructor(
         self, mock_verify
     ):
@@ -184,7 +182,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_past_date_same_playlist_same_site_instructor(
         self, mock_verify
     ):
@@ -231,7 +229,7 @@ class PortabilityLTITestCase(TestCase):
             self.assertEqual(models.Playlist.objects.count(), 1)
             self.assertEqual(models.Video.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_document_same_playlist_same_site_instructor(self, mock_verify):
         """Above case 1-1-1.
 
@@ -280,7 +278,7 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(models.Playlist.objects.count(), 1)
         self.assertEqual(model.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_same_playlist_same_site_student_ready_to_show(
         self, mock_verify
     ):
@@ -297,7 +295,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_live_same_playlist_same_site_student_ready_to_show(
         self, mock_verify
     ):
@@ -315,7 +313,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_same_playlist_same_site_student_ready_to_show(
         self, mock_verify
     ):
@@ -334,7 +332,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_past_same_playlist_same_site_student_ready_to_show(
         self, mock_verify
     ):
@@ -380,7 +378,7 @@ class PortabilityLTITestCase(TestCase):
             self.assertEqual(models.Playlist.objects.count(), 1)
             self.assertEqual(models.Video.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_document_same_playlist_same_site_student_ready_to_show(
         self, mock_verify
     ):
@@ -428,7 +426,7 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(models.Playlist.objects.count(), 1)
         self.assertEqual(model.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_same_playlist_same_site_student_not_ready_to_show(
         self, mock_verify
     ):
@@ -447,7 +445,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_document_same_playlist_same_site_student_not_ready_to_show(
         self, mock_verify
     ):
@@ -499,7 +497,7 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(models.Playlist.objects.count(), 1)
         self.assertEqual(model.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_other_site_playlist_portable_ready_to_show(
         self, mock_verify
     ):
@@ -518,7 +516,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_live_other_site_playlist_portable_ready_to_show(
         self, mock_verify
     ):
@@ -537,7 +535,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_other_site_playlist_portable_ready_to_show(
         self, mock_verify
     ):
@@ -557,7 +555,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_past_other_site_playlist_portable_ready_to_show(
         self, mock_verify
     ):
@@ -607,7 +605,7 @@ class PortabilityLTITestCase(TestCase):
             self.assertEqual(models.Playlist.objects.count(), 1)
             self.assertEqual(models.Video.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_document_other_site_playlist_portable_ready_to_show(
         self, mock_verify
     ):
@@ -661,7 +659,7 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(models.Playlist.objects.count(), 1)
         self.assertEqual(model.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_other_site_playlist_portable_not_ready_to_show_instructor(
         self, mock_verify
     ):
@@ -681,7 +679,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_document_other_site_playlist_portable_not_ready_to_show_instructor(
         self, mock_verify
     ):
@@ -731,7 +729,7 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(models.Playlist.objects.count(), 1)
         self.assertEqual(model.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_other_site_playlist_portable_not_ready_to_show_student(
         self, mock_verify
     ):
@@ -750,7 +748,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_document_other_site_playlist_portable_not_ready_to_show_student(
         self, mock_verify
     ):
@@ -805,7 +803,7 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(models.Playlist.objects.count(), 1)
         self.assertEqual(model.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_other_site_auto_portable_ready_to_show(self, mock_verify):
         """Above case 1-2-2-1.
 
@@ -821,7 +819,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_live_other_site_auto_portable_ready_to_show(
         self, mock_verify
     ):
@@ -839,7 +837,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_other_site_auto_portable_ready_to_show(
         self, mock_verify
     ):
@@ -858,7 +856,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_past_other_site_auto_portable_ready_to_show(
         self, mock_verify
     ):
@@ -909,7 +907,7 @@ class PortabilityLTITestCase(TestCase):
             self.assertEqual(models.Playlist.objects.count(), 1)
             self.assertEqual(models.Video.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_document_other_site_auto_portable_ready_to_show(self, mock_verify):
         """Above case 1-2-2-1.
 
@@ -962,7 +960,7 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(models.Playlist.objects.count(), 1)
         self.assertEqual(model.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_other_site_auto_portable_not_ready_to_show_instructor(
         self, mock_verify
     ):
@@ -981,7 +979,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_document_other_site_auto_portable_not_ready_to_show_instructor(
         self, mock_verify
     ):
@@ -1035,7 +1033,7 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(models.Playlist.objects.count(), 1)
         self.assertEqual(model.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_other_site_auto_portable_not_ready_to_show_student(
         self, mock_verify
     ):
@@ -1054,7 +1052,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_document_other_site_auto_portable_not_ready_to_show_student(
         self, mock_verify
     ):
@@ -1156,7 +1154,7 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(models.Playlist.objects.count(), nb_playlist)
         self.assertEqual(model.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_other_site_pl_auto_portable_ready_to_show_instructor(
         self, mock_verify
     ):
@@ -1171,7 +1169,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_live_other_site_pl_auto_portable_ready_to_show_instructor(
         self, mock_verify
     ):
@@ -1183,7 +1181,7 @@ class PortabilityLTITestCase(TestCase):
             factory_parameters={"live_state": "running", "live_type": RAW},
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_other_site_pl_auto_portable_ready_to_show_instructor(
         self, mock_verify
     ):
@@ -1199,7 +1197,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_past_other_site_pl_auto_portable_ready_to_show_instructor(
         self, mock_verify
     ):
@@ -1258,7 +1256,7 @@ class PortabilityLTITestCase(TestCase):
             self.assertEqual(models.Playlist.objects.count(), nb_playlist)
             self.assertEqual(models.Video.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_document_other_site_pl_auto_portable_ready_to_show_instructor(
         self, mock_verify
     ):
@@ -1273,7 +1271,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_other_site_pl_auto_portable_ready_to_show_student(
         self, mock_verify
     ):
@@ -1288,7 +1286,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_other_site_pl_auto_portable_ready_to_show_student(
         self, mock_verify
     ):
@@ -1304,7 +1302,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_past_other_site_pl_auto_portable_ready_to_show_student(
         self, mock_verify
     ):
@@ -1358,7 +1356,7 @@ class PortabilityLTITestCase(TestCase):
             self.assertEqual(models.Playlist.objects.count(), nb_playlist)
             self.assertEqual(models.Video.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_document_other_site_pl_auto_portable_ready_to_show_student(
         self, mock_verify
     ):
@@ -1373,7 +1371,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_other_site_pl_auto_portable_not_ready_to_show_instructor(
         self, mock_verify
     ):
@@ -1387,7 +1385,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_live_other_site_pl_auto_portable_not_ready_to_show_instructor(
         self, mock_verify
     ):
@@ -1404,7 +1402,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_other_site_pl_auto_portable_not_ready_to_show_instructor(
         self, mock_verify
     ):
@@ -1420,7 +1418,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_past_other_site_pl_auto_portable_not_ready_to_show_instructor(
         self, mock_verify
     ):
@@ -1479,7 +1477,7 @@ class PortabilityLTITestCase(TestCase):
             self.assertEqual(models.Playlist.objects.count(), nb_playlist)
             self.assertEqual(models.Video.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_document_other_site_pl_auto_portable_not_ready_to_show_instructor(
         self, mock_verify
     ):
@@ -1493,7 +1491,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_other_site_pl_auto_portable_not_ready_to_show_student(
         self, mock_verify
     ):
@@ -1507,7 +1505,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_document_other_site_pl_auto_portable_not_ready_to_show_student(
         self, mock_verify
     ):
@@ -1521,7 +1519,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_other_site_not_portable_instructor(self, mock_verify):
         """Above case 1-2-4-1 for Video.
 
@@ -1539,7 +1537,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_other_site_not_portable_instructor(
         self, mock_verify
     ):
@@ -1560,7 +1558,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_past_other_site_not_portable_instructor(
         self, mock_verify
     ):
@@ -1616,7 +1614,7 @@ class PortabilityLTITestCase(TestCase):
             self.assertEqual(models.Playlist.objects.count(), nb_playlist)
             self.assertEqual(models.Video.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_document_other_site_not_portable_instructor(self, mock_verify):
         """Above case 1-2-4-1 for Document.
 
@@ -1661,7 +1659,7 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(models.Playlist.objects.count(), 1)
         self.assertEqual(model.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_other_site_not_portable_student(self, mock_verify):
         """Above case 1-2-4-2 for Video.
 
@@ -1674,7 +1672,7 @@ class PortabilityLTITestCase(TestCase):
             {"upload_state": random.choice([s[0] for s in STATE_CHOICES])},
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_live_other_site_not_portable_student(self, mock_verify):
         """Above case 1-2-4-2 for video live.
 
@@ -1690,7 +1688,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_other_site_not_portable_student(self, mock_verify):
         """Above case 1-2-4-2 for a scheduled video.
 
@@ -1707,7 +1705,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_past_other_site_not_portable_student(
         self, mock_verify
     ):
@@ -1748,7 +1746,7 @@ class PortabilityLTITestCase(TestCase):
             self.assertEqual(models.Playlist.objects.count(), 1)
             self.assertEqual(models.Video.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_document_other_site_not_portable_student(self, mock_verify):
         """Above case 1-2-4-2 for Document.
 
@@ -1794,7 +1792,7 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(models.Playlist.objects.count(), 1)
         self.assertEqual(model.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_other_playlist_portable_ready_to_show(self, mock_verify):
         """Above case 1-3-1-1 for Video.
 
@@ -1811,7 +1809,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_live_other_playlist_portable_ready_to_show(
         self, mock_verify
     ):
@@ -1830,7 +1828,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_other_playlist_portable_ready_to_show(
         self, mock_verify
     ):
@@ -1850,7 +1848,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_past_other_playlist_portable_ready_to_show(
         self, mock_verify
     ):
@@ -1895,7 +1893,7 @@ class PortabilityLTITestCase(TestCase):
             self.assertEqual(models.Playlist.objects.count(), 1)
             self.assertEqual(models.Video.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_document_other_playlist_portable_ready_to_show(self, mock_verify):
         """Above case 1-3-1-1 for Document.
 
@@ -1944,7 +1942,7 @@ class PortabilityLTITestCase(TestCase):
         self.assertIsInstance(retrieved_resource, model)
         self.assertEqual(retrieved_resource, resource)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_other_pl_portable_not_ready_to_show_instructor(
         self, mock_verify
     ):
@@ -1964,7 +1962,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_document_other_pl_portable_not_ready_to_show_instructor(
         self, mock_verify
     ):
@@ -2015,7 +2013,7 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(models.Playlist.objects.count(), 1)
         self.assertEqual(model.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_other_playlist_portable_not_ready_to_show_student(
         self, mock_verify
     ):
@@ -2034,7 +2032,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_document_other_playlist_portable_not_ready_to_show_student(
         self, mock_verify
     ):
@@ -2093,7 +2091,7 @@ class PortabilityLTITestCase(TestCase):
             ),
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_other_playlist_not_portable_instructor(self, mock_verify):
         """Above case 1-3-2-1 for Video.
 
@@ -2109,7 +2107,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_live_other_playlist_not_portable_instructor(
         self, mock_verify
     ):
@@ -2128,7 +2126,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_other_playlist_not_portable_instructor(
         self, mock_verify
     ):
@@ -2148,7 +2146,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_past_other_playlist_not_portable_instructor(
         self, mock_verify
     ):
@@ -2200,7 +2198,7 @@ class PortabilityLTITestCase(TestCase):
                 ),
             )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_document_other_playlist_not_portable_instructor(self, mock_verify):
         """Above case 1-3-2-1 for Document.
 
@@ -2247,7 +2245,7 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(models.Playlist.objects.count(), 1)
         self.assertEqual(model.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_other_playlist_not_portable_student(self, mock_verify):
         """Above case 1-3-2-2 for Video.
 
@@ -2262,7 +2260,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_live_other_playlist_not_portable_student(self, mock_verify):
         """Above case 1-3-2-2 for video live.
 
@@ -2278,7 +2276,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_other_playlist_not_portable_student(
         self, mock_verify
     ):
@@ -2297,7 +2295,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_past_other_playlist_not_portable_student(
         self, mock_verify
     ):
@@ -2344,7 +2342,7 @@ class PortabilityLTITestCase(TestCase):
             self.assertEqual(models.Playlist.objects.count(), 1)
             self.assertEqual(models.Video.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_document_other_playlist_not_portable_student(self, mock_verify):
         """Above case 1-3-2-2 for Document.
 
@@ -2393,7 +2391,7 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(models.Playlist.objects.count(), 1)
         self.assertEqual(model.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_other_pl_site_portable_ready_to_show(self, mock_verify):
         """Above case 1-4-1-1-1 for Video.
 
@@ -2410,7 +2408,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_live_other_pl_site_portable_ready_to_show(self, mock_verify):
         """Above case 1-4-1-1-1 for video live.
 
@@ -2427,7 +2425,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_other_pl_site_portable_ready_to_show(
         self, mock_verify
     ):
@@ -2447,7 +2445,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_past_other_pl_site_portable_ready_to_show(
         self, mock_verify
     ):
@@ -2492,7 +2490,7 @@ class PortabilityLTITestCase(TestCase):
             self.assertEqual(models.Playlist.objects.count(), 1)
             self.assertEqual(models.Video.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_document_other_pl_site_portable_ready_to_show(self, mock_verify):
         """Above case 1-4-1-1-1 for Document.
 
@@ -2545,7 +2543,7 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(models.Playlist.objects.count(), 1)
         self.assertEqual(model.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_other_pl_site_portable_not_ready_to_show_instructor(
         self, mock_verify
     ):
@@ -2565,7 +2563,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_document_other_pl_site_portable_not_ready_to_show_instructor(
         self, mock_verify
     ):
@@ -2617,7 +2615,7 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(models.Playlist.objects.count(), 1)
         self.assertEqual(model.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_other_pl_site_portable_not_ready_to_show_student(
         self, mock_verify
     ):
@@ -2637,7 +2635,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_document_other_pl_site_portable_not_ready_to_show_student(
         self, mock_verify
     ):
@@ -2694,7 +2692,7 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(models.Playlist.objects.count(), 1)
         self.assertEqual(model.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_other_pl_site_auto_portable_ready_to_show(self, mock_verify):
         """Above case 1-4-1-2-1 for Video.
 
@@ -2710,7 +2708,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_live_other_pl_site_auto_portable_ready_to_show(
         self, mock_verify
     ):
@@ -2728,7 +2726,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_other_pl_site_auto_portable_ready_to_show(
         self, mock_verify
     ):
@@ -2747,7 +2745,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_past_other_pl_site_auto_portable_ready_to_show(
         self, mock_verify
     ):
@@ -2796,7 +2794,7 @@ class PortabilityLTITestCase(TestCase):
             self.assertEqual(models.Playlist.objects.count(), 1)
             self.assertEqual(models.Video.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_document_other_pl_site_auto_portable_ready_to_show(
         self, mock_verify
     ):
@@ -2855,7 +2853,7 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(models.Playlist.objects.count(), 1)
         self.assertEqual(model.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_other_pl_site_auto_portable_not_ready_to_show_instructor(
         self, mock_verify
     ):
@@ -2874,7 +2872,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_document_other_pl_site_auto_portable_not_ready_to_show_instructor(
         self, mock_verify
     ):
@@ -2927,7 +2925,7 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(models.Playlist.objects.count(), 1)
         self.assertEqual(model.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_other_pl_site_auto_portable_not_ready_to_show_student(
         self, mock_verify
     ):
@@ -2946,7 +2944,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_document_other_pl_site_auto_portable_not_ready_to_show_student(
         self, mock_verify
     ):
@@ -3004,7 +3002,7 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(models.Playlist.objects.count(), 2)
         self.assertEqual(model.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_other_pl_pl_auto_portable_ready_to_show(self, mock_verify):
         """Above case 1-4-1-3-1 for Video.
 
@@ -3020,7 +3018,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_live_other_pl_pl_auto_portable_ready_to_show(
         self, mock_verify
     ):
@@ -3038,7 +3036,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_other_pl_pl_auto_portable_ready_to_show(
         self, mock_verify
     ):
@@ -3057,7 +3055,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_past_other_pl_pl_auto_portable_ready_to_show(
         self, mock_verify
     ):
@@ -3107,7 +3105,7 @@ class PortabilityLTITestCase(TestCase):
             self.assertEqual(models.Playlist.objects.count(), 2)
             self.assertEqual(models.Video.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_document_other_pl_pl_auto_portable_ready_to_show(
         self, mock_verify
     ):
@@ -3167,26 +3165,28 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(models.Playlist.objects.count(), 2)
         self.assertEqual(model.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
-    def test_lti_get_video_other_pl_pl_auto_portable_not_ready_to_show_instructor(
-        self, mock_verify
-    ):
-        """Above case 1-4-1-3-2-1 for Video.
+    # @mock.patch.object(
+    #     SignatureOnlyEndpoint, "validate_request", return_value=(True, None)
+    # )
+    # def test_lti_get_video_other_pl_pl_auto_portable_not_ready_to_show_instructor(
+    #     self, mock_verify
+    # ):
+    #     """Above case 1-4-1-3-2-1 for Video.
+    #
+    #     Same as 1-4-1-1-2-1 but portability is automatic from the site of the video to the site
+    #     of the passport.
+    #     """
+    #     self._test_lti_get_resource_other_pl_pl_auto_portable_not_ready_to_show_instructor(
+    #         factories.VideoFactory,
+    #         models.Video,
+    #         {
+    #             "upload_state": random.choice(
+    #                 [s[0] for s in STATE_CHOICES if s[0] != "ready"]
+    #             ),
+    #         },
+    #     )
 
-        Same as 1-4-1-1-2-1 but portability is automatic from the site of the video to the site
-        of the passport.
-        """
-        self._test_lti_get_resource_other_pl_pl_auto_portable_not_ready_to_show_instructor(
-            factories.VideoFactory,
-            models.Video,
-            {
-                "upload_state": random.choice(
-                    [s[0] for s in STATE_CHOICES if s[0] != "ready"]
-                ),
-            },
-        )
-
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_document_other_pl_pl_auto_portable_not_ready_to_show_instructor(
         self, mock_verify
     ):
@@ -3242,7 +3242,7 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(models.Playlist.objects.count(), 2)
         self.assertEqual(model.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_other_pl_pl_auto_portable_not_ready_to_show_student(
         self, mock_verify
     ):
@@ -3261,7 +3261,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_document_other_pl_pl_auto_portable_not_ready_to_show_student(
         self, mock_verify
     ):
@@ -3322,7 +3322,7 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(models.Playlist.objects.count(), 1)
         self.assertEqual(model.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_other_pl_site_not_portable_instructor(self, mock_verify):
         """Above cases 1-4-1-4-1 and 1-4-2-1 for Video.
 
@@ -3339,7 +3339,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_live_other_pl_site_not_portable_instructor(
         self, mock_verify
     ):
@@ -3355,7 +3355,7 @@ class PortabilityLTITestCase(TestCase):
             {"live_state": RUNNING, "live_type": RAW},
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_other_pl_site_not_portable_instructor(
         self, mock_verify
     ):
@@ -3375,7 +3375,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_past_other_pl_site_not_portable_instructor(
         self, mock_verify
     ):
@@ -3430,7 +3430,7 @@ class PortabilityLTITestCase(TestCase):
             self.assertEqual(models.Playlist.objects.count(), 1)
             self.assertEqual(models.Video.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_document_other_pl_site_not_portable_instructor(self, mock_verify):
         """Above cases 1-4-1-4-1 and 1-4-2-1 for Document.
 
@@ -3480,7 +3480,7 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(models.Playlist.objects.count(), 1)
         self.assertEqual(model.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_other_pl_site_not_portable_student(self, mock_verify):
         """Above case 1-4-1-4-2 and 1-4-2-2 for Video.
 
@@ -3497,7 +3497,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_live_other_pl_site_not_portable_student(self, mock_verify):
         """Above case 1-4-1-4-2 and 1-4-2-2 for Video.
 
@@ -3511,7 +3511,7 @@ class PortabilityLTITestCase(TestCase):
             {"live_state": RUNNING, "live_type": RAW},
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_other_pl_site_not_portable_student(
         self, mock_verify
     ):
@@ -3531,7 +3531,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_past_other_pl_site_not_portable_student(
         self, mock_verify
     ):
@@ -3576,7 +3576,7 @@ class PortabilityLTITestCase(TestCase):
             self.assertEqual(models.Playlist.objects.count(), 1)
             self.assertEqual(models.Video.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_document_other_pl_site_not_portable_student(self, mock_verify):
         """Above case 1-4-1-4-2 and 1-4-2-2 for Document.
 
@@ -3630,7 +3630,7 @@ class PortabilityLTITestCase(TestCase):
         # No new playlist is created
         self.assertEqual(models.Playlist.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_wrong_lti_id_instructor(self, mock_verify):
         """Above case 2-1 for Video.
 
@@ -3641,7 +3641,7 @@ class PortabilityLTITestCase(TestCase):
             factories.VideoFactory, models.Video, {"uploaded_on": timezone.now()}
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_live_wrong_lti_id_instructor(self, mock_verify):
         """Above case 2-1 for Video.
 
@@ -3654,7 +3654,7 @@ class PortabilityLTITestCase(TestCase):
             {"live_state": "running", "live_type": RAW},
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_wrong_lti_id_instructor(self, mock_verify):
         """Above case 2-1 for Video scheduled.
 
@@ -3671,7 +3671,7 @@ class PortabilityLTITestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_scheduled_past_wrong_lti_id_instructor(self, mock_verify):
         """Above case 2-1 for Video scheduled with a date past and live_state to IDLE.
 
@@ -3720,7 +3720,7 @@ class PortabilityLTITestCase(TestCase):
             # No new playlist is created
             self.assertEqual(models.Playlist.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_document_wrong_lti_id_instructor(self, mock_verify):
         """Above case 2-1 for Document.
 
@@ -3756,7 +3756,7 @@ class PortabilityLTITestCase(TestCase):
         self.assertEqual(models.Playlist.objects.count(), 1)
         self.assertEqual(model.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_video_wrong_lti_id_student(self, mock_verify):
         """Above case 2-2 for Video.
 
@@ -3766,7 +3766,7 @@ class PortabilityLTITestCase(TestCase):
             factories.VideoFactory, models.Video
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_document_wrong_lti_id_student(self, mock_verify):
         """Above case 2-2 for Document.
 
@@ -3819,7 +3819,7 @@ class LTISelectTestCase(TestCase):
 
         self.assertNotIn(resource, get_selectable_resources(model, lti))
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_selectable_video_same_playlist_same_site_student_ready_to_show(
         self, mock_verify
     ):
@@ -3836,7 +3836,7 @@ class LTISelectTestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_selectable_document_same_playlist_same_site_student_ready_to_show(
         self, mock_verify
     ):
@@ -3881,7 +3881,7 @@ class LTISelectTestCase(TestCase):
 
         self.assertIn(resource, get_selectable_resources(model, lti))
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_selectable_video_same_playlist_same_site_instructor(
         self, mock_verify
     ):
@@ -3898,7 +3898,7 @@ class LTISelectTestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_selectable_video_live_same_playlist_same_site_instructor(
         self, mock_verify
     ):
@@ -3916,7 +3916,7 @@ class LTISelectTestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_selectable_video_scheduled_same_playlist_same_site_instructor(
         self, mock_verify
     ):
@@ -3935,7 +3935,7 @@ class LTISelectTestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_selectable_video_scheduled_past_same_playlist_same_site_instructor(
         self, mock_verify
     ):
@@ -3974,7 +3974,7 @@ class LTISelectTestCase(TestCase):
 
             self.assertIn(video, get_selectable_resources(models.Video, lti))
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_selectable_document_same_playlist_same_site_instructor(
         self, mock_verify
     ):
@@ -4025,7 +4025,7 @@ class LTISelectTestCase(TestCase):
 
         self.assertIn(resource, get_selectable_resources(model, lti))
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_selectable_video_other_pl_pl_auto_portable_ready_to_show(
         self, mock_verify
     ):
@@ -4043,7 +4043,7 @@ class LTISelectTestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_selectable_video_live_other_pl_pl_auto_portable_ready_to_show(
         self, mock_verify
     ):
@@ -4058,7 +4058,7 @@ class LTISelectTestCase(TestCase):
             {"live_state": "running", "live_type": RAW},
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_selectable_video_scheduled_other_pl_pl_auto_portable_ready_to_show(
         self, mock_verify
     ):
@@ -4077,7 +4077,7 @@ class LTISelectTestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_selectable_video_scheduled_past_other_pl_pl_auto_portable_ready_to_show(
         self, mock_verify
     ):
@@ -4123,7 +4123,7 @@ class LTISelectTestCase(TestCase):
 
             self.assertIn(video, get_selectable_resources(models.Video, lti))
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_selectable_document_other_pl_pl_auto_portable_ready_to_show(
         self, mock_verify
     ):
@@ -4182,7 +4182,7 @@ class LTISelectTestCase(TestCase):
         self.assertEqual(models.Playlist.objects.count(), 2)
         self.assertEqual(model.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_selectable_video_other_pl_pl_auto_portable_not_ready_to_show(
         self, mock_verify
     ):
@@ -4200,7 +4200,7 @@ class LTISelectTestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_selectable_video_live_other_pl_pl_auto_portable_not_ready_to_show(
         self, mock_verify
     ):
@@ -4215,7 +4215,7 @@ class LTISelectTestCase(TestCase):
             {"live_state": "running", "live_type": RAW},
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_selectable_video_scheduled_other_pl_pl_auto_portable_not_ready_to_show(
         self, mock_verify
     ):
@@ -4234,7 +4234,7 @@ class LTISelectTestCase(TestCase):
             },
         )
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_selectable_video_scheduled_past_other_pl_pl_auto_portable_not_ready_to_show(
         self, mock_verify
     ):
@@ -4287,7 +4287,7 @@ class LTISelectTestCase(TestCase):
             self.assertEqual(models.Playlist.objects.count(), 2)
             self.assertEqual(models.Video.objects.count(), 1)
 
-    @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_get_selectable_document_other_pl_pl_auto_portable_not_ready_to_show(
         self, mock_verify
     ):

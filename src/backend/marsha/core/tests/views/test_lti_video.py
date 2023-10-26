@@ -9,7 +9,6 @@ import uuid
 
 from django.test import TestCase, override_settings
 
-from pylti.common import LTIException
 from waffle.testutils import override_switch
 
 from marsha.core.defaults import (
@@ -36,7 +35,7 @@ from marsha.core.factories import (
     UserFactory,
     VideoFactory,
 )
-from marsha.core.lti import LTI
+from marsha.core.lti import LTI, LTIException
 from marsha.core.models import ADMINISTRATOR, Video
 from marsha.core.simple_jwt.tokens import PlaylistAccessToken, PlaylistRefreshToken
 from marsha.core.tests.views.test_lti_base import BaseLTIViewForPortabilityTestCase
@@ -1918,7 +1917,6 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
         context = json.loads(unescape(match.group(1)))
         jwt_token = PlaylistAccessToken(context.get("jwt"))
         PlaylistRefreshToken(context.get("refresh_token"))  # Must not raise
-        # breakpoint()
         self.assertEqual(jwt_token.payload["playlist_id"], str(video.playlist.id))
         self.assertEqual(
             jwt_token.payload["user"],
