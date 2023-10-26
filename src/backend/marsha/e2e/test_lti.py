@@ -5,6 +5,7 @@ import random
 import uuid
 
 from django.conf import settings
+from django.core.cache import cache
 from django.test import override_settings
 from django.utils import timezone
 
@@ -308,6 +309,8 @@ def test_lti_select_title_text(page: Page, live_server: LiveServer):
     assert document_content_items in lti_select_iframe.content()
 
     # Select a video
+    # clear cache to allow the same nonce in the request
+    cache.clear()
     page.click('#lti_select input[type="submit"]')
     lti_select_iframe.click('button[role="tab"]:has-text("Videos")')
     # Use send text in the response to fill the activity text
@@ -337,6 +340,8 @@ def test_lti_select_title_text(page: Page, live_server: LiveServer):
     assert Video.objects.count() == 1
 
     # Select a new video
+    # clear cache to allow the same nonce in the request
+    cache.clear()
     page.click('#lti_select input[type="submit"]')
     lti_select_iframe.click('button[role="tab"]:has-text("Videos")')
     sent_title_and_text = (
@@ -450,6 +455,8 @@ def test_lti_select_title_no_text(page: Page, live_server: LiveServer):
     assert document_content_items in lti_select_iframe.content()
 
     # Select a video
+    # clear cache to allow the same nonce in the request
+    cache.clear()
     page.click('#lti_select input[type="submit"]')
     lti_select_iframe.click('button[role="tab"]:has-text("Videos")')
     # Use the video description in the response to fill the activity text
@@ -479,6 +486,8 @@ def test_lti_select_title_no_text(page: Page, live_server: LiveServer):
     assert Video.objects.count() == 1
 
     # Select a new video
+    # clear cache to allow the same nonce in the request
+    cache.clear()
     page.click('#lti_select input[type="submit"]')
     lti_select_iframe.click('button[role="tab"]:has-text("Videos")')
     sent_title = f'"title":"{lti_consumer_parameters.get("title")}"'
@@ -588,6 +597,8 @@ def test_lti_select_default_title_no_text(page: Page, live_server: LiveServer):
     assert document_content_items in lti_select_iframe.content()
 
     # Select a video
+    # clear cache to allow the same nonce in the request
+    cache.clear()
     page.click('#lti_select input[type="submit"]')
     lti_select_iframe.click('button[role="tab"]:has-text("Videos")')
     # Use the video title and description in the response to fill the activity title and text
@@ -617,6 +628,8 @@ def test_lti_select_default_title_no_text(page: Page, live_server: LiveServer):
     assert Video.objects.count() == 1
 
     # Select a new video
+    # clear cache to allow the same nonce in the request
+    cache.clear()
     page.click('#lti_select input[type="submit"]')
     lti_select_iframe.click('button[role="tab"]:has-text("Videos")')
     sent_title = f'"title":"{lti_consumer_parameters.get("title")}"'

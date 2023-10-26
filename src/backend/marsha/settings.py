@@ -395,6 +395,7 @@ class Base(Configuration):
         }
     )
     LTI_CONFIG_CONTACT_EMAIL = values.Value()
+    LTI_REPLAY_PROTECTION_CACHE_DURATION = values.PositiveIntegerValue(3600)  # 1 hour
 
     # BBB
     BBB_ENABLED = values.BooleanValue(False)

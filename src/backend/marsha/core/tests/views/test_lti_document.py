@@ -9,8 +9,6 @@ import uuid
 
 from django.test import TestCase
 
-from pylti.common import LTIException
-
 from marsha.core.defaults import STATE_CHOICES
 from marsha.core.factories import (
     ConsumerSiteAccessFactory,
@@ -22,7 +20,7 @@ from marsha.core.factories import (
     UploadedDocumentFactory,
     UserFactory,
 )
-from marsha.core.lti import LTI
+from marsha.core.lti import LTI, LTIException
 from marsha.core.models import ADMINISTRATOR
 from marsha.core.simple_jwt.tokens import PlaylistAccessToken, PlaylistRefreshToken
 from marsha.core.tests.views.test_lti_base import BaseLTIViewForPortabilityTestCase

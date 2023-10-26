@@ -29,7 +29,6 @@ from django.views.generic import View
 from django.views.generic.base import TemplateResponseMixin, TemplateView
 
 from oauthlib import oauth1
-from pylti.common import LTIException
 from rest_framework.exceptions import ValidationError as DRFValidationError
 from rest_framework.views import exception_handler as drf_exception_handler
 from rest_framework_simplejwt.exceptions import TokenError
@@ -49,7 +48,7 @@ from marsha.core.defaults import (
     VIDEO,
     WEBINAR,
 )
-from marsha.core.lti import LTI
+from marsha.core.lti import LTI, LTIException
 from marsha.core.lti.user_association import get_user_from_lti
 from marsha.core.lti.utils import (
     PortabilityError,
