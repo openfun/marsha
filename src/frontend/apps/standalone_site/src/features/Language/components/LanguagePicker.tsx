@@ -1,7 +1,8 @@
-import { Select, ThemeContext } from 'grommet';
-import { Breakpoints, theme } from 'lib-common';
+import { Select, ThemeContext, defaultProps } from 'grommet';
+import { deepMerge } from 'grommet/utils';
+import { Breakpoints, theme as themeMarsha } from 'lib-common';
 import { Box, Text, useResponsive } from 'lib-components';
-import { Fragment } from 'react';
+import { Fragment, useContext } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { css } from 'styled-components';
 
@@ -35,35 +36,39 @@ const LanguagePicker = () => {
   const intl = useIntl();
   const setLanguage = useLanguageStore((state) => state.setLanguage);
   const { breakpoint, isSmallerBreakpoint } = useResponsive();
+  const theme = useContext(ThemeContext) || defaultProps.theme;
+
+  const customTheme = deepMerge(theme, {
+    select: {
+      control: {
+        extend: `
+        border: none; 
+        padding-block: 0.5rem;
+      `,
+      },
+      container: {
+        extend: css`
+          ...${themeMarsha.select?.container?.extend};
+          & {
+            border: none;
+          }
+        `,
+      },
+      options: {
+        container: {
+          pad: 'small',
+          align: 'center',
+        },
+      },
+      icons: {
+        down: undefined,
+      },
+    },
+  });
 
   return (
     <Fragment>
-      <ThemeContext.Extend
-        value={{
-          select: {
-            control: {
-              extend: `
-              border: none; 
-              padding-block: 0.5rem;
-            `,
-            },
-            container: {
-              extend: css`
-                ...${theme.select?.container?.extend};
-                & {
-                  border: none;
-                }
-              `,
-            },
-            options: {
-              container: {
-                pad: 'small',
-                align: 'center',
-              },
-            },
-          },
-        }}
-      >
+      <ThemeContext.Extend value={customTheme}>
         <Select
           options={optionsPicker}
           labelKey="label"

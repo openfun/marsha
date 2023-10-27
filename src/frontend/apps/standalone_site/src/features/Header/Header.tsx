@@ -1,9 +1,10 @@
 import { Button } from '@openfun/cunningham-react';
-import { Box, DropButton } from 'grommet';
+import { DropButton } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { Breakpoints, Nullable, theme } from 'lib-common';
 import {
   AnonymousUser,
+  Box,
   Text,
   useCurrentUser,
   useResponsive,
@@ -102,14 +103,14 @@ const Header = forwardRef<Nullable<HTMLDivElement>>((_props, ref) => {
       role="menubar"
       direction="row"
       fill
-      justify="between"
+      justify="space-between"
       pad={{ horizontal: 'medium' }}
       $isScrollTop={isScrollTop}
       $isDesktop={isDesktop}
     >
       <Box
         direction="row"
-        justify="between"
+        justify="space-between"
         margin={{ bottom: 'small' }}
         pad={{ right: 'medium' }}
         gap={
