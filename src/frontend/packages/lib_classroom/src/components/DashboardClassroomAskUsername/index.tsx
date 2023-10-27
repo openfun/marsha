@@ -1,6 +1,6 @@
 import { Button, Checkbox, Input } from '@openfun/cunningham-react';
 import { Box } from 'grommet';
-import { Classroom, Text } from 'lib-components';
+import { Classroom, ModalButton, Text } from 'lib-components';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -145,23 +145,15 @@ export const DashboardClassroomAskUsername = ({
       setUserFullname={setUserFullname}
       userFullname={userFullname}
     >
-      <Box direction="row" justify="center" margin={{ top: 'medium' }}>
-        {onCancel && (
-          <Button
-            aria-label={intl.formatMessage(messages.cancel)}
-            onClick={onCancel}
-          >
-            {intl.formatMessage(messages.cancel)}
-          </Button>
-        )}
-        <Button
-          aria-label={intl.formatMessage(messages.join)}
-          onClick={onJoin}
-          disabled={!userFullname}
-        >
-          {intl.formatMessage(messages.join)}
-        </Button>
-      </Box>
+      <ModalButton
+        onClickCancel={onCancel || undefined}
+        onClickSubmit={onJoin}
+        disabled={!userFullname}
+        labelCancel={intl.formatMessage(messages.cancel)}
+        aria-label={intl.formatMessage(messages.join)}
+      >
+        {intl.formatMessage(messages.join)}
+      </ModalButton>
     </DashboardClassroomAskUsernameWrapper>
   );
 };
