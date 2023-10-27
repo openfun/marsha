@@ -1,7 +1,7 @@
 import { Button } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
 import { Breakpoints } from 'lib-common';
 import {
+  Box,
   ErrorComponents,
   Text,
   WhiteCard,
@@ -85,7 +85,6 @@ const VideoWizard = () => {
           element={
             <WhiteCard title={intl.formatMessage(messages.chooseActionTitle)}>
               <Box
-                direction="column"
                 gap="medium"
                 margin={{
                   horizontal: isSmallerBreakpoint(breakpoint, Breakpoints.large)

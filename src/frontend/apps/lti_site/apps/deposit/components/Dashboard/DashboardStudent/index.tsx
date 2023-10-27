@@ -1,5 +1,6 @@
-import { Box, Grid } from 'grommet';
+import { Grid } from 'grommet';
 import {
+  Box,
   BoxLoader,
   FileDepository,
   Heading,
@@ -37,13 +38,7 @@ export const DashboardStudent = ({ fileDepository }: DashboardStudentProps) => {
 
   return (
     <React.Fragment>
-      <Box
-        background="white"
-        elevation="medium"
-        fill
-        pad="xlarge"
-        round="xsmall"
-      >
+      <Box background="white" elevation fill pad="xlarge" round="xsmall">
         <Heading>{fileDepository.title}</Heading>
         {isMobile ? (
           <React.Fragment>
@@ -59,7 +54,7 @@ export const DashboardStudent = ({ fileDepository }: DashboardStudentProps) => {
       </Box>
       <Box
         background="white"
-        elevation="medium"
+        elevation
         fill
         margin={{ top: 'small' }}
         pad="xlarge"

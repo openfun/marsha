@@ -1,8 +1,9 @@
-import { Box, Grommet, Tab, Tabs } from 'grommet';
+import { Grommet, Tab, Tabs } from 'grommet';
 import { deepMerge } from 'grommet/utils';
 import { Document as DocumentIcon } from 'grommet-icons';
 import { theme as baseTheme } from 'lib-common';
 import {
+  Box,
   BoxLoader,
   Document,
   Live,

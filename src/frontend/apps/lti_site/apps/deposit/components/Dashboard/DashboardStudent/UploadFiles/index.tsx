@@ -1,6 +1,7 @@
+import { colorsTokens } from '@lib-common/cunningham';
 import { Button } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
 import {
+  Box,
   PlusSVG,
   Text,
   UploadManagerStatus,
@@ -136,12 +137,12 @@ export const UploadFiles = () => {
     <Box>
       <Box
         align="center"
-        background="blue-message"
+        background={colorsTokens['info-100']}
         fill
-        border={{
-          style: filesToUpload.length === 0 ? 'dashed' : 'solid',
-          size: 'small',
-          color: 'blue-active',
+        style={{
+          borderStyle: filesToUpload.length === 0 ? 'dashed' : 'solid',
+          borderWidth: '2px',
+          borderColor: colorsTokens['info-200'],
         }}
         margin={{ bottom: 'medium' }}
         round="small"
@@ -184,15 +185,11 @@ export const UploadFiles = () => {
                 <Box justify="start" margin={{ bottom: 'xsmall' }}>
                   <Text weight="bold">{truncateFilename(file.name, 40)}</Text>
                 </Box>
-                <Box direction="row">
-                  <Box justify="start" flex="shrink">
-                    <Text textAlign="center">{bytesToSize(file.size)}</Text>
-                  </Box>
-                  <Box justify="end" flex>
-                    <Text textAlign="end">
-                      {DateTime.now().toFormat('dd/MM/yyyy')}
-                    </Text>
-                  </Box>
+                <Box direction="row" justify="space-between">
+                  <Text textAlign="center">{bytesToSize(file.size)}</Text>
+                  <Text textAlign="end">
+                    {DateTime.now().toFormat('dd/MM/yyyy')}
+                  </Text>
                 </Box>
               </Box>
             ))}

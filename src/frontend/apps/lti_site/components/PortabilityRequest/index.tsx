@@ -1,7 +1,7 @@
 import { Button } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
 import { Clock } from 'grommet-icons';
 import {
+  Box,
   DecodedJwtLTI,
   Heading,
   PortabilityConfig,
@@ -100,7 +100,7 @@ export const PortabilityRequest = ({
   };
 
   return (
-    <Box direction="column" pad="medium" align="center">
+    <Box pad="medium" align="center">
       <Heading level={5}>
         <FormattedMessage {...messages.resourceRequiresPortability} />
       </Heading>

@@ -1,6 +1,6 @@
+import { colorsTokens } from '@lib-common/cunningham';
 import { Text } from '@lib-components/common/Text';
-import { Box } from 'grommet';
-import { AppData } from 'lib-components';
+import { AppData, Box } from 'lib-components';
 
 type WarningsProps = {
   warnings: AppData['warnings'];
@@ -12,7 +12,11 @@ export const Warnings = ({ warnings }: WarningsProps) => {
   }
 
   return (
-    <Box background="status-warning" pad="small" margin={{ bottom: 'small' }}>
+    <Box
+      background={colorsTokens['warning-500']}
+      pad="small"
+      margin={{ bottom: 'small' }}
+    >
       {warnings.map((warning, index) => (
         <Text textAlign="center" key={index}>
           {warning}

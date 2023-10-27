@@ -1,5 +1,4 @@
-import { Box } from 'grommet';
-import { Heading } from 'lib-components';
+import { Box, Heading } from 'lib-components';
 import { useCreateMarkdownDocument } from 'lib-markdown';
 import React from 'react';
 import { useIntl } from 'react-intl';

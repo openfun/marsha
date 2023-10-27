@@ -1,7 +1,12 @@
 import { Button, Input } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
 import { Breakpoints } from 'lib-common';
-import { Text, WhiteCard, WizardLayout, useResponsive } from 'lib-components';
+import {
+  Box,
+  Text,
+  WhiteCard,
+  WizardLayout,
+  useResponsive,
+} from 'lib-components';
 import {
   LanguageSelector,
   MARKDOWN_EDITOR_ROUTE,
@@ -76,7 +81,6 @@ export const MarkdownWizard = ({ markdownDocumentId }: MarkdownWizardProps) => {
     <WizardLayout>
       <WhiteCard title={intl.formatMessage(messages.markdownCreationTitle)}>
         <Box
-          direction="column"
           gap="medium"
           margin={{
             horizontal: isSmallerBreakpoint(breakpoint, Breakpoints.large)

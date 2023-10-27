@@ -1,7 +1,13 @@
 import { Button } from '@openfun/cunningham-react';
-import { Box, Grid } from 'grommet';
+import { Grid } from 'grommet';
 import { Nullable } from 'lib-common';
-import { Classroom, ClassroomSVG, ContentCard, Text } from 'lib-components';
+import {
+  Box,
+  Classroom,
+  ClassroomSVG,
+  ContentCard,
+  Text,
+} from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 

@@ -166,7 +166,7 @@ describe('<DashboardDocument />', () => {
     screen.getByText((content) => content.startsWith('Ready'));
 
     // document filename
-    screen.getByText('Filename');
+    screen.getByText(/Filename/i);
     screen.getByText('bar_foo.pdf');
 
     // Buttons

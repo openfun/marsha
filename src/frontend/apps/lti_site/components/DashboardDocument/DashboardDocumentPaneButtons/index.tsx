@@ -1,6 +1,6 @@
 import { Button } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
 import {
+  Box,
   Document,
   builderUploadFormRoute,
   modelName,
@@ -55,6 +55,7 @@ export const DashboardDocumentPaneButtons = ({
       direction="row"
       justify={displayWatchBtn ? 'center' : 'end'}
       margin="small"
+      gap="small"
     >
       <ButtonWithLink
         to={builderUploadFormRoute(modelName.DOCUMENTS, document.id)}
@@ -67,7 +68,10 @@ export const DashboardDocumentPaneButtons = ({
         />
       </ButtonWithLink>
       {displayWatchBtn && (
-        <ButtonWithLink to={`/${PLAYER_ROUTE.base}/${PLAYER_ROUTE.documents}`}>
+        <ButtonWithLink
+          to={`/${PLAYER_ROUTE.base}/${PLAYER_ROUTE.documents}`}
+          color="secondary"
+        >
           <FormattedMessage {...messages.btnPlay} />
         </ButtonWithLink>
       )}

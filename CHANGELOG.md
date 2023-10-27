@@ -15,6 +15,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Replace grommet Button (#2453)
+- Replace grommet Box (#2484)
 - Update psycopg to version 3
 - Update node to version 20
 - Replace pylti with oauthlib for LTI request validation

@@ -1,6 +1,7 @@
-import { Anchor, Box } from 'grommet';
+import { Anchor } from 'grommet';
 import {
   AppDataRessource,
+  Box,
   DecodedJwtLTI,
   DepositedFile,
   useAppConfig,
