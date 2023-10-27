@@ -15,6 +15,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Replace grommet Button (#2453)
+- Update psycopg to version 3
 
 ## [4.7.0] - 2023-10-19
 
