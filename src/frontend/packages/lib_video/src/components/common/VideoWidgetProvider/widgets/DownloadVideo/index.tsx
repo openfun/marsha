@@ -26,10 +26,10 @@ const messages = defineMessages({
     description: 'Title of the widget used for downloading the video.',
     id: 'components.DownloadVideo.title',
   },
-  selectQualityLabel: {
+  selectDownloadQualityLabel: {
     defaultMessage: 'Download quality',
     description: 'Label of the select button.',
-    id: 'components.DownloadVideo.selectQualityLabel',
+    id: 'components.DownloadVideo.selectDownloadQualityLabel',
   },
   selectQualityInfo: {
     defaultMessage: 'Select the quality you desire for your download.',
@@ -168,8 +168,8 @@ export const DownloadVideo = ({ isTeacher }: DownloadVideoProps) => {
       )}
       <Box direction="column" gap="small" style={{ marginTop: '0.75rem' }}>
         <Select
-          aria-label={intl.formatMessage(messages.selectQualityLabel)}
-          label={intl.formatMessage(messages.selectQualityLabel)}
+          aria-label={intl.formatMessage(messages.selectDownloadQualityLabel)}
+          label={intl.formatMessage(messages.selectDownloadQualityLabel)}
           options={options}
           fullWidth
           value={selectedQuality}

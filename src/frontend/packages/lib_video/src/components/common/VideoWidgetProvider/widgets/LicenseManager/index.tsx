@@ -35,11 +35,11 @@ const messages = defineMessages({
     description: 'The label displayed in the select when there is no license.',
     id: 'components.LicenseManager.noLicenseAvailableLabel',
   },
-  selectLicenseLabel: {
+  selectLabelLicense: {
     defaultMessage: 'Select the license',
     description:
       'The label of the select used for choosing the license under which the instructor wants to publish your video',
-    id: 'components.LicenseManager.selectLicenseLabel',
+    id: 'components.LicenseManager.selectLabelLicense',
   },
   selectLicenseInfo: {
     defaultMessage:
@@ -101,8 +101,8 @@ export const LicenseManager = () => {
     >
       {!isLoading ? (
         <Select
-          aria-label={intl.formatMessage(messages.selectLicenseLabel)}
-          label={intl.formatMessage(messages.selectLicenseLabel)}
+          aria-label={intl.formatMessage(messages.selectLabelLicense)}
+          label={intl.formatMessage(messages.selectLabelLicense)}
           options={choices ?? [errorLicenseChoice]}
           value={selectedLicense}
           onChange={(evt) => {
