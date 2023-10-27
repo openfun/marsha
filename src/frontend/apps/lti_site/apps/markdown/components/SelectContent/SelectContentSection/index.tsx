@@ -1,8 +1,9 @@
 import { Button } from '@openfun/cunningham-react';
-import { Box, Grid } from 'grommet';
+import { Grid } from 'grommet';
 import { DocumentText } from 'grommet-icons';
 import { Nullable } from 'lib-common';
 import {
+  Box,
   ContentCard,
   MarkdownDocument,
   MarkdownDocumentTranslation,

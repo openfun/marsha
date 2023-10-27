@@ -1,7 +1,6 @@
 import { Pagination, Select } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
 import { Maybe } from 'lib-common';
-import { BoxLoader, FileDepository, Heading, Text } from 'lib-components';
+import { Box, BoxLoader, FileDepository, Heading, Text } from 'lib-components';
 import React, { FocusEvent, useState } from 'react';
 import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
@@ -142,13 +141,7 @@ export const DashboardInstructor = ({
 
   return (
     <React.Fragment>
-      <Box
-        background="white"
-        elevation="medium"
-        fill
-        pad="xlarge"
-        round="xsmall"
-      >
+      <Box background="white" elevation fill pad="xlarge" round="xsmall">
         <Heading
           contentEditable={true}
           onBlur={onBlurTitle}
@@ -172,7 +165,7 @@ export const DashboardInstructor = ({
 
       <Box
         background="white"
-        elevation="medium"
+        elevation
         fill
         margin={{ top: 'small' }}
         pad="xlarge"
@@ -191,7 +184,7 @@ export const DashboardInstructor = ({
               <Box
                 align="center"
                 direction="row"
-                justify="between"
+                justify="space-between"
                 pad="medium"
               >
                 <Select

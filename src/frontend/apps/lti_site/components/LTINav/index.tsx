@@ -1,5 +1,6 @@
-import { Box, Nav } from 'grommet';
+import { Nav } from 'grommet';
 import {
+  Box,
   Document,
   Video,
   builderDashboardRoute,
@@ -79,7 +80,7 @@ export const LTINav = ({ object: baseObject }: LTINavProps) => {
   const canAccessPreview = object.upload_state === uploadState.READY;
 
   return (
-    <Box align="center" alignContent="center" pad="small">
+    <Box align="center" pad="small">
       <Nav direction="row">
         {canAccessDashboard && (
           <NavItem to={builderDashboardRoute(appData.modelName)}>

@@ -187,10 +187,10 @@ describe('<SelectContent />', () => {
       within(screen.getByLabelText('Select Webinar 1')).getByRole('img', {
         name: 'thumbnail',
       }),
-    ).toHaveStyleRule(
-      'background',
-      'url(https://example.com/default_thumbnail/144) no-repeat center / cover',
-    );
+    ).toHaveStyle({
+      background:
+        'url(https://example.com/default_thumbnail/144) no-repeat center / cover',
+    });
 
     // Videos Tab
     const videoTab = screen.getByRole('tab', {
@@ -202,10 +202,10 @@ describe('<SelectContent />', () => {
       within(screen.getByLabelText('Select Video 1')).getByRole('img', {
         name: 'thumbnail',
       }),
-    ).toHaveStyleRule(
-      'background',
-      'url(https://example.com/default_thumbnail/144) no-repeat center / cover',
-    );
+    ).toHaveStyle({
+      background:
+        'url(https://example.com/default_thumbnail/144) no-repeat center / cover',
+    });
 
     // Documents Tab
     const documentTab = screen.getByRole('tab', {
@@ -248,10 +248,10 @@ describe('<SelectContent />', () => {
       within(screen.getByLabelText('Select Video 1')).getByRole('img', {
         name: 'thumbnail',
       }),
-    ).toHaveStyleRule(
-      'background',
-      'url(https://example.com/default_thumbnail/480) no-repeat center / cover',
-    );
+    ).toHaveStyle({
+      background:
+        'url(https://example.com/default_thumbnail/480) no-repeat center / cover',
+    });
   });
 
   it('displays first available uploaded video thumbnail', async () => {
@@ -289,10 +289,10 @@ describe('<SelectContent />', () => {
       within(screen.getByLabelText('Select Video 1')).getByRole('img', {
         name: 'thumbnail',
       }),
-    ).toHaveStyleRule(
-      'background',
-      'url(https://example.com/uploaded_thumbnail/480) no-repeat center / cover',
-    );
+    ).toHaveStyle({
+      background:
+        'url(https://example.com/uploaded_thumbnail/480) no-repeat center / cover',
+    });
   });
 
   it('fallback to generated video thumbnail if uploaded thumbnail not ready', async () => {
@@ -330,10 +330,10 @@ describe('<SelectContent />', () => {
       within(screen.getByLabelText('Select Video 1')).getByRole('img', {
         name: 'thumbnail',
       }),
-    ).toHaveStyleRule(
-      'background',
-      'url(https://example.com/default_thumbnail/144) no-repeat center / cover',
-    );
+    ).toHaveStyle({
+      background:
+        'url(https://example.com/default_thumbnail/144) no-repeat center / cover',
+    });
   });
 
   it('selects content', async () => {

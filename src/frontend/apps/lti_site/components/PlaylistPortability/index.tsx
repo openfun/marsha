@@ -1,7 +1,8 @@
 import { Button, Input, Loader } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
 import { AddCircle, Trash } from 'grommet-icons';
 import {
+  Box,
+  BoxError,
   CopyClipboard,
   Document,
   ErrorComponents,
@@ -124,11 +125,11 @@ export const PlaylistPortabilityList = ({
           {(reachableFromPlaylist: { title: string; id: string }) => (
             <Box
               role="listitem"
-              a11yTitle={intl.formatMessage(
+              aria-label={intl.formatMessage(
                 messages.hasPortabilityWith,
                 reachableFromPlaylist,
               )}
-              direction="row-responsive"
+              direction="row"
               gap="medium"
               align="center"
               pad="small"
@@ -247,17 +248,10 @@ export const PlaylistPortability = ({ object }: PlaylistPortabilityProps) => {
             />
           </Box>
 
-          <Box
-            align="center"
+          <BoxError
+            message={intl.formatMessage(messages.shareWithPlaylistDetails)}
             margin={{ top: 'medium' }}
-            pad="small"
-            background="status-warning"
-            width="large"
-          >
-            <Text color="clr-primary-800" size="large">
-              <FormattedMessage {...messages.shareWithPlaylistDetails} />
-            </Text>
-          </Box>
+          />
         </Box>
       </React.Fragment>
     );

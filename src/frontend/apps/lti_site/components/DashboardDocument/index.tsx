@@ -1,9 +1,9 @@
-import { Box } from 'grommet';
 import { colorsTokens } from 'lib-common';
 import {
+  Box,
   Document,
-  Heading,
   ObjectStatusPicker,
+  Text,
   UploadManagerStatus,
   UploadableObjectProgress,
   modelName,
@@ -12,8 +12,7 @@ import {
   useUploadManager,
 } from 'lib-components';
 import React, { useEffect } from 'react';
-import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
-import styled from 'styled-components';
+import { defineMessages, useIntl } from 'react-intl';
 
 import { pollForTrack } from 'data/sideEffects/pollForTrack';
 
@@ -47,32 +46,25 @@ const messages = defineMessages({
   },
 });
 
-const DashboardDocumentInnerContainer = styled.div`
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  padding: 1rem;
-`;
-
 const CommonStatusLine = ({
   document,
   documentUploadStatus,
 }: {
   document: Document;
   documentUploadStatus?: UploadManagerStatus;
-}) => (
-  <Box align="center" direction="row">
-    <Heading
-      level={5}
-      style={{ margin: 0, paddingRight: '1rem' }}
-      color={colorsTokens['secondary-text']}
-    >
-      <FormattedMessage {...messages.title} />
-    </Heading>
-    <ObjectStatusPicker object={document} uploadStatus={documentUploadStatus} />
-  </Box>
-);
+}) => {
+  const intl = useIntl();
+
+  return (
+    <Box align="center" direction="row" gap="xsmall">
+      <Text weight="bold">{intl.formatMessage(messages.title)}:</Text>
+      <ObjectStatusPicker
+        object={document}
+        uploadStatus={documentUploadStatus}
+      />
+    </Box>
+  );
+};
 
 interface DashboardDocumentProps {
   document: Document;
@@ -101,26 +93,26 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
 
   if (document.upload_state === READY) {
     return (
-      <DashboardDocumentInnerContainer>
-        <Box direction="row">
-          <Box basis="1/2" margin="small">
+      <Box pad="small" justify="space-around" style={{ flexGrow: 1 }}>
+        <Box direction="row" gap="xsmall">
+          <Box margin="small">
             <CommonStatusLine
               document={document}
               documentUploadStatus={documentUploadState}
             />
-            {intl.formatMessage(messages[READY])}
-            <Box align="center" direction="row" margin={{ top: 'small' }}>
-              <Heading
-                level={5}
-                style={{ margin: 0, paddingRight: '1rem' }}
-                color={colorsTokens['secondary-text']}
-              >
-                {intl.formatMessage(messages.filename)}
-              </Heading>
-              <div>{document.filename}</div>
+            <Text color={colorsTokens['greyscale-800']}>
+              {intl.formatMessage(messages[READY])}
+            </Text>
+            <Box direction="row" margin={{ top: 'small' }} gap="xxsmall">
+              <Text weight="bold">
+                {intl.formatMessage(messages.filename)}:
+              </Text>
+              <Text color={colorsTokens['greyscale-800']}>
+                {document.filename}
+              </Text>
             </Box>
           </Box>
-          <Box basis="1/2" margin="small">
+          <Box margin={{ horizontal: 'auto' }} justify="center">
             <DocumentPlayer document={document} />
           </Box>
         </Box>
@@ -128,7 +120,7 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
           <DashboardDocumentTitleForm document={document} />
         </Box>
         <DashboardDocumentPaneButtons document={document} />
-      </DashboardDocumentInnerContainer>
+      </Box>
     );
   }
 
@@ -138,13 +130,13 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
       uploadManagerState[document.id]?.status === UploadManagerStatus.SUCCESS)
   ) {
     return (
-      <DashboardDocumentInnerContainer>
+      <Box pad="small" justify="space-around" style={{ flexGrow: 1 }}>
         <CommonStatusLine
           document={document}
           documentUploadStatus={documentUploadState}
         />
         <DashboardDocumentPaneButtons document={document} />
-      </DashboardDocumentInnerContainer>
+      </Box>
     );
   }
 
@@ -153,7 +145,7 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
     uploadManagerState[document.id]?.status === UploadManagerStatus.UPLOADING
   ) {
     return (
-      <DashboardDocumentInnerContainer>
+      <Box pad="small" justify="space-around" style={{ flexGrow: 1 }}>
         <CommonStatusLine
           document={document}
           documentUploadStatus={documentUploadState}
@@ -164,12 +156,12 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
           />
         </Box>
         <DashboardDocumentPaneButtons document={document} />
-      </DashboardDocumentInnerContainer>
+      </Box>
     );
   }
 
   return (
-    <DashboardDocumentInnerContainer>
+    <Box pad="small" justify="space-around" style={{ flexGrow: 1 }}>
       <CommonStatusLine
         document={document}
         documentUploadStatus={documentUploadState}
@@ -177,7 +169,7 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
       {document.upload_state === PENDING &&
         intl.formatMessage(messages[PENDING])}
       <DashboardDocumentPaneButtons document={document} />
-    </DashboardDocumentInnerContainer>
+    </Box>
   );
 };
 

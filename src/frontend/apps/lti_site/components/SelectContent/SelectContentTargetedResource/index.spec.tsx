@@ -78,10 +78,10 @@ describe('SelectContentTargetedResource', () => {
       within(screen.getByLabelText('Select Video 1')).getByRole('img', {
         name: 'thumbnail',
       }),
-    ).toHaveStyleRule(
-      'background',
-      'url(https://example.com/default_thumbnail/144) no-repeat center / cover',
-    );
+    ).toHaveStyle({
+      background:
+        'url(https://example.com/default_thumbnail/144) no-repeat center / cover',
+    });
 
     screen.getByText('Video 1');
     screen.getByText('Video 2');
@@ -155,10 +155,10 @@ describe('SelectContentTargetedResource', () => {
       within(screen.getByLabelText('Select Webinar 1')).getByRole('img', {
         name: 'thumbnail',
       }),
-    ).toHaveStyleRule(
-      'background',
-      'url(https://example.com/default_thumbnail/144) no-repeat center / cover',
-    );
+    ).toHaveStyle({
+      background:
+        'url(https://example.com/default_thumbnail/144) no-repeat center / cover',
+    });
   });
 
   it('renders a dynamic resource loaded from an app', async () => {

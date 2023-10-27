@@ -1,6 +1,7 @@
-import { Anchor, Box } from 'grommet';
-import { Breakpoints } from 'lib-common';
+import { Anchor } from 'grommet';
+import { Breakpoints, themeTokens } from 'lib-common';
 import {
+  Box,
   DepositedFile,
   Text,
   truncateFilename,
@@ -57,66 +58,55 @@ export const DepositedFileRow = ({ file }: DepositedFileProps) => {
     <Box
       align="baseline"
       background={file.read ? '#F2F7FD' : 'white'}
-      border={
-        file.read
-          ? false
-          : { color: 'blue-active', side: 'all', size: 'xsmall' }
-      }
+      style={{
+        border: file.read
+          ? undefined
+          : `1px solid ${themeTokens.colors['primary-500']}`,
+      }}
       fill
       margin={{ top: 'xxsmall' }}
       pad="medium"
-      round="small"
+      round="xsmall"
     >
-      <Box direction="row" fill align="center">
-        <Box justify="start" gap="small" flex>
-          <Text weight="medium">{file.author_name}</Text>
-        </Box>
+      <Box
+        direction="row"
+        fill
+        align="center"
+        gap="small"
+        justify="space-between"
+      >
+        <Text weight="medium">{file.author_name}</Text>
         {uploadedOn && (
-          <Box justify="start" flex="shrink">
-            <Text size="small" className="mr-t">
-              {uploadedOnDate}&nbsp;{uploadedOnTime}
-            </Text>
-          </Box>
+          <Text size="small" className="mr-t">
+            {uploadedOnDate}&nbsp;{uploadedOnTime}
+          </Text>
         )}
-        <Box align="end" justify="end" gap="small" flex>
-          <Box
-            justify="end"
-            pad={{
-              horizontal: file.upload_state === 'ready' ? 'medium' : undefined,
-              vertical: 'xsmall',
-            }}
-            round="xsmall"
-          >
-            {file.upload_state === 'ready' ? (
-              <Anchor
-                onClick={markFileAsRead}
-                download
-                a11yTitle={intl.formatMessage(messages.labelDownload)}
-                label={intl.formatMessage(messages.labelDownload)}
-                style={{ fontFamily: 'Roboto-Medium' }}
-                title={intl.formatMessage(messages.labelDownload)}
-                href={file.url}
-              />
-            ) : (
-              <Text>{file.upload_state}</Text>
-            )}
-          </Box>
+        <Box align="end" justify="end" gap="small">
+          {file.upload_state === 'ready' ? (
+            <Anchor
+              onClick={markFileAsRead}
+              download
+              a11yTitle={intl.formatMessage(messages.labelDownload)}
+              label={intl.formatMessage(messages.labelDownload)}
+              style={{ fontFamily: 'Roboto-Medium' }}
+              title={intl.formatMessage(messages.labelDownload)}
+              href={file.url}
+            />
+          ) : (
+            <Text>{file.upload_state}</Text>
+          )}
         </Box>
       </Box>
 
-      <Box direction="row" fill>
-        <Box justify="start" flex>
-          <Text title={file.filename} weight={file.read ? 'regular' : 'bold'}>
-            {isSmallerBreakpoint(breakpoint, Breakpoints.large)
-              ? truncateFilename(file.filename, 40)
-              : breakpoint === 'large'
-              ? truncateFilename(file.filename, 60)
-              : file.filename}
-          </Text>
-        </Box>
-        <Box align="end" justify="end" flex="shrink">
-          <Text size="small">{bytesToSize(file.size)}</Text>
-        </Box>
+      <Box direction="row" fill align="center" justify="space-between">
+        <Text title={file.filename} weight={file.read ? 'regular' : 'bold'}>
+          {isSmallerBreakpoint(breakpoint, Breakpoints.large)
+            ? truncateFilename(file.filename, 40)
+            : breakpoint === 'large'
+            ? truncateFilename(file.filename, 60)
+            : file.filename}
+        </Text>
+        <Text size="small">{bytesToSize(file.size)}</Text>
       </Box>
     </Box>
   );
