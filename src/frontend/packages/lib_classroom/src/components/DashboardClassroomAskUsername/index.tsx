@@ -5,10 +5,10 @@ import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
-  label: {
+  labelEnterYourName: {
     defaultMessage: 'Enter your name',
-    description: 'Placeholder for asking username to join the classroom.',
-    id: 'component.DashboardClassroomAskUsername.label',
+    description: 'Input label for asking username to join the classroom.',
+    id: 'component.DashboardClassroomAskUsername.labelEnterYourName',
   },
   infoInput: {
     defaultMessage: 'Please enter your name to join the classroom',
@@ -54,8 +54,8 @@ const DashboardClassroomAskUsernameWrapper = ({
   return (
     <Box pad="large" gap="medium" className="DashboardClassroomAskUsername">
       <Input
-        aria-label={intl.formatMessage(messages.label)}
-        label={intl.formatMessage(messages.label)}
+        aria-label={intl.formatMessage(messages.labelEnterYourName)}
+        label={intl.formatMessage(messages.labelEnterYourName)}
         fullWidth
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
           setUserFullname(event.currentTarget.value);

@@ -22,10 +22,10 @@ const messages = defineMessages({
     description: 'Title of the widget used for setting join modes.',
     id: 'components.LiveJoinMode.title',
   },
-  selectLabel: {
+  selectLabelDiscussion: {
     defaultMessage: 'Join the discussion mode',
     description: 'The label for the select to set join modes.',
-    id: 'components.LiveJoinMode.selectLabel',
+    id: 'components.LiveJoinMode.selectLabelDiscussion',
   },
   selectLabelInfo: {
     defaultMessage: 'Choose the mode when someone join the discussion',
@@ -100,8 +100,8 @@ export const LiveJoinMode = () => {
     >
       <Box direction="column" gap="small">
         <Select
-          aria-label={intl.formatMessage(messages.selectLabel)}
-          label={intl.formatMessage(messages.selectLabel)}
+          aria-label={intl.formatMessage(messages.selectLabelDiscussion)}
+          label={intl.formatMessage(messages.selectLabelDiscussion)}
           options={options}
           fullWidth
           value={video.join_mode}

@@ -11,11 +11,11 @@ import { defineMessages, useIntl } from 'react-intl';
 import { LanguageChoice } from '@lib-video/types/SelectOptions';
 
 const messages = defineMessages({
-  selectLanguageLabel: {
+  selectLabelLanguage: {
     defaultMessage: 'Choose the language',
     description:
       'The label of the select used for choosing the language for which the user wants to upload a file.',
-    id: 'components.LanguageSelect.selectLanguageLabel',
+    id: 'components.LanguageSelect.selectLabelLanguage',
   },
   selectLanguageInfo: {
     defaultMessage:
@@ -78,8 +78,8 @@ export const LanguageSelect = ({
 
   return (
     <Select
-      aria-label={intl.formatMessage(messages.selectLanguageLabel)}
-      label={intl.formatMessage(messages.selectLanguageLabel)}
+      aria-label={intl.formatMessage(messages.selectLabelLanguage)}
+      label={intl.formatMessage(messages.selectLabelLanguage)}
       options={availableSelectableLanguages}
       value={selectedLanguage}
       onChange={(evt) => {
