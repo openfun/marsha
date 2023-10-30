@@ -1,8 +1,10 @@
 import { Button } from '@openfun/cunningham-react';
-import { Box, BoxTypes, CardBody, Card as GrommetCard } from 'grommet';
+import { BoxTypes, CardBody, Card as GrommetCard } from 'grommet';
 import { FormClose } from 'grommet-icons';
 import { PropsWithChildren, ReactNode, useState } from 'react';
 import styled from 'styled-components';
+
+import { Box } from '@lib-components/common';
 
 const CardLayout = styled(GrommetCard)`
   transition: all 0.3s;
@@ -52,12 +54,7 @@ export const ClosingCard = ({
           />
         </Box>
         {children && (
-          <Box
-            pad={{ vertical: 'small' }}
-            direction="column"
-            align="left"
-            gap="xsmall"
-          >
+          <Box pad={{ vertical: 'small' }} align="left" gap="xsmall">
             {children}
           </Box>
         )}

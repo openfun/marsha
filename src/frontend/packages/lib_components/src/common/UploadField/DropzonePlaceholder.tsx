@@ -1,10 +1,11 @@
 import { Button } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
 import * as React from 'react';
 import { FormattedMessage, defineMessages } from 'react-intl';
 import styled from 'styled-components';
+
+import { Box } from '..';
 
 import { DropzoneIcon } from './DropzoneIcon';
 

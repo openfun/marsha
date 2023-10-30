@@ -74,6 +74,7 @@ export const tokens = {
           'warning-text': '#FFFFFF',
           'danger-text': '#FFFFFF',
           'primary-150': '#E5EEFA',
+          'info-150': '#E5EEFA',
         },
         font: {
           sizes: {
@@ -169,6 +170,8 @@ export const tokens = {
           'border-radius': {
             active: 'var(--c--components--button--border-radius)',
           },
+          'medium-height': 'auto',
+          'small-height': 'auto',
           success: {
             color: 'white',
             'color-disabled': 'white',

@@ -1,10 +1,11 @@
-import { Box, Collapsible } from 'grommet';
+import { Collapsible } from 'grommet';
 import React, { useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { DownArrowSVG } from '@lib-components/common/SVGIcons/DownArrowSVG';
 import { useInfoWidgetModal } from '@lib-components/hooks/stores/useInfoWidgetModal';
 
+import { Box } from '../Box';
 import { ButtonBox } from '../Button/ButtonBox';
 import { Heading } from '../Headings';
 import { InfoCircleSVG } from '../SVGIcons/InfoCircleSVG';
@@ -41,8 +42,7 @@ export const FoldableItem = ({
     <Box
       ref={refWidget}
       background={cardStyle ? 'white' : 'transparent'}
-      direction="column"
-      round={cardStyle ? '6px' : '0'}
+      round={cardStyle ? 'xsmall' : '0'}
       style={
         cardStyle
           ? {
@@ -76,22 +76,20 @@ export const FoldableItem = ({
         />
       )}
 
-      <Box pad={{ horizontal: '20px' }}>
-        <ButtonBox onClick={() => setOpen(!open)} style={{ padding: 0 }}>
-          <Box align="center" direction="row" gap="25px">
-            <Box>
-              <DownArrowSVG
-                containerStyle={{
-                  transform: open ? undefined : 'rotate(-90deg)',
-                  transition: '150ms linear all',
-                }}
-                iconColor="blue-active"
-                height="9px"
-                width="14.5px"
-              />
-            </Box>
-            <Box style={{ minWidth: '0' }}>
-              <Heading level={3} truncate className="m-0">
+      <Box pad={{ horizontal: 'medium' }}>
+        <ButtonBox onClick={() => setOpen(!open)} pad="none">
+          <Box align="center" direction="row" gap="small">
+            <DownArrowSVG
+              containerStyle={{
+                transform: open ? undefined : 'rotate(-90deg)',
+                transition: '150ms linear all',
+              }}
+              iconColor="blue-active"
+              height="9px"
+              width="14.5px"
+            />
+            <Box width={{ min: 'none' }}>
+              <Heading level={3} truncate margin="none">
                 {title}
               </Heading>
             </Box>

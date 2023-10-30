@@ -162,6 +162,15 @@ input:-webkit-autofill:focus {
 .c__button:hover.c__button-no-bg, .c__button.c__button-no-bg, .c__button:disabled.c__button-no-bg {
   background-color: transparent;
 }
+.c__button--medium {
+  padding: 0.9rem var(--c--theme--spacings--s);
+}
+.c__button--small {
+  padding: 0.6rem 0.75rem;
+}
+.c__button--with-icon--right {
+  padding: 0.7rem var(--c--theme--spacings--t) 0.7rem var(--c--theme--spacings--s);
+}
 .c__button--primary {
   background-color: var(--c--components--button--primary--background--color);
   color: var(--c--components--button--primary--color);

@@ -1,4 +1,4 @@
-import { lazyImport } from 'lib-common';
+import { colorsTokens, lazyImport } from 'lib-common';
 import { BoxError, BoxLoader } from 'lib-components';
 import { Suspense, useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -68,10 +68,12 @@ const AppRoutes = () => {
         }}
       >
         <BoxError
-          background={{ color: 'white' }}
+          background="white"
           pad="large"
           round="small"
-          border={{ color: 'status-warning', size: '2px' }}
+          style={{
+            border: `2px solid ${colorsTokens['warning-500']}`,
+          }}
           width={{ max: 'large' }}
           margin="auto"
           message={error}

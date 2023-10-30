@@ -102,7 +102,7 @@ const Header = forwardRef<Nullable<HTMLDivElement>>((_props, ref) => {
       ref={ref}
       role="menubar"
       direction="row"
-      fill
+      width="full"
       justify="space-between"
       pad={{ horizontal: 'medium' }}
       $isScrollTop={isScrollTop}

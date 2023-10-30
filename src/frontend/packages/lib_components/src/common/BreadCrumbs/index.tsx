@@ -1,9 +1,10 @@
-import { Box } from 'grommet';
 import { BreadCrumbsContext, Crumb as CrumbType } from 'lib-common';
 import React, { useContext, useEffect, useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
+
+import { Box } from '../Box';
 
 const BreadCrumbLink = styled(Link)`
   color: black;
@@ -26,9 +27,9 @@ export const BreadCrumbs: React.FC = () => {
   );
 
   return (
-    <Box as="ul" direction="row" margin="none" pad="medium" gap="medium">
+    <Box type="ul" direction="row" margin="none" pad="medium" gap="medium">
       {orderedCrumbs.map((crumb, index, list) => (
-        <Box as="li" key={crumb.key}>
+        <Box type="li" key={crumb.key}>
           {index === list.length - 1 ? (
             crumb.title
           ) : (

@@ -1,5 +1,6 @@
-import { Box, Meter } from 'grommet';
+import { Meter } from 'grommet';
 
+import { Box } from '../Box';
 import { Text } from '../Text';
 
 interface ProgressionBarProps {

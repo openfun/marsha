@@ -38,8 +38,9 @@ export type ObtainHTMLProps<T extends ReactHTML[keyof ReactHTML]> =
 export interface TypoPropsOnly {
   align?: CSSProperties['alignItems'];
   background?: CSSProperties['background'];
+  basis?: CSSProperties['flexBasis'];
   color?: CSSProperties['color'];
-  fill?: boolean;
+  fill?: boolean | 'horizontal' | 'vertical' | 'full';
   fontSize?: CSSProperties['fontSize'];
   height?: Height;
   justify?: CSSProperties['justifyContent'];
@@ -94,15 +95,16 @@ export type TypoProps<
 const TypoRef = forwardRef(
   <T extends keyof ReactHTML = 'div'>(
     {
-      align = 'normal',
+      align,
       background,
+      basis,
       children,
       className,
       color,
       fill,
       fontSize,
       height,
-      justify = 'normal',
+      justify,
       margin,
       pad,
       textAlign,
@@ -174,11 +176,13 @@ const TypoRef = forwardRef(
         style: {
           alignItems: align,
           background: bgClassname ? undefined : background,
+          flexBasis: basis,
           color: colorClassname ? undefined : color,
           fontSize,
           justifyContent: justify,
           textAlign,
-          width: fill ? '100%' : undefined,
+          width: fill && fill !== 'vertical' ? '100%' : undefined,
+          height: fill && fill !== 'horizontal' ? '100%' : undefined,
           ...moreStyles,
           ...props.style,
         },

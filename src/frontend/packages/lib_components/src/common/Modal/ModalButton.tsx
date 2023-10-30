@@ -1,18 +1,22 @@
 import { Button } from '@openfun/cunningham-react';
-import { Box, BoxProps } from 'grommet';
 import { PropsWithChildren } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { ButtonLoader, ButtonLoaderProps } from '@lib-components/common/';
+import {
+  Box,
+  BoxProps,
+  ButtonLoader,
+  ButtonLoaderProps,
+} from '@lib-components/common/';
 
 export const ModalButtonContainer = ({
   children,
   ...props
-}: PropsWithChildren<BoxProps>) => {
+}: PropsWithChildren<BoxProps<'div'>>) => {
   return (
     <Box
       direction="row"
-      justify="around"
+      justify="space-around"
       gap="medium"
       margin={{ top: 'large' }}
       {...props}

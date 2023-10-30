@@ -1,11 +1,10 @@
 import { Button, DatePicker } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
 import { Nullable } from 'lib-common';
 import { DateTime } from 'luxon';
 import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { FoldableItem } from '@lib-components/common/FoldableItem';
+import { Box, FoldableItem } from '@lib-components/common';
 
 const messages = defineMessages({
   info: {
@@ -69,7 +68,7 @@ export const RetentionDate = ({
       initialOpenValue
       title={intl.formatMessage(messages.title)}
     >
-      <Box direction="column" gap="small" data-testid="retention-date-picker">
+      <Box gap="small" data-testid="retention-date-picker">
         <DatePicker
           fullWidth
           label={intl.formatMessage(messages.title)}

@@ -1,12 +1,13 @@
-import { Box } from 'grommet';
 import styled from 'styled-components';
 
+import { Box } from '../Box';
+
 interface StyledNoSelectElementProps {
-  isSelectDisable?: boolean;
+  $isSelectDisable?: boolean;
 }
 
 const disableSelect = (props: StyledNoSelectElementProps) =>
-  props.isSelectDisable ? 'none' : 'inherit';
+  props.$isSelectDisable ? 'none' : 'inherit';
 
 export const StyledNoSelectElement = styled(Box)`
   pointer-events: ${disableSelect};

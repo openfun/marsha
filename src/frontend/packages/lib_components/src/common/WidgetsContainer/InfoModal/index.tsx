@@ -1,11 +1,8 @@
-import { Box, Layer } from 'grommet';
-import { normalizeColor } from 'grommet/utils';
-import { isFirefox, isIframe, theme } from 'lib-common';
+import { Layer } from 'grommet';
+import { colorsTokens, isFirefox, isIframe } from 'lib-common';
 import React, { useCallback, useEffect } from 'react';
 
-import { Heading } from '@lib-components/common/Headings';
-import { RoundCrossSVG } from '@lib-components/common/SVGIcons/RoundCrossSVG';
-import { Text } from '@lib-components/common/Text';
+import { Box, Heading, RoundCrossSVG, Text } from '@lib-components/common';
 import { useResponsive } from '@lib-components/hooks/useResponsive';
 
 interface InfoModalProps {
@@ -53,7 +50,7 @@ export const InfoModal = ({
       responsive={false}
       style={{
         width: isMobile ? '95%' : '500px',
-        border: `1px solid ${normalizeColor('blue-active', theme)}`,
+        background: 'transparent',
         marginTop: `${
           refWidget?.offsetTop
             ? isFirefox() || !isIframe()
@@ -65,7 +62,13 @@ export const InfoModal = ({
       position={refWidget?.offsetTop ? 'top' : 'center'}
       data-testid="info-modal"
     >
-      <Box background="bg-info" direction="column" round="6px">
+      <Box
+        background={colorsTokens['info-100']}
+        round="xsmall"
+        style={{
+          border: `1px solid ${colorsTokens['info-500']}`,
+        }}
+      >
         <Box
           direction="row-reverse"
           pad={{ horizontal: 'small', top: 'small' }}
@@ -73,15 +76,11 @@ export const InfoModal = ({
           <RoundCrossSVG
             onClick={onClose}
             height="20px"
-            iconColor="blue-active"
+            iconColor={colorsTokens['info-500']}
             width="20px"
           />
         </Box>
-        <Box
-          direction="column"
-          gap="medium"
-          pad={{ horizontal: 'large', bottom: '30px' }}
-        >
+        <Box gap="medium" pad={{ horizontal: 'large', bottom: '30px' }}>
           <Heading level={2} truncate className="m-0">
             {title}
           </Heading>

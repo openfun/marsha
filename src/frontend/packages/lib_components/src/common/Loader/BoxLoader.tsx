@@ -1,10 +1,11 @@
 import { Loader } from '@openfun/cunningham-react';
-import { Box, BoxProps } from 'grommet';
 import { ComponentPropsWithoutRef } from 'react';
+
+import { Box, BoxProps } from '../Box';
 
 type LoaderProps = ComponentPropsWithoutRef<typeof Loader>;
 export interface BoxLoaderProps extends LoaderProps {
-  boxProps?: BoxProps;
+  boxProps?: BoxProps<'div'>;
   whiteBackground?: boolean;
 }
 export const BoxLoader = ({
@@ -12,7 +13,7 @@ export const BoxLoader = ({
   whiteBackground,
   ...loaderProps
 }: BoxLoaderProps) => {
-  let boxPropsAdd: BoxProps = { ...boxProps };
+  let boxPropsAdd: BoxLoaderProps['boxProps'] = { ...boxProps };
   if (whiteBackground) {
     boxPropsAdd = {
       ...boxProps,

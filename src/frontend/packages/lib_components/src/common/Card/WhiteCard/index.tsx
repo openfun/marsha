@@ -1,6 +1,7 @@
-import { Box } from 'grommet';
+import { colorsTokens } from '@lib-common/cunningham';
 import React, { PropsWithChildren } from 'react';
 
+import { Box } from '@lib-components/common/Box';
 import { Heading } from '@lib-components/common/Headings';
 import { useResponsive } from '@lib-components/hooks/useResponsive';
 
@@ -16,7 +17,7 @@ export const WhiteCard = ({
 
   return (
     <Box
-      background="bg-marsha"
+      background={colorsTokens['main']}
       margin={{ left: isDesktop ? 'auto' : undefined }}
       basis={isDesktop ? '50%' : '100%'}
       justify="center"
@@ -24,13 +25,12 @@ export const WhiteCard = ({
     >
       <Box
         background="white"
-        direction="column"
         pad="medium"
         round="small"
         style={{
           boxShadow: '0px 0px 6px 0px rgba(2, 117, 180, 0.3)',
         }}
-        className="clr-primary-500"
+        className={colorsTokens['primary-500']}
         height="initial"
       >
         <Heading level={2} textAlign="center">

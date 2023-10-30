@@ -1,21 +1,22 @@
 import { Button } from '@openfun/cunningham-react';
 import { screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Box } from 'grommet';
 import { render } from 'lib-tests';
 import { createRef } from 'react';
 
-import Modale, { ModalControlMethods } from './Modal';
+import { Box } from '../Box';
 
-describe('<Modale />', () => {
+import Modal, { ModalControlMethods } from './Modal';
+
+describe('<Modal />', () => {
   it('opens the modal on init', async () => {
     const onClose = jest.fn();
     const { rerender } = render(
       <Box>
         <Button>Open</Button>
-        <Modale isOpen onClose={onClose}>
+        <Modal isOpen onClose={onClose}>
           Some awesome content
-        </Modale>
+        </Modal>
       </Box>,
     );
 
@@ -26,7 +27,7 @@ describe('<Modale />', () => {
     rerender(
       <Box>
         <Button>Open</Button>
-        <Modale isOpen={false}>Some awesome content</Modale>
+        <Modal isOpen={false}>Some awesome content</Modal>
       </Box>,
     );
 
@@ -41,10 +42,10 @@ describe('<Modale />', () => {
     render(
       <Box>
         <Button onClick={() => ref.current?.open()}>Open</Button>
-        <Modale controlMethods={ref} onClose={onClose}>
+        <Modal controlMethods={ref} onClose={onClose}>
           <Button onClick={() => ref.current?.close()}>Close</Button>
           Some awesome content
-        </Modale>
+        </Modal>
       </Box>,
     );
 

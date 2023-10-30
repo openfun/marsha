@@ -1,10 +1,12 @@
 import { Button } from '@openfun/cunningham-react';
 import ClipboardJS from 'clipboard';
-import React, { Fragment, ReactElement, useEffect } from 'react';
+import React, { ReactElement, useEffect } from 'react';
 
 import { DashedBoxCustom } from '@lib-components/common/DashedBoxCustom';
 import { CopySVG } from '@lib-components/common/SVGIcons/CopySVG';
 import { Text, TextProps } from '@lib-components/common/Text/';
+
+import { Box } from '../Box';
 
 interface Props {
   copyId: string;
@@ -41,12 +43,8 @@ export const CopyClipboard = ({
   }, [copyId, isActive, onError, onSuccess]);
 
   return (
-    <Fragment>
-      {withLabel && (
-        <Text weight="medium" className="mt-t">
-          {title}
-        </Text>
-      )}
+    <Box>
+      {withLabel && <Text weight="medium">{title}</Text>}
       <DashedBoxCustom>
         <Text
           color={isActive ? 'clr-primary-500' : '#b4cff2'}
@@ -67,6 +65,6 @@ export const CopyClipboard = ({
           <CopySVG iconColor="blue-active" width="20px" height="25px" />
         </Button>
       </DashedBoxCustom>
-    </Fragment>
+    </Box>
   );
 };
