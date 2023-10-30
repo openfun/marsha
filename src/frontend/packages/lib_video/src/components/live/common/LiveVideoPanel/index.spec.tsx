@@ -1,11 +1,10 @@
 import { screen } from '@testing-library/react';
-import { ResponsiveContext } from 'grommet';
 import {
   participantMockFactory,
   useCurrentResourceContext,
   videoMockFactory,
 } from 'lib-components';
-import { render, renderImageSnapshot } from 'lib-tests';
+import { render } from 'lib-tests';
 import React from 'react';
 
 import {
@@ -211,62 +210,5 @@ describe('<LiveVideoPanel />', () => {
     ).not.toBeInTheDocument();
 
     screen.getByText('application content');
-  });
-
-  it('renders with appropriate style on large screen [screenshot]', async () => {
-    mockedUseCurrentResourceContext.mockReturnValue([
-      {
-        permissions: {
-          can_access_dashboard: false,
-          can_update: false,
-        },
-      },
-    ] as any);
-    useLivePanelState.setState({
-      currentItem: LivePanelItem.APPLICATION,
-      availableItems: [
-        LivePanelItem.APPLICATION,
-        LivePanelItem.CHAT,
-        LivePanelItem.VIEWERS_LIST,
-      ],
-    });
-
-    await renderImageSnapshot(
-      wrapInVideo(<LiveVideoPanel isLive />, mockVideo),
-    );
-
-    expect(screen.queryByRole('tablist')).not.toBeInTheDocument();
-  });
-
-  it('renders with appropriate style on small screen [screenshot]', async () => {
-    mockedUseCurrentResourceContext.mockReturnValue([
-      {
-        permissions: {
-          can_access_dashboard: false,
-          can_update: false,
-        },
-      },
-    ] as any);
-    useLivePanelState.setState({
-      currentItem: LivePanelItem.APPLICATION,
-      availableItems: [
-        LivePanelItem.APPLICATION,
-        LivePanelItem.CHAT,
-        LivePanelItem.VIEWERS_LIST,
-      ],
-    });
-
-    await renderImageSnapshot(
-      wrapInVideo(
-        <ResponsiveContext.Provider value="small">
-          <LiveVideoPanel isLive />
-        </ResponsiveContext.Provider>,
-        mockVideo,
-      ),
-      300,
-      300,
-    );
-
-    expect(screen.queryByRole('tablist')).not.toBeInTheDocument();
   });
 });

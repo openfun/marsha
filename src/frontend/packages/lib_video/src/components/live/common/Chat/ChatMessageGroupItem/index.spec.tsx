@@ -44,7 +44,7 @@ describe('<ChatMessageGroupItem />', () => {
     expect(screen.getByText('This is an example message')).toBeInTheDocument();
   });
 
-  it('renders the component when there are several messages and compares it with previous render [screenshot]', () => {
+  it('renders the component when there are several messages and compares it with previous render', () => {
     render(<ChatMessageGroupItem msgGroup={groupWithSeveralMessages} />);
 
     expect(screen.getByText('John Doe')).toBeInTheDocument();

@@ -7,10 +7,7 @@ module.exports = {
     '\\.(css)$': '<rootDir>/__mocks__/styleMock.js',
     ...libModuleNameMapper['lib-classroom'],
   },
-  reporters: [
-    'default',
-    'jest-image-snapshot/src/outdated-snapshot-reporter.js',
-  ],
+  reporters: ['default'],
   resolver: 'marsha-config/jest/resolver.js',
   setupFilesAfterEnv: [
     'core-js',

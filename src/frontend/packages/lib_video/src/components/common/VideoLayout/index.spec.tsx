@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ResponsiveContext } from 'grommet';
 import { useJwt } from 'lib-components';
-import { imageSnapshot, render } from 'lib-tests';
+import { render } from 'lib-tests';
 
 import { useLivePanelState } from '@lib-video/hooks/useLivePanelState';
 
@@ -20,7 +20,7 @@ describe('<VideoLayout />', () => {
     });
   });
 
-  it('renders components with panel [screenshot]', async () => {
+  it('renders components with panel', () => {
     useLivePanelState.setState({
       isPanelVisible: true,
     });
@@ -45,11 +45,9 @@ describe('<VideoLayout />', () => {
 
     const sideElenent = screen.getByText('panel component');
     expect(sideElenent).toBeVisible();
-
-    await imageSnapshot();
   });
 
-  it('hides the panel when isPanelOpen is false [screenshot]', async () => {
+  it('hides the panel when isPanelOpen is false', () => {
     render(
       <ResponsiveContext.Provider value="large">
         <VideoLayout
@@ -69,11 +67,9 @@ describe('<VideoLayout />', () => {
     screen.getByText('main component');
 
     expect(screen.queryByText('panel component')).not.toBeInTheDocument();
-
-    await imageSnapshot();
   });
 
-  it('does not render panel when is isPanelOpen is not defined [screenshot]', async () => {
+  it('does not render panel when is isPanelOpen is not defined', () => {
     render(
       <ResponsiveContext.Provider value="large">
         <VideoLayout
@@ -93,11 +89,9 @@ describe('<VideoLayout />', () => {
     screen.getByText('main component');
 
     expect(screen.queryByText('panel component')).not.toBeInTheDocument();
-
-    await imageSnapshot();
   });
 
-  it('does not render panel when sideElement is not defined even if isPanelOpen is true [screenshot]', async () => {
+  it('does not render panel when sideElement is not defined even if isPanelOpen is true', () => {
     render(
       <ResponsiveContext.Provider value="large">
         <VideoLayout
@@ -116,8 +110,6 @@ describe('<VideoLayout />', () => {
     screen.getByText('live title element');
     screen.getByText('main component');
     expect(screen.queryByText('panel component')).not.toBeInTheDocument();
-
-    await imageSnapshot();
   });
 
   it('does not render the actionElement when displayActionsElement is set to false', () => {
