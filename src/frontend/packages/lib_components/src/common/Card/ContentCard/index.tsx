@@ -1,6 +1,4 @@
 import {
-  Box,
-  BoxExtendedProps,
   BoxTypes,
   CardBody,
   CardFooter,
@@ -10,29 +8,30 @@ import {
 import React, { PropsWithChildren, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import { Text } from '@lib-components/common/Text';
+import { Box, BoxProps, Text } from '@lib-components/common';
 import { useResponsive } from '@lib-components/hooks';
 
-const CardBox = styled(Box)`
-  gap: 1.7rem;
-  transition: all 0.3s;
-`;
 export const ContentCards = ({
   children,
   ...boxProps
-}: PropsWithChildren<BoxExtendedProps>) => {
+}: PropsWithChildren<BoxProps<'div'>>) => {
   const { isSmallerBreakpoint, breakpoint } = useResponsive();
   const isSmallerXsmedium = isSmallerBreakpoint(breakpoint, 'smedium');
 
   return (
-    <CardBox
+    <Box
       direction="row"
-      wrap={true}
       justify={isSmallerXsmedium ? 'center' : 'start'}
+      gap="medium"
       {...boxProps}
+      style={{
+        flexWrap: 'wrap',
+        transition: 'all 0.3s',
+        ...boxProps.style,
+      }}
     >
       {children}
-    </CardBox>
+    </Box>
   );
 };
 

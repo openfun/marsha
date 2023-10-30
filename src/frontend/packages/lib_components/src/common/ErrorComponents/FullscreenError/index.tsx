@@ -1,12 +1,10 @@
-import { Box } from 'grommet';
 import { colorsTokens } from 'lib-common';
 import React from 'react';
 import { FormattedMessage, defineMessages } from 'react-intl';
 import styled from 'styled-components';
 
-import { Heading } from '@lib-components/common/Headings';
+import { Box, Heading, Text } from '@lib-components/common';
 import { LayoutMainArea } from '@lib-components/common/LayoutMainArea';
-import { Text } from '@lib-components/common/Text';
 
 export enum ErrorComponents {
   generic = 'generic',
@@ -193,7 +191,7 @@ const messages = {
 };
 
 export const ErrorMessage: React.FC<ErrorComponentsProps> = ({ code }) => (
-  <Box direction="column" pad="medium" align="center">
+  <Box pad="medium" align="center">
     <Heading level={5}>
       <FormattedMessage {...messages[code].title} />
     </Heading>

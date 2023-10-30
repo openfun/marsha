@@ -1,6 +1,6 @@
-import { Box, BoxExtendedProps } from 'grommet';
+import { Box, BoxProps } from '@lib-components/common/Box';
 
-export const ButtonBox = (props: BoxExtendedProps) => {
+export const ButtonBox = (props: BoxProps<'div'>) => {
   return (
     <Box
       role="button"

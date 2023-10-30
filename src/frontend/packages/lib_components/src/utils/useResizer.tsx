@@ -1,4 +1,3 @@
-import { Box, BoxProps } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { Nullable, theme } from 'lib-common';
 import React, {
@@ -10,6 +9,8 @@ import React, {
   useState,
 } from 'react';
 import styled from 'styled-components';
+
+import { Box, BoxProps } from '@lib-components/common';
 
 const HALF_SLIDER_WIDTH_PX = 14;
 
@@ -51,7 +52,7 @@ export const useResizer = (
       style,
       ...boxProps
     }: PropsWithChildren<
-      BoxProps & { isResizeHandle: boolean; style: CSSProperties }
+      BoxProps<'div'> & { isResizeHandle: boolean; style: CSSProperties }
     >) => (
       <Box {...boxProps} style={{ position: 'relative', ...style }}>
         {isResizeHandle && (
@@ -59,7 +60,7 @@ export const useResizer = (
             direction="row"
             height="100%"
             justify="center"
-            onMouseDown={(event) => {
+            onMouseDown={(event: { preventDefault: () => void }) => {
               event.preventDefault();
 
               if (!container.current) {

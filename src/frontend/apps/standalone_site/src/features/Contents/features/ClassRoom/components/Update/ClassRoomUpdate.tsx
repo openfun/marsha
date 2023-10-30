@@ -45,11 +45,6 @@ const DashboardClassroomStyled = styled(Box)<DashboardClassroomStyledProps>`
   & .DashboardClassroomLayout {
     border-radius: 1rem;
   }
-  & .DashboardClassroomLayout .classroom-edit-submit button {
-    font-size: 16px;
-    padding: 1rem;
-    line-height: 1.6rem;
-  }
   ${({ $isSmallerBreakpoint, $breakpoint }) =>
     $isSmallerBreakpoint($breakpoint, 'smedium') &&
     `

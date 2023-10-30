@@ -1,5 +1,5 @@
 import { DatePicker } from '@openfun/cunningham-react';
-import { Box, FormField, TextInput } from 'grommet';
+import { FormField, TextInput } from 'grommet';
 import { MarginType } from 'grommet/utils';
 import { Nullable } from 'lib-common';
 import { DateTime, Duration, Settings } from 'luxon';
@@ -8,6 +8,8 @@ import { defineMessages, useIntl } from 'react-intl';
 
 import { FormHelpText } from '@lib-components/common/Form';
 import { Text } from '@lib-components/common/Text';
+
+import { Box } from '../Box';
 
 import { mergeDateTime, splitDateTime } from './utils';
 
@@ -208,7 +210,7 @@ export const SchedulingFields = ({
     <React.Fragment>
       <Box
         direction={vertical ? 'column' : 'row'}
-        justify="between"
+        justify="space-between"
         margin={margin}
         gap="small"
       >

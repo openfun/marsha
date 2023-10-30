@@ -1,12 +1,9 @@
-import { Box, Image, Stack } from 'grommet';
-import { normalizeColor } from 'grommet/utils';
-import { theme } from 'lib-common';
+import { Image, Stack } from 'grommet';
 import React from 'react';
 import { useIntl } from 'react-intl';
 import styled from 'styled-components';
 
-import { Heading } from '@lib-components/common/Headings';
-import { Text } from '@lib-components/common/Text';
+import { Box, Heading, Text } from '@lib-components/common';
 import { useAppConfig } from '@lib-components/data/stores/useAppConfig';
 import { useResponsive } from '@lib-components/hooks/useResponsive';
 
@@ -114,7 +111,6 @@ export const BoundaryScreenError = ({
           round="8px"
           width={isSmall ? '95%' : undefined}
           pad={isSmall ? 'medium' : undefined}
-          style={{ color: normalizeColor('blue-active', theme) }}
         >
           <Text
             weight="light"
@@ -136,10 +132,10 @@ export const BoundaryScreenError = ({
           </Heading>
           <Text
             type="p"
-            className="m-0"
+            margin="none"
             textAlign="center"
-            style={{
-              maxWidth: `90%`,
+            width={{
+              max: '90%',
             }}
           >
             {intl.formatMessage(messages.introduceProblem)}

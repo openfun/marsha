@@ -1,10 +1,9 @@
-import { Box, BoxExtendedProps } from 'grommet';
 import { Alert } from 'grommet-icons';
 import React, { PropsWithChildren, ReactNode } from 'react';
 
-import { Text } from '@lib-components/common/Text';
+import { Box, BoxProps, Text } from '@lib-components/common';
 
-interface BoxErrorProps extends BoxExtendedProps {
+interface BoxErrorProps extends BoxProps<'div'> {
   message: ReactNode;
 }
 

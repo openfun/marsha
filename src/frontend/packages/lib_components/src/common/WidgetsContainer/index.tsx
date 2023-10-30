@@ -1,7 +1,9 @@
-import { Box } from 'grommet';
+import { colorsTokens } from '@lib-common/cunningham';
 import React, { useEffect, useRef, useState } from 'react';
 
 import { useInfoWidgetModal } from '@lib-components/hooks/stores/useInfoWidgetModal';
+
+import { Box } from '..';
 
 import { InfoModal } from './InfoModal';
 
@@ -75,12 +77,7 @@ export const WidgetsContainer = ({ children }: WidgetsContainerProps) => {
         ? children
             .filter((widget) => widget.size === WidgetSize.LARGE)
             .map((widget, index) => (
-              <Box
-                direction="column"
-                background="bg-marsha"
-                gap="small"
-                key={index}
-              >
+              <Box background={colorsTokens['main']} gap="small" key={index}>
                 {widget.component}
               </Box>
             ))
@@ -91,12 +88,11 @@ export const WidgetsContainer = ({ children }: WidgetsContainerProps) => {
       <Box
         ref={mainContainerRef}
         direction="row"
-        background="bg-marsha"
+        background={colorsTokens['main']}
         justify="center"
       >
         {mapper.map((_, indexColumn) => (
           <Box
-            direction="column"
             key={indexColumn}
             width={{
               max: `${WIDGETS_COLUMN.MAX_WIDTH}px`,

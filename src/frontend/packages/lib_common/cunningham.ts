@@ -7,6 +7,7 @@ const config = {
         colors: {
           'primary-100': '#EDF5FA',
           'primary-150': '#E5EEFA',
+          'info-150': '#E5EEFA',
         },
         font: {
           sizes: {
@@ -73,6 +74,8 @@ const config = {
           'border-radius': {
             active: 'var(--c--components--button--border-radius)',
           },
+          'medium-height': 'auto',
+          'small-height': 'auto',
           success: {
             color: 'white',
             'color-disabled': 'white',

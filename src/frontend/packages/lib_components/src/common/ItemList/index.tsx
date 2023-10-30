@@ -1,7 +1,7 @@
-import { Box } from 'grommet';
+import { colorsTokens } from 'lib-common';
 import React from 'react';
 
-import { Text } from '@lib-components/common/Text';
+import { Box, Text } from '@lib-components/common/';
 
 interface ItemListProps<T> {
   children: (item: T, index: string) => React.ReactNode;
@@ -15,30 +15,29 @@ export const ItemList = <T,>({
   noItemsMessage,
 }: ItemListProps<T>) => {
   return (
-    <Box direction="column" gap="small">
+    <Box gap="small">
       <Box
-        background="bg-select"
-        border={{
-          color: 'blue-off',
-          size: 'small',
-        }}
+        background={colorsTokens['info-150']}
+        style={{ border: `solid ${colorsTokens['info-200']} 2px` }}
         round="xsmall"
       >
-        <Box
-          align="center"
-          border={{
-            color: 'blue-off',
-            size: 'small',
-            style: 'dashed',
-            side: 'between',
-          }}
-          direction="column"
-          gap="small"
-          justify="center"
-          pad="small"
-        >
+        <Box align="center" justify="center" pad="small">
           {itemList.length ? (
-            itemList.map((item, index) => children(item, `list_item_${index}`))
+            itemList.map((item, index) => (
+              <Box
+                key={`list_item_${index}`}
+                fill
+                style={{
+                  borderTop: index && `dashed ${colorsTokens['info-200']} 2px`,
+                }}
+                pad={{
+                  top: index ? 'small' : 'none',
+                  bottom: index !== itemList.length - 1 ? 'small' : 'none',
+                }}
+              >
+                {children(item, `list_item_${index}`)}
+              </Box>
+            ))
           ) : (
             <Text truncate>{noItemsMessage}</Text>
           )}

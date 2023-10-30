@@ -18,10 +18,9 @@ describe(`<BoxLoader />`, () => {
   it('renders a loader with white background', () => {
     render(<BoxLoader whiteBackground />);
 
-    expect(screen.getByLabelText('loader')).toHaveStyleRule(
-      'background-color',
-      '#ffffff',
-    );
+    expect(screen.getByLabelText('loader')).toHaveStyle({
+      background: 'white',
+    });
   });
 
   it('renders a loader with small size', () => {
@@ -39,7 +38,7 @@ describe(`<BoxLoader />`, () => {
       />,
     );
 
-    expect(screen.getByLabelText('loader')).toHaveStyleRule('margin', '555px');
+    expect(screen.getByLabelText('loader')).toHaveStyle({ margin: '555px' });
   });
 
   it('renders a loader with aria-label', () => {

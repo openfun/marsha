@@ -1,5 +1,4 @@
 import { Button } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
 import React, {
   ComponentPropsWithRef,
   Dispatch,
@@ -11,7 +10,7 @@ import React, {
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { BoxLoader } from '..';
+import { Box, BoxLoader } from '..';
 
 type ButtonProps = ComponentPropsWithRef<typeof Button>;
 

@@ -82,7 +82,6 @@ export const VideoLayout = ({
                 <Box flex="grow">
                   <StyledNoSelectElement
                     margin={{ top: 'auto', bottom: 'auto' }}
-                    flex="grow"
                     isSelectDisable={isResizing}
                   >
                     {mainElement}

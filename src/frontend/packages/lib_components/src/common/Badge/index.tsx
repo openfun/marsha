@@ -1,23 +1,11 @@
-import { Box, BoxExtendedProps } from 'grommet';
 import { colorsTokens } from 'lib-common';
 import React from 'react';
-import styled from 'styled-components';
 
 import { Text } from '@lib-components/common/Text';
 
-const StyledBadge = styled(Box)`
-  position: absolute;
-  top: 0px;
-  right: 0px;
-  background-color: ${colorsTokens['primary-500']};
-  border-radius: 60px;
-  height: 22px;
-  width: 22px;
-  justify-content: center;
-  align-items: center;
-`;
+import { Box, BoxProps } from '../Box';
 
-interface BadgeProps extends BoxExtendedProps {
+interface BadgeProps extends Omit<BoxProps<'div'>, 'position'> {
   value: string;
   position?: {
     top: string;
@@ -41,11 +29,18 @@ export const Badge = ({
   }
 
   return (
-    <StyledBadge
+    <Box
       data-testid="badge_container"
+      background={colorsTokens['primary-500']}
+      round="full"
+      height="22px"
+      width="22px"
+      justify="center"
+      align="center"
       style={{
-        top: position?.top,
-        right: position?.right,
+        position: 'absolute',
+        top: position?.top || '0px',
+        right: position?.right || '0px',
         ...moreStyle,
         ...style,
       }}
@@ -54,6 +49,6 @@ export const Badge = ({
       <Text size="tiny" color="white">
         {value}
       </Text>
-    </StyledBadge>
+    </Box>
   );
 };

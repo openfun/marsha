@@ -1,6 +1,8 @@
+import { colorsTokens } from '@lib-common/cunningham';
 import { Switch } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
 import React from 'react';
+
+import { Box } from '../Box';
 
 interface ToggleInputProps {
   checked: boolean;
@@ -18,11 +20,10 @@ export const ToggleInput = ({
   return (
     <Box
       align="center"
-      background="bg-select"
+      background={colorsTokens['info-150']}
       direction="row"
       gap="medium"
-      height="60px"
-      pad={{ horizontal: '36px' }}
+      pad={{ horizontal: 'xmedium', vertical: 'small' }}
       round="6px"
     >
       <Switch

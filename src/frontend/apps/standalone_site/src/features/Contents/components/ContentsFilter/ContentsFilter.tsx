@@ -122,6 +122,9 @@ const ContentsFilter = ({ setFilter, filter }: ContentsFilterProps) => {
         }}
         background="#fff"
         round="xlarge"
+        style={{
+          position: 'relative',
+        }}
       >
         <Text>
           <Filter color="blue-active" size="20px" />

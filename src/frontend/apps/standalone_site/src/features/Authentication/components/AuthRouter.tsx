@@ -25,7 +25,7 @@ const AuthRouter = () => {
           <Route path="*" element={<Login />} />
         </Routes>
       </BaseAuthenticationPage>
-      <Box style={{ position: 'absolute', bottom: '0' }} fill>
+      <Box style={{ position: 'absolute', bottom: '0' }} fill="horizontal">
         <Footer />
       </Box>
     </Fragment>

@@ -1,6 +1,4 @@
 import {
-  Box,
-  BoxProps,
   Form as GrommetForm,
   FormExtendedEvent as GrommetFormExtendedEvent,
   FormField as GrommetFormField,
@@ -16,7 +14,7 @@ import React, {
   useState,
 } from 'react';
 
-import { Text, TextProps } from '../Text';
+import { Box, BoxProps, Text, TextProps } from '@lib-components/common';
 
 type ErrorStateType<T> = Partial<Record<keyof T, string>>;
 
@@ -95,7 +93,7 @@ export const FormField = (props: PropsWithChildren<GrommetFormFieldProps>) => {
 };
 
 interface FormHelpTextProps {
-  boxProps?: BoxProps;
+  boxProps?: BoxProps<'div'>;
   textProps?: TextProps<'span'>;
   disabled?: boolean;
 }

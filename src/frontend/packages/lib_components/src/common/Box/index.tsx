@@ -15,7 +15,10 @@ export interface BoxPropsOnly {
   elevation?: boolean;
 }
 
-type BoxTypes = Pick<ReactHTML, 'div' | 'header' | 'footer' | 'article'>;
+type BoxTypes = Pick<
+  ReactHTML,
+  'div' | 'header' | 'footer' | 'article' | 'ul' | 'li'
+>;
 
 /**
  * @description Typo props
@@ -39,10 +42,12 @@ export type BoxProps<T extends keyof BoxTypes> = TypoProps<
 const BoxRef = forwardRef(
   <T extends keyof BoxTypes = 'div'>(
     {
+      align = 'normal',
       className,
       direction = 'column',
       elevation,
       gap,
+      justify = 'normal',
       round,
       type = 'div',
       ...props
@@ -51,6 +56,8 @@ const BoxRef = forwardRef(
   ) => {
     return (
       <Typo<keyof BoxTypes>
+        align={align}
+        justify={justify}
         ref={ref}
         type={type}
         className={`typo-box ${className || ''}`}

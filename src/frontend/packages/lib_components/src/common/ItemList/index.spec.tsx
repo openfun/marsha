@@ -1,7 +1,8 @@
 import { screen } from '@testing-library/react';
-import { Box } from 'grommet';
 import { render } from 'lib-tests';
 import React from 'react';
+
+import { Box } from '..';
 
 import { ItemList } from '.';
 

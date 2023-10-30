@@ -35,7 +35,7 @@ const Footer = () => {
   const defaultFooterCopyright = '© 2023 Marsha Education';
 
   return (
-    <Box type="footer" margin={{ top: 'auto' }} color="white" fill>
+    <Box type="footer" margin={{ top: 'auto' }} color="white" fill="horizontal">
       <WaveIcon color={theme.color} height="4vw" style={{ zIndex: 2 }} />
       <Box
         background={theme.color}
