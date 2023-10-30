@@ -532,48 +532,6 @@ jobs:
           keys:
             - front-dependencies-<< pipeline.parameters.cache-version >>-{{ checksum "yarn.lock" }}
       - run:
-          name: Install Puppeteer dependencies for visual regression testing
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y \
-              ca-certificates \
-              fonts-liberation \
-              libappindicator3-1 \
-              libasound2 \
-              libatk-bridge2.0-0 \
-              libatk1.0-0 \
-              libc6 \
-              libcairo2 \
-              libcups2 \
-              libdbus-1-3 \
-              libexpat1 \
-              libfontconfig1 \
-              libgbm1 \
-              libgcc1 \
-              libglib2.0-0 \
-              libgtk-3-0 \
-              libnspr4 \
-              libnss3 \
-              libpango-1.0-0 \
-              libpangocairo-1.0-0 \
-              libstdc++6 \
-              libx11-6 \
-              libx11-xcb1 \
-              libxcb1 \
-              libxcomposite1 \
-              libxcursor1 \
-              libxdamage1 \
-              libxext6 \
-              libxfixes3 \
-              libxi6 \
-              libxrandr2 \
-              libxrender1 \
-              libxss1 \
-              libxtst6 \
-              lsb-release \
-              wget \
-              xdg-utils
-      - run:
           name: Run tests on libs-components
           command: yarn workspace lib-components run test -w 3 --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
       - run:
@@ -680,7 +638,7 @@ jobs:
       - run: # Can be removed when switching to mcr.microsoft.com/playwright:lunar
           name: Install Python 3.11
           command: apt update && apt upgrade -y && apt install -y software-properties-common && add-apt-repository -y ppa:deadsnakes/ppa && DEBIAN_FRONTEND=noninteractive apt install -y python3.11 python3.11-dev build-essential
-      - run:  # Can be removed when switching to mcr.microsoft.com/playwright:lunar
+      - run: # Can be removed when switching to mcr.microsoft.com/playwright:lunar
           name: Install pip for Python 3.11
           command: curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11
       - run:
@@ -710,7 +668,7 @@ jobs:
             && cp -r /home/circleci/marsha/src/backend/marsha/e2e/media /data/media/e2e
       - when:
           condition:
-            equal: [ chrome, << parameters.browser_channel >> ]
+            equal: [chrome, << parameters.browser_channel >>]
           steps:
             - run:
                 name: Build apt cache
@@ -723,7 +681,7 @@ jobs:
       # see https://github.com/microsoft/playwright/issues/15764#issuecomment-1462787720
       - when:
           condition:
-            equal: [ webkit, << parameters.browser_channel >> ]
+            equal: [webkit, << parameters.browser_channel >>]
           steps:
             - run:
                 name: Remove broken gstreamer plugin scan

@@ -9,10 +9,7 @@ module.exports = {
     'estree-walker': '<rootDir>/../../node_modules/estree-walker/src/index.js',
     ...libModuleNameMapper['lib-components'],
   },
-  reporters: [
-    'default',
-    'jest-image-snapshot/src/outdated-snapshot-reporter.js',
-  ],
+  reporters: ['default'],
   resolver: '<rootDir>/../../node_modules/marsha-config/jest/resolver.js',
   setupFilesAfterEnv: [
     'core-js',

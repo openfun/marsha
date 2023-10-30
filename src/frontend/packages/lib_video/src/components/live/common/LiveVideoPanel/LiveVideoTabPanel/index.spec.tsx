@@ -7,7 +7,7 @@ import {
   useJwt,
   videoMockFactory,
 } from 'lib-components';
-import { imageSnapshot, render, wrapInIntlProvider } from 'lib-tests';
+import { render, wrapInIntlProvider } from 'lib-tests';
 import renderer from 'react-test-renderer';
 
 import {
@@ -81,7 +81,7 @@ describe('<LiveVideoTabPanel /> styles', () => {
     });
   });
 
-  it('renders with default style when not selected, not hovered, not focused [screenshot]', async () => {
+  it('renders with default style when not selected, not hovered, not focused', () => {
     render(
       wrapInVideo(
         <Tabs>
@@ -107,11 +107,9 @@ describe('<LiveVideoTabPanel /> styles', () => {
     expect(text).toHaveStyle('letter-spacing: -0.23px;');
     expect(text).toHaveStyle('text-align: center;');
     expect(text).toHaveStyle('text-transform: uppercase;');
-
-    await imageSnapshot();
   });
 
-  it('renders with selected style [screenshot]', async () => {
+  it('renders with selected style', () => {
     render(
       wrapInVideo(
         <Tabs>
@@ -135,8 +133,6 @@ describe('<LiveVideoTabPanel /> styles', () => {
     expect(text).toHaveStyle('letter-spacing: -0.23px;');
     expect(text).toHaveStyle('text-align: center;');
     expect(text).toHaveStyle('text-transform: uppercase;');
-
-    await imageSnapshot();
   });
 
   it('checks hover style is applied', () => {

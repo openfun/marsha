@@ -1,6 +1,6 @@
 import { getDefaultNormalizer, screen } from '@testing-library/react';
 import { videoMockFactory } from 'lib-components';
-import { imageSnapshot, render } from 'lib-tests';
+import { render } from 'lib-tests';
 import React from 'react';
 
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
@@ -21,7 +21,7 @@ describe('<StudentLiveInfoBar />', () => {
     expect(screen.getByRole('heading', { name: 'title' })).toBeInTheDocument();
   });
 
-  it('renders live title and live start datetime [screenshot]', async () => {
+  it('renders live title and live start datetime', () => {
     const mockedVideo = videoMockFactory({
       allow_recording: false,
       title: 'title',
@@ -43,7 +43,5 @@ describe('<StudentLiveInfoBar />', () => {
         normalizer: getDefaultNormalizer({ collapseWhitespace: false }),
       }),
     ).toBeInTheDocument();
-
-    await imageSnapshot();
   });
 });
