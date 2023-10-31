@@ -248,7 +248,7 @@ describe('<Recordings />', () => {
       ),
     ).toBeInTheDocument();
     const vodLink = screen.getByRole('link', {
-      name: 'Navigate to VOD Dashboard',
+      name: classroomRecording.vod!.title as string,
     });
     expect(vodLink).toBeInTheDocument();
     expect(vodLink).toHaveAttribute(
