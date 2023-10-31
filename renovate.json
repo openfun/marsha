@@ -21,7 +21,6 @@
         "@types/react-dom",
         "@types/react-test-renderer",
         "faker",
-        "jwt-decode",
         "@mdx-js/mdx2",
         "mermaid",
         "node",
