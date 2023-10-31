@@ -29,7 +29,7 @@ RUN mkdir /install && \
     pip install --prefix=/install .
 
 # ---- front-end builder image ----
-FROM node:16 as front-builder
+FROM node:18 as front-builder
 
 WORKDIR /app
 
@@ -58,7 +58,7 @@ RUN yarn compile-translations && \
     yarn workspace marsha run build --mode=production --output-path /app/marsha/static/js/build/lti_site/
 
 # ---- mails ----
-FROM node:16 as mail-builder
+FROM node:18 as mail-builder
 RUN mkdir -p /app/backend/marsha/core/templates/core/mail/html/ && \
     mkdir -p /app/backend/marsha/core/templates/core/mail/text/ && \
     mkdir -p /app/mail

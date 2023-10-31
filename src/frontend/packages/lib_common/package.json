@@ -47,5 +47,8 @@
     "styled-components": "*",
     "typescript": "*"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "volta": {
+    "node": "18.18.2"
+  }
 }

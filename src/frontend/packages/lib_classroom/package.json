@@ -81,5 +81,8 @@
     "react-dropzone": "14.2.3",
     "styled-components": "*",
     "zustand": "*"
+  },
+  "volta": {
+    "node": "18.18.2"
   }
 }

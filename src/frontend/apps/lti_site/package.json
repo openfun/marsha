@@ -125,5 +125,8 @@
     "uuid": "9.0.1",
     "whatwg-fetch": "3.6.19",
     "zustand": "*"
+  },
+  "volta": {
+    "node": "18.18.2"
   }
 }

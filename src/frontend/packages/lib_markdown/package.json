@@ -118,5 +118,8 @@
     "styled-components": "*",
     "unist-util-visit": "5.0.0",
     "zustand": "*"
+  },
+  "volta": {
+    "node": "18.18.2"
   }
 }
