@@ -1,8 +1,9 @@
 import { Button, Input } from '@openfun/cunningham-react';
 import { useQueryClient } from '@tanstack/react-query';
-import { Anchor, Box, Footer } from 'grommet';
-import { Nullable } from 'lib-common';
+import { Anchor, Footer } from 'grommet';
+import { Nullable, colorsTokens } from 'lib-common';
 import {
+  Box,
   BoxLoader,
   MarkdownDocumentRenderingOptions,
   Text,
@@ -259,13 +260,13 @@ export const MarkdownEditor = ({ markdownDocumentId }: MarkdownEditorProps) => {
       <Suspense fallback={<BoxLoader />}>
         {isSaving && <BoxLoader />}
 
-        <Box direction="column">
+        <Box>
           <Box
             direction="row"
-            width="100%"
+            width="full"
             pad={{ bottom: 'xsmall' }}
-            gap="small"
             align="center"
+            gap="small"
           >
             <Input
               aria-label={intl.formatMessage(messages.title)}
@@ -275,36 +276,40 @@ export const MarkdownEditor = ({ markdownDocumentId }: MarkdownEditorProps) => {
               value={localTitle}
               maxLength={255}
             />
-            <Box flex="grow" />
 
-            <MdxRenderingOptionsSelector
-              renderingOptions={localRenderingOptions}
-              setRenderingOptions={setLocalRenderingOptions}
-            />
+            <Box direction="row">
+              <MdxRenderingOptionsSelector
+                renderingOptions={localRenderingOptions}
+                setRenderingOptions={setLocalRenderingOptions}
+              />
+              <Box direction="row" gap="small">
+                <Button
+                  onClick={() => publishDocument()}
+                  disabled={
+                    !canSaveDocument() ||
+                    contentChanged.current ||
+                    !localIsDraft
+                  }
+                >
+                  {intl.formatMessage(messages.publish)}
+                </Button>
 
-            <Button
-              onClick={() => publishDocument()}
-              disabled={
-                !canSaveDocument() || contentChanged.current || !localIsDraft
-              }
-            >
-              {intl.formatMessage(messages.publish)}
-            </Button>
-
-            <Button
-              onClick={() => saveDocument()}
-              disabled={!canSaveDocument() || !contentChanged.current}
-            >
-              {intl.formatMessage(messages.save)}
-            </Button>
+                <Button
+                  onClick={() => saveDocument()}
+                  disabled={!canSaveDocument() || !contentChanged.current}
+                >
+                  {intl.formatMessage(messages.save)}
+                </Button>
+              </Box>
+            </Box>
           </Box>
 
-          <Box direction="row" align="center">
+          <Box direction="row" align="center" justify="space-between">
             <ScreenDispositionSelector
               screenDisposition={screenDisposition}
               setScreenDisposition={setScreenDisposition}
             />
-            <Box flex="grow" margin="xsmall" align="end">
+            <Box margin="xsmall" align="end">
               <LanguageSelector
                 currentLanguage={language}
                 onLanguageChange={setLanguage}
@@ -314,10 +319,15 @@ export const MarkdownEditor = ({ markdownDocumentId }: MarkdownEditorProps) => {
           </Box>
         </Box>
 
-        <Box direction="row" style={{ minHeight: '50vw' }} border="top">
+        <Box
+          direction="row"
+          height={{ min: '50vw' }}
+          style={{
+            borderTop: `1px solid ${colorsTokens['greyscale-500']}`,
+          }}
+        >
           <Box
-            flex="grow"
-            width="50%"
+            fill="horizontal"
             // Use style to hide to keep the component's state
             style={{
               display:
@@ -328,7 +338,7 @@ export const MarkdownEditor = ({ markdownDocumentId }: MarkdownEditorProps) => {
             data-testid="editor_container"
           >
             {localMarkdownContent !== null ? (
-              <React.Fragment>
+              <Box justify="space-between" fill>
                 <MarkdownImageDropzone onDropAccepted={onDropAccepted}>
                   <CodeMirrorEditor
                     onEditorContentChange={setLocalMarkdownContent}
@@ -336,30 +346,30 @@ export const MarkdownEditor = ({ markdownDocumentId }: MarkdownEditorProps) => {
                     codemirrorEditor={codemirrorEditor}
                   />
                 </MarkdownImageDropzone>
-                <Box flex="grow" />
-                <Footer background="brand" pad="xxsmall">
-                  <Text color="white">
-                    {intl.formatMessage(messages.editorEmptyDragDropHelper)}
-                  </Text>
-                </Footer>
-                <Footer background="light-1" pad="xxsmall">
-                  <Anchor
-                    href="https://www.markdownguide.org/basic-syntax"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    label="Markdown basic syntax"
-                    color="dark-3"
-                    weight="normal"
-                  />
-                </Footer>
-              </React.Fragment>
+                <Box>
+                  <Footer background="brand" pad="xxsmall">
+                    <Text color="white">
+                      {intl.formatMessage(messages.editorEmptyDragDropHelper)}
+                    </Text>
+                  </Footer>
+                  <Footer background="light-1" pad="xxsmall">
+                    <Anchor
+                      href="https://www.markdownguide.org/basic-syntax"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      label="Markdown basic syntax"
+                      color="dark-3"
+                      weight="normal"
+                    />
+                  </Footer>
+                </Box>
+              </Box>
             ) : (
               <BoxLoader />
             )}
           </Box>
           <Box
-            flex="grow"
-            width="50%"
+            fill="horizontal"
             pad={{ left: 'xsmall' }}
             // Use style to hide to keep the component's state
             style={{

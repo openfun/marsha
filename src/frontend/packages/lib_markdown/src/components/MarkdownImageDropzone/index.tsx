@@ -1,7 +1,6 @@
-import { Box } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
-import { DropzoneIcon } from 'lib-components';
+import { Box, DropzoneIcon } from 'lib-components';
 import React from 'react';
 import Dropzone, { DropzoneOptions, DropzoneRootProps } from 'react-dropzone';
 import { defineMessages, useIntl } from 'react-intl';
