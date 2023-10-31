@@ -44,7 +44,7 @@
     "@types/clipboard": "2.0.1",
     "@types/faker": "5.5.9",
     "@types/iframe-resizer": "3.5.11",
-    "@types/jest": "29.5.6",
+    "@types/jest": "29.5.7",
     "@types/jest-image-snapshot": "6.2.2",
     "@types/jsdom-screenshot": "3.2.4",
     "@types/rc-tooltip": "3.7.9",
@@ -83,7 +83,7 @@
     "xhr-mock": "2.5.1"
   },
   "dependencies": {
-    "jwt-decode": "3.1.2",
+    "jwt-decode": "4.0.0",
     "lib-common": "*",
     "react-dropzone": "14.2.3",
     "styled-components": "*",
