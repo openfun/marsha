@@ -75,5 +75,8 @@
   },
   "dependencies": {
     "lib-common": "*"
+  },
+  "volta": {
+    "node": "18.18.2"
   }
 }

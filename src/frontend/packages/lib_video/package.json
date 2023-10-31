@@ -99,5 +99,8 @@
     "videojs-contrib-quality-levels": "2.2.1",
     "videojs-http-source-selector": "1.1.6",
     "vtt.js": "0.13.0"
+  },
+  "volta": {
+    "node": "18.18.2"
   }
 }

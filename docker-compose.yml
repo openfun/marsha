@@ -90,13 +90,13 @@ services:
     working_dir: /app
 
   node:
-    image: node:16
+    image: node:18
     volumes:
       - ".:/app"
     working_dir: /app/src/frontend
 
   mail-generator:
-    image: node:16
+    image: node:18
     volumes:
       - ".:/app"
     working_dir: /app/src/mail
@@ -228,20 +228,20 @@ services:
 
   prosody-app:
     image: fundocker/prosody
-    ports: 
+    ports:
       - 5222:5222
     volumes:
       - "./docker/files/etc/prosody:/etc/prosody"
-    depends_on: 
+    depends_on:
       - db
 
   prosody-nginx:
     image: nginx
-    ports: 
+    ports:
       - 8061:80
     volumes:
       - "./docker/files/etc/nginx/conf.d:/etc/nginx/conf.d"
-    depends_on: 
+    depends_on:
       - prosody-app
     links:
       - "prosody-app:prosody"

@@ -90,5 +90,8 @@
     "uuid": "9.0.1",
     "web-streams-polyfill": "3.2.1",
     "zustand": "*"
+  },
+  "volta": {
+    "node": "18.18.2"
   }
 }

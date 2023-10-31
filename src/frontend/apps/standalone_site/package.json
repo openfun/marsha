@@ -74,5 +74,8 @@
     "nohoist": [
       "typescript"
     ]
+  },
+  "volta": {
+    "node": "18.18.2"
   }
 }
