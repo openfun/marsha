@@ -1,4 +1,4 @@
-import jwt_decode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 import {
   DecodedJwt,
@@ -45,7 +45,7 @@ export const decodeJwt = (jwtToDecode?: string): DecodedJwt => {
     );
   }
 
-  const jwt = jwt_decode(jwtToDecode);
+  const jwt = jwtDecode(jwtToDecode);
 
   if (isDecodedJwtLTI(jwt) || isDecodedJwtWeb(jwt)) {
     return jwt;
