@@ -45,6 +45,7 @@
     "@types/clipboard": "2.0.1",
     "@types/faker": "5.5.9",
     "@types/jest": "29.5.7",
+    "@types/node": "*",
     "@types/react": "*",
     "@types/react-dom": "*",
     "@types/react-router-dom": "*",
