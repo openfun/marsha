@@ -1,7 +1,8 @@
 import { Button } from '@openfun/cunningham-react';
-import { Anchor, Box } from 'grommet';
+import { Anchor } from 'grommet';
 import {
   BinSVG,
+  Box,
   ClassroomDocument,
   ObjectStatusPicker,
   RetryUploadButton,
@@ -22,7 +23,6 @@ import {
 const StyledAnchor = styled(Anchor)`
   cursor: ${({ isClickable }: { isClickable: boolean }) =>
     isClickable ? 'pointer' : 'auto'};
-  font-family: Roboto-Medium;
 
   &:hover {
     text-decoration: ${({ isClickable }: { isClickable: boolean }) =>
@@ -119,8 +119,9 @@ export const DocumentRow = ({
       align="center"
       fill="horizontal"
       height="60px"
-      gap="medium"
-      pad={{ horizontal: 'small', vertical: 'small' }}
+      justify="space-between"
+      pad={{ vertical: 'small' }}
+      gap="xxsmall"
     >
       <Box direction="row" align="center" gap="small">
         <Button
@@ -132,62 +133,62 @@ export const DocumentRow = ({
         />
       </Box>
 
-      <Box style={{ minWidth: '0' }} direction="row" align="center" gap="small">
-        <Box style={{ minWidth: '0' }}>
-          <StyledAnchor
-            a11yTitle={title}
-            download={document.filename}
-            href={document.url || undefined}
-            // The click on the title triggers download of the associated upload. But this
-            // behavior should be possible only if upload is complete and finished
-            isClickable={document.upload_state === uploadState.READY}
-            label={
-              <Box style={{ minWidth: '0' }}>
-                <Text truncate weight="extrabold">
-                  {title}
-                </Text>
-              </Box>
-            }
-            rel="noopener"
-            target="_blank"
-            title={title}
-          />
-        </Box>
-        <Button
-          onClick={setDefaultDocument}
-          aria-label={intl.formatMessage(messages.setDefaultDocument)}
-          aria-selected={document.is_default}
-          role="row"
-          title={intl.formatMessage(messages.setDefaultDocument)}
-          disabled={
-            document.upload_state !== uploadState.READY || document.is_default
+      <Box width={{ min: 'none' }}>
+        <StyledAnchor
+          a11yTitle={title}
+          download={document.filename}
+          href={document.url || undefined}
+          // The click on the title triggers download of the associated upload. But this
+          // behavior should be possible only if upload is complete and finished
+          isClickable={document.upload_state === uploadState.READY}
+          label={
+            <Box>
+              <Text truncate weight="extrabold">
+                {title}
+              </Text>
+            </Box>
           }
-          icon={
-            <ValidSVG
-              iconColor={document.is_default ? 'brand' : 'light-5'}
-              height="20px"
-              width="20px"
-            />
-          }
-          color="tertiary"
+          rel="noopener"
+          target="_blank"
+          title={title}
         />
       </Box>
 
-      <Box
-        align="center"
-        direction="row"
-        justify="center"
-        margin={{ left: 'auto' }}
-        style={{ flex: 'none' }}
-      >
-        {document.upload_state !== uploadState.READY &&
-          (isUploadInProgress ? (
-            <Text weight="medium" truncate>
-              <ObjectStatusPicker
-                object={document}
-                uploadStatus={uploadingObject?.status}
+      <Box direction="row" align="center" gap="small">
+        {document.upload_state === uploadState.READY && (
+          <Button
+            onClick={setDefaultDocument}
+            aria-label={intl.formatMessage(messages.setDefaultDocument)}
+            aria-selected={document.is_default}
+            role="row"
+            title={intl.formatMessage(messages.setDefaultDocument)}
+            disabled={
+              document.upload_state !== uploadState.READY || document.is_default
+            }
+            icon={
+              <ValidSVG
+                iconColor={document.is_default ? 'brand' : 'light-5'}
+                height="20px"
+                width="20px"
               />
-            </Text>
+            }
+            color="tertiary"
+          />
+        )}
+      </Box>
+
+      {document.upload_state !== uploadState.READY && (
+        <Box
+          align="center"
+          direction="row"
+          justify="center"
+          style={{ flex: 'none' }}
+        >
+          {isUploadInProgress ? (
+            <ObjectStatusPicker
+              object={document}
+              uploadStatus={uploadingObject?.status}
+            />
           ) : (
             <React.Fragment>
               <Box>
@@ -201,8 +202,9 @@ export const DocumentRow = ({
                 onClick={() => onRetryFailedUpload(document.id)}
               />
             </React.Fragment>
-          ))}
-      </Box>
+          )}
+        </Box>
+      )}
     </Box>
   );
 };

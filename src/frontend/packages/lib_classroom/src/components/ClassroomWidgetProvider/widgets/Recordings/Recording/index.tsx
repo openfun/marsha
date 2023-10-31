@@ -1,8 +1,9 @@
 import { Button } from '@openfun/cunningham-react';
-import { Anchor, Box } from 'grommet';
+import { Anchor } from 'grommet';
 import { createVOD, useClassroom } from 'lib-classroom';
 import { Nullable } from 'lib-common';
 import {
+  Box,
   ClassroomRecording,
   CopyClipboard,
   Text,
@@ -131,9 +132,8 @@ const VodNotReady = ({
       key={recording.id}
       align="center"
       fill="horizontal"
-      gap="medium"
-      pad={recording.vod ? 'none' : 'small'}
-      justify="between"
+      gap="small"
+      justify="space-between"
     >
       {!recording.vod && (
         <DeleteClassroomRecordingButton recording={recording} />
@@ -172,6 +172,9 @@ const VodNotReady = ({
           onClick={() => convertVOD(recording)}
           size="small"
           disabled={!conversionEnabled || converting}
+          style={{
+            flexShrink: 0,
+          }}
         >
           {intl.formatMessage(messages.convertVODLabel)}
         </Button>
@@ -231,7 +234,6 @@ export const Recording = ({
   <React.Fragment>
     {recording.vod ? (
       <Box
-        direction="column"
         key={recording.id}
         align="start"
         fill="horizontal"

@@ -1,6 +1,6 @@
-import { Box, Grid } from 'grommet';
+import { Grid } from 'grommet';
 import { Breakpoints, Nullable } from 'lib-common';
-import { Text, useAppConfig, useResponsive } from 'lib-components';
+import { Box, Text, useAppConfig, useResponsive } from 'lib-components';
 import React from 'react';
 
 interface DashboardClassroomMessageProps {
@@ -41,10 +41,10 @@ export const DashboardClassroomLayout = ({
   }
   return (
     <Box
-      background={{
-        image: `url(${appData.static.img.bbbBackground || ''})`,
-        size: 'cover',
-        position: 'right top',
+      style={{
+        backgroundImage: `url(${appData.static.img.bbbBackground || ''})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'right top',
       }}
       fill
       pad="small"
@@ -52,7 +52,7 @@ export const DashboardClassroomLayout = ({
     >
       <Grid columns={columns} gap="small" fill>
         <Box
-          background={{ color: 'white' }}
+          background="white"
           round="xsmall"
           pad={{
             horizontal: 'medium',
@@ -62,7 +62,7 @@ export const DashboardClassroomLayout = ({
         >
           {left}
         </Box>
-        <Box>
+        <Box justify="space-between">
           <Box direction="row" align="center" gap="xsmall">
             <img
               height="30px"
@@ -75,7 +75,6 @@ export const DashboardClassroomLayout = ({
           <Box
             align={isDesktop ? 'end' : 'center'}
             direction="row"
-            flex={true}
             gap="medium"
             justify="end"
             pad="medium"

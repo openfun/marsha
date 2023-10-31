@@ -1,4 +1,4 @@
-import { Anchor, Box } from 'grommet';
+import { Typo } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -20,24 +20,19 @@ const DashboardClassroomJoin = ({
 }: DashboardClassroomJoinProps) => {
   const intl = useIntl();
   return (
-    <Box
-      align="center"
-      justify="center"
-      pad="medium"
-      round="small"
+    <Typo
+      className="c__button c__button--primary c__button--medium"
+      type="a"
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={onClick}
+      aria-label={intl.formatMessage(messages.joinLinkLabel)}
+      title={intl.formatMessage(messages.joinLinkLabel)}
       margin="medium"
-      border={{ color: 'accent-1', size: 'small' }}
-      background={{ color: 'accent-1', opacity: 'weak' }}
     >
-      <Anchor
-        href={href}
-        target="_blank"
-        rel="noopener"
-        onClick={onClick}
-        label={intl.formatMessage(messages.joinLinkLabel)}
-        color="accent-1"
-      />
-    </Box>
+      {intl.formatMessage(messages.joinLinkLabel)}
+    </Typo>
   );
 };
 

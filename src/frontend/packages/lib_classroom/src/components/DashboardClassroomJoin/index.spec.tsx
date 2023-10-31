@@ -17,7 +17,7 @@ describe('<DashboardClassroomJoin />', () => {
     });
     expect(link.getAttribute('href')).toEqual('https://example.com');
     expect(link.getAttribute('target')).toEqual('_blank');
-    expect(link.getAttribute('rel')).toEqual('noopener');
+    expect(link.getAttribute('rel')).toEqual('noopener noreferrer');
 
     fireEvent.click(link);
     expect(onClick).toHaveBeenCalledTimes(1);

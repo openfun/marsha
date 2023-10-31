@@ -1,6 +1,6 @@
-import { Box } from 'grommet';
 import {
   AnonymousUser,
+  Box,
   BoxLoader,
   Classroom,
   useCurrentResourceContext,

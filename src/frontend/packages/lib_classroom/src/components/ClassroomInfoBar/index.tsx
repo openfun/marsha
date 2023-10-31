@@ -1,8 +1,7 @@
 import { Input } from '@openfun/cunningham-react';
-import { Box, BoxProps } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
-import { EditionSVG, report } from 'lib-components';
+import { Box, BoxProps, EditionSVG, report } from 'lib-components';
 import { useCallback, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -48,7 +47,7 @@ const messages = defineMessages({
   },
 });
 
-export const ClassroomInfoBar = (props: BoxProps) => {
+export const ClassroomInfoBar = (props: BoxProps<'div'>) => {
   const classroom = useCurrentClassroom();
   const intl = useIntl();
 
@@ -100,18 +99,12 @@ export const ClassroomInfoBar = (props: BoxProps) => {
 
   return (
     <Box
-      direction="column"
       justify="center"
       style={{ flex: 'auto' }}
       width={{ min: 'small' }}
       {...props}
     >
-      <StyledBoxInput
-        margin={{ right: 'small' }}
-        gap="small"
-        alignContent="center"
-        direction="row"
-      >
+      <StyledBoxInput align="center" direction="row">
         <Input
           icon={
             <EditionSVG
