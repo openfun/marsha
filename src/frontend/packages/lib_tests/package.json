@@ -39,7 +39,7 @@
     "@testing-library/user-event": "*",
     "@types/clipboard": "2.0.1",
     "@types/faker": "5.5.9",
-    "@types/jest": "29.5.6",
+    "@types/jest": "29.5.7",
     "@types/jest-image-snapshot": "6.2.2",
     "@types/jsdom-screenshot": "3.2.4",
     "@types/rc-tooltip": "3.7.9",

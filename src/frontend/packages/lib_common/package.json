@@ -33,7 +33,7 @@
     "@babel/preset-env": "7.23.2",
     "@babel/preset-typescript": "7.23.2",
     "@formatjs/cli": "6.2.1",
-    "@types/jest": "29.5.6",
+    "@types/jest": "29.5.7",
     "@types/react": "*",
     "@types/react-dom": "*",
     "@types/styled-components": "5.1.29",
