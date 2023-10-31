@@ -1,10 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
-/* eslint-disable array-callback-return */
-import { Box } from 'grommet';
 import { Nullable } from 'lib-common';
-import { BoxLoader, MarkdownDocument } from 'lib-components';
+import { Box, BoxLoader, MarkdownDocument } from 'lib-components';
 import React, { useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -39,7 +34,7 @@ export const MarkdownViewer = ({ markdownDocument }: MarkdownViewerProps) => {
     );
 
     // Update image URL to use fresh signature
-    markdownDocument.images.map((value: { url: any; id: string }) => {
+    markdownDocument.images.forEach((value) => {
       if (!value.url) {
         return;
       }
@@ -61,7 +56,7 @@ export const MarkdownViewer = ({ markdownDocument }: MarkdownViewerProps) => {
   }, [intl, language, markdownDocument]);
 
   const availableLanguages = markdownDocument.translations.map(
-    (translation: { language_code: any }) => translation.language_code,
+    (translation) => translation.language_code,
   );
 
   if (htmlContent === null) {
@@ -69,7 +64,7 @@ export const MarkdownViewer = ({ markdownDocument }: MarkdownViewerProps) => {
   }
 
   return (
-    <Box pad="xsmall" direction="column" style={{ minHeight: '20rem' }}>
+    <Box pad="xsmall" style={{ minHeight: '20rem' }}>
       <Box
         pad="xsmall"
         style={{ position: 'absolute', top: 0, right: 0, zIndex: 10 }}

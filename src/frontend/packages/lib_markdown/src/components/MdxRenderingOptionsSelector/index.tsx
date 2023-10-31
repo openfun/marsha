@@ -1,7 +1,7 @@
 import { Switch } from '@openfun/cunningham-react';
-import { Box, DropButton } from 'grommet';
+import { DropButton } from 'grommet';
 import { SettingsOption } from 'grommet-icons';
-import { MarkdownDocumentRenderingOptions } from 'lib-components';
+import { Box, MarkdownDocumentRenderingOptions } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 

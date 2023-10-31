@@ -1,5 +1,5 @@
-import { Box, Meter, Stack } from 'grommet';
-import { Text } from 'lib-components';
+import { Meter, Stack } from 'grommet';
+import { Box, Text } from 'lib-components';
 import React from 'react';
 
 interface MarkdownImageProgressToastProps {
@@ -14,8 +14,8 @@ export const MarkdownImageProgressToast = ({
   const progressPercent = `${progress}%`;
 
   return (
-    <Box direction="row" gap="medium">
-      <Text>{filename}</Text>
+    <Box gap="small">
+      <Text truncate>{filename}</Text>
       <Box align="center" pad="none">
         <Stack anchor="center">
           <Meter

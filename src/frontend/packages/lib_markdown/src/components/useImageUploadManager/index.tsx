@@ -1,3 +1,4 @@
+import { colorsTokens } from '@lib-common/cunningham';
 import {
   MarkdownDocument,
   UploadManagerStatus,
@@ -30,7 +31,8 @@ const messages = defineMessages({
 });
 
 const toasterStyle = {
-  minWidth: '50%',
+  maxWidth: 'none',
+  background: colorsTokens['info-100'],
 };
 
 export const useImageUploadManager = (
