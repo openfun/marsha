@@ -48,6 +48,7 @@
     "@types/faker": "5.5.9",
     "@types/iframe-resizer": "3.5.11",
     "@types/jest": "29.5.7",
+    "@types/node": "*",
     "@types/rc-tooltip": "3.7.9",
     "@types/react": "*",
     "@types/react-dom": "*",

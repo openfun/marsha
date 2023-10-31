@@ -15,7 +15,12 @@
     "preserveWatchOutput": true,
     "skipLibCheck": true,
     "strict": true,
-    "types": ["@testing-library/jest-dom"]
+    "types": [
+      "@testing-library/jest-dom",
+      "node"
+    ]
   },
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }
