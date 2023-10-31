@@ -1,7 +1,7 @@
 import { Button } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
-import { Nullable } from 'lib-common';
+import { Nullable, colorsTokens } from 'lib-common';
 import {
+  Box,
   Classroom,
   PlusSVG,
   Text,
@@ -177,41 +177,52 @@ export const UploadDocuments = ({ classroomId }: UploadDocumentsProps) => {
       <Text weight="medium">{intl.formatMessage(messages.dropzoneTitle)}</Text>
       <Box
         align="center"
-        background="blue-message"
-        border={{
-          style: filesToUpload.length === 0 ? 'dashed' : 'solid',
-          size: 'xsmall',
-          color: 'blue-active',
+        background={colorsTokens['primary-100']}
+        style={{
+          border: `${colorsTokens['primary-500']} 1px ${
+            filesToUpload.length === 0 ? 'dashed' : 'solid'
+          }`,
         }}
         margin={{ top: 'xsmall' }}
         pad={{ vertical: 'small', horizontal: 'small' }}
         round="xsmall"
         justify="center"
+        gap="small"
       >
-        {classroomDocuments?.results
-          .filter(
-            (classroomDocument) =>
-              uploadsInProgress.find(
-                (upload) => upload.objectId === classroomDocument.id,
-              ) === undefined,
-          )
-          .map((classroomDocument, index) => (
-            <DocumentRow
-              key={index}
-              document={classroomDocument}
-              uploadingObject={Object.values(uploadManagerState).find(
-                (uploadingObject) =>
-                  uploadingObject.objectId === classroomDocument.id,
-              )}
-              onRetryFailedUpload={onRetryFailedUpload}
-            />
-          ))}
+        <Box fill="horizontal">
+          {classroomDocuments?.results
+            .filter(
+              (classroomDocument) =>
+                uploadsInProgress.find(
+                  (upload) => upload.objectId === classroomDocument.id,
+                ) === undefined,
+            )
+            .map((classroomDocument, index) => (
+              <Box
+                key={index}
+                style={{
+                  borderTop: index
+                    ? `dashed 1px ${colorsTokens['primary-500']}`
+                    : undefined,
+                }}
+              >
+                <DocumentRow
+                  document={classroomDocument}
+                  uploadingObject={Object.values(uploadManagerState).find(
+                    (uploadingObject) =>
+                      uploadingObject.objectId === classroomDocument.id,
+                  )}
+                  onRetryFailedUpload={onRetryFailedUpload}
+                />
+              </Box>
+            ))}
+        </Box>
 
         {filesToUpload.map((file, index) => (
           <Text key={`${file.name}_${index}`}>{file.name}</Text>
         ))}
 
-        <Box align="center" justify="center" height={{ min: 'xxsmall' }}>
+        <Box align="center" justify="center" style={{ cursor: 'pointer' }}>
           <Dropzone onDrop={onDrop} accept={{ 'application/pdf': ['.pdf'] }}>
             {({ getRootProps, getInputProps }) => (
               <div {...getRootProps()}>

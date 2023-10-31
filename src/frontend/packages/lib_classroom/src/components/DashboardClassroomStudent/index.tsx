@@ -1,8 +1,7 @@
 import { Button } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
 import { Schedule } from 'grommet-icons';
-import { Nullable } from 'lib-common';
-import { Classroom, Heading, Text, useResponsive } from 'lib-components';
+import { Nullable, colorsTokens } from 'lib-common';
+import { Box, Classroom, Heading, Text, useResponsive } from 'lib-components';
 import { DateTime, Duration, Settings } from 'luxon';
 import React, { Fragment, useEffect, useMemo } from 'react';
 import ICalendarLink from 'react-icalendar-link';
@@ -208,11 +207,7 @@ const DashboardClassroomStudent = ({
           margin={{ top: 'large', horizontal: 'small' }}
           pad={{ vertical: 'small', horizontal: 'small' }}
           round="xsmall"
-          border={{
-            color: 'blue-active',
-            size: 'small',
-            side: 'all',
-          }}
+          style={{ border: `solid 1px ${colorsTokens['primary-500']}` }}
         >
           <Text textAlign="center">{displayedEventTime}</Text>
         </Box>

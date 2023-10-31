@@ -1,6 +1,5 @@
-import { Box } from 'grommet';
 import { Nullable } from 'lib-common';
-import { ClosingCard, CopyClipboard, Text } from 'lib-components';
+import { Box, ClosingCard, CopyClipboard, Text } from 'lib-components';
 import React from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';

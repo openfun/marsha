@@ -1,6 +1,6 @@
-import { Box, Grid } from 'grommet';
-import { Nullable } from 'lib-common';
-import { ClassroomInfos, Text } from 'lib-components';
+import { Grid } from 'grommet';
+import { Nullable, colorsTokens } from 'lib-common';
+import { Box, ClassroomInfos, Text } from 'lib-components';
 import React, { Fragment } from 'react';
 import { FormattedMessage, defineMessages } from 'react-intl';
 
@@ -64,11 +64,7 @@ const DashboardClassroomInfos = ({
         margin={{ top: 'large' }}
         pad={{ vertical: 'small', horizontal: 'small' }}
         round="xsmall"
-        border={{
-          color: 'blue-active',
-          size: 'small',
-          side: 'all',
-        }}
+        style={{ border: `solid 1px ${colorsTokens['primary-500']}` }}
         className="DashboardClassroomInfos"
       >
         <Grid columns={{ count: 3, size: 'auto' }}>

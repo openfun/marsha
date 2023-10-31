@@ -135,8 +135,8 @@ describe('<DocumentRow />', () => {
       }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('row', { name: 'Click to set as default document' }),
-    ).toBeDisabled();
+      screen.queryByRole('row', { name: 'Click to set as default document' }),
+    ).not.toBeInTheDocument();
   });
 
   it('renders a row in FAILED state', () => {
@@ -166,7 +166,7 @@ describe('<DocumentRow />', () => {
       }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('row', { name: 'Click to set as default document' }),
-    ).toBeDisabled();
+      screen.queryByRole('row', { name: 'Click to set as default document' }),
+    ).not.toBeInTheDocument();
   });
 });

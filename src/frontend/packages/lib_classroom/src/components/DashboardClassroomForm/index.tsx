@@ -1,8 +1,8 @@
 import { Button } from '@openfun/cunningham-react';
-import { Box, Tab, Tabs, ThemeContext } from 'grommet';
+import { Tab, Tabs, ThemeContext } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
-import { theme } from 'lib-common';
-import { Classroom } from 'lib-components';
+import { colorsTokens, theme } from 'lib-common';
+import { Box, Classroom } from 'lib-components';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -84,12 +84,11 @@ const DashboardClassroomForm = ({ classroom }: DashboardClassroomFormProps) => {
 
   return (
     <CurrentClassroomProvider value={classroom}>
-      <Box background={{ color: 'bg-marsha' }} fill>
+      <Box background={colorsTokens.main} fill>
         <StyledClassroomInformationBarWrapper
           align="center"
           background="white"
-          direction="row-responsive"
-          height={{ min: '80px' }}
+          direction="row"
           justify="center"
           margin="small"
           pad={{
@@ -98,8 +97,9 @@ const DashboardClassroomForm = ({ classroom }: DashboardClassroomFormProps) => {
           }}
           round="xsmall"
           style={{ flexWrap: 'wrap' }}
+          gap="small"
         >
-          <ClassroomInfoBar flex />
+          <ClassroomInfoBar />
           <Button
             disabled={!classroom.title || isCreating}
             onClick={() => {

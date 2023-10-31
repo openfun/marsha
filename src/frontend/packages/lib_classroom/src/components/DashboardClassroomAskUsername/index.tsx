@@ -1,6 +1,6 @@
+import { colorsTokens } from '@lib-common/cunningham';
 import { Button, Checkbox, Input } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
-import { Classroom, ModalButton, Text } from 'lib-components';
+import { Box, Classroom, ModalButton, Text } from 'lib-components';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -106,10 +106,10 @@ export const DashboardClassroomAskUsernameStudent = ({
           <Box
             margin={{ top: 'xsmall' }}
             pad="small"
-            border={[
-              { color: 'light-2', side: 'vertical' },
-              { color: 'light-2', side: 'bottom' },
-            ]}
+            style={{
+              border: `solid ${colorsTokens['greyscale-200']} 1px`,
+              borderTop: 'none',
+            }}
             round="small"
           >
             <Text size="small" color="clr-greyscale-400">

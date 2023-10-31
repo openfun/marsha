@@ -1,5 +1,5 @@
-import { Box } from 'grommet';
 import {
+  Box,
   Classroom,
   FoldableItem,
   TextAreaInput,
@@ -79,13 +79,7 @@ const ToolsAndApplicationCheckbox = ({
   onChange,
 }: ToolsAndApplicationCheckboxProps) => {
   return (
-    <Box
-      align="left"
-      background="blue-message"
-      fill
-      round="xsmall"
-      margin={{ bottom: 'small' }}
-    >
+    <Box align="left" fill round="xsmall" margin={{ bottom: 'small' }}>
       <ToggleInput checked={checked} label={message} onChange={onChange} />
     </Box>
   );

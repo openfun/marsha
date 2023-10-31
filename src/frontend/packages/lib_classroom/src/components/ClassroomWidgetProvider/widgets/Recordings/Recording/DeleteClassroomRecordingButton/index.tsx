@@ -101,6 +101,7 @@ export const DeleteClassroomRecordingButton = ({
         spinnerProps={{ size: 'small' }}
         onClickSubmit={() => setIsModalOpen(true)}
         isSubmitting={deleteClassroomRecording.isLoading}
+        color="tertiary"
       >
         <BinSVG height="18px" iconColor="blue-active" width="14px" />
       </ButtonLoader>
