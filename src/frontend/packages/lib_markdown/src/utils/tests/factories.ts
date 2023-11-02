@@ -1,4 +1,4 @@
-import * as faker from 'faker';
+import { faker } from '@faker-js/faker';
 import {
   MarkdownDocument,
   MarkdownDocumentTranslation,
@@ -11,7 +11,7 @@ export const markdownDocumentMockFactory = (
   markdownDocument: Partial<MarkdownDocument> = {},
 ): MarkdownDocument => {
   return {
-    id: faker.datatype.uuid(),
+    id: faker.string.uuid(),
     playlist: playlistMockFactory(),
     lti_url: faker.internet.url(),
     is_draft: false,
@@ -38,11 +38,11 @@ export const markdownImageMockFactory = (
   markdownImage: Partial<MarkdownImage> = {},
 ): MarkdownImage => {
   return {
-    id: faker.datatype.uuid(),
-    markdown_document: faker.datatype.uuid(),
+    id: faker.string.uuid(),
+    markdown_document: faker.string.uuid(),
     filename: faker.system.commonFileName('png'),
     is_ready_to_show: faker.datatype.boolean(),
-    upload_state: faker.helpers.randomize(Object.values(uploadState)),
+    upload_state: faker.helpers.arrayElement(Object.values(uploadState)),
     active_stamp: faker.date.past().getTime().valueOf(),
     url: faker.internet.url(),
     ...markdownImage,

@@ -1,4 +1,4 @@
-import * as faker from 'faker';
+import { faker } from '@faker-js/faker';
 
 import { PortabilityConfig } from '@lib-components/types/AppData';
 import { Organization } from '@lib-components/types/Organization';
@@ -36,8 +36,8 @@ export const organizationMockFactory = (
   return {
     consumer_sites: [],
     created_on: faker.date.recent().toString(),
-    id: faker.datatype.uuid(),
-    name: faker.company.companyName(),
+    id: faker.string.uuid(),
+    name: faker.company.name(),
     users: [],
     ...organization,
   };
@@ -47,8 +47,8 @@ export const consumerSiteMockFactory = (
   consumerSite: Partial<ConsumerSite> = {},
 ): ConsumerSite => {
   return {
-    id: faker.datatype.uuid(),
-    name: faker.company.companyName(),
+    id: faker.string.uuid(),
+    name: faker.company.name(),
     domain: faker.internet.domainName(),
     ...consumerSite,
   };
@@ -58,9 +58,9 @@ export const playlistLiteMockFactory = (
   playlist: Partial<PlaylistLite> = {},
 ): PlaylistLite => {
   return {
-    id: faker.datatype.uuid(),
+    id: faker.string.uuid(),
     lti_id: faker.datatype.string(),
-    title: faker.name.title(),
+    title: faker.lorem.words(),
     ...playlist,
   };
 };
@@ -74,17 +74,17 @@ export const playlistMockFactory = (
     created_on: faker.date.recent().toString(),
     duplicated_from: null,
     retention_duration: null,
-    id: faker.datatype.uuid(),
+    id: faker.string.uuid(),
     is_portable_to_playlist: faker.datatype.boolean(),
     is_portable_to_consumer_site: faker.datatype.boolean(),
     is_public: faker.datatype.boolean(),
     lti_id: faker.datatype.string(),
     organization: {
-      id: faker.datatype.uuid(),
-      name: faker.company.companyName(),
+      id: faker.string.uuid(),
+      name: faker.company.name(),
     },
     portable_to: [],
-    title: faker.name.title(),
+    title: faker.lorem.words(),
     users: [],
     ...playlist,
   };
@@ -93,7 +93,7 @@ export const playlistMockFactory = (
 export const thumbnailMockFactory = (
   thumbnail: Partial<Thumbnail> = {},
 ): Thumbnail => {
-  const id = thumbnail.id || faker.datatype.uuid();
+  const id = thumbnail.id || faker.string.uuid();
   return {
     id,
     is_ready_to_show: faker.datatype.boolean(),
@@ -114,7 +114,7 @@ export const thumbnailMockFactory = (
 export const timedTextMockFactory = (
   timedText: Partial<TimedText> = {},
 ): TimedText => {
-  const id = timedText.id || faker.datatype.uuid();
+  const id = timedText.id || faker.string.uuid();
   return {
     id,
     active_stamp: faker.date.past().getTime(),
@@ -131,7 +131,7 @@ export const timedTextMockFactory = (
 };
 
 export const videoMockFactory = (video: Partial<Video> = {}): Video => {
-  const id = video.id || faker.datatype.uuid();
+  const id = video.id || faker.string.uuid();
   return {
     active_shared_live_media: null,
     active_shared_live_media_page: null,
@@ -222,7 +222,7 @@ export const documentMockFactory = (
 export const liveAttendanceFactory = (
   liveAttendance: Partial<LiveAttendance> = {},
 ): LiveAttendance => {
-  const id = liveAttendance.id || faker.datatype.uuid();
+  const id = liveAttendance.id || faker.string.uuid();
 
   return {
     display_name: null,
@@ -253,7 +253,7 @@ export const liveAttendanceFactory = (
 export const liveSessionFactory = (
   liveSession: Partial<LiveSession> = {},
 ): LiveSession => {
-  const id = liveSession.id || faker.datatype.uuid();
+  const id = liveSession.id || faker.string.uuid();
   const languages = ['en', 'fr'];
 
   return {
@@ -278,8 +278,8 @@ export const participantMockFactory = (
   participant: Partial<Participant> = {},
 ): Participant => {
   return {
-    id: faker.datatype.uuid(),
-    name: faker.name.findName(),
+    id: faker.string.uuid(),
+    name: faker.person.fullName(),
     ...participant,
   };
 };
@@ -296,9 +296,9 @@ export const ltiPublicTokenMockFactory = (
       can_update: false,
       ...permission,
     },
-    playlist_id: faker.datatype.uuid(),
+    playlist_id: faker.string.uuid(),
     roles: ['none'],
-    session_id: faker.datatype.uuid(),
+    session_id: faker.string.uuid(),
     ...token,
   };
 };
@@ -311,13 +311,13 @@ export const ltiStudentTokenMockFactory = (
   return {
     ...ltiPublicTokenMockFactory(token, permission),
     context_id: faker.lorem.sentence(2),
-    consumer_site: faker.datatype.uuid(),
+    consumer_site: faker.string.uuid(),
     roles: ['student'],
     user: {
       email: faker.internet.email(),
-      id: faker.datatype.uuid(),
+      id: faker.string.uuid(),
       username: faker.internet.userName(),
-      user_fullname: faker.name.findName(),
+      user_fullname: faker.person.fullName(),
       ...user,
     },
     ...token,
@@ -344,7 +344,7 @@ export const ltiInstructorTokenMockFactory = (
 export const sharedLiveMediaMockFactory = (
   sharedLiveMedia: Partial<SharedLiveMedia> = {},
 ): SharedLiveMedia => {
-  const id = sharedLiveMedia.id || faker.datatype.uuid();
+  const id = sharedLiveMedia.id || faker.string.uuid();
   return {
     id,
     active_stamp: faker.date.past().getTime().valueOf(),
@@ -364,7 +364,7 @@ export const sharedLiveMediaMockFactory = (
         5: `https://example.com/sharedLiveMedia/${id}/5`,
       },
     },
-    video: faker.datatype.uuid(),
+    video: faker.string.uuid(),
     ...sharedLiveMedia,
   };
 };
@@ -373,9 +373,9 @@ export const PortabilityConfigMockFactory = (
   portabilityConfig: Partial<PortabilityConfig> = {},
 ): PortabilityConfig => {
   return {
-    resource_id: faker.datatype.uuid(),
+    resource_id: faker.string.uuid(),
     redirect_to: faker.internet.url(),
-    for_playlist_id: faker.datatype.uuid(),
+    for_playlist_id: faker.string.uuid(),
     portability_request_exists: false,
     ...portabilityConfig,
   };
@@ -385,12 +385,12 @@ export const portabilityRequestMockFactory = (
   portabilityRequest: Partial<PortabilityRequest> = {},
 ): PortabilityRequest => {
   return {
-    id: faker.datatype.uuid(),
+    id: faker.string.uuid(),
     created_on: faker.date.recent().toString(),
     for_playlist: playlistLiteMockFactory(),
     from_playlist: playlistLiteMockFactory(),
     from_lti_consumer_site: consumerSiteMockFactory(),
-    from_lti_user_id: faker.datatype.uuid(),
+    from_lti_user_id: faker.string.uuid(),
     state: PortabilityRequestState.PENDING,
     from_user: null,
     updated_by_user: null,

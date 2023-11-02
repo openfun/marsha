@@ -1,4 +1,4 @@
-import * as faker from 'faker';
+import { faker } from '@faker-js/faker';
 import fetchMock from 'fetch-mock';
 import { liveSessionFactory, useJwt } from 'lib-components';
 import { v4 as uuidv4 } from 'uuid';

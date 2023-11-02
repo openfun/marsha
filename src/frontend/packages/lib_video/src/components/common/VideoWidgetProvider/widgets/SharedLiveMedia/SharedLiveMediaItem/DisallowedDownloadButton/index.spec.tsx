@@ -1,6 +1,6 @@
+import { faker } from '@faker-js/faker';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import faker from 'faker';
 import fetchMock from 'fetch-mock';
 import { report, sharedLiveMediaMockFactory, useJwt } from 'lib-components';
 import { render } from 'lib-tests';
