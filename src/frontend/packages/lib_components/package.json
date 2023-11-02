@@ -72,7 +72,7 @@
     "react-dom": "*",
     "react-dropzone": "14.2.3",
     "react-hot-toast": "2.4.1",
-    "react-intl": "5.24.8",
+    "react-intl": "*",
     "react-router-dom": "*",
     "source-map-loader": "4.0.1",
     "typescript": "*",
