@@ -1,5 +1,5 @@
+import { faker } from '@faker-js/faker';
 import { cleanup, screen } from '@testing-library/react';
-import faker from 'faker';
 import fetchMock from 'fetch-mock';
 import {
   LiveModeType,

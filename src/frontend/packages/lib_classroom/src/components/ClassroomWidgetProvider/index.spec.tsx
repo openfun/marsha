@@ -1,5 +1,5 @@
+import { faker } from '@faker-js/faker';
 import { screen, within } from '@testing-library/react';
-import faker from 'faker';
 import fetchMock from 'fetch-mock';
 import { useCurrentResourceContext, useJwt } from 'lib-components';
 import { render } from 'lib-tests';

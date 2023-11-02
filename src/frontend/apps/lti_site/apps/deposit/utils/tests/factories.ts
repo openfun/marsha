@@ -1,4 +1,4 @@
-import * as faker from 'faker';
+import { faker } from '@faker-js/faker';
 import {
   DepositedFile,
   FileDepository,
@@ -12,9 +12,9 @@ export const fileDepositoryMockFactory = (
   fileDepository: Partial<FileDepository> = {},
 ): FileDepository => {
   return {
-    id: faker.datatype.uuid(),
+    id: faker.string.uuid(),
     playlist: playlistMockFactory(),
-    title: faker.name.title(),
+    title: faker.lorem.words(),
     description: faker.lorem.paragraph(),
     deposited_files: [],
     lti_url: faker.internet.url(),

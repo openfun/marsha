@@ -1,6 +1,6 @@
+import { faker } from '@faker-js/faker';
 import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import faker from 'faker';
 import fetchMock from 'fetch-mock';
 import {
   JoinMode,

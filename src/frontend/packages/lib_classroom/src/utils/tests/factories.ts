@@ -1,4 +1,4 @@
-import * as faker from 'faker';
+import { faker } from '@faker-js/faker';
 import {
   Classroom,
   ClassroomDocument,
@@ -15,9 +15,9 @@ export const classroomMockFactory = <T extends Partial<Classroom>>(
   classroom: T = {} as T,
 ): Classroom & T => {
   return {
-    id: faker.datatype.uuid(),
+    id: faker.string.uuid(),
     playlist: playlistMockFactory(),
-    title: faker.name.title(),
+    title: faker.lorem.words(),
     description: faker.lorem.paragraph(),
     lti_url: faker.internet.url(),
     started: faker.datatype.boolean(),
@@ -53,7 +53,7 @@ export const classroomInfosMockFactory = (
     createTime: faker.date.recent().toString(),
     createDate: faker.date.recent().toString(),
     voiceBridge: faker.datatype.number(5).toString(),
-    dialNumber: faker.phone.phoneNumber(),
+    dialNumber: faker.phone.number(),
     attendeePW: faker.lorem.word(),
     moderatorPW: faker.lorem.word(),
     running: 'true',
@@ -80,9 +80,9 @@ export const classroomDocumentMockFactory = (
   classroomDocument: Partial<ClassroomDocument> = {},
 ): ClassroomDocument => {
   return {
-    classroom_id: faker.datatype.uuid().toString(),
+    classroom_id: faker.string.uuid().toString(),
     filename: faker.system.fileName(),
-    id: faker.datatype.uuid(),
+    id: faker.string.uuid(),
     is_default: false,
     upload_state: READY,
     uploaded_on: faker.date.recent().toISOString(),
@@ -95,8 +95,8 @@ export const classroomRecordingMockFactory = (
   classroomRecording: Partial<ClassroomRecording> = {},
 ): ClassroomRecording => {
   return {
-    classroom_id: faker.datatype.uuid(),
-    id: faker.datatype.uuid(),
+    classroom_id: faker.string.uuid(),
+    id: faker.string.uuid(),
     started_at: faker.date.recent().toISOString(),
     video_file_url: faker.internet.url(),
     vod: null,
@@ -108,8 +108,8 @@ export const classroomRecordingVodMockFactory = (
   classroomRecordingVod: Partial<ClassroomRecordingVod> = {},
 ): ClassroomRecordingVod => {
   return {
-    id: faker.datatype.uuid(),
-    title: faker.name.title(),
+    id: faker.string.uuid(),
+    title: faker.lorem.words(),
     upload_state: READY,
     ...classroomRecordingVod,
   };

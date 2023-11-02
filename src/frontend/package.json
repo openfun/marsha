@@ -55,6 +55,7 @@
     "@types/react-router-dom": "5.3.3",
     "eslint": "8.52.0",
     "eslint-config-marsha": "4.7.0",
+    "@faker-js/faker": "8.2.0",
     "grommet": "2.33.2",
     "lib-classroom": "4.7.0",
     "lib-common": "4.7.0",

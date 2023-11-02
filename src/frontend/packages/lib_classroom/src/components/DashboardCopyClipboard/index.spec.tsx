@@ -1,6 +1,6 @@
+import { faker } from '@faker-js/faker';
 import { screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import faker from 'faker';
 import { render } from 'lib-tests';
 
 import DashboardCopyClipboard from '.';
