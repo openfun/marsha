@@ -19,7 +19,7 @@ import * as runtime from 'react/jsx-runtime';
 import ReactDOMServer from 'react-dom/server';
 import rehypeHighlight from 'rehype-highlight'; // Support code highlighting.
 import rehypeKatex from 'rehype-katex'; // Render math with KaTeX.
-import rehypeMathjax from 'rehype-mathjax'; // Render math with Mathjax.
+import rehypeMathjax from 'rehype-mathjax/svg'; // Render math with Mathjax.
 import rehypeRaw from 'rehype-raw'; // Render HTML tags in simple Markdown.
 import remarkMath from 'remark-math'; // Support math like `$so$`.
 import { PluggableList } from 'unified';

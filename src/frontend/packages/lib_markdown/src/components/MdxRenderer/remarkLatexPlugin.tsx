@@ -8,6 +8,7 @@
 import { fromParse5 } from 'hast-util-from-parse5';
 import { Code, Parent } from 'mdast';
 import { parseFragment } from 'parse5';
+import { ElementContent } from 'rehype-katex/lib';
 import { Test, visit } from 'unist-util-visit';
 
 import { markdownRenderLatex } from '@lib-markdown/data/queries';
@@ -45,7 +46,11 @@ const remarkLatexPlugin = (markdownDocumentId: string) => {
                 children: [{ type: 'html', value: response.latex_image }],
                 data: {
                   hProperties: { className: 'latex-inline' },
-                  hChildren: [fromParse5(parseFragment(response.latex_image))],
+                  hChildren: [
+                    fromParse5(
+                      parseFragment(response.latex_image),
+                    ) as ElementContent,
+                  ],
                 },
               };
             }

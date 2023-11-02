@@ -7,6 +7,7 @@ import { fromParse5 } from 'hast-util-from-parse5';
 import { Code } from 'mdast';
 import mermaid from 'mermaid';
 import { parseFragment } from 'parse5';
+import { ElementContent } from 'rehype-katex/lib';
 import { visit } from 'unist-util-visit';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -31,10 +32,16 @@ const remarkMermaidPlugin = () => {
       { type: 'code', lang: 'mermaid' },
       (node) => {
         const mermaidText = node.value;
-        mermaid.render(`mermaid-id-${uuidv4()}`, mermaidText, (svgCode) => {
-          node.children = [{ type: 'html', svgCode }];
-          node.data = { hChildren: [fromParse5(parseFragment(svgCode))] };
-        });
+        mermaid
+          .render(`mermaid-id-${uuidv4()}`, mermaidText)
+          .then((svgCode) => {
+            node.children = [{ type: 'html', svgCode }];
+            node.data = {
+              hChildren: [
+                fromParse5(parseFragment(svgCode.svg)) as ElementContent,
+              ],
+            };
+          });
       },
     );
 
