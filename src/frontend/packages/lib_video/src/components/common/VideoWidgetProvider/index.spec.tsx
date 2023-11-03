@@ -44,7 +44,7 @@ const languageChoices = [
   { display_name: 'some_language_label', value: 'some_language' },
 ];
 
-const videoId = faker.datatype.uuid();
+const videoId = faker.string.uuid();
 
 describe('<VideoWidgetProvider />', () => {
   beforeEach(() => {

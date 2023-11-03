@@ -88,7 +88,7 @@ describe('<SharedLiveMedia />', () => {
   });
 
   it('uploads a file', async () => {
-    const videoId = faker.datatype.uuid();
+    const videoId = faker.string.uuid();
     const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
       video: videoId,
     });
@@ -159,7 +159,7 @@ describe('<SharedLiveMedia />', () => {
   });
 
   it('successfully deletes a shared live media', async () => {
-    const videoId = faker.datatype.uuid();
+    const videoId = faker.string.uuid();
     const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
       title: 'Title of the file',
       video: videoId,
@@ -237,7 +237,7 @@ describe('<SharedLiveMedia />', () => {
   });
 
   it('fails to delete a shared live media', async () => {
-    const videoId = faker.datatype.uuid();
+    const videoId = faker.string.uuid();
     const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
       title: 'Title of the file',
       video: videoId,
@@ -320,7 +320,7 @@ describe('<SharedLiveMedia />', () => {
   });
 
   it('retry to upload a failed upload', async () => {
-    const videoId = faker.datatype.uuid();
+    const videoId = faker.string.uuid();
     const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
       active_stamp: null,
       filename: null,
@@ -395,7 +395,7 @@ describe('<SharedLiveMedia />', () => {
   });
 
   it('renders the component in teacher VOD mode', () => {
-    const videoId = faker.datatype.uuid();
+    const videoId = faker.string.uuid();
     const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
       title: 'Title of the file',
       video: videoId,
@@ -437,7 +437,7 @@ describe('<SharedLiveMedia />', () => {
   });
 
   it('renders the component in student VOD mode', () => {
-    const videoId = faker.datatype.uuid();
+    const videoId = faker.string.uuid();
     const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
       title: 'Title of the file',
       video: videoId,
@@ -481,7 +481,7 @@ describe('<SharedLiveMedia />', () => {
   });
 
   it('does not show the media if show_donwload is set to false', () => {
-    const videoId = faker.datatype.uuid();
+    const videoId = faker.string.uuid();
     const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
       title: 'Title of the file',
       video: videoId,
@@ -522,7 +522,7 @@ describe('<SharedLiveMedia />', () => {
   });
 
   it('does not show anything in public is there is no media to downoad', () => {
-    const videoId = faker.datatype.uuid();
+    const videoId = faker.string.uuid();
     const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
       title: 'Title of the file',
       video: videoId,
@@ -560,7 +560,7 @@ describe('<SharedLiveMedia />', () => {
   });
 
   it('shows the compoment in teacher view even if is there is no media to downoad', () => {
-    const videoId = faker.datatype.uuid();
+    const videoId = faker.string.uuid();
     const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
       title: 'Title of the file',
       video: videoId,

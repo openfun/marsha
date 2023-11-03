@@ -25,7 +25,7 @@ describe('<DisallowedDownloadButton />', () => {
   });
 
   it('clicks on the button and successfully updates the show_download property', async () => {
-    const videoId = faker.datatype.uuid();
+    const videoId = faker.string.uuid();
     const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
       show_download: false,
       video: videoId,
@@ -72,7 +72,7 @@ describe('<DisallowedDownloadButton />', () => {
   });
 
   it('clicks on the button and update the show_download property fails', async () => {
-    const videoId = faker.datatype.uuid();
+    const videoId = faker.string.uuid();
     const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
       show_download: false,
       video: videoId,
