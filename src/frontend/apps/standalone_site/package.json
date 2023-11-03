@@ -19,6 +19,7 @@
     "eslint": "*",
     "eslint-config-marsha": "*",
     "fetch-mock": "9.11.0",
+    "fork-ts-checker-webpack-plugin": "9.0.2",
     "lib-tests": "*",
     "typescript": "*"
   },
