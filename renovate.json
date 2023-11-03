@@ -24,7 +24,6 @@
         "rehype-raw",
         "remark-math",
         "styled-components",
-        "typescript",
         "video.js",
         "videojs-contrib-quality-levels"
       ]
