@@ -32,7 +32,7 @@ describe('<SharedLiveMediaItem />', () => {
   });
 
   it('renders a SharedLiveMediaItem which is uploading', () => {
-    const videoId = faker.datatype.uuid();
+    const videoId = faker.string.uuid();
     const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
       active_stamp: null,
       filename: null,
@@ -95,7 +95,7 @@ describe('<SharedLiveMediaItem />', () => {
   });
 
   it('renders a SharedLiveMediaItem which is processing (with upload object)', () => {
-    const videoId = faker.datatype.uuid();
+    const videoId = faker.string.uuid();
     const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
       active_stamp: null,
       filename: null,
@@ -158,7 +158,7 @@ describe('<SharedLiveMediaItem />', () => {
   });
 
   it('renders a SharedLiveMediaItem which is processing (without upload object)', () => {
-    const videoId = faker.datatype.uuid();
+    const videoId = faker.string.uuid();
     const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
       active_stamp: null,
       filename: null,
@@ -211,7 +211,7 @@ describe('<SharedLiveMediaItem />', () => {
   });
 
   it('renders a SharedLiveMediaItem which is ready (and with students download disallowed)', () => {
-    const videoId = faker.datatype.uuid();
+    const videoId = faker.string.uuid();
     const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
       show_download: false,
       title: 'sharedLiveMediaFileName.pdf',
@@ -260,7 +260,7 @@ describe('<SharedLiveMediaItem />', () => {
   });
 
   it('renders a SharedLiveMediaItem which is ready (and being shared with students but not downloadable)', () => {
-    const videoId = faker.datatype.uuid();
+    const videoId = faker.string.uuid();
     const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
       title: 'sharedLiveMediaFileName.pdf',
       show_download: false,
@@ -313,7 +313,7 @@ describe('<SharedLiveMediaItem />', () => {
   });
 
   it('renders a SharedLiveMediaItem which has an error', async () => {
-    const videoId = faker.datatype.uuid();
+    const videoId = faker.string.uuid();
     const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
       title: null,
       upload_state: uploadState.ERROR,
@@ -365,7 +365,7 @@ describe('<SharedLiveMediaItem />', () => {
   });
 
   it('renders a SharedLiveMediaItem which has failed', async () => {
-    const videoId = faker.datatype.uuid();
+    const videoId = faker.string.uuid();
     const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
       title: null,
       upload_state: uploadState.PENDING,

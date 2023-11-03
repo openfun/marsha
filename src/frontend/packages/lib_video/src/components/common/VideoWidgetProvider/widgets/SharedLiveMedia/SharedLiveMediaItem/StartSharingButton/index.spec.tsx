@@ -32,7 +32,7 @@ describe('<StartSharingButton />', () => {
   });
 
   it('clicks on the button and successfully start sharing the shared live media', async () => {
-    const videoId = faker.datatype.uuid();
+    const videoId = faker.string.uuid();
     const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
       video: videoId,
     });
@@ -78,7 +78,7 @@ describe('<StartSharingButton />', () => {
   });
 
   it('clicks on the button and the sharing fails', async () => {
-    const videoId = faker.datatype.uuid();
+    const videoId = faker.string.uuid();
     const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
       video: videoId,
     });

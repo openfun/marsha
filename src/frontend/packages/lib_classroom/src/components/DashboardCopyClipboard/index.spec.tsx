@@ -127,25 +127,25 @@ describe('<DashboardCopyClipboard />', () => {
     {
       message: 'inviteToken starts with "pub_"',
       props: {
-        inviteToken: `pub_${faker.random.alphaNumeric(10)}`,
+        inviteToken: `pub_${faker.string.alphanumeric(10)}`,
       },
     },
     {
       message: 'inviteToken starts with "inst_"',
       props: {
-        inviteToken: `inst_${faker.random.alphaNumeric(10)}`,
+        inviteToken: `inst_${faker.string.alphanumeric(10)}`,
       },
     },
     {
       message: 'instructorToken starts with "pub_"',
       props: {
-        instructorToken: `pub_${faker.random.alphaNumeric(10)}`,
+        instructorToken: `pub_${faker.string.alphanumeric(10)}`,
       },
     },
     {
       message: 'instructorToken starts with "inst_"',
       props: {
-        instructorToken: `inst_${faker.random.alphaNumeric(10)}`,
+        instructorToken: `inst_${faker.string.alphanumeric(10)}`,
       },
     },
   ].forEach(({ message, props }) => {

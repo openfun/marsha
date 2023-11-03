@@ -18,6 +18,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Update psycopg to version 3
 - Update node to version 20
 - Replace pylti with oauthlib for LTI request validation
+- Replace faker with @faker-js/faker (frontend)
 
 ## [4.7.0] - 2023-10-19
 

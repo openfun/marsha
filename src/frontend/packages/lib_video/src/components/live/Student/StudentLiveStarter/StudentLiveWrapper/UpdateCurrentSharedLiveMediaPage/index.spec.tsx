@@ -30,7 +30,7 @@ jest.mock('hooks/useSharedMediaCurrentPage', () => ({
 
 describe('<UpdateCurrentSharedLiveMediaPage />', () => {
   it('set the page in the SharedMediaCurrentPageProvider', () => {
-    const videoId = faker.datatype.uuid();
+    const videoId = faker.string.uuid();
     const sharedLiveMedia = sharedLiveMediaMockFactory({ video: videoId });
     const video = liveMockFactory({
       id: videoId,
@@ -82,7 +82,7 @@ describe('<UpdateCurrentSharedLiveMediaPage />', () => {
   });
 
   it('set the page with id3 tags', () => {
-    const videoId = faker.datatype.uuid();
+    const videoId = faker.string.uuid();
     const sharedLiveMedia = sharedLiveMediaMockFactory({ video: videoId });
     const video = liveMockFactory({
       id: videoId,

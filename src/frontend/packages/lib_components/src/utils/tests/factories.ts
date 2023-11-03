@@ -59,7 +59,7 @@ export const playlistLiteMockFactory = (
 ): PlaylistLite => {
   return {
     id: faker.string.uuid(),
-    lti_id: faker.datatype.string(),
+    lti_id: faker.string.sample(),
     title: faker.lorem.words(),
     ...playlist,
   };
@@ -78,7 +78,7 @@ export const playlistMockFactory = (
     is_portable_to_playlist: faker.datatype.boolean(),
     is_portable_to_consumer_site: faker.datatype.boolean(),
     is_public: faker.datatype.boolean(),
-    lti_id: faker.datatype.string(),
+    lti_id: faker.string.sample(),
     organization: {
       id: faker.string.uuid(),
       name: faker.company.name(),
@@ -119,7 +119,7 @@ export const timedTextMockFactory = (
     id,
     active_stamp: faker.date.past().getTime(),
     is_ready_to_show: faker.datatype.boolean(),
-    language: faker.datatype.string(),
+    language: faker.string.sample(),
     mode: timedTextMode.SUBTITLE,
     upload_state: uploadState.READY,
     source_url: faker.internet.url(),
@@ -404,7 +404,7 @@ export const userMockFactory = (user: Partial<User> = {}): User => {
     is_staff: false,
     is_superuser: false,
     organization_accesses: [],
-    full_name: `${faker.name.firstName()} ${faker.name.lastName()}`,
+    full_name: `${faker.person.firstName()} ${faker.person.lastName()}`,
     ...user,
   };
 };

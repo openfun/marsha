@@ -130,8 +130,8 @@ describe('usePIPDragger/computePicturePosition', () => {
         { x: -100, y: -100 },
         container,
         {
-          offsetLeft: faker.datatype.number(),
-          offsetTop: faker.datatype.number(),
+          offsetLeft: faker.number.int(),
+          offsetTop: faker.number.int(),
           offsetWidth: 30,
           offsetHeight: 30,
         } as HTMLDivElement,
@@ -143,8 +143,8 @@ describe('usePIPDragger/computePicturePosition', () => {
         { x: 100, y: -100 },
         container,
         {
-          offsetLeft: faker.datatype.number(),
-          offsetTop: faker.datatype.number(),
+          offsetLeft: faker.number.int(),
+          offsetTop: faker.number.int(),
           offsetWidth: 30,
           offsetHeight: 30,
         } as HTMLDivElement,
@@ -156,8 +156,8 @@ describe('usePIPDragger/computePicturePosition', () => {
         { x: -100, y: 100 },
         container,
         {
-          offsetLeft: faker.datatype.number(),
-          offsetTop: faker.datatype.number(),
+          offsetLeft: faker.number.int(),
+          offsetTop: faker.number.int(),
           offsetWidth: 30,
           offsetHeight: 30,
         } as HTMLDivElement,
@@ -169,8 +169,8 @@ describe('usePIPDragger/computePicturePosition', () => {
         { x: 100, y: 100 },
         container,
         {
-          offsetLeft: faker.datatype.number(),
-          offsetTop: faker.datatype.number(),
+          offsetLeft: faker.number.int(),
+          offsetTop: faker.number.int(),
           offsetWidth: 30,
           offsetHeight: 30,
         } as HTMLDivElement,

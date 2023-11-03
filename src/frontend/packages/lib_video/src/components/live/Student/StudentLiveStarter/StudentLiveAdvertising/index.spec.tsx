@@ -261,7 +261,7 @@ describe('<StudentLiveAdvertising />', () => {
   });
 
   it('renders live information with uploaded thumbnail but with no urls', () => {
-    const videoId = faker.datatype.uuid();
+    const videoId = faker.string.uuid();
     const video = liveMockFactory({
       id: videoId,
       starting_at: DateTime.fromJSDate(
@@ -288,7 +288,7 @@ describe('<StudentLiveAdvertising />', () => {
   });
 
   it('renders live information with uploaded thumbnail but with no urls and past scheduled', () => {
-    const videoId = faker.datatype.uuid();
+    const videoId = faker.string.uuid();
     const video = liveMockFactory({
       id: videoId,
       starting_at: DateTime.fromJSDate(new Date(2022, 1, 25, 11, 0, 0)).toISO(),
@@ -309,7 +309,7 @@ describe('<StudentLiveAdvertising />', () => {
   });
 
   it('renders live information with an uploaded thumbnail', () => {
-    const videoId = faker.datatype.uuid();
+    const videoId = faker.string.uuid();
     const video = liveMockFactory({
       id: videoId,
       starting_at: DateTime.fromJSDate(

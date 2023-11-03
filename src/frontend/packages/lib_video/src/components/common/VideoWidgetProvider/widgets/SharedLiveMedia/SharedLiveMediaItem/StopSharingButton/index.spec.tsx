@@ -32,7 +32,7 @@ describe('<StopSharingButton />', () => {
   });
 
   it('clicks on the button and successfully stop sharing the shared live media', async () => {
-    const videoId = faker.datatype.uuid();
+    const videoId = faker.string.uuid();
     const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
       video: videoId,
     });
@@ -67,7 +67,7 @@ describe('<StopSharingButton />', () => {
   });
 
   it('clicks on the button and the stop sharing fails', async () => {
-    const videoId = faker.datatype.uuid();
+    const videoId = faker.string.uuid();
     const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
       video: videoId,
     });

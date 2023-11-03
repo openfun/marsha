@@ -42,7 +42,7 @@ describe('<ClassroomWidgetProvider />', () => {
         },
       },
     ] as any);
-    const classroomId = faker.datatype.uuid();
+    const classroomId = faker.string.uuid();
     const mockedClassroom = classroomMockFactory({
       id: classroomId,
       title: 'An example title',
