@@ -17,7 +17,7 @@
     "node": "18"
   },
   "volta": {
-    "node": "18.16.1"
+    "node": "20.9.0"
   },
   "dependencies": {
     "@sentry/node": "7.76.0",

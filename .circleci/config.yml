@@ -388,7 +388,7 @@ jobs:
   # ---- Front-end jobs ----
   install-front-dependencies:
     docker:
-      - image: cimg/node:18.18
+      - image: cimg/node:20.9
         auth:
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASS
@@ -427,7 +427,7 @@ jobs:
 
   build-front:
     docker:
-      - image: cimg/node:18.18
+      - image: cimg/node:20.9
         auth:
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASS
@@ -467,7 +467,7 @@ jobs:
   # ---- mail jobs ----
   build-mails:
     docker:
-      - image: cimg/node:18.18
+      - image: cimg/node:20.9
         auth:
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASS
@@ -498,7 +498,7 @@ jobs:
 
   lint-front:
     docker:
-      - image: cimg/node:18.18
+      - image: cimg/node:20.9
         auth:
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASS
@@ -518,7 +518,7 @@ jobs:
 
   test-front:
     docker:
-      - image: cimg/node:18.18
+      - image: cimg/node:20.9
         auth:
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASS
@@ -559,7 +559,7 @@ jobs:
 
   test-website:
     docker:
-      - image: cimg/node:18.18
+      - image: cimg/node:20.9
         auth:
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASS

@@ -48,7 +48,7 @@ services:
     tty: true
 
   webtorrent:
-    image: node:18
+    image: node:20
     environment:
       - APP_PORT=3000
       - JWT_SIGNING_KEY=ThisIsAnExampleKeyForDevPurposeOnly
@@ -90,13 +90,13 @@ services:
     working_dir: /app
 
   node:
-    image: node:18
+    image: node:20
     volumes:
       - ".:/app"
     working_dir: /app/src/frontend
 
   mail-generator:
-    image: node:18
+    image: node:20
     volumes:
       - ".:/app"
     working_dir: /app/src/mail
