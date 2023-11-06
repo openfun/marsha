@@ -1,5 +1,4 @@
-import { Box } from 'grommet';
-import { Text, TimedTextTranscript } from 'lib-components';
+import { Box, Text, TimedTextTranscript } from 'lib-components';
 import React, { useEffect, useRef, useState } from 'react';
 import { VTTCue, WebVTT } from 'vtt.js';
 
@@ -70,7 +69,7 @@ export const TranscriptReader = ({ transcript }: TranscriptReaderProps) => {
       align="start"
       direction="row"
       pad="medium"
-      overflow="scroll"
+      overflow="auto"
       height="small"
     >
       <Text type="p">

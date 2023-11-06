@@ -1,5 +1,4 @@
-import { Box } from 'grommet';
-import { liveState } from 'lib-components';
+import { Box, liveState } from 'lib-components';
 import React, { Fragment } from 'react';
 
 import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
@@ -27,7 +26,6 @@ export const TeacherLiveRecordingActions = ({
   if (video.is_recording) {
     return (
       <Box
-        flex={{ grow: 0 }}
         margin={{ horizontal: 'medium' }}
         pad={{ horizontal: 'auto', vertical: 'small' }}
       >
@@ -37,7 +35,6 @@ export const TeacherLiveRecordingActions = ({
   } else {
     return (
       <Box
-        flex={{ grow: 0 }}
         margin={{ horizontal: 'medium' }}
         pad={{ horizontal: 'auto', vertical: 'small' }}
       >

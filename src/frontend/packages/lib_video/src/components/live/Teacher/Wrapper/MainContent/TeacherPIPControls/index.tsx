@@ -1,4 +1,4 @@
-import { Box } from 'grommet';
+import { Box } from 'lib-components';
 import React, { useEffect, useState } from 'react';
 
 import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
@@ -51,11 +51,10 @@ export const TeacherPIPControls = ({ maxPage }: TeacherPIPControlsProps) => {
   return (
     <Box
       fill
-      animation={
-        isVisible > 0
-          ? { type: 'fadeIn', duration: 350 }
-          : { type: 'fadeOut', duration: 350 }
-      }
+      style={{
+        transition: 'opacity 0.35s ease-in-out',
+        opacity: isVisible > 0 ? 1 : 0,
+      }}
       onMouseMove={() => {
         setIsVisible((value) => ++value);
       }}

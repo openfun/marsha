@@ -1,7 +1,8 @@
 import { Button } from '@openfun/cunningham-react';
-import { Box, Stack } from 'grommet';
+import { Stack } from 'grommet';
 import { Nullable } from 'lib-common';
 import {
+  Box,
   BoxLoader,
   FoldableItem,
   PictureSVG,
@@ -150,7 +151,7 @@ export const WidgetThumbnail = ({ isLive = true }: WidgetThumbnailProps) => {
       {isLoading ? (
         <BoxLoader />
       ) : (
-        <Box direction="column" justify="center" gap="small">
+        <Box justify="center" gap="small">
           {!thumbnail ||
           (thumbnail &&
             !thumbnail.urls &&

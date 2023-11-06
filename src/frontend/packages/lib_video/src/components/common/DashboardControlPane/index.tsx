@@ -1,6 +1,6 @@
-import { Box, Tab, Tabs, ThemeContext } from 'grommet';
-import { normalizeColor } from 'grommet/utils';
-import { theme } from 'lib-common';
+import { Tab, Tabs, ThemeContext } from 'grommet';
+import { colorsTokens } from 'lib-common';
+import { Box } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -54,7 +54,7 @@ export const DashboardControlPane = ({
       },
     },
     tab: {
-      extend: ` color:${normalizeColor('blue-active', theme)};\
+      extend: ` color:${colorsTokens['info-500']};\
         font-family: 'Roboto-Bold';\
         height: 21px;\
         letter-spacing: -0.36px;\
@@ -73,7 +73,7 @@ export const DashboardControlPane = ({
   };
 
   return (
-    <Box background={{ color: 'bg-marsha' }}>
+    <Box background={colorsTokens['primary-100']}>
       <ThemeContext.Extend value={extendedTheme}>
         <Tabs>
           <Tab title={intl.formatMessage(messages.titleConfiguration)}>

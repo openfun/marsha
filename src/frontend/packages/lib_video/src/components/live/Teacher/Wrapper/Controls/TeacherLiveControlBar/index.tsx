@@ -1,6 +1,5 @@
 import { Switch } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
-import { LiveModeType, liveState } from 'lib-components';
+import { Box, LiveModeType, liveState } from 'lib-components';
 import React, { useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -60,7 +59,7 @@ export const TeacherLiveControlBar = () => {
 
   return (
     <Box direction="row" height="100%">
-      <Box height="100%" style={{ minWidth: '60px' }}>
+      <Box height="100%" width={{ min: '60px' }}>
         <Switch
           label={intl.formatMessage(messages.label)}
           checked={isLiveFeedbackVisible}

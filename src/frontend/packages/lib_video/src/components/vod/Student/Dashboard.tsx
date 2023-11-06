@@ -1,5 +1,5 @@
-import { Box } from 'grommet';
-import { Video, liveState, useTimedTextTrack } from 'lib-components';
+import { colorsTokens } from 'lib-common';
+import { Box, Video, liveState, useTimedTextTrack } from 'lib-components';
 import React from 'react';
 
 import { VideoPlayer } from '@lib-video/components/common/VideoPlayer';
@@ -32,7 +32,7 @@ export const Dashboard = ({
   return (
     <CurrentVideoProvider value={video}>
       <VideoWebSocketInitializer url={socketUrl} videoId={video.id}>
-        <Box background={{ color: 'bg-marsha' }}>
+        <Box background={colorsTokens['primary-100']}>
           <Box>
             {video.live_state === liveState.ENDED ? (
               <VideoFromLiveDashboard

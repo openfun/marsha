@@ -1,4 +1,5 @@
-import { Box, Image } from 'grommet';
+import { Image } from 'grommet';
+import { Box } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 

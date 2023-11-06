@@ -1,7 +1,6 @@
-import { Box } from 'grommet';
-import { normalizeColor } from 'grommet/utils';
-import { theme } from 'lib-common';
+import { colorsTokens } from 'lib-common';
 import {
+  Box,
   FoldableItem,
   InfoWidgetModalProvider,
   ThumbnailDisplayer,
@@ -12,7 +11,6 @@ import {
 } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import styled from 'styled-components';
 
 import {
   DashboardControlPane,
@@ -31,33 +29,27 @@ const messages = defineMessages({
   },
 });
 
-const StyledLiveVideoInformationBarWrapper = styled(Box)`
-  -webkit-box-shadow: 0px 0px 7px 5px ${normalizeColor('shadow-1', theme)};
-  box-shadow: 0px 0px 7px 5px ${normalizeColor('shadow-1', theme)};
-  flex-wrap: wrap;
-`;
-
 interface DashboardContentProps {
   video: Video;
 }
 
 const DashboardContent = ({ video }: DashboardContentProps) => (
   <React.Fragment>
-    <StyledLiveVideoInformationBarWrapper
+    <Box
       align="center"
       background="white"
-      direction="row-responsive"
-      height="80px"
-      justify="between"
+      direction="row"
+      justify="space-between"
       margin="small"
       pad={{
         vertical: 'small',
         horizontal: 'medium',
       }}
       round="xsmall"
+      elevation
     >
-      <TeacherVideoInfoBar flex startDate={video.starting_at} />
-    </StyledLiveVideoInformationBarWrapper>
+      <TeacherVideoInfoBar startDate={'10/12/2013'} />
+    </Box>
 
     <DashboardControlPane
       isLive={false}
@@ -85,7 +77,7 @@ export const Dashboard = ({ video, socketUrl }: DashboardProps) => {
   return (
     <CurrentVideoProvider value={video}>
       <VideoWebSocketInitializer url={socketUrl} videoId={video.id}>
-        <Box background={{ color: 'bg-marsha' }}>
+        <Box background={colorsTokens['primary-100']}>
           {video.is_ready_to_show ? (
             <VideoPlayer
               video={video}

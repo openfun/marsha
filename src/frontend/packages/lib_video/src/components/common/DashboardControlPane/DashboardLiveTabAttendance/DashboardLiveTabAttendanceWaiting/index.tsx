@@ -1,5 +1,4 @@
-import { Box } from 'grommet';
-import { Heading, useAppConfig } from 'lib-components';
+import { Box, Heading, useAppConfig } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -17,13 +16,7 @@ export const DashboardLiveTabAttendanceWaiting = ({}) => {
 
   return (
     <Box
-      background={{
-        image: `url(${appData.static.img.liveBackground})`,
-        position: 'top',
-        repeat: 'no-repeat',
-        size: 'cover',
-      }}
-      flex="grow"
+      background={`url(${appData.static.img.liveBackground}) top / cover no-repeat`}
       margin={{ top: 'small' }}
       pad={{ top: 'small' }}
     >

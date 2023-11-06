@@ -1,5 +1,4 @@
-import { Box } from 'grommet';
-import { FoldableItem, ToggleInput, report } from 'lib-components';
+import { Box, FoldableItem, ToggleInput, report } from 'lib-components';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -101,7 +100,7 @@ export const ToolsAndApplications = () => {
       initialOpenValue
       title={intl.formatMessage(messages.title)}
     >
-      <Box direction="column" gap="small">
+      <Box gap="small">
         <ToggleInput
           checked={isChatActive}
           onChange={onChatActiveChange}

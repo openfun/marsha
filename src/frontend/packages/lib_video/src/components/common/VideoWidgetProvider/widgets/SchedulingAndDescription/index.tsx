@@ -1,5 +1,5 @@
-import { Box } from 'grommet';
 import {
+  Box,
   DashedBoxCustom,
   FoldableItem,
   SchedulingFields,

@@ -1,7 +1,7 @@
 import { Button } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
 import { Maybe, Nullable } from 'lib-common';
 import {
+  Box,
   ItemList,
   TimedTextTrackState,
   formatSizeErrorScale,
@@ -173,7 +173,7 @@ export const LocalizedTimedTextTrackUpload = ({
   );
 
   return (
-    <Box direction="column" gap="small" margin={{ top: 'small' }}>
+    <Box gap="small" margin={{ top: 'small' }}>
       <LanguageSelect
         onChange={onChangeLanguageSelect}
         timedTextModeWidget={timedTextModeWidget}

@@ -1,5 +1,4 @@
-import { Box, BoxProps } from 'grommet';
-import { BoxLoader, Text, liveState } from 'lib-components';
+import { Box, BoxLoader, BoxProps, Text, liveState } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -47,7 +46,7 @@ const messages = defineMessages({
   },
 });
 
-interface TeacherLiveLifecycleControlsProps extends BoxProps {
+interface TeacherLiveLifecycleControlsProps extends BoxProps<'div'> {
   canStartStreaming: boolean;
   hasRightToStart: boolean;
 }
@@ -97,12 +96,7 @@ export const TeacherLiveLifecycleControls = ({
     );
   } else if (video.live_state === liveState.STARTING) {
     content = (
-      <Box
-        direction="row"
-        flex="shrink"
-        margin={firstItemMargin}
-        align="center"
-      >
+      <Box direction="row" margin={firstItemMargin} align="center">
         <Text size="large">{intl.formatMessage(messages.starting)}</Text>
         <BoxLoader boxProps={{ margin: { left: 'small' } }} size="small" />
       </Box>
@@ -113,24 +107,14 @@ export const TeacherLiveLifecycleControls = ({
     );
   } else if (video.live_state === liveState.STOPPING) {
     content = (
-      <Box
-        direction="row"
-        flex="shrink"
-        margin={firstItemMargin}
-        align="center"
-      >
+      <Box direction="row" margin={firstItemMargin} align="center">
         <Text size="large">{intl.formatMessage(messages.stopping)}</Text>
         <BoxLoader boxProps={{ margin: { left: 'small' } }} size="small" />
       </Box>
     );
   } else if (video.live_state === liveState.HARVESTING) {
     content = (
-      <Box
-        direction="row"
-        flex="shrink"
-        margin={firstItemMargin}
-        align="center"
-      >
+      <Box direction="row" margin={firstItemMargin} align="center">
         <Text style={{ minWidth: '5.5rem' }} textAlign="center">
           {intl.formatMessage(messages.harvesting)}
         </Text>

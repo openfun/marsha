@@ -1,6 +1,7 @@
-import { Box, Stack, Tab } from 'grommet';
-import { colors as themeColors } from 'lib-common';
+import { Stack, Tab } from 'grommet';
+import { colorsTokens } from 'lib-common';
 import {
+  Box,
   RingingBellSVG,
   Text,
   useCurrentResourceContext,
@@ -17,10 +18,10 @@ interface StyledTabProps {
 }
 
 const colors = {
-  active: themeColors['blue-active'],
-  counterPart: themeColors.white,
-  disable: themeColors['blue-off'],
-  focus: themeColors['blue-focus'],
+  active: colorsTokens['info-500'],
+  counterPart: '#ffffff',
+  disable: colorsTokens['info-200'],
+  focus: colorsTokens['info-900'],
 };
 
 const StyledTab = styled(Tab)`
@@ -122,7 +123,7 @@ export const LiveVideoTabPanel = ({
             {displayRingingBell && (
               <Box
                 background="white"
-                border={{ color: 'blue-active' }}
+                style={{ border: `1px solid ${colorsTokens['primary-500']}` }}
                 round="8px"
                 pad={{ vertical: '1px', horizontal: '3px' }}
                 direction="row"
@@ -132,7 +133,7 @@ export const LiveVideoTabPanel = ({
                   {video.participants_asking_to_join.length}
                 </Text>
                 <RingingBellSVG
-                  iconColor="blue-active"
+                  iconColor={colorsTokens['info-500']}
                   height="15px"
                   width="12px"
                   containerStyle={{ float: 'right', margin: 'auto' }}

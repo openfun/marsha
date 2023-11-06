@@ -1,6 +1,7 @@
-import { Box } from 'grommet';
+import { colorsTokens } from 'lib-common';
 import {
   Badge,
+  Box,
   ButtonBox,
   ChatSVG,
   Text,
@@ -51,9 +52,9 @@ const messages = defineMessages({
 });
 
 interface SlidingBoxProps {
-  active1: boolean;
-  active2: boolean;
-  active3: boolean;
+  $active1: boolean;
+  $active2: boolean;
+  $active3: boolean;
 }
 
 const SlidingBox = styled(Box)<SlidingBoxProps>`
@@ -63,9 +64,9 @@ const SlidingBox = styled(Box)<SlidingBoxProps>`
   transition: all 0.5s ease-out;
   border-top: 2px solid #d7e8f3;
   border-radius: 9px 9px 0 0;
-  ${({ active2, active3 }) =>
-    (active2 && `transform: translateX(100%);`) ||
-    (active3 && `transform: translateX(200%);`)}
+  ${({ $active2, $active3 }) =>
+    ($active2 && `transform: translateX(100%);`) ||
+    ($active3 && `transform: translateX(200%);`)}
 `;
 
 const TabBox = styled(Box)`
@@ -143,9 +144,9 @@ export const TabPanelWebinar = () => {
     <Box
       direction="row"
       height="auto"
-      justify="evenly"
-      style={{ position: 'relative' }}
-      background="bg-marsha"
+      justify="space-evenly"
+      position="relative"
+      background={colorsTokens['primary-100']}
       pad={{ top: '5px' }}
     >
       <SlidingBox
@@ -153,9 +154,9 @@ export const TabPanelWebinar = () => {
         height="100%"
         width={widthSlider}
         background="#fff"
-        active1={!isPanelVisible}
-        active2={isPanelVisible && currentItem === LivePanelItem.CHAT}
-        active3={isPanelVisible && currentItem === LivePanelItem.VIEWERS_LIST}
+        $active1={!isPanelVisible}
+        $active2={isPanelVisible && currentItem === LivePanelItem.CHAT}
+        $active3={isPanelVisible && currentItem === LivePanelItem.VIEWERS_LIST}
       />
       <TabBox height="100%">
         <ButtonBox
@@ -170,7 +171,7 @@ export const TabPanelWebinar = () => {
           aria-label={intl.formatMessage(messages.showWebinar)}
           title={intl.formatMessage(messages.showWebinar)}
         >
-          <WebinarSVG iconColor="blue-focus" height="30px" />{' '}
+          <WebinarSVG iconColor={colorsTokens['info-900']} height="30px" />{' '}
           <Text size="small">{intl.formatMessage(messages.webinar)}</Text>
         </ButtonBox>
       </TabBox>
@@ -189,7 +190,7 @@ export const TabPanelWebinar = () => {
             aria-label={intl.formatMessage(messages.showChat)}
             title={intl.formatMessage(messages.showChat)}
           >
-            <ChatSVG iconColor="blue-focus" height="30px" />{' '}
+            <ChatSVG iconColor={colorsTokens['info-900']} height="30px" />{' '}
             <Text size="small">{intl.formatMessage(messages.chat)}</Text>
           </ButtonBox>
         </TabBox>
@@ -209,8 +210,8 @@ export const TabPanelWebinar = () => {
             aria-label={intl.formatMessage(messages.showViewers)}
             title={intl.formatMessage(messages.showViewers)}
           >
-            <Box style={{ position: 'relative' }}>
-              <ViewersSVG iconColor="blue-focus" height="30px" />{' '}
+            <Box position="relative">
+              <ViewersSVG iconColor={colorsTokens['info-900']} height="30px" />{' '}
               {nbrOfOnStageRequests !== 0 && (
                 <Badge
                   value={nbrOfOnStageRequests?.toString()}

@@ -1,7 +1,7 @@
 import { Button } from '@openfun/cunningham-react';
-import { Box, Meter } from 'grommet';
+import { Meter } from 'grommet';
 import { colorsTokens } from 'lib-common';
-import { Text, liveState } from 'lib-components';
+import { Box, Text, liveState } from 'lib-components';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 

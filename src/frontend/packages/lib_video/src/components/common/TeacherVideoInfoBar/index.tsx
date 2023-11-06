@@ -1,10 +1,10 @@
-import { Box, BoxProps } from 'grommet';
 import { Nullable } from 'lib-common';
+import { Box, BoxProps } from 'lib-components';
 import React from 'react';
 
 import { VideoInfoBar } from '../VideoInfoBar';
 
-interface TeacherVideoInfoBarProps extends BoxProps {
+interface TeacherVideoInfoBarProps extends BoxProps<'div'> {
   startDate: Nullable<string>;
 }
 
@@ -13,12 +13,7 @@ export const TeacherVideoInfoBar = ({
   ...props
 }: TeacherVideoInfoBarProps) => {
   return (
-    <Box
-      direction="column"
-      justify="center"
-      style={{ flex: 'auto' }}
-      {...props}
-    >
+    <Box justify="center" flex="auto" {...props}>
       <VideoInfoBar isTeacher startDate={startDate} />
     </Box>
   );

@@ -1,6 +1,6 @@
 import { Switch } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
 import {
+  Box,
   LiveModeType,
   Text,
   modelName,

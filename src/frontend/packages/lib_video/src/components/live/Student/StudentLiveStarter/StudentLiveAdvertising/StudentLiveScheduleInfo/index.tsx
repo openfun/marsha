@@ -1,7 +1,8 @@
-import { Box, Clock } from 'grommet';
+import { Clock } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
-import { theme } from 'lib-common';
+import { colorsTokens, theme } from 'lib-common';
 import {
+  Box,
   ChronometerSVG,
   Heading,
   Text,
@@ -21,7 +22,7 @@ import styled from 'styled-components';
 
 const Header = ({ title }: { title: ReactNode }) => (
   <Heading
-    color={normalizeColor('blue-active', theme)}
+    color={colorsTokens['info-500']}
     level={5}
     style={{ display: 'flex', margin: '0' }}
   >
@@ -175,21 +176,19 @@ export const StudentLiveScheduleInfo = ({
         : messages.waitingMessage;
 
     return (
-      <Fragment>
-        <Box margin="auto" pad={{ horizontal: '36px' }}>
-          <Heading
-            level={3}
-            style={{
-              margin: 'auto',
-            }}
-          >
-            {intl.formatMessage(headingMessage)}
-          </Heading>
-          <Text type="p" textAlign="center" className="ml-auto mr-auto mt-s">
-            {intl.formatMessage(descriptionMessage)}
-          </Text>
-        </Box>
-      </Fragment>
+      <Box margin="auto" pad={{ horizontal: '36px' }}>
+        <Heading
+          level={3}
+          style={{
+            margin: 'auto',
+          }}
+        >
+          {intl.formatMessage(headingMessage)}
+        </Heading>
+        <Text type="p" textAlign="center" className="ml-auto mr-auto mt-s">
+          {intl.formatMessage(descriptionMessage)}
+        </Text>
+      </Box>
     );
   }
 
@@ -203,7 +202,7 @@ export const StudentLiveScheduleInfo = ({
               {intl.formatMessage(messages.timeLeft)}
               {!isMobile && (
                 <StyledClock
-                  color={normalizeColor('blue-active', theme)}
+                  color={colorsTokens['info-500']}
                   margin={{ left: 'xsmall' }}
                   onChange={onClockChange}
                   run="backward"
@@ -218,7 +217,7 @@ export const StudentLiveScheduleInfo = ({
           <Header
             title={
               <StyledClock
-                color={normalizeColor('blue-active', theme)}
+                color={colorsTokens['info-500']}
                 margin={{ left: 'xsmall' }}
                 onChange={onClockChange}
                 run="backward"
@@ -254,17 +253,15 @@ export const StudentLiveScheduleInfo = ({
       <ChronometerSVG
         containerStyle={{ position: 'absolute' }}
         height="36px"
-        iconColor={normalizeColor('blue-active', theme)}
+        iconColor={colorsTokens['info-500']}
       />
 
       <Box margin="auto" pad={{ horizontal: '36px' }}>
-        <Box direction="column" margin="auto">
-          {waitDurationInfo}
-        </Box>
+        <Box margin="auto">{waitDurationInfo}</Box>
         {localizedStartDate && (
           <Box direction="row" margin={{ bottom: 'small' }} width="100%">
             <Box
-              background={normalizeColor('blue-active', theme)}
+              background={colorsTokens['info-500']}
               flex="grow"
               height="2px"
               margin={{ right: 'xsmall', vertical: 'auto' }}
@@ -275,7 +272,7 @@ export const StudentLiveScheduleInfo = ({
               )}
             </Text>
             <Box
-              background={normalizeColor('blue-active', theme)}
+              background={colorsTokens['info-500']}
               flex="grow"
               height="2px"
               margin={{ left: 'xsmall', vertical: 'auto' }}

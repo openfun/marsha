@@ -1,5 +1,5 @@
-import { Box } from 'grommet';
-import { ExitCrossSVG } from 'lib-components';
+import { colorsTokens } from 'lib-common';
+import { Box, ExitCrossSVG } from 'lib-components';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { useSetDisplayName } from '@lib-video/hooks/useSetDisplayName';
@@ -23,7 +23,7 @@ export const InputDisplayNameOverlay = () => {
   };
 
   return (
-    <Box height="100%">
+    <Box fill="vertical">
       <Box
         direction="row-reverse"
         margin={{
@@ -40,11 +40,11 @@ export const InputDisplayNameOverlay = () => {
               height: '20px',
               width: '20px',
             }}
-            iconColor="blue-focus"
+            iconColor={colorsTokens['info-900']}
           />
         </Box>
       </Box>
-      <Box height="100%">
+      <Box fill="vertical">
         <InputDisplayName onSuccess={hideDisplayName} />
       </Box>
     </Box>

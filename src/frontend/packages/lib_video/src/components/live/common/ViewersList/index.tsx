@@ -1,7 +1,6 @@
 import { Button } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
 import { AddCircle } from 'grommet-icons';
-import { JoinMode, List, Text } from 'lib-components';
+import { Box, JoinMode, List, Text } from 'lib-components';
 import React, { ReactNode, useMemo } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -80,7 +79,7 @@ const Section = ({
   }
 
   return (
-    <Box height={{ min: 'auto' }} style={{ gap: '0.5rem' }}>
+    <Box height={{ min: 'auto' }} gap="0.5rem">
       <ViewersListHeader
         margin={{ left: 'medium' }}
         text={`${title} (${items.length})`}
@@ -181,14 +180,7 @@ export const ViewersList = ({ isInstructor }: ViewersListProps) => {
   );
 
   return (
-    <Box
-      fill
-      overflow={{
-        horizontal: 'hidden',
-        vertical: 'auto',
-      }}
-      style={{ gap: '1rem' }}
-    >
+    <Box fill overflow="auto" gap="1rem">
       {isInstructor && video.join_mode === JoinMode.APPROVAL && (
         <Section
           items={participantsAskingToJoin}
@@ -240,14 +232,12 @@ export const ViewersList = ({ isInstructor }: ViewersListProps) => {
 
       {video.join_mode !== JoinMode.FORCED && (
         <Box>
-          <Box flex>
-            <Section
-              items={simpleViewersWithName}
-              noItemsTitle={viewersMessage}
-              title={intl.formatMessage(messages.otherViewers)}
-              forceNoItemsTitle={anonymousViewersCount > 0}
-            />
-          </Box>
+          <Section
+            items={simpleViewersWithName}
+            noItemsTitle={viewersMessage}
+            title={intl.formatMessage(messages.otherViewers)}
+            forceNoItemsTitle={anonymousViewersCount > 0}
+          />
         </Box>
       )}
     </Box>

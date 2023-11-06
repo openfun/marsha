@@ -1,5 +1,6 @@
-import { Anchor, Box } from 'grommet';
+import { Anchor } from 'grommet';
 import {
+  Box,
   ObjectStatusPicker,
   RetryUploadButton,
   Text,

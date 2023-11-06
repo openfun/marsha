@@ -1,6 +1,6 @@
 import { Button } from '@openfun/cunningham-react';
-import { Box, Clock } from 'grommet';
-import { BoxLoader, RecordSVG } from 'lib-components';
+import { Clock } from 'grommet';
+import { Box, BoxLoader, RecordSVG } from 'lib-components';
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';

@@ -1,7 +1,7 @@
 import { Button } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
-import { Nullable } from 'lib-common';
+import { Nullable, colorsTokens } from 'lib-common';
 import {
+  Box,
   BoxLoader,
   FoldableItem,
   ProgressionBar,
@@ -91,7 +91,7 @@ export const UploadVideo = () => {
       initialOpenValue
       title={intl.formatMessage(messages.title)}
     >
-      <Box direction="column" gap="small">
+      <Box gap="small">
         {uploadManagerState[video.id] &&
           video.upload_state === uploadState.PENDING && (
             <ProgressionBar
@@ -102,7 +102,7 @@ export const UploadVideo = () => {
         {video.upload_state === uploadState.PROCESSING && (
           <Box
             align="center"
-            border={{ color: 'blue-active' }}
+            style={{ border: `1px solid ${colorsTokens['info-500']}` }}
             direction="row"
             gap="small"
             pad="small"
@@ -118,7 +118,7 @@ export const UploadVideo = () => {
         {video.upload_state === uploadState.READY && (
           <Box
             align="center"
-            background="bg-select"
+            background={colorsTokens['info-150']}
             direction="row"
             gap="small"
             height="50px"
@@ -126,7 +126,11 @@ export const UploadVideo = () => {
             pad="small"
             round="xsmall"
           >
-            <ValidSVG height="20px" iconColor="blue-active" width="20px" />
+            <ValidSVG
+              height="20px"
+              iconColor={colorsTokens['info-500']}
+              width="20px"
+            />
             <Text weight="medium" size="large">
               {intl.formatMessage(messages.videoAvailable)}
             </Text>

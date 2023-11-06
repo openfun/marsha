@@ -1,5 +1,5 @@
-import { Box } from 'grommet';
 import {
+  Box,
   JoinMode,
   LiveModeType,
   liveState,
@@ -40,16 +40,16 @@ export const StudentLiveControlBar = () => {
     <Box
       direction="row-reverse"
       height="100%"
-      justify={isMobile ? 'evenly' : undefined}
+      justify={isMobile ? 'space-evenly' : undefined}
     >
       {isMobile && availableItems.includes(LivePanelItem.APPLICATION) && (
-        <Box height="100%" style={{ minWidth: '60px' }}>
+        <Box height="100%" width={{ min: '60px' }}>
           <AppsWrapper />
         </Box>
       )}
 
       {displayJoinDiscussionButtons && (
-        <Box height="100%" style={{ minWidth: '60px' }}>
+        <Box height="100%" width={{ min: '60px' }}>
           <ButtonBox>
             <LeaveJoinDiscussionWrapper />
           </ButtonBox>

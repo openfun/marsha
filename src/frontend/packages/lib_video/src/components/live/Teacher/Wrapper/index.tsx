@@ -1,5 +1,5 @@
-import { Box } from 'grommet';
 import {
+  Box,
   JoinMode,
   LiveModeType,
   liveState,
@@ -178,12 +178,7 @@ export const TeacherLiveWrapper = () => {
       }
       displayActionsElement
       isXmppReady={!!live.xmpp}
-      liveTitleElement={
-        <TeacherVideoInfoBar
-          flex={isLiveStarted ? { grow: 1, shrink: 2 } : true}
-          startDate={live.starting_at}
-        />
-      }
+      liveTitleElement={<TeacherVideoInfoBar startDate={live.starting_at} />}
       mainElement={
         <MainContent
           setCanShowStartButton={setCanShowStartButton}

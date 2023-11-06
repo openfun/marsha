@@ -1,5 +1,5 @@
-import { Box } from 'grommet';
 import { Nullable } from 'lib-common';
+import { Box } from 'lib-components';
 import React from 'react';
 
 import { VideoInfoBar } from '@lib-video/components/common/VideoInfoBar';
@@ -10,7 +10,7 @@ interface StudentLiveInfoBarProps {
 
 export const StudentLiveInfoBar = ({ startDate }: StudentLiveInfoBarProps) => {
   return (
-    <Box direction="column" flex style={{ minWidth: '0' }}>
+    <Box>
       <VideoInfoBar isTeacher={false} startDate={startDate} />
     </Box>
   );

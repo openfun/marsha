@@ -1,6 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { Box } from 'grommet';
-import { TimedText, Video } from 'lib-components';
+import { Box, TimedText, Video } from 'lib-components';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useIntl } from 'react-intl';
 

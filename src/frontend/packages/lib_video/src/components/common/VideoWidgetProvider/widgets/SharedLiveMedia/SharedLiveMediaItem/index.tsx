@@ -1,6 +1,6 @@
-import { Box } from 'grommet';
 import { Nullable } from 'lib-common';
 import {
+  Box,
   ObjectStatusPicker,
   RetryUploadButton,
   SharedLiveMedia,

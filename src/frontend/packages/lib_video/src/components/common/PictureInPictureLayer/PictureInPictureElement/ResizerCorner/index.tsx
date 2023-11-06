@@ -1,4 +1,6 @@
-import { Box, Stack } from 'grommet';
+import { colorsTokens } from '@lib-common/cunningham';
+import { Stack } from 'grommet';
+import { Box } from 'lib-components';
 import React, { CSSProperties } from 'react';
 import styled from 'styled-components';
 
@@ -6,7 +8,6 @@ import { startDraggingHandler } from '../../usePIPDragger';
 
 const StyledContainer = styled(Box)`
   cursor: se-resize;
-  position: absolute;
   bottom: -10px;
   right: -10px;
   z-index: 10;
@@ -26,10 +27,11 @@ export const ResizerCorner = ({ startResizing, style }: ResizerCornerProps) => {
       style={style}
       pad={{ bottom: '10px', right: '10px' }}
       onMouseDown={startResizing}
+      position="absolute"
     >
       <Stack fill style={{ overflow: 'hidden' }}>
         <Box
-          background="blue-active"
+          background={colorsTokens['info-500']}
           width="100%"
           height="2px"
           margin={{ top: '10px' }}
@@ -39,29 +41,12 @@ export const ResizerCorner = ({ startResizing, style }: ResizerCornerProps) => {
         <Box
           width="0px"
           height="0px"
-          border={[
-            {
-              color: 'blue-active',
-              size: '10px',
-              style: 'solid',
-              side: 'bottom',
-            },
-            { color: 'transparent', size: '10px', style: 'solid', side: 'top' },
-            {
-              color: 'transparent',
-              size: '10px',
-              style: 'solid',
-              side: 'left',
-            },
-            {
-              color: 'transparent',
-              size: '10px',
-              style: 'solid',
-              side: 'right',
-            },
-          ]}
           margin={{ top: '10px', left: '10px' }}
-          style={{ transform: 'rotate(135deg)' }}
+          style={{
+            transform: 'rotate(135deg)',
+            border: '10px solid transparent',
+            borderBottomColor: colorsTokens['info-500'],
+          }}
         />
       </Stack>
     </StyledContainer>

@@ -1,5 +1,5 @@
-import { Box } from 'grommet';
 import {
+  Box,
   BoxLoader,
   ErrorComponents,
   ErrorMessage,
@@ -64,13 +64,11 @@ const Internal = ({ live_state, video_id }: InternalProps) => {
           {data.count > 0 && (
             <Box
               background="white"
-              direction="column"
               margin={{ top: 'small' }}
-              pad={{ top: 'medium' }}
-              round="6px"
-              style={{
-                boxShadow: '0px 0px 6px 0px rgba(2, 117, 180, 0.3)',
-                minHeight: '70px',
+              round="xsmall"
+              elevation
+              height={{
+                min: '70px',
               }}
             >
               {data.results.map((liveSession) => (

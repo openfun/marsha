@@ -1,5 +1,5 @@
-import { Box } from 'grommet';
 import {
+  Box,
   FoldableItem,
   TimedText,
   TimedTextTrackState,
@@ -79,9 +79,9 @@ export const Transcripts = () => {
       <Box
         direction="row"
         gap="small"
-        style={{
-          marginTop: '0.75rem',
-          marginBottom: '0.75rem',
+        margin={{
+          top: '0.75rem',
+          bottom: '0.75rem',
         }}
       >
         <a
