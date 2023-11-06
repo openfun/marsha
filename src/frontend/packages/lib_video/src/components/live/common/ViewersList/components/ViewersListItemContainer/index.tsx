@@ -1,12 +1,11 @@
-import { Box } from 'grommet';
-import { normalizeColor } from 'grommet/utils';
-import { theme } from 'lib-common';
+import { colorsTokens } from 'lib-common';
+import { Box } from 'lib-components';
 import React from 'react';
 import styled from 'styled-components';
 
 const StyledItemContainer = styled(Box)`
   &:hover {
-    background: ${normalizeColor('bg-marsha', theme)};
+    background: ${colorsTokens['primary-100']};
   }
 `;
 

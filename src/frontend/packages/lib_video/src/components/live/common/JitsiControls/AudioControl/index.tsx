@@ -1,10 +1,8 @@
 import { Button } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
 import { Nullable } from 'lib-common';
-import { MicrophoneOffSVG, MicrophoneOnSVG } from 'lib-components';
+import { Box, MicrophoneOffSVG, MicrophoneOnSVG } from 'lib-components';
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import styled from 'styled-components';
 
 import { useJitsiApi } from '@lib-video/hooks/useJitsiApi';
 
@@ -20,21 +18,6 @@ const messages = defineMessages({
     id: 'JitsiControls.AudioControl.enableTitle',
   },
 });
-
-// const StyledButton = styled(Button)`
-//   padding: 0px;
-//   height: 100%;
-//   width: 100%;
-//   max-height: 80px;
-//   max-width: 80px;
-//   margin: auto;
-// `;
-
-const ContainerStyle = styled(Box)`
-  margin: auto;
-  max-height: 35px;
-  max-width: 35px;
-`;
 
 export const AudioControl = () => {
   const intl = useIntl();
@@ -80,13 +63,13 @@ export const AudioControl = () => {
       )}
       color="tertiary"
       icon={
-        <ContainerStyle>
+        <Box margin="auto" height={{ max: '35px' }} width={{ max: '35px' }}>
           {isAudioOn ? (
             <MicrophoneOnSVG iconColor="white" height="100%" width="100%" />
           ) : (
             <MicrophoneOffSVG iconColor="white" height="100%" width="100%" />
           )}
-        </ContainerStyle>
+        </Box>
       }
       onClick={() => {
         if (!jitsiApi) {

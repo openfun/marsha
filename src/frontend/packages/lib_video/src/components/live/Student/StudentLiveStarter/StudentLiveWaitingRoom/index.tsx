@@ -1,5 +1,10 @@
-import { Box } from 'grommet';
-import { Heading, Text, useAppConfig, useResponsive } from 'lib-components';
+import {
+  Box,
+  Heading,
+  Text,
+  useAppConfig,
+  useResponsive,
+} from 'lib-components';
 import React, { CSSProperties } from 'react';
 import { FormattedMessage, defineMessages } from 'react-intl';
 
@@ -33,13 +38,7 @@ export const StudentLiveWaitingRoom = () => {
 
   return (
     <Box
-      background={{
-        image: `url(${appData.static.img.liveBackground})`,
-        position: 'top',
-        repeat: 'no-repeat',
-        size: 'cover',
-      }}
-      flex="grow"
+      background={`url(${appData.static.img.liveBackground}) top / cover no-repeat`}
     >
       <Box
         margin="auto"

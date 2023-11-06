@@ -1,4 +1,4 @@
-import { Box } from 'grommet';
+import { Box } from 'lib-components';
 import React, { Fragment } from 'react';
 
 import { TeacherLiveControlBar } from './TeacherLiveControlBar';
@@ -19,22 +19,10 @@ export const Controls = ({
   return (
     <Fragment>
       {isLiveStarted && <TeacherLiveControlBar />}
-      <Box
-        flex={isLiveStarted}
-        direction="row"
-        style={{ flex: '0' }}
-        justify="evenly"
-        width={{
-          min: 'auto',
-        }}
-        height={{
-          min: 'auto',
-        }}
-      >
+      <Box direction="row" justify="space-evenly" style={{ flexFlow: 'wrap' }}>
         <TeacherLiveRecordingActions isJitsiAdministrator={canStartLive} />
         <TeacherLiveLifecycleControls
           canStartStreaming={canShowStartButton}
-          flex={isLiveStarted ? { shrink: 1 } : false}
           hasRightToStart={canStartLive}
         />
       </Box>

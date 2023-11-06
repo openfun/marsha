@@ -1,5 +1,5 @@
-import { Box, Stack } from 'grommet';
-import { BinSVG } from 'lib-components';
+import { Stack } from 'grommet';
+import { BinSVG, Box } from 'lib-components';
 import React, { useEffect, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 

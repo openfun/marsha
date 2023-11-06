@@ -1,6 +1,6 @@
+import { colorsTokens } from '@lib-common/cunningham';
 import { Button } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
-import { Participant, Text } from 'lib-components';
+import { Box, Participant, Text } from 'lib-components';
 import React from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -35,7 +35,7 @@ export const OnStageRequestToast = ({
   }));
 
   return (
-    <Box background="bg-info" direction="column" round="xsmall" pad="medium">
+    <Box background={colorsTokens['primary-100']} round="xsmall" pad="medium">
       <Text type="p">{onStageRequestMessage(participantsList, intl)}</Text>
       <Button
         aria-label={intl.formatMessage(messages.manageRequestBtnLabel)}

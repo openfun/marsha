@@ -1,5 +1,6 @@
-import { Box } from 'grommet';
+import { colorsTokens } from 'lib-common';
 import {
+  Box,
   Text,
   Thumbnail,
   ThumbnailDisplayer,
@@ -23,7 +24,11 @@ export const ThumbnailManager = ({
   return (
     <React.Fragment>
       {messageToDisplay ? (
-        <Box border={{ color: 'blue-active' }} pad="small" round="xsmall">
+        <Box
+          style={{ border: `1px solid ${colorsTokens['info-500']}` }}
+          pad="small"
+          round="xsmall"
+        >
           <Text textAlign="center">{messageToDisplay}</Text>
         </Box>
       ) : (

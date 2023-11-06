@@ -1,5 +1,5 @@
-import { Box } from 'grommet';
-import { BoxLoader, FoldableItem, Text, liveState } from 'lib-components';
+import { colorsTokens } from 'lib-common';
+import { Box, BoxLoader, FoldableItem, Text, liveState } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -57,7 +57,11 @@ export const VODCreation = () => {
     content = (
       <Box fill background="white">
         <Box direction="row" margin="auto" align="center">
-          <Text color="blue-active" className="mr-s" textAlign="center">
+          <Text
+            color={colorsTokens['info-500']}
+            className="mr-s"
+            textAlign="center"
+          >
             {intl.formatMessage(messages.harvestingInProgress)}
           </Text>
           <BoxLoader size="small" />
@@ -67,7 +71,7 @@ export const VODCreation = () => {
   } else if (displayMessageLayer) {
     content = (
       <Box fill background="white">
-        <Text color="blue-active" textAlign="center">
+        <Text color={colorsTokens['info-500']} textAlign="center">
           {intl.formatMessage(messages.noHarvestMessage, { br: <br /> })}
         </Text>
       </Box>

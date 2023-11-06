@@ -1,5 +1,4 @@
-import { Box } from 'grommet';
-import { Text } from 'lib-components';
+import { Box, Text } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -19,12 +18,12 @@ export const StudentLiveRecordingInfo = () => {
     <Box
       direction="row"
       round="small"
-      background={{ color: '#002438' }}
+      background="#002438"
       pad="xsmall"
       margin="xsmall"
     >
       <Box
-        round={true}
+        round="small"
         background="red"
         pad="xsmall"
         margin={{ right: 'xsmall' }}

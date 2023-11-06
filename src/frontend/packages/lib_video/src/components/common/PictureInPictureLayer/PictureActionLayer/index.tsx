@@ -1,19 +1,9 @@
-import { Box, DropButton } from 'grommet';
-import { MoreOptionSVG } from 'lib-components';
-import React, { CSSProperties, ReactNode, useState } from 'react';
+import { DropButton } from 'grommet';
+import { Box, MoreOptionSVG } from 'lib-components';
+import { ReactNode, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import styled from 'styled-components';
 
 import { startDraggingHandler } from '../usePIPDragger';
-
-const DragLayer = styled(Box)`
-  cursor: move;
-`;
-
-const ActionContainer = styled(Box)`
-  display: ${({ display }: { display: CSSProperties['display'] }) =>
-    display ?? 'flex'};
-`;
 
 const messages = defineMessages({
   moreOptionTitle: {
@@ -41,22 +31,22 @@ export const PictureActionLayer = ({
   const minActionWidth = (actions?.length ?? 0) * 50;
 
   return (
-    <DragLayer
+    <Box
       key="actions-layer"
       fill
       onMouseDown={startDragging}
       onMouseOver={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
-      animation={
-        isHover
-          ? { type: 'fadeIn', duration: 350 }
-          : { type: 'fadeOut', duration: 350, delay: 1800 }
-      }
+      style={{
+        transition: 'opacity 0.3s ease-in-out',
+        opacity: isHover ? 1 : 0,
+        cursor: 'move',
+      }}
       background={actions && actions.length > 0 ? '#0000008C' : 'transparent'}
     >
-      <ActionContainer
+      <Box
         key="large-picture-action-container"
-        justify="between"
+        justify="space-between"
         direction="row"
         fill
         pad="small"
@@ -67,9 +57,9 @@ export const PictureActionLayer = ({
             {action}
           </Box>
         ))}
-      </ActionContainer>
+      </Box>
 
-      <ActionContainer
+      <Box
         key="small-picture-action-container"
         fill
         pad="small"
@@ -79,7 +69,7 @@ export const PictureActionLayer = ({
           a11yTitle={intl.formatMessage(messages.moreOptionTitle)}
           dropAlign={{ top: 'bottom' }}
           dropContent={
-            <Box>
+            <Box background="black">
               {actions?.map((action, index) => (
                 <Box key={`pip_action_${index}`} margin="small">
                   {action}
@@ -95,7 +85,7 @@ export const PictureActionLayer = ({
             <MoreOptionSVG key="more-options" iconColor="white" />
           </Box>
         </DropButton>
-      </ActionContainer>
-    </DragLayer>
+      </Box>
+    </Box>
   );
 };

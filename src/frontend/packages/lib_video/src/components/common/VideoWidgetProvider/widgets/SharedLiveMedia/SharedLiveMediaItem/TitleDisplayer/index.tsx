@@ -1,6 +1,6 @@
-import { Anchor, Box } from 'grommet';
+import { Anchor } from 'grommet';
 import { Maybe } from 'lib-common';
-import { SharedLiveMedia, Text, uploadState } from 'lib-components';
+import { Box, SharedLiveMedia, Text, uploadState } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
@@ -49,7 +49,7 @@ export const TitleDisplayer = ({
       // behavior should be possible only if upload is complete and finished
       isClickable={sharedLiveMedia.upload_state === uploadState.READY}
       label={
-        <Box style={{ minWidth: '0' }}>
+        <Box width={{ min: '0' }}>
           <Text truncate>{title}</Text>
         </Box>
       }

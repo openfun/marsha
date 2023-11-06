@@ -1,5 +1,5 @@
-import { Box, Grid } from 'grommet';
-import { BoxLoader, Text } from 'lib-components';
+import { Grid } from 'grommet';
+import { Box, BoxLoader, Text } from 'lib-components';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -66,8 +66,10 @@ export const DashboardTabStatistics = () => {
           {metricsLine.map((metric, metricIndex) => (
             <Box
               key={`metric-${metricIndex}`}
-              border={{ style: 'dashed', size: '1px', color: '#81ADE6' }}
-              style={{ borderRadius: 6 }}
+              style={{
+                border: '1px dashed #81ADE6',
+              }}
+              round="xsmall"
               justify="center"
               align="center"
               gap="small"

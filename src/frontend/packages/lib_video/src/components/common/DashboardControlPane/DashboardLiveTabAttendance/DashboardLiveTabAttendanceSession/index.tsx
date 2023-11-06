@@ -1,6 +1,7 @@
-import { Box } from 'grommet';
+import { colorsTokens } from '@lib-common/cunningham';
 import { CircleAlert, Clear, StatusGood, StatusGoodSmall } from 'grommet-icons';
 import {
+  Box,
   LiveAttendance,
   LiveAttendanceInfo,
   LiveAttendanceInfos,
@@ -83,7 +84,7 @@ export const DashboardLiveTabAttendanceSession = ({
     infoSession.percent >= diligentLimit ? (
       <StatusGood
         a11yTitle={intl.formatMessage(messages.connectedDiligent)}
-        color="blue-active"
+        color={colorsTokens['info-500']}
         key={liveSession.id}
       />
     ) : zeroPercent ? (
@@ -95,7 +96,7 @@ export const DashboardLiveTabAttendanceSession = ({
     ) : (
       <CircleAlert
         a11yTitle={intl.formatMessage(messages.connectedPartially)}
-        color="blue-active"
+        color={colorsTokens['info-500']}
         key={liveSession.id}
       />
     );
@@ -103,7 +104,7 @@ export const DashboardLiveTabAttendanceSession = ({
   return (
     <Box
       align="center"
-      justify="between"
+      justify="space-between"
       direction="row"
       gap="small"
       pad={{ horizontal: 'medium', vertical: 'xsmall' }}
@@ -121,7 +122,9 @@ export const DashboardLiveTabAttendanceSession = ({
       </Box>
       <Box align="center" direction="row" gap="2px">
         <Box
-          background={zeroPercent ? 'red-active' : 'blue-active'}
+          background={
+            zeroPercent ? colorsTokens['danger-400'] : colorsTokens['info-400']
+          }
           margin={{ right: 'medium' }}
           width="6rem"
           round="6px"
@@ -137,7 +140,7 @@ export const DashboardLiveTabAttendanceSession = ({
             <StatusGoodSmall
               data-testid={`Present_${liveSession.id}_${index}`}
               a11yTitle={intl.formatMessage(messages.dotWasPresent)}
-              color="blue-active"
+              color={colorsTokens['info-500']}
               key={`${liveSession.id}_${index}`}
               size="small"
             />

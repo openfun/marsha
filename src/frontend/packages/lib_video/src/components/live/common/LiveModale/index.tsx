@@ -1,5 +1,6 @@
 import { Button } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
+import { colorsTokens } from 'lib-common';
+import { Box } from 'lib-components';
 import React, { ReactNode } from 'react';
 
 interface LiveModaleAction {
@@ -17,7 +18,7 @@ export const LiveModale = ({ content, actions }: LiveModaleProps) => {
   return (
     <Box fill>
       <Box
-        background="dark-background"
+        background={colorsTokens['greyscale-900']}
         margin="auto"
         pad={{ horizontal: 'large', vertical: 'medium' }}
         round="small"

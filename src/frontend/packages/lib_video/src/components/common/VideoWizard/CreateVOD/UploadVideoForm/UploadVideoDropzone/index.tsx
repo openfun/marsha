@@ -1,7 +1,5 @@
-import { Box } from 'grommet';
-import { normalizeColor } from 'grommet/utils';
-import { theme } from 'lib-common';
-import { RoundPlusSVG, Text } from 'lib-components';
+import { colorsTokens } from 'lib-common';
+import { Box, RoundPlusSVG, Text } from 'lib-components';
 import React from 'react';
 import { useDropzone } from 'react-dropzone';
 import { defineMessages, useIntl } from 'react-intl';
@@ -32,9 +30,7 @@ export const UploadVideoDropzone = ({
 
   return (
     <BigDashedBox
-      background={
-        !isDragActive ? normalizeColor('bg-select', theme) : '#b4cff2'
-      }
+      background={!isDragActive ? colorsTokens['primary-150'] : '#b4cff2'}
       pad="0px"
     >
       <Box
@@ -43,7 +39,7 @@ export const UploadVideoDropzone = ({
         gap="small"
         pad={{ horizontal: 'medium', vertical: 'large' }}
         style={{ cursor: 'pointer', boxShadow: 'none' }}
-        {...getRootProps()}
+        {...(typeof getRootProps() === 'object' ? getRootProps() : {})}
       >
         <RoundPlusSVG
           containerStyle={{

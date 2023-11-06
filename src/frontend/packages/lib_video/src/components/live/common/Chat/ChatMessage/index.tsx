@@ -1,5 +1,6 @@
-import { Anchor, Box } from 'grommet';
-import { Text } from 'lib-components';
+import { colorsTokens } from '@lib-common/cunningham';
+import { Anchor } from 'grommet';
+import { Box, Text } from 'lib-components';
 import * as linkify from 'linkifyjs';
 import React, { useMemo } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -24,7 +25,7 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
   const memo = useMemo(
     () => (
       <Box
-        background="bg-marsha"
+        background={colorsTokens['primary-100']}
         pad="5px"
         round="xsmall"
         title={intl.formatMessage(messages.sentAt, {

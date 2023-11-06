@@ -40,12 +40,17 @@ export interface TypoPropsOnly {
   background?: CSSProperties['background'];
   basis?: CSSProperties['flexBasis'];
   color?: CSSProperties['color'];
+  display?: CSSProperties['display'];
   fill?: boolean | 'horizontal' | 'vertical' | 'full';
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  flex?: boolean | 'grow' | 'shrink' | (string & {});
   fontSize?: CSSProperties['fontSize'];
   height?: Height;
   justify?: CSSProperties['justifyContent'];
   margin?: MarginPadding;
+  overflow?: CSSProperties['overflow'];
   pad?: MarginPadding;
+  position?: CSSProperties['position'];
   ref?: Ref<HTMLElement>;
   textAlign?: CSSProperties['textAlign'];
   truncate?: boolean | number;
@@ -101,12 +106,16 @@ const TypoRef = forwardRef(
       children,
       className,
       color,
+      display,
       fill,
+      flex,
       fontSize,
       height,
       justify,
       margin,
+      overflow,
       pad,
+      position,
       textAlign,
       truncate,
       type = 'div',
@@ -176,13 +185,24 @@ const TypoRef = forwardRef(
         style: {
           alignItems: align,
           background: bgClassname ? undefined : background,
-          flexBasis: basis,
           color: colorClassname ? undefined : color,
+          display,
+          flex:
+            flex === 'grow'
+              ? '1 0 auto'
+              : flex === 'shrink'
+              ? '0 1 auto'
+              : flex === true
+              ? '1 1 auto'
+              : flex,
+          flexBasis: basis,
           fontSize,
+          height: fill && fill !== 'horizontal' ? '100%' : undefined,
           justifyContent: justify,
+          overflow,
+          position,
           textAlign,
           width: fill && fill !== 'vertical' ? '100%' : undefined,
-          height: fill && fill !== 'horizontal' ? '100%' : undefined,
           ...moreStyles,
           ...props.style,
         },
@@ -195,5 +215,5 @@ const TypoRef = forwardRef(
 TypoRef.displayName = 'Typo';
 
 export const Typo = TypoRef as <T extends keyof ReactHTML = 'div'>(
-  p: TypoProps<T> & { ref?: Ref<HTMLElement> },
+  p: TypoProps<T>,
 ) => ReactElement;

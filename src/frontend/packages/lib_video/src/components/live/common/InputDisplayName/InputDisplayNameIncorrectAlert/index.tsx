@@ -1,5 +1,4 @@
-import { Box } from 'grommet';
-import { Text } from 'lib-components';
+import { Box, Text } from 'lib-components';
 import React from 'react';
 
 interface InputDisplayNameIncorrectAlertProps {

@@ -1,4 +1,5 @@
 import { Button } from '@openfun/cunningham-react';
+import { colorsTokens } from 'lib-common';
 import { BinSVG, SharedLiveMedia } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -28,7 +29,13 @@ export const DeleteSharedLiveMediaButton = ({
       aria-label={intl.formatMessage(messages.buttonLabel)}
       onClick={() => setDeleteSharedLiveMediaModal(sharedLiveMedia)}
       color="tertiary"
-      icon={<BinSVG height="18px" iconColor="blue-active" width="14px" />}
+      icon={
+        <BinSVG
+          height="18px"
+          iconColor={colorsTokens['info-500']}
+          width="14px"
+        />
+      }
     />
   );
 };

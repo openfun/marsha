@@ -1,7 +1,7 @@
 import { Button, Input } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
 import { Breakpoints, Nullable } from 'lib-common';
 import {
+  Box,
   Text,
   Video,
   WhiteCard,
@@ -154,7 +154,6 @@ export const CreateVOD = ({
     <CurrentVideoProvider value={currentVideo}>
       <WhiteCard title={intl.formatMessage(messages.videoCreationTitle)}>
         <Box
-          direction="column"
           gap="medium"
           margin={{
             horizontal: isSmallerBreakpoint(breakpoint, Breakpoints.large)
@@ -200,7 +199,7 @@ export const CreateVOD = ({
         <Box
           align="center"
           direction="row"
-          justify="between"
+          justify="space-between"
           margin={{ horizontal: 'small', top: 'medium' }}
           gap="small"
         >

@@ -1,8 +1,7 @@
 import { defineMessages } from '@formatjs/intl';
-import { Box } from 'grommet';
-import { normalizeColor } from 'grommet/utils';
-import { Maybe, theme } from 'lib-common';
+import { Maybe, colorsTokens } from 'lib-common';
 import {
+  Box,
   DownloadSVG,
   Text,
   useFetchButton,
@@ -92,7 +91,7 @@ export const PublishVOD = () => {
           height="40px"
           width="100%"
           background="#e6f1f8"
-          border={{ color: 'blue-active', size: 'small' }}
+          style={{ border: `2px solid ${colorsTokens['info-500']}` }}
           margin={{ bottom: 'small' }}
           round="xsmall"
         >
@@ -105,7 +104,7 @@ export const PublishVOD = () => {
               textDecoration: 'none',
             }}
           >
-            <Box height="100%" width="100%">
+            <Box fill>
               <Box
                 align="center"
                 justify="center"
@@ -113,7 +112,7 @@ export const PublishVOD = () => {
                 margin="auto"
               >
                 <DownloadSVG
-                  iconColor={normalizeColor('blue-active', theme)}
+                  iconColor={colorsTokens['info-500']}
                   height="20px"
                 />
                 <Text className="ml-t">

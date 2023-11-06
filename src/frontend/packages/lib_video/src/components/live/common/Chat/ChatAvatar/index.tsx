@@ -1,6 +1,5 @@
-import { Box } from 'grommet';
-import { normalizeColor } from 'grommet/utils';
-import { theme } from 'lib-common';
+import { colorsTokens } from 'lib-common';
+import { Box } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
@@ -14,12 +13,12 @@ const messages = defineMessages({
 });
 
 interface AvatarProps {
-  isInstructor: boolean;
+  $isInstructor: boolean;
 }
 
 const AvatarBox = styled(Box)`
-  outline: ${({ isInstructor }: AvatarProps) =>
-    isInstructor && `2px solid ${normalizeColor('blue-active', theme)}`};
+  outline: ${({ $isInstructor }: AvatarProps) =>
+    $isInstructor && `2px solid ${colorsTokens['info-500']}`};
 `;
 
 interface ChatAvatarProps {
@@ -30,8 +29,8 @@ export const ChatAvatar = ({ isInstructor = false }: ChatAvatarProps) => {
   const intl = useIntl();
   return (
     <AvatarBox
-      background={`${normalizeColor('blue-active', theme)}19`}
-      isInstructor={isInstructor}
+      background={`${colorsTokens['info-500']}19`}
+      $isInstructor={isInstructor}
       height="26px"
       round="6px"
       title={intl.formatMessage(messages.avatarTitle)}

@@ -1,5 +1,6 @@
-import { Box, Stack } from 'grommet';
+import { Stack } from 'grommet';
 import {
+  Box,
   Heading,
   Text,
   ThumbnailDisplayer,
@@ -43,7 +44,7 @@ export const StudentLiveError = ({ error }: StudentLiveAdvertisingProps) => {
   }
   return (
     <Stack guidingChild="last">
-      <Box width="100%" height="100%">
+      <Box fill>
         <ThumbnailDisplayer
           fitted
           urlsThumbnail={{ 1080: appData.static.img.liveErrorBackground }}

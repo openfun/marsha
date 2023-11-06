@@ -1,6 +1,5 @@
 import { Select } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
-import { FoldableItem, JoinMode, report } from 'lib-components';
+import { Box, FoldableItem, JoinMode, report } from 'lib-components';
 import React from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -98,7 +97,7 @@ export const LiveJoinMode = () => {
       initialOpenValue
       title={intl.formatMessage(messages.title)}
     >
-      <Box direction="column" gap="small">
+      <Box gap="small">
         <Select
           aria-label={intl.formatMessage(messages.selectLabelDiscussion)}
           label={intl.formatMessage(messages.selectLabelDiscussion)}

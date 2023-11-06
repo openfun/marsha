@@ -12,9 +12,6 @@ describe('<Typo />', () => {
     expect(typo).toBeInTheDocument();
     expect(typo).toHaveClass('typo');
     expect(typo.tagName).toBe('DIV');
-    expect(typo).toHaveStyle(`
-      justifyContent: normal;
-      alignItems: normal;`);
   });
 
   it('has the classname from the prop', () => {

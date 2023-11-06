@@ -1,7 +1,7 @@
 import { Button } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
 import { Nullable } from 'lib-common';
 import {
+  Box,
   FoldableItem,
   ItemList,
   modelName,
@@ -149,7 +149,7 @@ export const SharedLiveMedia = ({ isLive, isTeacher }: SharedMediaProps) => {
       initialOpenValue
       title={intl.formatMessage(messages.title)}
     >
-      <Box direction="column" gap="small">
+      <Box gap="small">
         {isTeacher && (
           <Box>
             <input

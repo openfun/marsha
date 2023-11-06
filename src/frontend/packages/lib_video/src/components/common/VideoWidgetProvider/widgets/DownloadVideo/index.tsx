@@ -1,6 +1,6 @@
 import { Button, Select } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
 import {
+  Box,
   FoldableItem,
   ToggleInput,
   Video,
@@ -166,7 +166,7 @@ export const DownloadVideo = ({ isTeacher }: DownloadVideoProps) => {
           label={intl.formatMessage(messages.allowDownloadToggleLabel)}
         />
       )}
-      <Box direction="column" gap="small" style={{ marginTop: '0.75rem' }}>
+      <Box gap="small" margin={{ top: '0.75rem' }}>
         <Select
           aria-label={intl.formatMessage(messages.selectDownloadQualityLabel)}
           label={intl.formatMessage(messages.selectDownloadQualityLabel)}

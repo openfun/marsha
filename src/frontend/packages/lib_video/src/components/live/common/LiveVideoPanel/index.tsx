@@ -1,5 +1,6 @@
-import { Box, Tabs, ThemeContext, ThemeType } from 'grommet';
+import { Tabs, ThemeContext, ThemeType } from 'grommet';
 import {
+  Box,
   ShouldNotHappen,
   useCurrentResourceContext,
   useResponsive,
@@ -20,10 +21,6 @@ export const ContentContainer = styled.div`
   position: absolute;
   inset: 0px;
   padding-top: 1rem;
-`;
-
-const RelativeBox = styled(Box)`
-  position: relative;
 `;
 
 export interface LiveVideoPanelProps {
@@ -100,11 +97,11 @@ export const LiveVideoPanel = ({ isLive }: LiveVideoPanelProps) => {
   }
 
   return (
-    <Box background="white" flex direction="column">
+    <Box background="white" flex>
       <ThemeContext.Extend value={extendedTheme}>{header}</ThemeContext.Extend>
-      <RelativeBox flex="grow">
+      <Box flex="grow" position="relative">
         <ContentContainer>{content}</ContentContainer>
-      </RelativeBox>
+      </Box>
     </Box>
   );
 };

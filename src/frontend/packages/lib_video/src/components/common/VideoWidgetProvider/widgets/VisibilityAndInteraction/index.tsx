@@ -1,5 +1,6 @@
-import { Box, Collapsible } from 'grommet';
+import { Collapsible } from 'grommet';
 import {
+  Box,
   CopyClipboard,
   FoldableItem,
   ToggleInput,
@@ -120,7 +121,7 @@ export const VisibilityAndInteraction = () => {
       initialOpenValue
       title={intl.formatMessage(messages.title)}
     >
-      <Box direction="column" gap="small">
+      <Box gap="small">
         <ToggleInput
           checked={visibilityChecked}
           onChange={onToggleChange}

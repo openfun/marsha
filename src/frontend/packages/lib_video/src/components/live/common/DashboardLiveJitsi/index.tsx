@@ -1,11 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-misused-promises */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { Box } from 'grommet';
 import { Nullable } from 'lib-common';
 import {
+  Box,
   JitsiMeetExternalAPI,
   LiveJitsi,
   liveState,
@@ -122,6 +120,7 @@ const DashboardLiveJitsi = ({
         setJitsiApi(undefined);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jitsi, isInstructor]);
 
   //  handle jitsi recording according to live state
@@ -137,7 +136,7 @@ const DashboardLiveJitsi = ({
     if (liveJitsi.live_state === liveState.STOPPING && isJitsiRecording) {
       jitsi.executeCommand('stopRecording', 'stream');
     }
-  }, [jitsi, liveJitsi, isModerator, startRecording]);
+  }, [jitsi, liveJitsi, isModerator, startRecording, isJitsiRecording]);
 
   //  configure jitsi api event handlers
   useEffect(() => {

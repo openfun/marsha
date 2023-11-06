@@ -1,6 +1,6 @@
-import { Box, Layer } from 'grommet';
+import { Layer } from 'grommet';
 import { Nullable } from 'lib-common';
-import { useAppConfig, useVideo } from 'lib-components';
+import { Box, useAppConfig, useVideo } from 'lib-components';
 import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 

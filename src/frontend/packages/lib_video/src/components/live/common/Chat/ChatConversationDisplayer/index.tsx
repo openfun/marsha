@@ -1,4 +1,4 @@
-import { Box } from 'grommet';
+import { Box } from 'lib-components';
 import React, { useEffect, useRef } from 'react';
 
 import { useChatItemState } from '@lib-video/hooks/useChatItemsStore';
@@ -32,14 +32,7 @@ export const ChatConversationDisplayer = () => {
   });
 
   return (
-    <Box
-      fill="vertical"
-      overflow={{
-        horizontal: 'hidden',
-        vertical: 'auto',
-      }}
-      ref={scrollableContainerRef}
-    >
+    <Box fill="vertical" overflow="auto" ref={scrollableContainerRef}>
       {chatItems.map((chatItem, index) => {
         return (
           <ChatMessageGroupItem

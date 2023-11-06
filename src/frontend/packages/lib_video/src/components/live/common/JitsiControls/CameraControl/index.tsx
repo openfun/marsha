@@ -1,10 +1,8 @@
 import { Button } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
 import { Nullable } from 'lib-common';
-import { CameraOffSVG, CameraOnSVG } from 'lib-components';
+import { Box, CameraOffSVG, CameraOnSVG } from 'lib-components';
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import styled from 'styled-components';
 
 import { useJitsiApi } from '@lib-video/hooks/useJitsiApi';
 
@@ -20,12 +18,6 @@ const messages = defineMessages({
     id: 'JitsiControls.CameraControl.enableTitle',
   },
 });
-
-const ContainerStyle = styled(Box)`
-  margin: auto;
-  max-height: 35px;
-  max-width: 35px;
-`;
 
 export const CameraControl = () => {
   const intl = useIntl();
@@ -71,13 +63,13 @@ export const CameraControl = () => {
         isCameraOn ? messages.enableTitle : messages.disableTitle,
       )}
       icon={
-        <ContainerStyle>
+        <Box margin="auto" height={{ max: '35px' }} width={{ max: '35px' }}>
           {isCameraOn ? (
             <CameraOnSVG iconColor="white" height="100%" width="100%" />
           ) : (
             <CameraOffSVG iconColor="white" height="100%" width="100%" />
           )}
-        </ContainerStyle>
+        </Box>
       }
       onClick={() => {
         if (!jitsiApi) {

@@ -1,8 +1,6 @@
 import { Input } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
-import { normalizeColor } from 'grommet/utils';
-import { Nullable, colorsTokens, theme } from 'lib-common';
-import { EditionSVG, Heading, Text, report } from 'lib-components';
+import { Nullable, colorsTokens } from 'lib-common';
+import { Box, EditionSVG, Heading, Text, report } from 'lib-components';
 import { DateTime } from 'luxon';
 import React, {
   Fragment,
@@ -129,11 +127,11 @@ export const VideoInfoBar = ({ isTeacher, startDate }: VideoInfoBarProps) => {
   return (
     <Fragment>
       {isTeacher ? (
-        <StyledBoxInput alignContent="center" direction="row">
+        <StyledBoxInput align="center" direction="row">
           <Input
             icon={
               <EditionSVG
-                iconColor={normalizeColor('blue-chat', theme)}
+                iconColor={colorsTokens['info-500']}
                 width="25px"
                 height="25px"
                 containerStyle={{ margin: 'auto' }}
@@ -166,7 +164,7 @@ export const VideoInfoBar = ({ isTeacher, startDate }: VideoInfoBarProps) => {
           {numberOfStudents > 0 && (
             <Text
               type="p"
-              color="blue-active"
+              color={colorsTokens['info-500']}
               className={`mb-0 mr-b mb-t`}
               size="small"
             >

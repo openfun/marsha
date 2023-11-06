@@ -1,8 +1,9 @@
 import { Input, Loader } from '@openfun/cunningham-react';
-import { Box, Tip } from 'grommet';
-import { Maybe, Nullable } from 'lib-common';
+import { Tip } from 'grommet';
+import { Maybe, Nullable, colorsTokens } from 'lib-common';
 import {
   AnonymousUser,
+  Box,
   LiveSession,
   QuestionMarkSVG,
   Text,
@@ -234,7 +235,12 @@ export const InputDisplayName = ({ onSuccess }: InputDisplayNameProps) => {
       }}
       pad="3px"
     >
-      <Box background="bg-marsha" gap="8px" pad="12px" round="6px">
+      <Box
+        background={colorsTokens['primary-100']}
+        gap="8px"
+        pad="12px"
+        round="6px"
+      >
         <Box direction="row">
           <Text className="mr-t">
             {intl.formatMessage(messages.inputDisplayNameLabel)}
@@ -259,7 +265,7 @@ export const InputDisplayName = ({ onSuccess }: InputDisplayNameProps) => {
                     height: '15px',
                     width: '15px',
                   }}
-                  iconColor="blue-focus"
+                  iconColor={colorsTokens['info-900']}
                 />
               </Box>
             </Tip>

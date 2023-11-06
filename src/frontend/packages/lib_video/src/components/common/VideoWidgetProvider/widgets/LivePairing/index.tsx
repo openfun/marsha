@@ -1,5 +1,4 @@
-import { Box } from 'grommet';
-import { FoldableItem } from 'lib-components';
+import { Box, FoldableItem } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 

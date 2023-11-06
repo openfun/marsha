@@ -1,39 +1,34 @@
-import { Box, BoxProps, Stack } from 'grommet';
-import { Nullable } from 'lib-common';
-import React, { CSSProperties, MutableRefObject, ReactNode } from 'react';
+import { colorsTokens } from '@lib-common/cunningham';
+import { Stack } from 'grommet';
+import { Box, BoxProps } from 'lib-components';
+import { PropsWithChildren, ReactNode, forwardRef } from 'react';
 
 import { startDraggingHandler } from '../usePIPDragger';
 
 import { ResizerCorner } from './ResizerCorner';
 
-interface PictureInPictureElementProps extends BoxProps {
-  children: ReactNode;
-  containerRef?: MutableRefObject<Nullable<HTMLDivElement>>;
-  id?: string;
+interface PictureInPictureElementProps extends BoxProps<'div'> {
   isPicture?: boolean;
   pictureLayer?: ReactNode;
   startResizing?: startDraggingHandler;
-  style?: CSSProperties;
 }
 
-export const PictureInPictureElement = ({
-  children,
-  containerRef,
-  id,
-  isPicture,
-  pictureLayer,
-  startResizing,
-  style,
-}: PictureInPictureElementProps) => {
+const PictureInPictureElement = forwardRef<
+  HTMLElement,
+  PropsWithChildren<PictureInPictureElementProps>
+>(({ children, id, isPicture, pictureLayer, startResizing, ...props }, ref) => {
   return (
     <Box
       data-testid={id}
+      ref={ref}
       id={id}
-      ref={containerRef}
       background={isPicture ? 'white' : undefined}
-      border={isPicture ? { color: 'blue-focus' } : undefined}
       round={isPicture ? 'small' : undefined}
-      style={style}
+      {...props}
+      style={{
+        border: isPicture ? `1px solid ${colorsTokens['info-500']}` : undefined,
+        ...props.style,
+      }}
     >
       <Stack
         interactiveChild={isPicture ? 'last' : 'first'}
@@ -50,4 +45,7 @@ export const PictureInPictureElement = ({
       </Stack>
     </Box>
   );
-};
+});
+
+PictureInPictureElement.displayName = 'PictureInPictureElement';
+export { PictureInPictureElement };

@@ -1,5 +1,4 @@
-import { Box } from 'grommet';
-import { Text } from 'lib-components';
+import { Box, Text } from 'lib-components';
 import { DateTime } from 'luxon';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';

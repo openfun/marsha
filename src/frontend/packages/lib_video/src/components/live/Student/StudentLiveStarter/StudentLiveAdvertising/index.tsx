@@ -1,6 +1,8 @@
-import { Box, Stack } from 'grommet';
+import { Stack } from 'grommet';
 import { Schedule } from 'grommet-icons';
+import { colorsTokens } from 'lib-common';
 import {
+  Box,
   Text,
   ThumbnailDisplayer,
   liveState,
@@ -112,7 +114,7 @@ export const StudentLiveAdvertising = () => {
   }
   return (
     <Stack guidingChild="last">
-      <Box width="100%" height="100%">
+      <Box fill>
         <ThumbnailDisplayer fitted urlsThumbnail={urlsToDisplay} />
       </Box>
 
@@ -137,7 +139,7 @@ export const StudentLiveAdvertising = () => {
               <ICalendarLink event={scheduledEvent}>
                 <Schedule
                   a11yTitle={intl.formatMessage(messages.a11AddCalendar)}
-                  color="blue-active"
+                  color={colorsTokens['info-500']}
                 />
                 <Text className="pl-s">
                   {intl.formatMessage(messages.addCalendar)}

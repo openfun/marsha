@@ -1,5 +1,6 @@
-import { Box, Stack } from 'grommet';
-import { SharedLiveMediaUrls } from 'lib-components';
+import { Stack } from 'grommet';
+import { colorsTokens } from 'lib-common';
+import { Box, SharedLiveMediaUrls } from 'lib-components';
 import React, { PropsWithChildren } from 'react';
 
 import { useLivePanelState } from '@lib-video/hooks/useLivePanelState';
@@ -23,12 +24,12 @@ export const SharedMediaExplorer = ({
 
   return (
     <Box
-      flex
-      border={
-        isPanelOpen && pipState.reversed
-          ? { size: 'small', color: 'blue-active', side: 'right' }
-          : undefined
-      }
+      style={{
+        borderRight:
+          isPanelOpen && pipState.reversed
+            ? `2px solid ${colorsTokens['info-500']}`
+            : undefined,
+      }}
     >
       <SharedMediaCurrentPageProvider
         value={{

@@ -94,13 +94,13 @@ export const PictureInPictureLayer = ({
   const pipSwitch: ReactNode = <PictureInPictureSwitchAction />;
   return (
     <StyledNoSelectElement
-      isSelectDisable={isResizing}
+      $isSelectDisable={isResizing}
       ref={containerBoxRef}
       style={{ position: 'relative' }}
     >
       <PictureInPictureElement
         id="picture-in-picture-master"
-        containerRef={firstElementRef}
+        ref={firstElementRef}
         isPicture={reversed}
         pictureLayer={
           <PictureActionLayer
@@ -118,7 +118,7 @@ export const PictureInPictureLayer = ({
       {secondElement && (
         <PictureInPictureElement
           id="picture-in-picture-slave"
-          containerRef={secondElementRef}
+          ref={secondElementRef}
           isPicture={!reversed}
           pictureLayer={
             <PictureActionLayer

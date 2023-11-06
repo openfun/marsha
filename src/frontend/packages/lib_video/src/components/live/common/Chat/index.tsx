@@ -1,4 +1,4 @@
-import { Box, BoxExtendedProps } from 'grommet';
+import { Box, BoxProps } from 'lib-components';
 import React from 'react';
 
 import { ChatLayout } from './ChatLayout';
@@ -9,7 +9,7 @@ interface ChatProps {
 }
 
 export const Chat = ({ isModerated, standalone }: ChatProps) => {
-  const conditionalProps: Partial<BoxExtendedProps> = {};
+  const conditionalProps: Partial<BoxProps<'div'>> = {};
   if (standalone) {
     conditionalProps.height = 'large';
   } else {

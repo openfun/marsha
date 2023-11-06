@@ -1,15 +1,13 @@
 import { Button } from '@openfun/cunningham-react';
-import { Box } from 'grommet';
-import { normalizeColor } from 'grommet/utils';
-import { Nullable, theme } from 'lib-common';
+import { Nullable, colorsTokens } from 'lib-common';
 import {
+  Box,
   OpenClosePanelSVG,
   StyledNoSelectElement,
   useResizer,
   useResponsive,
 } from 'lib-components';
 import React, { useRef } from 'react';
-import styled from 'styled-components';
 
 import { TabPanelWebinar } from '@lib-video/components/live/common/TabPanelWebinar';
 import {
@@ -22,15 +20,6 @@ import { useLiveStateStarted } from '@lib-video/hooks/useLiveStateStarted';
 import { SetDisplayNameProvider } from '@lib-video/hooks/useSetDisplayName';
 
 import { DisplayNameForm } from './DisplayNameForm';
-
-const StyledLiveVideoInformationBarWrapper = styled(Box)`
-  -webkit-box-shadow: 0px 0px 7px 5px ${normalizeColor('shadow-1', theme)};
-  box-shadow: 0px 0px 7px 5px ${normalizeColor('shadow-1', theme)};
-  flex-wrap: wrap;
-  gap: 1rem;
-  height: auto;
-  justify-content: space-evenly;
-`;
 
 interface LiveStudentLayoutProps {
   isLive: boolean;
@@ -74,7 +63,7 @@ export const VideoLayout = ({
         fullPage={!isLargeLayout}
         target={containerRef.current}
       />
-      <Box background="bg-marsha">
+      <Box background={colorsTokens['primary-100']}>
         <Box ref={containerRef}>
           <Box flex={isLargeLayout ? undefined : 'grow'}>
             <Box direction="row" style={{ position: 'relative' }}>
@@ -82,7 +71,7 @@ export const VideoLayout = ({
                 <Box flex="grow">
                   <StyledNoSelectElement
                     margin={{ top: 'auto', bottom: 'auto' }}
-                    isSelectDisable={isResizing}
+                    $isSelectDisable={isResizing}
                   >
                     {mainElement}
                   </StyledNoSelectElement>
@@ -108,17 +97,26 @@ export const VideoLayout = ({
                         position: 'absolute',
                         right: '30px',
                         top: '18px',
-                        zIndex: 30,
+                        zIndex: 19,
                       }}
                     />
                   )}
 
                 {!isLive && isStarted && (
-                  <Box margin={{ top: 'medium' }}>
-                    <StyledLiveVideoInformationBarWrapper />
-                    <Box background="white" pad={{ left: 'small' }}>
-                      {liveTitleElement}
-                    </Box>
+                  <Box
+                    align="center"
+                    direction="row"
+                    background="white"
+                    margin="small"
+                    pad={{
+                      vertical: 'small',
+                      horizontal: 'medium',
+                    }}
+                    round="xsmall"
+                    elevation
+                    height="auto"
+                  >
+                    {liveTitleElement}
                   </Box>
                 )}
               </Box>
@@ -156,11 +154,11 @@ export const VideoLayout = ({
                         position: 'absolute',
                         top: '9px',
                         transform: 'rotate(180deg)',
-                        zIndex: 30,
+                        zIndex: 19,
                       }}
                     />
                   )}
-                  <StyledNoSelectElement fill isSelectDisable={isResizing}>
+                  <StyledNoSelectElement fill $isSelectDisable={isResizing}>
                     {sideElement}
                   </StyledNoSelectElement>
                 </ResizableContainer>
@@ -169,24 +167,25 @@ export const VideoLayout = ({
           </Box>
 
           {isLive && (
-            <StyledLiveVideoInformationBarWrapper
+            <Box
               align="center"
               background="white"
               direction="row"
-              height="80px"
-              justify="between"
+              justify="space-evenly"
               margin="small"
               pad={{
-                bottom: 'small',
-                left: 'medium',
-                right: 'medium',
-                top: 'small',
+                vertical: 'small',
+                horizontal: 'medium',
               }}
               round="xsmall"
+              elevation
+              gap="small"
+              height="auto"
+              style={{ flexWrap: 'wrap' }}
             >
               {liveTitleElement}
               {displayActionsElement && actionsElement}
-            </StyledLiveVideoInformationBarWrapper>
+            </Box>
           )}
         </Box>
 
