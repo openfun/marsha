@@ -77,7 +77,11 @@ export const WidgetsContainer = ({ children }: WidgetsContainerProps) => {
         ? children
             .filter((widget) => widget.size === WidgetSize.LARGE)
             .map((widget, index) => (
-              <Box background={colorsTokens['main']} gap="small" key={index}>
+              <Box
+                background={colorsTokens['primary-100']}
+                gap="small"
+                key={index}
+              >
                 {widget.component}
               </Box>
             ))
@@ -88,7 +92,7 @@ export const WidgetsContainer = ({ children }: WidgetsContainerProps) => {
       <Box
         ref={mainContainerRef}
         direction="row"
-        background={colorsTokens['main']}
+        background={colorsTokens['primary-100']}
         justify="center"
       >
         {mapper.map((_, indexColumn) => (

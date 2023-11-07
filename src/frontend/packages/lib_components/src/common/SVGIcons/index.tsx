@@ -1,5 +1,4 @@
 import { ThemeContext } from 'grommet';
-import { normalizeColor } from 'grommet/utils';
 import React, { PropsWithChildren, SVGProps, useContext } from 'react';
 import styled, { CSSProperties } from 'styled-components';
 
@@ -18,13 +17,12 @@ type StyledRectProps = RectInternalProps & ComponentWithTheme;
 type StyledSVGProps = SVGInternalProps & ComponentWithTheme;
 
 const StyledRect = styled.rect<StyledRectProps>`
-  fill: ${(props) =>
-    normalizeColor(props.focusColor ?? 'none', props.grommetTheme)};
+  fill: ${({ focusColor }) => focusColor || 'none'};
 `;
 
 const StyledSVG = styled.svg<StyledSVGProps>`
   path {
-    fill: ${(props) => normalizeColor(props.iconColor, props.grommetTheme)};
+    fill: ${({ iconColor }) => iconColor};
   }
 `;
 

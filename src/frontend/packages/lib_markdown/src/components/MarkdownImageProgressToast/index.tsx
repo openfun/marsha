@@ -1,4 +1,5 @@
 import { Meter, Stack } from 'grommet';
+import { colorsTokens } from 'lib-common';
 import { Box, Text } from 'lib-components';
 import React from 'react';
 
@@ -21,7 +22,7 @@ export const MarkdownImageProgressToast = ({
           <Meter
             values={[
               {
-                color: 'brand',
+                color: colorsTokens['info-300'],
                 label: progressPercent,
                 value: progress,
               },

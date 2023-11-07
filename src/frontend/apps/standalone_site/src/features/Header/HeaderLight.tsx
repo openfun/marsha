@@ -1,6 +1,5 @@
 import { Image } from 'grommet';
-import { normalizeColor } from 'grommet/utils';
-import { Nullable, theme } from 'lib-common';
+import { Nullable, colorsTokens } from 'lib-common';
 import { Box, useSiteConfig } from 'lib-components';
 import { forwardRef } from 'react';
 import { Link } from 'react-router-dom';
@@ -26,7 +25,7 @@ export const HeaderLight = forwardRef<
   Nullable<HTMLDivElement>,
   HeaderLightProps
 >(({ bgcolor, color, withLogoLink = false }, ref) => {
-  const colorLink = normalizeColor(color || 'blue-active', theme);
+  const colorLink = color || colorsTokens['info-500'];
   const { getSiteConfig } = useSiteConfig();
   const siteConfig = getSiteConfig();
   const showSiteConfigLogo =
@@ -63,7 +62,7 @@ export const HeaderLight = forwardRef<
       ref={ref}
       role="menubar"
       pad="small"
-      background={bgcolor || 'bg-marsha'}
+      background={bgcolor || colorsTokens['primary-100']}
     >
       {Logo}
     </Box>

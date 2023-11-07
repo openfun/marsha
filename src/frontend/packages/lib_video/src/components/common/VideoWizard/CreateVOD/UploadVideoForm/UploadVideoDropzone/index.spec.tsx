@@ -2,8 +2,7 @@
 /* eslint-disable testing-library/no-node-access */
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { normalizeColor } from 'grommet/utils';
-import { theme } from 'lib-common';
+import { colorsTokens } from 'lib-common';
 import { render } from 'lib-tests';
 
 import { UploadVideoDropzone } from '.';
@@ -23,7 +22,7 @@ describe('<UploadVideoDropzone />', () => {
     const dashedBox =
       container.firstElementChild!.children[1].firstElementChild;
     expect(dashedBox).toHaveStyle(
-      `background-color: ${normalizeColor('bg-select', theme)}`,
+      `background-color: ${colorsTokens['info-150']}}`,
     );
 
     const svg = container.getElementsByTagName('path')[0];
@@ -52,7 +51,7 @@ describe('<UploadVideoDropzone />', () => {
     const text = screen.getByText('Add a video or drag & drop it');
 
     expect(dashedBox).toHaveStyle(
-      `background-color: ${normalizeColor('bg-select', theme)}`,
+      `background-color: ${colorsTokens['info-150']}`,
     );
     expect(svg).toHaveStyle('fill: #b4cff2');
     expect(text).toHaveStyle('color: #b4cff2');
@@ -64,7 +63,7 @@ describe('<UploadVideoDropzone />', () => {
     await waitFor(() =>
       expect(dashedBox).toHaveStyle('background-color: #b4cff2'),
     );
-    expect(svg).toHaveStyle(`fill:  #ffffff`);
+    expect(svg).toHaveStyle(`fill: white`);
     expect(text).toHaveStyle(`color: white`);
 
     fireEvent.dragLeave(
@@ -73,7 +72,7 @@ describe('<UploadVideoDropzone />', () => {
     );
     await waitFor(() =>
       expect(dashedBox).toHaveStyle(
-        `background-color: ${normalizeColor('bg-select', theme)}`,
+        `background-color: ${colorsTokens['info-150']}`,
       ),
     );
     expect(svg).toHaveStyle('fill: #b4cff2');

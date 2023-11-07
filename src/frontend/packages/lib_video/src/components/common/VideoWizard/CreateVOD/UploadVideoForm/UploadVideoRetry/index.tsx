@@ -1,3 +1,4 @@
+import { colorsTokens } from 'lib-common';
 import { RetryUploadButton, Text, formatSizeErrorScale } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -41,11 +42,11 @@ export const UploadVideoRetry = ({
 
   return (
     <BigDashedBox direction="row">
-      <Text color="clr-danger-300" size="large">
+      <Text color={colorsTokens['danger-300']} size="large">
         {outputMessage}
       </Text>
       <RetryUploadButton
-        color="red-active"
+        color={colorsTokens['danger-500']}
         onClick={() => onClickRetry()}
         size="large"
       />

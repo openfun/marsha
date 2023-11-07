@@ -1,5 +1,6 @@
 import { Button } from '@openfun/cunningham-react';
 import { Anchor } from 'grommet';
+import { colorsTokens } from 'lib-common';
 import {
   BinSVG,
   Box,
@@ -128,7 +129,13 @@ export const DocumentRow = ({
           aria-label={intl.formatMessage(messages.buttonLabel)}
           onClick={() => setDeleteDocument()}
           style={{ display: 'flex' }}
-          icon={<BinSVG height="18px" iconColor="blue-active" width="14px" />}
+          icon={
+            <BinSVG
+              height="18px"
+              iconColor={colorsTokens['info-500']}
+              width="14px"
+            />
+          }
           color="tertiary"
         />
       </Box>
@@ -167,7 +174,11 @@ export const DocumentRow = ({
             }
             icon={
               <ValidSVG
-                iconColor={document.is_default ? 'brand' : 'light-5'}
+                iconColor={
+                  document.is_default
+                    ? colorsTokens['info-300']
+                    : colorsTokens['greyscale-400']
+                }
                 height="20px"
                 width="20px"
               />
@@ -192,13 +203,13 @@ export const DocumentRow = ({
           ) : (
             <React.Fragment>
               <Box>
-                <Text color="clr-danger-300" weight="medium">
+                <Text color={colorsTokens['danger-300']} weight="medium">
                   {intl.formatMessage(messages.retryUploadFailedLabel)}
                 </Text>
               </Box>
 
               <RetryUploadButton
-                color="red-active"
+                color={colorsTokens['danger-500']}
                 onClick={() => onRetryFailedUpload(document.id)}
               />
             </React.Fragment>

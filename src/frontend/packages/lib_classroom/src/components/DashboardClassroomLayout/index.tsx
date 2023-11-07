@@ -1,5 +1,5 @@
 import { Grid } from 'grommet';
-import { Breakpoints, Nullable } from 'lib-common';
+import { Breakpoints, Nullable, colorsTokens } from 'lib-common';
 import { Box, Text, useAppConfig, useResponsive } from 'lib-components';
 import React from 'react';
 
@@ -13,7 +13,7 @@ export const DashboardClassroomMessage = ({
   <Box
     margin={{ top: 'xlarge', horizontal: 'small' }}
     pad={{ vertical: 'small', horizontal: 'small' }}
-    background="blue-message"
+    background={colorsTokens['info-100']}
     round="xsmall"
   >
     <Text textAlign="center" weight="bold">

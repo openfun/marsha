@@ -1,4 +1,5 @@
 import { Meter, MeterProps } from 'grommet';
+import { colorsTokens } from 'lib-common';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
@@ -30,7 +31,7 @@ export const UploadableObjectProgress = ({
   // There is a conflict in the type of the `values` prop between `react` and `grommet`
   // Use the const type to ensure correctness and the `any` escape hatch for the actual value
   const values: MeterProps['values'] = [
-    { color: 'brand', label: `${progress}%`, value: progress },
+    { color: colorsTokens['info-300'], label: `${progress}%`, value: progress },
   ];
   return (
     <Box direction="row" justify="space-between">

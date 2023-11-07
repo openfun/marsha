@@ -1,6 +1,5 @@
 import { Input } from '@openfun/cunningham-react';
-import { normalizeColor } from 'grommet/utils';
-import { theme } from 'lib-common';
+import { colorsTokens } from 'lib-common';
 import { Box, BoxProps, EditionSVG, report } from 'lib-components';
 import { useCallback, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -108,8 +107,7 @@ export const ClassroomInfoBar = (props: BoxProps<'div'>) => {
         <Input
           icon={
             <EditionSVG
-              iconColor={normalizeColor('blue-chat', theme)}
-              width="25px"
+              iconColor={colorsTokens['info-500']}
               height="25px"
               containerStyle={{ margin: 'auto' }}
             />

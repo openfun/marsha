@@ -1,4 +1,5 @@
 import { Anchor } from 'grommet';
+import { colorsTokens } from 'lib-common';
 import {
   Box,
   ObjectStatusPicker,
@@ -102,7 +103,7 @@ export const TimedTextTrackItem = ({
                 </Box>
 
                 <RetryUploadButton
-                  color="red-active"
+                  color={colorsTokens['danger-500']}
                   onClick={() => onRetryFailedUpload(timedTextTrack.id)}
                 />
               </React.Fragment>

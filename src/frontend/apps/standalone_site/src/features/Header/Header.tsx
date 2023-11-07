@@ -1,7 +1,6 @@
 import { Button } from '@openfun/cunningham-react';
 import { DropButton } from 'grommet';
-import { normalizeColor } from 'grommet/utils';
-import { Breakpoints, Nullable, theme } from 'lib-common';
+import { Breakpoints, Nullable, colorsTokens } from 'lib-common';
 import {
   AnonymousUser,
   Box,
@@ -24,7 +23,7 @@ import { LanguagePicker } from 'features/Language/';
 import { Burger } from 'features/Menu';
 import { routes } from 'routes/routes';
 
-const colorMenu = normalizeColor('blue-active', theme);
+const colorMenu = colorsTokens['info-500'];
 
 interface PropsExtended {
   $isScrollTop: boolean;
@@ -42,7 +41,7 @@ const HeaderBox = styled(Box)<PropsExtended>`
         background: #fff;                                                                     
         box-shadow: 1px 1px 20px #cce4f3;
       `}
-  z-index: 11;
+  z-index: 20;
   height: auto;
 `;
 
@@ -221,7 +220,7 @@ const Header = forwardRef<Nullable<HTMLDivElement>>((_props, ref) => {
           dropProps={{
             round: 'xsmall',
             border: {
-              color: 'blue-active',
+              color: colorsTokens['info-500'],
               size: '2px',
             },
             style: {

@@ -1,3 +1,4 @@
+import { colorsTokens } from '@lib-common/cunningham';
 import { Button } from '@openfun/cunningham-react';
 import { NoDownloadSVG, SharedLiveMedia, report } from 'lib-components';
 import React from 'react';
@@ -69,7 +70,13 @@ export const DisallowedDownloadButton = ({
       }
       title={intl.formatMessage(messages.buttonLabel)}
       color="tertiary"
-      icon={<NoDownloadSVG iconColor="blue-off" width="24px" height="24px" />}
+      icon={
+        <NoDownloadSVG
+          iconColor={colorsTokens['info-200']}
+          width="24px"
+          height="24px"
+        />
+      }
     />
   );
 };

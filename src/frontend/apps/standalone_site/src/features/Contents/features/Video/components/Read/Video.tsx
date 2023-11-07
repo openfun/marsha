@@ -1,4 +1,5 @@
 import { Checkbox } from '@openfun/cunningham-react';
+import { colorsTokens } from 'lib-common';
 import {
   Box,
   ContentCard,
@@ -76,7 +77,11 @@ const Video = ({ video }: { video: IVideo }) => {
         }
         footer={
           <Box gap="small" align="center" direction="row">
-            <VueListIcon width={20} height={20} color="blue-active" />
+            <VueListIcon
+              width={20}
+              height={20}
+              color={colorsTokens['info-500']}
+            />
             <Text size="tiny" weight="bold">
               {video.playlist.title}
             </Text>

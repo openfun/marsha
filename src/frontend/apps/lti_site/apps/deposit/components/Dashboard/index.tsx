@@ -1,7 +1,6 @@
 import { Loader } from '@openfun/cunningham-react';
 import { ThemeContext, ThemeType } from 'grommet';
-import { normalizeColor } from 'grommet/utils';
-import { theme } from 'lib-common';
+import { colorsTokens } from 'lib-common';
 import { Box, UploadManager, useCurrentResourceContext } from 'lib-components';
 import React, { Fragment } from 'react';
 import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
@@ -41,7 +40,7 @@ const extendedTheme: ThemeType = {
     font: {
       family: 'Roboto-Bold',
     },
-    color: 'blue-active',
+    color: colorsTokens['info-500'],
     level: {
       1: {
         medium: {
@@ -54,14 +53,14 @@ const extendedTheme: ThemeType = {
     primary: {},
   },
   text: {
-    extend: `color: ${normalizeColor('blue-active', theme)};`,
+    extend: `color: ${colorsTokens['info-500']};`,
   },
   paragraph: {
-    extend: `color: ${normalizeColor('blue-active', theme)};`,
+    extend: `color: ${colorsTokens['info-500']};`,
   },
   pagination: {
     button: {
-      extend: `color: ${normalizeColor('blue-active', theme)};`,
+      extend: `color: ${colorsTokens['info-500']};`,
     },
   },
 };

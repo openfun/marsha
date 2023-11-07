@@ -1,4 +1,4 @@
-import { Nullable } from 'lib-common';
+import { Nullable, colorsTokens } from 'lib-common';
 import { Box, ClosingCard, CopyClipboard, Text } from 'lib-components';
 import React from 'react';
 import { toast } from 'react-hot-toast';
@@ -76,7 +76,7 @@ const DashboardCopyClipboard = ({
               {intl.formatMessage(messages.linksExpired)}
             </Text>
           }
-          background="status-warning"
+          background={colorsTokens['warning-500']}
           width="full"
           margin={{ bottom: 'small' }}
         />

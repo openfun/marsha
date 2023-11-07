@@ -1,5 +1,6 @@
 import { Tab } from 'grommet';
 import { DocumentStore } from 'grommet-icons';
+import { colorsTokens } from 'lib-common';
 import React from 'react';
 import { useIntl } from 'react-intl';
 
@@ -78,7 +79,11 @@ const SelectContentTab = ({
       title={
         <RichTabTitle
           icon={
-            <DocumentStore a11yTitle="" size="medium" color="blue-active" />
+            <DocumentStore
+              a11yTitle=""
+              size="medium"
+              color={colorsTokens['info-500']}
+            />
           }
           label={intl.formatMessage(commonMessages.titleDeposit)}
         />

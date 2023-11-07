@@ -1,6 +1,5 @@
 import { screen } from '@testing-library/react';
-import { normalizeColor } from 'grommet/utils';
-import { theme } from 'lib-common';
+import { colorsTokens } from 'lib-common';
 import { render } from 'lib-tests';
 import { Fragment } from 'react';
 
@@ -35,12 +34,12 @@ describe('<MenuItem />', () => {
     );
 
     expect(screen.getByRole('menuitem', { name: /Dashboard/i })).toHaveStyle({
-      backgroundColor: normalizeColor('bg-menu-hover', theme),
+      backgroundColor: colorsTokens['info-150'],
     });
     expect(
       screen.getByRole('menuitem', { name: /My Profile/i }),
     ).not.toHaveStyle({
-      backgroundColor: normalizeColor('bg-menu-hover', theme),
+      backgroundColor: colorsTokens['info-150'],
     });
 
     unmount();
@@ -61,10 +60,10 @@ describe('<MenuItem />', () => {
     expect(
       screen.getByRole('menuitem', { name: /Dashboard/i }),
     ).not.toHaveStyle({
-      backgroundColor: normalizeColor('bg-menu-hover', theme),
+      backgroundColor: colorsTokens['info-150'],
     });
     expect(screen.getByRole('menuitem', { name: /My Profile/i })).toHaveStyle({
-      backgroundColor: normalizeColor('bg-menu-hover', theme),
+      backgroundColor: colorsTokens['info-150'],
     });
   });
 });

@@ -1,5 +1,6 @@
 import { Button, Input, Loader } from '@openfun/cunningham-react';
 import { AddCircle, Trash } from 'grommet-icons';
+import { colorsTokens } from 'lib-common';
 import {
   Box,
   BoxError,
@@ -240,7 +241,7 @@ export const PlaylistPortability = ({ object }: PlaylistPortabilityProps) => {
                 <AddCircle
                   aria-label={intl.formatMessage(messages.addPortability)}
                   onClick={addPlaylistPortability}
-                  color="blue-active"
+                  color={colorsTokens['info-500']}
                   style={{ cursor: 'pointer' }}
                   role="button"
                 />

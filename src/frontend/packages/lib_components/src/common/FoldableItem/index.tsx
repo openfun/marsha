@@ -1,4 +1,5 @@
 import { Collapsible } from 'grommet';
+import { colorsTokens } from 'lib-common';
 import React, { useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -57,7 +58,7 @@ export const FoldableItem = ({
         <InfoCircleSVG
           height="17px"
           width="17px"
-          iconColor="blue-active"
+          iconColor={colorsTokens['info-500']}
           onClick={() => {
             if (!infoText) {
               //  this should not happen since button is disabled
@@ -84,7 +85,7 @@ export const FoldableItem = ({
                 transform: open ? undefined : 'rotate(-90deg)',
                 transition: '150ms linear all',
               }}
-              iconColor="blue-active"
+              iconColor={colorsTokens['info-500']}
               height="9px"
               width="14.5px"
             />

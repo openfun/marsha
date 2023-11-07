@@ -1,4 +1,5 @@
 import { Button } from '@openfun/cunningham-react';
+import { colorsTokens } from 'lib-common';
 import {
   BinSVG,
   Modal,
@@ -100,7 +101,13 @@ export const ThumbnailRemoveButton = ({
       {thumbnail && thumbnail.is_ready_to_show && (
         <Button
           aria-label={intl.formatMessage(messages.deleteButtonLabel)}
-          icon={<BinSVG width="14px" height="18px" iconColor="blue-active" />}
+          icon={
+            <BinSVG
+              width="14px"
+              height="18px"
+              iconColor={colorsTokens['info-500']}
+            />
+          }
           onClick={() => modalActions.current?.open()}
           color="tertiary"
           title={intl.formatMessage(messages.deleteButtonLabel)}

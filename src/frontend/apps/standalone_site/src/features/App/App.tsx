@@ -2,7 +2,7 @@ import { CunninghamProvider } from '@openfun/cunningham-react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Grommet } from 'grommet';
-import { colors } from 'lib-common';
+import { colorsTokens } from 'lib-common';
 import { retryQuery } from 'lib-components';
 import { Toaster } from 'react-hot-toast';
 import { BrowserRouter } from 'react-router-dom';
@@ -32,13 +32,14 @@ const App = () => {
               duration: 5000,
               success: {
                 style: {
-                  background: colors['status-ok'],
+                  background: colorsTokens['success-600'],
+                  color: 'white',
                 },
               },
               error: {
                 style: {
-                  color: colors['white'],
-                  background: colors['accent-2'],
+                  color: 'white',
+                  background: colorsTokens['danger-400'],
                 },
               },
             }}

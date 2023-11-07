@@ -1,4 +1,4 @@
-import { Nullable } from 'lib-common';
+import { Nullable, colorsTokens } from 'lib-common';
 import {
   Box,
   ObjectStatusPicker,
@@ -113,13 +113,13 @@ export const SharedLiveMediaItem = ({
           ) : (
             <React.Fragment>
               <Box>
-                <Text color="clr-danger-300">
+                <Text color={colorsTokens['danger-300']}>
                   {intl.formatMessage(messages.retryUploadFailedLabel)}
                 </Text>
               </Box>
 
               <RetryUploadButton
-                color="red-active"
+                color={colorsTokens['danger-500']}
                 onClick={() => onRetryFailedUpload(sharedLiveMedia.id)}
               />
             </React.Fragment>

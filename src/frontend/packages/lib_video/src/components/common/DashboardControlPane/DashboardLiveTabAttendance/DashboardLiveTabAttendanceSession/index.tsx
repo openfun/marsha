@@ -90,7 +90,7 @@ export const DashboardLiveTabAttendanceSession = ({
     ) : zeroPercent ? (
       <Clear
         a11yTitle={intl.formatMessage(messages.notConnected)}
-        color="red-active"
+        color={colorsTokens['danger-500']}
         key={liveSession.id}
       />
     ) : (
@@ -148,7 +148,7 @@ export const DashboardLiveTabAttendanceSession = ({
             <StatusGoodSmall
               data-testid={`Missed_${liveSession.id}_${index}`}
               a11yTitle={intl.formatMessage(messages.dotMissed)}
-              color="light-6"
+              color={colorsTokens['greyscale-400']}
               key={`${liveSession.id}_${index}`}
               size="small"
             />

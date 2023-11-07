@@ -1,5 +1,6 @@
 import { Checkbox } from '@openfun/cunningham-react';
 import { FormSchedule, InProgress } from 'grommet-icons';
+import { colorsTokens } from 'lib-common';
 import {
   Box,
   ClassroomLite,
@@ -83,7 +84,7 @@ const ClassRoom = ({ classroom }: { classroom: ClassroomLite }) => {
           <Fragment>
             {classroom.starting_at && (
               <Box gap="small" align="center" direction="row">
-                <FormSchedule size="medium" color="blue-active" />
+                <FormSchedule size="medium" color={colorsTokens['info-500']} />
                 <Text size="tiny" weight="bold">
                   {localDate(classroom.starting_at, intl.locale)}
                 </Text>
@@ -91,14 +92,21 @@ const ClassRoom = ({ classroom }: { classroom: ClassroomLite }) => {
             )}
             {classroom.estimated_duration && (
               <Box gap="small" align="center" direction="row">
-                <InProgress color="blue-active" style={{ height: '20px' }} />
+                <InProgress
+                  color={colorsTokens['info-500']}
+                  style={{ height: '20px' }}
+                />
                 <Text size="tiny" weight="bold">
                   {classroom.estimated_duration}
                 </Text>
               </Box>
             )}
             <Box gap="small" align="center" direction="row">
-              <VueListIcon width={20} height={20} color="blue-active" />
+              <VueListIcon
+                width={20}
+                height={20}
+                color={colorsTokens['info-500']}
+              />
               <Text size="tiny" weight="bold">
                 {classroom.playlist.title}
               </Text>

@@ -1,7 +1,6 @@
 import { Button } from '@openfun/cunningham-react';
 import { Tab, Tabs, ThemeContext } from 'grommet';
-import { normalizeColor } from 'grommet/utils';
-import { colorsTokens, theme } from 'lib-common';
+import { colorsTokens } from 'lib-common';
 import { Box, Classroom } from 'lib-components';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
@@ -14,8 +13,8 @@ import { useCreateClassroomAction } from '@lib-classroom/data/queries';
 import { CurrentClassroomProvider } from '@lib-classroom/hooks/useCurrentClassroom';
 
 const StyledClassroomInformationBarWrapper = styled(Box)`
-  -webkit-box-shadow: 0px 0px 7px 5px ${normalizeColor('shadow-1', theme)};
-  box-shadow: 0px 0px 7px 5px ${normalizeColor('shadow-1', theme)};
+  -webkit-box-shadow: 0px 0px 7px 5px ${colorsTokens['info-150']};
+  box-shadow: 0px 0px 7px 5px ${colorsTokens['info-150']};
 `;
 
 const messages = defineMessages({
@@ -53,7 +52,7 @@ const DashboardClassroomForm = ({ classroom }: DashboardClassroomFormProps) => {
       },
     },
     tab: {
-      extend: ` color:${normalizeColor('blue-active', theme)};\
+      extend: ` color:${colorsTokens['info-500']};\
         font-family: 'Roboto-Bold';\
         height: 21px;\
         letter-spacing: -0.36px;\
@@ -84,7 +83,7 @@ const DashboardClassroomForm = ({ classroom }: DashboardClassroomFormProps) => {
 
   return (
     <CurrentClassroomProvider value={classroom}>
-      <Box background={colorsTokens.main} fill>
+      <Box background={colorsTokens['primary-100']} fill>
         <StyledClassroomInformationBarWrapper
           align="center"
           background="white"

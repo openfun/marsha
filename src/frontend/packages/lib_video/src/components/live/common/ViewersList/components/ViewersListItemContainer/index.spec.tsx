@@ -1,6 +1,5 @@
 import { screen } from '@testing-library/react';
-import { normalizeColor } from 'grommet/utils';
-import { theme } from 'lib-common';
+import { colorsTokens } from 'lib-common';
 import { render } from 'lib-tests';
 import React from 'react';
 import renderer from 'react-test-renderer';
@@ -29,12 +28,8 @@ describe('<ViewersListItemContainer />', () => {
       )
       .toJSON();
 
-    expect(tree).toHaveStyleRule(
-      'background',
-      normalizeColor('bg-marsha', theme),
-      {
-        modifier: ':hover',
-      },
-    );
+    expect(tree).toHaveStyleRule('background', colorsTokens['primary-100'], {
+      modifier: ':hover',
+    });
   });
 });

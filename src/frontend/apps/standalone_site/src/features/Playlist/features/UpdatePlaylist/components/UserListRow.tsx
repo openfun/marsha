@@ -1,4 +1,5 @@
 import { Button, Select } from '@openfun/cunningham-react';
+import { colorsTokens } from 'lib-common';
 import {
   AnonymousUser,
   BinSVG,
@@ -191,7 +192,7 @@ export const UserDeleteColumn = ({
         aria-label={intl.formatMessage(messages.deleteUserLabel)}
         icon={
           <BinSVG
-            iconColor={userId === idUser ? 'grey' : 'blue-active'}
+            iconColor={userId === idUser ? 'grey' : colorsTokens['info-500']}
             width="18px"
             height="18px"
           />

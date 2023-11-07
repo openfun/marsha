@@ -1,6 +1,5 @@
 import { Clock } from 'grommet';
-import { normalizeColor } from 'grommet/utils';
-import { colorsTokens, theme } from 'lib-common';
+import { colorsTokens } from 'lib-common';
 import {
   Box,
   ChronometerSVG,
@@ -31,7 +30,7 @@ const Header = ({ title }: { title: ReactNode }) => (
 );
 
 const StyledClock = styled(Clock)`
-  color: ${normalizeColor('blue-hover', theme)};
+  color: ${colorsTokens['info-400']};
 `;
 
 function splitDay(scheduleDate: DateTime) {

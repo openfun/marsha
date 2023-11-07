@@ -1,5 +1,5 @@
 import { normalizeColor } from 'grommet/utils';
-import { theme } from 'lib-common';
+import { colorsTokens, theme } from 'lib-common';
 import {
   UploadManagerStatus,
   UploadableObject,
@@ -73,7 +73,7 @@ export const UploadableObjectStatusBadge = ({
   switch (object.upload_state) {
     case uploadState.READY:
       return (
-        <Badge role="status" background="status-ok">
+        <Badge role="status" background={colorsTokens['success-600']}>
           <FormattedMessage {...messages[uploadState.READY]} />
         </Badge>
       );
@@ -81,14 +81,14 @@ export const UploadableObjectStatusBadge = ({
     case uploadState.DELETED:
     case uploadState.PROCESSING:
       return (
-        <Badge role="status" background="brand">
+        <Badge role="status" background={colorsTokens['info-300']}>
           <FormattedMessage {...messages[object.upload_state]} />
         </Badge>
       );
 
     case uploadState.ERROR:
       return (
-        <Badge role="status" background="status-error">
+        <Badge role="status" background={colorsTokens['danger-400']}>
           <FormattedMessage {...messages[uploadState.ERROR]} />
         </Badge>
       );
@@ -98,7 +98,7 @@ export const UploadableObjectStatusBadge = ({
         case UploadManagerStatus.INIT:
         case UploadManagerStatus.UPLOADING:
           return (
-            <Badge role="status" background="brand">
+            <Badge role="status" background={colorsTokens['info-300']}>
               <FormattedMessage {...messages.uploading} />
             </Badge>
           );
@@ -106,28 +106,28 @@ export const UploadableObjectStatusBadge = ({
         case UploadManagerStatus.ERR_POLICY:
         case UploadManagerStatus.ERR_UPLOAD:
           return (
-            <Badge role="status" background="status-error">
+            <Badge role="status" background={colorsTokens['danger-400']}>
               <FormattedMessage {...messages[uploadState.ERROR]} />
             </Badge>
           );
 
         case UploadManagerStatus.ERR_SIZE:
           return (
-            <Badge role="status" background="status-error">
+            <Badge role="status" background={colorsTokens['danger-400']}>
               <FormattedMessage {...messages[uploadState.ERROR]} />
             </Badge>
           );
 
         case UploadManagerStatus.SUCCESS:
           return (
-            <Badge role="status" background="brand">
+            <Badge role="status" background={colorsTokens['info-300']}>
               <FormattedMessage {...messages[uploadState.PROCESSING]} />
             </Badge>
           );
 
         default:
           return (
-            <Badge role="status" background="dark-5">
+            <Badge role="status" background={colorsTokens['greyscale-700']}>
               <FormattedMessage {...messages[uploadState.PENDING]} />
             </Badge>
           );

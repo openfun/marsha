@@ -1,5 +1,4 @@
-import { normalizeColor } from 'grommet/utils';
-import { theme } from 'lib-common';
+import { colorsTokens } from 'lib-common';
 import { Box, Text, useResponsive } from 'lib-components';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
@@ -18,7 +17,7 @@ const messages = defineMessages({
   },
 });
 
-const colorMenu = normalizeColor('blue-active', theme);
+const colorMenu = colorsTokens['info-500'];
 const sizeMenu = '18.75rem';
 
 interface PropsExtended {

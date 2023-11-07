@@ -1,3 +1,4 @@
+import { colorsTokens } from 'lib-common';
 import { Text, useFetchButton, useVideo } from 'lib-components';
 import React, { Fragment, useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -55,7 +56,12 @@ export const HarvestVOD = () => {
 
   return (
     <Fragment>
-      <Text type="p" className="mt-0" color="blue-active" textAlign="center">
+      <Text
+        type="p"
+        className="mt-0"
+        color={colorsTokens['info-500']}
+        textAlign="center"
+      >
         {intl.formatMessage(messages.harvestLiveMessage)}
       </Text>
       <FetchButton
