@@ -1,7 +1,6 @@
 import { Layer, LayerProps } from 'grommet';
-import { normalizeColor } from 'grommet/utils';
 import { FormClose } from 'grommet-icons';
-import { Nullable, theme } from 'lib-common';
+import { Nullable, colorsTokens } from 'lib-common';
 import {
   MutableRefObject,
   PropsWithChildren,
@@ -26,7 +25,7 @@ const messages = defineMessages({
 });
 
 const FormCloseIcon = styled(FormClose)`
-  background-color: ${normalizeColor('blue-active', theme)};
+  background-color: ${colorsTokens['info-500']};
   border-radius: 100%;
   align-self: end;
   cursor: pointer;

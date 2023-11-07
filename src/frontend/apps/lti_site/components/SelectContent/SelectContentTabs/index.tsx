@@ -1,7 +1,7 @@
 import { Grommet, Tab, Tabs } from 'grommet';
 import { deepMerge } from 'grommet/utils';
 import { Document as DocumentIcon } from 'grommet-icons';
-import { theme as baseTheme } from 'lib-common';
+import { theme as baseTheme, colorsTokens } from 'lib-common';
 import {
   Box,
   BoxLoader,
@@ -32,11 +32,11 @@ import { buildContentItems } from '../utils';
 const customTheme = deepMerge(baseTheme, {
   tab: {
     active: {
-      background: 'bg-menu-hover',
-      color: 'blue-active',
+      background: colorsTokens['info-150'],
+      color: colorsTokens['info-500'],
     },
     border: undefined,
-    color: 'blue-active',
+    color: colorsTokens['info-500'],
     margin: 'none',
     pad: '6px 12px',
     extend: 'border-radius: 6px;',
@@ -157,7 +157,11 @@ export const SelectContentTabs = ({
             title={
               <RichTabTitle
                 icon={
-                  <WebinarSVG width={30} height={30} iconColor="blue-active" />
+                  <WebinarSVG
+                    width={30}
+                    height={30}
+                    iconColor={colorsTokens['info-500']}
+                  />
                 }
                 label={intl.formatMessage(commonMessages.titleWebinar)}
               />
@@ -185,7 +189,11 @@ export const SelectContentTabs = ({
             title={
               <RichTabTitle
                 icon={
-                  <PlaySVG width={30} height={30} iconColor="blue-active" />
+                  <PlaySVG
+                    width={30}
+                    height={30}
+                    iconColor={colorsTokens['info-500']}
+                  />
                 }
                 label={intl.formatMessage(commonMessages.titleVideo)}
               />
@@ -216,7 +224,7 @@ export const SelectContentTabs = ({
                   <DocumentIcon
                     a11yTitle=""
                     size="medium"
-                    color="blue-active"
+                    color={colorsTokens['info-500']}
                   />
                 }
                 label={intl.formatMessage(commonMessages.titleDocument)}

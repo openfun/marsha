@@ -1,4 +1,5 @@
 import { Search } from 'grommet-icons';
+import { colorsTokens } from 'lib-common';
 import { Box, Heading } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -28,7 +29,7 @@ export const MarkdownNotFoundView = () => {
     <Box justify="space-evenly">
       <Box margin="auto">
         <Heading>
-          <Search size="large" color="blue-active" />
+          <Search size="large" color={colorsTokens['info-500']} />
           {intl.formatMessage(messages.notFound.title)}
         </Heading>
       </Box>

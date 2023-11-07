@@ -347,18 +347,21 @@ export const MarkdownEditor = ({ markdownDocumentId }: MarkdownEditorProps) => {
                   />
                 </MarkdownImageDropzone>
                 <Box>
-                  <Footer background="brand" pad="xxsmall">
+                  <Footer background={colorsTokens['info-300']} pad="xxsmall">
                     <Text color="white">
                       {intl.formatMessage(messages.editorEmptyDragDropHelper)}
                     </Text>
                   </Footer>
-                  <Footer background="light-1" pad="xxsmall">
+                  <Footer
+                    background={colorsTokens['greyscale-100']}
+                    pad="xxsmall"
+                  >
                     <Anchor
                       href="https://www.markdownguide.org/basic-syntax"
                       target="_blank"
                       rel="noopener noreferrer"
                       label="Markdown basic syntax"
-                      color="dark-3"
+                      color={colorsTokens['greyscale-800']}
                       weight="normal"
                     />
                   </Footer>

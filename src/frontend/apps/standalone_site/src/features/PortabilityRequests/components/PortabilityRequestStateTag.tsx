@@ -1,13 +1,12 @@
 import { Tag } from 'grommet';
-import { normalizeColor } from 'grommet/utils';
-import { theme } from 'lib-common';
+import { colorsTokens } from 'lib-common';
 import { PortabilityRequestState } from 'lib-components';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 const NeutralStyledTag = styled(Tag)`
-  color: ${normalizeColor('blue-active', theme)};
-  border-color: ${normalizeColor('blue-active', theme)};
+  color: ${colorsTokens['info-500']};
+  border-color: ${colorsTokens['info-500']};
   width: fit-content;
   & > div {
     width: 100%;
@@ -15,8 +14,8 @@ const NeutralStyledTag = styled(Tag)`
 `;
 
 const StatusOkStyledTag = styled(Tag)`
-  color: ${normalizeColor('status-ok', theme)};
-  border-color: ${normalizeColor('status-ok', theme)};
+  color: ${colorsTokens['success-600']};
+  border-color: ${colorsTokens['success-600']};
   width: fit-content;
   & > div {
     width: 100%;
@@ -24,8 +23,8 @@ const StatusOkStyledTag = styled(Tag)`
 `;
 
 const StatusErrorStyledTag = styled(Tag)`
-  color: ${normalizeColor('status-error', theme)};
-  border-color: ${normalizeColor('status-error', theme)};
+  color: ${colorsTokens['danger-400']};
+  border-color: ${colorsTokens['danger-400']};
   width: fit-content;
   & > div {
     width: 100%;

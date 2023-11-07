@@ -1,5 +1,4 @@
-import { normalizeColor } from 'grommet/utils';
-import { Maybe, theme } from 'lib-common';
+import { Maybe, colorsTokens } from 'lib-common';
 import {
   AnonymousUser,
   Heading,
@@ -83,7 +82,7 @@ export const StudentLiveRegistration = () => {
 
   return (
     <AdvertisingBox margin={{ bottom: 'large' }} pad="large">
-      <Heading level={4} color={normalizeColor('blue-active', theme)}>
+      <Heading level={4} color={colorsTokens['info-500']}>
         {intl.formatMessage(messages.formTitle)}
       </Heading>
 

@@ -1,7 +1,7 @@
 import { DatePicker } from '@openfun/cunningham-react';
 import { FormField, TextInput } from 'grommet';
 import { MarginType } from 'grommet/utils';
-import { Nullable } from 'lib-common';
+import { Nullable, colorsTokens } from 'lib-common';
 import { DateTime, Duration, Settings } from 'luxon';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -244,7 +244,7 @@ export const SchedulingFields = ({
             label={intl.formatMessage(messages.startingAtTimeTextLabel)}
             htmlFor="starting_at_time"
             margin="none"
-            background={startingAtError ? 'status-error-off' : 'white'}
+            background={startingAtError ? colorsTokens['danger-100'] : 'white'}
             height="80%"
             disabled={disabled}
           >

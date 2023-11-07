@@ -1,5 +1,4 @@
-import { normalizeColor } from 'grommet/utils';
-import { theme } from 'lib-common';
+import { colorsTokens } from 'lib-common';
 import * as React from 'react';
 import styled from 'styled-components';
 
@@ -21,7 +20,7 @@ export const DropzoneIcon = () => (
   </DropzoneIconStyled>
 );
 const DropzoneIconStyled = styled.svg`
-  fill: ${normalizeColor('light-5', theme)};
+  fill: ${colorsTokens['greyscale-400']};
   width: 4rem;
   height: 4rem;
 `;

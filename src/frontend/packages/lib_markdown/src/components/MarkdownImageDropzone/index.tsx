@@ -1,5 +1,4 @@
-import { normalizeColor } from 'grommet/utils';
-import { theme } from 'lib-common';
+import { colorsTokens } from 'lib-common';
 import { Box, DropzoneIcon } from 'lib-components';
 import React from 'react';
 import Dropzone, { DropzoneOptions, DropzoneRootProps } from 'react-dropzone';
@@ -19,14 +18,14 @@ const DropzoneStyled = styled.div`
   border: ${(props: DropzoneRootProps) =>
     props.isDragAccept ? '3px dashed' : 'none'};
   border-radius: 0.375rem;
-  border-color: ${normalizeColor('light-5', theme)};
+  border-color: ${colorsTokens['greyscale-400']};
 
   display: grid;
   grid-template-areas: 'overlay';
 `;
 
 const DropzoneOverlay = styled.div`
-  background-color: ${normalizeColor('light-1', theme)};
+  background-color: ${colorsTokens['greyscale-100']};
   z-index: 100;
 
   grid-area: overlay;

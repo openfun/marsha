@@ -1,5 +1,6 @@
 import { Button } from '@openfun/cunningham-react';
 import ClipboardJS from 'clipboard';
+import { colorsTokens } from 'lib-common';
 import React, { ReactElement, useEffect } from 'react';
 
 import { DashedBoxCustom } from '@lib-components/common/DashedBoxCustom';
@@ -62,7 +63,11 @@ export const CopyClipboard = ({
           title={title}
           color="tertiary"
         >
-          <CopySVG iconColor="blue-active" width="20px" height="25px" />
+          <CopySVG
+            iconColor={colorsTokens['info-500']}
+            width="20px"
+            height="25px"
+          />
         </Button>
       </DashedBoxCustom>
     </Box>

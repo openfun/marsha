@@ -226,7 +226,7 @@ const DashboardClassroomStudent = ({
             <ICalendarLinkStyled event={scheduledEvent}>
               <Schedule
                 a11yTitle={intl.formatMessage(messages.a11AddCalendar)}
-                color="blue-active"
+                color={colorsTokens['info-500']}
               />
               <Text className="pl-s">
                 {intl.formatMessage(messages.addCalendar)}

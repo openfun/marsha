@@ -4,6 +4,7 @@ import {
   SortModel,
   usePagination,
 } from '@openfun/cunningham-react';
+import { colorsTokens } from 'lib-common';
 import {
   Box,
   BoxError,
@@ -232,7 +233,7 @@ export const PortabilityRequests = ({
         )}
         {hasNoResult && (
           <Box
-            background="content-background"
+            background={colorsTokens['info-150']}
             margin="auto"
             pad="medium"
             round="small"

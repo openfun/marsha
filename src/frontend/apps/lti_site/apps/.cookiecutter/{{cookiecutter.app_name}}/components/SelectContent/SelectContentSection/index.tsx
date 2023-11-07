@@ -1,6 +1,6 @@
 import { Box, Card, CardBody, Grid, Text, Tip } from 'grommet';
 import { Group } from 'grommet-icons/icons';
-import { Nullable } from 'lib-common';
+import { Nullable, colorsTokens } from 'lib-common';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -74,7 +74,7 @@ export const SelectContentSection = ({
         <Card
           height="144px"
           justify="center"
-          background="light-3"
+          background={colorsTokens['greyscale-300']}
           align="center"
           onClick={addAndSelectContent}
         >

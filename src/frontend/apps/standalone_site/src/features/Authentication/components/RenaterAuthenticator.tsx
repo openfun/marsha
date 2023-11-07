@@ -104,7 +104,7 @@ export const RenaterAuthenticator = () => {
               )}
             </Fragment>
           }
-          background="status-error"
+          background={colorsTokens['danger-400']}
           width="full"
           margin={{ bottom: 'small' }}
         />
@@ -116,7 +116,7 @@ export const RenaterAuthenticator = () => {
         align="center"
         gap="small"
       >
-        <Box background="blue-active" height="1px" width="100%" />
+        <Box background={colorsTokens['info-500']} height="1px" width="100%" />
         <Box width="100%">
           <Text
             size={isSmallerBreakpoint(breakpoint, 'small') ? 'tiny' : 'small'}
@@ -126,7 +126,7 @@ export const RenaterAuthenticator = () => {
             {intl.formatMessage(messages.textConnectWith)}
           </Text>
         </Box>
-        <Box background="blue-active" height="1px" width="100%" />
+        <Box background={colorsTokens['info-500']} height="1px" width="100%" />
       </Box>
       <ThemeContext.Extend value={{ select: { step: options.length || 20 } }}>
         <FormField label={intl.formatMessage(messages.labelSelectRenater)}>

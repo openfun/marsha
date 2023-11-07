@@ -1,5 +1,6 @@
 import { Button } from '@openfun/cunningham-react';
 import { AddCircle } from 'grommet-icons';
+import { colorsTokens } from 'lib-common';
 import { Box, JoinMode, List, Text } from 'lib-components';
 import React, { ReactNode, useMemo } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -191,7 +192,9 @@ export const ViewersList = ({ isInstructor }: ViewersListProps) => {
               <Button
                 className="c__button-no-bg"
                 color="tertiary"
-                icon={<AddCircle color="red-active" size="20px" />}
+                icon={
+                  <AddCircle color={colorsTokens['danger-500']} size="20px" />
+                }
                 onClick={() => {
                   converse.rejectParticipantToJoin(item);
                 }}

@@ -1,4 +1,5 @@
 import { Button } from '@openfun/cunningham-react';
+import { colorsTokens } from 'lib-common';
 import { BinSVG, TimedText } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -29,7 +30,13 @@ export const DeleteTimedTextTrackItemUploadButton = ({
       aria-label={intl.formatMessage(messages.buttonLabel)}
       onClick={() => setDeleteTimedTextTrackUploadModal(timedTextTrack)}
       color="tertiary"
-      icon={<BinSVG height="18px" iconColor="blue-active" width="14px" />}
+      icon={
+        <BinSVG
+          height="18px"
+          iconColor={colorsTokens['info-500']}
+          width="14px"
+        />
+      }
     />
   );
 };

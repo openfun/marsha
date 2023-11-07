@@ -5,7 +5,7 @@ import {
   SortModel,
   usePagination,
 } from '@openfun/cunningham-react';
-import { Breakpoints, Maybe } from 'lib-common';
+import { Breakpoints, Maybe, colorsTokens } from 'lib-common';
 import {
   Box,
   Heading,
@@ -191,7 +191,7 @@ export const PlaylistPage = () => {
           <Fragment>
             {shouldDisplayError && (
               <Box
-                background="content-background"
+                background={colorsTokens['info-150']}
                 margin="auto"
                 pad="medium"
                 round="small"
@@ -211,7 +211,7 @@ export const PlaylistPage = () => {
             )}
             {shouldDisplayNoPlaylistYetMessage && (
               <Box
-                background="content-background"
+                background={colorsTokens['info-150']}
                 margin="auto"
                 pad="medium"
                 round="small"

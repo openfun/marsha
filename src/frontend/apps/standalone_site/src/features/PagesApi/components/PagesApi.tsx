@@ -1,5 +1,4 @@
-import { normalizeColor } from 'grommet/utils';
-import { sizesTokens, theme } from 'lib-common';
+import { colorsTokens, sizesTokens } from 'lib-common';
 import { Box, BoxLoader, Heading } from 'lib-components';
 import ReactMarkdown from 'react-markdown';
 import { useLocation } from 'react-router-dom';
@@ -12,7 +11,7 @@ const BoxMarkdown = styled(Box)`
     color: #000;
   }
   & a {
-    color: ${normalizeColor('blue-active', theme)};
+    color: ${colorsTokens['info-500']};
   }
   box-shadow: inset rgba(2, 117, 180, 0.3) 1px 1px 6px 0px;
   & h1 {

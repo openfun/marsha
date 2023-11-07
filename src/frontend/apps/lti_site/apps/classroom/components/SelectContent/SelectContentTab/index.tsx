@@ -1,5 +1,6 @@
 import { Tab } from 'grommet';
 import { useCreateClassroom } from 'lib-classroom';
+import { colorsTokens } from 'lib-common';
 import { ClassroomSVG } from 'lib-components';
 import React from 'react';
 import { useIntl } from 'react-intl';
@@ -76,7 +77,13 @@ const SelectContentTab = ({
     <Tab
       title={
         <RichTabTitle
-          icon={<ClassroomSVG width={30} height={30} iconColor="blue-active" />}
+          icon={
+            <ClassroomSVG
+              width={30}
+              height={30}
+              iconColor={colorsTokens['info-500']}
+            />
+          }
           label={intl.formatMessage(commonMessages.titleClassroom)}
         />
       }

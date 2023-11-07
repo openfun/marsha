@@ -1,5 +1,4 @@
-import { normalizeColor } from 'grommet/utils';
-import { Nullable, theme } from 'lib-common';
+import { Nullable, colorsTokens } from 'lib-common';
 import React, {
   CSSProperties,
   PropsWithChildren,
@@ -21,7 +20,7 @@ const StyledResizeSeparator = styled(Box)`
   cursor: col-resize;
 
   &:hover div {
-    background-color: ${normalizeColor('blue-active', theme)};
+    background-color: ${colorsTokens['info-500']};
   }
 `;
 

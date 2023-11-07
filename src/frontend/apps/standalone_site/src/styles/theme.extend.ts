@@ -1,5 +1,5 @@
 import { deepMerge } from 'grommet/utils';
-import { theme } from 'lib-common';
+import { colorsTokens, theme } from 'lib-common';
 import { css } from 'styled-components';
 
 export const themeExtend = {
@@ -9,7 +9,7 @@ export const themeExtend = {
   global: {
     colors: {
       text: {
-        light: 'blue-active',
+        light: colorsTokens['info-500'],
       },
     },
     elevation: {

@@ -1,7 +1,6 @@
 import { Button, Input } from '@openfun/cunningham-react';
 import { ThemeContext } from 'grommet';
-import { normalizeColor } from 'grommet/utils';
-import { Maybe, theme } from 'lib-common';
+import { Maybe, colorsTokens } from 'lib-common';
 import {
   LiveSession,
   Text,
@@ -25,7 +24,7 @@ const formTheme = {
   },
   formField: {
     border: {
-      color: 'blue-chat',
+      color: colorsTokens['info-500'],
       position: 'outer',
       side: 'all',
       style: 'solid',
@@ -40,16 +39,16 @@ const formTheme = {
     },
     disabled: {
       border: {
-        color: 'bg-lightgrey',
+        color: colorsTokens['greyscale-400'],
       },
     },
     error: {
       border: {
-        color: 'red-active',
+        color: colorsTokens['danger-500'],
       },
       color: 'white',
       container: {
-        background: normalizeColor('red-active', theme),
+        background: colorsTokens['danger-500'],
         margin: {
           top: 'none',
           bottom: 'xsmall',
@@ -64,7 +63,7 @@ const formTheme = {
       size: 'medium',
     },
     label: {
-      color: normalizeColor('bg-grey', theme),
+      color: colorsTokens['greyscale-600'],
       margin: {
         bottom: 'none',
         left: '20px',

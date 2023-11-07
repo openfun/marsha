@@ -1,6 +1,5 @@
 import { Button } from '@openfun/cunningham-react';
-import { normalizeColor } from 'grommet/utils';
-import { theme } from 'lib-common';
+import { colorsTokens } from 'lib-common';
 import * as React from 'react';
 import { FormattedMessage, defineMessages } from 'react-intl';
 import styled from 'styled-components';
@@ -31,7 +30,7 @@ const DropzonePlaceholderStyled = styled.div`
   justify-content: space-evenly;
   flex-grow: 1;
   align-items: center;
-  background-color: ${normalizeColor('light-1', theme)};
+  background-color: ${colorsTokens['greyscale-100']};
   padding-top: 2rem;
   padding-bottom: 1rem;
 `;
@@ -55,7 +54,7 @@ const DropzoneDashBox = styled.div`
   right: 0.5rem;
   bottom: 0.5rem;
   left: 0.5rem;
-  border: 3px dashed ${normalizeColor('light-5', theme)};
+  border: 3px dashed ${colorsTokens['greyscale-400']};
   border-radius: 0.375rem;
 `;
 

@@ -98,10 +98,10 @@ describe('<LiveVideoTabPanel /> styles', () => {
 
     expect(button).toHaveStyle('background-color: rgb(255, 255, 255);');
     expect(button).toHaveStyle('flex: 1;');
-    expect(button).toHaveStyle('box-shadow: inset 0 -1px #81ade6;');
+    expect(button).toHaveStyle('box-shadow: inset 0 -1px #8CB5EA;');
 
     const text = screen.getByText('application');
-    expect(text).toHaveStyle('color: rgb(129, 173, 230);');
+    expect(text).toHaveStyle('color: rgb(140, 181, 234);');
     expect(text).toHaveStyle('font-size: 0.75rem;');
     expect(text).toHaveStyle('font-weight: bold;');
     expect(text).toHaveStyle('letter-spacing: -0.23px;');
@@ -123,7 +123,7 @@ describe('<LiveVideoTabPanel /> styles', () => {
 
     expect(button).toHaveStyle('background-color: rgb(255, 255, 255);');
     expect(button).toHaveStyle('flex: 1;');
-    expect(button).toHaveStyle('box-shadow: inset 0 -2px #055fd2;');
+    expect(button).toHaveStyle('box-shadow: inset 0 -2px #055FD2;');
 
     const text = screen.getByText('application');
 
@@ -150,10 +150,10 @@ describe('<LiveVideoTabPanel /> styles', () => {
       )
       .toJSON();
 
-    expect(tree).toHaveStyleRule('box-shadow', 'inset 0 -2px #031963', {
+    expect(tree).toHaveStyleRule('box-shadow', 'inset 0 -2px #022858', {
       modifier: ':hover',
     });
-    expect(tree).toHaveStyleRule('color', '#031963', {
+    expect(tree).toHaveStyleRule('color', '#022858', {
       modifier: ':hover div span',
     });
   });

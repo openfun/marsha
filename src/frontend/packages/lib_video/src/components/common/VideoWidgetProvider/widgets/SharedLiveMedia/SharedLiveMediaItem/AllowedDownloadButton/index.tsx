@@ -1,4 +1,5 @@
 import { Button } from '@openfun/cunningham-react';
+import { colorsTokens } from 'lib-common';
 import { DownloadSVG, SharedLiveMedia, report } from 'lib-components';
 import React from 'react';
 import toast from 'react-hot-toast';
@@ -68,7 +69,13 @@ export const AllowedDownloadButton = ({
         })
       }
       title={intl.formatMessage(messages.buttonLabel)}
-      icon={<DownloadSVG iconColor="blue-active" width="24px" height="24px" />}
+      icon={
+        <DownloadSVG
+          iconColor={colorsTokens['info-500']}
+          width="24px"
+          height="24px"
+        />
+      }
       color="tertiary"
     />
   );

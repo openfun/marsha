@@ -1,3 +1,4 @@
+import { colorsTokens } from 'lib-common';
 import {
   BinSVG,
   ButtonLoader,
@@ -103,7 +104,11 @@ export const DeleteClassroomRecordingButton = ({
         isSubmitting={deleteClassroomRecording.isLoading}
         color="tertiary"
       >
-        <BinSVG height="18px" iconColor="blue-active" width="14px" />
+        <BinSVG
+          height="18px"
+          iconColor={colorsTokens['info-500']}
+          width="14px"
+        />
       </ButtonLoader>
     </div>
   );
