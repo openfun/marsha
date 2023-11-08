@@ -1,4 +1,5 @@
 import { ReactElement, ReactHTML, Ref, forwardRef } from 'react';
+import { CSSProperties } from 'styled-components';
 
 import { Typo, TypoProps } from '@lib-components/common/Typo';
 
@@ -24,6 +25,7 @@ export const TextSizes = {
 export interface TextPropsOnly {
   size?: keyof typeof TextSizes;
   weight?: keyof typeof TextWeights;
+  fontStyle?: CSSProperties['fontStyle'];
 }
 
 type TextTypes = Pick<ReactHTML, 'p' | 'span' | 'div'>;
@@ -53,6 +55,7 @@ const TextRef = forwardRef(
   <T extends keyof TextTypes = 'span'>(
     {
       className,
+      fontStyle,
       size = 'medium-large',
       type = 'span',
       weight = 'regular',
@@ -68,6 +71,7 @@ const TextRef = forwardRef(
           className || ''
         }`}
         {...props}
+        style={{ fontStyle, ...props.style }}
       />
     );
   },

@@ -12,6 +12,8 @@ import { ClassroomWidgetProvider } from '@lib-classroom/components/ClassroomWidg
 import { useCreateClassroomAction } from '@lib-classroom/data/queries';
 import { CurrentClassroomProvider } from '@lib-classroom/hooks/useCurrentClassroom';
 
+import ClassroomAttendance from '../ClassroomAttendance';
+
 const StyledClassroomInformationBarWrapper = styled(Box)`
   -webkit-box-shadow: 0px 0px 7px 5px ${colorsTokens['info-150']};
   box-shadow: 0px 0px 7px 5px ${colorsTokens['info-150']};
@@ -28,6 +30,12 @@ const messages = defineMessages({
     description:
       'Title of the tab used to configure the live in capital letters',
     id: 'components.DashboardClassroomForm.titleConfiguration',
+  },
+  titleAttendance: {
+    defaultMessage: 'attendances',
+    description:
+      'Title of the tab used to watch attendance of the live in capital letters',
+    id: 'components.DashboardClassroomForm.titleAttendance',
   },
   startClassroomLabel: {
     defaultMessage: 'Launch the classroom now in BBB',
@@ -116,6 +124,9 @@ const DashboardClassroomForm = ({ classroom }: DashboardClassroomFormProps) => {
           <Tabs>
             <Tab title={intl.formatMessage(messages.titleConfiguration)}>
               <ClassroomWidgetProvider />
+            </Tab>
+            <Tab title={intl.formatMessage(messages.titleAttendance)}>
+              <ClassroomAttendance sessions={classroom.sessions} />
             </Tab>
           </Tabs>
         </ThemeContext.Extend>
