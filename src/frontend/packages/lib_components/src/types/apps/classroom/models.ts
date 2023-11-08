@@ -7,6 +7,20 @@ import {
   uploadState,
 } from '@lib-components/types/tracks';
 
+interface ClassroomSession {
+  started_at: string;
+  ended_at: string;
+  attendees: {
+    [key: string]: {
+      fullname: string;
+      presence: {
+        entered_at: number;
+        left_at: number;
+      }[];
+    };
+  };
+}
+
 export interface Classroom extends Resource {
   playlist: Playlist;
   title: Nullable<string>;
@@ -29,6 +43,7 @@ export interface Classroom extends Resource {
   enable_recordings: boolean;
   recording_purpose: Nullable<string>;
   retention_date: Nullable<string>;
+  sessions: ClassroomSession[];
   vod_conversion_enabled: boolean;
 }
 
