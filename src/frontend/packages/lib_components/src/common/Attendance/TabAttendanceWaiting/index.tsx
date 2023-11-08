@@ -1,16 +1,22 @@
-import { Box, Heading, useAppConfig } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
+import { Box, Heading } from '@lib-components/common';
+import { useAppConfig } from '@lib-components/data/stores/useAppConfig';
+
 const messages = defineMessages({
   noParticipants: {
-    defaultMessage: 'The live has no participant yet',
+    defaultMessage: 'The {type} has no participant yet',
     description: 'Message displayed if the live has no participant yet',
     id: 'components.DashboardLiveControlPane.tab.DashboardLiveTabAttendance.DashboardLiveTabAttendanceWaiting.noParticipants',
   },
 });
 
-export const DashboardLiveTabAttendanceWaiting = ({}) => {
+interface TabAttendanceWaitingProps {
+  type: 'webinar' | 'classroom';
+}
+
+export const TabAttendanceWaiting = ({ type }: TabAttendanceWaitingProps) => {
   const intl = useIntl();
   const appData = useAppConfig();
 
@@ -23,19 +29,18 @@ export const DashboardLiveTabAttendanceWaiting = ({}) => {
       <Box margin="auto" pad={{ horizontal: 'none', vertical: 'large' }}>
         <Box
           background="white"
-          fill
           round="6px"
-          margin={{ bottom: 'small', horizontal: 'auto', top: 'none' }}
+          margin="small"
           pad="large"
           style={{
             boxShadow: '0px 0px 6px 0px rgba(2, 117, 180, 0.3)',
           }}
         >
-          <Box margin="auto" pad={{ horizontal: '36px' }}>
-            <Heading level={3} textAlign="center" className="m-0">
-              {intl.formatMessage(messages.noParticipants)}
-            </Heading>
-          </Box>
+          <Heading level={3} textAlign="center" className="m-0">
+            {intl.formatMessage(messages.noParticipants, {
+              type,
+            })}
+          </Heading>
         </Box>
       </Box>
     </Box>

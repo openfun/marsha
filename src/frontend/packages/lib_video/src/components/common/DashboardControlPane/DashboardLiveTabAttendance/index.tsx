@@ -4,6 +4,7 @@ import {
   ErrorComponents,
   ErrorMessage,
   ShouldNotHappen,
+  TabAttendanceWaiting,
   liveState,
 } from 'lib-components';
 import { defineMessages, useIntl } from 'react-intl';
@@ -13,7 +14,6 @@ import { POLL_FOR_ATTENDANCES } from '@lib-video/conf/sideEffects';
 import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
 
 import { DashboardLiveTabAttendanceSession } from './DashboardLiveTabAttendanceSession';
-import { DashboardLiveTabAttendanceWaiting } from './DashboardLiveTabAttendanceWaiting';
 
 const messages = defineMessages({
   loading: {
@@ -79,7 +79,7 @@ const Internal = ({ live_state, video_id }: InternalProps) => {
               ))}
             </Box>
           )}
-          {data.count === 0 && <DashboardLiveTabAttendanceWaiting />}
+          {data.count === 0 && <TabAttendanceWaiting type="webinar" />}
         </Box>
       );
     default:
@@ -91,7 +91,7 @@ export const DashboardLiveTabAttendance = () => {
   const video = useCurrentVideo();
 
   if (!video.live_state || video.live_state === liveState.IDLE) {
-    return <DashboardLiveTabAttendanceWaiting />;
+    return <TabAttendanceWaiting type="webinar" />;
   }
 
   return <Internal live_state={video.live_state} video_id={video.id} />;

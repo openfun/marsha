@@ -1,3 +1,4 @@
+export * from './Attendance/';
 export * from './Badge/';
 export * from './Box/';
 export * from './BreadCrumbs';
