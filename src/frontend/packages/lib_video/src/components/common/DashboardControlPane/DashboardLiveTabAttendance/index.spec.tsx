@@ -11,13 +11,7 @@ import { DashboardLiveTabAttendance } from '.';
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
-  useAppConfig: () => ({
-    static: {
-      img: {
-        liveBackground: 'some_url',
-      },
-    },
-  }),
+  TabAttendanceWaiting: () => <div>The live has no participant yet</div>,
   report: jest.fn(),
 }));
 
