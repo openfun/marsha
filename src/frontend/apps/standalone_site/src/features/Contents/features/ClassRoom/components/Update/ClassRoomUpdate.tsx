@@ -17,6 +17,7 @@ import styled from 'styled-components';
 
 import bbbBackground from 'assets/img/bbbBackground.png';
 import bbbLogo from 'assets/img/bbbLogo.png';
+import liveBackground from 'assets/img/liveBackground.jpg';
 import { themeExtend } from 'styles/theme.extend';
 
 const appConfig = {
@@ -24,6 +25,7 @@ const appConfig = {
     img: {
       bbbBackground,
       bbbLogo,
+      liveBackground,
     },
   },
 } as AppConfig;
