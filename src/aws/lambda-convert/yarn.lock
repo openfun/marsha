@@ -1427,10 +1427,10 @@
   dependencies:
     "@types/istanbul-lib-report" "*"
 
-"@types/jest@29.5.7":
-  version "29.5.7"
-  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-29.5.7.tgz#2c0dafe2715dd958a455bc10e2ec3e1ec47b5036"
-  integrity sha512-HLyetab6KVPSiF+7pFcUyMeLsx25LDNDemw9mGsJBkai/oouwrjTycocSDYopMEwFhN2Y4s9oPyOCZNofgSt2g==
+"@types/jest@29.5.8":
+  version "29.5.8"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-29.5.8.tgz#ed5c256fe2bc7c38b1915ee5ef1ff24a3427e120"
+  integrity sha512-fXEFTxMV2Co8ZF5aYFJv+YeA08RTYJfhtN5c9JSv/mFEMe+xxjufCb+PHL+bJcMs/ebPUsBu+UNTEz+ydXrR6g==
   dependencies:
     expect "^29.0.0"
     pretty-format "^29.0.0"
@@ -1445,10 +1445,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-16.9.1.tgz#0611b37db4246c937feef529ddcc018cf8e35708"
   integrity sha512-QpLcX9ZSsq3YYUUnD3nFDY8H7wctAhQj/TFKL8Ya8v5fMm3CFXxo8zStsLAl780ltoYoo1WvKUVGBQK+1ifr7g==
 
-"@types/request-promise-native@1.0.20":
-  version "1.0.20"
-  resolved "https://registry.yarnpkg.com/@types/request-promise-native/-/request-promise-native-1.0.20.tgz#c3f242eb4e7cb091f759679e9a8703f99b402d02"
-  integrity sha512-1dfdWY0u6mNkAheZ5UqBGY/ARpDXE5xJ+npN3COoTfrQTt4FmHrwp8548zU6F1LniUK75qk06HoOvCG+hS/8Zw==
+"@types/request-promise-native@1.0.21":
+  version "1.0.21"
+  resolved "https://registry.yarnpkg.com/@types/request-promise-native/-/request-promise-native-1.0.21.tgz#9356d70b81475a29e4e20fd43c705a02c91a4332"
+  integrity sha512-NJ1M6iqWTEUT+qdP+OmXsRZ6tSdkoBdblHKatIWTVP1HdYpHU3IkfpLPf4MWb0+CC4Nl3TtLpYhDlhjZxytDIA==
   dependencies:
     "@types/request" "*"
 
@@ -1580,10 +1580,10 @@ available-typed-arrays@^1.0.5:
   resolved "https://registry.yarnpkg.com/available-typed-arrays/-/available-typed-arrays-1.0.5.tgz#92f95616501069d07d10edb2fc37d3e1c65123b7"
   integrity sha512-DMD0KiN46eipeziST1LPP/STfDU0sufISXmjSgvVsoU2tqxctQeASejWcfNtxYKqETM1UxQ8sp2OrSBWpHY6sw==
 
-aws-sdk@2.1484.0:
-  version "2.1484.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1484.0.tgz#efa32f6752b25d888a86383d0ce43130f6410fd0"
-  integrity sha512-emfCmb5j/UtaB7U8tvLpGdVNAlZMg4xZOhoFvL8jBQwIVJyCRyaqcshe31JXTwJdafThn2pNPtQOeYbZJCE0Ow==
+aws-sdk@2.1493.0:
+  version "2.1493.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1493.0.tgz#20dfda48eebf2b95cea5df6576ea447bba81576f"
+  integrity sha512-fnOoakH7HUHWDPjnXuCoy3KR+4Fn+Z76ZZjLUbsljzOdy1aBiN5C+cnrEnV8wWKI1dUjU6C1nwEystzi50HHyA==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
@@ -3517,10 +3517,10 @@ node-int64@^0.4.0:
   resolved "https://registry.yarnpkg.com/node-int64/-/node-int64-0.4.0.tgz#87a9065cdb355d3182d8f94ce11188b825c68a3b"
   integrity sha1-h6kGXNs1XTGC2PlM4RGIuCXGijs=
 
-node-poppler@7.0.2:
-  version "7.0.2"
-  resolved "https://registry.yarnpkg.com/node-poppler/-/node-poppler-7.0.2.tgz#53cd56789fe01d13e786012a53bd89dc3377fef7"
-  integrity sha512-SRnN/fVNeG1aoZ4v/FU3Xrz+t2/o1a/0exM6E7BOyApG6eGJFz8PfK1kLexTu43BQZfIfYjsMrn1KJC99D95CA==
+node-poppler@7.1.0:
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/node-poppler/-/node-poppler-7.1.0.tgz#c026e489e8c9b4ae27672b9c5036de493ca36134"
+  integrity sha512-VqiikLXq/jCAil1+mss0OaSpn/myZNmBDggF0UPAwgMc8X7pXYrvGHcbEGyzqTkSiAjpEDMDqxx/OmhzD3B2Qw==
   dependencies:
     camelcase "^6.3.0"
     semver "^7.5.4"
