@@ -82,6 +82,7 @@ const ToolsAndApplicationCheckbox = ({
 
 export const ToolsAndApplications = () => {
   const classroom = useCurrentClassroom();
+  const descriptionInit = useRef(classroom.description);
   const intl = useIntl();
   const updateClassroomMutation = useUpdateClassroom(classroom.id, {
     onSuccess: () => {
@@ -97,24 +98,36 @@ export const ToolsAndApplications = () => {
 
   const timeoutRef = useRef<NodeJS.Timeout>();
   const handleChange = (updatedClassroomAttribute: Partial<Classroom>) => {
-    const timeout = 1000;
+    const timeout = 1500;
 
-    setUpdatedClassroomState({
-      ...updatedClassroomState,
-      ...updatedClassroomAttribute,
+    setUpdatedClassroomState((_updatedClassroomState) => {
+      const updatedClassroom = {
+        ..._updatedClassroomState,
+        ...updatedClassroomAttribute,
+      };
+
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      timeoutRef.current = setTimeout(() => {
+        updateClassroomMutation.mutate(updatedClassroom);
+      }, timeout);
+
+      return updatedClassroom;
     });
-
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    timeoutRef.current = setTimeout(() => {
-      updateClassroomMutation.mutate(updatedClassroomAttribute);
-    }, timeout);
   };
 
   useEffect(() => {
-    setUpdatedClassroomState(classroom);
-  }, [classroom]);
+    const isIdle =
+      descriptionInit.current === updatedClassroomState.description;
+    const isWriting =
+      updatedClassroomState.description !== classroom.description;
+    if (isIdle || !isWriting) {
+      setUpdatedClassroomState(classroom);
+      descriptionInit.current = classroom.description;
+    }
+  }, [updatedClassroomState.description, classroom]);
 
   return (
     <FoldableItem
