@@ -1,4 +1,4 @@
-import { Form, FormField, TextArea } from 'grommet';
+import { Field, TextArea } from '@openfun/cunningham-react';
 import { Maybe } from 'lib-common';
 import { Classroom, FoldableItem, debounce } from 'lib-components';
 import React, { useEffect, useRef, useState } from 'react';
@@ -80,13 +80,6 @@ export const Description = () => {
     debouncedUpdateClassroom(updatedClassroom);
   };
 
-  const handleBlur = () => {
-    if (JSON.stringify(updatedClassroomState) !== '{}') {
-      window.clearTimeout(timeoutId.current);
-      updateClassroomMutation.mutate(updatedClassroomState);
-    }
-  };
-
   useEffect(() => {
     setUpdatedClassroomState({});
   }, [classroom]);
@@ -97,57 +90,37 @@ export const Description = () => {
       initialOpenValue
       title={intl.formatMessage(messages.title)}
     >
-      <Form
-        value={{ ...classroom, ...updatedClassroomState }}
-        onBlur={handleBlur}
-      >
-        <FormField
-          label={intl.formatMessage(messages.descriptionLabel)}
-          htmlFor="description"
-          margin={{ bottom: 'medium' }}
-        >
-          <TextArea
-            name="description"
-            id="description"
-            value={{ ...classroom, ...updatedClassroomState }.description || ''}
-            onChange={(e) => {
-              handleChange({ description: e.target.value });
-            }}
-            resize="vertical"
-            style={{
-              minHeight: '150px',
-            }}
-            onInput={(e) => {
-              e.currentTarget.style.height = 'auto';
-              e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`;
-            }}
-          />
-        </FormField>
-        <FormField
+      <TextArea
+        label={intl.formatMessage(messages.descriptionLabel)}
+        value={{ ...classroom, ...updatedClassroomState }.description || ''}
+        onChange={(e) => {
+          handleChange({ description: e.target.value });
+        }}
+        style={{
+          minHeight: '150px',
+        }}
+        onInput={(e) => {
+          e.currentTarget.style.height = 'auto';
+          e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`;
+        }}
+      />
+
+      <Field className="mt-s" fullWidth>
+        <TextArea
           label={intl.formatMessage(messages.welcomeTextLabel)}
-          htmlFor="welcome_text"
-          margin={{ bottom: 'medium' }}
-        >
-          <TextArea
-            name="welcome_text"
-            id="welcome_text"
-            value={
-              { ...classroom, ...updatedClassroomState }.welcome_text || ''
-            }
-            onChange={(e) => {
-              handleChange({ welcome_text: e.target.value });
-            }}
-            resize="vertical"
-            style={{
-              minHeight: '150px',
-            }}
-            onInput={(e) => {
-              e.currentTarget.style.height = 'auto';
-              e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`;
-            }}
-          />
-        </FormField>
-      </Form>
+          value={{ ...classroom, ...updatedClassroomState }.welcome_text || ''}
+          onChange={(e) => {
+            handleChange({ welcome_text: e.target.value });
+          }}
+          style={{
+            minHeight: '150px',
+          }}
+          onInput={(e) => {
+            e.currentTarget.style.height = 'auto';
+            e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`;
+          }}
+        />
+      </Field>
     </FoldableItem>
   );
 };

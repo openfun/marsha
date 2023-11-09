@@ -1,12 +1,10 @@
-import { Field, Input } from '@openfun/cunningham-react';
+import { Field, Input, TextArea } from '@openfun/cunningham-react';
 import { useQueryClient } from '@tanstack/react-query';
-import { TextArea } from 'grommet';
 import { Nullable } from 'lib-common';
 import {
   Box,
   BoxError,
   Form,
-  FormField,
   LiveModeType,
   ModalButton,
   useResponsive,
@@ -139,18 +137,17 @@ const LiveCreateForm = () => {
 
           {selectPlaylist}
 
-          <FormField
+          <TextArea
             label={intl.formatMessage(messages.descriptionLabel)}
-            htmlFor="description-id"
-            name="description"
-          >
-            <TextArea
-              size="1rem"
-              rows={5}
-              name="description"
-              id="description-id"
-            />
-          </FormField>
+            rows={5}
+            fullWidth
+            onChange={(e) => {
+              setLive((value) => ({
+                ...value,
+                description: e.target.value,
+              }));
+            }}
+          />
         </Box>
 
         <ModalButton
