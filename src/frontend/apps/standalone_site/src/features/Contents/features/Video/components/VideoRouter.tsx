@@ -1,4 +1,3 @@
-import { Box } from 'lib-components';
 import { Fragment } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 
@@ -20,26 +19,24 @@ const VideoRouter = () => {
   const videoUpdatePath = videoRoute.subRoutes.UPDATE.pathKey;
 
   return (
-    <Box pad="medium">
-      <Routes>
-        <Route path={videoUpdatePath} element={<VideoUpdate />} />
-        {[`${videoCreatePath}/*`, ''].map((path, index) => {
-          return (
-            <Route
-              path={path}
-              element={
-                <Fragment>
-                  <VideoManage />
-                  <Videos playlistId={playlistId} />
-                </Fragment>
-              }
-              key={`${path}-${index}`}
-            />
-          );
-        })}
-        <Route path="*" element={<Text404 />} />
-      </Routes>
-    </Box>
+    <Routes>
+      <Route path={videoUpdatePath} element={<VideoUpdate />} />
+      {[`${videoCreatePath}/*`, ''].map((path, index) => {
+        return (
+          <Route
+            path={path}
+            element={
+              <Fragment>
+                <VideoManage />
+                <Videos playlistId={playlistId} />
+              </Fragment>
+            }
+            key={`${path}-${index}`}
+          />
+        );
+      })}
+      <Route path="*" element={<Text404 />} />
+    </Routes>
   );
 };
 

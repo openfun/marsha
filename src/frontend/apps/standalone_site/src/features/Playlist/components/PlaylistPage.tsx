@@ -167,123 +167,117 @@ export const PlaylistPage = () => {
         />
       </Routes>
 
-      <Box pad="medium">
-        <WhiteCard direction="column" pad="medium">
-          <Box
-            direction={isXxsmallDevice ? 'column' : 'row'}
-            align="center"
-            justify="space-between"
-          >
-            <Heading level={2} margin={{ top: 'none' }}>
-              {intl.formatMessage(messages.title)}
-            </Heading>
-            {!shouldDisplayNoPlaylistYetMessage && (
-              <Button
-                aria-label={intl.formatMessage(messages.create)}
-                onClick={() => {
-                  navigate(playlistCreatePath);
-                }}
-              >
-                {intl.formatMessage(messages.create)}
-              </Button>
-            )}
-          </Box>
-          <Fragment>
-            {shouldDisplayError && (
-              <Box
-                background={colorsTokens['info-150']}
-                margin="auto"
-                pad="medium"
-                round="small"
-              >
-                <Text>{intl.formatMessage(messages.error)}</Text>
-                <Box margin={{ horizontal: 'auto', top: 'medium' }}>
-                  <Button
-                    aria-label={intl.formatMessage(messages.retry)}
-                    onClick={() => {
-                      refetch();
-                    }}
-                  >
-                    {intl.formatMessage(messages.retry)}
-                  </Button>
-                </Box>
+      <WhiteCard direction="column" pad="medium">
+        <Box
+          direction={isXxsmallDevice ? 'column' : 'row'}
+          align="center"
+          justify="space-between"
+        >
+          <Heading level={2} margin={{ top: 'none' }}>
+            {intl.formatMessage(messages.title)}
+          </Heading>
+          {!shouldDisplayNoPlaylistYetMessage && (
+            <Button
+              aria-label={intl.formatMessage(messages.create)}
+              onClick={() => {
+                navigate(playlistCreatePath);
+              }}
+            >
+              {intl.formatMessage(messages.create)}
+            </Button>
+          )}
+        </Box>
+        <Fragment>
+          {shouldDisplayError && (
+            <Box
+              background={colorsTokens['info-150']}
+              margin="auto"
+              pad="medium"
+              round="small"
+            >
+              <Text>{intl.formatMessage(messages.error)}</Text>
+              <Box margin={{ horizontal: 'auto', top: 'medium' }}>
+                <Button
+                  aria-label={intl.formatMessage(messages.retry)}
+                  onClick={() => {
+                    refetch();
+                  }}
+                >
+                  {intl.formatMessage(messages.retry)}
+                </Button>
               </Box>
-            )}
-            {shouldDisplayNoPlaylistYetMessage && (
-              <Box
-                background={colorsTokens['info-150']}
-                margin="auto"
-                pad="medium"
-                round="small"
-              >
-                <Text>{intl.formatMessage(messages.noPlaylists)}</Text>
-                <Box margin={{ horizontal: 'auto', top: 'medium' }}>
-                  <Button
-                    onClick={() => {
-                      navigate(playlistCreatePath);
-                    }}
-                  >
-                    {intl.formatMessage(messages.create)}
-                  </Button>
-                </Box>
+            </Box>
+          )}
+          {shouldDisplayNoPlaylistYetMessage && (
+            <Box
+              background={colorsTokens['info-150']}
+              margin="auto"
+              pad="medium"
+              round="small"
+            >
+              <Text>{intl.formatMessage(messages.noPlaylists)}</Text>
+              <Box margin={{ horizontal: 'auto', top: 'medium' }}>
+                <Button
+                  onClick={() => {
+                    navigate(playlistCreatePath);
+                  }}
+                >
+                  {intl.formatMessage(messages.create)}
+                </Button>
               </Box>
-            )}
-            {!shouldDisplayNoPlaylistYetMessage && (
-              <BoxDatagrid>
-                <DataGrid
-                  columns={[
-                    {
-                      field: 'created_on',
-                      headerName: intl.formatMessage(
-                        messages.columnNameCreatedOn,
-                      ),
-                    },
-                    {
-                      field: 'title',
-                      headerName: intl.formatMessage(messages.columnNameTitle),
-                    },
-                    {
-                      enableSorting: false,
-                      field: 'organization',
-                      headerName: intl.formatMessage(
-                        messages.columnNameOrganization,
-                      ),
-                    },
-                    {
-                      id: 'column-actions',
-                      renderCell: ({ row }) => (
-                        <ButtonCunningham
-                          color="tertiary"
-                          aria-label={intl.formatMessage(
-                            messages.updatePlaylist,
-                            {
-                              playlistName: row.title,
-                            },
-                          )}
-                          size="small"
-                          onClick={() => {
-                            navigate(
-                              `${routes.PLAYLIST.path}/${row.id}/update`,
-                            );
-                          }}
-                          icon={
-                            <span className="material-icons">settings</span>
-                          }
-                        />
-                      ),
-                    },
-                  ]}
-                  rows={rows}
-                  pagination={pagination}
-                  sortModel={sortModel}
-                  onSortModelChange={setSortModel}
-                  isLoading={isLoading}
-                />
-              </BoxDatagrid>
-            )}
-          </Fragment>
-        </WhiteCard>
-      </Box>
+            </Box>
+          )}
+          {!shouldDisplayNoPlaylistYetMessage && (
+            <BoxDatagrid>
+              <DataGrid
+                columns={[
+                  {
+                    field: 'created_on',
+                    headerName: intl.formatMessage(
+                      messages.columnNameCreatedOn,
+                    ),
+                  },
+                  {
+                    field: 'title',
+                    headerName: intl.formatMessage(messages.columnNameTitle),
+                  },
+                  {
+                    enableSorting: false,
+                    field: 'organization',
+                    headerName: intl.formatMessage(
+                      messages.columnNameOrganization,
+                    ),
+                  },
+                  {
+                    id: 'column-actions',
+                    renderCell: ({ row }) => (
+                      <ButtonCunningham
+                        color="tertiary"
+                        aria-label={intl.formatMessage(
+                          messages.updatePlaylist,
+                          {
+                            playlistName: row.title,
+                          },
+                        )}
+                        size="small"
+                        onClick={() => {
+                          navigate(`${routes.PLAYLIST.path}/${row.id}/update`);
+                        }}
+                        icon={<span className="material-icons">settings</span>}
+                      />
+                    ),
+                  },
+                ]}
+                rows={rows}
+                pagination={pagination}
+                sortModel={sortModel}
+                onSortModelChange={setSortModel}
+                isLoading={isLoading}
+              />
+            </BoxDatagrid>
+          )}
+        </Fragment>
+      </WhiteCard>
     </Fragment>
   );
 };
