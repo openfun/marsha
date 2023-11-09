@@ -1,5 +1,5 @@
-import { Nullable, colorsTokens } from 'lib-common';
-import { Box, BoxProps } from 'lib-components';
+import { Breakpoints, Nullable, colorsTokens } from 'lib-common';
+import { Box, BoxProps, useResponsive } from 'lib-components';
 import React, {
   ForwardRefExoticComponent,
   RefAttributes,
@@ -26,6 +26,7 @@ const MainLayout = ({
 }: MainLayoutProps) => {
   const headerBoxRef = useRef<Nullable<HTMLDivElement>>(null);
   const [headerHeight, setHeaderHeight] = useState(0);
+  const { isSmallerBreakpoint, breakpoint } = useResponsive();
 
   useEffect(() => {
     if (!headerBoxRef.current) {
@@ -56,7 +57,9 @@ const MainLayout = ({
           pad={{
             bottom: 'small',
             top: `${headerHeight}px`,
-            horizontal: 'medium',
+            horizontal: isSmallerBreakpoint(breakpoint, Breakpoints.smedium)
+              ? 'small'
+              : 'medium',
           }}
           margin={{ bottom: 'medium' }}
           width={{ min: 'none', width: 'full' }}

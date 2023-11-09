@@ -1,4 +1,3 @@
-import { Box } from 'lib-components';
 import { Fragment } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 
@@ -21,34 +20,32 @@ const ClassRoomRouter = () => {
   const classroomInvitePath = classroomRoute.subRoutes.INVITE.pathKey || '';
 
   return (
-    <Box pad="medium">
-      <Routes>
-        {[`${classroomCreatePath}/*`, ''].map((path, index) => {
-          return (
-            <Route
-              path={path}
-              element={
-                <Fragment>
-                  <ClassroomManage />
-                  <ClassRooms playlistId={playlistId} />
-                </Fragment>
-              }
-              key={`${path}-${index}`}
-            />
-          );
-        })}
-        {[classroomInvitePath, classroomUpdatePath].map((path, index) => {
-          return (
-            <Route
-              path={path}
-              element={<ClassRoomUpdate />}
-              key={`${path}-${index}`}
-            />
-          );
-        })}
-        <Route path="*" element={<Text404 />} />
-      </Routes>
-    </Box>
+    <Routes>
+      {[`${classroomCreatePath}/*`, ''].map((path, index) => {
+        return (
+          <Route
+            path={path}
+            element={
+              <Fragment>
+                <ClassroomManage />
+                <ClassRooms playlistId={playlistId} />
+              </Fragment>
+            }
+            key={`${path}-${index}`}
+          />
+        );
+      })}
+      {[classroomInvitePath, classroomUpdatePath].map((path, index) => {
+        return (
+          <Route
+            path={path}
+            element={<ClassRoomUpdate />}
+            key={`${path}-${index}`}
+          />
+        );
+      })}
+      <Route path="*" element={<Text404 />} />
+    </Routes>
   );
 };
 
