@@ -16,7 +16,7 @@
 .labelled-box--disabled label {
   color: var(--c--components--forms-labelledbox--label-color--small--disabled);
 }
-.labelled-box label.placeholder {
+.c__field :not(.c__textarea__wrapper, div) .labelled-box label.placeholder {
   top: 50%;
   transform: translateY(-50%);
 }
@@ -32,20 +32,23 @@
 }
 /**
  * Input
+ * TextArea
 */
-.c__input__wrapper {
+.c__input__wrapper, .c__textarea__wrapper {
   transition: all var(--c--theme--transitions--duration)
     var(--c--theme--transitions--ease-out);
 }
 .c__input__wrapper:has(input[readonly]), .c__input__wrapper:has(input[readonly]) * {
   cursor: default;
 }
+.c__textarea__wrapper:has(input.border-none), .c__textarea__wrapper:has(input.border-none) *,
 .c__input__wrapper:has(input.border-none), .c__input__wrapper:has(input.border-none) * {
   border: none;
 }
-.c__input__wrapper:hover {
+.c__input__wrapper:hover, .c__textarea__wrapper:hover {
   box-shadow: var(--c--theme--colors--primary-500) 0px 0px 0px 2px;
 }
+.c__textarea__wrapper--disabled:hover, 
 .c__input__wrapper--disabled:hover, .c__input__wrapper:hover:has(input[readonly]) {
   box-shadow: var(--c--theme--colors--primary-500) 0px 0px 0px 0px;
 }
@@ -55,7 +58,7 @@
 .c__input__wrapper .labelled-box__label.placeholder {
   cursor: inherit;
 }
-.c__input__wrapper .c__input {
+.c__input__wrapper .c__input, .c__textarea__wrapper .c__textarea {
   color: var(--c--components--forms-input--color);
   width: 100%;
 }
@@ -67,6 +70,12 @@ input:-webkit-autofill:focus {
   transition:
     background-color 0s 600000s,
     color 0s 600000s;
+}
+.c__textarea__wrapper:hover {
+  border-color: var(--c--components--forms-textarea--border-color-hover);
+}
+.c__textarea__wrapper--disabled:hover {
+  border-color: var(--c--components--forms-textarea--disabled--border-color-hover);
 }
 /**
  * Select

@@ -1,10 +1,5 @@
-import {
-  FoldableItem,
-  TextAreaInput,
-  Video,
-  debounce,
-  report,
-} from 'lib-components';
+import { TextArea } from '@openfun/cunningham-react';
+import { FoldableItem, Video, debounce, report } from 'lib-components';
 import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -88,14 +83,20 @@ export const DescriptionWidget = () => {
       initialOpenValue
       title={intl.formatMessage(messages.title)}
     >
-      <TextAreaInput
-        placeholder={intl.formatMessage(messages.placeholderDescriptionInput)}
+      <TextArea
+        label={intl.formatMessage(messages.placeholderDescriptionInput)}
         value={description || ''}
-        setValue={(inputText: string) => {
-          setDescription(inputText);
-          debouncedUpdatedVideo({ description: inputText });
+        onChange={(e) => {
+          setDescription(e.target.value);
+          debouncedUpdatedVideo({ description: e.target.value });
         }}
-        title={intl.formatMessage(messages.placeholderDescriptionInput)}
+        style={{
+          minHeight: '150px',
+        }}
+        onInput={(e) => {
+          e.currentTarget.style.height = 'auto';
+          e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`;
+        }}
       />
     </FoldableItem>
   );

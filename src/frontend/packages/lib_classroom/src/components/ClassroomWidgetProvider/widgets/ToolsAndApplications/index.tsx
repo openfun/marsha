@@ -1,10 +1,5 @@
-import {
-  Box,
-  Classroom,
-  FoldableItem,
-  TextAreaInput,
-  ToggleInput,
-} from 'lib-components';
+import { TextArea } from '@openfun/cunningham-react';
+import { Box, Classroom, FoldableItem, ToggleInput } from 'lib-components';
 import React, { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -178,20 +173,18 @@ export const ToolsAndApplications = () => {
         }
       />
       {updatedClassroomState.enable_recordings && (
-        <TextAreaInput
-          title={intl.formatMessage(messages.recordingPurpose)}
-          placeholder={intl.formatMessage(messages.recordingPurpose)}
+        <TextArea
+          label={intl.formatMessage(messages.recordingPurpose)}
           value={
             { ...classroom, ...updatedClassroomState }.recording_purpose || ''
           }
-          setValue={(recording_purpose) => {
-            handleChange({ recording_purpose });
+          onChange={(e) => handleChange({ recording_purpose: e.target.value })}
+          style={{
+            minHeight: '150px',
           }}
-          formFieldProps={{
-            margin: { bottom: 'medium' },
-            style: {
-              minHeight: 'auto',
-            },
+          onInput={(e) => {
+            e.currentTarget.style.height = 'auto';
+            e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`;
           }}
         />
       )}

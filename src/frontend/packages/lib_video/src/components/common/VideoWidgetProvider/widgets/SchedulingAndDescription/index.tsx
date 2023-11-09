@@ -1,10 +1,10 @@
+import { TextArea } from '@openfun/cunningham-react';
 import {
   Box,
   DashedBoxCustom,
   FoldableItem,
   SchedulingFields,
   Text,
-  TextAreaInput,
   Video,
   debounce,
   liveState,
@@ -156,14 +156,20 @@ export const SchedulingAndDescription = () => {
           )}
         </DashedBoxCustom>
 
-        <TextAreaInput
-          placeholder={intl.formatMessage(messages.placeholderDescriptionInput)}
+        <TextArea
+          label={intl.formatMessage(messages.placeholderDescriptionInput)}
           value={description || ''}
-          setValue={(inputText: string) => {
-            setDescription(inputText);
-            debouncedUpdatedVideo({ description: inputText });
+          onChange={(e) => {
+            setDescription(e.target.value);
+            debouncedUpdatedVideo({ description: e.target.value });
           }}
-          title={intl.formatMessage(messages.placeholderDescriptionInput)}
+          style={{
+            minHeight: '150px',
+          }}
+          onInput={(e) => {
+            e.currentTarget.style.height = 'auto';
+            e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`;
+          }}
         />
       </Box>
     </FoldableItem>

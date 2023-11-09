@@ -1,7 +1,6 @@
-import { Field, Input } from '@openfun/cunningham-react';
-import { TextArea } from 'grommet';
+import { Field, Input, TextArea } from '@openfun/cunningham-react';
 import { useCreateClassroom } from 'lib-classroom';
-import { BoxError, Form, FormField, ModalButton } from 'lib-components';
+import { BoxError, Form, ModalButton } from 'lib-components';
 import { Fragment, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
@@ -130,18 +129,17 @@ const ClassroomCreateForm = () => {
 
         {selectPlaylist}
 
-        <FormField
+        <TextArea
           label={intl.formatMessage(messages.descriptionLabel)}
-          htmlFor="description-id"
-          name="description"
-        >
-          <TextArea
-            size="1rem"
-            rows={5}
-            name="description"
-            id="description-id"
-          />
-        </FormField>
+          rows={5}
+          fullWidth
+          onChange={(e) => {
+            setClassroom((value) => ({
+              ...value,
+              description: e.target.value,
+            }));
+          }}
+        />
 
         <ModalButton
           aria-label={intl.formatMessage(messages.submitLabel)}

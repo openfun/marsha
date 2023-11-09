@@ -135,8 +135,15 @@
 	--c--components--forms-checkbox--background-color--hover: #055fd214;
 	--c--components--forms-checkbox--color: var(--c--theme--colors--primary-500);
 	--c--components--forms-checkbox--font-size: var(--c--theme--font--sizes--ml);
+	--c--components--forms-field--width: auto;
 	--c--components--forms-labelledbox--label-color--small: var(--c--theme--colors--primary-500);
+	--c--components--forms-labelledbox--label-color--big--disabled: var(--c--theme--colors--greyscale-400);
 	--c--components--forms-switch--accent-color: var(--c--theme--colors--primary-400);
+	--c--components--forms-textarea--border-color: var(--c--components--forms-textarea--border-color);
+	--c--components--forms-textarea--border-color-hover: var(--c--components--forms-textarea--border-color);
+	--c--components--forms-textarea--border-radius--hover: var(--c--components--forms-textarea--border-radius);
+	--c--components--forms-textarea--border-radius--focus: var(--c--components--forms-textarea--border-radius);
+	--c--components--forms-textarea--disabled--border-color-hover: var(--c--theme--colors--greyscale-200);
 	--c--components--button--border-radius--active: var(--c--components--button--border-radius);
 	--c--components--button--medium-height: auto;
 	--c--components--button--small-height: auto;

@@ -160,11 +160,27 @@ export const tokens = {
           color: 'var(--c--theme--colors--primary-500)',
           'font-size': 'var(--c--theme--font--sizes--ml)',
         },
+        'forms-field': { width: 'auto' },
         'forms-labelledbox': {
-          'label-color': { small: 'var(--c--theme--colors--primary-500)' },
+          'label-color': {
+            small: 'var(--c--theme--colors--primary-500)',
+            big: { disabled: 'var(--c--theme--colors--greyscale-400)' },
+          },
         },
         'forms-switch': {
           'accent-color': 'var(--c--theme--colors--primary-400)',
+        },
+        'forms-textarea': {
+          'border-color': 'var(--c--components--forms-textarea--border-color)',
+          'border-color-hover':
+            'var(--c--components--forms-textarea--border-color)',
+          'border-radius': {
+            hover: 'var(--c--components--forms-textarea--border-radius)',
+            focus: 'var(--c--components--forms-textarea--border-radius)',
+          },
+          disabled: {
+            'border-color-hover': 'var(--c--theme--colors--greyscale-200)',
+          },
         },
         button: {
           'border-radius': {

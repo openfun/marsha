@@ -1,11 +1,9 @@
-import { Field, Input } from '@openfun/cunningham-react';
-import { TextArea } from 'grommet';
+import { Field, Input, TextArea } from '@openfun/cunningham-react';
 import { Nullable } from 'lib-common';
 import {
   Box,
   BoxError,
   Form,
-  FormField,
   ModalButton,
   UploadManagerStatus,
   Video,
@@ -156,18 +154,19 @@ const VideoCreateForm = () => {
 
           {selectPlaylist}
 
-          <FormField
-            label={intl.formatMessage(messages.descriptionLabel)}
-            htmlFor="description-id"
-            name="description"
-          >
+          <Field className="mb-s" fullWidth>
             <TextArea
-              size="1rem"
+              label={intl.formatMessage(messages.descriptionLabel)}
               rows={5}
-              name="description"
-              id="description-id"
+              fullWidth
+              onChange={(e) => {
+                setVideo((value) => ({
+                  ...value,
+                  description: e.target.value,
+                }));
+              }}
             />
-          </FormField>
+          </Field>
 
           <UploadVideoForm
             onRetry={() => null}
