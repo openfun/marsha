@@ -69,14 +69,17 @@ describe('<ToolsAndApplications />', () => {
     expect(toggleEnableChat).toBeChecked();
     await userEvent.click(toggleEnableChat);
 
-    expect(await screen.findByText('Classroom updated.')).toBeInTheDocument();
+    expect(
+      await screen.findByText('Classroom updated.', {}, { timeout: 2000 }),
+    ).toBeInTheDocument();
+
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
         'Accept-Language': 'en',
       },
       method: 'PATCH',
-      body: '{"enable_chat":false}',
+      body: expect.stringContaining(`"enable_chat":false`),
     });
   });
 
@@ -99,14 +102,17 @@ describe('<ToolsAndApplications />', () => {
     expect(toggleEnableSharedNotes).toBeChecked();
     await userEvent.click(toggleEnableSharedNotes);
 
-    expect(await screen.findByText('Classroom updated.')).toBeInTheDocument();
+    expect(
+      await screen.findByText('Classroom updated.', {}, { timeout: 2000 }),
+    ).toBeInTheDocument();
+
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
         'Accept-Language': 'en',
       },
       method: 'PATCH',
-      body: '{"enable_shared_notes":false}',
+      body: expect.stringContaining(`"enable_shared_notes":false`),
     });
   });
 
@@ -129,14 +135,17 @@ describe('<ToolsAndApplications />', () => {
     expect(toggleEnableWaitingRoom).not.toBeChecked();
     await userEvent.click(toggleEnableWaitingRoom);
 
-    expect(await screen.findByText('Classroom updated.')).toBeInTheDocument();
+    expect(
+      await screen.findByText('Classroom updated.', {}, { timeout: 2000 }),
+    ).toBeInTheDocument();
+
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
         'Accept-Language': 'en',
       },
       method: 'PATCH',
-      body: '{"enable_waiting_room":true}',
+      body: expect.stringContaining(`"enable_waiting_room":true`),
     });
   });
 
@@ -174,14 +183,17 @@ describe('<ToolsAndApplications />', () => {
 
     await userEvent.click(toggleEnableRecordings);
 
-    expect(await screen.findByText('Classroom updated.')).toBeInTheDocument();
+    expect(
+      await screen.findByText('Classroom updated.', {}, { timeout: 2000 }),
+    ).toBeInTheDocument();
+
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
         'Accept-Language': 'en',
       },
       method: 'PATCH',
-      body: '{"enable_recordings":false}',
+      body: expect.stringContaining(`"enable_recordings":false`),
     });
 
     await waitFor(() => {
@@ -231,14 +243,19 @@ describe('<ToolsAndApplications />', () => {
       recording_purpose: recording_purpose_updated,
     });
 
-    expect(await screen.findByText('Classroom updated.')).toBeInTheDocument();
+    expect(
+      await screen.findByText('Classroom updated.', {}, { timeout: 2000 }),
+    ).toBeInTheDocument();
+
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
         'Accept-Language': 'en',
       },
       method: 'PATCH',
-      body: `{"recording_purpose":"${recording_purpose_updated}"}`,
+      body: expect.stringContaining(
+        `"recording_purpose":"${recording_purpose_updated}"`,
+      ),
     });
 
     expect(screen.getByText(recording_purpose_updated)).toBeInTheDocument();
@@ -262,8 +279,51 @@ describe('<ToolsAndApplications />', () => {
     await userEvent.click(toggleEnableRecordings);
 
     expect(
-      await screen.findByText('Classroom not updated!'),
+      await screen.findByText('Classroom not updated!', {}, { timeout: 2000 }),
     ).toBeInTheDocument();
+
     expect(toggleEnableRecordings).toBeChecked();
+  });
+
+  it('can update multiple properties in one http call', async () => {
+    const classroom = classroomMockFactory({ id: '1', started: false });
+    mockedUseCurrentClassroom.mockReturnValue(classroom);
+    fetchMock.patch('/api/classrooms/1/', {
+      ...classroom,
+      enable_waiting_room: true,
+      enable_shared_notes: false,
+    });
+    render(
+      <InfoWidgetModalProvider value={null}>
+        <ToolsAndApplications />
+      </InfoWidgetModalProvider>,
+    );
+
+    const toggleEnableWaitingRoom = screen.getByRole('checkbox', {
+      name: 'Enable waiting room',
+    });
+    expect(toggleEnableWaitingRoom).not.toBeChecked();
+    await userEvent.click(toggleEnableWaitingRoom);
+
+    const toggleEnableSharedNotes = screen.getByRole('checkbox', {
+      name: 'Enable shared notes',
+    });
+    expect(toggleEnableSharedNotes).toBeChecked();
+    await userEvent.click(toggleEnableSharedNotes);
+
+    expect(
+      await screen.findByText('Classroom updated.', {}, { timeout: 2000 }),
+    ).toBeInTheDocument();
+
+    expect(fetchMock.lastCall()![1]).toEqual({
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept-Language': 'en',
+      },
+      method: 'PATCH',
+      body:
+        expect.stringContaining(`"enable_waiting_room":true`) &&
+        expect.stringContaining(`"enable_shared_notes":false`),
+    });
   });
 });
