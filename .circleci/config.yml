@@ -1300,7 +1300,7 @@ jobs:
   # ---- webtorrent jobs ----
   webtorrent:
     docker:
-      - image: cimg/node:18.16
+      - image: cimg/node:20.9
         auth:
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASS
