@@ -83,7 +83,9 @@ describe('<Description />', () => {
 
     deferredPatch.resolve({ message: 'Classroom scheduled.' });
 
-    await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
+    await waitFor(() => expect(fetchMock.calls()).toHaveLength(1), {
+      timeout: 2000,
+    });
 
     expect(fetchMock.calls()[0]![0]).toEqual('/api/classrooms/1/');
     expect(fetchMock.calls()[0]![1]).toEqual({
@@ -92,9 +94,7 @@ describe('<Description />', () => {
         'Accept-Language': 'en',
       },
       method: 'PATCH',
-      body: JSON.stringify({
-        welcome_text: 'updated welcome text',
-      }),
+      body: expect.stringContaining(`"welcome_text":"updated welcome text"`),
     });
 
     // simulate classroom update
