@@ -1,9 +1,14 @@
-import React from 'react';
+import { ComponentProps } from 'react';
 import { IntlProvider, ReactIntlErrorCode } from 'react-intl';
 
-export const wrapInIntlProvider = (Component: JSX.Element, locale = 'en') => (
+type IntlProviderProps = ComponentProps<typeof IntlProvider>;
+
+export const wrapInIntlProvider = (
+  Component: JSX.Element,
+  option?: IntlProviderProps,
+) => (
   <IntlProvider
-    locale={locale}
+    locale={option?.locale || 'en'}
     onError={(err) => {
       // https://github.com/formatjs/formatjs/issues/465
       if (
@@ -14,6 +19,7 @@ export const wrapInIntlProvider = (Component: JSX.Element, locale = 'en') => (
       }
       throw err;
     }}
+    {...option}
   >
     {Component}
   </IntlProvider>
