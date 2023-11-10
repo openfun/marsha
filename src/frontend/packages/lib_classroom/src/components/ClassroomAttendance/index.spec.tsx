@@ -180,6 +180,9 @@ describe('<ClassroomAttendance />', () => {
       {
         intlOptions: {
           locale: 'fr',
+          messages: {
+            'components.ClassroomAttendance.durationLabel': 'Durée',
+          },
         },
       },
     );
@@ -188,13 +191,13 @@ describe('<ClassroomAttendance />', () => {
       screen.getByRole('rowheader', {
         name: /1 janv. 2021, 00:00/,
       }).textContent,
-    ).toBe('1 janv. 2021, 00:00-Duration: 00:20');
+    ).toBe('1 janv. 2021, 00:00-Durée: 00:20');
 
     expect(
       screen.getByRole('rowheader', {
         name: /1 mars 2021, 00:00/,
       }).textContent,
-    ).toBe('1 mars 2021, 00:00-Duration: 00:19');
+    ).toBe('1 mars 2021, 00:00-Durée: 00:19');
   });
 
   it('checks render attendees with multiple sessions', async () => {
