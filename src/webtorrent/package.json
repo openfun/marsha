@@ -9,12 +9,12 @@
   "type": "module",
   "scripts": {
     "build": "tsc -p .",
-    "dev": "nodemon --exec 'ts-node --esm' src/app.ts",
+    "dev": "nodemon --exec 'node --no-warnings=ExperimentalWarning --loader ts-node/esm' src/app.ts",
     "lint": "eslint . --ext .ts",
     "test": "jest"
   },
   "engines": {
-    "node": "18"
+    "node": "20"
   },
   "volta": {
     "node": "20.9.0"
