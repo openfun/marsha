@@ -56,9 +56,8 @@ export const Description = () => {
       setUpdatedClassroomState(classroom);
     },
   });
-  const [updatedClassroomState, setUpdatedClassroomState] = useState<
-    Partial<Classroom>
-  >({});
+  const [updatedClassroomState, setUpdatedClassroomState] =
+    useState<Partial<Classroom>>(classroom);
 
   const timeoutId = useRef<Maybe<number>>();
 
@@ -81,7 +80,7 @@ export const Description = () => {
   };
 
   useEffect(() => {
-    setUpdatedClassroomState({});
+    setUpdatedClassroomState(classroom);
   }, [classroom]);
 
   return (
