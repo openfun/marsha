@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc --noEmit && webpack",
     "build-dev": "yarn copy-iframe-resizer; yarn copy-katex-fonts; yarn build",
-    "copy-iframe-resizer": "cp ../../node_modules/iframe-resizer/js/*.min.js ../../../backend/marsha/static/js",
+    "copy-iframe-resizer": "cp ../../node_modules/iframe-resizer/js/*.js ../../../backend/marsha/static/js",
     "copy-katex-fonts": "mkdir -p ../../../backend/marsha/static/css/fonts && cp ../../node_modules/katex/dist/fonts/* ../../../backend/marsha/static/css/fonts",
     "lint": "tsc --noEmit && eslint **/*.{ts,tsx}",
     "lint:fix": "yarn run lint --fix",
