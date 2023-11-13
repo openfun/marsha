@@ -36,7 +36,7 @@
     "lib-components": "*",
     "lib-video": "*",
     "lodash": "4.17.21",
-    "luxon": "3.4.3",
+    "luxon": "3.4.4",
     "marsha-config": "*",
     "react": "*",
     "react-dom": "*",
