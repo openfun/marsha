@@ -44,7 +44,7 @@ export const CopyClipboard = ({
   }, [copyId, isActive, onError, onSuccess]);
 
   return (
-    <Box>
+    <Box fill>
       {withLabel && <Text weight="medium">{title}</Text>}
       <DashedBoxCustom>
         <Text

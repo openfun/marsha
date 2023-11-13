@@ -10,13 +10,14 @@ interface DashedBoxCustomProps {
 export const DashedBoxCustom = ({ children }: DashedBoxCustomProps) => {
   return (
     <Box
+      fill
       align="center"
       style={{
         border: `${colorsTokens['primary-500']} 1px dashed`,
       }}
       direction="row"
       justify="space-between"
-      pad={{ horizontal: 'medium', vertical: 'xsmall' }}
+      pad={{ horizontal: 'small', vertical: 'xsmall' }}
       round="xsmall"
       gap="small"
     >
