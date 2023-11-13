@@ -84,9 +84,8 @@ export const DashboardClassroomAskUsernameStudent = ({
   recordingPurpose,
 }: DashboardClassroomAskUsernameStudentProps) => {
   const intl = useIntl();
-  const [isStudentConsentRecord, setIsStudentConsentRecord] = useState(
-    !isRecordingEnabled,
-  );
+  const [isStudentConsentRecord, setIsStudentConsentRecord] =
+    useState(!isRecordingEnabled);
 
   return (
     <DashboardClassroomAskUsernameWrapper

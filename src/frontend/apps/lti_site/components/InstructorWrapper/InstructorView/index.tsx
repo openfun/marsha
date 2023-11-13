@@ -77,8 +77,8 @@ export const InstructorView = ({ children, resource }: InstructorViewProps) => {
   const message = canAccessDashboard
     ? messages.title
     : isMaintenanceOn
-    ? messages.maintenance
-    : messages.disabledDashboard;
+      ? messages.maintenance
+      : messages.disabledDashboard;
   const messagePlaceholder = canAccessDashboard
     ? {}
     : { lti_id: resource.playlist.lti_id };

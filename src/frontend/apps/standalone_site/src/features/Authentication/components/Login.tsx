@@ -21,8 +21,8 @@ export const Login = () => {
             breakpoint === 'xsmedium'
               ? 'medium'
               : isSmallerMedium
-              ? 'large'
-              : 'xlarge',
+                ? 'large'
+                : 'xlarge',
         }}
       >
         <LoginForm />

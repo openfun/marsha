@@ -191,10 +191,10 @@ const TypoRef = forwardRef(
             flex === 'grow'
               ? '1 0 auto'
               : flex === 'shrink'
-              ? '0 1 auto'
-              : flex === true
-              ? '1 1 auto'
-              : flex,
+                ? '0 1 auto'
+                : flex === true
+                  ? '1 1 auto'
+                  : flex,
           flexBasis: basis,
           fontSize,
           height: fill && fill !== 'horizontal' ? '100%' : undefined,

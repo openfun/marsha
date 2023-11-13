@@ -86,8 +86,8 @@ export const WidgetsContainer = ({ children }: WidgetsContainerProps) => {
               </Box>
             ))
         : children.size === WidgetSize.LARGE
-        ? children.component
-        : null}
+          ? children.component
+          : null}
 
       <Box
         ref={mainContainerRef}
@@ -115,8 +115,8 @@ export const WidgetsContainer = ({ children }: WidgetsContainerProps) => {
                     <Box key={index}>{widget.component}</Box>
                   ))
               : indexColumn === 0 && children.size === WidgetSize.DEFAULT
-              ? children.component
-              : null}
+                ? children.component
+                : null}
           </Box>
         ))}
       </Box>
