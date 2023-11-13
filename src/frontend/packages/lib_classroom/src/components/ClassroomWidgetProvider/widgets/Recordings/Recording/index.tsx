@@ -24,9 +24,7 @@ const StyledAnchor = styled(Anchor)`
 
 const NavLinkStyled = styled(NavLink)`
   text-decoration: none;
-  font-weight: bold;
-  font-family: Roboto-Medium;
-  padding-bottom: 0.5rem;
+  line-break: anywhere;
 `;
 
 const messages = defineMessages({
@@ -201,7 +199,7 @@ const VodReady = ({ recording }: RecordingProps) => {
           to={`/my-contents/videos/${recording.vod.id}`}
           title={intl.formatMessage(messages.vodDashboardLabel)}
         >
-          <Text>{recording.vod.title}</Text>
+          <Text weight="bold">{recording.vod.title}</Text>
         </NavLinkStyled>
       )}
       {ltiLink && (
