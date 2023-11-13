@@ -1,6 +1,5 @@
 import { Button, Input } from '@openfun/cunningham-react';
 import { useQueryClient } from '@tanstack/react-query';
-import { Footer } from 'grommet';
 import { Nullable, colorsTokens } from 'lib-common';
 import {
   Box,
@@ -347,16 +346,13 @@ export const MarkdownEditor = ({ markdownDocumentId }: MarkdownEditorProps) => {
                     codemirrorEditor={codemirrorEditor}
                   />
                 </MarkdownImageDropzone>
-                <Box>
-                  <Footer background={colorsTokens['info-300']} pad="xxsmall">
+                <Box type="footer">
+                  <Box background={colorsTokens['info-300']} pad="xxsmall">
                     <Text color="white">
                       {intl.formatMessage(messages.editorEmptyDragDropHelper)}
                     </Text>
-                  </Footer>
-                  <Footer
-                    background={colorsTokens['greyscale-100']}
-                    pad="xxsmall"
-                  >
+                  </Box>
+                  <Box background={colorsTokens['greyscale-100']} pad="xxsmall">
                     <Typo
                       type="a"
                       href="https://www.markdownguide.org/basic-syntax"
@@ -366,7 +362,7 @@ export const MarkdownEditor = ({ markdownDocumentId }: MarkdownEditorProps) => {
                     >
                       Markdown basic syntax
                     </Typo>
-                  </Footer>
+                  </Box>
                 </Box>
               </Box>
             ) : (
