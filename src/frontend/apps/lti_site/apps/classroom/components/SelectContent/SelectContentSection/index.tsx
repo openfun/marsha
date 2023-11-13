@@ -38,8 +38,8 @@ const SelectContentCard = ({
 
   return (
     <ContentCard
+      aria-label={intl.formatMessage(messages.select, { title: content.title })}
       onClick={onClick}
-      a11yTitle={intl.formatMessage(messages.select, { title: content.title })}
       header={
         <Box
           aria-label="thumbnail"

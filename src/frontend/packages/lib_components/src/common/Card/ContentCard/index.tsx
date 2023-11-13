@@ -1,12 +1,5 @@
-import {
-  BoxTypes,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Card as GrommetCard,
-} from 'grommet';
+import { colorsTokens } from '@lib-common/cunningham';
 import React, { PropsWithChildren, useEffect, useState } from 'react';
-import styled from 'styled-components';
 
 import { Box, BoxProps, Text } from '@lib-components/common';
 import { useResponsive } from '@lib-components/hooks';
@@ -35,16 +28,7 @@ export const ContentCards = ({
   );
 };
 
-interface CardLayoutPropsExtended {
-  opacity: number;
-}
-const CardLayout = styled(GrommetCard)<CardLayoutPropsExtended>`
-  opacity: ${(props) => props.opacity};
-  transition: opacity 0.3s;
-  cursor: pointer;
-`;
-
-interface ContentCardProps extends BoxTypes {
+interface ContentCardProps extends BoxProps<'div'> {
   header: React.ReactNode;
   footer?: React.ReactNode;
   title: string;
@@ -69,39 +53,43 @@ export const ContentCard = ({
   }, []);
 
   return (
-    <CardLayout
-      height="inherit"
+    <Box
       width="xsmedium"
       background="white"
       round="xsmall"
-      opacity={opacity}
-      elevation="medium"
+      elevation
+      justify="space-between"
+      pad={{ bottom: 'xsmall' }}
+      overflow="auto"
       {...cardLayoutProps}
+      style={{
+        opacity,
+        transition: 'all 0.3s ease-in-out',
+        cursor: 'pointer',
+        ...cardLayoutProps.style,
+      }}
     >
-      <CardHeader>{header}</CardHeader>
-      <CardBody pad={{ horizontal: 'medium', top: 'xsmall', bottom: 'xsmall' }}>
-        <Text weight="bold" color="clr-primary-800">
-          {title}
-        </Text>
-        {children && (
-          <Box
-            pad={{ vertical: 'small' }}
-            direction="column"
-            align="left"
-            gap="xsmall"
-          >
-            {children}
-          </Box>
-        )}
-      </CardBody>
-      <CardFooter
-        pad={{ horizontal: 'small', vertical: 'small' }}
-        direction="column"
-        align="left"
-        gap="xsmall"
-      >
-        {footer}
-      </CardFooter>
-    </CardLayout>
+      <Box type="header">{header}</Box>
+      <Box justify="space-between" flex="grow">
+        <Box pad={{ horizontal: 'medium', top: 'xsmall', bottom: 'xxsmall' }}>
+          <Text weight="bold" color={colorsTokens['primary-800']}>
+            {title}
+          </Text>
+          {children && (
+            <Box pad={{ vertical: 'xsmall' }} align="left" gap="xsmall">
+              {children}
+            </Box>
+          )}
+        </Box>
+        <Box
+          type="footer"
+          pad={{ horizontal: 'small', vertical: 'xsmall' }}
+          align="left"
+          gap="xxsmall"
+        >
+          {footer}
+        </Box>
+      </Box>
+    </Box>
   );
 };
