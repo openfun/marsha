@@ -155,17 +155,56 @@ export const tokens = {
         },
       },
       components: {
+        datagrid: {
+          header: {
+            weight: 'var(--c--theme--font--weights--extrabold)',
+            size: 'var(--c--theme--font--sizes--ml)',
+          },
+          cell: {
+            color: 'var(--c--theme--colors--primary-500)',
+            size: 'var(--c--theme--font--sizes--ml)',
+          },
+        },
         'forms-checkbox': {
           'background-color': { hover: '#055fd214' },
           color: 'var(--c--theme--colors--primary-500)',
           'font-size': 'var(--c--theme--font--sizes--ml)',
         },
-        'forms-field': { width: 'auto' },
+        'forms-datepicker': {
+          'border-color': 'var(--c--theme--colors--primary-500)',
+          'value-color': 'var(--c--theme--colors--primary-500)',
+          'border-radius': {
+            hover: 'var(--c--components--forms-datepicker--border-radius)',
+            focus: 'var(--c--components--forms-datepicker--border-radius)',
+          },
+        },
+        'forms-field': {
+          color: 'var(--c--theme--colors--primary-500)',
+          'value-color': 'var(--c--theme--colors--primary-500)',
+          width: 'auto',
+        },
+        'forms-input': {
+          'value-color': 'var(--c--theme--colors--primary-500)',
+          'border-color': 'var(--c--theme--colors--primary-500)',
+        },
         'forms-labelledbox': {
           'label-color': {
             small: 'var(--c--theme--colors--primary-500)',
             big: { disabled: 'var(--c--theme--colors--greyscale-400)' },
           },
+        },
+        'forms-select': {
+          'border-color': 'var(--c--theme--colors--primary-500)',
+          'border-radius': {
+            hover: 'var(--c--components--forms-select--border-radius)',
+            focus: 'var(--c--components--forms-select--border-radius)',
+          },
+          'font-size': 'var(--c--theme--font--sizes--ml)',
+          'item-background-color': {
+            hover: 'var(--c--theme--colors--primary-100)',
+          },
+          'item-color': 'var(--c--theme--colors--primary-500)',
+          'value-color': 'var(--c--theme--colors--primary-500)',
         },
         'forms-switch': {
           'accent-color': 'var(--c--theme--colors--primary-400)',
@@ -178,6 +217,7 @@ export const tokens = {
             hover: 'var(--c--components--forms-textarea--border-radius)',
             focus: 'var(--c--components--forms-textarea--border-radius)',
           },
+          color: 'var(--c--theme--colors--primary-500)',
           disabled: {
             'border-color-hover': 'var(--c--theme--colors--greyscale-200)',
           },

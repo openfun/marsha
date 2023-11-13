@@ -59,7 +59,6 @@
   cursor: inherit;
 }
 .c__input__wrapper .c__input, .c__textarea__wrapper .c__textarea {
-  color: var(--c--components--forms-input--color);
   width: 100%;
 }
 .c__input__wrapper--disabled .c__input {
@@ -70,6 +69,9 @@ input:-webkit-autofill:focus {
   transition:
     background-color 0s 600000s,
     color 0s 600000s;
+}
+.c__textarea__wrapper .c__textarea {
+  color: var(--c--components--forms-textarea--color);
 }
 .c__textarea__wrapper:hover {
   border-color: var(--c--components--forms-textarea--border-color-hover);
@@ -109,13 +111,13 @@ input:-webkit-autofill:focus {
 .c__datagrid > table td {
   max-width: 10rem;
   white-space: normal;
-  color: var(--c--theme--colors--primary-500);
-  font-size: var(--c--theme--font--size-datagrid-cell);
+  color: var(--c--components--datagrid--cell--color);
+  font-size: var(--c--components--datagrid--cell--size);
 }
 .c__datagrid > table th .c__datagrid__header {
   color: var(--c--theme--colors--primary-500);
-  font-weight: var(--c--theme--font--weights-datagrid-header);
-  font-size: var(--c--theme--font--size-datagrid-header);
+  font-weight: var(--c--components--datagrid--header--weight);
+  font-size: var(--c--components--datagrid--header--size);
 }
 .c__datagrid > table tbody tr {
   border: 1px var(--c--theme--colors--primary-100) solid;
