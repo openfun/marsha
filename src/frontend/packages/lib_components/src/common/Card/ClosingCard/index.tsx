@@ -1,16 +1,10 @@
 import { Button } from '@openfun/cunningham-react';
-import { BoxTypes, CardBody, Card as GrommetCard } from 'grommet';
 import { FormClose } from 'grommet-icons';
 import { PropsWithChildren, ReactNode, useState } from 'react';
-import styled from 'styled-components';
 
-import { Box } from '@lib-components/common';
+import { Box, BoxProps } from '@lib-components/common';
 
-const CardLayout = styled(GrommetCard)`
-  transition: all 0.3s;
-`;
-
-interface ClosingCardProps extends BoxTypes {
+interface ClosingCardProps extends BoxProps<'div'> {
   message: ReactNode;
 }
 
@@ -24,26 +18,29 @@ export const ClosingCard = ({
   const hide = {
     padding: 0,
     margin: 0,
-    height: 0,
-    opacity: 0,
+    maxHeight: 0,
   };
 
   return (
-    <CardLayout
-      height="inherit"
+    <Box
+      height={{
+        max: 'medium',
+      }}
       width="xsmedium"
       background="white"
       round="xsmall"
-      elevation="small"
+      elevation
       {...cardLayoutProps}
-      style={
-        display ? cardLayoutProps.style : { ...cardLayoutProps.style, ...hide }
-      }
+      style={{
+        ...cardLayoutProps.style,
+        transition: 'all 0.5s ease-in-out',
+        ...(display ? {} : hide),
+      }}
       role="alert"
       aria-hidden={!display}
     >
-      <CardBody pad={{ left: 'medium', vertical: 'xsmall', right: 'small' }}>
-        <Box direction="row" justify="between" align="center">
+      <Box pad={{ left: 'medium', vertical: 'xsmall', right: 'small' }}>
+        <Box direction="row" justify="space-between" align="center">
           <Box>{message}</Box>
           <Button
             className="c__button-no-bg"
@@ -58,7 +55,7 @@ export const ClosingCard = ({
             {children}
           </Box>
         )}
-      </CardBody>
-    </CardLayout>
+      </Box>
+    </Box>
   );
 };

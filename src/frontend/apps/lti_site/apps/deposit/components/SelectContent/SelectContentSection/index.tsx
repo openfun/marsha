@@ -33,7 +33,7 @@ const SelectContentCard = ({
 
   return (
     <ContentCard
-      a11yTitle={intl.formatMessage(messages.select, {
+      aria-label={intl.formatMessage(messages.select, {
         title: content.title || '',
       })}
       onClick={onClick}
