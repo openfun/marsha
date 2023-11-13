@@ -34,8 +34,8 @@ export const useParticipantsStore = create<State>((set) => ({
               participantA.isInstructor === participantB.isInstructor
                 ? participantA.name.localeCompare(participantB.name)
                 : participantA.isInstructor
-                ? -1
-                : 1,
+                  ? -1
+                  : 1,
             ),
         };
       } else {

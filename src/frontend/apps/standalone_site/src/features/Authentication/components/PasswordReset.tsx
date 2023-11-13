@@ -32,8 +32,8 @@ const PasswordResetContainer = ({ children }: PropsWithChildren<unknown>) => {
           breakpoint === 'xsmedium'
             ? 'medium'
             : isSmallerMedium
-            ? 'large'
-            : 'xlarge',
+              ? 'large'
+              : 'xlarge',
       }}
     >
       {children}

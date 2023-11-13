@@ -103,8 +103,8 @@ export const DepositedFileRow = ({ file }: DepositedFileProps) => {
           {isSmallerBreakpoint(breakpoint, Breakpoints.large)
             ? truncateFilename(file.filename, 40)
             : breakpoint === 'large'
-            ? truncateFilename(file.filename, 60)
-            : file.filename}
+              ? truncateFilename(file.filename, 60)
+              : file.filename}
         </Text>
         <Text size="small">{bytesToSize(file.size)}</Text>
       </Box>

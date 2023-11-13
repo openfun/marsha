@@ -56,15 +56,15 @@ export const useLivePanelState = create<State>((set) => ({
           ? //  select it
             itemToSelect
           : //  else try current item
-          state.currentItem && items.includes(state.currentItem)
-          ? //  select it
-            state.currentItem
-          : //  else try available items
-          items.length > 0
-          ? //  select it
-            items[0]
-          : //  else the current item doesn't change
-            state.currentItem,
+            state.currentItem && items.includes(state.currentItem)
+            ? //  select it
+              state.currentItem
+            : //  else try available items
+              items.length > 0
+              ? //  select it
+                items[0]
+              : //  else the current item doesn't change
+                state.currentItem,
     })),
   setPanelVisibility: (isVisible, itemToSelect) =>
     set((state) => ({

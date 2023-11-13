@@ -14,10 +14,10 @@ import {
 type PollForTrackType<T> = T extends modelName.TIMEDTEXTTRACKS
   ? TimedText
   : T extends modelName.VIDEOS
-  ? Video
-  : T extends modelName.DOCUMENTS
-  ? Document
-  : never;
+    ? Video
+    : T extends modelName.DOCUMENTS
+      ? Document
+      : never;
 
 export async function pollForTrack<
   T extends modelName.TIMEDTEXTTRACKS | modelName.VIDEOS | modelName.DOCUMENTS,
