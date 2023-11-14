@@ -1,4 +1,3 @@
-import { Nav } from 'grommet';
 import {
   Box,
   Document,
@@ -81,7 +80,7 @@ export const LTINav = ({ object: baseObject }: LTINavProps) => {
 
   return (
     <Box align="center" pad="small">
-      <Nav direction="row">
+      <Box type="nav" direction="row" gap="medium">
         {canAccessDashboard && (
           <NavItem to={builderDashboardRoute(appData.modelName)}>
             <FormattedMessage {...messages.linkDashboard} />
@@ -99,7 +98,7 @@ export const LTINav = ({ object: baseObject }: LTINavProps) => {
             <FormattedMessage {...messages.linkPlaylist} />
           </NavItem>
         )}
-      </Nav>
+      </Box>
     </Box>
   );
 };

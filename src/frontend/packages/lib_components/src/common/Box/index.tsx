@@ -17,7 +17,7 @@ export interface BoxPropsOnly {
 
 type BoxTypes = Pick<
   ReactHTML,
-  'div' | 'header' | 'footer' | 'article' | 'ul' | 'li'
+  'div' | 'header' | 'footer' | 'article' | 'ul' | 'li' | 'nav' | 'section'
 >;
 
 /**
