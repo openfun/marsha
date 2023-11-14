@@ -77,7 +77,9 @@ describe('<InputDisplayNameOverlay />', () => {
     render(wrapInVideo(<InputDisplayNameOverlay />, live));
 
     const inputTextbox = screen.getByRole('textbox');
-    const validateButton = screen.getByRole('button');
+    const validateButton = screen.getByRole('button', {
+      name: 'send',
+    });
 
     await userEvent.type(inputTextbox, `${ANONYMOUS_ID_PREFIX}-John`);
     await userEvent.click(validateButton);
@@ -100,7 +102,9 @@ describe('<InputDisplayNameOverlay />', () => {
     render(wrapInVideo(<InputDisplayNameOverlay />, live));
 
     const inputTextbox = screen.getByRole('textbox');
-    const validateButton = screen.getByRole('button');
+    const validateButton = screen.getByRole('button', {
+      name: 'send',
+    });
 
     await userEvent.type(inputTextbox, 'JD');
     await userEvent.click(validateButton);
@@ -123,7 +127,9 @@ describe('<InputDisplayNameOverlay />', () => {
     render(wrapInVideo(<InputDisplayNameOverlay />, live));
 
     const inputTextbox = screen.getByRole('textbox');
-    const validateButton = screen.getByRole('button');
+    const validateButton = screen.getByRole('button', {
+      name: 'send',
+    });
 
     await userEvent.type(inputTextbox, 'John Doe the legend');
     await userEvent.click(validateButton);
@@ -363,7 +369,9 @@ describe('<InputDisplayNameOverlay />', () => {
     render(wrapInVideo(<InputDisplayNameOverlay />, live));
 
     const inputTextbox = screen.getByRole('textbox');
-    const validateButton = screen.getByRole('button');
+    const validateButton = screen.getByRole('button', {
+      name: 'send',
+    });
     await userEvent.type(inputTextbox, 'John_Doe');
     await userEvent.click(validateButton);
     await waitFor(() =>

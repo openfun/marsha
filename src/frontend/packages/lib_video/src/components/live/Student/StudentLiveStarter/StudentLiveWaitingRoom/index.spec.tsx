@@ -123,7 +123,9 @@ describe('<StudentLiveWaitingRoom />', () => {
     render(wrapInVideo(<StudentLiveWaitingRoom />, video));
 
     const inputTextbox = screen.getByRole('textbox');
-    const validateButton = screen.getByRole('button');
+    const validateButton = screen.getByRole('button', {
+      name: 'send',
+    });
     await userEvent.clear(inputTextbox);
     await userEvent.type(inputTextbox, 'John_Doe');
 

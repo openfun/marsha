@@ -1,5 +1,4 @@
-import { Input, Loader } from '@openfun/cunningham-react';
-import { Tip } from 'grommet';
+import { Input, Loader, Popover } from '@openfun/cunningham-react';
 import { Maybe, Nullable, colorsTokens } from 'lib-common';
 import {
   AnonymousUser,
@@ -106,6 +105,8 @@ export const InputDisplayName = ({ onSuccess }: InputDisplayNameProps) => {
       (user !== AnonymousUser.ANONYMOUS && user?.username) ||
       '',
   );
+  const popoverRef = useRef(null);
+  const [popoverVisible, setPopoverVisible] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -246,29 +247,38 @@ export const InputDisplayName = ({ onSuccess }: InputDisplayNameProps) => {
             {intl.formatMessage(messages.inputDisplayNameLabel)}
           </Text>
           <Box>
-            <Tip
-              dropProps={{
-                elevation: 'medium',
-              }}
-              content={
-                <Box background="white" pad="2px" round="6px" width="150px">
+            <Box ref={popoverRef}>
+              <QuestionMarkSVG
+                containerStyle={{
+                  height: '15px',
+                  width: '15px',
+                }}
+                iconColor={colorsTokens['info-900']}
+                onClick={() => {
+                  setPopoverVisible(true);
+                }}
+              />
+            </Box>
+            {popoverVisible && (
+              <Popover
+                parentRef={popoverRef}
+                onClickOutside={() => setPopoverVisible(false)}
+                borderless
+              >
+                <Box
+                  background="white"
+                  pad="2px"
+                  round="6px"
+                  width="150px"
+                  margin={{ top: 'small' }}
+                  elevation
+                >
                   <Text size="tiny" className="m-t">
                     {intl.formatMessage(messages.inputDisplayNameInformative)}
                   </Text>
                 </Box>
-              }
-              plain
-            >
-              <Box>
-                <QuestionMarkSVG
-                  containerStyle={{
-                    height: '15px',
-                    width: '15px',
-                  }}
-                  iconColor={colorsTokens['info-900']}
-                />
-              </Box>
-            </Tip>
+              </Popover>
+            )}
           </Box>
         </Box>
         <Input
