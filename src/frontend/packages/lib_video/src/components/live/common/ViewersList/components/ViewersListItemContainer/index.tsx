@@ -14,7 +14,7 @@ export const ViewersListItemContainer = ({
 }: React.PropsWithChildren<unknown>) => (
   <StyledItemContainer
     align="center"
-    justify="between"
+    justify="space-between"
     direction="row"
     gap="small"
     pad={{ horizontal: 'medium', vertical: 'xsmall' }}

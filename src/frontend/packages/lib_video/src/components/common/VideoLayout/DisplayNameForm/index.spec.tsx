@@ -41,7 +41,11 @@ describe('<DisplayNameForm />', () => {
     render(wrapInVideo(wrapInIntlProvider(<DisplayNameForm />), live));
 
     expect(screen.getByRole('textbox')).toBeInTheDocument();
-    expect(screen.getByRole('button')).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: 'send',
+      }),
+    ).toBeInTheDocument();
     expect(screen.getByText('Display name')).toBeInTheDocument();
   });
 });

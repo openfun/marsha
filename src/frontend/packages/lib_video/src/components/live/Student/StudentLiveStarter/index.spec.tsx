@@ -420,7 +420,9 @@ describe('StudentLiveStarter', () => {
     await screen.findByText(/Live has started/);
 
     const inputTextbox = screen.getByRole('textbox');
-    const validateButton = screen.getByRole('button');
+    const validateButton = screen.getByRole('button', {
+      name: 'send',
+    });
     await userEvent.type(inputTextbox, 'John_Doe');
 
     await userEvent.click(validateButton);
