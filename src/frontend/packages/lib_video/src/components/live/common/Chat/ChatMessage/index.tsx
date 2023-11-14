@@ -1,6 +1,5 @@
 import { colorsTokens } from '@lib-common/cunningham';
-import { Anchor } from 'grommet';
-import { Box, Text } from 'lib-components';
+import { Box, Text, Typo } from 'lib-components';
 import * as linkify from 'linkifyjs';
 import React, { useMemo } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -39,14 +38,16 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
                   return token.toString();
                 } else {
                   return (
-                    <Anchor
+                    <Typo
+                      type="a"
                       href={token.toHref()}
                       key={index}
                       target="_blank"
                       rel="noopener noreferrer"
+                      color={colorsTokens['primary-500']}
                     >
                       {token.toString()}
-                    </Anchor>
+                    </Typo>
                   );
                 }
               })

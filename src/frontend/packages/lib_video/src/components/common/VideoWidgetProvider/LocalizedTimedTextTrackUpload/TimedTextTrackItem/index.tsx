@@ -1,4 +1,4 @@
-import { Anchor } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
 import { colorsTokens } from 'lib-common';
 import {
   Box,
@@ -65,6 +65,7 @@ export const TimedTextTrackItem = ({
       fill="horizontal"
       height="60px"
       gap="medium"
+      justify="left"
       pad={{ horizontal: 'small', vertical: 'small' }}
     >
       <Box align="center">
@@ -72,45 +73,39 @@ export const TimedTextTrackItem = ({
       </Box>
 
       <Box width={{ min: '0px' }}>
-        <Anchor href={timedTextTrack.source_url ?? undefined}>
-          <Text weight="medium" truncate>
-            {languageLabel}
-          </Text>
-        </Anchor>
+        <Button
+          target="_blank"
+          rel="noopener noreferrer"
+          color="tertiary"
+          href={timedTextTrack.source_url ?? undefined}
+        >
+          {languageLabel}
+        </Button>
       </Box>
 
-      <Box
-        align="center"
-        direction="row"
-        justify="center"
-        margin={{ left: 'auto' }}
-      >
-        {timedTextTrack.upload_state !== uploadState.READY && (
-          <React.Fragment>
-            {IS_UPLOAD_IN_PROGRESS ? (
-              <Text weight="medium" truncate>
-                <ObjectStatusPicker
-                  object={timedTextTrack}
-                  uploadStatus={uploadingObject?.status}
-                />
-              </Text>
-            ) : (
-              <React.Fragment>
-                <Box>
-                  <Text color="clr-danger-300" weight="medium">
-                    {intl.formatMessage(messages.retryUploadFailedLabel)}
-                  </Text>
-                </Box>
+      {timedTextTrack.upload_state !== uploadState.READY && (
+        <Box align="center" direction="row" justify="end" flex="grow">
+          {IS_UPLOAD_IN_PROGRESS ? (
+            <ObjectStatusPicker
+              object={timedTextTrack}
+              uploadStatus={uploadingObject?.status}
+            />
+          ) : (
+            <React.Fragment>
+              <Box>
+                <Text color="clr-danger-300" weight="medium">
+                  {intl.formatMessage(messages.retryUploadFailedLabel)}
+                </Text>
+              </Box>
 
-                <RetryUploadButton
-                  color={colorsTokens['danger-500']}
-                  onClick={() => onRetryFailedUpload(timedTextTrack.id)}
-                />
-              </React.Fragment>
-            )}
-          </React.Fragment>
-        )}
-      </Box>
+              <RetryUploadButton
+                color={colorsTokens['danger-500']}
+                onClick={() => onRetryFailedUpload(timedTextTrack.id)}
+              />
+            </React.Fragment>
+          )}
+        </Box>
+      )}
     </Box>
   );
 };

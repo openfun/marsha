@@ -1,4 +1,3 @@
-/* eslint-disable testing-library/no-node-access */
 import { screen } from '@testing-library/react';
 import { sharedLiveMediaMockFactory, uploadState } from 'lib-components';
 import { render } from 'lib-tests';
@@ -30,7 +29,6 @@ describe('<TitleDisplayer />', () => {
       'href',
       mockedSharedLiveMedia.urls!.media,
     );
-    expect(downloadUploadLink).toHaveStyle('cursor: auto');
   });
 
   it('renders the download upload link button when shared live media has finished to upload', () => {
@@ -55,7 +53,6 @@ describe('<TitleDisplayer />', () => {
       'href',
       mockedSharedLiveMedia.urls!.media,
     );
-    expect(downloadUploadLink).toHaveStyle('cursor: pointer');
   });
 
   it('renders the download upload link button when shared live media upload has failed', () => {
@@ -65,17 +62,17 @@ describe('<TitleDisplayer />', () => {
       title: null,
       filename: null,
     });
-    const { elementContainer: container } = render(
+    render(
       <TitleDisplayer
         sharedLiveMedia={mockedSharedLiveMedia}
         uploadingTitle={undefined}
       />,
     );
 
-    screen.getByText('Upload has failed');
-    const downloadUploadLink = container!.getElementsByTagName('a')[0];
-    expect(downloadUploadLink).not.toHaveAttribute('download');
-    expect(downloadUploadLink).not.toHaveAttribute('href');
-    expect(downloadUploadLink).toHaveStyle('cursor: auto');
+    const link = screen.getByRole('button', {
+      name: 'Upload has failed',
+    });
+    expect(link).toBeInTheDocument();
+    expect(link).toBeDisabled();
   });
 });

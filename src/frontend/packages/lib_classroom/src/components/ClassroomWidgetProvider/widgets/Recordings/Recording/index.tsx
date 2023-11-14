@@ -1,5 +1,4 @@
 import { Button } from '@openfun/cunningham-react';
-import { Anchor } from 'grommet';
 import { createVOD, useClassroom } from 'lib-classroom';
 import { Nullable } from 'lib-common';
 import {
@@ -17,10 +16,6 @@ import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { DeleteClassroomRecordingButton } from './DeleteClassroomRecordingButton';
-
-const StyledAnchor = styled(Anchor)`
-  font-family: Roboto-Medium;
-`;
 
 const NavLinkStyled = styled(NavLink)`
   text-decoration: none;
@@ -130,25 +125,27 @@ const VodNotReady = ({
       key={recording.id}
       align="center"
       fill="horizontal"
-      gap="small"
+      gap="xsmall"
       justify="space-between"
     >
       {!recording.vod && (
         <DeleteClassroomRecordingButton recording={recording} />
       )}
 
-      <StyledAnchor
+      <Button
         title={intl.formatMessage(messages.downloadRecordingLabel)}
         href={recording.video_file_url}
         target="_blank"
         rel="noreferrer noopener"
+        color="tertiary"
+        size="nano"
       >
         <Text style={{ whiteSpace: 'initial' }}>
           {recording.vod
             ? recording.vod.title
             : buildRecordingTitle(recording, intl)}
         </Text>
-      </StyledAnchor>
+      </Button>
       {recording.vod ? (
         <Text>{recording.vod.upload_state}</Text>
       ) : (

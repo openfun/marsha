@@ -1,9 +1,8 @@
-import { Anchor } from 'grommet';
-import { Maybe } from 'lib-common';
-import { Box, SharedLiveMedia, Text, uploadState } from 'lib-components';
+import { Button } from '@openfun/cunningham-react';
+import { Maybe, colorsTokens } from 'lib-common';
+import { SharedLiveMedia, Text, uploadState } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import styled from 'styled-components';
 
 const messages = defineMessages({
   noFilenameUploadFailed: {
@@ -13,17 +12,6 @@ const messages = defineMessages({
     id: 'component.TitleDisplayer.noFilenameUploadFailed',
   },
 });
-
-const StyledAnchor = styled(Anchor)`
-  cursor: ${({ isClickable }: { isClickable: boolean }) =>
-    isClickable ? 'pointer' : 'auto'};
-  font-family: Roboto-Medium;
-
-  &:hover {
-    text-decoration: ${({ isClickable }: { isClickable: boolean }) =>
-      isClickable ? 'underline' : undefined};
-  }
-`;
 
 interface TitleDisplayerProps {
   sharedLiveMedia: SharedLiveMedia;
@@ -40,22 +28,32 @@ export const TitleDisplayer = ({
     uploadingTitle ||
     intl.formatMessage(messages.noFilenameUploadFailed);
 
+  const isDisabled = sharedLiveMedia.upload_state !== uploadState.READY;
+
   return (
-    <StyledAnchor
-      a11yTitle={title}
+    <Button
+      aria-label={title}
       download={sharedLiveMedia.filename}
-      href={sharedLiveMedia.urls ? sharedLiveMedia.urls.media : undefined}
+      href={sharedLiveMedia.urls?.media || undefined}
       // The click on the title triggers download of the associated upload. But this
       // behavior should be possible only if upload is complete and finished
-      isClickable={sharedLiveMedia.upload_state === uploadState.READY}
-      label={
-        <Box width={{ min: '0' }}>
-          <Text truncate>{title}</Text>
-        </Box>
-      }
+      disabled={isDisabled}
+      style={{
+        pointerEvents: isDisabled ? 'none' : undefined,
+      }}
       rel="noopener"
       target="_blank"
       title={title}
-    />
+      color="tertiary"
+      size="nano"
+    >
+      <Text
+        truncate
+        weight="bold"
+        color={colorsTokens[isDisabled ? 'greyscale-400' : 'primary-500']}
+      >
+        {title}
+      </Text>
+    </Button>
   );
 };

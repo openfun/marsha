@@ -1,5 +1,4 @@
 import { Button } from '@openfun/cunningham-react';
-import { Anchor } from 'grommet';
 import { colorsTokens } from 'lib-common';
 import {
   BinSVG,
@@ -14,22 +13,11 @@ import {
 } from 'lib-components';
 import React, { useCallback, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import styled from 'styled-components';
 
 import {
   useDeleteClassroomDocument,
   useUpdateClassroomDocument,
 } from '@lib-classroom/data';
-
-const StyledAnchor = styled(Anchor)`
-  cursor: ${({ isClickable }: { isClickable: boolean }) =>
-    isClickable ? 'pointer' : 'auto'};
-
-  &:hover {
-    text-decoration: ${({ isClickable }: { isClickable: boolean }) =>
-      isClickable ? 'underline' : undefined};
-  }
-`;
 
 const messages = defineMessages({
   retryUploadFailedLabel: {
@@ -141,24 +129,27 @@ export const DocumentRow = ({
       </Box>
 
       <Box width={{ min: 'none' }}>
-        <StyledAnchor
-          a11yTitle={title}
+        <Button
+          aria-label={title}
           download={document.filename}
           href={document.url || undefined}
           // The click on the title triggers download of the associated upload. But this
           // behavior should be possible only if upload is complete and finished
-          isClickable={document.upload_state === uploadState.READY}
-          label={
-            <Box>
-              <Text truncate weight="extrabold">
-                {title}
-              </Text>
-            </Box>
-          }
+          disabled={document.upload_state !== uploadState.READY}
+          style={{
+            pointerEvents:
+              document.upload_state !== uploadState.READY ? 'none' : undefined,
+          }}
           rel="noopener"
           target="_blank"
           title={title}
-        />
+          color="tertiary"
+          size="nano"
+        >
+          <Text truncate weight="extrabold">
+            {title}
+          </Text>
+        </Button>
       </Box>
 
       <Box direction="row" align="center" gap="small">

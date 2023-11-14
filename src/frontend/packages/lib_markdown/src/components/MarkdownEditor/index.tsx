@@ -1,12 +1,13 @@
 import { Button, Input } from '@openfun/cunningham-react';
 import { useQueryClient } from '@tanstack/react-query';
-import { Anchor, Footer } from 'grommet';
+import { Footer } from 'grommet';
 import { Nullable, colorsTokens } from 'lib-common';
 import {
   Box,
   BoxLoader,
   MarkdownDocumentRenderingOptions,
   Text,
+  Typo,
 } from 'lib-components';
 import React, { Suspense, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
@@ -356,14 +357,15 @@ export const MarkdownEditor = ({ markdownDocumentId }: MarkdownEditorProps) => {
                     background={colorsTokens['greyscale-100']}
                     pad="xxsmall"
                   >
-                    <Anchor
+                    <Typo
+                      type="a"
                       href="https://www.markdownguide.org/basic-syntax"
                       target="_blank"
                       rel="noopener noreferrer"
-                      label="Markdown basic syntax"
                       color={colorsTokens['greyscale-800']}
-                      weight="normal"
-                    />
+                    >
+                      Markdown basic syntax
+                    </Typo>
                   </Footer>
                 </Box>
               </Box>

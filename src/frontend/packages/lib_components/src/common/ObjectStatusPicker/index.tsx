@@ -1,7 +1,8 @@
+import { colorsTokens } from '@lib-common/cunningham';
 import React, { Fragment } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { Box, Text } from '@lib-components/common';
+import { Box } from '@lib-components/common';
 import { UploadManagerStatus } from '@lib-components/common/UploadManager';
 import {
   UploadableObject,
@@ -150,10 +151,17 @@ export const ObjectStatusPicker = ({
   }
 
   return (
-    <Box direction="row" margin="none" pad="none" align="center">
-      <Text>
-        {intl.formatMessage(message)}&nbsp;{icon}
-      </Text>
+    <Box
+      direction="row"
+      margin="none"
+      pad="none"
+      align="center"
+      flex="grow"
+      color={colorsTokens['primary-500']}
+    >
+      {intl.formatMessage(message)}
+      &nbsp;
+      {icon}
     </Box>
   );
 };
