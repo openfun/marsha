@@ -51,14 +51,7 @@ export const SharedLiveMediaItem = ({
     sharedLiveMedia.upload_state === uploadState.PROCESSING;
 
   return (
-    <Box
-      direction="row"
-      align="center"
-      fill="horizontal"
-      height="60px"
-      gap="small"
-      pad={{ horizontal: 'small', vertical: 'small' }}
-    >
+    <Box direction="row" align="center" fill="horizontal" gap="xxsmall">
       {isTeacher &&
         (sharedLiveMedia.show_download ? (
           <AllowedDownloadButton
@@ -89,9 +82,8 @@ export const SharedLiveMediaItem = ({
         <Box
           align="center"
           direction="row"
-          justify="center"
+          justify="right"
           margin={{ left: 'auto' }}
-          width={{ min: 'auto' }}
         >
           {sharedLiveMedia.upload_state === uploadState.READY ? (
             isLive && (

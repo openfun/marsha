@@ -44,6 +44,7 @@ export interface TypoPropsOnly {
   fill?: boolean | 'horizontal' | 'vertical' | 'full';
   // eslint-disable-next-line @typescript-eslint/ban-types
   flex?: boolean | 'grow' | 'shrink' | (string & {});
+  flow?: CSSProperties['flexFlow'];
   fontSize?: CSSProperties['fontSize'];
   height?: Height;
   justify?: CSSProperties['justifyContent'];
@@ -109,6 +110,7 @@ const TypoRef = forwardRef(
       display,
       fill,
       flex,
+      flow,
       fontSize,
       height,
       justify,
@@ -167,7 +169,7 @@ const TypoRef = forwardRef(
     }
 
     let bgClassname = '';
-    // if color is a classname
+    // if background is a classname
     if (
       background &&
       typeof background === 'string' &&
@@ -196,6 +198,7 @@ const TypoRef = forwardRef(
                   ? '1 1 auto'
                   : flex,
           flexBasis: basis,
+          flexFlow: flow,
           fontSize,
           height: fill && fill !== 'horizontal' ? '100%' : undefined,
           justifyContent: justify,

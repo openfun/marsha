@@ -1,4 +1,4 @@
-import { Anchor } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
 import { Breakpoints, themeTokens } from 'lib-common';
 import {
   Box,
@@ -74,6 +74,7 @@ export const DepositedFileRow = ({ file }: DepositedFileProps) => {
         align="center"
         gap="small"
         justify="space-between"
+        flow="wrap"
       >
         <Text weight="medium">{file.author_name}</Text>
         {uploadedOn && (
@@ -83,22 +84,29 @@ export const DepositedFileRow = ({ file }: DepositedFileProps) => {
         )}
         <Box align="end" justify="end" gap="small">
           {file.upload_state === 'ready' ? (
-            <Anchor
+            <Button
               onClick={markFileAsRead}
               download
-              a11yTitle={intl.formatMessage(messages.labelDownload)}
-              label={intl.formatMessage(messages.labelDownload)}
+              aria-label={intl.formatMessage(messages.labelDownload)}
               style={{ fontFamily: 'Roboto-Medium' }}
               title={intl.formatMessage(messages.labelDownload)}
               href={file.url}
-            />
+            >
+              {intl.formatMessage(messages.labelDownload)}
+            </Button>
           ) : (
             <Text>{file.upload_state}</Text>
           )}
         </Box>
       </Box>
 
-      <Box direction="row" fill align="center" justify="space-between">
+      <Box
+        direction="row"
+        fill
+        align="center"
+        justify="space-between"
+        margin={{ top: 'xsmall' }}
+      >
         <Text title={file.filename} weight={file.read ? 'regular' : 'bold'}>
           {isSmallerBreakpoint(breakpoint, Breakpoints.large)
             ? truncateFilename(file.filename, 40)

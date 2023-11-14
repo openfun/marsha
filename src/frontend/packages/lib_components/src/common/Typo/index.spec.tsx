@@ -32,6 +32,18 @@ describe('<Typo />', () => {
     expect(screen.getByText('My Typo')).toHaveClass('clr-black');
   });
 
+  it('has the background from the prop', () => {
+    render(<Typo background="black">My Typo</Typo>);
+
+    expect(screen.getByText('My Typo')).toHaveStyle('background: black');
+  });
+
+  it('has the classname background from the prop', () => {
+    render(<Typo background="bg-black">My Typo</Typo>);
+
+    expect(screen.getByText('My Typo')).toHaveClass('bg-black');
+  });
+
   it('has the font size from the prop', () => {
     render(<Typo fontSize="1rem">My Typo</Typo>);
 
@@ -163,5 +175,87 @@ describe('<Typo />', () => {
         originalOffsetHeight,
       );
     }
+  });
+
+  it('has the align prop', () => {
+    render(<Typo align="center">My Typo</Typo>);
+
+    expect(screen.getByText('My Typo')).toHaveStyle('align-items: center');
+  });
+
+  it('has the basis prop', () => {
+    render(<Typo basis="50%">My Typo</Typo>);
+
+    expect(screen.getByText('My Typo')).toHaveStyle('flex-basis: 50%');
+  });
+
+  it('has the display prop', () => {
+    render(<Typo display="block">My Typo</Typo>);
+
+    expect(screen.getByText('My Typo')).toHaveStyle('display: block');
+  });
+
+  it('has the fill prop', () => {
+    render(<Typo fill>My Typo</Typo>);
+
+    expect(screen.getByText('My Typo')).toHaveStyle(`
+      height: 100%;
+      width: 100%;`);
+  });
+
+  it('has the fill full prop', () => {
+    render(<Typo fill="full">My Typo</Typo>);
+
+    expect(screen.getByText('My Typo')).toHaveStyle(`
+      height: 100%;
+      width: 100%;`);
+  });
+
+  it('has the fill horizontal prop', () => {
+    render(<Typo fill="horizontal">My Typo</Typo>);
+
+    expect(screen.getByText('My Typo')).toHaveStyle('width: 100%');
+  });
+
+  it('has the fill vertical prop', () => {
+    render(<Typo fill="vertical">My Typo</Typo>);
+
+    expect(screen.getByText('My Typo')).toHaveStyle('height: 100%');
+  });
+
+  [
+    { message: '', value: true, expected: '1 1 auto' },
+    { message: 'grow', value: 'grow', expected: '1 0 auto' },
+    { message: 'shrink', value: 'shrink', expected: '0 1 auto' },
+  ].forEach(({ message, value, expected }) => {
+    it(`has the flex ${message} prop`, () => {
+      render(<Typo flex={value}>My Typo</Typo>);
+
+      expect(screen.getByText('My Typo')).toHaveStyle(`flex: ${expected}`);
+    });
+  });
+
+  it('has the flow prop', () => {
+    render(<Typo flow="wrap">My Typo</Typo>);
+
+    expect(screen.getByText('My Typo')).toHaveStyle('flex-flow: wrap');
+  });
+
+  it('has the justify prop', () => {
+    render(<Typo justify="center">My Typo</Typo>);
+
+    expect(screen.getByText('My Typo')).toHaveStyle('justify-content: center');
+  });
+
+  it('has the overflow prop', () => {
+    render(<Typo overflow="hidden">My Typo</Typo>);
+
+    expect(screen.getByText('My Typo')).toHaveStyle('overflow: hidden');
+  });
+
+  it('has the position prop', () => {
+    render(<Typo position="absolute">My Typo</Typo>);
+
+    expect(screen.getByText('My Typo')).toHaveStyle('position: absolute');
   });
 });

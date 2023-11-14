@@ -1,4 +1,4 @@
-import { Anchor } from 'grommet';
+import { Button } from '@openfun/cunningham-react';
 import {
   AppDataRessource,
   Box,
@@ -70,11 +70,19 @@ export const ClaimLink = ({ decodedJwt }: ClaimLinkProps) => {
     claimUrl += `&lti_user_id=${decodedJwt.user?.id}`;
     return (
       <Box align="center" pad="medium">
-        <Anchor href={claimUrl} target="_blank" rel="noopener noreferrer">
+        <Button
+          href={claimUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          color="tertiary"
+          style={{
+            textAlign: 'center',
+          }}
+        >
           {intlShape.formatMessage(messages.claimResource, {
             frontend_home_url: appConfig.frontend_home_url,
           })}
-        </Anchor>
+        </Button>
       </Box>
     );
   }
