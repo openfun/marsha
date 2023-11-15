@@ -24,6 +24,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Replace pylti with oauthlib for LTI request validation
 - Replace faker with @faker-js/faker (frontend)
 
+### Fixed
+
+- Blocking error when shared document is deleted (#2504)
+
 ## [4.7.0] - 2023-10-19
 
 ### Added

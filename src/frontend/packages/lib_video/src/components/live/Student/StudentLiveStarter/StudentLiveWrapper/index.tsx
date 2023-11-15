@@ -13,10 +13,7 @@ import { AudioControl } from '@lib-video/components/live/common/JitsiControls/Au
 import { CameraControl } from '@lib-video/components/live/common/JitsiControls/CameraControl';
 import { LiveVideoPanel } from '@lib-video/components/live/common/LiveVideoPanel';
 import { SharedMediaExplorer } from '@lib-video/components/live/common/SharedMediaExplorer';
-import {
-  InvalidJitsiLiveException,
-  MissingSharedLiveSessionUrls,
-} from '@lib-video/errors';
+import { InvalidJitsiLiveException } from '@lib-video/errors';
 import { useCurrentLive } from '@lib-video/hooks/useCurrentVideo';
 import {
   LivePanelItem,
@@ -130,9 +127,7 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
       live.active_shared_live_media_page
     ) {
       if (!live.active_shared_live_media.urls) {
-        throw new MissingSharedLiveSessionUrls(
-          'Missing shared live session urls during a sharing.',
-        );
+        return;
       }
 
       secondElement = (
@@ -156,9 +151,7 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
       const pageNumber = id3Video.active_shared_live_media_page;
 
       if (!pages) {
-        throw new MissingSharedLiveSessionUrls(
-          'Missing shared live session urls during a sharing.',
-        );
+        return;
       }
 
       secondElement = (
