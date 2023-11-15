@@ -34,6 +34,11 @@ describe('<HeaderLight />', () => {
         name: /My LogoIcon/i,
       }),
     ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: /Language Picker/,
+      }),
+    ).toBeInTheDocument();
   });
 
   test('renders HeaderLight custom site logo', async () => {
