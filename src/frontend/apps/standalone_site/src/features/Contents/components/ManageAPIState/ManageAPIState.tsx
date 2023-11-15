@@ -1,3 +1,4 @@
+import { colorsTokens } from 'lib-common';
 import { Box, BoxError, BoxLoader, Text } from 'lib-components';
 import { Fragment, PropsWithChildren, ReactElement } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -37,7 +38,11 @@ const ManageAPIState = ({
 
   let content = (
     <Box margin={{ top: 'medium' }} align="center" justify="center" gap="small">
-      <ContentsIcon width={60} height={60} />
+      <ContentsIcon
+        width={60}
+        height={60}
+        color={colorsTokens['primary-500']}
+      />
       <Text weight="bold">
         {typeof nothingToDisplay === 'string'
           ? nothingToDisplay

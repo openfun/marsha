@@ -12,6 +12,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Retrieve BBB learning analytics and send them through API
 - Classroom attendance analytics (#2499) 
+- Add a language picker for the invite link on the website (#2504)
 
 ### Changed
 

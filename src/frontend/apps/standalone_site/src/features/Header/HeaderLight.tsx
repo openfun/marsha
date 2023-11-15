@@ -5,6 +5,7 @@ import { forwardRef } from 'react';
 import { Link } from 'react-router-dom';
 
 import { ReactComponent as LogoIcon } from 'assets/svg/logo_marsha.svg';
+import { LanguagePicker } from 'features/Language';
 import { routes } from 'routes';
 
 interface HeaderLightProps {
@@ -25,7 +26,7 @@ export const HeaderLight = forwardRef<
   Nullable<HTMLDivElement>,
   HeaderLightProps
 >(({ bgcolor, color, withLogoLink = false }, ref) => {
-  const colorLink = color || colorsTokens['info-500'];
+  const colorLink = color || colorsTokens['primary-500'];
   const { getSiteConfig } = useSiteConfig();
   const siteConfig = getSiteConfig();
   const showSiteConfigLogo =
@@ -35,7 +36,7 @@ export const HeaderLight = forwardRef<
     <LogoIcon
       width={117}
       height={80}
-      color={withLogoLink ? undefined : color}
+      color={withLogoLink ? undefined : colorLink}
     />
   );
   if (showSiteConfigLogo) {
@@ -61,10 +62,14 @@ export const HeaderLight = forwardRef<
     <Box
       ref={ref}
       role="menubar"
-      pad="small"
+      pad={{ right: 'medium', horizontal: 'small', vertical: 'small' }}
+      direction="row"
       background={bgcolor || colorsTokens['primary-100']}
+      color={colorsTokens['primary-500']}
+      justify="space-between"
     >
       {Logo}
+      <LanguagePicker />
     </Box>
   );
 });
