@@ -170,6 +170,7 @@ const ClassroomAttendance = ({ sessions }: Pick<Classroom, 'sessions'>) => {
           background="white"
           round="xsmall"
           pad={{ vertical: 'medium', horizontal: 'medium' }}
+          margin={{ horizontal: 'small' }}
         >
           <AccordionPanel label={session.humanDate}>
             {session.attendees.map((attendee) => (
