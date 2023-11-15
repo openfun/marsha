@@ -26,7 +26,6 @@ const pictureAnimationStyle: CSSProperties = {
   transitionTimingFunction: 'ease-out',
 };
 const containerStyle = {
-  flex: '1',
   zIndex: 0,
 };
 

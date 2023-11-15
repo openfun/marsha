@@ -18,17 +18,12 @@ describe('<TitleDisplayer />', () => {
       />,
     );
 
-    const downloadUploadLink = screen.getByRole('link', {
-      name: 'uploading_title',
-    });
-    expect(downloadUploadLink).toHaveAttribute(
-      'download',
-      mockedSharedLiveMedia.filename,
-    );
-    expect(downloadUploadLink).toHaveAttribute(
-      'href',
-      mockedSharedLiveMedia.urls!.media,
-    );
+    expect(
+      screen.queryByRole('link', {
+        name: 'uploading_title',
+      }),
+    ).not.toBeInTheDocument();
+    expect(screen.getByText('uploading_title')).toBeInTheDocument();
   });
 
   it('renders the download upload link button when shared live media has finished to upload', () => {
@@ -69,10 +64,6 @@ describe('<TitleDisplayer />', () => {
       />,
     );
 
-    const link = screen.getByRole('button', {
-      name: 'Upload has failed',
-    });
-    expect(link).toBeInTheDocument();
-    expect(link).toBeDisabled();
+    expect(screen.getByText('Upload has failed')).toBeInTheDocument();
   });
 });

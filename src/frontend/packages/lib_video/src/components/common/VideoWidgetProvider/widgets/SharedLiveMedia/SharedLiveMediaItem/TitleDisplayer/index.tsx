@@ -30,28 +30,26 @@ export const TitleDisplayer = ({
 
   const isDisabled = sharedLiveMedia.upload_state !== uploadState.READY;
 
+  if (isDisabled) {
+    return (
+      <Text truncate weight="medium" color={colorsTokens['greyscale-500']}>
+        {title}
+      </Text>
+    );
+  }
+
   return (
     <Button
       aria-label={title}
       download={sharedLiveMedia.filename}
       href={sharedLiveMedia.urls?.media || undefined}
-      // The click on the title triggers download of the associated upload. But this
-      // behavior should be possible only if upload is complete and finished
-      disabled={isDisabled}
-      style={{
-        pointerEvents: isDisabled ? 'none' : undefined,
-      }}
       rel="noopener"
       target="_blank"
       title={title}
       color="tertiary"
       size="nano"
     >
-      <Text
-        truncate
-        weight="bold"
-        color={colorsTokens[isDisabled ? 'greyscale-400' : 'primary-500']}
-      >
+      <Text truncate weight="bold" color={colorsTokens['primary-500']}>
         {title}
       </Text>
     </Button>

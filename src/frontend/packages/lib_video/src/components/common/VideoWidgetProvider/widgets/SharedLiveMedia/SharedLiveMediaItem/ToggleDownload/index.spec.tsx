@@ -5,14 +5,14 @@ import fetchMock from 'fetch-mock';
 import { report, sharedLiveMediaMockFactory, useJwt } from 'lib-components';
 import { render } from 'lib-tests';
 
-import { DisallowedDownloadButton } from '.';
+import { ToggleDownload } from '.';
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
   report: jest.fn(),
 }));
 
-describe('<DisallowedDownloadButton />', () => {
+describe('<ToggleDownload />', () => {
   beforeEach(() => {
     useJwt.setState({
       jwt: 'json web token',
@@ -24,14 +24,43 @@ describe('<DisallowedDownloadButton />', () => {
     fetchMock.restore();
   });
 
-  it('clicks on the button and successfully updates the show_download property', async () => {
+  it('display correctly the toggle depend the prop isDownloadAllowed', () => {
+    const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
+      video: faker.string.uuid(),
+    });
+
+    const { rerender } = render(
+      <ToggleDownload
+        isDownloadAllowed={false}
+        sharedLiveMediaId={mockedSharedLiveMedia.id}
+        videoId={mockedSharedLiveMedia.video}
+      />,
+    );
+
+    const input: HTMLInputElement = screen.getByRole('checkbox', {
+      name: 'Allow download',
+    });
+    expect(input.checked).toEqual(false);
+
+    rerender(
+      <ToggleDownload
+        isDownloadAllowed={true}
+        sharedLiveMediaId={mockedSharedLiveMedia.id}
+        videoId={mockedSharedLiveMedia.video}
+      />,
+    );
+
+    expect(input.checked).toEqual(true);
+  });
+
+  it('checks the download toggle interaction (allowed / unallowed)', async () => {
     const videoId = faker.string.uuid();
     const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
-      show_download: false,
+      show_download: true,
       video: videoId,
     });
 
-    fetchMock.patch(
+    fetchMock.patchOnce(
       `/api/videos/${videoId}/sharedlivemedias/${mockedSharedLiveMedia.id}/`,
       {
         ...mockedSharedLiveMedia,
@@ -40,17 +69,19 @@ describe('<DisallowedDownloadButton />', () => {
     );
 
     render(
-      <DisallowedDownloadButton
+      <ToggleDownload
+        isDownloadAllowed={false}
         sharedLiveMediaId={mockedSharedLiveMedia.id}
         videoId={videoId}
       />,
     );
 
-    const disallowedDownloadButton = screen.getByRole('button', {
-      name: 'Click on this button to allow students to download the media.',
+    const input: HTMLInputElement = screen.getByRole('checkbox', {
+      name: 'Allow download',
     });
 
-    await userEvent.click(disallowedDownloadButton);
+    // Allowed
+    await userEvent.click(input);
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.lastCall()![0]).toEqual(
@@ -69,14 +100,43 @@ describe('<DisallowedDownloadButton />', () => {
     });
     expect(report).not.toHaveBeenCalled();
     screen.getByText('Shared media updated.');
+
+    fetchMock.patchOnce(
+      `/api/videos/${videoId}/sharedlivemedias/${mockedSharedLiveMedia.id}/`,
+      {
+        ...mockedSharedLiveMedia,
+        show_download: false,
+      },
+      {
+        overwriteRoutes: true,
+      },
+    );
+
+    // Unallowed
+    await userEvent.click(input);
+
+    await waitFor(() => expect(fetchMock.calls()).toHaveLength(2));
+    expect(fetchMock.lastCall()![0]).toEqual(
+      `/api/videos/${videoId}/sharedlivemedias/${mockedSharedLiveMedia.id}/`,
+    );
+    expect(fetchMock.lastCall()![1]).toEqual({
+      headers: {
+        Authorization: 'Bearer json web token',
+        'Content-Type': 'application/json',
+        'Accept-Language': 'en',
+      },
+      method: 'PATCH',
+      body: JSON.stringify({
+        show_download: false,
+      }),
+    });
+    expect(report).not.toHaveBeenCalled();
+    expect(screen.getAllByText('Shared media updated.').length).toBe(2);
   });
 
-  it('clicks on the button and update the show_download property fails', async () => {
+  it('fails to update the download status', async () => {
     const videoId = faker.string.uuid();
-    const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
-      show_download: false,
-      video: videoId,
-    });
+    const mockedSharedLiveMedia = sharedLiveMediaMockFactory();
 
     fetchMock.patch(
       `/api/videos/${videoId}/sharedlivemedias/${mockedSharedLiveMedia.id}/`,
@@ -84,17 +144,18 @@ describe('<DisallowedDownloadButton />', () => {
     );
 
     render(
-      <DisallowedDownloadButton
+      <ToggleDownload
+        isDownloadAllowed={false}
         sharedLiveMediaId={mockedSharedLiveMedia.id}
         videoId={videoId}
       />,
     );
 
-    const disallowedDownloadButton = screen.getByRole('button', {
-      name: 'Click on this button to allow students to download the media.',
+    const input: HTMLInputElement = screen.getByRole('checkbox', {
+      name: 'Allow download',
     });
 
-    await userEvent.click(disallowedDownloadButton);
+    await userEvent.click(input);
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.lastCall()![0]).toEqual(

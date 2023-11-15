@@ -1,7 +1,6 @@
-import { Button } from '@openfun/cunningham-react';
-import { colorsTokens } from 'lib-common';
-import { DownloadSVG, SharedLiveMedia, report } from 'lib-components';
-import React from 'react';
+import { Switch } from '@openfun/cunningham-react';
+import { SharedLiveMedia, report } from 'lib-components';
+import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -12,33 +11,33 @@ const messages = defineMessages({
     defaultMessage: 'Shared media updated.',
     description:
       'Message displayed when a shared media is successfully updated.',
-    id: 'component.AllowedDownloadButton.updateSharedLiveMediaSucces',
+    id: 'component.ToggleDownload.updateSharedLiveMediaSucces',
   },
   updateSharedLiveMediaFail: {
     defaultMessage: 'Shared media update has failed !',
     description: 'Message displayed when shared media update has failed.',
-    id: 'component.AllowedDownloadButton.updateSharedLiveMediaFail',
+    id: 'component.ToggleDownload.updateSharedLiveMediaFail',
   },
-  buttonLabel: {
-    defaultMessage:
-      'Click on this button to stop allowing students to download this media.',
+  labelToggleAllowDownloadSupport: {
+    defaultMessage: 'Allow download',
     description:
-      'The label of the button for stopping to allow students to download the media.',
-    id: 'component.AllowedDownloadButton.buttonLabel',
+      'Label of the toggle allowing to download the support share by the instructor',
+    id: 'component.ToggleDownload.labelToggleAllowDownloadSupport',
   },
 });
 
-interface AllowedDownloadButtonProps {
+interface ToggleDownloadProps {
+  isDownloadAllowed: boolean;
   videoId: SharedLiveMedia['video'];
   sharedLiveMediaId: SharedLiveMedia['id'];
 }
 
-export const AllowedDownloadButton = ({
+export const ToggleDownload = ({
+  isDownloadAllowed,
   videoId,
   sharedLiveMediaId,
-}: AllowedDownloadButtonProps) => {
+}: ToggleDownloadProps) => {
   const intl = useIntl();
-
   const sharedLiveMediaMutation = useUpdateSharedLiveMedia(
     videoId,
     sharedLiveMediaId,
@@ -56,27 +55,29 @@ export const AllowedDownloadButton = ({
         toast.error(intl.formatMessage(messages.updateSharedLiveMediaFail), {
           position: 'bottom-center',
         });
+        setIsLocalDownloadAllowed(isDownloadAllowed);
       },
     },
   );
 
+  const [isLocalDownloadAllowed, setIsLocalDownloadAllowed] =
+    useState(isDownloadAllowed);
+
+  useEffect(() => {
+    setIsLocalDownloadAllowed(isDownloadAllowed);
+  }, [isDownloadAllowed]);
+
   return (
-    <Button
-      aria-label={intl.formatMessage(messages.buttonLabel)}
-      onClick={() =>
+    <Switch
+      checked={isLocalDownloadAllowed}
+      onChange={() => {
         sharedLiveMediaMutation.mutate({
-          show_download: false,
-        })
-      }
-      title={intl.formatMessage(messages.buttonLabel)}
-      icon={
-        <DownloadSVG
-          iconColor={colorsTokens['info-500']}
-          width="24px"
-          height="24px"
-        />
-      }
-      color="tertiary"
+          show_download: !isLocalDownloadAllowed,
+        });
+        setIsLocalDownloadAllowed(!isLocalDownloadAllowed);
+      }}
+      label={intl.formatMessage(messages.labelToggleAllowDownloadSupport)}
+      labelSide="right"
     />
   );
 };
