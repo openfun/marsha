@@ -16,6 +16,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Refacto widgets SharedLiveMedia (#2504)
 - Replace grommet Button (#2453)
 - Replace grommet Box (#2484)
 - Replace grommet TextArea (#2500)

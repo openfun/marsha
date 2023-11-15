@@ -32,7 +32,7 @@ export const DeleteSharedLiveMediaButton = ({
       icon={
         <BinSVG
           height="18px"
-          iconColor={colorsTokens['info-500']}
+          iconColor={colorsTokens['danger-200']}
           width="14px"
         />
       }

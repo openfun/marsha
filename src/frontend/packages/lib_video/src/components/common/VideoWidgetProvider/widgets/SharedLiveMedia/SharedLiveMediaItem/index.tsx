@@ -11,12 +11,10 @@ import {
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { AllowedDownloadButton } from './AllowedDownloadButton';
 import { DeleteSharedLiveMediaButton } from './DeleteSharedLiveMediaButton';
-import { DisallowedDownloadButton } from './DisallowedDownloadButton';
-import { StartSharingButton } from './StartSharingButton';
-import { StopSharingButton } from './StopSharingButton';
 import { TitleDisplayer } from './TitleDisplayer';
+import { ToggleDownload } from './ToggleDownload';
+import { ToggleSharing } from './ToggleSharing';
 
 const messages = defineMessages({
   retryUploadFailedLabel: {
@@ -51,73 +49,93 @@ export const SharedLiveMediaItem = ({
     sharedLiveMedia.upload_state === uploadState.PROCESSING;
 
   return (
-    <Box direction="row" align="center" fill="horizontal" gap="xxsmall">
-      {isTeacher &&
-        (sharedLiveMedia.show_download ? (
-          <AllowedDownloadButton
-            videoId={sharedLiveMedia.video}
-            sharedLiveMediaId={sharedLiveMedia.id}
-          />
-        ) : (
-          <DisallowedDownloadButton
-            videoId={sharedLiveMedia.video}
-            sharedLiveMediaId={sharedLiveMedia.id}
-          />
-        ))}
+    <Box fill="horizontal" gap="xxsmall">
+      <Box direction="row" align="center" fill="horizontal" gap="xxsmall">
+        {isTeacher && !IS_UPLOAD_IN_PROGRESS && (
+          <Box direction="row" align="center" gap="small">
+            <DeleteSharedLiveMediaButton sharedLiveMedia={sharedLiveMedia} />
+          </Box>
+        )}
 
-      {isTeacher && (
-        <Box direction="row" align="center" gap="small">
-          <DeleteSharedLiveMediaButton sharedLiveMedia={sharedLiveMedia} />
+        <Box style={{ minWidth: '0' }}>
+          <TitleDisplayer
+            sharedLiveMedia={sharedLiveMedia}
+            uploadingTitle={uploadingObject?.file.name}
+          />
         </Box>
-      )}
-
-      <Box style={{ minWidth: '0' }}>
-        <TitleDisplayer
-          sharedLiveMedia={sharedLiveMedia}
-          uploadingTitle={uploadingObject?.file.name}
-        />
       </Box>
 
-      {isTeacher && (
-        <Box
-          align="center"
-          direction="row"
-          justify="right"
-          margin={{ left: 'auto' }}
-        >
-          {sharedLiveMedia.upload_state === uploadState.READY ? (
-            isLive && (
-              <Box justify="center" margin={{ left: 'auto' }}>
-                {!isShared ? (
-                  <StartSharingButton sharedLiveMediaId={sharedLiveMedia.id} />
-                ) : (
-                  <StopSharingButton />
-                )}
-              </Box>
-            )
-          ) : IS_UPLOAD_IN_PROGRESS ? (
-            <Text truncate>
-              <ObjectStatusPicker
-                object={sharedLiveMedia}
-                uploadStatus={uploadingObject?.status}
-              />
-            </Text>
-          ) : (
-            <React.Fragment>
+      {isTeacher &&
+        !IS_UPLOAD_IN_PROGRESS &&
+        sharedLiveMedia.upload_state === uploadState.READY && (
+          <Box
+            pad={{ vertical: 'xsmall', horizontal: 'small' }}
+            background={colorsTokens['info-100']}
+            round="xsmall"
+            direction="row"
+            gap="small"
+            flow="wrap"
+            justify="space-between"
+            style={{ border: `1px solid #c0d4ed` }}
+          >
+            {isLive && (
               <Box>
-                <Text color={colorsTokens['danger-300']}>
-                  {intl.formatMessage(messages.retryUploadFailedLabel)}
-                </Text>
+                <ToggleSharing
+                  isShared={isShared}
+                  sharedLiveMediaId={sharedLiveMedia.id}
+                  videoId={sharedLiveMedia.video}
+                />
               </Box>
-
-              <RetryUploadButton
-                color={colorsTokens['danger-500']}
-                onClick={() => onRetryFailedUpload(sharedLiveMedia.id)}
+            )}
+            <Box>
+              <ToggleDownload
+                isDownloadAllowed={sharedLiveMedia.show_download}
+                sharedLiveMediaId={sharedLiveMedia.id}
+                videoId={sharedLiveMedia.video}
               />
-            </React.Fragment>
-          )}
+            </Box>
+          </Box>
+        )}
+
+      {isTeacher && IS_UPLOAD_IN_PROGRESS && (
+        <Box
+          pad={{ vertical: 'xsmall', horizontal: 'small' }}
+          background={colorsTokens['info-100']}
+          round="xsmall"
+          align="center"
+          style={{ border: `1px solid #c0d4ed` }}
+        >
+          <Text truncate>
+            <ObjectStatusPicker
+              object={sharedLiveMedia}
+              uploadStatus={uploadingObject?.status}
+            />
+          </Text>
         </Box>
       )}
+
+      {isTeacher &&
+        !IS_UPLOAD_IN_PROGRESS &&
+        sharedLiveMedia.upload_state !== uploadState.READY && (
+          <Box
+            pad={{ vertical: 'xsmall', horizontal: 'small' }}
+            background={colorsTokens['info-100']}
+            round="xsmall"
+            align="center"
+            justify="center"
+            direction="row"
+            style={{ border: `1px solid #c0d4ed` }}
+          >
+            <Text color={colorsTokens['danger-300']}>
+              {intl.formatMessage(messages.retryUploadFailedLabel)}
+            </Text>
+
+            <RetryUploadButton
+              color={colorsTokens['danger-500']}
+              onClick={() => onRetryFailedUpload(sharedLiveMedia.id)}
+            />
+          </Box>
+        )}
     </Box>
   );
 };

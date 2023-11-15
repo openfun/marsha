@@ -171,7 +171,7 @@ export const VideoLayout = ({
               align="center"
               background="white"
               direction="row"
-              justify="space-evenly"
+              justify="space-between"
               margin="small"
               pad={{
                 vertical: 'small',

@@ -39,7 +39,7 @@ export const ItemList = <T,>({
               </Box>
             ))
           ) : (
-            <Text truncate>{noItemsMessage}</Text>
+            <Text>{noItemsMessage}</Text>
           )}
         </Box>
       </Box>

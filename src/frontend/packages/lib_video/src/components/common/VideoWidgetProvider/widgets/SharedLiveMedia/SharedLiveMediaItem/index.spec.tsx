@@ -80,16 +80,6 @@ describe('<SharedLiveMediaItem />', () => {
       ),
     );
 
-    expect(
-      screen.getByRole('button', {
-        name: 'Click on this button to stop allowing students to download this media.',
-      }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', {
-        name: 'Click on this button to delete the media.',
-      }),
-    ).toBeInTheDocument();
     expect(screen.getByText('uploadingObjectFileName.pdf')).toBeInTheDocument();
     expect(screen.getByText('Uploading')).toBeInTheDocument();
   });
@@ -143,16 +133,6 @@ describe('<SharedLiveMediaItem />', () => {
       ),
     );
 
-    expect(
-      screen.getByRole('button', {
-        name: 'Click on this button to stop allowing students to download this media.',
-      }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', {
-        name: 'Click on this button to delete the media.',
-      }),
-    ).toBeInTheDocument();
     expect(screen.getByText('sharedLiveMediaFileName.pdf')).toBeInTheDocument();
     screen.getByText('Processing');
   });
@@ -196,16 +176,6 @@ describe('<SharedLiveMediaItem />', () => {
       ),
     );
 
-    expect(
-      screen.getByRole('button', {
-        name: 'Click on this button to stop allowing students to download this media.',
-      }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', {
-        name: 'Click on this button to delete the media.',
-      }),
-    ).toBeInTheDocument();
     expect(screen.getByText('sharedLiveMediaFileName.pdf')).toBeInTheDocument();
     expect(screen.getByText('Processing')).toBeInTheDocument();
   });
@@ -246,8 +216,8 @@ describe('<SharedLiveMediaItem />', () => {
     );
 
     expect(
-      screen.getByRole('button', {
-        name: 'Click on this button to allow students to download the media.',
+      screen.getByRole('checkbox', {
+        name: 'Allow download',
       }),
     ).toBeInTheDocument();
     expect(
@@ -256,7 +226,11 @@ describe('<SharedLiveMediaItem />', () => {
       }),
     ).toBeInTheDocument();
     expect(screen.getByText('sharedLiveMediaFileName.pdf')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Share' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('checkbox', {
+        name: 'Share support',
+      }),
+    ).toBeInTheDocument();
   });
 
   it('renders a SharedLiveMediaItem which is ready (and being shared with students but not downloadable)', () => {
@@ -297,8 +271,8 @@ describe('<SharedLiveMediaItem />', () => {
     );
 
     expect(
-      screen.getByRole('button', {
-        name: 'Click on this button to allow students to download the media.',
+      screen.getByRole('checkbox', {
+        name: 'Allow download',
       }),
     ).toBeInTheDocument();
     expect(
@@ -308,8 +282,10 @@ describe('<SharedLiveMediaItem />', () => {
     ).toBeInTheDocument();
     expect(screen.getByText('sharedLiveMediaFileName.pdf')).toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: 'Stop sharing' }),
-    ).toBeInTheDocument();
+      screen.getByRole('checkbox', {
+        name: 'Share support',
+      }),
+    ).toBeChecked();
   });
 
   it('renders a SharedLiveMediaItem which has an error', async () => {
@@ -346,9 +322,6 @@ describe('<SharedLiveMediaItem />', () => {
       ),
     );
 
-    screen.getByRole('button', {
-      name: 'Click on this button to stop allowing students to download this media.',
-    });
     screen.getByRole('button', {
       name: 'Click on this button to delete the media.',
     });
@@ -398,9 +371,6 @@ describe('<SharedLiveMediaItem />', () => {
       ),
     );
 
-    screen.getByRole('button', {
-      name: 'Click on this button to stop allowing students to download this media.',
-    });
     screen.getByRole('button', {
       name: 'Click on this button to delete the media.',
     });

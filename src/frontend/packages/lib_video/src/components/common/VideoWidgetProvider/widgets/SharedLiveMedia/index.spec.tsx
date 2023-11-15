@@ -205,10 +205,16 @@ describe('<SharedLiveMedia />', () => {
     expect(
       screen.queryByText('You have no uploaded documents yet.'),
     ).toBeNull();
-    screen.getByRole('button', {
-      name: 'Click on this button to stop allowing students to download this media.',
-    });
-    screen.getByRole('button', { name: 'Share' });
+    expect(
+      screen.getByRole('checkbox', {
+        name: 'Allow download',
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('checkbox', {
+        name: 'Share support',
+      }),
+    ).toBeInTheDocument();
     screen.getByRole('link', { name: 'Title of the file' });
 
     const deleteButton = screen.getByRole('button', {
@@ -283,10 +289,16 @@ describe('<SharedLiveMedia />', () => {
     expect(
       screen.queryByText('You have no uploaded documents yet.'),
     ).toBeNull();
-    screen.getByRole('button', {
-      name: 'Click on this button to stop allowing students to download this media.',
-    });
-    screen.getByRole('button', { name: 'Share' });
+    expect(
+      screen.getByRole('checkbox', {
+        name: 'Allow download',
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('checkbox', {
+        name: 'Share support',
+      }),
+    ).toBeInTheDocument();
     screen.getByRole('link', { name: 'Title of the file' });
 
     const deleteButton = screen.getByRole('button', {
@@ -367,9 +379,6 @@ describe('<SharedLiveMedia />', () => {
       screen.queryByText('You have no uploaded documents yet.'),
     ).toBeNull();
     screen.getByRole('button', {
-      name: 'Click on this button to stop allowing students to download this media.',
-    });
-    screen.getByRole('button', {
       name: 'Click on this button to delete the media.',
     });
     screen.getByText('Upload has failed');
@@ -424,9 +433,11 @@ describe('<SharedLiveMedia />', () => {
     );
 
     screen.getByRole('button', { name: 'Upload a presentation support' });
-    screen.getByRole('button', {
-      name: 'Click on this button to stop allowing students to download this media.',
-    });
+    expect(
+      screen.getByRole('checkbox', {
+        name: 'Allow download',
+      }),
+    ).toBeInTheDocument();
     screen.getByRole('button', {
       name: 'Click on this button to delete the media.',
     });
