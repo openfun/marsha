@@ -105,6 +105,28 @@ input:-webkit-autofill:focus {
 .c__select__wrapper:focus-within .labelled-box--disabled label {
   color: var(--c--components--forms-labelledbox--label-color--small--disabled);
 }
+.c__select__wrapper .labelled-box {
+  display: flex;
+  gap: 0.6rem;
+  flex-direction: column;
+}
+.c__select__wrapper .labelled-box .labelled-box__children {
+  padding: unset;
+  padding-right: 5rem;
+}
+.c__select__wrapper .labelled-box .c__select__inner__actions {
+  right: 0px;
+  top: 50%;
+  position: absolute;
+}
+.c__select__wrapper label {
+  position: relative;
+  padding-right: 5rem;
+  max-width: none;
+}
+.c__select__wrapper .c__select__inner__actions__open:focus {
+  outline: none;
+}
 /**
  * DataGrid
 */
