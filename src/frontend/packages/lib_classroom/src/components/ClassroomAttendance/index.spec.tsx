@@ -101,7 +101,7 @@ describe('<ClassroomAttendance />', () => {
         sessions={[
           {
             started_at: '2021-01-01T00:00:00.000Z',
-            ended_at: '2021-01-01T00:18:00.000Z',
+            ended_at: '2021-01-01T01:18:02.000Z',
             attendees: {
               '1234': {
                 fullname: 'John Doe',
@@ -134,10 +134,10 @@ describe('<ClassroomAttendance />', () => {
     );
 
     expect(screen.getAllByRole('rowheader')[0].textContent).toBe(
-      'Mar 1, 2021, 12:00 AM-Duration: 00:20',
+      'Mar 1, 2021, 12:00 AM-Duration: 20 minutes',
     );
     expect(screen.getAllByRole('rowheader')[1].textContent).toMatch(
-      'Jan 1, 2021, 12:00 AM-Duration: 00:18',
+      'Jan 1, 2021, 12:00 AM-Duration: 1 hour, 18 minutes, 2 seconds',
     );
   });
 
@@ -147,7 +147,7 @@ describe('<ClassroomAttendance />', () => {
         sessions={[
           {
             started_at: '2021-01-01T00:00:00.000Z',
-            ended_at: '2021-01-01T00:20:00.000Z',
+            ended_at: '2021-01-01T01:20:02.000Z',
             attendees: {
               '1234': {
                 fullname: 'John Doe',
@@ -191,13 +191,13 @@ describe('<ClassroomAttendance />', () => {
       screen.getByRole('rowheader', {
         name: /1 janv. 2021, 00:00/,
       }).textContent,
-    ).toBe('1 janv. 2021, 00:00-Durée: 00:20');
+    ).toBe('1 janv. 2021, 00:00-Durée: 1 heure, 20 minutes, 2 secondes');
 
     expect(
       screen.getByRole('rowheader', {
         name: /1 mars 2021, 00:00/,
       }).textContent,
-    ).toBe('1 mars 2021, 00:00-Durée: 00:19');
+    ).toBe('1 mars 2021, 00:00-Durée: 19 minutes');
   });
 
   it('checks render attendees with multiple sessions', async () => {
