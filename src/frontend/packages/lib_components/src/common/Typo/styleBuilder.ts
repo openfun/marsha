@@ -29,6 +29,7 @@ export type MarginPadding =
       bottom?: Spacings;
       left?: Spacings;
       right?: Spacings;
+      all?: Spacings;
     };
 
 type SizesKey = keyof typeof sizes;
@@ -74,10 +75,22 @@ export const stylesTruncate = (truncate: boolean | number) => {
 export const stylesPad = (pad: MarginPadding) => {
   if (typeof pad === 'object') {
     return {
-      paddingTop: spacingValue(pad.top) || spacingValue(pad.vertical),
-      paddingBottom: spacingValue(pad.bottom) || spacingValue(pad.vertical),
-      paddingLeft: spacingValue(pad.left) || spacingValue(pad.horizontal),
-      paddingRight: spacingValue(pad.right) || spacingValue(pad.horizontal),
+      paddingTop:
+        spacingValue(pad.top) ||
+        spacingValue(pad.vertical) ||
+        spacingValue(pad.all),
+      paddingBottom:
+        spacingValue(pad.bottom) ||
+        spacingValue(pad.vertical) ||
+        spacingValue(pad.all),
+      paddingLeft:
+        spacingValue(pad.left) ||
+        spacingValue(pad.horizontal) ||
+        spacingValue(pad.all),
+      paddingRight:
+        spacingValue(pad.right) ||
+        spacingValue(pad.horizontal) ||
+        spacingValue(pad.all),
     };
   } else {
     return {
@@ -89,12 +102,22 @@ export const stylesPad = (pad: MarginPadding) => {
 export const stylesMargin = (margin: MarginPadding) => {
   if (typeof margin === 'object') {
     return {
-      marginTop: spacingValue(margin.top) || spacingValue(margin.vertical),
+      marginTop:
+        spacingValue(margin.top) ||
+        spacingValue(margin.vertical) ||
+        spacingValue(margin.all),
       marginBottom:
-        spacingValue(margin.bottom) || spacingValue(margin.vertical),
-      marginLeft: spacingValue(margin.left) || spacingValue(margin.horizontal),
+        spacingValue(margin.bottom) ||
+        spacingValue(margin.vertical) ||
+        spacingValue(margin.all),
+      marginLeft:
+        spacingValue(margin.left) ||
+        spacingValue(margin.horizontal) ||
+        spacingValue(margin.all),
       marginRight:
-        spacingValue(margin.right) || spacingValue(margin.horizontal),
+        spacingValue(margin.right) ||
+        spacingValue(margin.horizontal) ||
+        spacingValue(margin.all),
     };
   } else {
     return {

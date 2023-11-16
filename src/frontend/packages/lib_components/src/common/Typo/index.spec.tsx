@@ -69,7 +69,7 @@ describe('<Typo />', () => {
     unmount();
 
     render(
-      <Typo pad={{ horizontal: '20px', vertical: '5px', bottom: '2px' }}>
+      <Typo pad={{ horizontal: '20px', all: '5px', bottom: '2px' }}>
         My Typo
       </Typo>,
     );
@@ -88,7 +88,14 @@ describe('<Typo />', () => {
     unmount();
 
     render(
-      <Typo margin={{ horizontal: '20px', vertical: '5px', bottom: '2px' }}>
+      <Typo
+        margin={{
+          horizontal: '20px',
+          vertical: '5px',
+          bottom: '2px',
+          all: '15px',
+        }}
+      >
         My Typo
       </Typo>,
     );
