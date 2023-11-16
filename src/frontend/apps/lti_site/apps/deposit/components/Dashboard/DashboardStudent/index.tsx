@@ -1,4 +1,5 @@
 import { Grid } from 'grommet';
+import { Breakpoints } from 'lib-common';
 import {
   Box,
   BoxLoader,
@@ -33,12 +34,21 @@ interface DashboardStudentProps {
 }
 
 export const DashboardStudent = ({ fileDepository }: DashboardStudentProps) => {
-  const { isMobile } = useResponsive();
+  const { isSmallerBreakpoint, breakpoint, isMobile } = useResponsive();
   const { data, isError, isLoading } = useDepositedFiles(fileDepository.id);
+
+  const isXsmall = isSmallerBreakpoint(breakpoint, Breakpoints.xsmall);
+  const isSmall = isSmallerBreakpoint(breakpoint, Breakpoints.small);
 
   return (
     <React.Fragment>
-      <Box background="white" elevation fill pad="xlarge" round="xsmall">
+      <Box
+        background="white"
+        elevation
+        fill
+        pad={isXsmall ? 'xsmall' : isSmall ? 'small' : 'xlarge'}
+        round="xsmall"
+      >
         <Heading>{fileDepository.title}</Heading>
         {isMobile ? (
           <React.Fragment>
@@ -57,7 +67,7 @@ export const DashboardStudent = ({ fileDepository }: DashboardStudentProps) => {
         elevation
         fill
         margin={{ top: 'small' }}
-        pad="xlarge"
+        pad={isXsmall ? 'xsmall' : isSmall ? 'small' : 'xlarge'}
         round="xsmall"
       >
         <Heading>
@@ -68,7 +78,7 @@ export const DashboardStudent = ({ fileDepository }: DashboardStudentProps) => {
         ) : isError ? (
           <FormattedMessage {...messages.fetchFilesError} />
         ) : (
-          <Box fill margin={{ top: 'small' }} pad="medium" round="xsmall">
+          <Box fill margin={{ top: 'small' }}>
             {data?.results.map((file) => (
               <DepositedFileRow key={file.id} file={file} />
             ))}

@@ -65,7 +65,12 @@ export const DepositedFileRow = ({ file }: DepositedFileProps) => {
       }}
       fill
       margin={{ top: 'xxsmall' }}
-      pad="medium"
+      pad={{
+        all: 'small',
+        horizontal: isSmallerBreakpoint(breakpoint, Breakpoints.smedium)
+          ? 'small'
+          : 'medium',
+      }}
       round="xsmall"
     >
       <Box
@@ -76,19 +81,20 @@ export const DepositedFileRow = ({ file }: DepositedFileProps) => {
         justify="space-between"
         flow="wrap"
       >
-        <Text weight="medium">{file.author_name}</Text>
-        {uploadedOn && (
-          <Text size="small" className="mr-t">
-            {uploadedOnDate}&nbsp;{uploadedOnTime}
-          </Text>
-        )}
+        <Box>
+          <Text weight="medium">{file.author_name}</Text>
+          {uploadedOn && (
+            <Text size="small" className="mr-t">
+              {uploadedOnDate}&nbsp;{uploadedOnTime}
+            </Text>
+          )}
+        </Box>
         <Box align="end" justify="end" gap="small">
           {file.upload_state === 'ready' ? (
             <Button
               onClick={markFileAsRead}
               download
               aria-label={intl.formatMessage(messages.labelDownload)}
-              style={{ fontFamily: 'Roboto-Medium' }}
               title={intl.formatMessage(messages.labelDownload)}
               href={file.url}
             >
@@ -106,6 +112,7 @@ export const DepositedFileRow = ({ file }: DepositedFileProps) => {
         align="center"
         justify="space-between"
         margin={{ top: 'xsmall' }}
+        gap="xsmall"
       >
         <Text title={file.filename} weight={file.read ? 'regular' : 'bold'}>
           {isSmallerBreakpoint(breakpoint, Breakpoints.large)
