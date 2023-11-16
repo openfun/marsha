@@ -35,6 +35,7 @@
     "@babel/polyfill": "7.12.1",
     "@babel/preset-env": "7.23.3",
     "@babel/preset-typescript": "7.23.3",
+    "@faker-js/faker": "*",
     "@formatjs/cli": "6.2.3",
     "@openfun/cunningham-react": "*",
     "@tanstack/react-query": "*",
@@ -43,6 +44,7 @@
     "@testing-library/react": "*",
     "@testing-library/user-event": "*",
     "@types/clipboard": "2.0.1",
+    "@types/humanize-duration": "^3.27.3",
     "@types/jest": "29.5.8",
     "@types/node": "*",
     "@types/react": "*",
@@ -53,7 +55,6 @@
     "cross-env": "7.0.3",
     "eslint": "*",
     "eslint-config-marsha": "*",
-    "@faker-js/faker": "*",
     "grommet": "*",
     "jest": "29.7.0",
     "jest-environment-jsdom": "29.7.0",
@@ -72,6 +73,7 @@
     "typescript": "*"
   },
   "dependencies": {
+    "humanize-duration": "3.31.0",
     "lib-common": "*",
     "lib-components": "*",
     "react-dropzone": "14.2.3",

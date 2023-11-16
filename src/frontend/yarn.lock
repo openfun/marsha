@@ -5188,6 +5188,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/humanize-duration@^3.27.3":
+  version "3.27.3"
+  resolved "https://registry.yarnpkg.com/@types/humanize-duration/-/humanize-duration-3.27.3.tgz#fa49ada1cc65222d5f1295c7756b6877f5a96bcf"
+  integrity sha512-wiiiFYjnrYDJE/ujU7wS/NShqp12IKrejozjDtcejP0zYi+cjyjVcfZHwcFUDKVJ7tHGsmgeW2ED92ABIIjfpg==
+
 "@types/iframe-resizer@3.5.12":
   version "3.5.12"
   resolved "https://registry.yarnpkg.com/@types/iframe-resizer/-/iframe-resizer-3.5.12.tgz#9726d734be5ef0a81d31e87e636445e4e6b40d8d"
@@ -10247,6 +10252,11 @@ human-signals@^4.3.0:
   version "4.3.1"
   resolved "https://registry.yarnpkg.com/human-signals/-/human-signals-4.3.1.tgz#ab7f811e851fca97ffbd2c1fe9a958964de321b2"
   integrity sha512-nZXjEF2nbo7lIw3mgYjItAfgQXog3OjJogSbKa2CQIIvSGWcKgeJnQlNXip6NglNzYH45nSRiEVimMvYL8DDqQ==
+
+humanize-duration@3.31.0:
+  version "3.31.0"
+  resolved "https://registry.yarnpkg.com/humanize-duration/-/humanize-duration-3.31.0.tgz#a0384d22555024cd17e6e9f8561540d37756bf4c"
+  integrity sha512-fRrehgBG26NNZysRlTq1S+HPtDpp3u+Jzdc/d5A4cEzOD86YLAkDaJyJg8krSdCi7CJ+s7ht3fwRj8Dl+Btd0w==
 
 iconv-lite@0.4, iconv-lite@0.4.24:
   version "0.4.24"

@@ -1,5 +1,6 @@
 import { Accordion, AccordionPanel } from 'grommet';
 import { StatusGoodSmall } from 'grommet-icons';
+import humanizeDuration from 'humanize-duration';
 import { colorsTokens } from 'lib-common';
 import {
   Box,
@@ -8,7 +9,7 @@ import {
   TabAttendanceWaiting,
   Text,
 } from 'lib-components';
-import { DateTime, Duration } from 'luxon';
+import { DateTime } from 'luxon';
 import { useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
@@ -75,7 +76,12 @@ const ClassroomAttendance = ({ sessions }: Pick<Classroom, 'sessions'>) => {
       }
 
       // Format the date locally
-      const duration = Duration.fromMillis(totalDuration).toFormat('hh:mm');
+      const duration = humanizeDuration(totalDuration, {
+        language: intl.locale.split(/[-_]/)[0],
+        fallbacks: ['en'],
+        maxDecimalPoints: 0,
+      });
+
       const date = DateTime.fromISO(session.started_at).setLocale(intl.locale);
 
       const humanDate = (
