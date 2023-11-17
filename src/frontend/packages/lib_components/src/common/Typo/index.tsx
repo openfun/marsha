@@ -9,9 +9,11 @@ import {
 } from 'react';
 
 import {
+  Flex,
   Height,
   MarginPadding,
   Width,
+  stylesFlex,
   stylesHeight,
   stylesMargin,
   stylesPad,
@@ -42,8 +44,7 @@ export interface TypoPropsOnly {
   color?: CSSProperties['color'];
   display?: CSSProperties['display'];
   fill?: boolean | 'horizontal' | 'vertical' | 'full';
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  flex?: boolean | 'grow' | 'shrink' | (string & {});
+  flex?: Flex;
   flow?: CSSProperties['flexFlow'];
   fontSize?: CSSProperties['fontSize'];
   height?: Height;
@@ -178,6 +179,13 @@ const TypoRef = forwardRef(
       bgClassname = ` ${background}`;
     }
 
+    if (flex) {
+      moreStyles = {
+        ...moreStyles,
+        ...stylesFlex(flex),
+      };
+    }
+
     return createElement(
       type,
       {
@@ -189,14 +197,6 @@ const TypoRef = forwardRef(
           background: bgClassname ? undefined : background,
           color: colorClassname ? undefined : color,
           display,
-          flex:
-            flex === 'grow'
-              ? '1 0 auto'
-              : flex === 'shrink'
-                ? '0 1 auto'
-                : flex === true
-                  ? '1 1 auto'
-                  : flex,
           flexBasis: basis,
           flexFlow: flow,
           fontSize,
