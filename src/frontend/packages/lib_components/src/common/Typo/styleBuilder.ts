@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { themeTokens } from 'lib-common';
 
 const {
@@ -14,7 +15,6 @@ const {
 } = themeTokens.spacings;
 
 type SpacingsKey = keyof typeof spacings;
-// eslint-disable-next-line @typescript-eslint/ban-types
 export type Spacings = SpacingsKey | (string & {});
 
 export const spacingValue = (value?: Spacings) =>
@@ -33,7 +33,6 @@ export type MarginPadding =
     };
 
 type SizesKey = keyof typeof sizes;
-// eslint-disable-next-line @typescript-eslint/ban-types
 export type Sizes = SizesKey | (string & {}) | (number & {});
 
 export const sizesValue = (value?: Sizes) =>
@@ -152,4 +151,31 @@ export const stylesHeight = (height: Height) => {
       height: sizesValue(height),
     };
   }
+};
+
+export type Flex = boolean | 'grow' | 'shrink' | (string & {});
+export const stylesFlex = (flex: Flex) => {
+  if (flex === 'grow') {
+    return {
+      flexGrow: 1,
+      flexShrink: 0,
+      flexBasis: 'auto',
+    };
+  } else if (flex === 'shrink') {
+    return {
+      flexGrow: 0,
+      flexShrink: 1,
+      flexBasis: 'auto',
+    };
+  } else if (flex === true) {
+    return {
+      flexGrow: 1,
+      flexShrink: 1,
+      flexBasis: 'auto',
+    };
+  }
+
+  return {
+    flex,
+  };
 };
