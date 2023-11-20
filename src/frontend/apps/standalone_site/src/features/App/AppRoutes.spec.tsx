@@ -1,7 +1,11 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { useCurrentUser, useJwt } from 'lib-components';
+import {
+  useCurrentUser,
+  useJwt,
+  localStore as useLocalJwt,
+} from 'lib-components';
 import { render } from 'lib-tests';
 
 import featureContentLoader from 'features/Contents/features/featureLoader';
@@ -126,6 +130,13 @@ describe('<AppRoutes />', () => {
     });
 
     test('render invite route', async () => {
+      useLocalJwt.setState({
+        setDecodedJwt: (jwt) =>
+          useLocalJwt.setState({
+            internalDecodedJwt: `${jwt!}-decoded` as any,
+          }),
+      });
+
       fetchMock.get('/api/classrooms/456789/token/?invite_token=123456', {
         access_token: 'fake-jwt',
       });
@@ -141,7 +152,11 @@ describe('<AppRoutes />', () => {
       ).not.toBeInTheDocument();
       expect(screen.getByText('My ClassRoomUpdate Page')).toBeInTheDocument();
       expect(screen.getByText('My Footer')).toBeInTheDocument();
-      expect(useJwt.getState().jwt).toEqual('fake-jwt');
+      expect(useLocalJwt.getState().jwt).toEqual('fake-jwt');
+      expect(useLocalJwt.getState().internalDecodedJwt).toEqual(
+        'fake-jwt-decoded',
+      );
+      expect(useJwt.getState().jwt).toBeUndefined();
     });
 
     test('render invite route error message', async () => {

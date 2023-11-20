@@ -3,8 +3,8 @@ import { create } from 'zustand';
 import { DecodedJwt } from '../../../types/jwt';
 import { decodeJwt } from '../../../utils/decodeJwt';
 
-const JWT_KEY = 'JWT';
-const REFRESH_JWT_KEY = 'REFRESH_JWT';
+export const JWT_KEY = 'JWT';
+export const REFRESH_JWT_KEY = 'REFRESH_JWT';
 
 interface JwtStoreInterface {
   refreshJwtBlackListed?: string;
@@ -21,13 +21,15 @@ interface JwtStoreInterface {
   resetJwt: () => void;
 }
 
-const localStore = create<JwtStoreInterface>((set, get) => ({
+export const localStore = create<JwtStoreInterface>((set, get) => ({
   refreshJwtBlackListed: undefined,
   jwt: undefined,
   refreshJwt: undefined,
   internalDecodedJwt: undefined,
   getJwt: () => get().jwt,
-  setJwt: (jwt) => set((state) => ({ ...state, jwt })),
+  setJwt: (jwt) => {
+    set((state) => ({ ...state, jwt }));
+  },
   getRefreshJwt: () => get().refreshJwt,
   setRefreshJwt: (refreshJwt) => set((state) => ({ ...state, refreshJwt })),
   setRefreshJwtBlackListed: (refreshJwt) => {
@@ -37,8 +39,14 @@ const localStore = create<JwtStoreInterface>((set, get) => ({
     }));
   },
   setDecodedJwt: (jwt) => {
-    const decoded = decodeJwt(jwt);
-    set((state) => ({ ...state, internalDecodedJwt: decoded }));
+    if (jwt) {
+      const decoded = decodeJwt(jwt);
+      set((state) => ({ ...state, internalDecodedJwt: decoded }));
+    } else {
+      if (get().internalDecodedJwt) {
+        set((state) => ({ ...state, internalDecodedJwt: undefined }));
+      }
+    }
   },
   getDecodedJwt: () => {
     const currentValue = get().internalDecodedJwt;

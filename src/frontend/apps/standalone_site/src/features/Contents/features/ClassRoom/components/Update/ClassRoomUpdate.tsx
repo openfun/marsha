@@ -9,6 +9,7 @@ import {
   isDecodedJwtWeb,
   useCurrentResourceContext,
   useJwt,
+  localStore as useLocalJwt,
   useResponsive,
 } from 'lib-components';
 import { useEffect, useMemo } from 'react';
@@ -69,9 +70,20 @@ const DashboardClassroomStyled = styled(Box)<DashboardClassroomStyledProps>`
 `;
 
 const ClassRoomUpdate = () => {
-  const { classroomId } = useParams();
+  const { classroomId, inviteId } = useParams();
 
-  const internalDecodedJwt = useJwt((state) => state.internalDecodedJwt);
+  const internalDecodedPersistingJwt = useJwt(
+    (state) => state.internalDecodedJwt,
+  );
+  const internalDecodedLocalJwt = useLocalJwt(
+    (state) => state.internalDecodedJwt,
+  );
+
+  // Invited users have a local jwt (working only for the current browser tab),
+  // otherwise it's a persisting jwt
+  const internalDecodedJwt = inviteId
+    ? internalDecodedLocalJwt
+    : internalDecodedPersistingJwt;
   const resourceContext: ResourceContext = useMemo(() => {
     let permissions = {
       can_access_dashboard: false,
