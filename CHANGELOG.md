@@ -16,6 +16,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Remove persistency on token from invite link (#2505)
 - Replace grommet Cards / Footer/ Anchor / Tip / Nav (#2503)
 - Refacto widgets SharedLiveMedia (#2504)
 - Replace grommet Button (#2453)

@@ -1,12 +1,19 @@
 import { render, renderHook, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { classroomMockFactory } from 'lib-classroom';
-import { useCurrentUser, useJwt } from 'lib-components';
+import {
+  JWT_KEY,
+  useCurrentUser,
+  useJwt,
+  localStore as useLocalJwt,
+} from 'lib-components';
 import { Deferred, wrapperUtils } from 'lib-tests';
 
 import { featureContentLoader } from 'features/Contents';
 
 import { useAuthenticator } from './useAuthenticator';
+
+window.use_jwt_persistence = true;
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
@@ -29,7 +36,7 @@ const whoAmIResponse200 = {
 
 describe('<useAuthenticator />', () => {
   beforeEach(() => {
-    localStorage.removeItem('jwt-storage');
+    localStorage.removeItem(JWT_KEY);
     useJwt.getState().resetJwt();
     useCurrentUser.setState({
       currentUser: null,
@@ -113,6 +120,7 @@ describe('<useAuthenticator />', () => {
     expect(useJwt.getState().internalDecodedJwt).toEqual(
       'some-internalDecodedJwt',
     );
+    expect(localStorage.getItem(JWT_KEY)).toEqual('some-access2');
   });
 
   it('checks unsuccessfully the authentication with the token parameter', async () => {
@@ -149,6 +157,12 @@ describe('<useAuthenticator />', () => {
 
   it('checks classroom invite link', async () => {
     featureContentLoader([]);
+    useLocalJwt.setState({
+      setDecodedJwt: (jwt) =>
+        useLocalJwt.setState({
+          internalDecodedJwt: `${jwt!}-decoded` as any,
+        }),
+    });
 
     const accessTokenResponse = {
       access_token: 'valid_jwt',
@@ -175,7 +189,14 @@ describe('<useAuthenticator />', () => {
 
     await waitFor(() => expect(result.current.isLoading).toBeFalsy());
     expect(result.current.isAuthenticated).toBeFalsy();
-    await waitFor(() => expect(useJwt.getState().jwt).toEqual('valid_jwt'));
+    await waitFor(() =>
+      expect(useLocalJwt.getState().jwt).toEqual('valid_jwt'),
+    );
+    expect(useLocalJwt.getState().internalDecodedJwt).toEqual(
+      'valid_jwt-decoded',
+    );
+    expect(useJwt.getState().jwt).toBeUndefined();
+    expect(localStorage.getItem(JWT_KEY)).toBeNull();
   });
 
   it('checks legacy invite link', async () => {
@@ -197,7 +218,9 @@ describe('<useAuthenticator />', () => {
 
     await waitFor(() => expect(result.current.isLoading).toBeFalsy());
     expect(result.current.isAuthenticated).toBeFalsy();
-    await waitFor(() => expect(useJwt.getState().jwt).toEqual(legacyInvite));
+    await waitFor(() =>
+      expect(useLocalJwt.getState().jwt).toEqual(legacyInvite),
+    );
     expect(
       fetchMock.called(
         `/api/classrooms/${classroom.id}/token/?invite_token=${legacyInvite}`,

@@ -4,7 +4,7 @@ import { render } from 'lib-tests';
 import React, { Fragment } from 'react';
 
 import { useCurrentUser } from '@lib-components/hooks/stores/useCurrentUser';
-import { useJwt } from '@lib-components/hooks/stores/useJwt';
+import { JWT_KEY, useJwt } from '@lib-components/hooks/stores/useJwt';
 import { EServiceworkerAuthAction } from '@lib-components/types/serviceWorker';
 
 import { useServiceWorkerRefreshToken } from './index';
@@ -32,7 +32,7 @@ const TestComponent = () => {
 
 describe('<useServiceWorkerRefreshToken />', () => {
   beforeEach(() => {
-    localStorage.removeItem('jwt-storage');
+    localStorage.removeItem(JWT_KEY);
 
     useJwt.getState().resetJwt();
     fetchMock.restore();

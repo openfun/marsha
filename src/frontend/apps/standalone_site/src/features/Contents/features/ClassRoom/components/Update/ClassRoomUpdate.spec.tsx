@@ -1,6 +1,10 @@
 import { screen } from '@testing-library/react';
 import { ResponsiveContext } from 'grommet';
-import { ltiPublicTokenMockFactory, useJwt } from 'lib-components';
+import {
+  ltiPublicTokenMockFactory,
+  useJwt,
+  localStore as useLocalJwt,
+} from 'lib-components';
 import { render } from 'lib-tests';
 import { useParams } from 'react-router-dom';
 
@@ -10,10 +14,10 @@ import ClassRoomUpdate from './ClassRoomUpdate';
 
 const fullTheme = getFullThemeExtend();
 
-const mockSetCurrentRessourceContext = jest.fn();
+const mockSetCurrentResourceContext = jest.fn();
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
-  useCurrentResourceContext: () => [, mockSetCurrentRessourceContext],
+  useCurrentResourceContext: () => [, mockSetCurrentResourceContext],
 }));
 
 jest.mock('react-router-dom', () => ({
@@ -51,6 +55,29 @@ describe('<ClassRoomUpdate />', () => {
     jest.resetAllMocks();
   });
 
+  test('render', () => {
+    useJwt.setState({
+      jwt: 'some token',
+      internalDecodedJwt: ltiPublicTokenMockFactory(
+        {},
+        { can_access_dashboard: true, can_update: true },
+      ),
+    });
+
+    render(<ClassRoomUpdate />);
+
+    expect(screen.getByText(/My DashboardClassroom/i)).toBeInTheDocument();
+    expect(mockSetCurrentResourceContext).toHaveBeenCalledWith({
+      isFromWebsite: true,
+      permissions: {
+        can_access_dashboard: true,
+        can_update: true,
+      },
+      resource_id: '123456',
+      roles: [],
+    });
+  });
+
   test('render without classroomId', () => {
     mockUseParams.mockReturnValue({
       classroomId: '',
@@ -80,11 +107,16 @@ describe('<ClassRoomUpdate />', () => {
     ).toHaveStyle('width: 75%;');
   });
 
-  test('ressource if viewer invited', () => {
+  test('resource if viewer invited', () => {
+    mockUseParams.mockReturnValue({
+      classroomId: '123456',
+      inviteId: '456789',
+    });
+
     render(<ClassRoomUpdate />);
 
     expect(screen.getByText(/My DashboardClassroom/i)).toBeInTheDocument();
-    expect(mockSetCurrentRessourceContext).toHaveBeenCalledWith({
+    expect(mockSetCurrentResourceContext).toHaveBeenCalledWith({
       isFromWebsite: true,
       permissions: {
         can_access_dashboard: false,
@@ -95,8 +127,13 @@ describe('<ClassRoomUpdate />', () => {
     });
   });
 
-  test('ressource if moderator invited', () => {
-    useJwt.setState({
+  test('resource if moderator invited', () => {
+    mockUseParams.mockReturnValue({
+      classroomId: '123456',
+      inviteId: '456789',
+    });
+
+    useLocalJwt.setState({
       jwt: 'some token',
       internalDecodedJwt: ltiPublicTokenMockFactory(
         {},
@@ -107,7 +144,7 @@ describe('<ClassRoomUpdate />', () => {
     render(<ClassRoomUpdate />);
 
     expect(screen.getByText(/My DashboardClassroom/i)).toBeInTheDocument();
-    expect(mockSetCurrentRessourceContext).toHaveBeenCalledWith({
+    expect(mockSetCurrentResourceContext).toHaveBeenCalledWith({
       isFromWebsite: true,
       permissions: {
         can_access_dashboard: true,
