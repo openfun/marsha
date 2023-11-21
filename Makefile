@@ -105,6 +105,7 @@ run: ## start the development server using Docker
 	@$(COMPOSE) up -d app
 	@echo "Wait for postgresql to be up..."
 	@$(COMPOSE_RUN) dockerize -wait tcp://db:5432 -timeout 60s
+	@$(COMPOSE) up -d celery
 	@$(COMPOSE) up -d prosody-nginx
 	@$(COMPOSE) up -d webtorrent
 	@$(COMPOSE) up -d peertube-runner

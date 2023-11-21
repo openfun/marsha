@@ -772,6 +772,11 @@ class Base(Configuration):
     # PLAYLIST CLAIM SETTING
     PLAYLIST_CLAIM_EXCLUDED_LTI_USER_ID = values.ListValue(["STUDENT"])
 
+    # CELERY SETTINGS
+    CELERY_BROKER_URL = values.Value("redis://redis:6379/0")
+    CELERY_RESULT_BACKEND = values.Value("redis://redis:6379/0")
+    CELERY_BROKER_TRANSPORT_OPTIONS = values.DictValue({})
+
     # pylint: disable=invalid-name
     @property
     def AWS_SOURCE_BUCKET_NAME(self):
@@ -1052,6 +1057,9 @@ class Test(Base):
             "BACKEND": "django.core.files.storage.InMemoryStorage",
         }
     }
+
+    CELERY_BROKER_URL = "memory://"
+    CELERY_RESULT_BACKEND = "cache+memory://"
 
     # Development tools (we want to test them in tests)
     INSTALLED_APPS = Base.INSTALLED_APPS + ["marsha.development.apps.DevelopmentConfig"]
