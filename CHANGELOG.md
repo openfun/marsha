@@ -12,6 +12,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Add scaleway storage configuration
 - Add Peertube pipeline to VOD
+- Celery task queue
 
 ### Changed
 

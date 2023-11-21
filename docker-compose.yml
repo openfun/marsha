@@ -48,6 +48,31 @@ services:
     stdin_open: true
     tty: true
 
+  celery:
+    build:
+      context: .
+      dockerfile: ./docker/images/dev/Dockerfile
+      args:
+        DOCKER_USER: ${DOCKER_USER:-1000}
+    image: marsha:dev
+    env_file:
+      - env.d/db
+      - env.d/${ENV_FILE:-development}
+    command: >
+      python -m celery -A marsha.celery_app worker -l info
+    volumes:
+      - .:/app
+      - ./data/static:/data/static
+      - ./data/media:/data/media
+      - ./data/videos:/data/videos
+    depends_on:
+      - "base"
+      - "db"
+      - "redis"
+      - "mailcatcher"
+    stdin_open: true
+    tty: true
+
   peertube-runner:
     image: fundocker/peertube-runner:latest
     env_file:
