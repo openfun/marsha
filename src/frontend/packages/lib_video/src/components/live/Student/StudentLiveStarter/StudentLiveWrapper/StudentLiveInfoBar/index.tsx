@@ -10,7 +10,7 @@ interface StudentLiveInfoBarProps {
 
 export const StudentLiveInfoBar = ({ startDate }: StudentLiveInfoBarProps) => {
   return (
-    <Box>
+    <Box gap="xsmall">
       <VideoInfoBar isTeacher={false} startDate={startDate} />
     </Box>
   );

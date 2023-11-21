@@ -155,18 +155,19 @@ export const VideoInfoBar = ({ isTeacher, startDate }: VideoInfoBarProps) => {
           level={2}
           style={{ maxWidth: '100%' }}
           truncate
+          margin="none"
         >
           {title}
         </Heading>
       )}
       {numberOfStudents > 0 || localStartDate ? (
-        <Box>
+        <Box gap="xsmall">
           {numberOfStudents > 0 && (
             <Text
               type="p"
               color={colorsTokens['info-500']}
-              className={`mb-0 mr-b mb-t`}
               size="small"
+              margin={{ vertical: 'none', right: 'medium' }}
             >
               {intl.formatMessage(messages.nbViewers, {
                 numberOfStudents,
@@ -174,7 +175,7 @@ export const VideoInfoBar = ({ isTeacher, startDate }: VideoInfoBarProps) => {
             </Text>
           )}
           {localStartDate && (
-            <Text type="p" className={`mb-t`} size="small">
+            <Text type="p" size="small">
               {localStartDate}
             </Text>
           )}

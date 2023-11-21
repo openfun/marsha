@@ -29,9 +29,10 @@ describe('<PictureInPictureElement />', () => {
     const Compo = () => (
       <Button onClick={onButtonClick}>my button label</Button>
     );
+    const Action = () => <Button>some action</Button>;
 
     render(
-      <PictureInPictureElement isPicture>
+      <PictureInPictureElement isPicture pictureLayer={<Action />}>
         <Compo />
       </PictureInPictureElement>,
     );

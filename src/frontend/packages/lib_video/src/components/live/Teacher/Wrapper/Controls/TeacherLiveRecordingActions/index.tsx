@@ -23,23 +23,7 @@ export const TeacherLiveRecordingActions = ({
     return <Fragment />;
   }
 
-  if (video.is_recording) {
-    return (
-      <Box
-        margin={{ horizontal: 'medium' }}
-        pad={{ horizontal: 'auto', vertical: 'small' }}
-      >
-        <StopRecording />
-      </Box>
-    );
-  } else {
-    return (
-      <Box
-        margin={{ horizontal: 'medium' }}
-        pad={{ horizontal: 'auto', vertical: 'small' }}
-      >
-        <StartRecording />
-      </Box>
-    );
-  }
+  return (
+    <Box>{video.is_recording ? <StopRecording /> : <StartRecording />}</Box>
+  );
 };

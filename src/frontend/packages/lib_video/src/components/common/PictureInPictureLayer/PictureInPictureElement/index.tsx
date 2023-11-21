@@ -37,11 +37,13 @@ const PictureInPictureElement = forwardRef<
       >
         {children}
 
-        <Box fill hidden={!isPicture}>
-          {pictureLayer}
+        {isPicture && pictureLayer && (
+          <Box fill>
+            {pictureLayer}
 
-          <ResizerCorner key="resize-corner" startResizing={startResizing} />
-        </Box>
+            <ResizerCorner key="resize-corner" startResizing={startResizing} />
+          </Box>
+        )}
       </Stack>
     </Box>
   );

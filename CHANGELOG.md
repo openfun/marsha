@@ -30,6 +30,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Blocking error when shared document is deleted (#2504)
+- Improve render sharing picture in live (#2508)
 
 ## [4.7.0] - 2023-10-19
 

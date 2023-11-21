@@ -13,7 +13,7 @@ export const TeacherVideoInfoBar = ({
   ...props
 }: TeacherVideoInfoBarProps) => {
   return (
-    <Box justify="center" flex="auto" {...props}>
+    <Box justify="center" flex="auto" gap="xsmall" {...props}>
       <VideoInfoBar isTeacher startDate={startDate} />
     </Box>
   );
