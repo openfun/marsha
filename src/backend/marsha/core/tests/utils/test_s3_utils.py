@@ -1,16 +1,13 @@
 """Tests for the `core.s3_utils` module."""
-from datetime import datetime
 from unittest import mock
 
 from django.test import TestCase
-
-from botocore.exceptions import ClientError
 
 from marsha.core.utils.s3_utils import (
     get_aws_s3_client,
     get_s3_client,
     get_videos_s3_client,
-    update_expiration_date,
+    move_s3_directory,
 )
 
 
@@ -115,147 +112,124 @@ class S3UtilsTestCase(TestCase):
                 "Unknown s3 client type: unknown",
             )
 
-    def test_update_expiration_date_existing_rule(self):
+    def test_s3_move_directory(self):
         """
-        Test the update_expiration_date function with an existing rule.
+        Test the move_s3_directory with existing files. It should list,
+        copy, and delete files.
         """
-        self.mock_s3_client.get_bucket_lifecycle_configuration.return_value = {
-            "Rules": [
+        mock_s3_client = mock.Mock()
+
+        mock_s3_client.list_objects_v2.return_value = {
+            "IsTruncated": False,
+            "Contents": [
                 {
-                    "ID": "test_key",
-                    "Filter": {"Prefix": "test_key"},
-                    "Status": "Enabled",
-                    "Expiration": {"Date": "2022-01-01"},
+                    "Key": "example1.txt",
+                    "LastModified": "2015-01-01 00:00:00",
+                    "ETag": '"example1etag"',
+                    "Size": 100,
+                    "StorageClass": "STANDARD",
                 },
                 {
-                    "ID": "test_key2",
-                    "Filter": {"Prefix": "test_key2"},
-                    "Status": "Enabled",
-                    "Expiration": {"Date": "2022-02-02"},
+                    "Key": "example2.txt",
+                    "LastModified": "2015-01-01 00:00:00",
+                    "ETag": '"example2etag"',
+                    "Size": 200,
+                    "StorageClass": "STANDARD",
                 },
-            ]
+            ],
+            "Name": "mybucket",
+            "Prefix": "",
+            "MaxKeys": 1000,
+            "CommonPrefixes": [],
+            "KeyCount": 2,
+            "ResponseMetadata": {
+                "RequestId": "example3id",
+                "HostId": "example4id",
+                "HTTPStatusCode": 200,
+                "HTTPHeaders": {
+                    "x-amz-id-2": "example5id",
+                    "x-amz-request-id": "example6id",
+                    "date": "Wed, 21 Oct 2015 20:33:07 GMT",
+                    "x-amz-bucket-region": "us-west-2",
+                    "content-type": "application/xml",
+                    "transfer-encoding": "chunked",
+                    "server": "AmazonS3",
+                },
+                "RetryAttempts": 0,
+            },
         }
 
-        with mock.patch("boto3.client", return_value=self.mock_s3_client):
-            update_expiration_date("test_key", datetime(2022, 12, 31))
+        with mock.patch(
+            "marsha.core.utils.s3_utils.get_s3_client", return_value=mock_s3_client
+        ):
+            move_s3_directory("test_key", "destination", "AWS", "test-bucket")
+            mock_s3_client.list_objects_v2.assert_called_once_with(
+                Bucket="test-bucket", Prefix="test_key"
+            )
 
-        self.mock_s3_client.put_bucket_lifecycle_configuration.assert_called_once_with(
-            Bucket="test-marsha-destination",
-            LifecycleConfiguration={
-                "Rules": [
-                    {
-                        "ID": "test_key",
-                        "Filter": {"Prefix": "test_key"},
-                        "Status": "Enabled",
-                        "Expiration": {"Date": "2022-12-31"},
-                    },
-                    {
-                        "ID": "test_key2",
-                        "Filter": {"Prefix": "test_key2"},
-                        "Status": "Enabled",
-                        "Expiration": {"Date": "2022-02-02"},
-                    },
+            mock_s3_client.copy.assert_has_calls(
+                [
+                    mock.call(
+                        {"Bucket": "test-bucket", "Key": "example1.txt"},
+                        "test-bucket",
+                        "destination/example1.txt",
+                    ),
+                    mock.call(
+                        {"Bucket": "test-bucket", "Key": "example2.txt"},
+                        "test-bucket",
+                        "destination/example2.txt",
+                    ),
                 ]
-            },
-        )
+            )
 
-    def test_update_with_no_expiration_date_existing_rule(self):
-        """
-        Test the update_expiration_date function with an existing rule.
-        """
-        self.mock_s3_client.get_bucket_lifecycle_configuration.return_value = {
-            "Rules": [
-                {
-                    "ID": "test_key",
-                    "Filter": {"Prefix": "test_key"},
-                    "Status": "Enabled",
-                    "Expiration": {"Date": "2022-01-01"},
+            mock_s3_client.delete_objects.assert_called_once_with(
+                Bucket="test-bucket",
+                Delete={
+                    "Objects": [
+                        {"Key": "example1.txt"},
+                        {"Key": "example2.txt"},
+                    ]
                 },
-                {
-                    "ID": "test_key2",
-                    "Filter": {"Prefix": "test_key2"},
-                    "Status": "Enabled",
-                    "Expiration": {"Date": "2022-02-02"},
+            )
+
+    def test_s3_move_directory_with_no_content(self):
+        """
+        Test the move_s3_directory with no content. It should list,
+        and do nothing.
+        """
+        mock_s3_client = mock.Mock()
+
+        mock_s3_client.list_objects_v2.return_value = {
+            "IsTruncated": False,
+            "Name": "mybucket",
+            "Prefix": "",
+            "MaxKeys": 1000,
+            "CommonPrefixes": [],
+            "KeyCount": 0,
+            "ResponseMetadata": {
+                "RequestId": "example3id",
+                "HostId": "example4id",
+                "HTTPStatusCode": 200,
+                "HTTPHeaders": {
+                    "x-amz-id-2": "example5id",
+                    "x-amz-request-id": "example6id",
+                    "date": "Wed, 21 Oct 2015 20:33:07 GMT",
+                    "x-amz-bucket-region": "us-west-2",
+                    "content-type": "application/xml",
+                    "transfer-encoding": "chunked",
+                    "server": "AmazonS3",
                 },
-            ]
+                "RetryAttempts": 0,
+            },
         }
 
-        with mock.patch("boto3.client", return_value=self.mock_s3_client):
-            update_expiration_date("test_key", None)
+        with mock.patch(
+            "marsha.core.utils.s3_utils.get_s3_client", return_value=mock_s3_client
+        ):
+            move_s3_directory("test_key", "destination", "AWS", "test-bucket")
+            mock_s3_client.list_objects_v2.assert_called_once_with(
+                Bucket="test-bucket", Prefix="test_key"
+            )
 
-        self.mock_s3_client.put_bucket_lifecycle_configuration.assert_called_once_with(
-            Bucket="test-marsha-destination",
-            LifecycleConfiguration={
-                "Rules": [
-                    {
-                        "ID": "test_key2",
-                        "Filter": {"Prefix": "test_key2"},
-                        "Status": "Enabled",
-                        "Expiration": {"Date": "2022-02-02"},
-                    },
-                ]
-            },
-        )
-
-    def test_update_expiration_date_new_rule(self):
-        """
-        Test the update_expiration_date function with a new rule.
-        """
-        with mock.patch("boto3.client", return_value=self.mock_s3_client):
-            update_expiration_date("test_key", datetime(2022, 12, 31))
-
-        self.mock_s3_client.put_bucket_lifecycle_configuration.assert_called_once_with(
-            Bucket="test-marsha-destination",
-            LifecycleConfiguration={
-                "Rules": [
-                    {
-                        "ID": "test_key",
-                        "Filter": {"Prefix": "test_key"},
-                        "Status": "Enabled",
-                        "Expiration": {"Date": "2022-12-31"},
-                    }
-                ]
-            },
-        )
-
-    def test_update_with_no_expiration_date_new_rule(self):
-        """
-        Test the update_expiration_date function with a new rule.
-        """
-        with mock.patch("boto3.client", return_value=self.mock_s3_client):
-            update_expiration_date("test_key", None)
-
-        self.mock_s3_client.put_bucket_lifecycle_configuration.assert_called_once_with(
-            Bucket="test-marsha-destination",
-            LifecycleConfiguration={"Rules": []},
-        )
-
-    def test_update_expiration_date_no_lifecycle_configuration(self):
-        """
-        Test for updating the expiration date without a lifecycle configuration.
-        """
-        self.mock_s3_client.get_bucket_lifecycle_configuration.side_effect = ClientError(
-            {
-                "Error": {
-                    "Code": "NoSuchLifecycleConfiguration",
-                    "Message": "The bucket does not have a lifecycle configuration.",
-                }
-            },
-            "get_bucket_lifecycle_configuration",
-        )
-        with mock.patch("boto3.client", return_value=self.mock_s3_client):
-            update_expiration_date("test_key", datetime(2022, 12, 31))
-
-        self.mock_s3_client.put_bucket_lifecycle_configuration.assert_called_once_with(
-            Bucket="test-marsha-destination",
-            LifecycleConfiguration={
-                "Rules": [
-                    {
-                        "ID": "test_key",
-                        "Filter": {"Prefix": "test_key"},
-                        "Status": "Enabled",
-                        "Expiration": {"Date": "2022-12-31"},
-                    }
-                ]
-            },
-        )
+            mock_s3_client.copy.assert_not_called()
+            mock_s3_client.delete_objects.assert_not_called()

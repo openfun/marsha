@@ -2,20 +2,18 @@
 from datetime import timedelta
 import logging
 
-from django.conf import settings
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from botocore.exceptions import ClientError
 from safedelete import HARD_DELETE
 from safedelete.managers import SafeDeleteManager
 from safedelete.queryset import SafeDeleteQueryset
 
 from marsha.core.models.account import ADMINISTRATOR, INSTRUCTOR, ROLE_CHOICES
 from marsha.core.models.base import BaseModel
-from marsha.core.utils import s3_utils
+from marsha.core.tasks.video import delete_s3_video
 
 
 logger = logging.getLogger(__name__)
@@ -311,34 +309,25 @@ class RetentionDateObjectMixin(models.Model):
 
         If the instance is being updated, nothing should be done.
 
-        If the instance is soft deleted. It calls `s3_utils.update_expiration_date` with an
-        expiration date equals to the current time plus settings.AWS_S3_EXPIRATION_DURATION.
-        If the instance is soft deleted. It calls `s3_utils.update_expiration_date` with
-        an expiration date equals to `None`.
+        If the instance is soft deleted. It calls `delete_s3_video` which is a celery task
+        that will take care of deleting the video from S3.
         """
         # pylint: disable=protected-access
-        try:
-            if is_created:  # Creation
-                playlist = self.playlist
-                if (
-                    playlist and playlist.retention_duration
-                ):  # Check if a related playlist is given
-                    self.retention_date = timezone.now().date() + timedelta(
-                        days=playlist.retention_duration
-                    )
-            else:  # Update or soft delete
-                old_value = self.__class__.all_objects.get(pk=self.pk)
-                if old_value.deleted != self.deleted:  # Soft delete behavior
-                    if self.deleted:  # Delete
-                        expiration_date = timezone.now().date() + timedelta(
-                            days=settings.AWS_S3_EXPIRATION_DURATION
-                        )
-                        s3_utils.update_expiration_date(str(self.pk), expiration_date)
-                    else:  # Undelete
-                        self.retention_date = None
-                        s3_utils.update_expiration_date(str(self.pk), None)
-        except ClientError as exception:
-            logger.error("Error while updating expiration date in S3: %s", exception)
+
+        if is_created:  # Creation
+            playlist = self.playlist
+            if (
+                playlist and playlist.retention_duration
+            ):  # Check if a related playlist is given
+                self.retention_date = timezone.now().date() + timedelta(
+                    days=playlist.retention_duration
+                )
+        else:  # Update or soft delete
+            old_value = self.__class__.all_objects.get(pk=self.pk)
+            if (
+                old_value.deleted != self.deleted and self.deleted
+            ):  # Soft delete behavior
+                delete_s3_video.delay(str(self.pk))
 
     class Meta:
         """Options for the ``RetentionObjectMixin`` model."""

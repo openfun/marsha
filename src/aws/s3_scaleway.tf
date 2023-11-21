@@ -17,6 +17,16 @@ resource "scaleway_object_bucket" "marsha_object_bucket" {
       }
   }
 
+  lifecycle_rule {
+      id      = "deleted-directory-expiration-rule"
+      prefix  = "deleted/"
+      enabled = true
+
+      expiration {
+        days = var.deletion_retention_period
+      }
+  }
+
   cors_rule {
     allowed_headers = ["*"]
     allowed_methods = ["GET", "POST", "HEAD"]

@@ -68,6 +68,26 @@ resource "aws_s3_bucket_acl" "marsha_destination_acl" {
   acl    = "private"
 }
 
+resource "aws_s3_bucket_lifecycle_configuration" "marsha_destination_deleted_lifecycle_configuration" {
+  bucket = aws_s3_bucket.marsha_destination.id
+
+  rule {
+    id = "marsha-destination-deleted-expiration-rule"
+    
+    # Apply to deleted objects in the bucket
+    filter {
+      prefix = "deleted/"
+    }
+
+    # A deleted object will expire after 3 weeks
+    expiration {
+      days = var.deletion_retention_period
+    } 
+
+    # This rule is enabled
+    status = "Enabled"
+  }
+}
 
 # Create S3 Bucket for static files
 resource "aws_s3_bucket" "marsha_static" {

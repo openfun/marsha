@@ -20,6 +20,7 @@ from safedelete.queryset import SafeDeleteQueryset
 from marsha.core.defaults import (
     APPROVAL,
     DELETED,
+    DELETED_VIDEOS_STORAGE_BASE_DIRECTORY,
     ENDED,
     HARVESTED,
     IDLE,
@@ -315,8 +316,11 @@ class Video(BaseFile, RetentionDateObjectMixin):
             The videos storage prefix for the video, depending on the base directory passed.
         """
         stamp = stamp or to_timestamp(self.uploaded_on)
+        base = base_dir
+        if base == DELETED_VIDEOS_STORAGE_BASE_DIRECTORY:
+            base = f"{base}/{VOD_VIDEOS_STORAGE_BASE_DIRECTORY}"
 
-        return f"{base_dir}/{self.pk}/video/{stamp}"
+        return f"{base}/{self.pk}/video/{stamp}"
 
     def update_upload_state(self, upload_state, uploaded_on, **extra_parameters):
         """Manage upload state.

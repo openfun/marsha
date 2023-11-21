@@ -5,7 +5,6 @@ from django.conf import settings
 
 import boto3
 from botocore.client import Config
-from botocore.exceptions import ClientError
 
 
 def get_aws_s3_client():
@@ -25,7 +24,6 @@ def get_aws_s3_client():
 
 def get_videos_s3_client():
     """Return a boto3 s3 client connected to Videos S3."""
-
     return boto3.client(
         "s3",
         aws_access_key_id=settings.VIDEOS_STORAGE_S3_ACCESS_KEY,
@@ -131,60 +129,36 @@ def create_presigned_post(
     )
 
 
-def update_expiration_date(key, expiration_date):
+def move_s3_directory(
+    key: str, destination: str, client_type: ClientType, bucket_name: str
+):
     """
-    Updates the expiration date for a given key in an S3 bucket.
+    Move the content of a directory with `key` prefix to a "destination" folder
+    in an S3 bucket.
 
     Parameters:
-        key (str): The key of the object in the S3 bucket.
-        expiration_date (datetime): The new expiration date for the object.
+        key (str): The key of folder in the S3 bucket.
+        destination (str): The destination folder in the S3 bucket without a
+        `/` at the end.
+        s3_client (boto3.client): The type of client to use.
+        bucket_name (str): The name of the bucket.
     """
-    s3_client = boto3.client(
-        "s3",
-        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-        config=Config(
-            region_name=settings.AWS_S3_REGION_NAME,
-            signature_version="s3v4",
-        ),
-    )
+    s3_client = get_s3_client(client_type)
 
-    try:
-        response = s3_client.get_bucket_lifecycle_configuration(
-            Bucket=settings.AWS_DESTINATION_BUCKET_NAME
-        )
-        current_config = response.get("Rules", [])
-    except ClientError as client_error:
-        if client_error.response["Error"]["Code"] == "NoSuchLifecycleConfiguration":
-            # Handle when the bucket does not have a lifecycle configuration yet
-            current_config = []
-        else:
-            raise client_error
+    # First, we ned to get the list of objects in the folder
+    objects = s3_client.list_objects_v2(Bucket=bucket_name, Prefix=key)
 
-    if expiration_date:
-        # Update the expiration date
-        expiration_date_config = {"Date": expiration_date.strftime("%Y-%m-%d")}
-        rule_key_expiration_date_config = {
-            "ID": key,
-            "Filter": {"Prefix": key},
-            "Status": "Enabled",
-            "Expiration": expiration_date_config,
-        }
+    if "Contents" not in objects:
+        # No need to copy or delete anything
+        return
 
-        is_update = False
-        for rule in current_config:
-            if rule["ID"] == key:
-                is_update = True
-                rule["Expiration"] = expiration_date_config
-                break
-        if not is_update:
-            current_config.append(rule_key_expiration_date_config)
-    else:
-        # Remove the expiration date
-        current_config = [rule for rule in current_config if rule.get("ID") != key]
+    # Second, we need to copy each object to the "to_delete" folder
+    for obj in objects["Contents"]:
+        copy_source = {"Bucket": bucket_name, "Key": obj["Key"]}
+        s3_client.copy(copy_source, bucket_name, f"{destination}/{obj['Key']}")
 
-    # Update the lifecycle configuration for the bucket
-    s3_client.put_bucket_lifecycle_configuration(
-        Bucket=settings.AWS_DESTINATION_BUCKET_NAME,
-        LifecycleConfiguration={"Rules": current_config},
+    # Finally, we need to bulk delete each files in the folder
+    s3_client.delete_objects(
+        Bucket=bucket_name,
+        Delete={"Objects": [{"Key": obj["Key"]} for obj in objects["Contents"]]},
     )
