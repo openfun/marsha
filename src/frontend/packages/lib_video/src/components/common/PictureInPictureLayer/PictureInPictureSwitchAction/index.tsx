@@ -1,5 +1,4 @@
-import { Button } from '@openfun/cunningham-react';
-import { Box, SwitchToDocumentSVG, SwitchToPlayerSVG } from 'lib-components';
+import { SwitchToDocumentSVG, SwitchToPlayerSVG } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -24,25 +23,34 @@ export const PictureInPictureSwitchAction = () => {
   const intl = useIntl();
   const [pipState, setPipState] = usePictureInPicture();
 
+  const style = {
+    maxHeight: '35px',
+    maxWidth: '35px',
+    width: '100%',
+    height: '100%',
+  };
+
+  if (pipState.reversed) {
+    return (
+      <SwitchToPlayerSVG
+        iconColor="white"
+        aria-label={intl.formatMessage(messages.documentActive)}
+        onClick={() => {
+          setPipState({ reversed: !pipState.reversed });
+        }}
+        style={style}
+      />
+    );
+  }
+
   return (
-    <Button
-      className="c__button-no-bg"
-      aria-label={intl.formatMessage(
-        pipState.reversed ? messages.documentActive : messages.playerActive,
-      )}
-      color="tertiary"
-      icon={
-        <Box margin="auto" height={{ max: '35px' }} width={{ max: '35px' }}>
-          {pipState.reversed ? (
-            <SwitchToPlayerSVG iconColor="white" height="100%" width="100%" />
-          ) : (
-            <SwitchToDocumentSVG iconColor="white" height="100%" width="100%" />
-          )}
-        </Box>
-      }
+    <SwitchToDocumentSVG
+      iconColor="white"
+      aria-label={intl.formatMessage(messages.playerActive)}
       onClick={() => {
         setPipState({ reversed: !pipState.reversed });
       }}
+      style={style}
     />
   );
 };

@@ -69,7 +69,7 @@ export const PictureActionLayer = ({
           a11yTitle={intl.formatMessage(messages.moreOptionTitle)}
           dropAlign={{ top: 'bottom' }}
           dropContent={
-            <Box background="black">
+            <Box background="black" align="center">
               {actions?.map((action, index) => (
                 <Box key={`pip_action_${index}`} margin="small">
                   {action}

@@ -1,6 +1,5 @@
-import { Button } from '@openfun/cunningham-react';
 import { Nullable } from 'lib-common';
-import { Box, MicrophoneOffSVG, MicrophoneOnSVG } from 'lib-components';
+import { MicrophoneOffSVG, MicrophoneOnSVG } from 'lib-components';
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -55,22 +54,34 @@ export const AudioControl = () => {
     return <Fragment />;
   }
 
+  const style = {
+    maxHeight: '35px',
+    maxWidth: '35px',
+    width: '100%',
+    height: '100%',
+  };
+
+  if (isAudioOn) {
+    return (
+      <MicrophoneOnSVG
+        iconColor="white"
+        aria-label={intl.formatMessage(messages.enableTitle)}
+        style={style}
+        onClick={() => {
+          if (!jitsiApi) {
+            return;
+          }
+
+          jitsiApi.executeCommand('toggleAudio');
+        }}
+      />
+    );
+  }
+
   return (
-    <Button
-      className="c__button-no-bg"
-      aria-label={intl.formatMessage(
-        isAudioOn ? messages.enableTitle : messages.disableTitle,
-      )}
-      color="tertiary"
-      icon={
-        <Box margin="auto" height={{ max: '35px' }} width={{ max: '35px' }}>
-          {isAudioOn ? (
-            <MicrophoneOnSVG iconColor="white" height="100%" width="100%" />
-          ) : (
-            <MicrophoneOffSVG iconColor="white" height="100%" width="100%" />
-          )}
-        </Box>
-      }
+    <MicrophoneOffSVG
+      iconColor="white"
+      aria-label={intl.formatMessage(messages.disableTitle)}
       onClick={() => {
         if (!jitsiApi) {
           return;
@@ -78,6 +89,7 @@ export const AudioControl = () => {
 
         jitsiApi.executeCommand('toggleAudio');
       }}
+      style={style}
     />
   );
 };

@@ -1,6 +1,5 @@
-import { Button } from '@openfun/cunningham-react';
 import { Nullable } from 'lib-common';
-import { Box, CameraOffSVG, CameraOnSVG } from 'lib-components';
+import { CameraOffSVG, CameraOnSVG } from 'lib-components';
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -55,22 +54,34 @@ export const CameraControl = () => {
     return <Fragment />;
   }
 
+  const style = {
+    maxHeight: '35px',
+    maxWidth: '35px',
+    width: '100%',
+    height: '100%',
+  };
+
+  if (isCameraOn) {
+    return (
+      <CameraOnSVG
+        iconColor="white"
+        aria-label={intl.formatMessage(messages.enableTitle)}
+        style={style}
+        onClick={() => {
+          if (!jitsiApi) {
+            return;
+          }
+
+          jitsiApi.executeCommand('toggleVideo');
+        }}
+      />
+    );
+  }
+
   return (
-    <Button
-      className="c__button-no-bg"
-      color="tertiary"
-      aria-label={intl.formatMessage(
-        isCameraOn ? messages.enableTitle : messages.disableTitle,
-      )}
-      icon={
-        <Box margin="auto" height={{ max: '35px' }} width={{ max: '35px' }}>
-          {isCameraOn ? (
-            <CameraOnSVG iconColor="white" height="100%" width="100%" />
-          ) : (
-            <CameraOffSVG iconColor="white" height="100%" width="100%" />
-          )}
-        </Box>
-      }
+    <CameraOffSVG
+      iconColor="white"
+      aria-label={intl.formatMessage(messages.disableTitle)}
       onClick={() => {
         if (!jitsiApi) {
           return;
@@ -78,6 +89,7 @@ export const CameraControl = () => {
 
         jitsiApi.executeCommand('toggleVideo');
       }}
+      style={style}
     />
   );
 };
