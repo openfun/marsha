@@ -91,6 +91,8 @@ input:-webkit-autofill:focus {
 .c__select__wrapper {
   transition: all var(--c--theme--transitions--duration)
     var(--c--theme--transitions--ease-out);
+  min-height: var(--c--components--forms-select--height);
+  height: auto;
 }
 .c__select:not(.c__select--disabled) .c__select__wrapper:hover {
   box-shadow: var(--c--theme--colors--primary-500) 0px 0px 0px 2px;
@@ -99,7 +101,9 @@ input:-webkit-autofill:focus {
   transition: all var(--c--theme--transitions--duration)
     var(--c--theme--transitions--ease-out);
 }
-.c__select--disabled .c__select__wrapper label, .c__select--disabled .c__select__wrapper input {
+.c__select--disabled .c__select__wrapper label, 
+.c__select--disabled .c__select__wrapper input, 
+.c_select__no_bg .c__select__wrapper {
   background: none;
 }
 .c__select__wrapper:focus-within .labelled-box--disabled label {
@@ -109,6 +113,7 @@ input:-webkit-autofill:focus {
   display: flex;
   gap: 0.6rem;
   flex-direction: column;
+  align-items: flex-start;
 }
 .c__select__wrapper .labelled-box .labelled-box__children {
   padding: unset;
@@ -126,6 +131,9 @@ input:-webkit-autofill:focus {
 }
 .c__select__wrapper .c__select__inner__actions__open:focus {
   outline: none;
+}
+.c__select__wrapper .labelled-box__label.c__offscreen  {
+  display: none;
 }
 /**
  * DataGrid

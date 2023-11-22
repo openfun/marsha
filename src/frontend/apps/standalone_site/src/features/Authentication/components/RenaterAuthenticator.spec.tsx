@@ -50,7 +50,7 @@ describe('<RenaterAuthenticator />', () => {
 
     expect(screen.getByText(/OR LOGIN WITH/i)).toBeInTheDocument();
 
-    await userEvent.click(screen.getByRole('button', { name: /Open Drop/i }));
+    await userEvent.click(screen.getByText('Select single option'));
 
     const firstIdp = await screen.findByRole('option', { name: /Fake IdP 1/i });
     const secondIdp = screen.getByRole('option', { name: /Fake IdP 2/i });
@@ -106,13 +106,13 @@ describe('<RenaterAuthenticator />', () => {
   it('checks search selectbox', async () => {
     render(<RenaterAuthenticator />);
 
-    await userEvent.click(screen.getByRole('button', { name: /Open Drop/i }));
+    await userEvent.click(screen.getByText('Select single option'));
 
     expect(
       await screen.findByRole('option', { name: /Fake IdP 1/i }),
     ).toBeInTheDocument();
 
-    await userEvent.type(screen.getByRole('searchbox'), 'Local');
+    await userEvent.type(screen.getByRole('combobox'), 'Local');
 
     expect(
       await screen.findByRole('option', { name: /Local accepting IdP/i }),
@@ -124,7 +124,7 @@ describe('<RenaterAuthenticator />', () => {
       screen.queryByRole('option', { name: /Fake IdP 2/i }),
     ).not.toBeInTheDocument();
 
-    await userEvent.clear(screen.getByRole('searchbox'));
+    await userEvent.clear(screen.getByRole('combobox'));
 
     expect(
       await screen.findByRole('option', { name: /Fake IdP 2/i }),
@@ -138,7 +138,7 @@ describe('<RenaterAuthenticator />', () => {
   it('checks redirect', async () => {
     render(<RenaterAuthenticator />);
 
-    await userEvent.click(screen.getByRole('button', { name: /Open Drop/i }));
+    await userEvent.click(screen.getByText('Select single option'));
 
     await userEvent.click(
       await screen.findByRole('option', { name: /Local accepting IdP/i }),
@@ -156,7 +156,7 @@ describe('<RenaterAuthenticator />', () => {
       },
     });
 
-    await userEvent.click(screen.getByRole('button', { name: /Open Drop/i }));
+    await userEvent.click(screen.getByText('Select single option'));
 
     expect(
       await screen.findByRole('option', { name: /Fake IdP 1/i }),
@@ -176,7 +176,7 @@ describe('<RenaterAuthenticator />', () => {
       },
     });
 
-    await userEvent.click(screen.getByRole('button', { name: /Open Drop/i }));
+    await userEvent.click(screen.getByText('Select single option'));
 
     expect(
       await screen.findByRole('option', { name: /Fake IdP 1/i }),

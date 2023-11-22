@@ -22,9 +22,7 @@ describe('<Header />', () => {
     expect(screen.getByRole('menubar')).toBeInTheDocument();
     expect(screen.getByText(/John Doe/i)).toBeInTheDocument();
     expect(screen.getByText(/language/i)).toBeInTheDocument();
-    expect(
-      screen.getByLabelText(/Language Picker; Selected: en/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/Language Picker/i)).toBeInTheDocument();
   });
 
   it('scrolls and updates background', () => {
