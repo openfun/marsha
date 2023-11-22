@@ -6,7 +6,6 @@ import { RenaterAuthenticator } from './RenaterAuthenticator';
 
 export const Login = () => {
   const { breakpoint, isSmallerBreakpoint } = useResponsive();
-  const isSmallerMedium = isSmallerBreakpoint(breakpoint, 'medium');
   const isSmallerSmall = isSmallerBreakpoint(breakpoint, 'small');
 
   return (
@@ -14,15 +13,7 @@ export const Login = () => {
       <Box
         width={{
           max: 'large',
-          width: isSmallerSmall || breakpoint === 'xsmedium' ? '90%' : '80%',
-        }}
-        pad={{
-          horizontal:
-            breakpoint === 'xsmedium'
-              ? 'medium'
-              : isSmallerMedium
-                ? 'large'
-                : 'xlarge',
+          width: isSmallerSmall || breakpoint === 'xsmedium' ? '90%' : '70%',
         }}
       >
         <LoginForm />
