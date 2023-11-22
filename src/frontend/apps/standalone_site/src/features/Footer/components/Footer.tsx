@@ -13,7 +13,7 @@ import { usePagesApi } from 'features/PagesApi';
 
 import { ReactComponent as WaveIcon } from '../assets/svg/footer-wave.svg';
 
-const Footer = () => {
+const Footer = ({ withoutWave }: { withoutWave?: boolean }) => {
   const { isSmallerBreakpoint, breakpoint } = useResponsive();
   const theme = {
     color: '#253961',
@@ -36,7 +36,9 @@ const Footer = () => {
 
   return (
     <Box type="footer" margin={{ top: 'auto' }} color="white" fill="horizontal">
-      <WaveIcon color={theme.color} height="4vw" style={{ zIndex: 2 }} />
+      {!withoutWave && (
+        <WaveIcon color={theme.color} height="4vw" style={{ zIndex: 2 }} />
+      )}
       <Box
         background={theme.color}
         pad={{

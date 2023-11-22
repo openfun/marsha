@@ -1,4 +1,4 @@
-import { Box } from 'lib-components';
+import { Box, useResponsive } from 'lib-components';
 import { Fragment } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
@@ -10,6 +10,9 @@ import { Login } from './Login';
 import { PasswordReset, PasswordResetConfirm } from './PasswordReset';
 
 const AuthRouter = () => {
+  const { breakpoint, isSmallerBreakpoint } = useResponsive();
+  const isSmallerXsmedium = isSmallerBreakpoint(breakpoint, 'xsmedium');
+
   return (
     <Fragment>
       <BaseAuthenticationPage>
@@ -25,8 +28,14 @@ const AuthRouter = () => {
           <Route path="*" element={<Login />} />
         </Routes>
       </BaseAuthenticationPage>
-      <Box style={{ position: 'absolute', bottom: '0' }} fill="horizontal">
-        <Footer />
+      <Box
+        style={{
+          position: isSmallerXsmedium ? 'initial' : 'absolute',
+          bottom: '0',
+        }}
+        fill="horizontal"
+      >
+        <Footer withoutWave={isSmallerXsmedium} />
       </Box>
     </Fragment>
   );

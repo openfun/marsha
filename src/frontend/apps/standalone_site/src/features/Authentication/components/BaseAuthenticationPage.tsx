@@ -45,7 +45,11 @@ const ResponsiveBox = ({ children }: PropsWithChildren) => {
 
   if (isSmallerBreakpoint(breakpoint, 'xsmedium')) {
     return (
-      <Box height="87vh" background={backgroundImage('30%', '80%')}>
+      <Box
+        height={{ min: '87vh' }}
+        background={backgroundImage('30%', '80%')}
+        pad={{ bottom: '10px' }}
+      >
         <HeaderLight bgcolor="transparent" color="white" />
         <WhiteCard width="90%" margin="auto" pad={{ vertical: 'large' }}>
           {children}
@@ -60,7 +64,7 @@ const ResponsiveBox = ({ children }: PropsWithChildren) => {
         align="center"
         justify="center"
         background={backgroundImage('center', isViewWidth ? '45vw' : '80vh')}
-        style={{ flex: '1' }}
+        basis="50%"
       >
         {siteConfig.is_default_site ? (
           <LogoIcon
@@ -98,11 +102,11 @@ export const BaseAuthenticationPage = ({
   return (
     <Box
       direction={isSmallerXsmedium ? 'column' : 'row'}
-      height="100vh"
+      height={isSmallerBreakpoint(breakpoint, 'xsmedium') ? 'auto' : '100vh'}
       background={colorsTokens['secondary-100']}
     >
       <ResponsiveBox>
-        <Box style={{ flex: '1' }} align="center" justify="center">
+        <Box style={{ flex: '1', zIndex: 11 }} align="center" justify="center">
           {children}
         </Box>
       </ResponsiveBox>

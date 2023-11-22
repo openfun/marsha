@@ -92,7 +92,7 @@ export const RenaterAuthenticator = () => {
       background={colorsTokens['primary-150']}
       pad={{
         horizontal: isSmallerBreakpoint(breakpoint, 'medium')
-          ? 'large'
+          ? 'small'
           : 'xlarge',
         vertical: 'small',
       }}
