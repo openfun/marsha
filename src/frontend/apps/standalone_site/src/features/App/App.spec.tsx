@@ -129,11 +129,13 @@ describe('<App />', () => {
 
     render(<App />);
 
-    await userEvent.click(
-      await screen.findByLabelText(/Language Picker; Selected: en/i),
-    );
+    await userEvent.click(await screen.findByText(/Language Picker/i));
 
-    await userEvent.click(screen.getByText(/Français/i));
+    await userEvent.click(
+      screen.getByRole('option', {
+        name: /Français/i,
+      }),
+    );
 
     expect(
       await screen.findByRole('menuitem', { name: /Mon Tableau de bord/i }),

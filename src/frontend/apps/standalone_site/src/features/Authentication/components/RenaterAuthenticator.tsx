@@ -1,7 +1,14 @@
-import { FormField, Image, ThemeContext } from 'grommet';
+import { Select } from '@openfun/cunningham-react';
+import { Image } from 'grommet';
 import { colorsTokens } from 'lib-common';
-import { Box, ClosingCard, Select, Text, useResponsive } from 'lib-components';
-import { Fragment, useEffect, useMemo, useState } from 'react';
+import { Box, ClosingCard, Text, useResponsive } from 'lib-components';
+import React, {
+  ComponentPropsWithRef,
+  Fragment,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useLocation } from 'react-router-dom';
 
@@ -9,6 +16,8 @@ import {
   RenaterSamlFerIdp,
   getRenaterFerIdpList,
 } from '../api/getRenaterFerIdpList';
+
+type SelectProps = ComponentPropsWithRef<typeof Select>;
 
 const messages = defineMessages({
   textConnectWith: {
@@ -30,8 +39,7 @@ const messages = defineMessages({
 
 export const RenaterAuthenticator = () => {
   const intl = useIntl();
-  const [optionsDefault, setOptionsDefault] = useState<RenaterSamlFerIdp[]>([]);
-  const [options, setOptions] = useState<RenaterSamlFerIdp[]>([]);
+  const [options, setOptions] = useState<SelectProps['options']>([]);
   const { breakpoint, isSmallerBreakpoint } = useResponsive();
 
   const { search } = useLocation();
@@ -42,7 +50,7 @@ export const RenaterAuthenticator = () => {
   const ERRORTOKEN = 'social-auth';
 
   const renderOption = (option: RenaterSamlFerIdp) => (
-    <Box align="center" direction="row" pad="small">
+    <Box direction="row">
       <Image
         src={
           option.logo ||
@@ -62,8 +70,13 @@ export const RenaterAuthenticator = () => {
       const signal = controller.signal;
       try {
         const results = await getRenaterFerIdpList(signal);
-        setOptionsDefault(results);
-        setOptions(results);
+        setOptions(
+          results.map((o) => ({
+            value: o.login_url,
+            label: o.display_name,
+            render: () => renderOption(o),
+          })),
+        );
       } catch (e) {
         console.error(e);
       }
@@ -128,32 +141,16 @@ export const RenaterAuthenticator = () => {
         </Box>
         <Box background={colorsTokens['info-500']} height="1px" width="100%" />
       </Box>
-      <ThemeContext.Extend value={{ select: { step: options.length || 20 } }}>
-        <FormField label={intl.formatMessage(messages.labelSelectRenater)}>
-          <Select
-            size="medium"
-            options={options}
-            onChange={({ option }: { option: RenaterSamlFerIdp }) => {
-              window.location.assign(option.login_url);
-            }}
-            onSearch={(text) => {
-              // The line below escapes regular expression special characters:
-              // [ \ ^ $ . | ? * + ( )
-              const escapedText = text.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&');
-
-              // Create the regular expression with modified value which
-              // handles escaping special characters. Without escaping special
-              // characters, errors will appear in the console
-              const exp = new RegExp(escapedText, 'i');
-              setOptions(
-                optionsDefault.filter((o) => exp.test(o.display_name)),
-              ); // defaultOptions
-            }}
-          >
-            {renderOption}
-          </Select>
-        </FormField>
-      </ThemeContext.Extend>
+      <Select
+        options={options}
+        label={intl.formatMessage(messages.labelSelectRenater)}
+        showLabelWhenSelected={false}
+        clearable={false}
+        onChange={({ target: { value } }) => {
+          window.location.assign(value as string);
+        }}
+        searchable
+      />
     </Box>
   );
 };

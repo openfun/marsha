@@ -10,27 +10,39 @@ describe('<LanguagePicker />', () => {
   beforeEach(() => {});
 
   it('renders LanguagePicker', async () => {
-    render(<LanguagePicker />);
-    expect(screen.getByText(/language/i)).toBeInTheDocument();
+    render(<LanguagePicker />, {
+      intlOptions: { locale: 'en-US' },
+    });
 
-    const select = screen.getByLabelText(/Language Picker; Selected: en/i);
-    expect(select).toBeInTheDocument();
+    const select = screen.getByRole('combobox');
+    expect(select.contains(screen.getByText(/English/i))).toBeTruthy();
     await userEvent.click(select);
-    expect(screen.getByText(/Français/i)).toBeInTheDocument();
-    expect(screen.getByText(/English/i)).toBeInTheDocument();
+
+    expect(
+      screen.getByRole('option', {
+        name: /Français/i,
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('option', {
+        name: /English/i,
+      }),
+    ).toBeInTheDocument();
   });
 
   it('changes to another language', async () => {
     render(<LanguagePicker />);
 
-    await userEvent.click(
-      screen.getByLabelText(/Language Picker; Selected: en/i),
-    );
+    await userEvent.click(screen.getByText(/Language Picker/i));
 
-    await userEvent.click(screen.getByText(/Français/i));
+    await userEvent.click(
+      screen.getByRole('option', {
+        name: /Français/i,
+      }),
+    );
     expect(
-      screen.getByLabelText(/Language Picker; Selected: fr/i),
-    ).toBeInTheDocument();
+      screen.getByRole('combobox').contains(screen.getByText(/Français/i)),
+    ).toBeTruthy();
 
     expect(useLanguageStore.getState().language).toEqual('fr_FR');
   });
