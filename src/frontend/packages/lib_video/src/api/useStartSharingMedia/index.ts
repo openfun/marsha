@@ -3,15 +3,10 @@ import {
   useMutation,
   useQueryClient,
 } from '@tanstack/react-query';
-import { SharedLiveMedia, actionOne } from 'lib-components';
+import { FetchResponseError, SharedLiveMedia, actionOne } from 'lib-components';
 
 type UseStartSharingData = { sharedlivemedia: string };
-type UseStartSharingError =
-  | { code: 'exception' }
-  | {
-      code: 'invalid';
-      errors: { [key in keyof UseStartSharingData]?: string[] }[];
-    };
+type UseStartSharingError = FetchResponseError<UseStartSharingData>;
 type UseStartSharingLiveMediaOptions = UseMutationOptions<
   SharedLiveMedia,
   UseStartSharingError,
