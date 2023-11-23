@@ -8,7 +8,7 @@ import {
   useJwt,
   videoMockFactory,
 } from 'lib-components';
-import { render } from 'lib-tests';
+import { Deferred, render } from 'lib-tests';
 
 import { ToggleSharing } from '.';
 
@@ -228,5 +228,90 @@ describe('<ToggleSharing />', () => {
     });
     expect(report).toHaveBeenCalled();
     screen.getByText('Shared media update has failed !');
+  });
+
+  it('retries to share if failed because a resource is already sharing', async () => {
+    const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
+      video: faker.string.uuid(),
+    });
+    const mockedVideo = videoMockFactory({
+      id: mockedSharedLiveMedia.video,
+      shared_live_medias: [mockedSharedLiveMedia],
+    });
+
+    const deferredStartSharing1 = new Deferred();
+    const deferredStartSharing2 = new Deferred();
+    const deferredEndSharing = new Deferred();
+
+    fetchMock.patchOnce(
+      `/api/videos/${mockedVideo.id}/start-sharing/`,
+      deferredStartSharing1.promise,
+    );
+
+    fetchMock.patchOnce(
+      `/api/videos/${mockedVideo.id}/end-sharing/`,
+      deferredEndSharing.promise,
+    );
+
+    render(
+      <ToggleSharing
+        isShared={false}
+        sharedLiveMediaId={mockedSharedLiveMedia.id}
+        videoId={mockedSharedLiveMedia.video}
+      />,
+    );
+
+    const input: HTMLInputElement = screen.getByRole('checkbox', {
+      name: 'Share support',
+    });
+
+    await userEvent.click(input);
+
+    deferredStartSharing1.resolve({
+      status: 400,
+      body: {
+        detail: 'Video is already sharing.',
+      },
+    });
+
+    await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
+    expect(
+      fetchMock.called(`/api/videos/${mockedVideo.id}/start-sharing/`),
+    ).toBeTruthy();
+
+    fetchMock.patchOnce(
+      `/api/videos/${mockedVideo.id}/start-sharing/`,
+      deferredStartSharing2.promise,
+      {
+        overwriteRoutes: true,
+      },
+    );
+
+    deferredEndSharing.resolve(mockedVideo);
+
+    await waitFor(() =>
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/videos/${mockedVideo.id}/end-sharing/`,
+      ),
+    );
+
+    deferredStartSharing2.resolve({
+      ...mockedVideo,
+      active_shared_live_media: mockedSharedLiveMedia,
+      active_shared_live_media_page: 1,
+    });
+
+    await waitFor(() => expect(fetchMock.calls()).toHaveLength(3));
+    expect(fetchMock.lastCall()![0]).toEqual(
+      `/api/videos/${mockedVideo.id}/start-sharing/`,
+    );
+
+    expect(report).not.toHaveBeenCalled();
+
+    expect(
+      screen.queryByText('Shared media update has failed !'),
+    ).not.toBeInTheDocument();
+
+    expect(screen.getByText('Shared media updated.')).toBeInTheDocument();
   });
 });

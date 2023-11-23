@@ -16,6 +16,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- On live, can now share resource when one is already shared (#2512)
 - Remove persistency on token from invite link (#2505)
 - Replace grommet Cards / Footer/ Anchor / Tip / Nav (#2503)
 - Refacto widgets SharedLiveMedia (#2504)

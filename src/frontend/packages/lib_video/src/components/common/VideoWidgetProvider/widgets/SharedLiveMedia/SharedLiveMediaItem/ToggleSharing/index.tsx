@@ -38,41 +38,82 @@ export const ToggleSharing = ({
   videoId,
 }: ToggleSharingProps) => {
   const intl = useIntl();
-  const shareMediaStart = useStartSharingMedia(videoId, {
-    onSuccess: () => {
-      toast.success(intl.formatMessage(messages.updateSharedLiveMediaSucces), {
-        position: 'bottom-center',
-      });
-    },
-    onError: (err: unknown) => {
-      report(err);
-      toast.error(intl.formatMessage(messages.updateSharedLiveMediaFail), {
-        position: 'bottom-center',
-      });
-      setIsLocalShared(isShared);
-    },
-  });
+  const [shouldRetrySharing, setShouldRetrySharing] = useState(false);
+  const { mutate: startSharing, isLoading: isStartSharingLoading } =
+    useStartSharingMedia(videoId, {
+      onSuccess: () => {
+        toast.success(
+          intl.formatMessage(messages.updateSharedLiveMediaSucces),
+          {
+            position: 'bottom-center',
+          },
+        );
+      },
+      onError: (err) => {
+        if (err.detail?.includes('Video is already sharing')) {
+          setShouldRetrySharing(true);
+          stopSharing();
+          return;
+        }
 
-  const shareMediaStop = useStopSharingMedia(videoId, {
-    onSuccess: () => {
-      toast.success(intl.formatMessage(messages.updateSharedLiveMediaSucces), {
-        position: 'bottom-center',
-      });
-    },
-    onError: (err: unknown) => {
-      report(err);
-      toast.error(intl.formatMessage(messages.updateSharedLiveMediaFail), {
-        position: 'bottom-center',
-      });
-      setIsLocalShared(isShared);
-    },
-  });
+        report(err);
+        toast.error(intl.formatMessage(messages.updateSharedLiveMediaFail), {
+          position: 'bottom-center',
+        });
+        setIsLocalShared(isShared);
+      },
+    });
+
+  const { mutate: stopSharing, isSuccess: isStopSharingSuccess } =
+    useStopSharingMedia(videoId, {
+      onSuccess: () => {
+        if (shouldRetrySharing) {
+          return;
+        }
+
+        toast.success(
+          intl.formatMessage(messages.updateSharedLiveMediaSucces),
+          {
+            position: 'bottom-center',
+          },
+        );
+      },
+      onError: (err) => {
+        setShouldRetrySharing(false);
+        report(err);
+        toast.error(intl.formatMessage(messages.updateSharedLiveMediaFail), {
+          position: 'bottom-center',
+        });
+        setIsLocalShared(isShared);
+      },
+    });
 
   const [isLocalShared, setIsLocalShared] = useState(isShared);
 
   useEffect(() => {
+    if (!isStopSharingSuccess || !shouldRetrySharing) {
+      return;
+    }
+
+    startSharing({
+      sharedlivemedia: sharedLiveMediaId,
+    });
+
+    setShouldRetrySharing(false);
+  }, [
+    isStopSharingSuccess,
+    startSharing,
+    sharedLiveMediaId,
+    shouldRetrySharing,
+  ]);
+
+  useEffect(() => {
+    if (shouldRetrySharing || isStartSharingLoading) {
+      return;
+    }
+
     setIsLocalShared(isShared);
-  }, [isShared]);
+  }, [isShared, isStartSharingLoading, shouldRetrySharing]);
 
   return (
     <Switch
@@ -80,8 +121,8 @@ export const ToggleSharing = ({
       onChange={() => {
         setIsLocalShared(!isLocalShared);
         isLocalShared
-          ? shareMediaStop.mutate()
-          : shareMediaStart.mutate({
+          ? stopSharing()
+          : startSharing({
               sharedlivemedia: sharedLiveMediaId,
             });
       }}
