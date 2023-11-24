@@ -33,7 +33,7 @@ export const PictureInPictureSwitchAction = () => {
   if (pipState.reversed) {
     return (
       <SwitchToPlayerSVG
-        iconColor="white"
+        iconColor="currentColor"
         aria-label={intl.formatMessage(messages.documentActive)}
         onClick={() => {
           setPipState({ reversed: !pipState.reversed });
@@ -45,7 +45,7 @@ export const PictureInPictureSwitchAction = () => {
 
   return (
     <SwitchToDocumentSVG
-      iconColor="white"
+      iconColor="currentColor"
       aria-label={intl.formatMessage(messages.playerActive)}
       onClick={() => {
         setPipState({ reversed: !pipState.reversed });

@@ -9,6 +9,8 @@ import { useLanguageStore } from '../store/languageStore';
 import { getLanguageFromLocale } from '../utils';
 
 const SelectStyled = styled(Select)<{ $isSmall: boolean }>`
+  flex-shrink: 0;
+
   .c__select__wrapper .labelled-box .labelled-box__children {
     padding-right: 2rem;
 

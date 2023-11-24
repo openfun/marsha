@@ -26,6 +26,7 @@ export interface TextPropsOnly {
   size?: keyof typeof TextSizes;
   weight?: keyof typeof TextWeights;
   fontStyle?: CSSProperties['fontStyle'];
+  transform?: CSSProperties['textTransform'];
 }
 
 type TextTypes = Pick<ReactHTML, 'p' | 'span' | 'div'>;
@@ -57,6 +58,7 @@ const TextRef = forwardRef(
       className,
       fontStyle,
       size = 'medium-large',
+      transform,
       type = 'span',
       weight = 'regular',
       ...props
@@ -71,7 +73,7 @@ const TextRef = forwardRef(
           className || ''
         }`}
         {...props}
-        style={{ fontStyle, ...props.style }}
+        style={{ fontStyle, textTransform: transform, ...props.style }}
       />
     );
   },

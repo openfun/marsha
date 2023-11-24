@@ -79,7 +79,11 @@ const Menu = () => {
         margin={{ vertical: 'medium', horizontal: 'small' }}
       />
       <Box role="group">
-        <Text weight="bold" margin={{ bottom: 'xxsmall' }}>
+        <Text
+          weight="bold"
+          margin={{ bottom: 'xxsmall' }}
+          transform="uppercase"
+        >
           {intl.formatMessage(messages.menuTypeContentLabel)}
         </Text>
         {contents.map((content, index) => (

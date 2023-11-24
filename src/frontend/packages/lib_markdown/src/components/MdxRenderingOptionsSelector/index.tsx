@@ -1,7 +1,11 @@
+import { colorsTokens } from '@lib-common/cunningham';
 import { Switch } from '@openfun/cunningham-react';
-import { DropButton } from 'grommet';
 import { SettingsOption } from 'grommet-icons';
-import { Box, MarkdownDocumentRenderingOptions } from 'lib-components';
+import {
+  Box,
+  DropButton,
+  MarkdownDocumentRenderingOptions,
+} from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -81,28 +85,31 @@ export const MdxRenderingOptionsSelector = ({
 
   return (
     <DropButton
-      a11yTitle={intl.formatMessage(messages.settings)}
-      icon={<SettingsOption />}
-      dropAlign={{ top: 'bottom', left: 'left' }}
-      style={{ borderColor: 'transparent' }}
-      dropContent={
-        <Box>
-          <ToggleCheckBox
-            optionName="useMdx"
-            enabledLabel={intl.formatMessage(messages.mdxEnabled)}
-            disabledLabel={intl.formatMessage(messages.mdxDisabled)}
-            renderingOptions={renderingOptions}
-            setRenderingOptions={setRenderingOptions}
-          />
-          <ToggleCheckBox
-            optionName="useMathjax"
-            enabledLabel={intl.formatMessage(messages.mathjaxEnabled)}
-            disabledLabel={intl.formatMessage(messages.mathjaxDisabled)}
-            renderingOptions={renderingOptions}
-            setRenderingOptions={setRenderingOptions}
-          />
-        </Box>
+      containerProps={{ justify: 'center' }}
+      pad={{ vertical: 'xsmall' }}
+      button={
+        <SettingsOption
+          a11yTitle={intl.formatMessage(messages.settings)}
+          color={colorsTokens['primary-500']}
+        />
       }
-    />
+    >
+      <Box>
+        <ToggleCheckBox
+          optionName="useMdx"
+          enabledLabel={intl.formatMessage(messages.mdxEnabled)}
+          disabledLabel={intl.formatMessage(messages.mdxDisabled)}
+          renderingOptions={renderingOptions}
+          setRenderingOptions={setRenderingOptions}
+        />
+        <ToggleCheckBox
+          optionName="useMathjax"
+          enabledLabel={intl.formatMessage(messages.mathjaxEnabled)}
+          disabledLabel={intl.formatMessage(messages.mathjaxDisabled)}
+          renderingOptions={renderingOptions}
+          setRenderingOptions={setRenderingOptions}
+        />
+      </Box>
+    </DropButton>
   );
 };

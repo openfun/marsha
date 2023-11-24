@@ -266,7 +266,7 @@ export const MarkdownEditor = ({ markdownDocumentId }: MarkdownEditorProps) => {
             width="full"
             pad={{ bottom: 'xsmall' }}
             align="center"
-            gap="small"
+            gap="medium"
           >
             <Input
               aria-label={intl.formatMessage(messages.title)}
@@ -277,7 +277,7 @@ export const MarkdownEditor = ({ markdownDocumentId }: MarkdownEditorProps) => {
               maxLength={255}
             />
 
-            <Box direction="row">
+            <Box direction="row" gap="small">
               <MdxRenderingOptionsSelector
                 renderingOptions={localRenderingOptions}
                 setRenderingOptions={setLocalRenderingOptions}

@@ -155,7 +155,7 @@ describe('<PictureInPictureLayer />', () => {
       </PictureInPictureProvider>,
     );
 
-    await userEvent.click(screen.getByRole('button', { name: 'More options' }));
+    await userEvent.click(screen.getByRole('img', { name: 'More options' }));
     await screen.findByRole('button', { name: 'Show document' });
     expect(
       screen.getByRole('button', { name: 'some action' }),

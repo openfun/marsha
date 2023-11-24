@@ -1,9 +1,9 @@
 import { Button } from '@openfun/cunningham-react';
-import { DropButton } from 'grommet';
 import { Breakpoints, Nullable, colorsTokens } from 'lib-common';
 import {
   AnonymousUser,
   Box,
+  DropButton,
   Text,
   useCurrentUser,
   useResponsive,
@@ -23,16 +23,12 @@ import { LanguagePicker } from 'features/Language/';
 import { Burger } from 'features/Menu';
 import { routes } from 'routes/routes';
 
-const colorMenu = colorsTokens['info-500'];
-
 interface PropsExtended {
   $isScrollTop: boolean;
   $isDesktop: boolean;
 }
 
 const HeaderBox = styled(Box)<PropsExtended>`
-  position: fixed;
-  color: ${colorMenu};
   transition: all 0.3s ease-in-out;
   ${(props) =>
     props.$isScrollTop && props.$isDesktop
@@ -42,7 +38,6 @@ const HeaderBox = styled(Box)<PropsExtended>`
         box-shadow: 1px 1px 20px #cce4f3;
       `}
   z-index: 20;
-  height: auto;
 `;
 
 const messages = defineMessages({
@@ -103,31 +98,28 @@ const Header = forwardRef<Nullable<HTMLDivElement>>((_props, ref) => {
       direction="row"
       width="full"
       justify="space-between"
-      pad={{ horizontal: 'medium' }}
+      pad={{ horizontal: 'medium', vertical: 'xsmall' }}
       $isScrollTop={isScrollTop}
       $isDesktop={isDesktop}
+      height="auto"
+      position="fixed"
+      color={colorsTokens['info-500']}
     >
       <Box
         direction="row"
         justify="space-between"
-        margin={{ bottom: 'small' }}
-        pad={{ right: 'medium' }}
         gap={
           isSmallerBreakpoint(breakpoint, Breakpoints.small) ? 'none' : 'medium'
         }
+        style={{ flexShrink: 0 }}
       >
-        <Burger
-          width={60}
-          height={60}
-          aria-controls="menu"
-          style={{ flex: 'none' }}
-        />
+        <Burger width={60} height={60} aria-controls="menu" />
         {siteConfig.is_default_site && (
           <Link to={routes.HOMEPAGE.path} style={{ color: 'currentColor' }}>
             <MarshaLogoIcon
               height={
                 isSmallerBreakpoint(breakpoint, Breakpoints.small)
-                  ? '100%'
+                  ? '50px'
                   : '80px'
               }
             />
@@ -152,82 +144,57 @@ const Header = forwardRef<Nullable<HTMLDivElement>>((_props, ref) => {
         )}
       </Box>
 
-      <Box direction="row" align="center" gap="small" justify="end">
+      <Box direction="row" align="center" gap="xsmall" justify="end">
         <LanguagePicker />
+        {!isSmallerBreakpoint(breakpoint, Breakpoints.xsmall) && (
+          <Text width={{ max: 'small' }} truncate={2}>
+            {fullName}
+          </Text>
+        )}
         <DropButton
-          open={isDropOpen}
-          onOpen={() => {
-            setIsDropOpen(true);
-          }}
-          onClose={() => {
-            setIsDropOpen(false);
-          }}
-          plain
-          label={
-            <Box direction="row" align="center" gap="small" justify="end">
-              {!isSmallerBreakpoint(breakpoint, Breakpoints.xsmall) && (
-                <Text
-                  truncate={2}
-                  style={{
-                    maxWidth: '90px',
-                  }}
-                >
-                  {fullName}
-                </Text>
-              )}
-              <AvatarIcon
-                style={{ flex: 'none' }}
-                title={intl.formatMessage(messages.iconTitle)}
-                width={42}
-                height={42}
-              />
-            </Box>
+          isOpen={isDropOpen}
+          setIsOpen={setIsDropOpen}
+          button={
+            <AvatarIcon
+              style={{ flex: 'none' }}
+              title={intl.formatMessage(messages.iconTitle)}
+              width={42}
+              height={42}
+            />
           }
-          dropAlign={{ top: 'bottom', right: 'right' }}
-          dropContent={
-            <Box direction="column" margin="small">
-              <NavLink
-                className="c__button c__button--tertiary c__button--medium  c__button--with-icon--left"
-                to={routes.PROFILE.path}
-                onClick={() => {
-                  setIsDropOpen(false);
-                }}
-              >
-                <AvatarIcon />
-                <Text>{intl.formatMessage(messages.profile)}</Text>
-              </NavLink>
-              <NavLink
-                className="c__button c__button--tertiary c__button--medium  c__button--with-icon--left"
-                to={routes.PROFILE.subRoutes.PROFILE_SETTINGS.path}
-                onClick={() => {
-                  setIsDropOpen(false);
-                }}
-              >
-                <SettingsIcon />{' '}
-                <Text>{intl.formatMessage(messages.settings)}</Text>
-              </NavLink>
-              <Button
-                onClick={() => {
-                  logout();
-                }}
-                icon={<LogoutIcon />}
-                color="tertiary"
-              >
-                <Text>{intl.formatMessage(messages.logout)}</Text>
-              </Button>
-            </Box>
-          }
-          dropProps={{
-            round: 'xsmall',
-            border: {
-              color: colorsTokens['info-500'],
-              size: '2px',
-            },
-            style: {
-              zIndex: 991,
-            },
-          }}
-        />
+        >
+          <Box margin="xsmall">
+            <NavLink
+              className="c__button c__button--tertiary c__button--medium  c__button--with-icon--left"
+              to={routes.PROFILE.path}
+              onClick={() => {
+                setIsDropOpen(false);
+              }}
+            >
+              <AvatarIcon />
+              <Text>{intl.formatMessage(messages.profile)}</Text>
+            </NavLink>
+            <NavLink
+              className="c__button c__button--tertiary c__button--medium  c__button--with-icon--left"
+              to={routes.PROFILE.subRoutes.PROFILE_SETTINGS.path}
+              onClick={() => {
+                setIsDropOpen(false);
+              }}
+            >
+              <SettingsIcon />{' '}
+              <Text>{intl.formatMessage(messages.settings)}</Text>
+            </NavLink>
+            <Button
+              onClick={() => {
+                logout();
+              }}
+              icon={<LogoutIcon />}
+              color="tertiary"
+            >
+              <Text>{intl.formatMessage(messages.logout)}</Text>
+            </Button>
+          </Box>
+        </DropButton>
       </Box>
     </HeaderBox>
   );
