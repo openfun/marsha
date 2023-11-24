@@ -76,7 +76,6 @@ export const PictureInPictureLayer = ({
 
   let pictureStyle: CSSProperties = {
     position: 'absolute',
-    overflow: 'hidden',
     left: `${picturePosition.x}px`,
     top: `${picturePosition.y}px`,
     borderRadius: '6px',

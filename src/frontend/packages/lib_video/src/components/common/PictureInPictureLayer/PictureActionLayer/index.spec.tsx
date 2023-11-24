@@ -28,7 +28,7 @@ describe('<PictureActionLayer />', () => {
     );
 
     expect(
-      screen.getByRole('button', { name: 'More options' }),
+      screen.getByRole('img', { name: 'More options' }),
     ).toBeInTheDocument();
     await userEvent.click(screen.getByRole('button', { name: 'More options' }));
   });

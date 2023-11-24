@@ -1,8 +1,9 @@
-import { Input, Loader, Popover } from '@openfun/cunningham-react';
+import { Input, Loader } from '@openfun/cunningham-react';
 import { Maybe, Nullable, colorsTokens } from 'lib-common';
 import {
   AnonymousUser,
   Box,
+  DropButton,
   LiveSession,
   QuestionMarkSVG,
   Text,
@@ -105,8 +106,6 @@ export const InputDisplayName = ({ onSuccess }: InputDisplayNameProps) => {
       (user !== AnonymousUser.ANONYMOUS && user?.username) ||
       '',
   );
-  const popoverRef = useRef(null);
-  const [popoverVisible, setPopoverVisible] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -247,38 +246,22 @@ export const InputDisplayName = ({ onSuccess }: InputDisplayNameProps) => {
             {intl.formatMessage(messages.inputDisplayNameLabel)}
           </Text>
           <Box>
-            <Box ref={popoverRef}>
-              <QuestionMarkSVG
-                containerStyle={{
-                  height: '15px',
-                  width: '15px',
-                }}
-                iconColor={colorsTokens['info-900']}
-                onClick={() => {
-                  setPopoverVisible(true);
-                }}
-              />
-            </Box>
-            {popoverVisible && (
-              <Popover
-                parentRef={popoverRef}
-                onClickOutside={() => setPopoverVisible(false)}
-                borderless
-              >
-                <Box
-                  background="white"
-                  pad="2px"
-                  round="6px"
-                  width="150px"
-                  margin={{ top: 'small' }}
-                  elevation
-                >
-                  <Text size="tiny" className="m-t">
-                    {intl.formatMessage(messages.inputDisplayNameInformative)}
-                  </Text>
-                </Box>
-              </Popover>
-            )}
+            <DropButton
+              popoverProps={{ margin: { top: 'xsmall' } }}
+              button={
+                <QuestionMarkSVG
+                  containerStyle={{
+                    height: '15px',
+                    width: '15px',
+                  }}
+                  iconColor={colorsTokens['info-900']}
+                />
+              }
+            >
+              <Text size="tiny" className="m-t">
+                {intl.formatMessage(messages.inputDisplayNameInformative)}
+              </Text>
+            </DropButton>
           </Box>
         </Box>
         <Input

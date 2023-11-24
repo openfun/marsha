@@ -1,5 +1,5 @@
-import { DropButton } from 'grommet';
-import { Box, MoreOptionSVG } from 'lib-components';
+import { colorsTokens } from '@lib-common/cunningham';
+import { Box, DropButton, MoreOptionSVG } from 'lib-components';
 import { ReactNode, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -53,7 +53,7 @@ export const PictureActionLayer = ({
         display={pictureWidth >= minActionWidth ? 'flex' : 'none'}
       >
         {actions?.map((action, index) => (
-          <Box key={`pip_action_${index}`} margin="auto">
+          <Box key={`pip_action_${index}`} margin="auto" color="white">
             {action}
           </Box>
         ))}
@@ -63,27 +63,30 @@ export const PictureActionLayer = ({
         key="small-picture-action-container"
         fill
         pad="small"
+        align="center"
+        justify="center"
         display={pictureWidth < minActionWidth ? 'flex' : 'none'}
       >
         <DropButton
-          a11yTitle={intl.formatMessage(messages.moreOptionTitle)}
-          dropAlign={{ top: 'bottom' }}
-          dropContent={
-            <Box background="black" align="center">
-              {actions?.map((action, index) => (
-                <Box key={`pip_action_${index}`} margin="small">
-                  {action}
-                </Box>
-              ))}
-            </Box>
+          button={
+            <MoreOptionSVG
+              key="more-options"
+              iconColor="white"
+              width={40}
+              aria-label={intl.formatMessage(messages.moreOptionTitle)}
+              style={{ padding: '1rem' }}
+            />
           }
-          dropProps={{}}
-          margin="auto"
-          style={{ padding: 0, maxWidth: '40px', width: '100%' }}
         >
-          <Box pad={{ vertical: 'small' }}>
-            <MoreOptionSVG key="more-options" iconColor="white" />
-          </Box>
+          {actions?.map((action, index) => (
+            <Box
+              key={`pip_action_${index}`}
+              margin="small"
+              color={colorsTokens['primary-500']}
+            >
+              {action}
+            </Box>
+          ))}
         </DropButton>
       </Box>
     </Box>

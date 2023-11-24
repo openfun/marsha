@@ -64,7 +64,7 @@ export const CameraControl = () => {
   if (isCameraOn) {
     return (
       <CameraOnSVG
-        iconColor="white"
+        iconColor="currentColor"
         aria-label={intl.formatMessage(messages.enableTitle)}
         style={style}
         onClick={() => {
@@ -80,7 +80,7 @@ export const CameraControl = () => {
 
   return (
     <CameraOffSVG
-      iconColor="white"
+      iconColor="currentColor"
       aria-label={intl.formatMessage(messages.disableTitle)}
       onClick={() => {
         if (!jitsiApi) {

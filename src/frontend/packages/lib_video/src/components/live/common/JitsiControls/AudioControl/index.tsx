@@ -64,7 +64,7 @@ export const AudioControl = () => {
   if (isAudioOn) {
     return (
       <MicrophoneOnSVG
-        iconColor="white"
+        iconColor="currentColor"
         aria-label={intl.formatMessage(messages.enableTitle)}
         style={style}
         onClick={() => {
@@ -80,7 +80,7 @@ export const AudioControl = () => {
 
   return (
     <MicrophoneOffSVG
-      iconColor="white"
+      iconColor="currentColor"
       aria-label={intl.formatMessage(messages.disableTitle)}
       onClick={() => {
         if (!jitsiApi) {
