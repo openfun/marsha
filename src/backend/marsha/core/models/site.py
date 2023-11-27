@@ -122,6 +122,20 @@ class SiteConfig(BaseModel):
         blank=True,
     )
 
+    meta_title = models.TextField(
+        verbose_name=_("meta title"),
+        help_text=_("The meta title of the site"),
+        null=True,
+        blank=True,
+    )
+
+    meta_description = models.TextField(
+        verbose_name=_("meta description"),
+        help_text=_("The meta description of the site"),
+        null=True,
+        blank=True,
+    )
+
     def __str__(self):
         return f"Config associated to: {self.site.name}"
 
