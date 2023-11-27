@@ -5,11 +5,24 @@ import {
   useSiteConfig,
 } from 'lib-components';
 import { PropsWithChildren, useEffect, useState } from 'react';
-import { RawIntlProvider } from 'react-intl';
+import { RawIntlProvider, defineMessages } from 'react-intl';
 
 import { useConfig } from 'api/useConfig';
 import { featureContentLoader, useContentFeatures } from 'features/Contents';
 import { useLanguage } from 'features/Language';
+
+const messages = defineMessages({
+  metaTitle: {
+    defaultMessage: 'Marsha',
+    description: 'Meta title website',
+    id: 'routes.AppRoutes.metaTitle',
+  },
+  metaDescription: {
+    defaultMessage: 'Marsha',
+    description: 'Meta description website',
+    id: 'routes.AppRoutes.metaDescription',
+  },
+});
 
 const AppConfig = ({ children }: PropsWithChildren<unknown>) => {
   const intl = useLanguage();
@@ -66,8 +79,27 @@ const AppConfig = ({ children }: PropsWithChildren<unknown>) => {
       vod_conversion_enabled: config.vod_conversion_enabled,
       homepage_banner_title: config.homepage_banner_title,
       homepage_banner_text: config.homepage_banner_text,
+      meta_description: config.meta_description,
+      meta_title: config.meta_title,
     });
   }, [setSentry, setP2PConfig, config, setSiteConfig]);
+
+  useEffect(() => {
+    if (!intl) {
+      return;
+    }
+
+    document.title =
+      config?.meta_title || intl.formatMessage(messages.metaTitle);
+
+    document
+      .querySelector("[name='description']")
+      ?.setAttribute(
+        'content',
+        config?.meta_description ||
+          intl.formatMessage(messages.metaDescription),
+      );
+  }, [intl, config?.meta_title, config?.meta_description]);
 
   if (!isConfigReady) {
     return <BoxLoader boxProps={{ height: '100vh' }} />;

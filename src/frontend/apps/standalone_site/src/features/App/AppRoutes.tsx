@@ -1,7 +1,6 @@
 import { colorsTokens, lazyImport } from 'lib-common';
 import { BoxError, BoxLoader } from 'lib-components';
 import { Suspense, useEffect } from 'react';
-import { defineMessages, useIntl } from 'react-intl';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 
 import { MainLayout } from 'components/Layout';
@@ -25,21 +24,7 @@ const { PortabilityRequestsRouteComponent } = lazyImport(
 const { ProfileRouter } = lazyImport(() => import('features/Profile'));
 const { ClaimResource } = lazyImport(() => import('features/ClaimResource'));
 
-const messages = defineMessages({
-  metaTitle: {
-    defaultMessage: 'Marsha',
-    description: 'Meta title website',
-    id: 'routes.AppRoutes.metaTitle',
-  },
-  metaDescription: {
-    defaultMessage: 'Marsha',
-    description: 'Meta description website',
-    id: 'routes.AppRoutes.metaDescription',
-  },
-});
-
 const AppRoutes = () => {
-  const intl = useIntl();
   const location = useLocation();
   const { isAuthenticated, isLoading, error } = useAuthenticator();
 
@@ -49,13 +34,6 @@ const AppRoutes = () => {
       behavior: 'smooth',
     });
   }, [location.pathname]);
-
-  useEffect(() => {
-    document.title = intl.formatMessage(messages.metaTitle);
-    document
-      .querySelector("[name='description']")
-      ?.setAttribute('content', intl.formatMessage(messages.metaDescription));
-  }, [intl]);
 
   if (error) {
     return (

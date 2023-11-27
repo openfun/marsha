@@ -1,4 +1,4 @@
-import { act, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { useP2PConfig, useSentry, useSiteConfig } from 'lib-components';
 import { Deferred, render } from 'lib-tests';
@@ -61,6 +61,55 @@ describe('AppConfig', () => {
     fetchMock.restore();
     jest.resetAllMocks();
     consoleWarn.mockClear();
+
+    // eslint-disable-next-line testing-library/no-node-access
+    const metaDesc = document.head.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      document.head.removeChild(metaDesc);
+    }
+  });
+
+  it('renders default meta title desc', async () => {
+    const meta = document.createElement('meta');
+    meta.setAttribute('name', 'description');
+    meta.setAttribute('data-testid', 'description-id');
+    document.head.appendChild(meta);
+
+    render(<AppConfig />);
+
+    await waitFor(() => {
+      expect(document.title).toEqual('Marsha');
+    });
+
+    expect(within(document.head).getByTestId('description-id')).toHaveAttribute(
+      'content',
+      'Marsha',
+    );
+  });
+
+  it('renders meta title desc from site_config', async () => {
+    deferredConfig.resolve({
+      ...config,
+      is_default_site: false,
+      meta_title: 'some title',
+      meta_description: 'some desc',
+    });
+
+    const meta = document.createElement('meta');
+    meta.setAttribute('name', 'description');
+    meta.setAttribute('data-testid', 'description-id');
+    document.head.appendChild(meta);
+
+    render(<AppConfig />);
+
+    await waitFor(() => {
+      expect(document.title).toEqual('some title');
+    });
+
+    expect(within(document.head).getByTestId('description-id')).toHaveAttribute(
+      'content',
+      'some desc',
+    );
   });
 
   it('should init Sentry when active', async () => {
@@ -182,6 +231,8 @@ describe('AppConfig', () => {
       login_html: 'some login',
       footer_copyright: 'some footer',
       vod_conversion_enabled: false,
+      meta_description: 'some description',
+      meta_title: 'some title',
     });
 
     render(<AppConfig />);
@@ -194,6 +245,8 @@ describe('AppConfig', () => {
         login_html: 'some login',
         footer_copyright: 'some footer',
         vod_conversion_enabled: false,
+        meta_description: 'some description',
+        meta_title: 'some title',
       });
     });
     expect(useSiteConfig.getState().siteConfig).toEqual({
@@ -202,6 +255,8 @@ describe('AppConfig', () => {
       login_html: 'some login',
       footer_copyright: 'some footer',
       vod_conversion_enabled: false,
+      meta_description: 'some description',
+      meta_title: 'some title',
     });
   });
 
@@ -252,7 +307,9 @@ describe('AppConfig', () => {
 
     expect(await screen.findByText(/My test/i)).toBeInTheDocument();
 
-    useLanguageStore.getState().setLanguage('fr');
+    act(() => {
+      useLanguageStore.getState().setLanguage('fr');
+    });
     expect(await screen.findByText(/Mon test/i)).toBeInTheDocument();
   });
 

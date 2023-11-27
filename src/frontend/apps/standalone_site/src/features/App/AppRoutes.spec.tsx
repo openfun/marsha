@@ -1,4 +1,4 @@
-import { screen, waitFor, within } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
@@ -94,24 +94,6 @@ describe('<AppRoutes />', () => {
   afterEach(() => {
     jest.resetAllMocks();
     fetchMock.restore();
-  });
-
-  test('renders meta title desc', async () => {
-    const meta = document.createElement('meta');
-    meta.setAttribute('name', 'description');
-    meta.setAttribute('data-testid', 'description-id');
-    document.head.appendChild(meta);
-
-    render(<AppRoutes />);
-
-    await waitFor(() => {
-      expect(document.title).toEqual('Marsha');
-    });
-
-    expect(within(document.head).getByTestId('description-id')).toHaveAttribute(
-      'content',
-      'Marsha',
-    );
   });
 
   describe('when the user is not authenticated', () => {
