@@ -37,6 +37,16 @@
         "mcr.microsoft.com/playwright"
       ],
       "versioning": "semver"
+    },
+    {
+      "groupName": "allowed urllib3 versions",
+      "matchManagers": [
+        "setup-cfg"
+      ],
+      "matchPackageNames": [
+        "urllib3"
+      ],
+      "allowedVersions": "<2.1.0"
     }
   ]
 }
