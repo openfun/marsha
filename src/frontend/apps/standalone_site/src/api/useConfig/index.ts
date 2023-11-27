@@ -2,11 +2,12 @@ import { UseQueryOptions, useQuery } from '@tanstack/react-query';
 import {
   FetchListQueryKey,
   FetchResponseError,
+  SiteConfig,
   fetchResponseHandler,
   fetchWrapper,
 } from 'lib-components';
 
-export interface ConfigResponse {
+export interface ConfigResponse extends SiteConfig {
   p2p: {
     isEnabled: boolean;
     webTorrentTrackerUrls: string[];
@@ -16,14 +17,6 @@ export interface ConfigResponse {
   environment: string;
   release: string;
   inactive_resources: string[];
-  vod_conversion_enabled: boolean;
-  is_default_site: boolean;
-  logo_url?: string;
-  is_logo_enabled?: boolean;
-  login_html?: string;
-  footer_copyright?: string;
-  homepage_banner_title?: string;
-  homepage_banner_text?: string;
 }
 
 export const getConfig = async () => {

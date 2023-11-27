@@ -69,6 +69,8 @@ describe('<Header />', () => {
         vod_conversion_enabled: true,
         homepage_banner_title: 'banner title',
         homepage_banner_text: 'banner text',
+        meta_description: 'meta description',
+        meta_title: 'meta title',
       },
     });
 
@@ -106,6 +108,8 @@ describe('<Header />', () => {
         vod_conversion_enabled: true,
         homepage_banner_title: 'banner title',
         homepage_banner_text: 'banner text',
+        meta_description: 'meta description',
+        meta_title: 'meta title',
       },
     });
 
@@ -142,6 +146,8 @@ describe('<Header />', () => {
         vod_conversion_enabled: true,
         homepage_banner_title: 'banner title',
         homepage_banner_text: 'banner text',
+        meta_description: 'meta description',
+        meta_title: 'meta title',
       },
     });
 

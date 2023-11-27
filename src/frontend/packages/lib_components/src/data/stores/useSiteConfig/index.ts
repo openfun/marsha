@@ -1,15 +1,16 @@
-import { Maybe } from 'lib-common';
 import { create } from 'zustand';
 
-interface SiteConfig {
+export interface SiteConfig {
   is_default_site: boolean;
-  logo_url: Maybe<string>;
-  is_logo_enabled: Maybe<boolean>;
-  login_html: Maybe<string>;
-  footer_copyright: Maybe<string>;
+  logo_url?: string;
+  is_logo_enabled?: boolean;
+  login_html?: string;
+  footer_copyright?: string;
   vod_conversion_enabled: boolean;
-  homepage_banner_title: Maybe<string>;
-  homepage_banner_text: Maybe<string>;
+  homepage_banner_title?: string;
+  homepage_banner_text?: string;
+  meta_description?: string;
+  meta_title?: string;
 }
 
 interface SiteConfigStore {
@@ -28,6 +29,8 @@ export const useSiteConfig = create<SiteConfigStore>((set, get) => ({
     vod_conversion_enabled: true,
     homepage_banner_text: undefined,
     homepage_banner_title: undefined,
+    meta_description: undefined,
+    meta_title: undefined,
   },
   setSiteConfig: (siteConfig) => {
     set((state) => {

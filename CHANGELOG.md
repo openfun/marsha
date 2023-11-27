@@ -10,6 +10,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Meta description and meta title on the website from the API (#2516)
 - Retrieve BBB learning analytics and send them through API
 - Classroom attendance analytics (#2499) 
 - Add a language picker for the invite link on the website (#2504)
