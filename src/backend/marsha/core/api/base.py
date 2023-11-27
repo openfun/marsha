@@ -249,6 +249,8 @@ def get_frontend_configuration(request):
             config["footer_copyright"] = site_config.footer_copyright
             config["homepage_banner_title"] = site_config.homepage_banner_title
             config["homepage_banner_text"] = site_config.homepage_banner_text
+            config["meta_title"] = site_config.meta_title
+            config["meta_description"] = site_config.meta_description
         except SiteConfig.DoesNotExist:
             pass
 

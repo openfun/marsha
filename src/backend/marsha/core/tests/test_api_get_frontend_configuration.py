@@ -116,6 +116,8 @@ class TestGetFrontendConfiguration(TestCase):
             footer_copyright="footer copyright",
             homepage_banner_title="banner title",
             homepage_banner_text="banner text",
+            meta_title="meta title",
+            meta_description="meta description",
         )
         response = self.client.get("/api/config/", HTTP_HOST="marsha.education")
 
@@ -140,6 +142,8 @@ class TestGetFrontendConfiguration(TestCase):
                 "footer_copyright": "footer copyright",
                 "homepage_banner_title": "banner title",
                 "homepage_banner_text": "banner text",
+                "meta_title": "meta title",
+                "meta_description": "meta description",
             },
         )
 

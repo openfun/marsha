@@ -154,6 +154,14 @@ class Command(BaseCommand):
                 "homepage_banner_text": (
                     "Le portail national des classes virtuelles de l'enseignement supérieur"
                 ),
+                "meta_title": (
+                    "Le portail national des classes virtuelles de l'enseignement supérieur"
+                ),
+                "meta_description": """
+                    Les enseignants peuvent accéder à la solution de classes virtuelles BBB à
+                    travers le portail national déployé par FUN en utilisant leur identifiant
+                    universitaire (via la fédération d'identité Shibboleth).
+                """,
             },
         )
         self.stdout.write(" - done.")
