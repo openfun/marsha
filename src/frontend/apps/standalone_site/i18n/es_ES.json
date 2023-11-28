@@ -31,18 +31,6 @@
     "description": "Title of the delete modal.",
     "message": "Delete playlist"
   },
-  "components.Profile.components.SettingsProfilePage.account": {
-    "description": "Account tab title in settings page, to update password and link to other site.",
-    "message": "My account"
-  },
-  "components.Profile.components.SettingsProfilePage.info": {
-    "description": "Info tab title in settings page, to update name and other general infos.",
-    "message": "My informations"
-  },
-  "components.Profile.components.SettingsProfilePage.organizations": {
-    "description": "Organization tab title in settings page, to config organizations.",
-    "message": "My organizations"
-  },
   "components.Text.PrivateTextInputfield.hidePassword": {
     "description": "A18n label for the hidden password button.",
     "message": "Hide the password."
@@ -130,6 +118,22 @@
   "feature.Profile.ProfilePage.header": {
     "description": "Profile page's title.",
     "message": "My profile"
+  },
+  "feature.Profile.ProfilePage.inputLabelEmail": {
+    "description": "Profile page's input label email.",
+    "message": "Your Email"
+  },
+  "feature.Profile.ProfilePage.inputLabelName": {
+    "description": "Profile page's input label name.",
+    "message": "Your name"
+  },
+  "feature.Profile.ProfilePage.noEmail": {
+    "description": "Profile page's when no email is provided.",
+    "message": "No email provided"
+  },
+  "feature.Profile.ProfilePage.noName": {
+    "description": "Profile page's when no name is provided.",
+    "message": "No name provided"
   },
   "features.Authentication.Login.altLogo": {
     "description": "Accessible description for the Marsha logo",
