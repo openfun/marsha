@@ -143,18 +143,6 @@
     "description": "Title of the widget used to change retention date.",
     "message": "Retention date"
   },
-  "component.AllowedDownloadButton.buttonLabel": {
-    "description": "The label of the button for stopping to allow students to download the media.",
-    "message": "Click on this button to stop allowing students to download this media."
-  },
-  "component.AllowedDownloadButton.updateSharedLiveMediaFail": {
-    "description": "Message displayed when shared media update has failed.",
-    "message": "Shared media update has failed !"
-  },
-  "component.AllowedDownloadButton.updateSharedLiveMediaSucces": {
-    "description": "Message displayed when a shared media is successfully updated.",
-    "message": "Shared media updated."
-  },
   "component.ChatAvatar.avatarTitle": {
     "description": "A title describing the avatar icon purpose.",
     "message": "The user's avatar"
@@ -263,8 +251,8 @@
     "description": "Button label for setting username and joining the classroom in classroom dashboard view.",
     "message": "Join"
   },
-  "component.DashboardClassroomAskUsername.label": {
-    "description": "Placeholder for asking username to join the classroom.",
+  "component.DashboardClassroomAskUsername.labelEnterYourName": {
+    "description": "Input label for asking username to join the classroom.",
     "message": "Enter your name"
   },
   "component.DashboardClassroomAskUsername.studentConsent": {
@@ -387,26 +375,6 @@
     "description": "Message displayed when video is successfully updated.",
     "message": "Video updated."
   },
-  "component.DisallowedDownloadButton.buttonLabel": {
-    "description": "The label of the button for allowing the students to download the media.",
-    "message": "Click on this button to allow students to download the media."
-  },
-  "component.DisallowedDownloadButton.updateSharedLiveMediaFail": {
-    "description": "Message displayed when shared media update has failed.",
-    "message": "Shared media update has failed !"
-  },
-  "component.DisallowedDownloadButton.updateSharedLiveMediaSucces": {
-    "description": "Message displayed when a shared media is successfully updated.",
-    "message": "Shared media updated."
-  },
-  "component.HideLiveFeedback.label": {
-    "description": "Label for the button in actions during a live in raw mode for a teacher to hide his live feedback.",
-    "message": "Live feedback"
-  },
-  "component.HideLiveFeedback.title": {
-    "description": "Title for the button in actions during a live in raw mode for a teacher to hide his live feedback.",
-    "message": "Hide live feedback"
-  },
   "component.ImageViewer.altMessage": {
     "description": "Alt message for a shared document page",
     "message": "Shared document page {url}"
@@ -422,6 +390,10 @@
   "component.LicenseManager.updateVideoSuccess": {
     "description": "Message displayed when video is successfully updated.",
     "message": "Video updated."
+  },
+  "component.LiveFeedbackWrapper.label": {
+    "description": "Label for the button in actions during a live in raw mode for a teacher to hide his live feedback.",
+    "message": "Live feedback"
   },
   "component.LiveInfoBar.nbViewers": {
     "description": "Number of user connected on the live",
@@ -623,38 +595,6 @@
     "description": "Message displayed when a shared media is successfully updated.",
     "message": "Shared media deleted."
   },
-  "component.ShowLiveFeedback.label": {
-    "description": "Label for the button in actions during a live in raw mode for a teacher to show his live feedback.",
-    "message": "Live feedback"
-  },
-  "component.ShowLiveFeedback.title": {
-    "description": "Title for the button in actions during a live in raw mode for a teacher to show his live feedback.",
-    "message": "Show live feedback"
-  },
-  "component.StartSharingButton.publishSharedLiveMediaBtn": {
-    "description": "Label of the button allowing instructor to share a media with its students.",
-    "message": "Share"
-  },
-  "component.StartSharingButton.updateSharedLiveMediaFail": {
-    "description": "Message displayed when shared media update has failed.",
-    "message": "Shared media update has failed !"
-  },
-  "component.StartSharingButton.updateSharedLiveMediaSucces": {
-    "description": "Message displayed when a shared media is successfully updated.",
-    "message": "Shared media updated."
-  },
-  "component.StopSharingButton.unpublishSharedLiveMediaBtn": {
-    "description": "Label of the button allowing instructor to stop sharing a media with its students.",
-    "message": "Stop sharing"
-  },
-  "component.StopSharingButton.updateSharedLiveMediaFail": {
-    "description": "Message displayed when shared media update has failed.",
-    "message": "Shared media update has failed !"
-  },
-  "component.StopSharingButton.updateSharedLiveMediaSucces": {
-    "description": "Message displayed when a shared media is successfully updated.",
-    "message": "Shared media updated."
-  },
   "component.StudentLiveAdvertising.StudentLiveAdvertising.defaultDescription": {
     "description": "Description to advertise a live in a ics file which has no description set yet.",
     "message": "Come and join us!"
@@ -751,6 +691,30 @@
     "description": "A message displayed when upload has failed, and so the file hasn't any filename.",
     "message": "Upload has failed"
   },
+  "component.ToggleDownload.labelToggleAllowDownloadSupport": {
+    "description": "Label of the toggle allowing to download the support share by the instructor",
+    "message": "Allow download"
+  },
+  "component.ToggleDownload.updateSharedLiveMediaFail": {
+    "description": "Message displayed when shared media update has failed.",
+    "message": "Shared media update has failed !"
+  },
+  "component.ToggleDownload.updateSharedLiveMediaSucces": {
+    "description": "Message displayed when a shared media is successfully updated.",
+    "message": "Shared media updated."
+  },
+  "component.ToggleSharing.labelToggleShareSupport": {
+    "description": "Label of the toggle allowing instructor to share a media with its students.",
+    "message": "Share support"
+  },
+  "component.ToggleSharing.updateSharedLiveMediaFail": {
+    "description": "Message displayed when shared media update has failed.",
+    "message": "Shared media update has failed !"
+  },
+  "component.ToggleSharing.updateSharedLiveMediaSucces": {
+    "description": "Message displayed when a shared media is successfully updated.",
+    "message": "Shared media updated."
+  },
   "component.ToggleSubtitlesAsTranscript.useTranscriptToggleLabel": {
     "description": "Label of the toggle used to use subtitles as transcripts.",
     "message": "Use subtitles as transcripts"
@@ -843,6 +807,17 @@
     "description": "Displayed in Markdown image upload status",
     "message": "Uploaded {imageName}"
   },
+  "components.ClassroomAttendance.dotMissed": {
+    "description": "Title on dot icon showing this slice of time the user was not connected",
+    "message": "Missed"
+  },
+  "components.ClassroomAttendance.dotWasPresent": {
+    "description": "Dot icon showing this slice of time the user was connected",
+    "message": "Present"
+  },
+  "components.ClassroomAttendance.durationLabel": {
+    "message": "Duration"
+  },
   "components.ClassroomInfoBar.noTitle": {
     "description": "Title placeholder when no title is defined for this classroom",
     "message": "No title"
@@ -895,6 +870,10 @@
     "description": "Title for the 404 Not Found error page",
     "message": "The classroom you are looking for could not be found"
   },
+  "components.DashboardClassroomForm.titleAttendance": {
+    "description": "Title of the tab used to watch attendance of the live in capital letters",
+    "message": "attendances"
+  },
   "components.DashboardClassroomForm.titleConfiguration": {
     "description": "Title of the tab used to configure the live in capital letters",
     "message": "Configuration"
@@ -913,7 +892,7 @@
   },
   "components.DashboardLiveControlPane.tab.DashboardLiveTabAttendance.DashboardLiveTabAttendanceWaiting.noParticipants": {
     "description": "Message displayed if the live has no participant yet",
-    "message": "The live has no participant yet"
+    "message": "The {type} has no participant yet"
   },
   "components.DashboardLiveControlPane.tab.DashboardLivettendance.DashboardLivettendanceSession.connectedOver80percent": {
     "description": "Title on icon to indicate the participant was mostly present for the duration of the live",
@@ -1167,13 +1146,13 @@
     "description": "The disabled option displayed in the select when there is no selection to perform.",
     "message": "No resolutions available"
   },
+  "components.DownloadVideo.selectDownloadQualityLabel": {
+    "description": "Label of the select button.",
+    "message": "Download quality"
+  },
   "components.DownloadVideo.selectQualityInfo": {
     "description": "Text explaining the select button.",
     "message": "Select the quality you desire for your download."
-  },
-  "components.DownloadVideo.selectQualityLabel": {
-    "description": "Label of the select button.",
-    "message": "Download quality"
   },
   "components.DownloadVideo.title": {
     "description": "Title of the widget used for downloading the video.",
@@ -1271,13 +1250,13 @@
     "description": "An alert message saying that the servers answer to the nickname change request took too much time.",
     "message": "The server took too long to respond. Please retry."
   },
+  "components.LanguageSelect.selectLabelLanguage": {
+    "description": "The label of the select used for choosing the language for which the user wants to upload a file.",
+    "message": "Choose the language"
+  },
   "components.LanguageSelect.selectLanguageInfo": {
     "description": "The text under the select used for choosing the language for which the user wants to upload a file.",
     "message": "The language for which you want to upload a timed text file"
-  },
-  "components.LanguageSelect.selectLanguageLabel": {
-    "description": "The label of the select used for choosing the language for which the user wants to upload a file.",
-    "message": "Choose the language"
   },
   "components.LicenseManager.info": {
     "description": "Info of the widget used for managing the license.",
@@ -1287,13 +1266,13 @@
     "description": "The label displayed in the select when there is no license.",
     "message": "No license available"
   },
+  "components.LicenseManager.selectLabelLicense": {
+    "description": "The label of the select used for choosing the license under which the instructor wants to publish your video",
+    "message": "Select the license"
+  },
   "components.LicenseManager.selectLicenseInfo": {
     "description": "The text under the select used for choosing the license under which the instructor wants to publish your video",
     "message": "Select the license under which you want to publish your video"
-  },
-  "components.LicenseManager.selectLicenseLabel": {
-    "description": "The label of the select used for choosing the license under which the instructor wants to publish your video",
-    "message": "Select the license"
   },
   "components.LicenseManager.title": {
     "description": "Title of the widget used to manage the license of the video.",
@@ -1347,7 +1326,7 @@
     "description": "Info of the widget used for setting join modes.",
     "message": "This widget allows you to select permissions for students to join the discussion."
   },
-  "components.LiveJoinMode.selectLabel": {
+  "components.LiveJoinMode.selectLabelDiscussion": {
     "description": "The label for the select to set join modes.",
     "message": "Join the discussion mode"
   },
@@ -1471,30 +1450,6 @@
     "description": "Title for the stop recording button",
     "message": "REC"
   },
-  "components.StudentHideAppsButton.apps": {
-    "description": "Label for the hide apps button",
-    "message": "Apps"
-  },
-  "components.StudentHideAppsButton.hideApps": {
-    "description": "Title for the hide apps button",
-    "message": "Hide apps"
-  },
-  "components.StudentHideChatButton.Chat": {
-    "description": "Label for the chat button",
-    "message": "Chat"
-  },
-  "components.StudentHideChatButton.hideChat": {
-    "description": "Title for the chat button",
-    "message": "Hide chat"
-  },
-  "components.StudentHideViewersButton.Viewers": {
-    "description": "Label for the viewers button",
-    "message": "Viewers"
-  },
-  "components.StudentHideViewersButton.hideViewers": {
-    "description": "Title for the viewers button",
-    "message": "Hide viewers"
-  },
   "components.StudentJoinDiscussionButton.askInstructor": {
     "description": "Ask the instructor to join the discussion",
     "message": "Send request to join the discussion"
@@ -1579,29 +1534,9 @@
     "description": "Text title to inform that the event has started",
     "message": "Live has started"
   },
-  "components.StudentShowAppsButton.apps": {
-    "description": "Label for the show apps button",
-    "message": "Apps"
-  },
   "components.StudentShowAppsButton.showApps": {
     "description": "Title for the show apps button",
     "message": "Show apps"
-  },
-  "components.StudentShowChatButton.Chat": {
-    "description": "Label for the chat button",
-    "message": "Chat"
-  },
-  "components.StudentShowChatButton.showChat": {
-    "description": "Title for the chat button",
-    "message": "Show chat"
-  },
-  "components.StudentShowViewerButton.showViewer": {
-    "description": "Title for the viewer button",
-    "message": "Show viewers"
-  },
-  "components.StudentShowViewerButton.viewer": {
-    "description": "Label for the viewer button",
-    "message": "Viewers"
   },
   "components.SubscribScheduledVideoEmail.consent": {
     "description": "Consent message to inform the user you will save his email and send emails.",

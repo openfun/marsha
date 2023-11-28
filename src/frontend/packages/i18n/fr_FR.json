@@ -143,18 +143,6 @@
     "description": "Title of the widget used to change retention date.",
     "message": "Date de rétention"
   },
-  "component.AllowedDownloadButton.buttonLabel": {
-    "description": "The label of the button for stopping to allow students to download the media.",
-    "message": "Cliquer sur ce bouton pour ne plus permettre le téléchargement du document par les étudiants."
-  },
-  "component.AllowedDownloadButton.updateSharedLiveMediaFail": {
-    "description": "Message displayed when shared media update has failed.",
-    "message": "La mise à jour du document partagé a échoué !"
-  },
-  "component.AllowedDownloadButton.updateSharedLiveMediaSucces": {
-    "description": "Message displayed when a shared media is successfully updated.",
-    "message": "Document partagé mis à jour."
-  },
   "component.ChatAvatar.avatarTitle": {
     "description": "A title describing the avatar icon purpose.",
     "message": "Avatar de l'utilisateur"
@@ -263,8 +251,8 @@
     "description": "Button label for setting username and joining the classroom in classroom dashboard view.",
     "message": "Rejoindre"
   },
-  "component.DashboardClassroomAskUsername.label": {
-    "description": "Placeholder for asking username to join the classroom.",
+  "component.DashboardClassroomAskUsername.labelEnterYourName": {
+    "description": "Input label for asking username to join the classroom.",
     "message": "Saisissez votre nom"
   },
   "component.DashboardClassroomAskUsername.studentConsent": {
@@ -387,26 +375,6 @@
     "description": "Message displayed when video is successfully updated.",
     "message": "Vidéo mise à jour."
   },
-  "component.DisallowedDownloadButton.buttonLabel": {
-    "description": "The label of the button for allowing the students to download the media.",
-    "message": "Cliquer sur ce bouton pour permettre le téléchargement du document par les étudiants."
-  },
-  "component.DisallowedDownloadButton.updateSharedLiveMediaFail": {
-    "description": "Message displayed when shared media update has failed.",
-    "message": "La mise à jour du document partagé a échoué !"
-  },
-  "component.DisallowedDownloadButton.updateSharedLiveMediaSucces": {
-    "description": "Message displayed when a shared media is successfully updated.",
-    "message": "Document partagé mis à jour."
-  },
-  "component.HideLiveFeedback.label": {
-    "description": "Label for the button in actions during a live in raw mode for a teacher to hide his live feedback.",
-    "message": "Retour du direct"
-  },
-  "component.HideLiveFeedback.title": {
-    "description": "Title for the button in actions during a live in raw mode for a teacher to hide his live feedback.",
-    "message": "Cacher le retour du direct"
-  },
   "component.ImageViewer.altMessage": {
     "description": "Alt message for a shared document page",
     "message": "Page du document partagé {url}"
@@ -422,6 +390,10 @@
   "component.LicenseManager.updateVideoSuccess": {
     "description": "Message displayed when video is successfully updated.",
     "message": "Vidéo mise à jour."
+  },
+  "component.LiveFeedbackWrapper.label": {
+    "description": "Label for the button in actions during a live in raw mode for a teacher to hide his live feedback.",
+    "message": "Retour du direct"
   },
   "component.LiveInfoBar.nbViewers": {
     "description": "Number of user connected on the live",
@@ -623,38 +595,6 @@
     "description": "Message displayed when a shared media is successfully updated.",
     "message": "Document partagé supprimé."
   },
-  "component.ShowLiveFeedback.label": {
-    "description": "Label for the button in actions during a live in raw mode for a teacher to show his live feedback.",
-    "message": "Retour du direct"
-  },
-  "component.ShowLiveFeedback.title": {
-    "description": "Title for the button in actions during a live in raw mode for a teacher to show his live feedback.",
-    "message": "Afficher le retour du direct"
-  },
-  "component.StartSharingButton.publishSharedLiveMediaBtn": {
-    "description": "Label of the button allowing instructor to share a media with its students.",
-    "message": "Partager"
-  },
-  "component.StartSharingButton.updateSharedLiveMediaFail": {
-    "description": "Message displayed when shared media update has failed.",
-    "message": "La mise à jour du document partagé a échoué !"
-  },
-  "component.StartSharingButton.updateSharedLiveMediaSucces": {
-    "description": "Message displayed when a shared media is successfully updated.",
-    "message": "Document partagé mis à jour."
-  },
-  "component.StopSharingButton.unpublishSharedLiveMediaBtn": {
-    "description": "Label of the button allowing instructor to stop sharing a media with its students.",
-    "message": "Arrêter le partage"
-  },
-  "component.StopSharingButton.updateSharedLiveMediaFail": {
-    "description": "Message displayed when shared media update has failed.",
-    "message": "La mise à jour du document partagé a échoué !"
-  },
-  "component.StopSharingButton.updateSharedLiveMediaSucces": {
-    "description": "Message displayed when a shared media is successfully updated.",
-    "message": "Document partagé mis à jour."
-  },
   "component.StudentLiveAdvertising.StudentLiveAdvertising.defaultDescription": {
     "description": "Description to advertise a live in a ics file which has no description set yet.",
     "message": "Venez nous rejoindre !"
@@ -751,6 +691,30 @@
     "description": "A message displayed when upload has failed, and so the file hasn't any filename.",
     "message": "Téléversement échoué"
   },
+  "component.ToggleDownload.labelToggleAllowDownloadSupport": {
+    "description": "Label of the toggle allowing to download the support share by the instructor",
+    "message": "Autoriser les téléchargements"
+  },
+  "component.ToggleDownload.updateSharedLiveMediaFail": {
+    "description": "Message displayed when shared media update has failed.",
+    "message": "La mise à jour du document partagé a échoué !"
+  },
+  "component.ToggleDownload.updateSharedLiveMediaSucces": {
+    "description": "Message displayed when a shared media is successfully updated.",
+    "message": "Document partagé mis à jour."
+  },
+  "component.ToggleSharing.labelToggleShareSupport": {
+    "description": "Label of the toggle allowing instructor to share a media with its students.",
+    "message": "Partager le document"
+  },
+  "component.ToggleSharing.updateSharedLiveMediaFail": {
+    "description": "Message displayed when shared media update has failed.",
+    "message": "La mise à jour du document partagé a échoué !"
+  },
+  "component.ToggleSharing.updateSharedLiveMediaSucces": {
+    "description": "Message displayed when a shared media is successfully updated.",
+    "message": "Document partagé mis à jour."
+  },
   "component.ToggleSubtitlesAsTranscript.useTranscriptToggleLabel": {
     "description": "Label of the toggle used to use subtitles as transcripts.",
     "message": "Utiliser les sous-titres comme transcription"
@@ -843,6 +807,17 @@
     "description": "Displayed in Markdown image upload status",
     "message": "Téléversé {imageName}"
   },
+  "components.ClassroomAttendance.dotMissed": {
+    "description": "Title on dot icon showing this slice of time the user was not connected",
+    "message": "Absent"
+  },
+  "components.ClassroomAttendance.dotWasPresent": {
+    "description": "Dot icon showing this slice of time the user was connected",
+    "message": "Présent"
+  },
+  "components.ClassroomAttendance.durationLabel": {
+    "message": "Durée"
+  },
   "components.ClassroomInfoBar.noTitle": {
     "description": "Title placeholder when no title is defined for this classroom",
     "message": "Sans titre"
@@ -894,6 +869,10 @@
   "components.DashboardClassroomError.notFound.title": {
     "description": "Title for the 404 Not Found error page",
     "message": "La classe virtuelle recherchée n'a pu être trouvée"
+  },
+  "components.DashboardClassroomForm.titleAttendance": {
+    "description": "Title of the tab used to watch attendance of the live in capital letters",
+    "message": "émargement"
   },
   "components.DashboardClassroomForm.titleConfiguration": {
     "description": "Title of the tab used to configure the live in capital letters",
@@ -1167,13 +1146,13 @@
     "description": "The disabled option displayed in the select when there is no selection to perform.",
     "message": "Aucune résolution disponible"
   },
+  "components.DownloadVideo.selectDownloadQualityLabel": {
+    "description": "Label of the select button.",
+    "message": "Qualité de téléchargement"
+  },
   "components.DownloadVideo.selectQualityInfo": {
     "description": "Text explaining the select button.",
     "message": "Sélectionnez la qualité que vous désirez pour votre téléchargement."
-  },
-  "components.DownloadVideo.selectQualityLabel": {
-    "description": "Label of the select button.",
-    "message": "Qualité de téléchargement"
   },
   "components.DownloadVideo.title": {
     "description": "Title of the widget used for downloading the video.",
@@ -1271,13 +1250,13 @@
     "description": "An alert message saying that the servers answer to the nickname change request took too much time.",
     "message": "Le serveur a pris trop de temps pour répondre. Veuillez réessayer."
   },
+  "components.LanguageSelect.selectLabelLanguage": {
+    "description": "The label of the select used for choosing the language for which the user wants to upload a file.",
+    "message": "Choisir la langue"
+  },
   "components.LanguageSelect.selectLanguageInfo": {
     "description": "The text under the select used for choosing the language for which the user wants to upload a file.",
     "message": "Sélectionnez la langue pour laquelle vous souhaitez téléverser la piste de texte"
-  },
-  "components.LanguageSelect.selectLanguageLabel": {
-    "description": "The label of the select used for choosing the language for which the user wants to upload a file.",
-    "message": "Choisir la langue"
   },
   "components.LicenseManager.info": {
     "description": "Info of the widget used for managing the license.",
@@ -1287,13 +1266,13 @@
     "description": "The label displayed in the select when there is no license.",
     "message": "Aucune licence disponible"
   },
+  "components.LicenseManager.selectLabelLicense": {
+    "description": "The label of the select used for choosing the license under which the instructor wants to publish your video",
+    "message": "Sélectionnez une licence"
+  },
   "components.LicenseManager.selectLicenseInfo": {
     "description": "The text under the select used for choosing the license under which the instructor wants to publish your video",
     "message": "Sélectionnez la licence sous laquelle vous souhaitez publier votre vidéo"
-  },
-  "components.LicenseManager.selectLicenseLabel": {
-    "description": "The label of the select used for choosing the license under which the instructor wants to publish your video",
-    "message": "Sélectionnez une licence"
   },
   "components.LicenseManager.title": {
     "description": "Title of the widget used to manage the license of the video.",
@@ -1347,7 +1326,7 @@
     "description": "Info of the widget used for setting join modes.",
     "message": "Ce widget vous permet de sélectionner le mode permettant à l'étudiant de rejoindre la discussion."
   },
-  "components.LiveJoinMode.selectLabel": {
+  "components.LiveJoinMode.selectLabelDiscussion": {
     "description": "The label for the select to set join modes.",
     "message": "Mode permettant de rejoindre la discussion"
   },
@@ -1471,30 +1450,6 @@
     "description": "Title for the stop recording button",
     "message": "REC"
   },
-  "components.StudentHideAppsButton.apps": {
-    "description": "Label for the hide apps button",
-    "message": "Applications"
-  },
-  "components.StudentHideAppsButton.hideApps": {
-    "description": "Title for the hide apps button",
-    "message": "Masquer les applications"
-  },
-  "components.StudentHideChatButton.Chat": {
-    "description": "Label for the chat button",
-    "message": "Chat"
-  },
-  "components.StudentHideChatButton.hideChat": {
-    "description": "Title for the chat button",
-    "message": "Masquer le chat"
-  },
-  "components.StudentHideViewersButton.Viewers": {
-    "description": "Label for the viewers button",
-    "message": "Spectateurs"
-  },
-  "components.StudentHideViewersButton.hideViewers": {
-    "description": "Title for the viewers button",
-    "message": "Cacher les spectateurs"
-  },
   "components.StudentJoinDiscussionButton.askInstructor": {
     "description": "Ask the instructor to join the discussion",
     "message": "Envoyer une demande pour rejoindre la discussion"
@@ -1579,29 +1534,9 @@
     "description": "Text title to inform that the event has started",
     "message": "Le webinaire a débuté"
   },
-  "components.StudentShowAppsButton.apps": {
-    "description": "Label for the show apps button",
-    "message": "Apps"
-  },
   "components.StudentShowAppsButton.showApps": {
     "description": "Title for the show apps button",
     "message": "Afficher les applications"
-  },
-  "components.StudentShowChatButton.Chat": {
-    "description": "Label for the chat button",
-    "message": "Chat"
-  },
-  "components.StudentShowChatButton.showChat": {
-    "description": "Title for the chat button",
-    "message": "Afficher le tchat"
-  },
-  "components.StudentShowViewerButton.showViewer": {
-    "description": "Title for the viewer button",
-    "message": "Afficher les spectateurs"
-  },
-  "components.StudentShowViewerButton.viewer": {
-    "description": "Label for the viewer button",
-    "message": "Spectateurs"
   },
   "components.SubscribScheduledVideoEmail.consent": {
     "description": "Consent message to inform the user you will save his email and send emails.",
