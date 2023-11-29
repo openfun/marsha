@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [4.8.0] - 2023-11-29
+
 ### Added
 
 - Meta description and meta title on the website from the API (#2516)
@@ -1879,7 +1881,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v4.7.0...master
+[unreleased]: https://github.com/openfun/marsha/compare/v4.8.0...master
+[4.8.0]: https://github.com/openfun/marsha/compare/v4.7.0...v4.8.0
 [4.7.0]: https://github.com/openfun/marsha/compare/v4.6.0...v4.7.0
 [4.6.0]: https://github.com/openfun/marsha/compare/v4.5.0...v4.6.0
 [4.5.0]: https://github.com/openfun/marsha/compare/v4.4.0...v4.5.0
