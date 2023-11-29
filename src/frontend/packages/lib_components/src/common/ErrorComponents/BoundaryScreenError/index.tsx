@@ -1,9 +1,9 @@
-import { Image, Stack } from 'grommet';
+import { Stack } from 'grommet';
 import React from 'react';
 import { useIntl } from 'react-intl';
 import styled from 'styled-components';
 
-import { Box, Heading, Text } from '@lib-components/common';
+import { Box, Heading, Image, Text } from '@lib-components/common';
 import { useAppConfig } from '@lib-components/data/stores/useAppConfig';
 import { useResponsive } from '@lib-components/hooks/useResponsive';
 

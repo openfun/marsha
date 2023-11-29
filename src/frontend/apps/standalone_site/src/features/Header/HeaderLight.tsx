@@ -1,6 +1,5 @@
-import { Image } from 'grommet';
 import { Nullable, colorsTokens } from 'lib-common';
-import { Box, useSiteConfig } from 'lib-components';
+import { Box, Image, useSiteConfig } from 'lib-components';
 import { forwardRef } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -40,14 +39,7 @@ export const HeaderLight = forwardRef<
     />
   );
   if (showSiteConfigLogo) {
-    Logo = (
-      <Image
-        src={siteConfig.logo_url}
-        alt="Home"
-        fit="contain"
-        alignSelf="start"
-      />
-    );
+    Logo = <Image src={siteConfig.logo_url} alt="Home" fit="contain" />;
   }
 
   if (withLogoLink) {
