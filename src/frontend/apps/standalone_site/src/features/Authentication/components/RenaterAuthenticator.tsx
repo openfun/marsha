@@ -1,7 +1,6 @@
 import { Select } from '@openfun/cunningham-react';
-import { Image } from 'grommet';
 import { colorsTokens } from 'lib-common';
-import { Box, ClosingCard, Text, useResponsive } from 'lib-components';
+import { Box, ClosingCard, Image, Text, useResponsive } from 'lib-components';
 import React, {
   ComponentPropsWithRef,
   Fragment,
@@ -56,8 +55,8 @@ export const RenaterAuthenticator = () => {
           option.logo ||
           'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==' // 1x1 transparent gif
         }
-        height="16"
-        width="16"
+        height={16}
+        width={16}
         margin={{ right: 'small' }}
       />
       <Text size="small">{option.display_name}</Text>

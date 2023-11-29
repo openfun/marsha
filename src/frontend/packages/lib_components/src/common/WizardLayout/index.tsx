@@ -1,6 +1,7 @@
-import { Image, Stack } from 'grommet';
+import { Stack } from 'grommet';
 import React from 'react';
 
+import { Image } from '@lib-components/common';
 import { useAppConfig } from '@lib-components/data/stores/useAppConfig';
 import { useResponsive } from '@lib-components/hooks/useResponsive';
 

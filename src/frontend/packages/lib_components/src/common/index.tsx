@@ -11,6 +11,7 @@ export * from './ErrorComponents';
 export * from './FoldableItem';
 export * from './Form';
 export * from './Headings';
+export * from './Image';
 export * from './ItemList';
 export * from './List';
 export * from './Loader';

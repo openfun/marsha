@@ -1,7 +1,7 @@
-import { Image } from 'grommet';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
+import { Image } from '@lib-components/common';
 import { urls, videoSize } from '@lib-components/types/tracks';
 
 import { videoSizeMapping } from './videoSizeMapping';

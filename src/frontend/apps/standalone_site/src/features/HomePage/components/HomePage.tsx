@@ -1,7 +1,7 @@
-import { Image } from 'grommet';
 import {
   Box,
   Heading,
+  Image,
   StyledLink,
   Text,
   useResponsive,
