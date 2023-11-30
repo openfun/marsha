@@ -1,10 +1,6 @@
 import { screen } from '@testing-library/react';
 import { ResponsiveContext } from 'grommet';
-import {
-  ltiPublicTokenMockFactory,
-  useJwt,
-  localStore as useLocalJwt,
-} from 'lib-components';
+import { ltiPublicTokenMockFactory, useJwt } from 'lib-components';
 import { render } from 'lib-tests';
 import { useParams } from 'react-router-dom';
 
@@ -57,7 +53,6 @@ describe('<ClassRoomUpdate />', () => {
 
   test('render', () => {
     useJwt.setState({
-      jwt: 'some token',
       internalDecodedJwt: ltiPublicTokenMockFactory(
         {},
         { can_access_dashboard: true, can_update: true },
@@ -133,8 +128,7 @@ describe('<ClassRoomUpdate />', () => {
       inviteId: '456789',
     });
 
-    useLocalJwt.setState({
-      jwt: 'some token',
+    useJwt.setState({
       internalDecodedJwt: ltiPublicTokenMockFactory(
         {},
         { can_access_dashboard: true, can_update: true },

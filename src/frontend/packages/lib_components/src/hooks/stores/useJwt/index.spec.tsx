@@ -1,7 +1,7 @@
 import { act, render } from '@testing-library/react';
 import React, { useEffect } from 'react';
 
-import { persistentStore as useJwt } from '.';
+import { useJwt } from '.';
 
 const TestJwtComponent = ({
   renderFnc,
@@ -73,7 +73,8 @@ describe('useJwt', () => {
     expect(useJwt.getState().getJwt()).toEqual('another token');
   });
 
-  it('checks when another tab change jwt', () => {
+  it('checks when another tab change jwt if persistent store', () => {
+    useJwt.getState().setWithPersistancy(true);
     expect(useJwt.getState().getJwt()).toEqual(undefined);
 
     useJwt.getState().setJwt('some token');

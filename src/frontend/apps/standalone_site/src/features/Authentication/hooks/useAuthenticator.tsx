@@ -4,7 +4,6 @@ import {
   report,
   useCurrentUser,
   useJwt,
-  localStore as useLocalJwt,
 } from 'lib-components';
 import { useEffect, useState } from 'react';
 import { useLocation, useMatch, useNavigate } from 'react-router-dom';
@@ -37,9 +36,14 @@ export const useAuthenticator = () => {
     currentUser: state.currentUser,
     setCurrentUser: state.setCurrentUser,
   }));
-  const { jwt, setJwt, setRefreshJwt, resetJwt, setDecodedJwt } = useJwt();
-  const { setJwt: setLocalJwt, setDecodedJwt: setLocalDecodedJwt } =
-    useLocalJwt();
+  const {
+    jwt,
+    setJwt,
+    setRefreshJwt,
+    resetJwt,
+    setDecodedJwt,
+    setWithPersistancy,
+  } = useJwt();
 
   const [isAuthenticated, setIsAuthenticated] = useState(
     currentUser !== AnonymousUser.ANONYMOUS && !!currentUser,
@@ -55,7 +59,8 @@ export const useAuthenticator = () => {
       return;
     }
 
-    setLocalJwt(undefined);
+    setWithPersistancy(false);
+    setJwt(undefined);
 
     const fetchInvite = async (classroomId: string, inviteId: string) => {
       try {
@@ -63,8 +68,9 @@ export const useAuthenticator = () => {
           classroomId,
           inviteId,
         );
-        setLocalJwt(response.access_token);
-        setLocalDecodedJwt(response.access_token);
+
+        setJwt(response.access_token);
+        setDecodedJwt(response.access_token);
         setIsLoading(false);
       } catch (error) {
         setError((error as ValidateClassroomInviteError).message);
@@ -78,15 +84,22 @@ export const useAuthenticator = () => {
       // This try catch is subject to be removed in few months when all legacy inviteId will be
       // expired.
       decodeJwt(inviteId);
-      setLocalJwt(inviteId);
-      setLocalDecodedJwt(inviteId);
+      setJwt(inviteId);
+      setDecodedJwt(inviteId);
       setIsLoading(false);
     } catch (error) {
       // Otherwise, it's probably a new inviteId store in the classroom model.
       // We have to test it by fetching the classroom invite endpoint.
       classroomId && fetchInvite(classroomId, inviteId);
     }
-  }, [inviteId, classroomId, setIsLoading, setLocalJwt, setLocalDecodedJwt]);
+  }, [
+    inviteId,
+    classroomId,
+    setIsLoading,
+    setWithPersistancy,
+    setJwt,
+    setDecodedJwt,
+  ]);
 
   /**
    * This useEffect is used when we want to log an anonymous user

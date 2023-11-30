@@ -11,6 +11,8 @@ interface JwtStoreInterface {
   jwt?: string;
   refreshJwt?: string;
   internalDecodedJwt?: DecodedJwt;
+  withPersistancy: boolean;
+  setWithPersistancy: (withPersistancy: boolean) => void;
   getJwt: () => JwtStoreInterface['jwt'];
   setJwt: (jwt: JwtStoreInterface['jwt']) => void;
   getRefreshJwt: () => JwtStoreInterface['refreshJwt'];
@@ -21,57 +23,20 @@ interface JwtStoreInterface {
   resetJwt: () => void;
 }
 
-export const localStore = create<JwtStoreInterface>((set, get) => ({
-  refreshJwtBlackListed: undefined,
-  jwt: undefined,
-  refreshJwt: undefined,
-  internalDecodedJwt: undefined,
-  getJwt: () => get().jwt,
-  setJwt: (jwt) => {
-    set((state) => ({ ...state, jwt }));
-  },
-  getRefreshJwt: () => get().refreshJwt,
-  setRefreshJwt: (refreshJwt) => set((state) => ({ ...state, refreshJwt })),
-  setRefreshJwtBlackListed: (refreshJwt) => {
-    set((state) => ({
-      ...state,
-      refreshJwtBlackListed: refreshJwt,
-    }));
-  },
-  setDecodedJwt: (jwt) => {
-    if (jwt) {
-      const decoded = decodeJwt(jwt);
-      set((state) => ({ ...state, internalDecodedJwt: decoded }));
-    } else {
-      if (get().internalDecodedJwt) {
-        set((state) => ({ ...state, internalDecodedJwt: undefined }));
-      }
-    }
-  },
-  getDecodedJwt: () => {
-    const currentValue = get().internalDecodedJwt;
-    if (currentValue) {
-      return currentValue;
-    }
-
-    get().setDecodedJwt(get().getJwt());
-    return get().internalDecodedJwt;
-  },
-  resetJwt: () => {
-    set((state) => ({
-      ...state,
-      jwt: undefined,
-      refreshJwt: undefined,
-    }));
-  },
-}));
-
-export const persistentStore = create<JwtStoreInterface>((set, get) => ({
+export const useJwt = create<JwtStoreInterface>((set, get) => ({
   refreshJwtBlackListed: undefined,
   jwt: localStorage.getItem(JWT_KEY) || undefined,
   refreshJwt: localStorage.getItem(REFRESH_JWT_KEY) || undefined,
   internalDecodedJwt: undefined,
+  withPersistancy: !!window.use_jwt_persistence,
+  setWithPersistancy: (withPersistancy) => {
+    set((state) => ({ ...state, withPersistancy }));
+  },
   getJwt() {
+    if (!get().withPersistancy) {
+      return get().jwt;
+    }
+
     const jwt = localStorage.getItem(JWT_KEY) || undefined;
     if (jwt !== get().jwt) {
       get().setJwt(jwt);
@@ -79,11 +44,21 @@ export const persistentStore = create<JwtStoreInterface>((set, get) => ({
     return jwt;
   },
   setJwt: (jwt) => {
-    jwt ? localStorage.setItem(JWT_KEY, jwt) : localStorage.removeItem(JWT_KEY);
-    get().setDecodedJwt(jwt);
+    if (get().withPersistancy) {
+      jwt
+        ? localStorage.setItem(JWT_KEY, jwt)
+        : localStorage.removeItem(JWT_KEY);
+
+      get().setDecodedJwt(jwt);
+    }
+
     set((state) => ({ ...state, jwt }));
   },
   getRefreshJwt() {
+    if (!get().withPersistancy) {
+      return get().refreshJwt;
+    }
+
     const refreshJwt = localStorage.getItem(REFRESH_JWT_KEY) || undefined;
     if (refreshJwt !== get().refreshJwt) {
       get().setRefreshJwt(refreshJwt);
@@ -91,9 +66,12 @@ export const persistentStore = create<JwtStoreInterface>((set, get) => ({
     return refreshJwt;
   },
   setRefreshJwt: (refreshJwt) => {
-    refreshJwt
-      ? localStorage.setItem(REFRESH_JWT_KEY, refreshJwt)
-      : localStorage.removeItem(REFRESH_JWT_KEY);
+    if (get().withPersistancy) {
+      refreshJwt
+        ? localStorage.setItem(REFRESH_JWT_KEY, refreshJwt)
+        : localStorage.removeItem(REFRESH_JWT_KEY);
+    }
+
     set((state) => ({ ...state, refreshJwt }));
   },
   setRefreshJwtBlackListed: (refreshJwt) => {
@@ -132,5 +110,3 @@ export const persistentStore = create<JwtStoreInterface>((set, get) => ({
     }));
   },
 }));
-
-export const useJwt = window.use_jwt_persistence ? persistentStore : localStore;
