@@ -1,5 +1,4 @@
-import { Grid } from 'grommet';
-import { Breakpoints, Nullable, colorsTokens } from 'lib-common';
+import { Nullable, colorsTokens } from 'lib-common';
 import { Box, Text, useAppConfig, useResponsive } from 'lib-components';
 import React from 'react';
 
@@ -32,13 +31,8 @@ export const DashboardClassroomLayout = ({
   right,
 }: DashboardClassroomLayoutProps) => {
   const appData = useAppConfig();
-  const { isSmallerBreakpoint, breakpoint, isDesktop } = useResponsive();
-  let columns = ['1/2', '1/2'];
-  if (!isDesktop) {
-    columns = ['full'];
-  } else if (isSmallerBreakpoint(breakpoint, Breakpoints.large)) {
-    columns = ['2/3', '1/3'];
-  }
+  const { isDesktop } = useResponsive();
+
   return (
     <Box
       style={{
@@ -50,7 +44,7 @@ export const DashboardClassroomLayout = ({
       pad="small"
       className="DashboardClassroomLayout"
     >
-      <Grid columns={columns} gap="small" fill>
+      <Box direction="row" gap="small" wrap="wrap">
         <Box
           background="white"
           round="xsmall"
@@ -59,10 +53,13 @@ export const DashboardClassroomLayout = ({
             vertical: 'small',
           }}
           height={{ min: 'medium' }}
+          width={{ min: 'none' }}
+          flex="grow"
+          basis="60%"
         >
           {left}
         </Box>
-        <Box justify="space-between">
+        <Box justify="space-between" flex="grow">
           <Box direction="row" align="center" gap="xsmall">
             <img
               height="30px"
@@ -83,7 +80,7 @@ export const DashboardClassroomLayout = ({
             {right}
           </Box>
         </Box>
-      </Grid>
+      </Box>
     </Box>
   );
 };

@@ -54,7 +54,7 @@ export const ContentCard = ({
 
   return (
     <Box
-      width="xsmedium"
+      width={{ width: 'xsmedium', max: 'full' }}
       background="white"
       round="xsmall"
       elevation

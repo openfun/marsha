@@ -1,5 +1,4 @@
-import { Grid } from 'grommet';
-import { Box, BoxLoader, Text } from 'lib-components';
+import { Box, BoxLoader, Grid, Text } from 'lib-components';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 

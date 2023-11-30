@@ -1,5 +1,5 @@
 import { colorsTokens } from 'lib-common';
-import { CSSProperties, ReactElement, ReactHTML, Ref, forwardRef } from 'react';
+import { ReactElement, ReactHTML, Ref, forwardRef } from 'react';
 
 import {
   Spacings,
@@ -8,14 +8,14 @@ import {
   spacingValue,
 } from '@lib-components/common/Typo';
 
+export { Grid } from './Grid';
+
 export interface BoxPropsOnly {
-  gap?: Spacings;
-  direction?: CSSProperties['flexDirection'];
   round?: Spacings;
   elevation?: boolean;
 }
 
-type BoxTypes = Pick<
+export type BoxTypes = Pick<
   ReactHTML,
   'div' | 'header' | 'footer' | 'article' | 'ul' | 'li' | 'nav' | 'section'
 >;
@@ -46,7 +46,6 @@ const BoxRef = forwardRef(
       className,
       direction = 'column',
       elevation,
-      gap,
       justify = 'normal',
       round,
       type = 'div',
@@ -57,6 +56,7 @@ const BoxRef = forwardRef(
     return (
       <Typo<keyof BoxTypes>
         align={align}
+        direction={direction}
         justify={justify}
         ref={ref}
         type={type}
@@ -64,8 +64,6 @@ const BoxRef = forwardRef(
         {...props}
         style={{
           borderRadius: spacingValue(round),
-          flexDirection: direction,
-          gap: spacingValue(gap),
           boxShadow: elevation
             ? `0 2px 6px ${colorsTokens['primary-500']}44`
             : undefined,

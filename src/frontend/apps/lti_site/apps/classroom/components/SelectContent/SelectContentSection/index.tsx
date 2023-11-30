@@ -1,11 +1,11 @@
 import { Button } from '@openfun/cunningham-react';
-import { Grid } from 'grommet';
 import { Nullable } from 'lib-common';
 import {
   Box,
   Classroom,
   ClassroomSVG,
   ContentCard,
+  Grid,
   Text,
 } from 'lib-components';
 import React from 'react';

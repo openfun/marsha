@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { themeTokens } from 'lib-common';
+import { CSSProperties } from 'react';
 
 const {
   sizes,
@@ -34,8 +35,8 @@ export type MarginPadding =
 
 type SizesKey = keyof typeof sizes;
 export type Sizes = SizesKey | (string & {}) | (number & {});
-
-export const sizesValue = (value?: Sizes) =>
+export type SizeValue = string | (number & {}) | undefined;
+export const sizesValue = (value?: Sizes): SizeValue =>
   value && value in sizes ? sizes[value as SizesKey] : value;
 
 export type Width =
@@ -153,29 +154,30 @@ export const stylesHeight = (height: Height) => {
   }
 };
 
-export type Flex = boolean | 'grow' | 'shrink' | (string & {});
-export const stylesFlex = (flex: Flex) => {
+export type Flex = boolean | 'grow' | 'shrink' | (string & {}) | undefined;
+export const stylesFlex = (flex: Flex, basis: CSSProperties['flexBasis']) => {
   if (flex === 'grow') {
     return {
       flexGrow: 1,
       flexShrink: 0,
-      flexBasis: 'auto',
+      flexBasis: basis || 'auto',
     };
   } else if (flex === 'shrink') {
     return {
       flexGrow: 0,
       flexShrink: 1,
-      flexBasis: 'auto',
+      flexBasis: basis || 'auto',
     };
   } else if (flex === true) {
     return {
       flexGrow: 1,
       flexShrink: 1,
-      flexBasis: 'auto',
+      flexBasis: basis || 'auto',
     };
   }
 
   return {
     flex,
+    flexBasis: basis,
   };
 };

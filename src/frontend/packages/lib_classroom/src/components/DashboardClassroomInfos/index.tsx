@@ -1,6 +1,5 @@
-import { Grid } from 'grommet';
 import { Nullable, colorsTokens } from 'lib-common';
-import { Box, ClassroomInfos, Text } from 'lib-components';
+import { Box, ClassroomInfos, Grid, Text } from 'lib-components';
 import React, { Fragment } from 'react';
 import { FormattedMessage, defineMessages } from 'react-intl';
 
