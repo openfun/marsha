@@ -1,11 +1,11 @@
 import { Button } from '@openfun/cunningham-react';
-import { Grid } from 'grommet';
 import { Document as DocumentIcon } from 'grommet-icons';
 import { Nullable } from 'lib-common';
 import {
   Box,
   ContentCard,
   Document,
+  Grid,
   PlaySVG,
   Text,
   Video,

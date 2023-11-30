@@ -1,9 +1,9 @@
-import { Grid } from 'grommet';
 import { Breakpoints } from 'lib-common';
 import {
   Box,
   BoxLoader,
   FileDepository,
+  Grid,
   Heading,
   Text,
   useResponsive,

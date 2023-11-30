@@ -41,12 +41,6 @@ describe('<Box />', () => {
     );
   });
 
-  it('has gap prop', () => {
-    render(<Box gap="2px">My Box</Box>);
-
-    expect(screen.getByText('My Box')).toHaveStyle(`gap: 2px`);
-  });
-
   it('has round prop', () => {
     render(<Box round="2px">My Box</Box>);
 

@@ -1,10 +1,10 @@
 import { Button } from '@openfun/cunningham-react';
-import { Grid } from 'grommet';
 import { DocumentText } from 'grommet-icons';
 import { Nullable } from 'lib-common';
 import {
   Box,
   ContentCard,
+  Grid,
   MarkdownDocument,
   MarkdownDocumentTranslation,
 } from 'lib-components';

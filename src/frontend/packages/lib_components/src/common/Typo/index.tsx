@@ -12,7 +12,9 @@ import {
   Flex,
   Height,
   MarginPadding,
+  Spacings,
   Width,
+  spacingValue,
   stylesFlex,
   stylesHeight,
   stylesMargin,
@@ -42,11 +44,13 @@ export interface TypoPropsOnly {
   background?: CSSProperties['background'];
   basis?: CSSProperties['flexBasis'];
   color?: CSSProperties['color'];
+  direction?: CSSProperties['flexDirection'];
   display?: CSSProperties['display'];
   fill?: boolean | 'horizontal' | 'vertical' | 'full';
   flex?: Flex;
   flow?: CSSProperties['flexFlow'];
   fontSize?: CSSProperties['fontSize'];
+  gap?: Spacings;
   height?: Height;
   justify?: CSSProperties['justifyContent'];
   margin?: MarginPadding;
@@ -57,6 +61,7 @@ export interface TypoPropsOnly {
   textAlign?: CSSProperties['textAlign'];
   truncate?: boolean | number;
   width?: Width;
+  wrap?: CSSProperties['flexWrap'];
 }
 
 /**
@@ -108,11 +113,13 @@ const TypoRef = forwardRef(
       children,
       className,
       color,
+      direction,
       display,
       fill,
       flex,
       flow,
       fontSize,
+      gap,
       height,
       justify,
       margin,
@@ -123,6 +130,7 @@ const TypoRef = forwardRef(
       truncate,
       type = 'div',
       width,
+      wrap,
       ...props
     }: TypoProps<T>,
     ref: Ref<TypoProps<T>>,
@@ -179,13 +187,6 @@ const TypoRef = forwardRef(
       bgClassname = ` ${background}`;
     }
 
-    if (flex) {
-      moreStyles = {
-        ...moreStyles,
-        ...stylesFlex(flex),
-      };
-    }
-
     return createElement(
       type,
       {
@@ -197,8 +198,11 @@ const TypoRef = forwardRef(
           background: bgClassname ? undefined : background,
           color: colorClassname ? undefined : color,
           display,
-          flexBasis: basis,
+          ...stylesFlex(flex, basis),
           flexFlow: flow,
+          flexDirection: direction,
+          flexWrap: wrap,
+          gap: spacingValue(gap),
           fontSize,
           height: fill && fill !== 'horizontal' ? '100%' : undefined,
           justifyContent: justify,

@@ -248,6 +248,20 @@ describe('<Typo />', () => {
     expect(screen.getByText('My Typo')).toHaveStyle('flex-flow: wrap');
   });
 
+  it('has the direction prop', () => {
+    render(<Typo direction="row-reverse">My Typo</Typo>);
+
+    expect(screen.getByText('My Typo')).toHaveStyle(
+      'flex-direction: row-reverse',
+    );
+  });
+
+  it('has the wrap prop', () => {
+    render(<Typo wrap="nowrap">My Typo</Typo>);
+
+    expect(screen.getByText('My Typo')).toHaveStyle('flex-wrap: nowrap');
+  });
+
   it('has the justify prop', () => {
     render(<Typo justify="center">My Typo</Typo>);
 
@@ -264,5 +278,11 @@ describe('<Typo />', () => {
     render(<Typo position="absolute">My Typo</Typo>);
 
     expect(screen.getByText('My Typo')).toHaveStyle('position: absolute');
+  });
+
+  it('has this gap prop', () => {
+    render(<Typo gap="2px">My Typo</Typo>);
+
+    expect(screen.getByText('My Typo')).toHaveStyle(`gap: 2px`);
   });
 });

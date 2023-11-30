@@ -1,8 +1,7 @@
 import { Button } from '@openfun/cunningham-react';
-import { Grid } from 'grommet';
 import { DocumentStore } from 'grommet-icons';
 import { Nullable } from 'lib-common';
-import { Box, ContentCard, FileDepository, Text } from 'lib-components';
+import { Box, ContentCard, FileDepository, Grid, Text } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
