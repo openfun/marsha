@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix invite links on BBB (#2521)
+
 ## [4.8.0] - 2023-11-29
 
 ### Added

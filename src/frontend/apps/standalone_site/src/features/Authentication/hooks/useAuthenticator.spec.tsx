@@ -1,19 +1,12 @@
 import { render, renderHook, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { classroomMockFactory } from 'lib-classroom';
-import {
-  JWT_KEY,
-  useCurrentUser,
-  useJwt,
-  localStore as useLocalJwt,
-} from 'lib-components';
+import { JWT_KEY, useCurrentUser, useJwt } from 'lib-components';
 import { Deferred, wrapperUtils } from 'lib-tests';
 
 import { featureContentLoader } from 'features/Contents';
 
 import { useAuthenticator } from './useAuthenticator';
-
-window.use_jwt_persistence = true;
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
@@ -157,9 +150,9 @@ describe('<useAuthenticator />', () => {
 
   it('checks classroom invite link', async () => {
     featureContentLoader([]);
-    useLocalJwt.setState({
+    useJwt.setState({
       setDecodedJwt: (jwt) =>
-        useLocalJwt.setState({
+        useJwt.setState({
           internalDecodedJwt: `${jwt!}-decoded` as any,
         }),
     });
@@ -177,6 +170,8 @@ describe('<useAuthenticator />', () => {
 
     fetchMock.get('/api/users/whoami/', whoAmIResponse200);
 
+    expect(useJwt.getState().withPersistancy).toEqual(true);
+
     const { result } = renderHook(() => useAuthenticator(), {
       wrapper: wrapperUtils({
         routerOptions: {
@@ -189,14 +184,11 @@ describe('<useAuthenticator />', () => {
 
     await waitFor(() => expect(result.current.isLoading).toBeFalsy());
     expect(result.current.isAuthenticated).toBeFalsy();
-    await waitFor(() =>
-      expect(useLocalJwt.getState().jwt).toEqual('valid_jwt'),
-    );
-    expect(useLocalJwt.getState().internalDecodedJwt).toEqual(
-      'valid_jwt-decoded',
-    );
-    expect(useJwt.getState().jwt).toBeUndefined();
+    await waitFor(() => expect(useJwt.getState().jwt).toEqual('valid_jwt'));
+    expect(useJwt.getState().internalDecodedJwt).toEqual('valid_jwt-decoded');
     expect(localStorage.getItem(JWT_KEY)).toBeNull();
+    expect(useJwt.getState().withPersistancy).toEqual(false);
+    useJwt.getState().setWithPersistancy(true);
   });
 
   it('checks legacy invite link', async () => {
@@ -205,6 +197,8 @@ describe('<useAuthenticator />', () => {
     const legacyInvite =
       'ewogICJhbGciOiAiSFMyNTYiLAogICJ0eXAiOiAiSldUIgp9.ewogICJ0b2tlbl90eXBlIjogInBsYXlsaXN0X2FjY2VzcyIsCiAgImV4cCI6IDE2ODkyMDY0MDAsCiAgImlhdCI6IDE2ODY1ODYwMzgsCiAgImp0aSI6ICJjbGFzc3Jvb20taW52aXRlLTBiY2ViMWQyLTNiMTktNDRiNy1hNjQ3LTRjMTU1NmY1OTJmZS0yMDIzLTA2LTEyIiwKICAic2Vzc2lvbl9pZCI6ICIwYmNlYjFkMi0zYjE5LTQ0YjctYTY0Ny00YzE1NTZmNTkyZmUtaW52aXRlIiwKICAicGxheWxpc3RfaWQiOiAiMGJjZWIxZDItM2IxOS00NGI3LWE2NDctNGMxNTU2ZjU5MmZlIiwKICAicm9sZXMiOiBbCiAgICAibm9uZSIKICBdLAogICJsb2NhbGUiOiAiZW5fVVMiLAogICJwZXJtaXNzaW9ucyI6IHsKICAgICJjYW5fYWNjZXNzX2Rhc2hib2FyZCI6IGZhbHNlLAogICAgImNhbl91cGRhdGUiOiBmYWxzZQogIH0sCiAgIm1haW50ZW5hbmNlIjogZmFsc2UKfQ.68xSZYUAzrLD49pLkoOQy-ud7uaJVHgZ69zgkoW7umA';
     fetchMock.get('/api/users/whoami/', whoAmIResponse200);
+
+    expect(useJwt.getState().withPersistancy).toEqual(true);
 
     const { result } = renderHook(() => useAuthenticator(), {
       wrapper: wrapperUtils({
@@ -218,14 +212,14 @@ describe('<useAuthenticator />', () => {
 
     await waitFor(() => expect(result.current.isLoading).toBeFalsy());
     expect(result.current.isAuthenticated).toBeFalsy();
-    await waitFor(() =>
-      expect(useLocalJwt.getState().jwt).toEqual(legacyInvite),
-    );
+    await waitFor(() => expect(useJwt.getState().jwt).toEqual(legacyInvite));
     expect(
       fetchMock.called(
         `/api/classrooms/${classroom.id}/token/?invite_token=${legacyInvite}`,
       ),
     ).toBe(false);
+    expect(useJwt.getState().withPersistancy).toEqual(false);
+    useJwt.getState().setWithPersistancy(true);
   });
 
   it('checks error classroom invite link', async () => {
