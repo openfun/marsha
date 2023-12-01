@@ -132,6 +132,9 @@ class LTIRequestValidator(RequestValidator):
             bool: True if the timestamp and nonce has not been used before
         """
 
+        if not settings.LTI_REPLAY_PROTECTION_ENABLED:
+            return True
+
         cache_timeout = settings.LTI_REPLAY_PROTECTION_CACHE_DURATION
         # Disallow usage of timestamp older than cache_timeout
         request_timestamp = int(timestamp)
