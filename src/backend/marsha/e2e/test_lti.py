@@ -238,6 +238,7 @@ def mock_document_cloud_storage(mocker, live_server):
 
 @pytest.mark.django_db()
 @pytest.mark.usefixtures("mock_video_cloud_storage")
+@override_settings(LTI_REPLAY_PROTECTION_ENABLED=False)
 def test_lti_select_title_text(page: Page, live_server: LiveServer):
     """Test LTI select."""
     lti_consumer_parameters = {
@@ -309,8 +310,6 @@ def test_lti_select_title_text(page: Page, live_server: LiveServer):
     assert document_content_items in lti_select_iframe.content()
 
     # Select a video
-    # clear cache to allow the same nonce in the request
-    cache.clear()
     page.click('#lti_select input[type="submit"]')
     lti_select_iframe.click('button[role="tab"]:has-text("Videos")')
     # Use send text in the response to fill the activity text
@@ -340,8 +339,6 @@ def test_lti_select_title_text(page: Page, live_server: LiveServer):
     assert Video.objects.count() == 1
 
     # Select a new video
-    # clear cache to allow the same nonce in the request
-    cache.clear()
     page.click('#lti_select input[type="submit"]')
     lti_select_iframe.click('button[role="tab"]:has-text("Videos")')
     sent_title_and_text = (

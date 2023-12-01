@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Disable lti nonce and timestamp validation
+
 ## [4.8.1] - 2023-11-29
 
 ### Fixed
