@@ -6,10 +6,11 @@ import path from 'path';
 
 import { screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { markdownImageMockFactory } from 'index';
 import { useJwt } from 'lib-components';
 import { render } from 'lib-tests';
 import React from 'react';
+
+import { markdownImageMockFactory } from '@lib-markdown/tests';
 
 import { MdxRenderer } from '.';
 

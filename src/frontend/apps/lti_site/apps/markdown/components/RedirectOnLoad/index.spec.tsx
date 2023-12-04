@@ -12,9 +12,11 @@ import {
   MARKDOWN_EDITOR_ROUTE,
   MARKDOWN_NOT_FOUND_ROUTE,
   MARKDOWN_VIEWER_ROUTE,
+} from 'lib-markdown';
+import {
   markdownDocumentMockFactory,
   markdownTranslationMockFactory,
-} from 'lib-markdown';
+} from 'lib-markdown/tests';
 import { render } from 'lib-tests';
 
 import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';

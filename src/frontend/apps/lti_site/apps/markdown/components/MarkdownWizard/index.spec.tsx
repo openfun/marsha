@@ -2,11 +2,11 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { useJwt } from 'lib-components';
+import { MARKDOWN_EDITOR_ROUTE } from 'lib-markdown';
 import {
-  MARKDOWN_EDITOR_ROUTE,
   markdownDocumentMockFactory,
   markdownTranslationMockFactory,
-} from 'lib-markdown';
+} from 'lib-markdown/tests';
 import { render } from 'lib-tests';
 import React from 'react';
 
