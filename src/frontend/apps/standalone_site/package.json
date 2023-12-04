@@ -1,6 +1,6 @@
 {
   "name": "standalone_site",
-  "version": "4.8.1",
+  "version": "4.9.0",
   "license": "MIT",
   "private": true,
   "devDependencies": {

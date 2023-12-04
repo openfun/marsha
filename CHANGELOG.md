@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [4.9.0] - 2023-12-04
+
 ### Added
 
 - Disable lti nonce and timestamp validation
@@ -1891,7 +1893,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v4.8.1...master
+[unreleased]: https://github.com/openfun/marsha/compare/v4.9.0...master
+[4.9.0]: https://github.com/openfun/marsha/compare/v4.8.1...v4.9.0
 [4.8.1]: https://github.com/openfun/marsha/compare/v4.8.0...v4.8.1
 [4.8.0]: https://github.com/openfun/marsha/compare/v4.7.0...v4.8.0
 [4.7.0]: https://github.com/openfun/marsha/compare/v4.6.0...v4.7.0
