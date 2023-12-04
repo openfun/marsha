@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react';
-import { markdownDocumentMockFactory } from 'lib-markdown';
+import { markdownDocumentMockFactory } from 'lib-markdown/tests';
 import { render } from 'lib-tests';
 import React from 'react';
 

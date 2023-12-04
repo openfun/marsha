@@ -1,8 +1,9 @@
 import { waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { markdownImageMockFactory } from 'index';
 import { report } from 'lib-components';
 import { v4 as uuidv4 } from 'uuid';
+
+import { markdownImageMockFactory } from '@lib-markdown/tests';
 
 import { pollForMarkdownImage } from './index';
 

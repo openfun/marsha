@@ -1,6 +1,5 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { markdownImageMockFactory } from 'index';
 import {
   UploadManager,
   UploadManagerStatus,
@@ -12,6 +11,8 @@ import { Deferred, render } from 'lib-tests';
 import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import xhrMock, { MockResponse } from 'xhr-mock';
+
+import { markdownImageMockFactory } from '@lib-markdown/tests';
 
 import { useImageUploadManager } from './index';
 

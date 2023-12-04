@@ -1,9 +1,10 @@
 /* eslint-disable testing-library/render-result-naming-convention */
 import { renderHook, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { markdownDocumentMockFactory } from 'index';
 import { useJwt } from 'lib-components';
 import { WrapperReactQuery } from 'lib-tests';
+
+import { markdownDocumentMockFactory } from '@lib-markdown/tests';
 
 import {
   markdownRenderLatex,

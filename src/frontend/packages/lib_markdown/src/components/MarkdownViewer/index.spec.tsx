@@ -1,13 +1,14 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { useJwt } from 'lib-components';
+import { render } from 'lib-tests';
+import React from 'react';
+
 import {
   markdownDocumentMockFactory,
   markdownImageMockFactory,
   markdownTranslationMockFactory,
-} from 'index';
-import { useJwt } from 'lib-components';
-import { render } from 'lib-tests';
-import React from 'react';
+} from '@lib-markdown/tests';
 
 import { MarkdownViewer } from '.';
 

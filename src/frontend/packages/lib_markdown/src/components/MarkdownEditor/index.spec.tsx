@@ -19,7 +19,7 @@ import {
   markdownDocumentMockFactory,
   markdownImageMockFactory,
   markdownTranslationMockFactory,
-} from '@lib-markdown/utils/tests/factories';
+} from '@lib-markdown/tests/factories';
 
 import { MarkdownEditor } from '.';
 
