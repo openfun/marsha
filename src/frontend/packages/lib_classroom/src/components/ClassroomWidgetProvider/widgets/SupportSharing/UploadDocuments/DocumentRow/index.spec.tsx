@@ -9,7 +9,7 @@ import React from 'react';
 import {
   classroomDocumentMockFactory,
   classroomMockFactory,
-} from '@lib-classroom/utils/tests/factories';
+} from '@lib-classroom/tests/factories';
 import { wrapInClassroom } from '@lib-classroom/utils/wrapInClassroom';
 
 import { DocumentRow } from '.';

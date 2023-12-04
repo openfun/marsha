@@ -1,1 +1,1 @@
-export * from './tests/factories';
+export * from './wrapInClassroom';

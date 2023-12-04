@@ -1,7 +1,7 @@
 import fetchMock from 'fetch-mock';
 import { useJwt } from 'lib-components';
 
-import { classroomRecordingMockFactory } from '@lib-classroom/utils/tests/factories';
+import { classroomRecordingMockFactory } from '@lib-classroom/tests/factories';
 
 import { createVOD } from '.';
 

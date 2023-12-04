@@ -5,7 +5,7 @@ import { InfoWidgetModalProvider, useJwt } from 'lib-components';
 import { render, userTypeDatePicker } from 'lib-tests';
 import { DateTime, Settings } from 'luxon';
 
-import { classroomMockFactory } from '@lib-classroom/utils/tests/factories';
+import { classroomMockFactory } from '@lib-classroom/tests/factories';
 import { wrapInClassroom } from '@lib-classroom/utils/wrapInClassroom';
 
 import { RetentionDate } from '.';

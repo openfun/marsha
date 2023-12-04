@@ -5,7 +5,7 @@ import { InfoWidgetModalProvider } from 'lib-components';
 import { render } from 'lib-tests';
 
 import { useCurrentClassroom } from '@lib-classroom/hooks/useCurrentClassroom';
-import { classroomMockFactory } from '@lib-classroom/utils/tests/factories';
+import { classroomMockFactory } from '@lib-classroom/tests/factories';
 
 import { ToolsAndApplications } from '.';
 

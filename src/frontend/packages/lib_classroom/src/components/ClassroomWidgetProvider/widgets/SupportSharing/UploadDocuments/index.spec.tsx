@@ -15,7 +15,7 @@ import { createClassroomDocument } from '@lib-classroom/data/sideEffects/createC
 import {
   classroomDocumentMockFactory,
   classroomMockFactory,
-} from '@lib-classroom/utils/tests/factories';
+} from '@lib-classroom/tests/factories';
 
 import { UploadDocuments } from '.';
 

@@ -1,6 +1,6 @@
 import { render, renderHook, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { classroomMockFactory } from 'lib-classroom';
+import { classroomMockFactory } from 'lib-classroom/tests';
 import { JWT_KEY, useCurrentUser, useJwt } from 'lib-components';
 import { Deferred, wrapperUtils } from 'lib-tests';
 

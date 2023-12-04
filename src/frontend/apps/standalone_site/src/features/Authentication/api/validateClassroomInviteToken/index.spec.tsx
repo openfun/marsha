@@ -1,5 +1,5 @@
-import { classroomMockFactory } from '@lib-classroom/utils';
 import fetchMock from 'fetch-mock';
+import { classroomMockFactory } from 'lib-classroom/tests';
 
 import { validateClassroomInviteToken } from '.';
 

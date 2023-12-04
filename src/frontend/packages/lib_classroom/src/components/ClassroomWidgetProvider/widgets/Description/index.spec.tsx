@@ -5,7 +5,7 @@ import { InfoWidgetModalProvider } from 'lib-components';
 import { Deferred, render } from 'lib-tests';
 import { Settings } from 'luxon';
 
-import { classroomMockFactory } from '@lib-classroom/utils/tests/factories';
+import { classroomMockFactory } from '@lib-classroom/tests/factories';
 import { wrapInClassroom } from '@lib-classroom/utils/wrapInClassroom';
 
 import { Description } from '.';

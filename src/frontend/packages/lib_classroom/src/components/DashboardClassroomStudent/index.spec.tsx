@@ -3,7 +3,7 @@ import { render } from 'lib-tests';
 import { DateTime, Duration, Settings } from 'luxon';
 import React from 'react';
 
-import { classroomMockFactory } from '@lib-classroom/utils/tests/factories';
+import { classroomMockFactory } from '@lib-classroom/tests/factories';
 
 import DashboardClassroomStudent from '.';
 
