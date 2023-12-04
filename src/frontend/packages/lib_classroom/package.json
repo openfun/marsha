@@ -1,6 +1,6 @@
 {
   "name": "lib-classroom",
-  "version": "4.8.1",
+  "version": "4.9.0",
   "license": "MIT",
   "directories": {
     "lib": "lib"
