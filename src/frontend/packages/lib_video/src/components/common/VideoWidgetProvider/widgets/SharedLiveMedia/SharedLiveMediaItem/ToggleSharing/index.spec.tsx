@@ -2,12 +2,11 @@ import { faker } from '@faker-js/faker';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
+import { report, useJwt } from 'lib-components';
 import {
-  report,
   sharedLiveMediaMockFactory,
-  useJwt,
   videoMockFactory,
-} from 'lib-components';
+} from 'lib-components/tests';
 import { Deferred, render } from 'lib-tests';
 
 import { ToggleSharing } from '.';

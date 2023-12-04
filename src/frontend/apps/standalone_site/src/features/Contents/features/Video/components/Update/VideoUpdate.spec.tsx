@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { videoMockFactory } from 'lib-components';
+import { videoMockFactory } from 'lib-components/tests';
 import { Deferred, render } from 'lib-tests';
 import { useParams } from 'react-router-dom';
 

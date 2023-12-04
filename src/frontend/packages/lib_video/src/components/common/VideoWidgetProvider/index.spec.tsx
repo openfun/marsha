@@ -7,9 +7,6 @@ import {
   TimedTextTranscript,
   Video,
   liveState,
-  sharedLiveMediaMockFactory,
-  thumbnailMockFactory,
-  timedTextMockFactory,
   timedTextMode,
   uploadState,
   useCurrentResourceContext,
@@ -17,8 +14,13 @@ import {
   useSharedLiveMedia,
   useThumbnail,
   useTimedTextTrack,
-  videoMockFactory,
 } from 'lib-components';
+import {
+  sharedLiveMediaMockFactory,
+  thumbnailMockFactory,
+  timedTextMockFactory,
+  videoMockFactory,
+} from 'lib-components/tests';
 import { render } from 'lib-tests';
 import { DateTime } from 'luxon';
 

@@ -1,12 +1,8 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import {
-  InfoWidgetModalProvider,
-  report,
-  useJwt,
-  videoMockFactory,
-} from 'lib-components';
+import { InfoWidgetModalProvider, report, useJwt } from 'lib-components';
+import { videoMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';

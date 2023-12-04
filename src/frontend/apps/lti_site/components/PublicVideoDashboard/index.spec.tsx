@@ -3,11 +3,10 @@ import fetchMock from 'fetch-mock';
 import {
   ErrorComponents,
   builderFullScreenErrorRoute,
-  liveMockFactory,
   uploadState,
   useJwt,
-  videoMockFactory,
 } from 'lib-components';
+import { liveMockFactory, videoMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 
 import PublicVideoDashboard from '.';

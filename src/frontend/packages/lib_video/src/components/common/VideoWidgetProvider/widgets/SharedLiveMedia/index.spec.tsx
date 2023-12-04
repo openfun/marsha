@@ -7,13 +7,15 @@ import {
   UploadManagerContext,
   modelName,
   report,
-  sharedLiveMediaMockFactory,
   uploadState,
   useJwt,
   useSharedLiveMedia,
   useUploadManager,
-  videoMockFactory,
 } from 'lib-components';
+import {
+  sharedLiveMediaMockFactory,
+  videoMockFactory,
+} from 'lib-components/tests';
 import { render } from 'lib-tests';
 import { PropsWithChildren } from 'react';
 

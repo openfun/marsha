@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { timedTextMockFactory } from 'lib-components';
+import { timedTextMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 import { PropsWithChildren } from 'react';
 

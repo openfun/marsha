@@ -1,5 +1,6 @@
 import { screen } from '@testing-library/react';
-import { LiveModeType, liveMockFactory, liveState } from 'lib-components';
+import { LiveModeType, liveState } from 'lib-components';
+import { liveMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 import React, { Suspense } from 'react';
 

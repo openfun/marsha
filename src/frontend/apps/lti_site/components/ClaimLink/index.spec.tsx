@@ -6,9 +6,8 @@ import {
   appNames,
   appState,
   modelName,
-  playlistMockFactory,
-  videoMockFactory,
 } from 'lib-components';
+import { playlistMockFactory, videoMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 import React from 'react';
 

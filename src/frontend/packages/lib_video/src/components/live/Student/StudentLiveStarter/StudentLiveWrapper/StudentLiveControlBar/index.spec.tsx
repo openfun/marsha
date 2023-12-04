@@ -3,9 +3,9 @@ import {
   JoinMode,
   LiveModeType,
   PersistentStore,
-  liveMockFactory,
   liveState,
 } from 'lib-components';
+import { liveMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 import React from 'react';
 

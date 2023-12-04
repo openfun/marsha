@@ -6,12 +6,8 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import {
-  participantMockFactory,
-  report,
-  useJwt,
-  videoMockFactory,
-} from 'lib-components';
+import { report, useJwt } from 'lib-components';
+import { participantMockFactory, videoMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 
 import { useParticipantsStore } from '@lib-video/hooks/useParticipantsStore';

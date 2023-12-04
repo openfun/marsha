@@ -3,9 +3,9 @@ import {
   UploadManagerState,
   UploadManagerStatus,
   modelName,
-  thumbnailMockFactory,
   uploadState,
 } from 'lib-components';
+import { thumbnailMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 import React from 'react';
 

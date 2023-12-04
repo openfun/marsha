@@ -5,13 +5,15 @@ import fetchMock from 'fetch-mock';
 import {
   LiveModeType,
   liveState,
-  thumbnailMockFactory,
-  timedTextMockFactory,
   timedTextMode,
   uploadState,
   useThumbnail,
-  videoMockFactory,
 } from 'lib-components';
+import {
+  thumbnailMockFactory,
+  timedTextMockFactory,
+  videoMockFactory,
+} from 'lib-components/tests';
 import { render } from 'lib-tests';
 import React from 'react';
 

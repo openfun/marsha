@@ -1,7 +1,8 @@
 import { QueryClient } from '@tanstack/react-query';
 import { screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { liveState, useJwt, videoMockFactory } from 'lib-components';
+import { liveState, useJwt } from 'lib-components';
+import { videoMockFactory } from 'lib-components/tests';
 import { Deferred, render } from 'lib-tests';
 import React from 'react';
 

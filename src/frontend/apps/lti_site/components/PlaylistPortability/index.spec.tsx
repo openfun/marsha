@@ -1,11 +1,11 @@
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
+import { useJwt } from 'lib-components';
 import {
   playlistLiteMockFactory,
   playlistMockFactory,
-  useJwt,
   videoMockFactory,
-} from 'lib-components';
+} from 'lib-components/tests';
 import { Deferred, render } from 'lib-tests';
 import React from 'react';
 

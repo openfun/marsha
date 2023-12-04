@@ -1,6 +1,7 @@
 import { QueryClient } from '@tanstack/react-query';
 import { screen } from '@testing-library/react';
-import { liveState, videoMockFactory } from 'lib-components';
+import { liveState } from 'lib-components';
+import { videoMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 import React from 'react';
 

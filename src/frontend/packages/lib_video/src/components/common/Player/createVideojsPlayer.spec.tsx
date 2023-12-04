@@ -1,14 +1,8 @@
 /* eslint-disable testing-library/no-node-access */
 /* eslint-disable testing-library/no-container */
 import { waitFor } from '@testing-library/react';
-import {
-  liveMockFactory,
-  liveState,
-  timedTextMode,
-  uploadState,
-  useJwt,
-  videoMockFactory,
-} from 'lib-components';
+import { liveState, timedTextMode, uploadState, useJwt } from 'lib-components';
+import { liveMockFactory, videoMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 import React from 'react';
 import videojs from 'video.js';

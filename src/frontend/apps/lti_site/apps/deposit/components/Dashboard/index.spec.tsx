@@ -1,12 +1,11 @@
 import { QueryClient } from '@tanstack/react-query';
 import { screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
+import { useCurrentResourceContext, useJwt } from 'lib-components';
 import {
   ltiInstructorTokenMockFactory,
   ltiStudentTokenMockFactory,
-  useCurrentResourceContext,
-  useJwt,
-} from 'lib-components';
+} from 'lib-components/tests';
 import { Deferred, render } from 'lib-tests';
 import React from 'react';
 

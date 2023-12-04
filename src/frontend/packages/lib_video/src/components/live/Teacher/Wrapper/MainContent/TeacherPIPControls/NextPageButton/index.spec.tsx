@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { videoMockFactory } from 'lib-components';
+import { videoMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 
 import { navigateSharingDoc } from '@lib-video/api/navigateSharingDoc';

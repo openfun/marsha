@@ -1,11 +1,10 @@
 import { act, screen } from '@testing-library/react';
 import {
   PersistentStore,
-  liveSessionFactory,
   liveState,
   useCurrentResourceContext,
-  videoMockFactory,
 } from 'lib-components';
+import { liveSessionFactory, videoMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 import React from 'react';
 

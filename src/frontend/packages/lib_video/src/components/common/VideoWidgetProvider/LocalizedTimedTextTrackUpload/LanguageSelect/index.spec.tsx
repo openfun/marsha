@@ -1,11 +1,8 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import {
-  timedTextMockFactory,
-  timedTextMode,
-  useTimedTextTrack,
-} from 'lib-components';
+import { timedTextMode, useTimedTextTrack } from 'lib-components';
+import { timedTextMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 
 import { LanguageSelect } from '.';

@@ -1,11 +1,11 @@
 import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
+import { PortabilityRequestState } from 'lib-components';
 import {
-  PortabilityRequestState,
   playlistMockFactory,
   portabilityRequestMockFactory,
-} from 'lib-components';
+} from 'lib-components/tests';
 import { Deferred, render } from 'lib-tests';
 
 import { PortabilityRequests } from './PortabilityRequests';

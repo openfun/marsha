@@ -2,13 +2,15 @@ import { waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import {
   addResource,
-  documentMockFactory,
   modelName,
   report,
   requestStatus,
-  timedTextMockFactory,
   useJwt,
 } from 'lib-components';
+import {
+  documentMockFactory,
+  timedTextMockFactory,
+} from 'lib-components/tests';
 
 import { pollForTrack } from '.';
 

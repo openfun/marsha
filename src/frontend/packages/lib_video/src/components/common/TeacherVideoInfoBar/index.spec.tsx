@@ -1,5 +1,5 @@
 import { getDefaultNormalizer, screen } from '@testing-library/react';
-import { videoMockFactory } from 'lib-components';
+import { videoMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 import React from 'react';
 

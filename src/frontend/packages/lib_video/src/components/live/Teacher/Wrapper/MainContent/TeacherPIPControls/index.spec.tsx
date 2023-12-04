@@ -1,5 +1,6 @@
 import { screen } from '@testing-library/react';
-import { uploadState, useJwt, videoMockFactory } from 'lib-components';
+import { uploadState, useJwt } from 'lib-components';
+import { videoMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 
 import {

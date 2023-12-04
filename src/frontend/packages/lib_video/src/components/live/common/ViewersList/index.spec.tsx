@@ -1,10 +1,7 @@
 import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import {
-  JoinMode,
-  participantMockFactory,
-  videoMockFactory,
-} from 'lib-components';
+import { JoinMode } from 'lib-components';
+import { participantMockFactory, videoMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 
 import { useParticipantsStore } from '@lib-video/hooks/useParticipantsStore';

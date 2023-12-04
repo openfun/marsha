@@ -1,7 +1,7 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { playlistMockFactory } from 'lib-components';
+import { playlistMockFactory } from 'lib-components/tests';
 import { markdownDocumentMockFactory } from 'lib-markdown';
 import { render } from 'lib-tests';
 import React from 'react';

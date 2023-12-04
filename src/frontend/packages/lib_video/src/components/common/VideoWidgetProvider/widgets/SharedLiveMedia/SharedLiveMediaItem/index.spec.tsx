@@ -6,11 +6,13 @@ import {
   UploadManagerStatus,
   UploadingObject,
   modelName,
-  sharedLiveMediaMockFactory,
   uploadState,
   useJwt,
-  videoMockFactory,
 } from 'lib-components';
+import {
+  sharedLiveMediaMockFactory,
+  videoMockFactory,
+} from 'lib-components/tests';
 import { render } from 'lib-tests';
 
 import { DeleteSharedLiveMediaModalProvider } from '@lib-video/hooks/useDeleteSharedLiveMediaModal';

@@ -2,13 +2,15 @@ import { screen } from '@testing-library/react';
 import {
   FULL_SCREEN_ERROR_ROUTE,
   appState,
-  ltiInstructorTokenMockFactory,
-  ltiStudentTokenMockFactory,
   modelName,
   uploadState,
   useAppConfig,
   useCurrentResourceContext,
 } from 'lib-components';
+import {
+  ltiInstructorTokenMockFactory,
+  ltiStudentTokenMockFactory,
+} from 'lib-components/tests';
 import { render } from 'lib-tests';
 
 import { LTIInnerRoutes } from './';

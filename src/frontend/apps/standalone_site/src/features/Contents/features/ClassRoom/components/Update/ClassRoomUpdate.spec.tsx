@@ -1,6 +1,7 @@
 import { screen } from '@testing-library/react';
 import { ResponsiveContext } from 'grommet';
-import { ltiPublicTokenMockFactory, useJwt } from 'lib-components';
+import { useJwt } from 'lib-components';
+import { ltiPublicTokenMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 import { useParams } from 'react-router-dom';
 

@@ -7,9 +7,9 @@ import { UploadManager } from '@lib-components/common/UploadManager';
 import { DASHBOARD_ROUTE } from '@lib-components/data/routes';
 import { uploadFile } from '@lib-components/data/sideEffects/uploadFile';
 import { getStoreResource } from '@lib-components/data/stores/generics';
+import { videoMockFactory } from '@lib-components/tests';
 import { modelName } from '@lib-components/types/models';
 import { timedTextMode, uploadState } from '@lib-components/types/tracks';
-import { videoMockFactory } from '@lib-components/utils/tests/factories';
 
 import { ErrorComponents } from '../ErrorComponents';
 

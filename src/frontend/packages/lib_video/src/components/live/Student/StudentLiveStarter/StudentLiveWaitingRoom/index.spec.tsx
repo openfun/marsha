@@ -1,12 +1,8 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Nullable } from 'lib-common';
-import {
-  liveMockFactory,
-  liveSessionFactory,
-  useCurrentUser,
-  useMaintenance,
-} from 'lib-components';
+import { useCurrentUser, useMaintenance } from 'lib-components';
+import { liveMockFactory, liveSessionFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 
 import { setLiveSessionDisplayName } from '@lib-video/api/setLiveSessionDisplayName';

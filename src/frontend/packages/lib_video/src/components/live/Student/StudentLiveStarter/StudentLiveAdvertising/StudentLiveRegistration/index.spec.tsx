@@ -1,13 +1,8 @@
 import { fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import {
-  decodeJwt,
-  liveMockFactory,
-  liveSessionFactory,
-  useCurrentUser,
-  useJwt,
-} from 'lib-components';
+import { decodeJwt, useCurrentUser, useJwt } from 'lib-components';
+import { liveMockFactory, liveSessionFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 import { v4 as uuidv4 } from 'uuid';
 

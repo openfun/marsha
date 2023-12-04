@@ -1,10 +1,6 @@
 import { renderHook } from '@testing-library/react';
-import {
-  UploadManagerStatus,
-  modelName,
-  thumbnailMockFactory,
-  uploadState,
-} from 'lib-components';
+import { UploadManagerStatus, modelName, uploadState } from 'lib-components';
+import { thumbnailMockFactory } from 'lib-components/tests';
 import { wrapperUtils } from 'lib-tests';
 
 import { useDetermineMessage } from './utils';

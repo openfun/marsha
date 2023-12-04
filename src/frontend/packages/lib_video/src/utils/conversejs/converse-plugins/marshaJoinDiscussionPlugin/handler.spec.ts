@@ -3,11 +3,10 @@ import {
   EventType,
   JitsiMeetExternalAPI,
   MessageType,
-  participantMockFactory,
   useJwt,
   useVideo,
-  videoMockFactory,
 } from 'lib-components';
+import { participantMockFactory, videoMockFactory } from 'lib-components/tests';
 
 import { useParticipantWorkflow } from '@lib-video/hooks/useParticipantWorkflow';
 

@@ -6,13 +6,12 @@ import {
   UploadManagerContext,
   UploadManagerStatus,
   modelName,
-  thumbnailMockFactory,
   uploadState,
   useJwt,
   useThumbnail,
   useUploadManager,
-  videoMockFactory,
 } from 'lib-components';
+import { thumbnailMockFactory, videoMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 import { PropsWithChildren } from 'react';
 

@@ -1,6 +1,7 @@
 import { renderHook, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { portabilityRequestMockFactory, useJwt } from 'lib-components';
+import { useJwt } from 'lib-components';
+import { portabilityRequestMockFactory } from 'lib-components/tests';
 import { WrapperReactQuery } from 'lib-tests';
 
 import {

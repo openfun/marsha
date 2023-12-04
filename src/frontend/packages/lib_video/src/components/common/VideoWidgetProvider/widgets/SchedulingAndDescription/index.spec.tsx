@@ -6,8 +6,8 @@ import {
   liveState,
   report,
   useJwt,
-  videoMockFactory,
 } from 'lib-components';
+import { videoMockFactory } from 'lib-components/tests';
 import { render, userTypeDatePicker } from 'lib-tests';
 import { DateTime, Duration } from 'luxon';
 

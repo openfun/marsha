@@ -2,10 +2,10 @@ import fetchMock from 'fetch-mock';
 
 import { addResource } from '@lib-components/data/stores/generics';
 import { useJwt } from '@lib-components/hooks/stores/useJwt';
+import { videoMockFactory } from '@lib-components/tests';
 import { requestStatus } from '@lib-components/types/api';
 import { modelName } from '@lib-components/types/models';
 import { report } from '@lib-components/utils/errors/report';
-import { videoMockFactory } from '@lib-components/utils/tests/factories';
 
 import { getResource } from '.';
 

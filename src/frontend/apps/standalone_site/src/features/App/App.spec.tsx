@@ -2,11 +2,8 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { Grommet, ResponsiveContext } from 'grommet';
-import {
-  playlistMockFactory,
-  useCurrentUser,
-  userMockFactory,
-} from 'lib-components';
+import { useCurrentUser } from 'lib-components';
+import { playlistMockFactory, userMockFactory } from 'lib-components/tests';
 
 import fetchMockAuth from '__mock__/fetchMockAuth.mock';
 import { ConfigResponse } from 'api/useConfig';

@@ -1,6 +1,7 @@
 import { screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { useJwt, videoMockFactory } from 'lib-components';
+import { useJwt } from 'lib-components';
+import { videoMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 import React from 'react';
 

@@ -4,14 +4,16 @@ import fetchMock from 'fetch-mock';
 import { Tab } from 'grommet';
 import {
   LiveModeType,
-  documentMockFactory,
-  liveMockFactory,
   liveState,
-  playlistMockFactory,
   selectableBaseResource,
   uploadState,
-  videoMockFactory,
 } from 'lib-components';
+import {
+  documentMockFactory,
+  liveMockFactory,
+  playlistMockFactory,
+  videoMockFactory,
+} from 'lib-components/tests';
 import { render } from 'lib-tests';
 import { initiateLive } from 'lib-video';
 import React from 'react';

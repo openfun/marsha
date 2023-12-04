@@ -1,10 +1,6 @@
 import { screen } from '@testing-library/react';
-import {
-  PersistentStore,
-  liveState,
-  useJwt,
-  videoMockFactory,
-} from 'lib-components';
+import { PersistentStore, liveState, useJwt } from 'lib-components';
+import { videoMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 import React from 'react';
 

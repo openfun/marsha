@@ -2,12 +2,8 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEventInit from '@testing-library/user-event';
 import { Nullable } from 'lib-common';
-import {
-  decodeJwt,
-  liveMockFactory,
-  liveSessionFactory,
-  useCurrentUser,
-} from 'lib-components';
+import { decodeJwt, useCurrentUser } from 'lib-components';
+import { liveMockFactory, liveSessionFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 
 import { setLiveSessionDisplayName } from '@lib-video/api/setLiveSessionDisplayName';

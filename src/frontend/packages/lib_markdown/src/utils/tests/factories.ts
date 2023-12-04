@@ -3,9 +3,9 @@ import {
   MarkdownDocument,
   MarkdownDocumentTranslation,
   MarkdownImage,
-  playlistMockFactory,
   uploadState,
 } from 'lib-components';
+import { playlistMockFactory } from 'lib-components/tests';
 
 export const markdownDocumentMockFactory = (
   markdownDocument: Partial<MarkdownDocument> = {},

@@ -1,11 +1,11 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
+import { useJwt } from 'lib-components';
 import {
   playlistMockFactory,
   portabilityRequestMockFactory,
-  useJwt,
-} from 'lib-components';
+} from 'lib-components/tests';
 import { Deferred, render } from 'lib-tests';
 
 import { AcceptRejectButtons } from './AcceptRejectButtons';

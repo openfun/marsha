@@ -1,6 +1,7 @@
 import { renderHook, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { playlistMockFactory, useJwt } from 'lib-components';
+import { useJwt } from 'lib-components';
+import { playlistMockFactory } from 'lib-components/tests';
 import { WrapperReactQuery } from 'lib-tests';
 
 import { useClaimResource } from './useClaimResource';

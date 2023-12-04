@@ -4,13 +4,12 @@ import { waitFor } from '@testing-library/react';
 import {
   VideoXAPIStatementInterface,
   XAPIStatement,
-  liveMockFactory,
   liveState,
   timedTextMode,
   uploadState,
   useJwt,
-  videoMockFactory,
 } from 'lib-components';
+import { liveMockFactory, videoMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 import React from 'react';
 import videojs from 'video.js';

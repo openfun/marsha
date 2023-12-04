@@ -1,13 +1,8 @@
 import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import {
-  timedTextMockFactory,
-  timedTextMode,
-  useJwt,
-  useTimedTextTrack,
-  videoMockFactory,
-} from 'lib-components';
+import { timedTextMode, useJwt, useTimedTextTrack } from 'lib-components';
+import { timedTextMockFactory, videoMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';

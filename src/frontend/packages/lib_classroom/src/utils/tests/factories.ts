@@ -5,9 +5,9 @@ import {
   ClassroomInfos,
   ClassroomRecording,
   ClassroomRecordingVod,
-  playlistMockFactory,
   uploadState,
 } from 'lib-components';
+import { playlistMockFactory } from 'lib-components/tests';
 
 const { READY } = uploadState;
 

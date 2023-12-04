@@ -2,11 +2,8 @@
 /* eslint-disable testing-library/no-container */
 import { cleanup, screen } from '@testing-library/react';
 import { Tabs } from 'grommet';
-import {
-  participantMockFactory,
-  useJwt,
-  videoMockFactory,
-} from 'lib-components';
+import { useJwt } from 'lib-components';
+import { participantMockFactory, videoMockFactory } from 'lib-components/tests';
 import { render, wrapInIntlProvider } from 'lib-tests';
 import renderer from 'react-test-renderer';
 

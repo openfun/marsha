@@ -1,12 +1,8 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import {
-  report,
-  sharedLiveMediaMockFactory,
-  useJwt,
-  useSharedLiveMedia,
-} from 'lib-components';
+import { report, useJwt, useSharedLiveMedia } from 'lib-components';
+import { sharedLiveMediaMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 
 import { useDeleteSharedLiveMediaModal } from '@lib-video/hooks/useDeleteSharedLiveMediaModal';

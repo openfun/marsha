@@ -2,10 +2,10 @@ import { cleanup, screen } from '@testing-library/react';
 import {
   UploadManagerContext,
   UploadManagerStatus,
-  documentMockFactory,
   modelName,
   uploadState,
 } from 'lib-components';
+import { documentMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 import React from 'react';
 

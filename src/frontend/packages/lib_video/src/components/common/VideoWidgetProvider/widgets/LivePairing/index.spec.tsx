@@ -1,11 +1,7 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import {
-  InfoWidgetModalProvider,
-  liveState,
-  useJwt,
-  videoMockFactory,
-} from 'lib-components';
+import { InfoWidgetModalProvider, liveState, useJwt } from 'lib-components';
+import { videoMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';

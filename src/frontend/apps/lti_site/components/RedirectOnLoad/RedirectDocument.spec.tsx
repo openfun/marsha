@@ -3,10 +3,10 @@ import {
   FULL_SCREEN_ERROR_ROUTE,
   WithParams,
   builderDashboardRoute,
-  documentMockFactory,
   modelName,
   useCurrentResourceContext,
 } from 'lib-components';
+import { documentMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 
 import { builderPlayerRoute } from 'components/routes';

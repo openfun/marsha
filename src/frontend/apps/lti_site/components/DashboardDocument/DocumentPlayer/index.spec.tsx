@@ -2,11 +2,11 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import {
   XAPI_ENDPOINT,
-  documentMockFactory,
   uploadState,
   useCurrentSession,
   useJwt,
 } from 'lib-components';
+import { documentMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 import React from 'react';
 

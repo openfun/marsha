@@ -27,8 +27,8 @@ import {
   uploadState,
 } from '@lib-components/types/tracks';
 
-import { User } from '../../types';
-import { ConsumerSite } from '../../types/ConsumerSite';
+import { User } from '../types';
+import { ConsumerSite } from '../types/ConsumerSite';
 
 export const organizationMockFactory = (
   organization: Partial<Organization> = {},
