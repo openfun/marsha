@@ -1,6 +1,6 @@
 import { getDefaultNormalizer, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { classroomMockFactory } from 'lib-classroom';
+import { classroomMockFactory } from 'lib-classroom/tests';
 import { playlistMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 import React from 'react';

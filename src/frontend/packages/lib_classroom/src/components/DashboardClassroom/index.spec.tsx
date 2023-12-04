@@ -13,7 +13,7 @@ import {
 } from 'lib-components/tests';
 import { Deferred, render } from 'lib-tests';
 
-import { classroomMockFactory } from '@lib-classroom/utils/tests/factories';
+import { classroomMockFactory } from '@lib-classroom/tests/factories';
 
 import DashboardClassroom from '.';
 

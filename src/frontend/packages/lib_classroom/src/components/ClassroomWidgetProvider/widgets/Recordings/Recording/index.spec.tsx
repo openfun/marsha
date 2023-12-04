@@ -9,7 +9,7 @@ import {
   classroomMockFactory,
   classroomRecordingMockFactory,
   classroomRecordingVodMockFactory,
-} from '@lib-classroom/utils/tests/factories';
+} from '@lib-classroom/tests/factories';
 
 import { Recording } from '.';
 

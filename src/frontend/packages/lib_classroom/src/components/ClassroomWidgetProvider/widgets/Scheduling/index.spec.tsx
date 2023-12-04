@@ -5,7 +5,7 @@ import { InfoWidgetModalProvider } from 'lib-components';
 import { Deferred, render, userTypeDatePicker } from 'lib-tests';
 import { DateTime, Duration, Settings } from 'luxon';
 
-import { classroomMockFactory } from '@lib-classroom/utils/tests/factories';
+import { classroomMockFactory } from '@lib-classroom/tests/factories';
 import { wrapInClassroom } from '@lib-classroom/utils/wrapInClassroom';
 
 import { Scheduling } from '.';

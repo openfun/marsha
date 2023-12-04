@@ -7,6 +7,12 @@
   },
   "main": "./src/index.ts",
   "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./tests": "./src/tests/index.ts"
+  },
   "scripts": {
     "lint": "tsc --noEmit && eslint src/**/*.{ts,tsx}",
     "lint:fix": "yarn run lint --fix",

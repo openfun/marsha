@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import { render } from 'lib-tests';
 import React from 'react';
 
-import { classroomInfosMockFactory } from '@lib-classroom/utils/tests/factories';
+import { classroomInfosMockFactory } from '@lib-classroom/tests/factories';
 
 import DashboardClassroomInfos from '.';
 

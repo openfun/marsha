@@ -1,7 +1,7 @@
 import fetchMock from 'fetch-mock';
 import { useJwt } from 'lib-components';
 
-import { classroomDocumentMockFactory } from '@lib-classroom/utils/tests/factories';
+import { classroomDocumentMockFactory } from '@lib-classroom/tests/factories';
 
 import { createClassroomDocument } from '.';
 

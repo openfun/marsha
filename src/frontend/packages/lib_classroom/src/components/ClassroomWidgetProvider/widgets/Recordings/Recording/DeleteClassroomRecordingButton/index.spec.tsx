@@ -8,7 +8,7 @@ import { DateTime } from 'luxon';
 import {
   classroomMockFactory,
   classroomRecordingMockFactory,
-} from '@lib-classroom/utils';
+} from '@lib-classroom/tests/factories';
 
 import { DeleteClassroomRecordingButton } from '.';
 
