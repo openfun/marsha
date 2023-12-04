@@ -2,14 +2,12 @@
 /* eslint-disable testing-library/no-container */
 import { screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
+import { timedTextMode, useJwt, useTimedTextTrack } from 'lib-components';
 import {
   liveMockFactory,
   timedTextMockFactory,
-  timedTextMode,
-  useJwt,
-  useTimedTextTrack,
   videoMockFactory,
-} from 'lib-components';
+} from 'lib-components/tests';
 import { render } from 'lib-tests';
 import React from 'react';
 

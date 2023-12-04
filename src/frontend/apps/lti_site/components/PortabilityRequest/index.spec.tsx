@@ -1,7 +1,8 @@
 import { cleanup, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { PortabilityConfigMockFactory, useJwt } from 'lib-components';
+import { useJwt } from 'lib-components';
+import { PortabilityConfigMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 import React from 'react';
 

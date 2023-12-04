@@ -4,12 +4,11 @@ import { Nullable } from 'lib-common';
 import {
   JoinMode,
   Live,
-  liveMockFactory,
-  liveSessionFactory,
   liveState,
   useCurrentResourceContext,
   useJwt,
 } from 'lib-components';
+import { liveMockFactory, liveSessionFactory } from 'lib-components/tests';
 import { Deferred, render } from 'lib-tests';
 import React from 'react';
 

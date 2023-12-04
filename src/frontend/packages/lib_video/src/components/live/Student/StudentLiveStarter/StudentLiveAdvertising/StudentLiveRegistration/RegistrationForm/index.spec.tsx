@@ -1,7 +1,8 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import MatchMediaMock from 'jest-matchmedia-mock';
-import { decodeJwt, liveMockFactory, liveSessionFactory } from 'lib-components';
+import { decodeJwt } from 'lib-components';
+import { liveMockFactory, liveSessionFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 
 import { createLiveSession } from '@lib-video/api/createLiveSession';

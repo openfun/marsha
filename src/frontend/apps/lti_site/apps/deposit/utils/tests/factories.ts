@@ -1,10 +1,6 @@
 import { faker } from '@faker-js/faker';
-import {
-  DepositedFile,
-  FileDepository,
-  playlistMockFactory,
-  uploadState,
-} from 'lib-components';
+import { DepositedFile, FileDepository, uploadState } from 'lib-components';
+import { playlistMockFactory } from 'lib-components/tests';
 
 const { READY } = uploadState;
 

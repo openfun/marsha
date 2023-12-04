@@ -7,13 +7,12 @@ import {
   appNames,
   appState,
   modelName,
-  playlistMockFactory,
   retryQuery,
   useCurrentSession,
   useCurrentUser,
   useJwt,
-  videoMockFactory,
 } from 'lib-components';
+import { playlistMockFactory, videoMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 import React from 'react';
 import { IntlShape, useIntl } from 'react-intl';

@@ -1,7 +1,7 @@
 import fetchMock from 'fetch-mock';
 
 import { useJwt } from '@lib-components/hooks/stores/useJwt';
-import { videoMockFactory } from '@lib-components/utils/tests/factories';
+import { videoMockFactory } from '@lib-components/tests';
 
 import { fetchJitsiInfo } from '.';
 

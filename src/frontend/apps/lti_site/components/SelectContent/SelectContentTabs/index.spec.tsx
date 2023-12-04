@@ -1,15 +1,13 @@
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Tab } from 'grommet';
+import { LiveModeType, liveState, uploadState } from 'lib-components';
 import {
-  LiveModeType,
   documentMockFactory,
   liveMockFactory,
-  liveState,
   playlistMockFactory,
-  uploadState,
   videoMockFactory,
-} from 'lib-components';
+} from 'lib-components/tests';
 import { render } from 'lib-tests';
 import React, { Suspense } from 'react';
 

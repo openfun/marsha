@@ -1,8 +1,8 @@
 import fetchMock from 'fetch-mock';
 import { XAPI_ENDPOINT } from 'lib-components';
 
+import { documentMockFactory } from '@lib-components/tests/factories';
 import { VerbDefinition } from '@lib-components/types/XAPI';
-import { documentMockFactory } from '@lib-components/utils/tests/factories';
 
 import { DocumentXapiStatement } from './DocumentXapiStatement';
 

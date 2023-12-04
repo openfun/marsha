@@ -5,15 +5,17 @@ import {
   PersistentStore,
   decodeJwt,
   liveState,
-  sharedLiveMediaMockFactory,
-  timedTextMockFactory,
   timedTextMode,
   useCurrentResourceContext,
   useJwt,
   useSharedLiveMedia,
   useTimedTextTrack,
-  videoMockFactory,
 } from 'lib-components';
+import {
+  sharedLiveMediaMockFactory,
+  timedTextMockFactory,
+  videoMockFactory,
+} from 'lib-components/tests';
 import { render } from 'lib-tests';
 import React from 'react';
 

@@ -1,10 +1,10 @@
 import {
   JoinMode,
   LiveModeType,
-  liveMockFactory,
   liveState,
   useCurrentUser,
 } from 'lib-components';
+import { liveMockFactory } from 'lib-components/tests';
 
 import { useLiveSession } from '@lib-video/hooks/useLiveSession';
 import { convertVideoToJitsiLive } from '@lib-video/utils/convertVideo';

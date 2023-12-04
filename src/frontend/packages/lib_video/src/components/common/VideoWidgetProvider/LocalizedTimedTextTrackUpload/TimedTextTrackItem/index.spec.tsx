@@ -6,10 +6,10 @@ import {
   UploadManagerStatus,
   UploadingObject,
   modelName,
-  timedTextMockFactory,
   uploadState,
   useJwt,
 } from 'lib-components';
+import { timedTextMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 
 import { DeleteTimedTextTrackUploadModalProvider } from '@lib-video/hooks/useDeleteTimedTextTrackUploadModal';

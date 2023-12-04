@@ -1,12 +1,8 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import {
-  report,
-  thumbnailMockFactory,
-  useJwt,
-  useThumbnail,
-} from 'lib-components';
+import { report, useJwt, useThumbnail } from 'lib-components';
+import { thumbnailMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 
 import { ThumbnailRemoveButton } from '.';

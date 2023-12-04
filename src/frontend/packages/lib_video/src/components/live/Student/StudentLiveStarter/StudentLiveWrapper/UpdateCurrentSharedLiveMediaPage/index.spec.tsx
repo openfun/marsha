@@ -1,12 +1,10 @@
 import { faker } from '@faker-js/faker';
 import { act } from '@testing-library/react';
+import { LiveModeType, liveState, useVideo } from 'lib-components';
 import {
-  LiveModeType,
   liveMockFactory,
-  liveState,
   sharedLiveMediaMockFactory,
-  useVideo,
-} from 'lib-components';
+} from 'lib-components/tests';
 import { render } from 'lib-tests';
 
 import { SharedMediaCurrentPageProvider } from '@lib-video/hooks/useSharedMediaCurrentPage';

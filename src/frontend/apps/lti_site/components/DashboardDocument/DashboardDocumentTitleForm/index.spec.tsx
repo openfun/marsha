@@ -1,7 +1,8 @@
 import { act, fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { documentMockFactory, uploadState, useJwt } from 'lib-components';
+import { uploadState, useJwt } from 'lib-components';
+import { documentMockFactory } from 'lib-components/tests';
 import { Deferred, render } from 'lib-tests';
 import React from 'react';
 

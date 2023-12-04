@@ -3,11 +3,10 @@ import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
   InfoWidgetModalProvider,
-  liveMockFactory,
   useCurrentResourceContext,
   useJwt,
-  videoMockFactory,
 } from 'lib-components';
+import { liveMockFactory, videoMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';

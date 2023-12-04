@@ -1,11 +1,6 @@
 import { act, cleanup, waitFor } from '@testing-library/react';
-import {
-  DecodedJwt,
-  LiveModeType,
-  liveMockFactory,
-  liveState,
-  useJwt,
-} from 'lib-components';
+import { DecodedJwt, LiveModeType, liveState, useJwt } from 'lib-components';
+import { liveMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 import React from 'react';
 

@@ -3,12 +3,8 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import {
-  liveState,
-  uploadState,
-  useJwt,
-  videoMockFactory,
-} from 'lib-components';
+import { liveState, uploadState, useJwt } from 'lib-components';
+import { videoMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 
 import { VideoWidgetProvider } from '@lib-video/components/common';

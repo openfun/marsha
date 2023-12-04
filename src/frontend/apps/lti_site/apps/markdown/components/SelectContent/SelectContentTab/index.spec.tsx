@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
 import { Tabs } from 'grommet';
-import { playlistMockFactory } from 'lib-components';
+import { playlistMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 import React from 'react';
 

@@ -1,11 +1,11 @@
 /* eslint-disable testing-library/no-node-access */
 import { screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
+import { useJwt } from 'lib-components';
 import {
   sharedLiveMediaMockFactory,
-  useJwt,
   videoMockFactory,
-} from 'lib-components';
+} from 'lib-components/tests';
 import { render } from 'lib-tests';
 import React from 'react';
 

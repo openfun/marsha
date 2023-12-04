@@ -4,11 +4,11 @@ import {
   Playlist,
   UploadManagerContext,
   UploadManagerStatus,
-  documentMockFactory,
   modelName,
   uploadState,
   useJwt,
 } from 'lib-components';
+import { documentMockFactory } from 'lib-components/tests';
 import { Deferred, render } from 'lib-tests';
 
 import DashboardDocument from '.';

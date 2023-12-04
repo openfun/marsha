@@ -1,9 +1,9 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 
+import { videoMockFactory } from '@lib-components/tests';
 import { modelName } from '@lib-components/types/models';
 import { timedTextMode, uploadState } from '@lib-components/types/tracks';
-import { videoMockFactory } from '@lib-components/utils/tests/factories';
 
 import { useVideo } from '.';
 

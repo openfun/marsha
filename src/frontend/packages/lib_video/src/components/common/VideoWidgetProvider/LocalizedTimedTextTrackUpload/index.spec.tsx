@@ -6,14 +6,13 @@ import {
   UploadManagerStatus,
   UploadingObject,
   modelName,
-  timedTextMockFactory,
   timedTextMode,
   uploadState,
   useJwt,
   useTimedTextTrack,
   useUploadManager,
-  videoMockFactory,
 } from 'lib-components';
+import { timedTextMockFactory, videoMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 import { PropsWithChildren } from 'react';
 

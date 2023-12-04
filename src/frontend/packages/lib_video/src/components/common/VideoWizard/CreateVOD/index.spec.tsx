@@ -13,8 +13,8 @@ import {
   useJwt,
   useUploadManager,
   useVideo,
-  videoMockFactory,
 } from 'lib-components';
+import { videoMockFactory } from 'lib-components/tests';
 import { Deferred, render } from 'lib-tests';
 import { PropsWithChildren } from 'react';
 

@@ -6,8 +6,8 @@ import {
   JoinMode,
   report,
   useJwt,
-  videoMockFactory,
 } from 'lib-components';
+import { videoMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';

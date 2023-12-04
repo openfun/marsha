@@ -5,6 +5,7 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "lib": ["ES2015", "DOM"],
+    "moduleResolution": "Bundler",
     "module": "esnext",
     "target": "es6"
   }

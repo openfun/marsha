@@ -3,12 +3,14 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
-  ltiInstructorTokenMockFactory,
-  ltiStudentTokenMockFactory,
   useCurrentResourceContext,
   useCurrentUser,
   useJwt,
 } from 'lib-components';
+import {
+  ltiInstructorTokenMockFactory,
+  ltiStudentTokenMockFactory,
+} from 'lib-components/tests';
 import { Deferred, render } from 'lib-tests';
 
 import { classroomMockFactory } from '@lib-classroom/utils/tests/factories';

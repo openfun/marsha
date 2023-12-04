@@ -1,5 +1,6 @@
 import fetchMock from 'fetch-mock';
-import { uploadState, useJwt, videoMockFactory } from 'lib-components';
+import { uploadState, useJwt } from 'lib-components';
+import { videoMockFactory } from 'lib-components/tests';
 
 import { uploadEnded } from '.';
 

@@ -6,8 +6,8 @@ import {
   requestStatus,
   uploadState,
   useJwt,
-  videoMockFactory,
 } from 'lib-components';
+import { videoMockFactory } from 'lib-components/tests';
 
 import { getResourceList } from './';
 

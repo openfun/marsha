@@ -1,11 +1,8 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import {
-  InfoWidgetModalProvider,
-  useJwt,
-  videoMockFactory,
-} from 'lib-components';
+import { InfoWidgetModalProvider, useJwt } from 'lib-components';
+import { videoMockFactory } from 'lib-components/tests';
 import { render, userTypeDatePicker } from 'lib-tests';
 import { DateTime, Settings } from 'luxon';
 

@@ -9,7 +9,6 @@ export * from './formatSizeErrorScale';
 export * from './localstorage';
 export * from './serviceWorker';
 export * from './system';
-export * from './tests/factories';
 export * from './retryQuery';
 export * from './router';
 export * from './truncateFilename';

@@ -6,8 +6,8 @@ import {
   uploadState,
   useJwt,
   useTimedTextTrack,
-  videoMockFactory,
 } from 'lib-components';
+import { videoMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 import { act } from 'react-dom/test-utils';
 import { VTTCue } from 'vtt.js';

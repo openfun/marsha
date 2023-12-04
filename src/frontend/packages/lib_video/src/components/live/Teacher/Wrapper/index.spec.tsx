@@ -8,13 +8,12 @@ import {
   LiveModeType,
   PersistentStore,
   Video,
-  liveMockFactory,
   liveState,
-  participantMockFactory,
   uploadState,
   useCurrentResourceContext,
   useJwt,
 } from 'lib-components';
+import { liveMockFactory, participantMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 import { Suspense, useEffect } from 'react';
 

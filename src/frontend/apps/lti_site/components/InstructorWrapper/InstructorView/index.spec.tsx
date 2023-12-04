@@ -1,9 +1,6 @@
 import { screen } from '@testing-library/react';
-import {
-  useCurrentResourceContext,
-  useMaintenance,
-  videoMockFactory,
-} from 'lib-components';
+import { useCurrentResourceContext, useMaintenance } from 'lib-components';
+import { videoMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 import React from 'react';
 

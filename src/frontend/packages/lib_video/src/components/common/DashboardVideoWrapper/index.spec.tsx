@@ -4,8 +4,8 @@ import {
   liveState,
   modelName,
   uploadState,
-  videoMockFactory,
 } from 'lib-components';
+import { videoMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 import React, { Suspense } from 'react';
 

@@ -3,14 +3,13 @@
 import { waitFor } from '@testing-library/react';
 import {
   Id3VideoType,
-  liveMockFactory,
   liveState,
   timedTextMode,
   uploadState,
   useJwt,
   useVideo,
-  videoMockFactory,
 } from 'lib-components';
+import { liveMockFactory, videoMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 import React from 'react';
 import videojs from 'video.js';

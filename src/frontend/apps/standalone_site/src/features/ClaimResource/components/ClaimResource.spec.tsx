@@ -1,11 +1,7 @@
 import { screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import {
-  playlistMockFactory,
-  useCurrentUser,
-  useJwt,
-  userMockFactory,
-} from 'lib-components';
+import { useCurrentUser, useJwt } from 'lib-components';
+import { playlistMockFactory, userMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 
 import { ClaimResource } from './ClaimResource';

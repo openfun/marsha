@@ -1,4 +1,5 @@
-import { liveState, videoMockFactory } from 'lib-components';
+import { liveState } from 'lib-components';
+import { videoMockFactory } from 'lib-components/tests';
 
 import { shouldDisplayDefaultMessage } from './utils';
 

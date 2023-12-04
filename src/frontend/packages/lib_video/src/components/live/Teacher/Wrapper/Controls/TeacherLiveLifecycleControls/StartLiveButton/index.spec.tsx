@@ -4,13 +4,8 @@ import {
   waitForElementToBeRemoved,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import {
-  Video,
-  liveState,
-  useJwt,
-  useVideo,
-  videoMockFactory,
-} from 'lib-components';
+import { Video, liveState, useJwt, useVideo } from 'lib-components';
+import { videoMockFactory } from 'lib-components/tests';
 import { Deferred, render } from 'lib-tests';
 
 import { startLive } from '@lib-video/api/startLive';

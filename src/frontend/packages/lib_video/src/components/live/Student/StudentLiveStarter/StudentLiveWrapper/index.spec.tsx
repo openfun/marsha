@@ -11,13 +11,15 @@ import {
   LiveModeType,
   PersistentStore,
   decodeJwt,
-  liveMockFactory,
   liveState,
-  sharedLiveMediaMockFactory,
   useCurrentResourceContext,
   useVideo,
-  videoMockFactory,
 } from 'lib-components';
+import {
+  liveMockFactory,
+  sharedLiveMediaMockFactory,
+  videoMockFactory,
+} from 'lib-components/tests';
 import { Deferred, render } from 'lib-tests';
 
 import { pushAttendance } from '@lib-video/api/pushAttendance';

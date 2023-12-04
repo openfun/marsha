@@ -1,4 +1,4 @@
-import { participantMockFactory } from 'lib-components';
+import { participantMockFactory } from 'lib-components/tests';
 import { IntlShape, createIntl } from 'react-intl';
 
 import { onStageRequestMessage } from './onStageRequestMessage';

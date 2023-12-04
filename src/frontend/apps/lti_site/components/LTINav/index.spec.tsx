@@ -2,14 +2,13 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
   builderDashboardRoute,
-  documentMockFactory,
   modelName,
   uploadState,
   useAppConfig,
   useCurrentResourceContext,
   useMaintenance,
-  videoMockFactory,
 } from 'lib-components';
+import { documentMockFactory, videoMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 import { Fragment } from 'react';
 import { useLocation } from 'react-router-dom';

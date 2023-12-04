@@ -1,9 +1,6 @@
 import fetchMock from 'fetch-mock';
-import {
-  participantMockFactory,
-  useJwt,
-  videoMockFactory,
-} from 'lib-components';
+import { useJwt } from 'lib-components';
+import { participantMockFactory, videoMockFactory } from 'lib-components/tests';
 
 import {
   addParticipantAskingToJoin,

@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react';
-import { liveMockFactory } from 'lib-components';
+import { liveMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 import { DateTime } from 'luxon';
 import React from 'react';

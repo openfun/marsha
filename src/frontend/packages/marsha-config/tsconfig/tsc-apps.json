@@ -8,6 +8,7 @@
     "incremental": true,
     "jsx": "react-jsx",
     "lib": ["dom", "dom.iterable", "esnext", "es2015"],
+    "moduleResolution": "Bundler",
     "module": "esnext",
     "noFallthroughCasesInSwitch": true,
     "noEmit": true,

@@ -4,7 +4,7 @@ import {
   documentMockFactory,
   liveMockFactory,
   videoMockFactory,
-} from 'lib-components';
+} from 'lib-components/tests';
 import { render } from 'lib-tests';
 
 import { SelectContentSection } from '.';

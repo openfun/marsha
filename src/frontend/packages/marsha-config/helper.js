@@ -34,24 +34,25 @@ for (const packageConfig of packagesConfig) {
     );
 
     // This is needed for jest to work with the alias
-    appModuleNameMapper[app][
-      `${packageConfig.alias}/(.*)`
-    ] = `<rootDir>../../packages/${packageConfig.folder}/src/$1`;
+    appModuleNameMapper[app][`${packageConfig.alias}/(.*)`] =
+      `<rootDir>../../packages/${packageConfig.folder}/src/$1`;
+
+    // ESM not supported - this is necessary for jest to work with packages exports
+    appModuleNameMapper[app][`${packageConfig.name}/tests`] =
+      `<rootDir>../../packages/${packageConfig.folder}/src/tests/`;
   }
 
   if (!libModuleNameMapper[packageConfig.name]) {
     libModuleNameMapper[packageConfig.name] = {};
-    libModuleNameMapper[packageConfig.name][
-      `${packageConfig.alias}/(.*)`
-    ] = `<rootDir>/src/$1`;
+    libModuleNameMapper[packageConfig.name][`${packageConfig.alias}/(.*)`] =
+      `<rootDir>/src/$1`;
   }
 
   for (const dependency of packageConfig.dependencies) {
     for (const depConf of packagesConfig) {
       if (depConf.name === dependency) {
-        libModuleNameMapper[packageConfig.name][
-          `${depConf.alias}/(.*)`
-        ] = `<rootDir>/../${depConf.folder}/src/$1`;
+        libModuleNameMapper[packageConfig.name][`${depConf.alias}/(.*)`] =
+          `<rootDir>/../${depConf.folder}/src/$1`;
       }
     }
   }

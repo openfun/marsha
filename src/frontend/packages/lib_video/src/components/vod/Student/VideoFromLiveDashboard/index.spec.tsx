@@ -5,8 +5,8 @@ import {
   liveState,
   useCurrentResourceContext,
   useJwt,
-  videoMockFactory,
 } from 'lib-components';
+import { videoMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 import React, { ReactNode } from 'react';
 

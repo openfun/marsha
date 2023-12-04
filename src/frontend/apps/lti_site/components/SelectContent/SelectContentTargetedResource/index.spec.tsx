@@ -2,14 +2,16 @@ import { screen, within } from '@testing-library/react';
 import {
   LiveModeType,
   appNames,
-  documentMockFactory,
-  liveMockFactory,
   liveState,
-  playlistMockFactory,
   selectableBaseResource,
   uploadState,
-  videoMockFactory,
 } from 'lib-components';
+import {
+  documentMockFactory,
+  liveMockFactory,
+  playlistMockFactory,
+  videoMockFactory,
+} from 'lib-components/tests';
 import { render } from 'lib-tests';
 import React from 'react';
 

@@ -1,7 +1,8 @@
 import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Nullable } from 'lib-common';
-import { liveSessionFactory, useJwt } from 'lib-components';
+import { useJwt } from 'lib-components';
+import { liveSessionFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 
 import { useChatItemState } from '@lib-video/hooks/useChatItemsStore';
