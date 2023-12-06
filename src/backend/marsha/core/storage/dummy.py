@@ -3,7 +3,7 @@ from django.urls import reverse
 
 
 # pylint: disable=unused-argument
-def initiate_video_upload(request, pk):
+def initiate_object_videos_storage_upload(request, obj, conditions):
     """Get an upload policy for a video.
 
     Returns an upload policy for dummy video backend.
@@ -25,7 +25,9 @@ def initiate_video_upload(request, pk):
     """
     return {
         "fields": {},
-        "url": request.build_absolute_uri(reverse("local-video-upload", args=[pk])),
+        "url": request.build_absolute_uri(
+            reverse("local-videos-storage-upload", args=[obj.pk])
+        ),
     }
 
 

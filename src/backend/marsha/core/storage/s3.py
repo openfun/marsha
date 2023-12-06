@@ -5,7 +5,7 @@ from django.utils import timezone
 from storages.backends.s3boto3 import S3Boto3Storage
 
 from marsha.core.defaults import TMP_VIDEOS_STORAGE_BASE_DIRECTORY
-from marsha.core.models import Document, Video
+from marsha.core.models import Document
 from marsha.core.utils.s3_utils import create_presigned_post
 from marsha.core.utils.time_utils import to_timestamp
 
@@ -28,9 +28,10 @@ class S3VideoStorage(S3Boto3Storage):
 
 
 # pylint: disable=unused-argument
-def initiate_video_upload(request, pk):
+def initiate_object_videos_storage_upload(request, obj, conditions):
     """Get an upload policy for a video.
 
+    The object must implement the get_videos_storage_prefix method.
     Returns an upload policy to our AWS S3 source bucket.
 
     Returns
@@ -44,15 +45,12 @@ def initiate_video_upload(request, pk):
     now = timezone.now()
     stamp = to_timestamp(now)
 
-    video = Video.objects.get(pk=pk)
-    key = video.get_videos_storage_prefix(
+    key = obj.get_videos_storage_prefix(
         stamp=stamp, base_dir=TMP_VIDEOS_STORAGE_BASE_DIRECTORY
     )
+
     return create_presigned_post(
-        [
-            ["starts-with", "$Content-Type", "video/"],
-            ["content-length-range", 0, settings.VIDEO_SOURCE_MAX_SIZE],
-        ],
+        conditions,
         {},
         key,
         S3VideoStorage.bucket_name,

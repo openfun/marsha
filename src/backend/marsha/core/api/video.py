@@ -383,12 +383,19 @@ class VideoViewSet(
 
         """
         # Ensure object exists and user has access to it
-        self.get_object()
+        video = self.get_object()
 
         serializer = serializers.VideoUploadSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        response = storage.get_initiate_backend().initiate_video_upload(request, pk)
+        response = storage.get_initiate_backend().initiate_object_videos_storage_upload(
+            request,
+            video,
+            [
+                ["starts-with", "$Content-Type", "video/"],
+                ["content-length-range", 0, settings.VIDEO_SOURCE_MAX_SIZE],
+            ],
+        )
 
         # Reset the upload state of the video (don't use get_object()
         # as it does not lock the row)
@@ -421,8 +428,8 @@ class VideoViewSet(
         # Ensure object exists and user has access to it
         video = self.get_object()
 
-        serializer = serializers.VideoUploadEndedSerializer(
-            data=request.data, context={"pk": pk}
+        serializer = serializers.VideosStorageUploadEndedSerializer(
+            data=request.data, context={"obj": video}
         )
         serializer.is_valid(raise_exception=True)
 
