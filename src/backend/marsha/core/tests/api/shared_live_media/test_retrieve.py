@@ -90,6 +90,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
             uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=3,
             video__id="d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb",
+            process_pipeline=defaults.AWS_PIPELINE,
         )
 
         jwt_token = StudentLtiTokenFactory(playlist=shared_live_media.video.playlist)
@@ -152,6 +153,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
             uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=3,
             video__id="d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb",
+            process_pipeline=defaults.AWS_PIPELINE,
         )
 
         jwt_token = StudentLtiTokenFactory(playlist=shared_live_media.video.playlist)
@@ -242,6 +244,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
             uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=3,
             video__id="d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb",
+            process_pipeline=defaults.AWS_PIPELINE,
         )
 
         jwt_token = StudentLtiTokenFactory(playlist=shared_live_media.video.playlist)
@@ -353,6 +356,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
             uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=3,
             video__id="d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb",
+            process_pipeline=defaults.AWS_PIPELINE,
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
@@ -418,6 +422,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
             uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=3,
             video__id="d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb",
+            process_pipeline=defaults.AWS_PIPELINE,
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(

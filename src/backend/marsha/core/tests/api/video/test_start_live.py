@@ -10,6 +10,7 @@ from boto3.exceptions import Boto3Error
 
 from marsha.core import api, factories, models
 from marsha.core.defaults import (
+    AWS_PIPELINE,
     HARVESTED,
     IDLE,
     JITSI,
@@ -670,11 +671,13 @@ class VideoStartLiveAPITest(TestCase):
             title="python structures",
             upload_state=READY,
             uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
+            process_pipeline=AWS_PIPELINE,
             nb_pages=3,
         )
         shared_live_media_2 = factories.SharedLiveMediaFactory(
             nb_pages=None,
             upload_state=PENDING,
+            process_pipeline=AWS_PIPELINE,
             video=video,
         )
 

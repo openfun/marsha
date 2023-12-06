@@ -5,12 +5,14 @@ from django.conf import settings
 
 from rest_framework import serializers
 
+from marsha.core.defaults import CELERY_PIPELINE
 from marsha.core.models import SharedLiveMedia
 from marsha.core.serializers.base import (
     TimestampField,
     UploadableFileWithExtensionSerializerMixin,
     get_video_cloudfront_url_params,
 )
+from marsha.core.storage.storage_class import video_storage
 from marsha.core.utils import cloudfront_utils, time_utils
 
 
@@ -86,6 +88,14 @@ class SharedLiveMediaSerializer(
         if obj.uploaded_on is None or obj.nb_pages is None:
             return None
 
+        if obj.process_pipeline == CELERY_PIPELINE:
+            return self.get_celery_pipeline_url(obj)
+
+        # default AWS fallback: obj.process_pipeline == AWS_PIPELINE
+        return self.get_aws_pipeline_url(obj)
+
+    def get_aws_pipeline_url(self, obj):
+        """Get the url for the shared live media processed with AWS."""
         urls = {}
 
         stamp = time_utils.to_timestamp(obj.uploaded_on)
@@ -116,6 +126,28 @@ class SharedLiveMediaSerializer(
                 f"{quote_plus('attachment; filename=' + self.get_filename(obj))}",
                 params,
             )
+
+        return urls
+
+    def get_celery_pipeline_url(self, obj):
+        """Get the url for the shared live media processed with Celery."""
+        urls = {}
+
+        stamp = time_utils.to_timestamp(obj.uploaded_on)
+        base = obj.get_videos_storage_prefix()
+
+        pages = {}
+        for page_number in range(1, obj.nb_pages + 1):
+            url = f"{base}/{stamp}_{page_number}.svg"
+            pages[page_number] = video_storage.url(url)
+
+        urls["pages"] = pages
+
+        if (
+            self.context.get("is_admin") or obj.show_download
+        ) and settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
+            url = f"{base}/{stamp}.pdf"
+            urls["media"] = video_storage.url(url)
 
         return urls
 

@@ -9,6 +9,7 @@ from django.test import TestCase, override_settings
 from marsha.core import factories, models
 from marsha.core.api import timezone
 from marsha.core.defaults import (
+    AWS_PIPELINE,
     CC_BY,
     IDLE,
     JITSI,
@@ -166,11 +167,13 @@ class VideoRetrieveAPITest(TestCase):
             title="python structures",
             upload_state=READY,
             uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
+            process_pipeline=AWS_PIPELINE,
             nb_pages=3,
         )
         shared_live_media_2 = factories.SharedLiveMediaFactory(
             nb_pages=None,
             upload_state=PENDING,
+            process_pipeline=AWS_PIPELINE,
             video=video,
         )
 
@@ -361,6 +364,7 @@ class VideoRetrieveAPITest(TestCase):
             show_download=False,
             title="python expressions",
             upload_state=READY,
+            process_pipeline=AWS_PIPELINE,
             uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=3,
             video=video,
@@ -368,6 +372,7 @@ class VideoRetrieveAPITest(TestCase):
         shared_live_media_2 = factories.SharedLiveMediaFactory(
             nb_pages=None,
             upload_state=PENDING,
+            process_pipeline=AWS_PIPELINE,
             video=video,
         )
 
@@ -582,12 +587,14 @@ class VideoRetrieveAPITest(TestCase):
             title="python expressions",
             upload_state=READY,
             uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
+            process_pipeline=AWS_PIPELINE,
             nb_pages=3,
             video=video,
         )
         shared_live_media_2 = factories.SharedLiveMediaFactory(
             nb_pages=None,
             upload_state=PENDING,
+            process_pipeline=AWS_PIPELINE,
             video=video,
         )
 

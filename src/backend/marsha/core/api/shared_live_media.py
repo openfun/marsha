@@ -1,6 +1,5 @@
 """Declare API endpoints for shared live media with Django RestFramework viewsets."""
 from django.conf import settings
-from django.utils import timezone
 
 import django_filters
 from rest_framework import filters, viewsets
@@ -8,7 +7,7 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.response import Response
 
-from marsha.core import defaults, permissions, serializers
+from marsha.core import defaults, permissions, serializers, storage
 from marsha.core.api.base import (
     APIViewMixin,
     ObjectPkMixin,
@@ -16,8 +15,7 @@ from marsha.core.api.base import (
     ObjectVideoRelatedMixin,
 )
 from marsha.core.models import SharedLiveMedia
-from marsha.core.utils.s3_utils import create_presigned_post
-from marsha.core.utils.time_utils import to_timestamp
+from marsha.core.tasks.shared_live_media import convert_shared_live_media
 from marsha.websocket.utils import channel_layers_utils
 
 
@@ -79,7 +77,13 @@ class SharedLiveMediaViewSet(
                 | permissions.IsRelatedVideoPlaylistAdminOrInstructor
                 | permissions.IsRelatedVideoOrganizationAdmin
             ]
-        elif self.action in ["destroy", "initiate_upload", "update", "partial_update"]:
+        elif self.action in [
+            "destroy",
+            "initiate_upload",
+            "update",
+            "partial_update",
+            "upload_ended",
+        ]:
             permission_classes = [
                 permissions.IsTokenPlaylistRouteObjectRelatedVideo
                 & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
@@ -156,27 +160,60 @@ class SharedLiveMediaViewSet(
         serializer = serializers.SharedLiveMediaInitiateUploadSerializer(
             data=request.data
         )
+        serializer.is_valid(raise_exception=True)
 
-        if serializer.is_valid() is not True:
-            return Response(serializer.errors, status=400)
-
-        now = timezone.now()
-        stamp = to_timestamp(now)
-
-        key = shared_live_media.get_source_s3_key(
-            stamp=stamp, extension=serializer.validated_data["extension"]
-        )
-
-        presigned_post = create_presigned_post(
-            [
-                ["eq", "$Content-Type", serializer.validated_data["mimetype"]],
-                ["content-length-range", 0, settings.SHARED_LIVE_MEDIA_SOURCE_MAX_SIZE],
-            ],
-            {},
-            key,
+        presigned_post = (
+            storage.get_initiate_backend().initiate_object_videos_storage_upload(
+                request,
+                shared_live_media,
+                [
+                    ["eq", "$Content-Type", serializer.validated_data["mimetype"]],
+                    [
+                        "content-length-range",
+                        0,
+                        settings.SHARED_LIVE_MEDIA_SOURCE_MAX_SIZE,
+                    ],
+                ],
+            )
         )
 
         # Reset the upload state of the shared live media
         SharedLiveMedia.objects.filter(pk=pk).update(upload_state=defaults.PENDING)
 
         return Response(presigned_post)
+
+    @action(methods=["post"], detail=True, url_path="upload-ended")
+    # pylint: disable=unused-argument
+    def upload_ended(self, request, pk=None, video_id=None):
+        """Notify the API that the shared live media upload has ended.
+
+        Calling the endpoint will start the conversion process.
+        The request should have a file_key in the body, which is the key of the
+        uploaded file.
+
+        Parameters
+        ----------
+        request : Type[django.http.request.HttpRequest]
+            The request on the API endpoint
+        pk: string
+            The primary key of the shared live media
+
+        Returns
+        -------
+        Type[rest_framework.response.Response]
+            HttpResponse with the serialized shared live media.
+        """
+        # Ensure object exists and user has access to it
+        shared_live_media = self.get_object()
+
+        serializer = serializers.VideosStorageUploadEndedSerializer(
+            data=request.data, context={"obj": shared_live_media}
+        )
+        serializer.is_valid(raise_exception=True)
+
+        file_key = serializer.validated_data["file_key"]
+        # The file_key have the "tmp/{video_pk}/sharedlivemedia/{pk}/{stamp}" format
+        stamp = file_key.split("/")[-1]
+        convert_shared_live_media.delay(pk, stamp)
+
+        return Response(serializer.data)

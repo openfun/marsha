@@ -84,6 +84,7 @@ class SharedLiveMediaListAPITest(TestCase):
             uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=3,
             video=video,
+            process_pipeline=defaults.AWS_PIPELINE,
         )
 
         # This shared_live_media belongs to another video and should not be in the
@@ -92,6 +93,7 @@ class SharedLiveMediaListAPITest(TestCase):
             upload_state=defaults.READY,
             uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=3,
+            process_pipeline=defaults.AWS_PIPELINE,
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
@@ -211,9 +213,14 @@ class SharedLiveMediaListAPITest(TestCase):
             uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=3,
             video=video,
+            process_pipeline=defaults.AWS_PIPELINE,
         )
         shared_live_media2 = SharedLiveMediaFactory(
-            upload_state=defaults.PENDING, uploaded_on=None, nb_pages=None, video=video
+            upload_state=defaults.PENDING,
+            uploaded_on=None,
+            nb_pages=None,
+            video=video,
+            process_pipeline=defaults.AWS_PIPELINE,
         )
 
         # This shared_live_media belongs to another video and should not be in the
@@ -359,6 +366,7 @@ class SharedLiveMediaListAPITest(TestCase):
             uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=3,
             video=video,
+            process_pipeline=defaults.AWS_PIPELINE,
         )
 
         # This shared_live_media belongs to another video and should not be in the
@@ -367,6 +375,7 @@ class SharedLiveMediaListAPITest(TestCase):
             upload_state=defaults.READY,
             uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=5,
+            process_pipeline=defaults.AWS_PIPELINE,
         )
         PlaylistAccessFactory(user=user, playlist=playlist, role=ADMINISTRATOR)
 
@@ -515,6 +524,7 @@ class SharedLiveMediaListAPITest(TestCase):
             uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=3,
             video=video,
+            process_pipeline=defaults.AWS_PIPELINE,
         )
         OrganizationAccessFactory(
             user=user, organization=organization, role=ADMINISTRATOR
@@ -526,6 +536,7 @@ class SharedLiveMediaListAPITest(TestCase):
             upload_state=defaults.READY,
             uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=5,
+            process_pipeline=defaults.AWS_PIPELINE,
         )
 
         jwt_token = UserAccessTokenFactory(user=user)

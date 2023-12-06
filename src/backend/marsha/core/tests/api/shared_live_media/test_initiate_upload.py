@@ -104,29 +104,29 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
         self.assertEqual(
             content,
             {
-                "url": "https://test-marsha-source.s3.amazonaws.com/",
+                "url": "https://s3.fr-par.scw.cloud/test-marsha",
                 "fields": {
                     "acl": "private",
                     "key": (
-                        "ed08da34-7447-4141-96ff-5740315d7b99/sharedlivemedia/"
-                        "c5cad053-111a-4e0e-8f78-fe43dec11512/1638403200.pdf"
+                        "tmp/ed08da34-7447-4141-96ff-5740315d7b99/sharedlivemedia/"
+                        "c5cad053-111a-4e0e-8f78-fe43dec11512/1638403200"
                     ),
                     "x-amz-algorithm": "AWS4-HMAC-SHA256",
-                    "x-amz-credential": "aws-access-key-id/20211202/eu-west-1/s3/aws4_request",
+                    "x-amz-credential": "scw-access-key/20211202/fr-par/s3/aws4_request",
                     "x-amz-date": "20211202T000000Z",
                     "policy": (
-                        "eyJleHBpcmF0aW9uIjogIjIwMjEtMTItMDNUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBb"
-                        "eyJhY2wiOiAicHJpdmF0ZSJ9LCBbImVxIiwgIiRDb250ZW50LVR5cGUiLCAiYXBwbGljYXRp"
-                        "b24vcGRmIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAzMTQ1NzI4MDBdLCB7ImJ1"
-                        "Y2tldCI6ICJ0ZXN0LW1hcnNoYS1zb3VyY2UifSwgeyJrZXkiOiAiZWQwOGRhMzQtNzQ0Ny00"
-                        "MTQxLTk2ZmYtNTc0MDMxNWQ3Yjk5L3NoYXJlZGxpdmVtZWRpYS9jNWNhZDA1My0xMTFhLTRl"
-                        "MGUtOGY3OC1mZTQzZGVjMTE1MTIvMTYzODQwMzIwMC5wZGYifSwgeyJ4LWFtei1hbGdvcml0"
-                        "aG0iOiAiQVdTNC1ITUFDLVNIQTI1NiJ9LCB7IngtYW16LWNyZWRlbnRpYWwiOiAiYXdzLWFj"
-                        "Y2Vzcy1rZXktaWQvMjAyMTEyMDIvZXUtd2VzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LCB7Ingt"
-                        "YW16LWRhdGUiOiAiMjAyMTEyMDJUMDAwMDAwWiJ9XX0="
+                        "eyJleHBpcmF0aW9uIjogIjIwMjEtMTItMDNUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBbe"
+                        "yJhY2wiOiAicHJpdmF0ZSJ9LCBbImVxIiwgIiRDb250ZW50LVR5cGUiLCAiYXBwbGljYXRpb2"
+                        "4vcGRmIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAzMTQ1NzI4MDBdLCB7ImJ1Y2t"
+                        "ldCI6ICJ0ZXN0LW1hcnNoYSJ9LCB7ImtleSI6ICJ0bXAvZWQwOGRhMzQtNzQ0Ny00MTQxLTk2"
+                        "ZmYtNTc0MDMxNWQ3Yjk5L3NoYXJlZGxpdmVtZWRpYS9jNWNhZDA1My0xMTFhLTRlMGUtOGY3O"
+                        "C1mZTQzZGVjMTE1MTIvMTYzODQwMzIwMCJ9LCB7IngtYW16LWFsZ29yaXRobSI6ICJBV1M0LU"
+                        "hNQUMtU0hBMjU2In0sIHsieC1hbXotY3JlZGVudGlhbCI6ICJzY3ctYWNjZXNzLWtleS8yMDI"
+                        "xMTIwMi9mci1wYXIvczMvYXdzNF9yZXF1ZXN0In0sIHsieC1hbXotZGF0ZSI6ICIyMDIxMTIw"
+                        "MlQwMDAwMDBaIn1dfQ=="
                     ),
                     "x-amz-signature": (
-                        "db00ba70403f098597777a3cfb9ba5433eecbbe67ebefdf17987f368dec70a5d"
+                        "6b92b2ce1d92c6efe9cef543488b77ad3c6300d5a963b8ea025db06a34aa2419"
                     ),
                 },
             },
@@ -168,29 +168,29 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
         self.assertEqual(
             content,
             {
-                "url": "https://test-marsha-source.s3.amazonaws.com/",
+                "url": "https://s3.fr-par.scw.cloud/test-marsha",
                 "fields": {
                     "acl": "private",
                     "key": (
-                        "ed08da34-7447-4141-96ff-5740315d7b99/sharedlivemedia/"
-                        "c5cad053-111a-4e0e-8f78-fe43dec11512/1638403200.pdf"
+                        "tmp/ed08da34-7447-4141-96ff-5740315d7b99/sharedlivemedia/"
+                        "c5cad053-111a-4e0e-8f78-fe43dec11512/1638403200"
                     ),
                     "x-amz-algorithm": "AWS4-HMAC-SHA256",
-                    "x-amz-credential": "aws-access-key-id/20211202/eu-west-1/s3/aws4_request",
+                    "x-amz-credential": "scw-access-key/20211202/fr-par/s3/aws4_request",
                     "x-amz-date": "20211202T000000Z",
                     "policy": (
-                        "eyJleHBpcmF0aW9uIjogIjIwMjEtMTItMDNUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBb"
-                        "eyJhY2wiOiAicHJpdmF0ZSJ9LCBbImVxIiwgIiRDb250ZW50LVR5cGUiLCAiYXBwbGljYXRp"
-                        "b24vcGRmIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAzMTQ1NzI4MDBdLCB7ImJ1"
-                        "Y2tldCI6ICJ0ZXN0LW1hcnNoYS1zb3VyY2UifSwgeyJrZXkiOiAiZWQwOGRhMzQtNzQ0Ny00"
-                        "MTQxLTk2ZmYtNTc0MDMxNWQ3Yjk5L3NoYXJlZGxpdmVtZWRpYS9jNWNhZDA1My0xMTFhLTRl"
-                        "MGUtOGY3OC1mZTQzZGVjMTE1MTIvMTYzODQwMzIwMC5wZGYifSwgeyJ4LWFtei1hbGdvcml0"
-                        "aG0iOiAiQVdTNC1ITUFDLVNIQTI1NiJ9LCB7IngtYW16LWNyZWRlbnRpYWwiOiAiYXdzLWFj"
-                        "Y2Vzcy1rZXktaWQvMjAyMTEyMDIvZXUtd2VzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LCB7Ingt"
-                        "YW16LWRhdGUiOiAiMjAyMTEyMDJUMDAwMDAwWiJ9XX0="
+                        "eyJleHBpcmF0aW9uIjogIjIwMjEtMTItMDNUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBbe"
+                        "yJhY2wiOiAicHJpdmF0ZSJ9LCBbImVxIiwgIiRDb250ZW50LVR5cGUiLCAiYXBwbGljYXRpb2"
+                        "4vcGRmIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAzMTQ1NzI4MDBdLCB7ImJ1Y2t"
+                        "ldCI6ICJ0ZXN0LW1hcnNoYSJ9LCB7ImtleSI6ICJ0bXAvZWQwOGRhMzQtNzQ0Ny00MTQxLTk2"
+                        "ZmYtNTc0MDMxNWQ3Yjk5L3NoYXJlZGxpdmVtZWRpYS9jNWNhZDA1My0xMTFhLTRlMGUtOGY3O"
+                        "C1mZTQzZGVjMTE1MTIvMTYzODQwMzIwMCJ9LCB7IngtYW16LWFsZ29yaXRobSI6ICJBV1M0LU"
+                        "hNQUMtU0hBMjU2In0sIHsieC1hbXotY3JlZGVudGlhbCI6ICJzY3ctYWNjZXNzLWtleS8yMDI"
+                        "xMTIwMi9mci1wYXIvczMvYXdzNF9yZXF1ZXN0In0sIHsieC1hbXotZGF0ZSI6ICIyMDIxMTIw"
+                        "MlQwMDAwMDBaIn1dfQ=="
                     ),
                     "x-amz-signature": (
-                        "db00ba70403f098597777a3cfb9ba5433eecbbe67ebefdf17987f368dec70a5d"
+                        "6b92b2ce1d92c6efe9cef543488b77ad3c6300d5a963b8ea025db06a34aa2419"
                     ),
                 },
             },
@@ -353,29 +353,29 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
         self.assertEqual(
             response.json(),
             {
-                "url": "https://test-marsha-source.s3.amazonaws.com/",
+                "url": "https://s3.fr-par.scw.cloud/test-marsha",
                 "fields": {
                     "acl": "private",
                     "key": (
-                        "ed08da34-7447-4141-96ff-5740315d7b99/sharedlivemedia/"
-                        "c5cad053-111a-4e0e-8f78-fe43dec11512/1638403200.pdf"
+                        "tmp/ed08da34-7447-4141-96ff-5740315d7b99/sharedlivemedia/"
+                        "c5cad053-111a-4e0e-8f78-fe43dec11512/1638403200"
                     ),
                     "x-amz-algorithm": "AWS4-HMAC-SHA256",
-                    "x-amz-credential": "aws-access-key-id/20211202/eu-west-1/s3/aws4_request",
+                    "x-amz-credential": "scw-access-key/20211202/fr-par/s3/aws4_request",
                     "x-amz-date": "20211202T000000Z",
                     "policy": (
-                        "eyJleHBpcmF0aW9uIjogIjIwMjEtMTItMDNUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBb"
-                        "eyJhY2wiOiAicHJpdmF0ZSJ9LCBbImVxIiwgIiRDb250ZW50LVR5cGUiLCAiYXBwbGljYXRp"
-                        "b24vcGRmIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAzMTQ1NzI4MDBdLCB7ImJ1"
-                        "Y2tldCI6ICJ0ZXN0LW1hcnNoYS1zb3VyY2UifSwgeyJrZXkiOiAiZWQwOGRhMzQtNzQ0Ny00"
-                        "MTQxLTk2ZmYtNTc0MDMxNWQ3Yjk5L3NoYXJlZGxpdmVtZWRpYS9jNWNhZDA1My0xMTFhLTRl"
-                        "MGUtOGY3OC1mZTQzZGVjMTE1MTIvMTYzODQwMzIwMC5wZGYifSwgeyJ4LWFtei1hbGdvcml0"
-                        "aG0iOiAiQVdTNC1ITUFDLVNIQTI1NiJ9LCB7IngtYW16LWNyZWRlbnRpYWwiOiAiYXdzLWFj"
-                        "Y2Vzcy1rZXktaWQvMjAyMTEyMDIvZXUtd2VzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LCB7Ingt"
-                        "YW16LWRhdGUiOiAiMjAyMTEyMDJUMDAwMDAwWiJ9XX0="
+                        "eyJleHBpcmF0aW9uIjogIjIwMjEtMTItMDNUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBbe"
+                        "yJhY2wiOiAicHJpdmF0ZSJ9LCBbImVxIiwgIiRDb250ZW50LVR5cGUiLCAiYXBwbGljYXRpb2"
+                        "4vcGRmIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAzMTQ1NzI4MDBdLCB7ImJ1Y2t"
+                        "ldCI6ICJ0ZXN0LW1hcnNoYSJ9LCB7ImtleSI6ICJ0bXAvZWQwOGRhMzQtNzQ0Ny00MTQxLTk2"
+                        "ZmYtNTc0MDMxNWQ3Yjk5L3NoYXJlZGxpdmVtZWRpYS9jNWNhZDA1My0xMTFhLTRlMGUtOGY3O"
+                        "C1mZTQzZGVjMTE1MTIvMTYzODQwMzIwMCJ9LCB7IngtYW16LWFsZ29yaXRobSI6ICJBV1M0LU"
+                        "hNQUMtU0hBMjU2In0sIHsieC1hbXotY3JlZGVudGlhbCI6ICJzY3ctYWNjZXNzLWtleS8yMDI"
+                        "xMTIwMi9mci1wYXIvczMvYXdzNF9yZXF1ZXN0In0sIHsieC1hbXotZGF0ZSI6ICIyMDIxMTIw"
+                        "MlQwMDAwMDBaIn1dfQ=="
                     ),
                     "x-amz-signature": (
-                        "db00ba70403f098597777a3cfb9ba5433eecbbe67ebefdf17987f368dec70a5d"
+                        "6b92b2ce1d92c6efe9cef543488b77ad3c6300d5a963b8ea025db06a34aa2419"
                     ),
                 },
             },
@@ -430,29 +430,29 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
         self.assertEqual(
             content,
             {
-                "url": "https://test-marsha-source.s3.amazonaws.com/",
+                "url": "https://s3.fr-par.scw.cloud/test-marsha",
                 "fields": {
                     "acl": "private",
                     "key": (
-                        "ed08da34-7447-4141-96ff-5740315d7b99/sharedlivemedia/"
-                        "c5cad053-111a-4e0e-8f78-fe43dec11512/1638403200.pdf"
+                        "tmp/ed08da34-7447-4141-96ff-5740315d7b99/sharedlivemedia/"
+                        "c5cad053-111a-4e0e-8f78-fe43dec11512/1638403200"
                     ),
                     "x-amz-algorithm": "AWS4-HMAC-SHA256",
-                    "x-amz-credential": "aws-access-key-id/20211202/eu-west-1/s3/aws4_request",
+                    "x-amz-credential": "scw-access-key/20211202/fr-par/s3/aws4_request",
                     "x-amz-date": "20211202T000000Z",
                     "policy": (
-                        "eyJleHBpcmF0aW9uIjogIjIwMjEtMTItMDNUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBb"
-                        "eyJhY2wiOiAicHJpdmF0ZSJ9LCBbImVxIiwgIiRDb250ZW50LVR5cGUiLCAiYXBwbGljYXRp"
-                        "b24vcGRmIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAzMTQ1NzI4MDBdLCB7ImJ1"
-                        "Y2tldCI6ICJ0ZXN0LW1hcnNoYS1zb3VyY2UifSwgeyJrZXkiOiAiZWQwOGRhMzQtNzQ0Ny00"
-                        "MTQxLTk2ZmYtNTc0MDMxNWQ3Yjk5L3NoYXJlZGxpdmVtZWRpYS9jNWNhZDA1My0xMTFhLTRl"
-                        "MGUtOGY3OC1mZTQzZGVjMTE1MTIvMTYzODQwMzIwMC5wZGYifSwgeyJ4LWFtei1hbGdvcml0"
-                        "aG0iOiAiQVdTNC1ITUFDLVNIQTI1NiJ9LCB7IngtYW16LWNyZWRlbnRpYWwiOiAiYXdzLWFj"
-                        "Y2Vzcy1rZXktaWQvMjAyMTEyMDIvZXUtd2VzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LCB7Ingt"
-                        "YW16LWRhdGUiOiAiMjAyMTEyMDJUMDAwMDAwWiJ9XX0="
+                        "eyJleHBpcmF0aW9uIjogIjIwMjEtMTItMDNUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBbe"
+                        "yJhY2wiOiAicHJpdmF0ZSJ9LCBbImVxIiwgIiRDb250ZW50LVR5cGUiLCAiYXBwbGljYXRpb2"
+                        "4vcGRmIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAzMTQ1NzI4MDBdLCB7ImJ1Y2t"
+                        "ldCI6ICJ0ZXN0LW1hcnNoYSJ9LCB7ImtleSI6ICJ0bXAvZWQwOGRhMzQtNzQ0Ny00MTQxLTk2"
+                        "ZmYtNTc0MDMxNWQ3Yjk5L3NoYXJlZGxpdmVtZWRpYS9jNWNhZDA1My0xMTFhLTRlMGUtOGY3O"
+                        "C1mZTQzZGVjMTE1MTIvMTYzODQwMzIwMCJ9LCB7IngtYW16LWFsZ29yaXRobSI6ICJBV1M0LU"
+                        "hNQUMtU0hBMjU2In0sIHsieC1hbXotY3JlZGVudGlhbCI6ICJzY3ctYWNjZXNzLWtleS8yMDI"
+                        "xMTIwMi9mci1wYXIvczMvYXdzNF9yZXF1ZXN0In0sIHsieC1hbXotZGF0ZSI6ICIyMDIxMTIw"
+                        "MlQwMDAwMDBaIn1dfQ=="
                     ),
                     "x-amz-signature": (
-                        "db00ba70403f098597777a3cfb9ba5433eecbbe67ebefdf17987f368dec70a5d"
+                        "6b92b2ce1d92c6efe9cef543488b77ad3c6300d5a963b8ea025db06a34aa2419"
                     ),
                 },
             },
@@ -544,29 +544,29 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
         self.assertEqual(
             content,
             {
-                "url": "https://test-marsha-source.s3.amazonaws.com/",
+                "url": "https://s3.fr-par.scw.cloud/test-marsha",
                 "fields": {
                     "acl": "private",
                     "key": (
-                        "ed08da34-7447-4141-96ff-5740315d7b99/sharedlivemedia/"
-                        "c5cad053-111a-4e0e-8f78-fe43dec11512/1638403200.pdf"
+                        "tmp/ed08da34-7447-4141-96ff-5740315d7b99/sharedlivemedia/"
+                        "c5cad053-111a-4e0e-8f78-fe43dec11512/1638403200"
                     ),
                     "x-amz-algorithm": "AWS4-HMAC-SHA256",
-                    "x-amz-credential": "aws-access-key-id/20211202/eu-west-1/s3/aws4_request",
+                    "x-amz-credential": "scw-access-key/20211202/fr-par/s3/aws4_request",
                     "x-amz-date": "20211202T000000Z",
                     "policy": (
-                        "eyJleHBpcmF0aW9uIjogIjIwMjEtMTItMDNUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBb"
-                        "eyJhY2wiOiAicHJpdmF0ZSJ9LCBbImVxIiwgIiRDb250ZW50LVR5cGUiLCAiYXBwbGljYXRp"
-                        "b24vcGRmIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAzMTQ1NzI4MDBdLCB7ImJ1"
-                        "Y2tldCI6ICJ0ZXN0LW1hcnNoYS1zb3VyY2UifSwgeyJrZXkiOiAiZWQwOGRhMzQtNzQ0Ny00"
-                        "MTQxLTk2ZmYtNTc0MDMxNWQ3Yjk5L3NoYXJlZGxpdmVtZWRpYS9jNWNhZDA1My0xMTFhLTRl"
-                        "MGUtOGY3OC1mZTQzZGVjMTE1MTIvMTYzODQwMzIwMC5wZGYifSwgeyJ4LWFtei1hbGdvcml0"
-                        "aG0iOiAiQVdTNC1ITUFDLVNIQTI1NiJ9LCB7IngtYW16LWNyZWRlbnRpYWwiOiAiYXdzLWFj"
-                        "Y2Vzcy1rZXktaWQvMjAyMTEyMDIvZXUtd2VzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LCB7Ingt"
-                        "YW16LWRhdGUiOiAiMjAyMTEyMDJUMDAwMDAwWiJ9XX0="
+                        "eyJleHBpcmF0aW9uIjogIjIwMjEtMTItMDNUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBbe"
+                        "yJhY2wiOiAicHJpdmF0ZSJ9LCBbImVxIiwgIiRDb250ZW50LVR5cGUiLCAiYXBwbGljYXRpb2"
+                        "4vcGRmIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAzMTQ1NzI4MDBdLCB7ImJ1Y2t"
+                        "ldCI6ICJ0ZXN0LW1hcnNoYSJ9LCB7ImtleSI6ICJ0bXAvZWQwOGRhMzQtNzQ0Ny00MTQxLTk2"
+                        "ZmYtNTc0MDMxNWQ3Yjk5L3NoYXJlZGxpdmVtZWRpYS9jNWNhZDA1My0xMTFhLTRlMGUtOGY3O"
+                        "C1mZTQzZGVjMTE1MTIvMTYzODQwMzIwMCJ9LCB7IngtYW16LWFsZ29yaXRobSI6ICJBV1M0LU"
+                        "hNQUMtU0hBMjU2In0sIHsieC1hbXotY3JlZGVudGlhbCI6ICJzY3ctYWNjZXNzLWtleS8yMDI"
+                        "xMTIwMi9mci1wYXIvczMvYXdzNF9yZXF1ZXN0In0sIHsieC1hbXotZGF0ZSI6ICIyMDIxMTIw"
+                        "MlQwMDAwMDBaIn1dfQ=="
                     ),
                     "x-amz-signature": (
-                        "db00ba70403f098597777a3cfb9ba5433eecbbe67ebefdf17987f368dec70a5d"
+                        "6b92b2ce1d92c6efe9cef543488b77ad3c6300d5a963b8ea025db06a34aa2419"
                     ),
                 },
             },

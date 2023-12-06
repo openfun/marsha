@@ -12,6 +12,7 @@ import React, { useEffect, useRef } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { createSharedLiveMedia } from '@lib-video/api/createSharedLiveMedia';
+import { sharedLiveMediaUploadEnded } from '@lib-video/api/sharedLiveMediaUploadEnded';
 import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
 
 import { SharedLiveMediaItem } from './SharedLiveMediaItem';
@@ -88,7 +89,7 @@ export const SharedLiveMedia = ({ isLive, isTeacher }: SharedMediaProps) => {
 
   //  handle hidden file input change, IE a file has been selected to upload
   const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    let sharedLiveMediaId;
+    let sharedLiveMediaId: string | undefined;
     if (event.target.files && event.target.files[0]) {
       if (!retryUploadIdRef.current) {
         const response = await createSharedLiveMedia({
@@ -109,6 +110,13 @@ export const SharedLiveMedia = ({ isLive, isTeacher }: SharedMediaProps) => {
         sharedLiveMediaId,
         event.target.files[0],
         video.id,
+        (presignedPost) => {
+          sharedLiveMediaUploadEnded(
+            video.id,
+            sharedLiveMediaId as string,
+            presignedPost.fields['key'],
+          );
+        },
       );
     }
   };

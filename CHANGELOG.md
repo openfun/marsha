@@ -15,6 +15,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Celery task queue
 - Refactor video S3 deletion
 - Add thumbnail celery task
+- Add shared live media celery task
 
 ### Changed
 

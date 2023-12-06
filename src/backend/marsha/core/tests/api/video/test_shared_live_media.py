@@ -8,6 +8,7 @@ from django.test import TestCase, override_settings
 from marsha.core import api
 from marsha.core.api.video import channel_layers_utils
 from marsha.core.defaults import (
+    AWS_PIPELINE,
     DELETED,
     ERROR,
     JITSI,
@@ -689,6 +690,7 @@ class TestVideoSharedLiveMedia(TestCase):
             uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
             nb_pages=3,
             video=video,
+            process_pipeline=AWS_PIPELINE,
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
