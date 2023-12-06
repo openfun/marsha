@@ -4,8 +4,10 @@ from django.db.utils import IntegrityError
 
 from rest_framework import serializers
 
+from marsha.core.defaults import CELERY_PIPELINE
 from marsha.core.models import Thumbnail
 from marsha.core.serializers.base import TimestampField
+from marsha.core.storage.storage_class import video_storage
 from marsha.core.utils import time_utils
 
 
@@ -107,11 +109,22 @@ class ThumbnailSerializer(serializers.ModelSerializer):
             None if the thumbnail is still not uploaded to S3 with success.
 
         """
-        if obj.uploaded_on:
-            base = f"{settings.AWS_S3_URL_PROTOCOL}://{settings.CLOUDFRONT_DOMAIN}/{obj.video.pk}"
-            urls = {}
+        if not obj.uploaded_on:
+            return None
+
+        if obj.process_pipeline == CELERY_PIPELINE:
             stamp = time_utils.to_timestamp(obj.uploaded_on)
+            base = obj.get_videos_storage_prefix(stamp=stamp)
+
+            urls = {}
             for resolution in settings.VIDEO_RESOLUTIONS:
-                urls[resolution] = f"{base}/thumbnails/{stamp}_{resolution}.jpg"
+                urls[resolution] = video_storage.url(f"{base}/{resolution}.jpg")
             return urls
-        return None
+
+        # Default AWS fallback:
+        base = f"{settings.AWS_S3_URL_PROTOCOL}://{settings.CLOUDFRONT_DOMAIN}/{obj.video.pk}"
+        urls = {}
+        stamp = time_utils.to_timestamp(obj.uploaded_on)
+        for resolution in settings.VIDEO_RESOLUTIONS:
+            urls[resolution] = f"{base}/thumbnails/{stamp}_{resolution}.jpg"
+        return urls

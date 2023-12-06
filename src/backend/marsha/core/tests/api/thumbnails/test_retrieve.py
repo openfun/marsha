@@ -4,6 +4,7 @@ import json
 
 from django.test import TestCase, override_settings
 
+from marsha.core.defaults import AWS_PIPELINE
 from marsha.core.factories import (
     ConsumerSiteAccessFactory,
     OrganizationAccessFactory,
@@ -287,6 +288,7 @@ class ThumbnailRetrieveApiTest(TestCase):
             video=video,
             uploaded_on=datetime(2018, 8, 8, tzinfo=timezone.utc),
             upload_state="ready",
+            process_pipeline=AWS_PIPELINE,
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)

@@ -45,7 +45,9 @@ class ThumbnailInitiateUploadApiTest(TestCase):
             id="c10b79b6-9ecc-4aba-bf9d-5aab4765fd40", upload_state="ready"
         )
         thumbnail = ThumbnailFactory(
-            id="4ab8079e-ff4d-4d06-9922-4929e4f7a6eb", video=video, upload_state="ready"
+            id="4ab8079e-ff4d-4d06-9922-4929e4f7a6eb",
+            video=video,
+            upload_state="ready",
         )
         jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
@@ -64,29 +66,27 @@ class ThumbnailInitiateUploadApiTest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
-                "url": "https://test-marsha-source.s3.amazonaws.com/",
+                "url": "https://s3.fr-par.scw.cloud/test-marsha",
                 "fields": {
                     "acl": "private",
                     "key": (
-                        "c10b79b6-9ecc-4aba-bf9d-5aab4765fd40/thumbnail/4ab8079e-ff4d-4d06-9922-"
-                        "4929e4f7a6eb/1533686400"
+                        "tmp/c10b79b6-9ecc-4aba-bf9d-5aab4765fd40/thumbnail/1533686400"
                     ),
                     "x-amz-algorithm": "AWS4-HMAC-SHA256",
-                    "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
+                    "x-amz-credential": "scw-access-key/20180808/fr-par/s3/aws4_request",
                     "x-amz-date": "20180808T000000Z",
                     "policy": (
                         "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBbe"
                         "yJhY2wiOiAicHJpdmF0ZSJ9LCBbInN0YXJ0cy13aXRoIiwgIiRDb250ZW50LVR5cGUiLCAiaW"
                         "1hZ2UvIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAxMDQ4NTc2MF0sIHsiYnVja2V"
-                        "0IjogInRlc3QtbWFyc2hhLXNvdXJjZSJ9LCB7ImtleSI6ICJjMTBiNzliNi05ZWNjLTRhYmEt"
-                        "YmY5ZC01YWFiNDc2NWZkNDAvdGh1bWJuYWlsLzRhYjgwNzllLWZmNGQtNGQwNi05OTIyLTQ5M"
-                        "jllNGY3YTZlYi8xNTMzNjg2NDAwIn0sIHsieC1hbXotYWxnb3JpdGhtIjogIkFXUzQtSE1BQy"
-                        "1TSEEyNTYifSwgeyJ4LWFtei1jcmVkZW50aWFsIjogImF3cy1hY2Nlc3Mta2V5LWlkLzIwMTg"
-                        "wODA4L2V1LXdlc3QtMS9zMy9hd3M0X3JlcXVlc3QifSwgeyJ4LWFtei1kYXRlIjogIjIwMTgw"
-                        "ODA4VDAwMDAwMFoifV19"
+                        "0IjogInRlc3QtbWFyc2hhIn0sIHsia2V5IjogInRtcC9jMTBiNzliNi05ZWNjLTRhYmEtYmY5"
+                        "ZC01YWFiNDc2NWZkNDAvdGh1bWJuYWlsLzE1MzM2ODY0MDAifSwgeyJ4LWFtei1hbGdvcml0a"
+                        "G0iOiAiQVdTNC1ITUFDLVNIQTI1NiJ9LCB7IngtYW16LWNyZWRlbnRpYWwiOiAic2N3LWFjY2"
+                        "Vzcy1rZXkvMjAxODA4MDgvZnItcGFyL3MzL2F3czRfcmVxdWVzdCJ9LCB7IngtYW16LWRhdGU"
+                        "iOiAiMjAxODA4MDhUMDAwMDAwWiJ9XX0="
                     ),
                     "x-amz-signature": (
-                        "ea005034dc1de7ad3deb546b63bde56b22d68154a4d14a9b4a9acc03c7062612"
+                        "49da85714886e613a6030c62c53d135e275e8940b5b80a9c50dbc5a2fefd1e59"
                     ),
                 },
             },

@@ -21,6 +21,7 @@ import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { createThumbnail } from '@lib-video/api/createThumbnail';
+import { thumbnailUploadEnded } from '@lib-video/api/thumbnailUploadEnded';
 import { useThumbnailMetadata } from '@lib-video/api/useThumbnailMetadata';
 import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
 
@@ -82,7 +83,7 @@ export const WidgetThumbnail = ({ isLive = true }: WidgetThumbnailProps) => {
   const handleChange = useCallback(
     async (event: React.ChangeEvent<HTMLInputElement>) => {
       if (event.target.files && event.target.files[0]) {
-        let thumbnailId;
+        let thumbnailId: string | undefined;
         try {
           if (!thumbnail?.id) {
             const response = await createThumbnail({
@@ -99,6 +100,13 @@ export const WidgetThumbnail = ({ isLive = true }: WidgetThumbnailProps) => {
             thumbnailId,
             event.target.files[0],
             video.id,
+            (presignedPost) => {
+              thumbnailUploadEnded(
+                video.id,
+                thumbnailId as string,
+                presignedPost.fields['key'],
+              );
+            },
           );
         } catch (error) {
           if (

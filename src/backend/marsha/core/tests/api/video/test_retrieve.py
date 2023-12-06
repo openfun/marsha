@@ -1278,6 +1278,7 @@ class VideoRetrieveAPITest(TestCase):
             video=video,
             uploaded_on=datetime(2018, 8, 8, tzinfo=baseTimezone.utc),
             upload_state="ready",
+            process_pipeline=AWS_PIPELINE,
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
