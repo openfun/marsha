@@ -158,6 +158,7 @@ class VideoRetrieveAPITest(TestCase):
             mode="cc",
             language="fr",
             uploaded_on=datetime(2018, 8, 8, tzinfo=baseTimezone.utc),
+            process_pipeline=AWS_PIPELINE,
             upload_state="ready",
             extension="srt",
         )

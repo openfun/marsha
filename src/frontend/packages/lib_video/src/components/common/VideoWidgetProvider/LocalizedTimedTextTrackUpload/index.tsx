@@ -23,6 +23,7 @@ import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { createTimedTextTrack } from '@lib-video/api/createTimedTextTrack';
+import { timedTextTrackUploadEnded } from '@lib-video/api/timedTextTrackUploadEnded';
 import { useTimedTextMetadata } from '@lib-video/api/useTimedTextMetadata';
 import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
 import { LanguageChoice } from '@lib-video/types/SelectOptions';
@@ -91,7 +92,7 @@ export const LocalizedTimedTextTrackUpload = ({
 
   const handleChange = useCallback(
     async (event: React.ChangeEvent<HTMLInputElement>) => {
-      let timedTextTrackId;
+      let timedTextTrackId: string | undefined;
       const nativeEvent = event.nativeEvent.target as HTMLInputElement;
       if (event.target.files && event.target.files[0] && selectedLanguage) {
         try {
@@ -112,6 +113,13 @@ export const LocalizedTimedTextTrackUpload = ({
             timedTextTrackId,
             event.target.files[0],
             video.id,
+            (presignedPost) => {
+              timedTextTrackUploadEnded(
+                video.id,
+                timedTextTrackId as string,
+                presignedPost.fields['key'],
+              );
+            },
           );
         } catch (error) {
           if ((error as object).hasOwnProperty('size') && metadata.data) {

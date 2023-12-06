@@ -8,6 +8,7 @@ from django.test import TestCase, override_settings
 
 from marsha.core import factories, models
 from marsha.core.api import timezone
+from marsha.core.defaults import AWS_PIPELINE
 from marsha.core.factories import TimedTextTrackFactory, UserFactory, VideoFactory
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
@@ -64,6 +65,7 @@ class TimedTextTrackRetrieveAPITest(TestCase):
             uploaded_on=datetime(2018, 8, 8, tzinfo=baseTimezone.utc),
             upload_state="ready",
             extension="srt",
+            process_pipeline=AWS_PIPELINE,
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
@@ -123,6 +125,7 @@ class TimedTextTrackRetrieveAPITest(TestCase):
             language="fr",
             uploaded_on=datetime(2018, 8, 8, tzinfo=baseTimezone.utc),
             upload_state="ready",
+            process_pipeline=AWS_PIPELINE,
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
@@ -179,6 +182,7 @@ class TimedTextTrackRetrieveAPITest(TestCase):
             uploaded_on=datetime(2018, 8, 8, tzinfo=baseTimezone.utc),
             upload_state="ready",
             extension="srt",
+            process_pipeline=AWS_PIPELINE,
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
@@ -308,6 +312,7 @@ class TimedTextTrackRetrieveAPITest(TestCase):
             language="fr",
             uploaded_on=datetime(2018, 8, 8, tzinfo=baseTimezone.utc),
             upload_state="ready",
+            process_pipeline=AWS_PIPELINE,
             extension="srt",
         )
         jwt_token = InstructorOrAdminLtiTokenFactory(
