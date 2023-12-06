@@ -6,8 +6,10 @@ from django.utils.text import slugify
 
 from rest_framework import serializers
 
+from marsha.core.defaults import CELERY_PIPELINE
 from marsha.core.models import TimedTextTrack
 from marsha.core.serializers.base import TimestampField, get_video_cloudfront_url_params
+from marsha.core.storage.storage_class import video_storage
 from marsha.core.utils import cloudfront_utils, time_utils
 
 
@@ -137,20 +139,28 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
             None if the timed text track is still not uploaded to S3 with success.
 
         """
-        if obj.uploaded_on and obj.extension:
-            stamp = time_utils.to_timestamp(obj.uploaded_on)
-            filename = f"{slugify(obj.video.playlist.title)}_{stamp}.{obj.extension}"
-            url = self._generate_url(
-                obj,
-                "timedtext/source",
-                content_disposition=quote_plus(f"attachment; filename={filename}"),
-            )
+        if not obj.uploaded_on or not obj.extension:
+            return None
 
-            # Sign the url only if the functionality is activated
-            if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
-                url = self._sign_url(url, obj.video_id)
-            return url
-        return None
+        stamp = time_utils.to_timestamp(obj.uploaded_on)
+
+        if obj.process_pipeline == CELERY_PIPELINE:
+            base = obj.get_videos_storage_prefix()
+
+            return video_storage.url(f"{base}/source.{obj.extension}")
+
+        # Default AWS fallback
+        filename = f"{slugify(obj.video.playlist.title)}_{stamp}.{obj.extension}"
+        url = self._generate_url(
+            obj,
+            "timedtext/source",
+            content_disposition=quote_plus(f"attachment; filename={filename}"),
+        )
+
+        # Sign the url only if the functionality is activated
+        if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
+            url = self._sign_url(url, obj.video_id)
+        return url
 
     def get_url(self, obj):
         """Url of the timed text track, signed with a CloudFront key if activated.
@@ -167,11 +177,19 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
             None if the timed text track is still not uploaded to S3 with success.
 
         """
-        if obj.uploaded_on:
-            url = self._generate_url(obj, "timedtext", extension="vtt")
+        if not obj.uploaded_on:
+            return None
 
-            # Sign the url only if the functionality is activated
-            if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
-                url = self._sign_url(url, obj.video_id)
-            return url
-        return None
+        if obj.process_pipeline == CELERY_PIPELINE:
+            stamp = time_utils.to_timestamp(obj.uploaded_on)
+            base = obj.get_videos_storage_prefix()
+
+            return video_storage.url(f"{base}/{stamp}.vtt")
+
+        # Default AWS fallback
+        url = self._generate_url(obj, "timedtext", extension="vtt")
+
+        # Sign the url only if the functionality is activated
+        if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
+            url = self._sign_url(url, obj.video_id)
+        return url

@@ -81,28 +81,28 @@ class TimedTextTrackInitiateUploadAPITest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
-                "url": "https://test-marsha-source.s3.amazonaws.com/",
+                "url": "https://s3.fr-par.scw.cloud/test-marsha",
                 "fields": {
                     "acl": "private",
                     "key": (
-                        "b8d40ed7-95b8-4848-98c9-50728dfee25d/timedtexttrack/5c019027-1e1f-4d8c-"
-                        "9f83-c5e20edaad2b/1533686400_fr_cc"
+                        "tmp/b8d40ed7-95b8-4848-98c9-50728dfee25d/timedtext/"
+                        "5c019027-1e1f-4d8c-9f83-c5e20edaad2b/1533686400"
                     ),
                     "x-amz-algorithm": "AWS4-HMAC-SHA256",
-                    "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
+                    "x-amz-credential": "scw-access-key/20180808/fr-par/s3/aws4_request",
                     "x-amz-date": "20180808T000000Z",
                     "policy": (
                         "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBbe"
                         "yJhY2wiOiAicHJpdmF0ZSJ9LCBbImNvbnRlbnQtbGVuZ3RoLXJhbmdlIiwgMCwgMTA0ODU3Nl"
-                        "0sIHsiYnVja2V0IjogInRlc3QtbWFyc2hhLXNvdXJjZSJ9LCB7ImtleSI6ICJiOGQ0MGVkNy0"
-                        "5NWI4LTQ4NDgtOThjOS01MDcyOGRmZWUyNWQvdGltZWR0ZXh0dHJhY2svNWMwMTkwMjctMWUx"
-                        "Zi00ZDhjLTlmODMtYzVlMjBlZGFhZDJiLzE1MzM2ODY0MDBfZnJfY2MifSwgeyJ4LWFtei1hb"
-                        "Gdvcml0aG0iOiAiQVdTNC1ITUFDLVNIQTI1NiJ9LCB7IngtYW16LWNyZWRlbnRpYWwiOiAiYX"
-                        "dzLWFjY2Vzcy1rZXktaWQvMjAxODA4MDgvZXUtd2VzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LCB"
-                        "7IngtYW16LWRhdGUiOiAiMjAxODA4MDhUMDAwMDAwWiJ9XX0="
+                        "0sIHsiYnVja2V0IjogInRlc3QtbWFyc2hhIn0sIHsia2V5IjogInRtcC9iOGQ0MGVkNy05NWI"
+                        "4LTQ4NDgtOThjOS01MDcyOGRmZWUyNWQvdGltZWR0ZXh0LzVjMDE5MDI3LTFlMWYtNGQ4Yy05"
+                        "ZjgzLWM1ZTIwZWRhYWQyYi8xNTMzNjg2NDAwIn0sIHsieC1hbXotYWxnb3JpdGhtIjogIkFXU"
+                        "zQtSE1BQy1TSEEyNTYifSwgeyJ4LWFtei1jcmVkZW50aWFsIjogInNjdy1hY2Nlc3Mta2V5Lz"
+                        "IwMTgwODA4L2ZyLXBhci9zMy9hd3M0X3JlcXVlc3QifSwgeyJ4LWFtei1kYXRlIjogIjIwMTg"
+                        "wODA4VDAwMDAwMFoifV19"
                     ),
                     "x-amz-signature": (
-                        "bab90cecbb4db4a6bd7d4036a6be95a7c398b0f9eaa78b14c7f10e6bb3349558"
+                        "a5304424118bfd835026c73d74980adbedc677cb5dfc051938b434634727339d"
                     ),
                 },
             },
@@ -238,28 +238,28 @@ class TimedTextTrackInitiateUploadAPITest(TestCase):
         self.assertEqual(
             response.json(),
             {
-                "url": "https://test-marsha-source.s3.amazonaws.com/",
+                "url": "https://s3.fr-par.scw.cloud/test-marsha",
                 "fields": {
                     "acl": "private",
                     "key": (
-                        "b8d40ed7-95b8-4848-98c9-50728dfee25d/timedtexttrack/5c019027-1e1f-4d8c-"
-                        "9f83-c5e20edaad2b/1533686400_fr_cc"
+                        "tmp/b8d40ed7-95b8-4848-98c9-50728dfee25d/timedtext/"
+                        "5c019027-1e1f-4d8c-9f83-c5e20edaad2b/1533686400"
                     ),
                     "x-amz-algorithm": "AWS4-HMAC-SHA256",
-                    "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
+                    "x-amz-credential": "scw-access-key/20180808/fr-par/s3/aws4_request",
                     "x-amz-date": "20180808T000000Z",
                     "policy": (
                         "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBbe"
                         "yJhY2wiOiAicHJpdmF0ZSJ9LCBbImNvbnRlbnQtbGVuZ3RoLXJhbmdlIiwgMCwgMTA0ODU3Nl"
-                        "0sIHsiYnVja2V0IjogInRlc3QtbWFyc2hhLXNvdXJjZSJ9LCB7ImtleSI6ICJiOGQ0MGVkNy0"
-                        "5NWI4LTQ4NDgtOThjOS01MDcyOGRmZWUyNWQvdGltZWR0ZXh0dHJhY2svNWMwMTkwMjctMWUx"
-                        "Zi00ZDhjLTlmODMtYzVlMjBlZGFhZDJiLzE1MzM2ODY0MDBfZnJfY2MifSwgeyJ4LWFtei1hb"
-                        "Gdvcml0aG0iOiAiQVdTNC1ITUFDLVNIQTI1NiJ9LCB7IngtYW16LWNyZWRlbnRpYWwiOiAiYX"
-                        "dzLWFjY2Vzcy1rZXktaWQvMjAxODA4MDgvZXUtd2VzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LCB"
-                        "7IngtYW16LWRhdGUiOiAiMjAxODA4MDhUMDAwMDAwWiJ9XX0="
+                        "0sIHsiYnVja2V0IjogInRlc3QtbWFyc2hhIn0sIHsia2V5IjogInRtcC9iOGQ0MGVkNy05NWI"
+                        "4LTQ4NDgtOThjOS01MDcyOGRmZWUyNWQvdGltZWR0ZXh0LzVjMDE5MDI3LTFlMWYtNGQ4Yy05"
+                        "ZjgzLWM1ZTIwZWRhYWQyYi8xNTMzNjg2NDAwIn0sIHsieC1hbXotYWxnb3JpdGhtIjogIkFXU"
+                        "zQtSE1BQy1TSEEyNTYifSwgeyJ4LWFtei1jcmVkZW50aWFsIjogInNjdy1hY2Nlc3Mta2V5Lz"
+                        "IwMTgwODA4L2ZyLXBhci9zMy9hd3M0X3JlcXVlc3QifSwgeyJ4LWFtei1kYXRlIjogIjIwMTg"
+                        "wODA4VDAwMDAwMFoifV19"
                     ),
                     "x-amz-signature": (
-                        "bab90cecbb4db4a6bd7d4036a6be95a7c398b0f9eaa78b14c7f10e6bb3349558"
+                        "a5304424118bfd835026c73d74980adbedc677cb5dfc051938b434634727339d"
                     ),
                 },
             },
@@ -311,28 +311,28 @@ class TimedTextTrackInitiateUploadAPITest(TestCase):
         self.assertEqual(
             response.json(),
             {
-                "url": "https://test-marsha-source.s3.amazonaws.com/",
+                "url": "https://s3.fr-par.scw.cloud/test-marsha",
                 "fields": {
                     "acl": "private",
                     "key": (
-                        "b8d40ed7-95b8-4848-98c9-50728dfee25d/timedtexttrack/5c019027-1e1f-4d8c-"
-                        "9f83-c5e20edaad2b/1533686400_fr_cc"
+                        "tmp/b8d40ed7-95b8-4848-98c9-50728dfee25d/timedtext/"
+                        "5c019027-1e1f-4d8c-9f83-c5e20edaad2b/1533686400"
                     ),
                     "x-amz-algorithm": "AWS4-HMAC-SHA256",
-                    "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
+                    "x-amz-credential": "scw-access-key/20180808/fr-par/s3/aws4_request",
                     "x-amz-date": "20180808T000000Z",
                     "policy": (
                         "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBbe"
                         "yJhY2wiOiAicHJpdmF0ZSJ9LCBbImNvbnRlbnQtbGVuZ3RoLXJhbmdlIiwgMCwgMTA0ODU3Nl"
-                        "0sIHsiYnVja2V0IjogInRlc3QtbWFyc2hhLXNvdXJjZSJ9LCB7ImtleSI6ICJiOGQ0MGVkNy0"
-                        "5NWI4LTQ4NDgtOThjOS01MDcyOGRmZWUyNWQvdGltZWR0ZXh0dHJhY2svNWMwMTkwMjctMWUx"
-                        "Zi00ZDhjLTlmODMtYzVlMjBlZGFhZDJiLzE1MzM2ODY0MDBfZnJfY2MifSwgeyJ4LWFtei1hb"
-                        "Gdvcml0aG0iOiAiQVdTNC1ITUFDLVNIQTI1NiJ9LCB7IngtYW16LWNyZWRlbnRpYWwiOiAiYX"
-                        "dzLWFjY2Vzcy1rZXktaWQvMjAxODA4MDgvZXUtd2VzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LCB"
-                        "7IngtYW16LWRhdGUiOiAiMjAxODA4MDhUMDAwMDAwWiJ9XX0="
+                        "0sIHsiYnVja2V0IjogInRlc3QtbWFyc2hhIn0sIHsia2V5IjogInRtcC9iOGQ0MGVkNy05NWI"
+                        "4LTQ4NDgtOThjOS01MDcyOGRmZWUyNWQvdGltZWR0ZXh0LzVjMDE5MDI3LTFlMWYtNGQ4Yy05"
+                        "ZjgzLWM1ZTIwZWRhYWQyYi8xNTMzNjg2NDAwIn0sIHsieC1hbXotYWxnb3JpdGhtIjogIkFXU"
+                        "zQtSE1BQy1TSEEyNTYifSwgeyJ4LWFtei1jcmVkZW50aWFsIjogInNjdy1hY2Nlc3Mta2V5Lz"
+                        "IwMTgwODA4L2ZyLXBhci9zMy9hd3M0X3JlcXVlc3QifSwgeyJ4LWFtei1kYXRlIjogIjIwMTg"
+                        "wODA4VDAwMDAwMFoifV19"
                     ),
                     "x-amz-signature": (
-                        "bab90cecbb4db4a6bd7d4036a6be95a7c398b0f9eaa78b14c7f10e6bb3349558"
+                        "a5304424118bfd835026c73d74980adbedc677cb5dfc051938b434634727339d"
                     ),
                 },
             },
@@ -425,28 +425,28 @@ class TimedTextTrackInitiateUploadAPITest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
-                "url": "https://test-marsha-source.s3.amazonaws.com/",
+                "url": "https://s3.fr-par.scw.cloud/test-marsha",
                 "fields": {
                     "acl": "private",
                     "key": (
-                        "b8d40ed7-95b8-4848-98c9-50728dfee25d/timedtexttrack/5c019027-1e1f-4d8c-"
-                        "9f83-c5e20edaad2b/1533686400_fr_cc"
+                        "tmp/b8d40ed7-95b8-4848-98c9-50728dfee25d/timedtext/"
+                        "5c019027-1e1f-4d8c-9f83-c5e20edaad2b/1533686400"
                     ),
                     "x-amz-algorithm": "AWS4-HMAC-SHA256",
-                    "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
+                    "x-amz-credential": "scw-access-key/20180808/fr-par/s3/aws4_request",
                     "x-amz-date": "20180808T000000Z",
                     "policy": (
                         "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBbe"
                         "yJhY2wiOiAicHJpdmF0ZSJ9LCBbImNvbnRlbnQtbGVuZ3RoLXJhbmdlIiwgMCwgMTA0ODU3Nl"
-                        "0sIHsiYnVja2V0IjogInRlc3QtbWFyc2hhLXNvdXJjZSJ9LCB7ImtleSI6ICJiOGQ0MGVkNy0"
-                        "5NWI4LTQ4NDgtOThjOS01MDcyOGRmZWUyNWQvdGltZWR0ZXh0dHJhY2svNWMwMTkwMjctMWUx"
-                        "Zi00ZDhjLTlmODMtYzVlMjBlZGFhZDJiLzE1MzM2ODY0MDBfZnJfY2MifSwgeyJ4LWFtei1hb"
-                        "Gdvcml0aG0iOiAiQVdTNC1ITUFDLVNIQTI1NiJ9LCB7IngtYW16LWNyZWRlbnRpYWwiOiAiYX"
-                        "dzLWFjY2Vzcy1rZXktaWQvMjAxODA4MDgvZXUtd2VzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LCB"
-                        "7IngtYW16LWRhdGUiOiAiMjAxODA4MDhUMDAwMDAwWiJ9XX0="
+                        "0sIHsiYnVja2V0IjogInRlc3QtbWFyc2hhIn0sIHsia2V5IjogInRtcC9iOGQ0MGVkNy05NWI"
+                        "4LTQ4NDgtOThjOS01MDcyOGRmZWUyNWQvdGltZWR0ZXh0LzVjMDE5MDI3LTFlMWYtNGQ4Yy05"
+                        "ZjgzLWM1ZTIwZWRhYWQyYi8xNTMzNjg2NDAwIn0sIHsieC1hbXotYWxnb3JpdGhtIjogIkFXU"
+                        "zQtSE1BQy1TSEEyNTYifSwgeyJ4LWFtei1jcmVkZW50aWFsIjogInNjdy1hY2Nlc3Mta2V5Lz"
+                        "IwMTgwODA4L2ZyLXBhci9zMy9hd3M0X3JlcXVlc3QifSwgeyJ4LWFtei1kYXRlIjogIjIwMTg"
+                        "wODA4VDAwMDAwMFoifV19"
                     ),
                     "x-amz-signature": (
-                        "bab90cecbb4db4a6bd7d4036a6be95a7c398b0f9eaa78b14c7f10e6bb3349558"
+                        "a5304424118bfd835026c73d74980adbedc677cb5dfc051938b434634727339d"
                     ),
                 },
             },

@@ -170,6 +170,7 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
         mockTimedTextTrack.id,
         file,
         mockedVideo.id,
+        expect.any(Function),
       ),
     );
   });

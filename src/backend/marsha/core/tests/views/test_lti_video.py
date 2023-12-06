@@ -12,6 +12,7 @@ from django.test import TestCase, override_settings
 from waffle.testutils import override_switch
 
 from marsha.core.defaults import (
+    AWS_PIPELINE,
     DELETED,
     HARVESTED,
     IDLE,
@@ -2255,6 +2256,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
         transcript = TimedTextTrackFactory(
             video=video,
             mode="ts",
+            process_pipeline=AWS_PIPELINE,
             upload_state=READY,
             uploaded_on="2019-09-24 07:24:40+00",
             extension="srt",
