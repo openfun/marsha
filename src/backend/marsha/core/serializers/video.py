@@ -22,6 +22,7 @@ from marsha.core.defaults import (
     PEERTUBE_PIPELINE,
     RUNNING,
     STOPPED,
+    TMP_VIDEOS_STORAGE_BASE_DIRECTORY,
 )
 from marsha.core.models import TimedTextTrack, Video
 from marsha.core.serializers.base import TimestampField, get_video_cloudfront_url_params
@@ -51,23 +52,28 @@ class UpdateLiveStateSerializer(serializers.Serializer):
     extraParameters = serializers.DictField(allow_null=True, required=False)
 
 
-class VideoUploadEndedSerializer(serializers.Serializer):
+class VideosStorageUploadEndedSerializer(serializers.Serializer):
     """A serializer to validate data submitted on the UploadEnded API endpoint."""
 
     file_key = serializers.CharField()
 
     def validate_file_key(self, value):
         """Check if the file_key is valid."""
-        base_video_pk = self.context["pk"]
-        [tmp_dir, video_pk, video_dir, stamp] = value.split("/")
 
-        if base_video_pk != video_pk or tmp_dir != "tmp" or video_dir != "video":
-            raise serializers.ValidationError("file_key is not valid")
+        stamp = value.split("/")[-1]
+
         try:
             to_datetime(stamp)
         except serializers.ValidationError as error:
             raise serializers.ValidationError("file_key is not valid") from error
 
+        if (
+            self.context["obj"].get_videos_storage_prefix(
+                stamp, TMP_VIDEOS_STORAGE_BASE_DIRECTORY
+            )
+            != value
+        ):
+            raise serializers.ValidationError("file_key is not valid")
         return value
 
 

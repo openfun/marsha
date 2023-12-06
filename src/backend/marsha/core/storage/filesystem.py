@@ -4,11 +4,12 @@
 from django.urls import reverse
 from django.utils import timezone
 
+from marsha.core.defaults import TMP_VIDEOS_STORAGE_BASE_DIRECTORY
 from marsha.core.utils.time_utils import to_timestamp
 
 
 # pylint: disable=unused-argument
-def initiate_video_upload(request, pk):
+def initiate_object_videos_storage_upload(request, obj, conditions):
     """Get an upload policy for a video.
 
     Returns an upload policy for dummy video backend.
@@ -30,12 +31,17 @@ def initiate_video_upload(request, pk):
     """
     now = timezone.now()
     stamp = to_timestamp(now)
-
+    key = obj.get_videos_storage_prefix(
+        stamp=stamp, base_dir=TMP_VIDEOS_STORAGE_BASE_DIRECTORY
+    )
     return {
         "fields": {
-            "key": f"tmp/{pk}/video/{stamp}",
+            "key": key,
         },
         "url": request.build_absolute_uri(
-            reverse("local-video-upload", args=[pk, stamp])
+            reverse(
+                "local-videos-storage-upload",
+                args=[obj.pk, stamp, obj.__class__.__name__],
+            )
         ),
     }

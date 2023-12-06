@@ -2,12 +2,14 @@
 
 import logging
 
+from django.apps import apps
 from django.conf import settings
 from django.http import HttpRequest
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from marsha.core.defaults import TMP_VIDEOS_STORAGE_BASE_DIRECTORY
 from marsha.core.models import Document, Video
 from marsha.core.storage.storage_class import video_storage
 from marsha.core.utils import time_utils
@@ -34,14 +36,20 @@ def dummy_video_upload(request: HttpRequest, uuid=None):
 
 
 @api_view(["POST"])
-def local_video_upload(request: HttpRequest, uuid=None, stamp=None):
+def local_videos_storage_upload(
+    request: HttpRequest, uuid=None, stamp=None, model=None
+):
     """Endpoint to mock s3 video upload in dev environment."""
     uploaded_video_file = request.FILES["file"]
 
-    video_storage.save(
-        f"tmp/{uuid}/video/{stamp}",
-        uploaded_video_file,
+    object_model = apps.get_model("core", model)
+    object_instance = object_model.objects.get(id=uuid)
+
+    destination = object_instance.get_videos_storage_prefix(
+        stamp=stamp, base_dir=TMP_VIDEOS_STORAGE_BASE_DIRECTORY
     )
+
+    video_storage.save(destination, uploaded_video_file)
     return Response(status=204)
 
 
