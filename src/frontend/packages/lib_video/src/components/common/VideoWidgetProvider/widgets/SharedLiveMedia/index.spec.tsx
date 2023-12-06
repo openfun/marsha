@@ -157,6 +157,7 @@ describe('<SharedLiveMedia />', () => {
       mockedSharedLiveMedia.id,
       file,
       mockedVideo.id,
+      expect.any(Function),
     );
   });
 
@@ -402,6 +403,7 @@ describe('<SharedLiveMedia />', () => {
       mockedSharedLiveMedia.id,
       file,
       mockedVideo.id,
+      expect.any(Function),
     );
   });
 

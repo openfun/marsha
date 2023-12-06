@@ -1183,6 +1183,14 @@ class SharedLiveMedia(UploadableFileMixin, BaseModel):
         verbose_name=_("extension"),
     )
 
+    process_pipeline = models.CharField(
+        max_length=255,
+        verbose_name=_("process pipeline"),
+        help_text=_("Pipeline used to process the shared live media"),
+        choices=PROCESS_PIPELINE_CHOICES,
+        default=CELERY_PIPELINE,
+    )
+
     class Meta:
         """Options for the ``SharedLiveMedia`` model."""
 
@@ -1227,6 +1235,38 @@ class SharedLiveMedia(UploadableFileMixin, BaseModel):
 
         stamp = stamp or to_timestamp(self.uploaded_on)
         return f"{self.video.pk}/sharedlivemedia/{self.pk}/{stamp}{extension}"
+
+    def get_videos_storage_prefix(
+        self,
+        stamp=None,
+        base_dir: VIDEOS_STORAGE_BASE_DIRECTORY = VOD_VIDEOS_STORAGE_BASE_DIRECTORY,
+    ):
+        """Compute the videos storage prefix for the shared live media.
+
+        Parameters
+        ----------
+        stamp: Type[string]
+            Passing a value for this argument will return the videos storage prefix for the shared
+            live media assuming its active stamp is set to this value. This is useful to create
+            an upload policy for this prospective version of the shared live media, so that the
+            client can upload the file and celery task can set the `uploaded_on` field to this
+            value.
+
+        base_dir: Type[VIDEOS_STORAGE_BASE_DIRECTORY]
+            The videos storage base directory. Defaults to VOD. It will be used to compute the
+            videos storage prefix.
+
+        Returns
+        -------
+        string
+            The videos storage prefix for the shared live media.
+        """
+        stamp = stamp or to_timestamp(self.uploaded_on)
+        base = base_dir
+        if base_dir == DELETED_VIDEOS_STORAGE_BASE_DIRECTORY:
+            base = f"{DELETED_VIDEOS_STORAGE_BASE_DIRECTORY}/{VOD_VIDEOS_STORAGE_BASE_DIRECTORY}"
+
+        return f"{base}/{self.video.pk}/sharedlivemedia/{self.pk}/{stamp}"
 
     def update_upload_state(self, upload_state, uploaded_on, **extra_parameters):
         """Manage upload state.
