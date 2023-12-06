@@ -14,6 +14,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add Peertube pipeline to VOD
 - Celery task queue
 - Refactor video S3 deletion
+- Add thumbnail celery task
 
 ### Changed
 

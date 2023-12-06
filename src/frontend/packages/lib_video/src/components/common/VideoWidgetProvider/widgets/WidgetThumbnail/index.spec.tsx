@@ -151,6 +151,7 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
       mockedThumbnail.id,
       file,
       mockedVideo.id,
+      expect.any(Function),
     );
   });
 

@@ -1,6 +1,5 @@
 """Declare API endpoints for thumbnails with Django RestFramework viewsets."""
 from django.conf import settings
-from django.utils import timezone
 
 import django_filters
 from rest_framework import filters, mixins, viewsets
@@ -8,7 +7,7 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.response import Response
 
-from marsha.core import defaults, permissions, serializers
+from marsha.core import defaults, permissions, serializers, storage
 from marsha.core.api.base import (
     APIViewMixin,
     ObjectPkMixin,
@@ -17,8 +16,7 @@ from marsha.core.api.base import (
 )
 from marsha.core.metadata import ThumbnailMetadata
 from marsha.core.models import Thumbnail
-from marsha.core.utils.s3_utils import create_presigned_post
-from marsha.core.utils.time_utils import to_timestamp
+from marsha.core.tasks.thumbnail import resize_thumbnails
 
 
 class ThumbnailFilter(django_filters.FilterSet):
@@ -66,7 +64,7 @@ class ThumbnailViewSet(
                 | permissions.IsParamsVideoAdminOrInstructorThroughPlaylist
                 | permissions.IsParamsVideoAdminThroughOrganization
             ]
-        elif self.action in ["retrieve", "destroy", "initiate_upload"]:
+        elif self.action in ["retrieve", "destroy", "initiate_upload", "upload_ended"]:
             permission_classes = [
                 permissions.IsPlaylistTokenMatchingRouteObject
                 & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
@@ -110,25 +108,57 @@ class ThumbnailViewSet(
 
         """
         thumbnail = self.get_object()  # check permissions first
-
         serializer = serializers.ThumbnailSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        now = timezone.now()
-        stamp = to_timestamp(now)
-
-        key = thumbnail.get_source_s3_key(stamp=stamp)
-
-        presigned_post = create_presigned_post(
-            [
-                ["starts-with", "$Content-Type", "image/"],
-                ["content-length-range", 0, settings.THUMBNAIL_SOURCE_MAX_SIZE],
-            ],
-            {},
-            key,
+        presigned_post = (
+            storage.get_initiate_backend().initiate_object_videos_storage_upload(
+                request,
+                thumbnail,
+                [
+                    ["starts-with", "$Content-Type", "image/"],
+                    ["content-length-range", 0, settings.THUMBNAIL_SOURCE_MAX_SIZE],
+                ],
+            )
         )
 
         # Reset the upload state of the thumbnail
         Thumbnail.objects.filter(pk=pk).update(upload_state=defaults.PENDING)
 
         return Response(presigned_post)
+
+    @action(methods=["post"], detail=True, url_path="upload-ended")
+    # pylint: disable=unused-argument
+    def upload_ended(self, request, pk=None, video_id=None):
+        """Notify the API that the thumbnail upload has ended.
+
+        Calling the endpoint will start the resizing process of the thumbnail.
+        The request should have a file_key in the body, which is the key of the
+        uploaded file.
+
+        Parameters
+        ----------
+        request : Type[django.http.request.HttpRequest]
+            The request on the API endpoint
+        pk: string
+            The primary key of the thumbnail
+
+        Returns
+        -------
+        Type[rest_framework.response.Response]
+            HttpResponse with the serialized thumbnail.
+        """
+        # Ensure object exists and user has access to it
+        thumbnail = self.get_object()
+
+        serializer = serializers.VideosStorageUploadEndedSerializer(
+            data=request.data, context={"obj": thumbnail}
+        )
+        serializer.is_valid(raise_exception=True)
+
+        file_key = serializer.validated_data["file_key"]
+        # The file_key have the "tmp/{video_pk}/thumbnail/{stamp}" format
+        stamp = file_key.split("/")[-1]
+        resize_thumbnails.delay(pk, stamp)
+
+        return Response(serializer.data)
