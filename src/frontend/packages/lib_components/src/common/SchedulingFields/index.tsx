@@ -123,10 +123,7 @@ export const SchedulingFields = ({
     setCurrentStartingAtTime(timeUpdated);
     const updatedStartingAt = mergeDateTime(dateUpdated, timeUpdated);
     if (updatedStartingAt !== startingAt) {
-      if (
-        updatedStartingAt &&
-        updatedStartingAt < (DateTime.local().toISO() as string)
-      ) {
+      if (updatedStartingAt && updatedStartingAt < DateTime.local().toISO()) {
         setStartingAtError(
           intl.formatMessage(messages.invalidStartingAt, {
             updatedStartingAt: DateTime.fromISO(
@@ -220,16 +217,14 @@ export const SchedulingFields = ({
             fullWidth
             label={intl.formatMessage(messages.startingAtDateTextLabel)}
             locale={intl.locale}
-            minValue={
-              DateTime.local()
-                .set({
-                  hour: 0,
-                  minute: 0,
-                  second: 0,
-                  millisecond: 0,
-                })
-                .toISO() as string
-            }
+            minValue={DateTime.local()
+              .set({
+                hour: 0,
+                minute: 0,
+                second: 0,
+                millisecond: 0,
+              })
+              .toISO()}
             onChange={onStartingAtDateInputChange}
             state={startingAtError ? 'error' : 'default'}
             value={
