@@ -73,17 +73,15 @@ export const RetentionDate = ({
           fullWidth
           label={intl.formatMessage(messages.title)}
           locale={intl.locale}
-          minValue={
-            DateTime.local()
-              .plus({ days: 1 })
-              .set({
-                hour: 0,
-                minute: 0,
-                second: 0,
-                millisecond: 0,
-              })
-              .toISO() as string
-          }
+          minValue={DateTime.local()
+            .plus({ days: 1 })
+            .set({
+              hour: 0,
+              minute: 0,
+              second: 0,
+              millisecond: 0,
+            })
+            .toISO()}
           onChange={onLocalChange}
           value={selectedRetentionDate}
         />
