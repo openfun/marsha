@@ -3,6 +3,6 @@
   "compilerOptions": {
     "baseUrl": "src",
   },
-  "include": ["**/*.ts", "**/*.tsx", "../../packages/**/*.d.ts"],
-  "exclude": ["node_modules"]
+  "include": ["**/*.ts", "**/*.tsx", "../../packages/**/*.d.ts", "vite.config.mts"],
+  "exclude": ["node_modules", "**/*.spec.ts", "**/*.spec.tsx", "**/*.mock.ts"]
 }

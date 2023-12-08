@@ -100,7 +100,7 @@ describe('<InstructorDownloadVideo />', () => {
 
     await userEvent.click(downloadButton);
 
-    expect(global.open).toBeCalledWith(
+    expect(global.open).toHaveBeenCalledWith(
       'https://example.com/mp4/1080',
       '_blank',
     );

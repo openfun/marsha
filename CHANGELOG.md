@@ -17,6 +17,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Replace CRA by Vite (#2530)
 - Replace grommet Image and Grid component (#2518)
 - Optimized apps bundle (#2528)
 
