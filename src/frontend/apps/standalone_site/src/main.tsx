@@ -1,6 +1,5 @@
 import 'init';
 import 'lib-common/cunningham-style';
-import { serviceWorkerRegistration } from 'lib-components';
 import 'public-path';
 import { createRoot } from 'react-dom/client';
 
@@ -12,7 +11,4 @@ if (!container) {
   throw new Error('container not found!');
 }
 
-const root = createRoot(container);
-root.render(<App />);
-
-serviceWorkerRegistration.unregister();
+createRoot(container).render(<App />);

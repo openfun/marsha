@@ -1,4 +1,4 @@
-/// <reference types="react-scripts" />
+/// <reference types="vite/client" />
 
 declare let __webpack_public_path__: string;
 interface Window extends Window {

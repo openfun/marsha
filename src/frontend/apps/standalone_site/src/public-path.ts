@@ -10,7 +10,7 @@ const eventCDNLoadedEvent = new CustomEvent('CDNLoaded', {
 document.addEventListener('DOMContentLoaded', () => {
   const metaPublicValue = getMetaPublicValue();
   if (metaPublicValue) {
-    __webpack_public_path__ = metaPublicValue;
+    //__webpack_public_path__ = metaPublicValue;
   }
 
   window.isCDNLoaded = true;

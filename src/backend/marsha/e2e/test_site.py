@@ -75,7 +75,7 @@ def test_site_login(page: Page, live_server: LiveServer):
 def test_site_logged_in(context: BrowserContext, live_server: LiveServer):
     """Test site already logged in."""
     page = context.new_page()
-    page.goto(live_server.url)
+    page.goto(live_server.url, wait_until="domcontentloaded")
 
     expect(page.get_by_role("menuitem", name="Dashboard")).to_be_visible()
     expect(page.get_by_role("menuitem", name="My Playlists")).to_be_visible()

@@ -1,36 +1,25 @@
 {
   "name": "standalone_site",
   "version": "4.9.0",
-  "license": "MIT",
   "private": true,
-  "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "*",
-    "@testing-library/jest-dom": "*",
-    "@testing-library/react": "*",
-    "@testing-library/user-event": "*",
-    "@types/fetch-mock": "7.3.8",
-    "@types/jest": "29.5.11",
-    "@types/node": "*",
-    "@types/react": "*",
-    "@types/react-dom": "*",
-    "@types/react-router-dom": "*",
-    "babel-jest": "29.7.0",
-    "cross-env": "7.0.3",
-    "eslint": "*",
-    "eslint-config-marsha": "*",
-    "fetch-mock": "9.11.0",
-    "fork-ts-checker-webpack-plugin": "9.0.2",
-    "lib-tests": "*",
-    "typescript": "*"
+  "type": "module",
+  "scripts": {
+    "start": "vite",
+    "start:custom": "yarn start --port=3001",
+    "build": "tsc && vite build",
+    "build:watch": "yarn build --watch",
+    "build:preview": "yarn build && yarn preview",
+    "lint": "tsc --noEmit && eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "yarn run lint -- --fix",
+    "prettier": "prettier --list-different '**/*.+(ts|tsx|json|js|jsx)' --ignore-path ../../../.prettierignore",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "@craco/craco": "7.1.0",
     "@openfun/cunningham-react": "*",
     "@tanstack/react-query": "*",
     "@tanstack/react-query-devtools": "*",
     "grommet": "*",
     "grommet-icons": "4.11.0",
-    "http-proxy-middleware": "2.0.6",
     "lib-classroom": "*",
     "lib-common": "*",
     "lib-components": "*",
@@ -43,38 +32,23 @@
     "react-hot-toast": "2.4.1",
     "react-markdown": "9.0.1",
     "react-router-dom": "*",
-    "react-scripts": "5.0.1",
-    "resize-observer-polyfill": "^1.5.1",
     "styled-components": "*",
-    "web-vitals": "3.5.0",
     "zustand": "*"
   },
-  "scripts": {
-    "start": "craco start",
-    "start:custom": "cross-env PORT=3001 yarn start",
-    "build": "craco build",
-    "postbuild": "./postbuild.sh",
-    "test": "cross-env CI=true TZ=UTC craco test",
-    "lint": "tsc --noEmit && eslint src/**/*.{ts,tsx}",
-    "lint:fix": "yarn run lint -- --fix",
-    "prettier": "prettier --list-different '**/*.+(ts|tsx|json|js|jsx)' --ignore-path ../../../.prettierignore"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "workspaces": {
-    "nohoist": [
-      "typescript"
-    ]
+  "devDependencies": {
+    "@types/react": "18.2.37",
+    "@types/react-dom": "18.2.15",
+    "@typescript-eslint/eslint-plugin": "6.10.0",
+    "@typescript-eslint/parser": "6.10.0",
+    "@vitejs/plugin-react": "4.2.0",
+    "cross-env": "7.0.3",
+    "eslint": "*",
+    "eslint-config-marsha": "*",
+    "fetch-mock": "9.11.0",
+    "lib-tests": "*",
+    "typescript": "*",
+    "vite": "5.0.0",
+    "vite-tsconfig-paths": "4.2.1"
   },
   "volta": {
     "node": "20.9.0"

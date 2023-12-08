@@ -322,7 +322,9 @@ describe('<ToolsAndApplications />', () => {
       },
       method: 'PATCH',
       body:
+        // eslint-disable-next-line jest/no-conditional-expect
         expect.stringContaining(`"enable_waiting_room":true`) &&
+        // eslint-disable-next-line jest/no-conditional-expect
         expect.stringContaining(`"enable_shared_notes":false`),
     });
   });
