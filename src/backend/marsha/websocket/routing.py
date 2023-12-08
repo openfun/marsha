@@ -2,6 +2,9 @@
 
 from django.urls import re_path
 
+from django_peertube_runner_connector.socket import sio
+from socketio import ASGIApp
+
 from marsha.websocket.consumers import VideoConsumer
 
 
@@ -14,4 +17,5 @@ websocket_urlpatterns = [
         f"ws/video/(?P<video_id>{UUID_REGEX:s})/$",
         VideoConsumer.as_asgi(),
     ),
+    re_path(r"^socket.io/", ASGIApp(sio)),
 ]

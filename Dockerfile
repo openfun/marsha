@@ -113,7 +113,8 @@ RUN apt-get update && \
         dvisvgm \
         libxml2-dev \
         libxmlsec1-dev \
-        libxmlsec1-openssl && \
+        libxmlsec1-openssl \
+        ffmpeg && \
     rm -rf /var/lib/apt/lists/*
 
 # Copy installed python dependencies

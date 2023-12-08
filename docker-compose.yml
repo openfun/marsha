@@ -47,6 +47,11 @@ services:
     stdin_open: true
     tty: true
 
+  peertube-runner:
+    image: fundocker/peertube-runner:latest
+    env_file:
+      - env.d/peertube_runner
+
   webtorrent:
     image: node:20
     environment:

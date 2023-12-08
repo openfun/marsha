@@ -6,6 +6,8 @@ from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.db.transaction import atomic
 
+from django_peertube_runner_connector.models import Runner, RunnerRegistrationToken
+
 from marsha.bbb.factories import ClassroomFactory
 from marsha.core.defaults import DEPOSIT, DOCUMENT, MARKDOWN, VIDEO, WEBINAR
 from marsha.core.factories import (
@@ -81,6 +83,7 @@ class Command(BaseCommand):
         organization = self._create_organizations(localhost_cs)
         self._create_playlists(localhost_cs, organization)
         self._create_lti_passports()
+        self._create_peertube_runner_token()
 
     def _create_site(self):
         self.stdout.write("Creating custom frontend...")
@@ -444,4 +447,21 @@ class Command(BaseCommand):
             shared_secret="sandbox",  # nosec
         )
 
+        self.stdout.write(" - done.")
+
+    def _create_peertube_runner_token(self):
+        """Create peertube runner token."""
+        self.stdout.write("Creating peertube runner token...")
+        registration_token, _ = RunnerRegistrationToken.objects.get_or_create(
+            registrationToken="49c0e9f4-d0c1-41bc-8559-a59baf1a40b6",
+        )
+        Runner.objects.get_or_create(
+            name="local-peertube-runner",
+            defaults={
+                "runnerRegistrationToken": registration_token,
+                "runnerToken": "ptrt-a8d27afb-ea3f-4746-9040-875a9b53f4d4",
+                "lastContact": "2020-01-01T00:00:00Z",
+                "ip": "172.22.0.9",
+            },
+        )
         self.stdout.write(" - done.")

@@ -40,8 +40,10 @@ class JWTMiddleware:
             )
 
         try:
-            token = self.validate_jwt(scope)
-            scope["token"] = token
+            # In case of a socket.io connection do not validate the token
+            if scope["path"] != "/socket.io/":
+                token = self.validate_jwt(scope)
+                scope["token"] = token
             return await self.application(scope, receive, send)
         except InvalidToken:
             # Deny the connection
