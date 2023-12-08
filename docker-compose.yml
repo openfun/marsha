@@ -39,6 +39,7 @@ services:
       - .:/app
       - ./data/static:/data/static
       - ./data/media:/data/media
+      - ./data/videos:/data/videos
     depends_on:
       - "base"
       - "db"

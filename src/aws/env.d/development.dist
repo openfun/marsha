@@ -6,6 +6,15 @@ AWS_SECRET_ACCESS_KEY=YourAwsSecretAccessKey
 AWS_DEFAULT_REGION=eu-west-1
 AWS_SESSION_TOKEN=
 
+# SCw credentials
+SCW_ACCESS_KEY=YourScwAccessKey
+SCW_SECRET_KEY=YourScwSecretKey
+SCW_DEFAULT_PROJECT_ID=YourScwProjectId
+SCW_DEFAULT_ORGANIZATION_ID=YourScwOrganizationId
+SCW_DEFAULT_REGION=fr-par
+SCW_DEFAULT_ZONE=fr-par-1
+
+
 # Terraform variables
 TF_VAR_cloudfront_trusted_signer_id=888888888888
 TF_VAR_update_state_disable_ssl_validation=false
@@ -14,6 +23,8 @@ TF_VAR_marsha_base_url=https://your.marsha.tld
 TF_VAR_migrations=[""]
 # /!\ Choose carefully this suffix, it's not possible to change it afterward
 TF_VAR_s3_bucket_unique_suffix=<REPLACE-BY-UNIQUE-SUFFIX>
+
+TF_VAR_scw_group_id=YourScwGroupId
 
 TF_VAR_lambda_image_name=your.ecr.image.name
 TF_VAR_lambda_image_tag=3.14.0

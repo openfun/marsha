@@ -2,9 +2,28 @@
 from django.conf import settings
 from django.utils import timezone
 
+from storages.backends.s3boto3 import S3Boto3Storage
+
 from marsha.core.models import Document, Video
 from marsha.core.utils.s3_utils import create_presigned_post
 from marsha.core.utils.time_utils import to_timestamp
+
+
+class S3VideoStorage(S3Boto3Storage):
+    """
+    Storage class to handle s3 storage for videos.
+    """
+
+    access_key = settings.VIDEOS_STORAGE_S3_ACCESS_KEY
+    secret_key = settings.VIDEOS_STORAGE_S3_SECRET_KEY
+    endpoint_url = settings.VIDEOS_STORAGE_S3_ENDPOINT_URL
+    region_name = settings.VIDEOS_STORAGE_S3_REGION_NAME
+    signature_version = "s3v4"
+
+    bucket_name = settings.VIDEOS_STORAGE_S3_BUCKET_NAME
+
+    custom_domain = settings.CLOUDFRONT_DOMAIN
+    url_protocol = "https:"
 
 
 # pylint: disable=unused-argument

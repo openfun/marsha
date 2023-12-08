@@ -1,5 +1,6 @@
 locals {
   s3_destination_origin_id = "marsha-destination-origin"
+  scw_object_storage_origin_id = "marsha-scw-object-storage-origin"
   static_origin_id = "marsha-static-origin"
 }
 
@@ -38,6 +39,19 @@ resource "aws_cloudfront_distribution" "marsha_cloudfront_distribution" {
     }
   }
 
+  # Origin for the scw object storage bucket
+  origin {
+    domain_name = "${scaleway_object_bucket.marsha_object_bucket.name}.s3.${scaleway_object_bucket.marsha_object_bucket.region}.scw.cloud"
+    origin_id   = local.scw_object_storage_origin_id
+
+    custom_origin_config {
+      http_port = 80
+      https_port = 443
+      origin_protocol_policy = "https-only"
+      origin_ssl_protocols = ["SSLv3", "TLSv1", "TLSv1.1", "TLSv1.2"]
+    }
+  }
+
   # Origin for static distribution
   origin {
     domain_name = trimprefix(var.marsha_base_url, "https://")
@@ -54,6 +68,50 @@ resource "aws_cloudfront_distribution" "marsha_cloudfront_distribution" {
   enabled             = true
   is_ipv6_enabled     = true
   wait_for_deployment = false
+
+  ordered_cache_behavior {
+    path_pattern     = "scw/*"
+    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+    cached_methods   = ["GET", "HEAD", "OPTIONS"]
+    target_origin_id = local.scw_object_storage_origin_id
+
+    forwarded_values {
+      query_string = false
+      headers = ["Access-Control-Request-Headers", "Access-Control-Request-Method", "Origin"]
+
+      cookies {
+        forward = "none"
+      }
+    }
+
+    min_ttl                = 0
+    default_ttl            = 3600
+    max_ttl                = 86400
+    compress               = true
+    viewer_protocol_policy = "redirect-to-https"
+  }
+
+   ordered_cache_behavior {
+    path_pattern     = "tmp/*"
+    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+    cached_methods   = ["GET", "HEAD", "OPTIONS"]
+    target_origin_id = local.scw_object_storage_origin_id
+
+    forwarded_values {
+      query_string = false
+      headers = ["Access-Control-Request-Headers", "Access-Control-Request-Method", "Origin"]
+
+      cookies {
+        forward = "none"
+      }
+    }
+
+    min_ttl                = 0
+    default_ttl            = 3600
+    max_ttl                = 86400
+    compress               = true
+    viewer_protocol_policy = "redirect-to-https"
+  }
 
   # Destination bucket: allow public access by default
   default_cache_behavior {

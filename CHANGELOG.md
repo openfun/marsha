@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Add scaleway storage configuration
+
 ### Changed
 
 - Replace grommet Image and Grid component (#2518)
