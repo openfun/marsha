@@ -903,6 +903,7 @@ class Build(Base):
     AWS_BASE_NAME = values.Value("")
     AWS_MEDIALIVE_ROLE_ARN = values.Value("")
     AWS_MEDIAPACKAGE_HARVEST_JOB_ARN = values.Value("")
+    CLOUDFRONT_SIGNED_URLS_ACTIVE = values.BooleanValue(False)
     VIDEOS_STORAGE_S3_ACCESS_KEY = values.Value("DummyKey")
     VIDEOS_STORAGE_S3_SECRET_KEY = values.Value("DummyKey")
     BBB_API_SECRET = values.Value("")

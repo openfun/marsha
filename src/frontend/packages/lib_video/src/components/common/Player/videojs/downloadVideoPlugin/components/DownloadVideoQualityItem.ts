@@ -29,6 +29,7 @@ export class DownloadVideoQualityItem extends MenuItem {
   downloadVideoQuality(source: string) {
     const link = document.createElement('a');
     link.href = source;
+    link.download = '';
     link.click();
   }
 }

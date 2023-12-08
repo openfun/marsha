@@ -143,9 +143,7 @@ class SharedLiveMediaSerializer(
 
         urls["pages"] = pages
 
-        if (
-            self.context.get("is_admin") or obj.show_download
-        ) and settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
+        if self.context.get("is_admin") or obj.show_download:
             url = f"{base}/{stamp}.pdf"
             urls["media"] = video_storage.url(url)
 

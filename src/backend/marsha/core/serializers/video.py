@@ -256,13 +256,9 @@ class VideoBaseSerializer(serializers.ModelSerializer):
             base = obj.get_videos_storage_prefix(stamp=stamp)
             for resolution in obj.resolutions:
                 # MP4
-                mp4_url = (
-                    video_storage.url(f"{base}/{stamp}-{resolution}-fragmented.mp4")
-                    + f"?response-content-disposition={content_disposition}"
+                mp4_url = video_storage.url(
+                    f"{base}/{stamp}-{resolution}-fragmented.mp4"
                 )
-                # Sign the urls of mp4 videos only if the functionality is activated
-                if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
-                    mp4_url = cloudfront_utils.build_signed_url(mp4_url, params)
 
                 urls["mp4"][resolution] = mp4_url
 

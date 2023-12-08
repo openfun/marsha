@@ -74,10 +74,9 @@ export const TimedTextTrackItem = ({
 
       <Box width={{ min: '0px' }}>
         <Button
-          target="_blank"
-          rel="noopener noreferrer"
           color="tertiary"
           href={timedTextTrack.source_url ?? undefined}
+          download
         >
           {languageLabel}
         </Button>

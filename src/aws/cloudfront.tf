@@ -70,13 +70,38 @@ resource "aws_cloudfront_distribution" "marsha_cloudfront_distribution" {
   wait_for_deployment = false
 
   ordered_cache_behavior {
-    path_pattern     = "vod/*"
+    path_pattern     = "vod/*/video/*"
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
     target_origin_id = local.scw_object_storage_origin_id
 
     forwarded_values {
-      query_string = false
+      query_string = true
+      query_string_cache_keys = ["response-content-disposition"]
+      headers = ["Access-Control-Request-Headers", "Access-Control-Request-Method", "Origin"]
+
+      cookies {
+        forward = "none"
+      }
+    }
+
+    min_ttl                = 0
+    default_ttl            = 3600
+    max_ttl                = 86400
+    compress               = true
+    viewer_protocol_policy = "redirect-to-https"
+  }
+
+  ordered_cache_behavior {
+    path_pattern     = "vod/*"
+    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+    cached_methods   = ["GET", "HEAD", "OPTIONS"]
+    target_origin_id = local.scw_object_storage_origin_id
+    trusted_signers  = []
+    trusted_key_groups = [aws_cloudfront_key_group.marsha_cloudfront_signer_key_group.id]
+
+    forwarded_values {
+      query_string = true
       headers = ["Access-Control-Request-Headers", "Access-Control-Request-Method", "Origin"]
 
       cookies {
@@ -96,6 +121,8 @@ resource "aws_cloudfront_distribution" "marsha_cloudfront_distribution" {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
     target_origin_id = local.scw_object_storage_origin_id
+    trusted_signers  = []
+    trusted_key_groups = [aws_cloudfront_key_group.marsha_cloudfront_signer_key_group.id]
 
     forwarded_values {
       query_string = false
