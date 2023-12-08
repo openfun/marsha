@@ -11,7 +11,7 @@ import React from 'react';
 
 import { usePagesApi } from 'features/PagesApi';
 
-import { ReactComponent as WaveIcon } from '../assets/svg/footer-wave.svg';
+import WaveIcon from '../assets/svg/footer-wave.svg?react';
 
 const Footer = ({ withoutWave }: { withoutWave?: boolean }) => {
   const { isSmallerBreakpoint, breakpoint } = useResponsive();

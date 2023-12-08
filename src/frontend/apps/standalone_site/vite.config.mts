@@ -5,6 +5,7 @@ import {
   loadEnv,
   splitVendorChunkPlugin,
 } from 'vite';
+import svgr from 'vite-plugin-svgr';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
 // https://vitejs.dev/config/
@@ -20,7 +21,7 @@ export default defineConfig(({ mode }) => {
     preview: {
       port: 3015,
     },
-    plugins: [react(), tsconfigPaths(), splitVendorChunkPlugin()],
+    plugins: [react(), tsconfigPaths(), splitVendorChunkPlugin(), svgr()],
     define: {
       // By default, Vite doesn't include shims for NodeJS/
       // necessary for segment analytics lib to work

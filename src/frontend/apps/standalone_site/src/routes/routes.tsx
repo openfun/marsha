@@ -1,8 +1,8 @@
 import { FormattedMessage, defineMessages } from 'react-intl';
 
-import { ReactComponent as AvatarIcon } from 'assets/svg/iko_avatarsvg.svg';
-import { ReactComponent as HomeIcon } from 'assets/svg/iko_homesvg.svg';
-import { ReactComponent as VueListIcon } from 'assets/svg/iko_vuelistesvg.svg';
+import AvatarIcon from 'assets/svg/iko_avatarsvg.svg?react';
+import HomeIcon from 'assets/svg/iko_homesvg.svg?react';
+import VueListIcon from 'assets/svg/iko_vuelistesvg.svg?react';
 import { LoadSVG } from 'components/Assets';
 
 const messages = defineMessages({

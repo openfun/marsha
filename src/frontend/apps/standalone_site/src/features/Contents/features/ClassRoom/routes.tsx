@@ -1,6 +1,6 @@
 import { FormattedMessage, defineMessages } from 'react-intl';
 
-import { ReactComponent as ClassroomsIcon } from 'assets/svg/iko_webinairesvg.svg';
+import ClassroomsIcon from 'assets/svg/iko_webinairesvg.svg?react';
 import { LoadSVG } from 'components/Assets';
 import { RouteRequired } from 'routes';
 

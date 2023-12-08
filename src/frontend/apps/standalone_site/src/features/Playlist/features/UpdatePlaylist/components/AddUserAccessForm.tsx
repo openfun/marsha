@@ -5,7 +5,7 @@ import { debounce } from 'lodash';
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { ReactComponent as SearchPeopleIcon } from 'assets/svg/iko_search-people.svg';
+import SearchPeopleIcon from 'assets/svg/iko_search-people.svg?react';
 
 import { useCreatePlaylistAccess } from '../api/useCreatePlaylistAccess';
 import { UserLite } from '../api/useSearchUsers';

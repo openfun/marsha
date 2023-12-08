@@ -3,8 +3,8 @@ import { colorsTokens } from 'lib-common';
 import { Box, ContentCard, StyledLink, Text, Video } from 'lib-components';
 import { useEffect, useState } from 'react';
 
-import { ReactComponent as LiveIcon } from 'assets/svg/iko_live.svg';
-import { ReactComponent as VueListIcon } from 'assets/svg/iko_vuelistesvg.svg';
+import LiveIcon from 'assets/svg/iko_live.svg?react';
+import VueListIcon from 'assets/svg/iko_vuelistesvg.svg?react';
 import { useSelectFeatures } from 'features/Contents/store/selectionStore';
 
 import routes from '../../routes';

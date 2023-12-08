@@ -1,7 +1,7 @@
 import { useResponsive } from 'lib-components';
 import { SVGProps } from 'react';
 
-import { ReactComponent as BurgerIcon } from 'assets/svg/burger.svg';
+import BurgerIcon from 'assets/svg/burger.svg?react';
 import { useMenu } from 'features/Menu/store/menuStore';
 
 import styles from './Burger.module.css';

@@ -1,6 +1,6 @@
 import { FormattedMessage, defineMessages } from 'react-intl';
 
-import { ReactComponent as VideoIcon } from 'assets/svg/iko_next.svg';
+import VideoIcon from 'assets/svg/iko_next.svg?react';
 import { LoadSVG } from 'components/Assets';
 import { RouteRequired } from 'routes';
 

@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 import { render } from 'lib-tests';
 
-import { ReactComponent as StarIcon } from 'assets/svg/iko_starsvg.svg';
+import StarIcon from 'assets/svg/iko_starsvg.svg?react';
 
 import LoadSVG from './LoadSVG';
 
