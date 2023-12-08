@@ -6,6 +6,9 @@ from django.contrib import admin
 from django.urls import include, path, re_path, register_converter
 from django.views.decorators.cache import cache_page
 
+from django_peertube_runner_connector.urls import (
+    urlpatterns as django_peertube_runner_connector_urls,
+)
 from rest_framework.routers import DefaultRouter
 
 from marsha.core import models
@@ -177,6 +180,7 @@ if "dummy" in settings.STORAGE_BACKEND:
             name="local-document-upload",
         ),
     ]
+urlpatterns += django_peertube_runner_connector_urls
 
 static_path = re.escape(settings.STATIC_URL.lstrip("/"))
 media_path = re.escape(settings.MEDIA_URL.lstrip("/"))

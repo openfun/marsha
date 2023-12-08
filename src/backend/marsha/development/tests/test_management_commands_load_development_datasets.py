@@ -56,6 +56,8 @@ class LoadDevelopmentDatasetsTestCase(TransactionTestCase):
                 " - done.",
                 "Creating LTI passports...",
                 " - done.",
+                "Creating peertube runner token...",
+                " - done.",
             ],
         )
 
@@ -101,6 +103,8 @@ class LoadDevelopmentDatasetsTestCase(TransactionTestCase):
                 "Creating playlists...",
                 " - done.",
                 "Creating LTI passports...",
+                " - done.",
+                "Creating peertube runner token...",
                 " - done.",
             ],
         )
@@ -151,6 +155,8 @@ class LoadDevelopmentDatasetsTestCase(TransactionTestCase):
                 "Creating playlists...",
                 " - done.",
                 "Creating LTI passports...",
+                " - done.",
+                "Creating peertube runner token...",
                 " - done.",
             ],
         )

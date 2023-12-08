@@ -127,6 +127,8 @@ class Base(Configuration):
         "rest_framework_simplejwt.token_blacklist",
         "social_django.apps.PythonSocialAuthConfig",  # python-social-auth for Django
         "social_edu_federation.django.apps.PythonSocialEduFedAuthConfig",
+        "django_peertube_runner_connector.apps.DjangoPeertubeRunnerConnectorConfig",
+        "storages",
         # Marsha
         "marsha.account.apps.AccountConfig",
         "marsha.core.apps.MarshaAdminConfig",
@@ -721,6 +723,33 @@ class Base(Configuration):
 
     SOCIAL_AUTH_SAML_FER_PIPELINE = MARSHA_DEFAULT_AUTH_PIPELINE
 
+    # Django Peertube connector settings
+
+    # Transcoding resolution settings
+    TRANSCODING_ALWAYS_TRANSCODE_ORIGINAL_RESOLUTION = False
+    TRANSCODING_RESOLUTIONS_144P = False
+    TRANSCODING_RESOLUTIONS_240P = True
+    TRANSCODING_RESOLUTIONS_360P = True
+    TRANSCODING_RESOLUTIONS_480P = True
+    TRANSCODING_RESOLUTIONS_720P = True
+    TRANSCODING_RESOLUTIONS_1080P = False
+    TRANSCODING_RESOLUTIONS_1440P = False
+    TRANSCODING_RESOLUTIONS_2160P = False
+
+    # Transcoding fps settings
+    TRANSCODING_FPS_MIN = 1
+    TRANSCODING_FPS_STANDARD = [24, 25, 30]
+    TRANSCODING_FPS_HD_STANDARD = [50, 60]
+    TRANSCODING_FPS_AUDIO_MERGE = 25
+    TRANSCODING_FPS_AVERAGE = 30
+    TRANSCODING_FPS_MAX = 60
+    TRANSCODING_FPS_KEEP_ORIGIN_FPS_RESOLUTION_MIN = 720
+
+    # Max number of times a job can fail before being marked as failed
+    TRANSCODING_RUNNER_MAX_FAILURE = 5
+
+    # The callback path to a function that will be called when a video is published
+    TRANSCODING_VIDEO_IS_PUBLISHED_CALLBACK_PATH = ""
     # LRS settings dedicated to the current site
     LRS_URL = values.Value()
     LRS_AUTH_TOKEN = values.Value()
