@@ -6,15 +6,20 @@ import { defineMessages, useIntl } from 'react-intl';
 
 import { ConfigResponse } from 'api/useConfig';
 import { useContentFeatures } from 'features/Contents';
-import { useLanguageStore } from 'features/Language/store/languageStore';
+import { getTranslations, useLanguageStore } from 'features/Language/';
 
 import AppConfig from './AppConfig';
+
+jest.mock('features/Language/getTranslations', () => ({
+  getTranslations: jest.fn(),
+}));
+const mockedGetTranslations = getTranslations as jest.MockedFunction<
+  typeof getTranslations
+>;
 
 const consoleWarn = jest
   .spyOn(console, 'warn')
   .mockImplementation(() => jest.fn());
-
-window.isCDNLoaded = true;
 
 useSentry.setState({
   setSentry: () => useSentry.setState({ isSentryReady: true }),
@@ -289,13 +294,10 @@ describe('AppConfig', () => {
       return <div>{intl.formatMessage(messages.testMessage)}</div>;
     };
 
-    jest.mock(
-      'translations/fr_FR.json',
-      () => ({
-        test: 'Mon test',
-      }),
-      { virtual: true },
-    );
+    mockedGetTranslations.mockReturnValue({
+      '../../translations/fr_FR.json': async () =>
+        await Promise.resolve({ default: { test: 'Mon test' } }),
+    });
 
     deferredConfig.resolve(config);
 

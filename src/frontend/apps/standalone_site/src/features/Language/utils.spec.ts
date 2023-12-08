@@ -1,11 +1,24 @@
 import { LANGUAGE_LOCAL_STORAGE } from './conf';
+import { getTranslations } from './getTranslations';
 import {
+  getCurrentTranslation,
   getLanguage,
   getLanguageFromLocale,
   getLocaleCode,
   splitLocaleCode,
   toLocale,
 } from './utils';
+
+jest.mock('features/Language/getTranslations', () => ({
+  getTranslations: jest.fn(),
+}));
+const mockedGetTranslations = getTranslations as jest.MockedFunction<
+  typeof getTranslations
+>;
+
+const consoleWarn = jest
+  .spyOn(console, 'warn')
+  .mockImplementation(() => jest.fn());
 
 describe('toLocale', () => {
   it('Turns a language name (en-us) into a locale name (en_US)', () => {
@@ -123,9 +136,33 @@ describe('getLanguageFromLocale', () => {
 
   it('gets an error if locale not correct', () => {
     try {
-      expect(getLanguageFromLocale('en_US')).toThrowError(
+      expect(getLanguageFromLocale('en_US')).toThrow(
         'RangeError: Incorrect locale information provided',
       );
     } catch (e) {}
+  });
+});
+
+describe('getCurrentTranslation', () => {
+  afterEach(() => {
+    jest.resetAllMocks();
+    consoleWarn.mockClear();
+  });
+
+  it('gets translation', async () => {
+    mockedGetTranslations.mockReturnValue({
+      '../../translations/fr_FR.json': async () =>
+        await Promise.resolve({ default: { test: 'Mon test' } }),
+    });
+
+    expect(await getCurrentTranslation('fr_FR')).toEqual({ test: 'Mon test' });
+  });
+
+  it('gives a warning if the translation does not exist', async () => {
+    expect(await getCurrentTranslation('en_TEST')).toBeUndefined();
+
+    expect(consoleWarn).toHaveBeenCalledWith(
+      '[intl] No translation found for language en_TEST',
+    );
   });
 });

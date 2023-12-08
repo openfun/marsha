@@ -1219,6 +1219,13 @@
   dependencies:
     regenerator-runtime "^0.14.0"
 
+"@babel/runtime@^7.13.9":
+  version "7.23.6"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.23.6.tgz#c05e610dc228855dc92ef1b53d07389ed8ab521d"
+  integrity sha512-zHd0eUrf5GZoOWVCXp6koAKQTfZV07eit6bGPmJgnZdnSAvvZee6zniW2XMF7Cmc4ISOOnPy3QaSiIJGJkVEDQ==
+  dependencies:
+    regenerator-runtime "^0.14.0"
+
 "@babel/runtime@^7.22.15", "@babel/runtime@^7.9.2":
   version "7.23.5"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.23.5.tgz#11edb98f8aeec529b82b211028177679144242db"
@@ -4032,7 +4039,7 @@
     "@types/babel__template" "*"
     "@types/babel__traverse" "*"
 
-"@types/babel__core@^7.20.4":
+"@types/babel__core@^7.1.12", "@types/babel__core@^7.20.4":
   version "7.20.5"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.20.5.tgz#3df15f27ba85319caa07ba08d0721889bb39c017"
   integrity sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==
@@ -5313,6 +5320,15 @@ babel-plugin-transform-react-jsx@7.0.0-beta.3:
   dependencies:
     babel-helper-builder-react-jsx "7.0.0-beta.3"
     babel-plugin-syntax-jsx "7.0.0-beta.3"
+
+babel-plugin-transform-vite-meta-glob@1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/babel-plugin-transform-vite-meta-glob/-/babel-plugin-transform-vite-meta-glob-1.0.3.tgz#74320e0ea09b6325974109cab1c3fc6f3a6c8036"
+  integrity sha512-JW3VnwUjJqpj0FM0vJFxrGdxSBcHOa0j5YMvvtXYPmFshroq53nbK9dqRETgjXlMrfIz0oU/6ki+u1GdVWdNHA==
+  dependencies:
+    "@babel/runtime" "^7.13.9"
+    "@types/babel__core" "^7.1.12"
+    glob "^7.1.6"
 
 babel-preset-current-node-syntax@^1.0.0:
   version "1.0.1"
