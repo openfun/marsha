@@ -11,7 +11,12 @@ import {
   useResponsive,
   useUploadManager,
 } from 'lib-components';
-import { LicenseSelect, UploadVideoForm, useCreateVideo } from 'lib-video';
+import {
+  LicenseSelect,
+  UploadVideoForm,
+  uploadEnded,
+  useCreateVideo,
+} from 'lib-video';
 import { Fragment, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
@@ -82,7 +87,15 @@ const VideoCreateForm = () => {
       setNewVideo(data);
 
       if (video.videoFile) {
-        addUpload(modelName.VIDEOS, data.id, video.videoFile);
+        addUpload(
+          modelName.VIDEOS,
+          data.id,
+          video.videoFile,
+          undefined,
+          (presignedPost) => {
+            uploadEnded(data.id, presignedPost.fields['key']);
+          },
+        );
         setIsUploading(true);
       } else {
         navigate(`../${data.id}`);

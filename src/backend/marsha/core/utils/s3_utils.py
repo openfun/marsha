@@ -62,7 +62,13 @@ def get_s3_client(client_type: ClientType):
     raise ValueError(f"Unknown s3 client type: {client_type}")
 
 
-def create_presigned_post(conditions, fields, key):
+def create_presigned_post(
+    conditions,
+    fields,
+    key,
+    bucket_name=settings.AWS_SOURCE_BUCKET_NAME,
+    client_type: ClientType = "AWS",
+):
     """Build the url and the form fields used for a presigned s3 post.
 
     Parameters
@@ -95,6 +101,14 @@ def create_presigned_post(conditions, fields, key):
         Note that key related conditions and fields are filled out for you and should not be
         included in the Fields or Conditions parameter.
 
+    bucket_name: Type[String]
+        The name of the bucket to post to. If not specified, it will default to the
+        settings.AWS_SOURCE_BUCKET_NAME.
+
+    client_type: Type[ClientType]
+        The type of client to use. Can be "AWS" or "VIDEOS_S3". If not specified, it will default
+        to "AWS".
+
     Returns
     -------
     Dictionary
@@ -103,27 +117,19 @@ def create_presigned_post(conditions, fields, key):
         the post.
 
     """
-    # Configure S3 client using signature V4
-    s3_client = boto3.client(
-        "s3",
-        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-        config=Config(
-            region_name=settings.AWS_S3_REGION_NAME,
-            signature_version="s3v4",
-        ),
-    )
+    s3_client = get_s3_client(client_type)
 
     acl = "private"
     fields.update({"acl": acl})
 
     return s3_client.generate_presigned_post(
-        settings.AWS_SOURCE_BUCKET_NAME,
+        bucket_name,
         key,
         Fields=fields,
         Conditions=[{"acl": acl}] + conditions,
         ExpiresIn=settings.AWS_UPLOAD_EXPIRATION_DELAY,
     )
+
 
 def update_expiration_date(key, expiration_date):
     """

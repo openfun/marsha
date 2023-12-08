@@ -212,8 +212,9 @@ describe('<VideoCreateForm />', () => {
 
     const file = new File(['(⌐□_□)'], 'course.mp4', { type: 'video/mp4' });
 
+    const mockAddUpload = jest.fn();
     mockUseUploadManager.mockReturnValue({
-      addUpload: jest.fn(),
+      addUpload: mockAddUpload,
       uploadManagerState: {
         '1234': {
           file: file,
@@ -303,6 +304,13 @@ describe('<VideoCreateForm />', () => {
     });
 
     await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('../1234'));
+    expect(mockAddUpload).toHaveBeenLastCalledWith(
+      modelName.VIDEOS,
+      '1234',
+      file,
+      undefined,
+      expect.any(Function),
+    );
   });
 
   test('post failed', async () => {

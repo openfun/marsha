@@ -11,7 +11,7 @@ from django.test import TestCase
 
 from waffle.testutils import override_switch
 
-from marsha.core.defaults import SENTRY, STATE_CHOICES
+from marsha.core.defaults import AWS_PIPELINE, SENTRY, STATE_CHOICES
 from marsha.core.factories import ConsumerSiteFactory, LiveSessionFactory, VideoFactory
 from marsha.core.lti import LTI
 
@@ -48,6 +48,7 @@ class CacheLTIViewTestCase(TestCase):
             playlist__is_portable_to_consumer_site=True,
             uploaded_on="2019-09-24 07:24:40+00",
             resolutions=[144, 240],
+            transcode_pipeline=AWS_PIPELINE,
         )
 
         mock_get_consumer_site.return_value = video1.playlist.consumer_site
@@ -127,6 +128,7 @@ class CacheLTIViewTestCase(TestCase):
             upload_state=random.choice([s[0] for s in STATE_CHOICES]),
             uploaded_on="2019-09-24 07:24:40+00",
             resolutions=[144, 240],
+            transcode_pipeline=AWS_PIPELINE,
         )
 
         mock_get_consumer_site.return_value = video.playlist.consumer_site
@@ -158,6 +160,7 @@ class CacheLTIViewTestCase(TestCase):
         video = VideoFactory(
             upload_state=random.choice([s[0] for s in STATE_CHOICES]),
             uploaded_on="2019-09-24 07:24:40+00",
+            transcode_pipeline=AWS_PIPELINE,
             resolutions=[144, 240],
             is_public=True,
         )

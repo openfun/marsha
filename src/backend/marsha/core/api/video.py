@@ -15,6 +15,10 @@ from django.utils.module_loading import import_string
 
 from boto3.exceptions import Boto3Error
 import django_filters
+from django_peertube_runner_connector.transcode import (
+    VideoNotFoundError,
+    transcode_video,
+)
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import APIException, MethodNotAllowed
@@ -197,6 +201,7 @@ class VideoViewSet(
             "stop_recording",
             "stats",
             "jitsi_info",
+            "upload_ended",
         ]:
             permission_classes = [
                 # With LTI: playlist admin or instructor admin can access
@@ -387,11 +392,66 @@ class VideoViewSet(
 
         # Reset the upload state of the video (don't use get_object()
         # as it does not lock the row)
-        Video.objects.filter(pk=pk).update(
-            upload_state=defaults.PENDING, transcode_pipeline=defaults.AWS_PIPELINE
-        )
+        Video.objects.filter(pk=pk).update(upload_state=defaults.PENDING)
 
         return Response(response)
+
+    @action(methods=["post"], detail=True, url_path="upload-ended")
+    # pylint: disable=unused-argument
+    def upload_ended(self, request, pk=None):
+        """Notify the API that the video upload has ended.
+
+        Calling the endpoint will start the transcoding process of the video.
+        The request should have a file_key in the body, which is the key of the
+        uploaded file. It will be used in the transcoding process to name
+        the generated files, and set the uploaded_on property.
+
+        Parameters
+        ----------
+        request : Type[django.http.request.HttpRequest]
+            The request on the API endpoint
+        pk: string
+            The primary key of the video
+
+        Returns
+        -------
+        Type[rest_framework.response.Response]
+            HttpResponse with the serialized video.
+        """
+        # Ensure object exists and user has access to it
+        video = self.get_object()
+
+        serializer = serializers.VideoUploadEndedSerializer(
+            data=request.data, context={"pk": pk}
+        )
+        serializer.is_valid(raise_exception=True)
+
+        file_key = serializer.validated_data["file_key"]
+        # The file_key have the "tmp/{video_pk}/video/{stamp}" format
+        stamp = file_key.split("/")[-1]
+
+        # Launch the PeerTube transcoding process
+        if settings.TRANSCODING_CALLBACK_DOMAIN:
+            domain = settings.TRANSCODING_CALLBACK_DOMAIN
+        else:
+            domain = f"{request.scheme}://{request.get_host()}"
+        try:
+            transcode_video(
+                file_path=file_key,
+                destination=video.get_videos_storage_prefix(stamp=stamp),
+                base_name=stamp,
+                domain=domain,
+            )
+        except VideoNotFoundError:
+            return Response(status=404)
+
+        video.upload_state = defaults.PROCESSING
+        video.save(update_fields=["upload_state"])
+
+        channel_layers_utils.dispatch_video(video, to_admin=True)
+        serializer = self.get_serializer(video)
+
+        return Response(serializer.data)
 
     @action(
         methods=["post"],

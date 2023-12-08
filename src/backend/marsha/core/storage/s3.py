@@ -4,6 +4,7 @@ from django.utils import timezone
 
 from storages.backends.s3boto3 import S3Boto3Storage
 
+from marsha.core.defaults import TMP_VIDEOS_STORAGE_BASE_DIRECTORY
 from marsha.core.models import Document, Video
 from marsha.core.utils.s3_utils import create_presigned_post
 from marsha.core.utils.time_utils import to_timestamp
@@ -44,8 +45,9 @@ def initiate_video_upload(request, pk):
     stamp = to_timestamp(now)
 
     video = Video.objects.get(pk=pk)
-    key = video.get_source_s3_key(stamp=stamp)
-
+    key = video.get_videos_storage_prefix(
+        stamp=stamp, base_dir=TMP_VIDEOS_STORAGE_BASE_DIRECTORY
+    )
     return create_presigned_post(
         [
             ["starts-with", "$Content-Type", "video/"],
@@ -53,6 +55,8 @@ def initiate_video_upload(request, pk):
         ],
         {},
         key,
+        S3VideoStorage.bucket_name,
+        "VIDEOS_S3",
     )
 
 

@@ -33,6 +33,7 @@ export interface UploadingObject {
   status: UploadManagerStatus;
   message?: string;
   parentId?: string;
+  onUploadEnded?: (presignedPost: AWSPresignedPost) => Promise<void> | void;
 }
 
 export interface UploadManagerState {
@@ -84,7 +85,7 @@ export const UploadManager = ({
 
     Object.values(uploadManagerState)
       .filter(({ status }) => status === UploadManagerStatus.INIT)
-      .forEach(({ file, objectId, objectType, parentId }) => {
+      .forEach(({ file, objectId, objectType, parentId, onUploadEnded }) => {
         (async () => {
           let presignedPost: AWSPresignedPost;
           try {
@@ -160,6 +161,7 @@ export const UploadManager = ({
                 [objectId]: { ...state[objectId], progress },
               })),
             );
+            onUploadEnded?.(presignedPost);
           } catch (e) {
             setUploadState((state) => ({
               ...state,
@@ -204,6 +206,7 @@ export const useUploadManager = () => {
       objectId: string,
       file: File,
       parentId?: Maybe<string>,
+      onUploadEnded?: (presignedPost: AWSPresignedPost) => Promise<void> | void,
     ) => {
       setUploadState((state) => ({
         ...state,
@@ -214,6 +217,7 @@ export const useUploadManager = () => {
           progress: 0,
           status: UploadManagerStatus.INIT,
           parentId,
+          onUploadEnded,
         },
       }));
     },

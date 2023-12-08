@@ -70,7 +70,7 @@ resource "aws_cloudfront_distribution" "marsha_cloudfront_distribution" {
   wait_for_deployment = false
 
   ordered_cache_behavior {
-    path_pattern     = "scw/*"
+    path_pattern     = "vod/*"
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
     target_origin_id = local.scw_object_storage_origin_id

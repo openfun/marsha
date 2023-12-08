@@ -15,6 +15,7 @@ import {
 import React, { useEffect, useRef } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
+import { uploadEnded } from '@lib-video/api/uploadEnded';
 import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
 
 const messages = defineMessages({
@@ -50,14 +51,22 @@ const messages = defineMessages({
 
 export const UploadVideo = () => {
   const video = useCurrentVideo();
+
   const intl = useIntl();
   const { addUpload, resetUpload, uploadManagerState } = useUploadManager();
-
   const hiddenFileInput = useRef<Nullable<HTMLInputElement>>(null);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
-      addUpload(modelName.VIDEOS, video.id, event.target.files[0]);
+      addUpload(
+        modelName.VIDEOS,
+        video.id,
+        event.target.files[0],
+        undefined,
+        (presignedPost) => {
+          uploadEnded(video.id, presignedPost.fields['key']);
+        },
+      );
     }
   };
 

@@ -28,3 +28,4 @@ export * from './useStopSharingMedia';
 export * from './useTimedTextMetadata';
 export * from './useVideoMetadata';
 export * from './useVideos';
+export * from './uploadEnded';

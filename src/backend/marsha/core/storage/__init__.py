@@ -5,7 +5,7 @@ from django.utils.module_loading import import_string
 
 
 # pylint: disable=unused-import
-from . import dummy, s3  # noqa isort:skip
+from . import dummy, s3, filesystem  # noqa isort:skip
 
 
 def get_initiate_backend():

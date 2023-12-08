@@ -11,6 +11,7 @@ import {
   useUploadManager,
   useVideo,
 } from 'lib-components';
+import { uploadEnded } from 'lib-video';
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -137,7 +138,15 @@ export const CreateVOD = ({
     }
 
     if (wizardedVideo.videoFile) {
-      addUpload(modelName.VIDEOS, currentVideo.id, wizardedVideo.videoFile);
+      addUpload(
+        modelName.VIDEOS,
+        currentVideo.id,
+        wizardedVideo.videoFile,
+        undefined,
+        (presignedPost) => {
+          uploadEnded(currentVideo.id, presignedPost.fields['key']);
+        },
+      );
     }
   }, [formState, wizardedVideo.videoFile, currentVideo.id, addUpload]);
 

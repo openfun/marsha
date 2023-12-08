@@ -11,6 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Add scaleway storage configuration
+- Add Peertube pipeline to VOD
 
 ### Changed
 

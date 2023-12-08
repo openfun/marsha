@@ -31,6 +31,8 @@ from marsha.core.defaults import (
     RUNNING,
     STOPPING,
     TRANSCODE_PIPELINE_CHOICES,
+    VIDEOS_STORAGE_BASE_DIRECTORY,
+    VOD_VIDEOS_STORAGE_BASE_DIRECTORY,
 )
 from marsha.core.models.account import ADMINISTRATOR, INSTRUCTOR, OrganizationAccess
 from marsha.core.models.base import BaseModel
@@ -287,6 +289,34 @@ class Video(BaseFile, RetentionDateObjectMixin):
         """
         stamp = stamp or to_timestamp(self.uploaded_on)
         return f"{self.pk}/video/{self.pk}/{stamp}"
+
+    def get_videos_storage_prefix(
+        self,
+        stamp=None,
+        base_dir: VIDEOS_STORAGE_BASE_DIRECTORY = VOD_VIDEOS_STORAGE_BASE_DIRECTORY,
+    ):
+        """Compute the videos storage prefix for the video.
+
+        Parameters
+        ----------
+        stamp: Type[string]
+            Passing a value for this argument will return the videos storage prefix for the video
+            assuming its active stamp is set to this value. This is useful to create an upload
+            policy for this prospective version of the video, so that the client can upload the
+            file to S3 and the transcodings job can set the `uploaded_on` field to this value.
+
+        base: Type[VIDEOS_STORAGE_BASE_DIRECTORY]
+            The videos storage base directory. Defaults to VOD. It will be used to compute the
+            videos storage prefix.
+
+        Returns
+        -------
+        string
+            The videos storage prefix for the video, depending on the base directory passed.
+        """
+        stamp = stamp or to_timestamp(self.uploaded_on)
+
+        return f"{base_dir}/{self.pk}/video/{stamp}"
 
     def update_upload_state(self, upload_state, uploaded_on, **extra_parameters):
         """Manage upload state.

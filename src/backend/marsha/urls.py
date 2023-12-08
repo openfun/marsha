@@ -2,6 +2,7 @@
 import re
 
 from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path, re_path, register_converter
 from django.views.decorators.cache import cache_page
@@ -47,7 +48,11 @@ from marsha.core.views import (
     VideoLTIView,
     VideoView,
 )
-from marsha.development.api import local_document_upload, local_video_upload
+from marsha.development.api import (
+    dummy_video_upload,
+    local_document_upload,
+    local_video_upload,
+)
 
 
 register_converter(XAPIResourceKindConverter, "xapi_resource_kind")
@@ -171,7 +176,7 @@ if "dummy" in settings.STORAGE_BACKEND:
     urlpatterns += [
         path(
             "e2e/api/video-upload/<uuid:uuid>",
-            local_video_upload,
+            dummy_video_upload,
             name="local-video-upload",
         ),
         path(
@@ -180,6 +185,17 @@ if "dummy" in settings.STORAGE_BACKEND:
             name="local-document-upload",
         ),
     ]
+elif "filesystem" in settings.STORAGE_BACKEND:
+    urlpatterns += [
+        path(
+            "api/video-upload/<uuid:uuid>/<str:stamp>",
+            local_video_upload,
+            name="local-video-upload",
+        )
+    ]
+    urlpatterns += static(settings.VIDEOS_ROOT, document_root=settings.VIDEOS_ROOT)
+
+
 urlpatterns += django_peertube_runner_connector_urls
 
 static_path = re.escape(settings.STATIC_URL.lstrip("/"))

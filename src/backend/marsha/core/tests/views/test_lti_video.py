@@ -1667,6 +1667,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
                 "thumbnail": None,
                 "title": video.title,
                 "urls": {
+                    "manifests": {},
                     "mp4": {
                         "240": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
                         "mp4/1569309880_240.mp4?response-content-disposition=attachment%3B+"
