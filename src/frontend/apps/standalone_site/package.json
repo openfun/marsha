@@ -61,6 +61,7 @@
     "lib-tests": "*",
     "typescript": "*",
     "vite": "5.0.0",
+    "vite-plugin-node-polyfills": "0.17.0",
     "vite-plugin-svgr": "4.2.0",
     "vite-tsconfig-paths": "4.2.1"
   },
