@@ -35,3 +35,7 @@ output "medialive_role_arn" {
 output "mediapackage_harvest_job_role_arn" {
   value = aws_iam_role.mediapackage_harvest_job_s3_role.arn
 }
+
+output "scaleway_object_bucket_name" {
+  value = scaleway_object_bucket.marsha_object_bucket.name
+}

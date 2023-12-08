@@ -63,6 +63,7 @@ class Base(Configuration):
     # Allow to configure location of static/media files for non-Docker installation
     MEDIA_ROOT = values.Value(os.path.join(str(DATA_DIR), "media"))
     STATIC_ROOT = values.Value(os.path.join(str(DATA_DIR), "static"))
+    VIDEOS_ROOT = values.Value(os.path.join(str(DATA_DIR), "videos"))
 
     SECRET_KEY = values.SecretValue()
 
@@ -370,6 +371,13 @@ class Base(Configuration):
     AWS_MEDIALIVE_INPUT_WAITER_DELAY = values.PositiveIntegerValue(5)
     AWS_MEDIALIVE_INPUT_WAITER_MAX_ATTEMPTS = values.PositiveIntegerValue(84)
     AWS_S3_EXPIRATION_DURATION = values.PositiveIntegerValue(30)  # 30 days
+
+    # VIDEOS_STORAGE_S3
+    VIDEOS_STORAGE_S3_ACCESS_KEY = values.SecretValue()
+    VIDEOS_STORAGE_S3_SECRET_KEY = values.SecretValue()
+    VIDEOS_STORAGE_S3_ENDPOINT_URL = values.Value("https://s3.fr-par.scw.cloud")
+    VIDEOS_STORAGE_S3_REGION_NAME = values.Value("fr-par")
+    VIDEOS_STORAGE_S3_BUCKET_NAME = values.Value()
 
     # LTI Config
     LTI_CONFIG_TITLE = values.Value("Marsha")
@@ -884,6 +892,8 @@ class Build(Base):
     AWS_BASE_NAME = values.Value("")
     AWS_MEDIALIVE_ROLE_ARN = values.Value("")
     AWS_MEDIAPACKAGE_HARVEST_JOB_ARN = values.Value("")
+    VIDEOS_STORAGE_S3_ACCESS_KEY = values.Value("DummyKey")
+    VIDEOS_STORAGE_S3_SECRET_KEY = values.Value("DummyKey")
     BBB_API_SECRET = values.Value("")
     SECRET_KEY = values.Value("DummyKey")
     STORAGES = {
@@ -916,6 +926,29 @@ class Development(Base):
     CLOUDFRONT_SIGNED_URLS_ACTIVE = values.BooleanValue(False)
     CACHES = {"default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"}}
     STAT_BACKEND = values.Value("marsha.core.stats.dummy_backend")
+    # use marsha.core.storage.s3 for S3 storage
+    STORAGE_BACKEND = values.Value("marsha.core.storage.s3")
+    DATA_UPLOAD_MAX_MEMORY_SIZE = 30 * 1024 * 1024  # 30MB
+    STORAGES = Base.STORAGES | {
+        "videos": {
+            # This is the storage used by django_peertube_runner_connector
+            # use marsha.core.storage.s3.S3VideoStorage for S3 storage
+            "BACKEND": values.Value(
+                "marsha.core.storage.s3.S3VideoStorage",
+                environ_name="STORAGES_VIDEOS_BACKEND",
+            ),
+            "OPTIONS": values.DictValue(
+                {},
+                environ_name="STORAGES_VIDEOS_OPTIONS",
+            ),
+        },
+        "staticfiles": {
+            "BACKEND": values.Value(
+                "marsha.core.static.MarshaCompressedManifestStaticFilesStorage",
+                environ_name="STORAGES_STATICFILES_BACKEND",
+            )
+        },
+    }
 
     # P2P
     P2P_WEB_TORRENT_TRACKER_URLS = values.ListValue(["ws://localhost:8080"])
@@ -998,6 +1031,16 @@ class Test(Base):
         "default": {"BACKEND": "channels.layers.InMemoryChannelLayer"},
     }
 
+    VIDEOS_STORAGE_S3_ACCESS_KEY = values.Value("scw-access-key")
+    VIDEOS_STORAGE_S3_SECRET_KEY = values.Value("scw-secret-key")
+    VIDEOS_STORAGE_S3_BUCKET_NAME = values.Value("test-marsha")
+
+    STORAGES = Base.STORAGES | {
+        "videos": {
+            "BACKEND": "django.core.files.storage.InMemoryStorage",
+        }
+    }
+
     # Development tools (we want to test them in tests)
     INSTALLED_APPS = Base.INSTALLED_APPS + ["marsha.development.apps.DevelopmentConfig"]
 
@@ -1014,13 +1057,24 @@ class Production(Base):
     ALLOWED_HOSTS = values.ListValue(None)
 
     STORAGES = {
+        "videos": {  # This is the storage used by django_peertube_runner_connector
+            "BACKEND": values.Value(
+                "marsha.core.storage.s3.S3VideoStorage",
+                environ_name="STORAGES_VIDEOS_BACKEND",
+            ),
+            "OPTIONS": values.DictValue(
+                {},
+                environ_name="STORAGES_VIDEOS_OPTIONS",
+            ),
+        },
         "staticfiles": {
             "BACKEND": values.Value(
                 "marsha.core.static.MarshaCompressedManifestStaticFilesStorage",
                 environ_name="STORAGES_STATICFILES_BACKEND",
-            )
-        }
+            ),
+        },
     }
+
     STATIC_POSTPROCESS_IGNORE_REGEX = values.Value(
         r"^js\/build\/.*[0-9]*\..*\.js(\.map)?$"
     )

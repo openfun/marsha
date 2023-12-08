@@ -148,3 +148,9 @@ variable "user_arn" {
   type = string
   default = ""
 }
+
+variable "scw_group_id" {
+  description = "Scaleway group id"
+  type = string
+  default = ""
+}
