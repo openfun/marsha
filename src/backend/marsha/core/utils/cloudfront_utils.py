@@ -18,6 +18,15 @@ class MissingRSAKey(Exception):
     """Exception raised when an RSA key is missing."""
 
 
+def get_cloudfront_private_key():
+    """Get the private key for CloudFront signed urls."""
+    try:
+        with open(settings.CLOUDFRONT_PRIVATE_KEY_PATH, "rb") as key_file:
+            return key_file.read()
+    except FileNotFoundError as exc:
+        raise MissingRSAKey() from exc
+
+
 def rsa_signer(message):
     """Sign a message with an RSA key pair found on the file system for CloudFront signed urls.
 
@@ -32,17 +41,13 @@ def rsa_signer(message):
         The rsa signature
 
     """
-    try:
-        with open(settings.CLOUDFRONT_PRIVATE_KEY_PATH, "rb") as key_file:
-            private_key = serialization.load_pem_private_key(
-                key_file.read(), password=None, backend=default_backend()
-            )
-    except FileNotFoundError as exc:
-        raise MissingRSAKey() from exc
-
+    private_key = get_cloudfront_private_key()
+    pem_private_key = serialization.load_pem_private_key(
+        private_key, password=None, backend=default_backend()
+    )
     # The following line is excluded from bandit security check because cloudfront supports
     # only sha1 hash for signed URLs.
-    return private_key.sign(message, padding.PKCS1v15(), hashes.SHA1())  # nosec
+    return pem_private_key.sign(message, padding.PKCS1v15(), hashes.SHA1())  # nosec
 
 
 def generate_cloudfront_urls_signed_parameters(resource, date_less_than):

@@ -6,6 +6,7 @@ from storages.backends.s3boto3 import S3Boto3Storage
 
 from marsha.core.defaults import TMP_VIDEOS_STORAGE_BASE_DIRECTORY
 from marsha.core.models import Document
+from marsha.core.utils.cloudfront_utils import get_cloudfront_private_key
 from marsha.core.utils.s3_utils import create_presigned_post
 from marsha.core.utils.time_utils import to_timestamp
 
@@ -25,6 +26,25 @@ class S3VideoStorage(S3Boto3Storage):
 
     custom_domain = settings.CLOUDFRONT_DOMAIN
     url_protocol = "https:"
+
+    if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
+        cloudfront_key_id = settings.CLOUDFRONT_SIGNED_PUBLIC_KEY_ID
+        cloudfront_key = get_cloudfront_private_key()
+        querystring_expire = settings.CLOUDFRONT_SIGNED_URLS_VALIDITY
+
+    def url(self, name, parameters=None, expire=None, http_method=None):
+        """
+        Overload the url method to add a Content-Disposition header. This allows us
+        to download files in the browser, without having to use a different url method
+        for the S3VideoStorage and the FileSystemStorage.
+        """
+        filename = name.split("/")[-1]
+        return super().url(
+            name,
+            parameters={
+                "response-content-disposition": f'attachment; filename="{filename}"'
+            },
+        )
 
 
 # pylint: disable=unused-argument

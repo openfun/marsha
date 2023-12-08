@@ -181,16 +181,12 @@ export const DownloadVideo = ({ isTeacher }: DownloadVideoProps) => {
         />
         <Button
           fullWidth
+          href={
+            video.urls?.mp4[Number(selectedQuality) as videoSize] || undefined
+          }
           aria-label={intl.formatMessage(messages.downloadButtonLabel)}
           disabled={isResolutionsEmpty}
-          onClick={() => {
-            window.open(
-              video.urls
-                ? video.urls.mp4[Number(selectedQuality) as videoSize]
-                : undefined,
-              '_blank',
-            );
-          }}
+          download
         >
           {intl.formatMessage(messages.downloadButtonLabel)}
         </Button>

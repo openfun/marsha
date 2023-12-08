@@ -44,10 +44,12 @@ describe('<InstructorDownloadVideo />', () => {
       name: 'Download quality',
     });
     within(button).getByText('1080 p');
-
-    expect(
-      screen.getByRole('button', { name: 'Download' }),
-    ).toBeInTheDocument();
+    const downloadAnchor = await screen.findByRole('link');
+    expect(downloadAnchor).toHaveAttribute(
+      'href',
+      'https://example.com/mp4/1080',
+    );
+    expect(downloadAnchor).toBeInTheDocument();
   });
 
   it('selects the lowest quality', async () => {
@@ -95,14 +97,10 @@ describe('<InstructorDownloadVideo />', () => {
     );
 
     screen.getByText('1080 p');
-    const downloadButton = screen.getByRole('button', { name: 'Download' });
-    global.open = jest.fn();
-
-    await userEvent.click(downloadButton);
-
-    expect(global.open).toHaveBeenCalledWith(
+    const downloadAnchor = await screen.findByRole('link');
+    expect(downloadAnchor).toHaveAttribute(
+      'href',
       'https://example.com/mp4/1080',
-      '_blank',
     );
   });
 
