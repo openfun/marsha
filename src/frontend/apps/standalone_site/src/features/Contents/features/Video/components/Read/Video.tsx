@@ -9,8 +9,8 @@ import {
 } from 'lib-components';
 import { useEffect, useState } from 'react';
 
-import { ReactComponent as VideoIcon } from 'assets/svg/iko_next.svg';
-import { ReactComponent as VueListIcon } from 'assets/svg/iko_vuelistesvg.svg';
+import VideoIcon from 'assets/svg/iko_next.svg?react';
+import VueListIcon from 'assets/svg/iko_vuelistesvg.svg?react';
 import { useSelectFeatures } from 'features/Contents/store/selectionStore';
 
 import routes from '../../routes';

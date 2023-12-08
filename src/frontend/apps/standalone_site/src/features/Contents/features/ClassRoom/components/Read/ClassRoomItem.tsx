@@ -11,8 +11,8 @@ import {
 import { Fragment, useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 
-import { ReactComponent as VueListIcon } from 'assets/svg/iko_vuelistesvg.svg';
-import { ReactComponent as ClassroomsIcon } from 'assets/svg/iko_webinairesvg.svg';
+import VueListIcon from 'assets/svg/iko_vuelistesvg.svg?react';
+import ClassroomsIcon from 'assets/svg/iko_webinairesvg.svg?react';
 import { useSelectFeatures } from 'features/Contents/store/selectionStore';
 import { localDate } from 'utils/date';
 

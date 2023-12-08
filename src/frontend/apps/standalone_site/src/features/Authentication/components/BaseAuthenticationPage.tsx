@@ -4,7 +4,7 @@ import React, { Fragment, PropsWithChildren, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import imageLeft from 'assets/img/telescope.png';
-import { ReactComponent as LogoIcon } from 'assets/svg/logo_marsha.svg';
+import LogoIcon from 'assets/svg/logo_marsha.svg?react';
 import { WhiteCard } from 'components/Cards';
 import { HeaderLight } from 'features/Header';
 

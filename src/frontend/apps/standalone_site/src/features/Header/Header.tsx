@@ -14,10 +14,10 @@ import { defineMessages, useIntl } from 'react-intl';
 import { Link, NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { ReactComponent as AvatarIcon } from 'assets/svg/iko_avatarsvg.svg';
-import { ReactComponent as MarshaLogoIcon } from 'assets/svg/logo_marsha.svg';
-import { ReactComponent as LogoutIcon } from 'assets/svg/logout.svg';
-import { ReactComponent as SettingsIcon } from 'assets/svg/settings.svg';
+import AvatarIcon from 'assets/svg/iko_avatarsvg.svg?react';
+import MarshaLogoIcon from 'assets/svg/logo_marsha.svg?react';
+import LogoutIcon from 'assets/svg/logout.svg?react';
+import SettingsIcon from 'assets/svg/settings.svg?react';
 import { logout } from 'features/Authentication';
 import { LanguagePicker } from 'features/Language/';
 import { Burger } from 'features/Menu';

@@ -1,6 +1,6 @@
 import { FormattedMessage, defineMessages } from 'react-intl';
 
-import { ReactComponent as VueListIcon } from 'assets/svg/iko_vuelistesvg.svg';
+import VueListIcon from 'assets/svg/iko_vuelistesvg.svg?react';
 import { LoadSVG } from 'components/Assets';
 import { RouteRequired } from 'routes';
 

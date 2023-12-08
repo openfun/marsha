@@ -3,7 +3,7 @@ import { Box, BoxError, BoxLoader, Text } from 'lib-components';
 import { Fragment, PropsWithChildren, ReactElement } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { ReactComponent as ContentsIcon } from 'assets/svg/iko_webinairesvg.svg';
+import ContentsIcon from 'assets/svg/iko_webinairesvg.svg?react';
 
 const messages = defineMessages({
   NoThing: {

@@ -3,7 +3,7 @@ import { Box, Image, useSiteConfig } from 'lib-components';
 import { forwardRef } from 'react';
 import { Link } from 'react-router-dom';
 
-import { ReactComponent as LogoIcon } from 'assets/svg/logo_marsha.svg';
+import LogoIcon from 'assets/svg/logo_marsha.svg?react';
 import { LanguagePicker } from 'features/Language';
 import { routes } from 'routes';
 

@@ -2,8 +2,8 @@ import { Button, Input } from '@openfun/cunningham-react';
 import { ComponentPropsWithRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { ReactComponent as HideContent } from 'assets/svg/hide-content.svg';
-import { ReactComponent as ShowContent } from 'assets/svg/show-content.svg';
+import HideContent from 'assets/svg/hide-content.svg?react';
+import ShowContent from 'assets/svg/show-content.svg?react';
 
 const messages = defineMessages({
   revealPassword: {

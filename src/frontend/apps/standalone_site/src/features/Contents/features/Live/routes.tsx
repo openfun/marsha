@@ -1,6 +1,6 @@
 import { FormattedMessage, defineMessages } from 'react-intl';
 
-import { ReactComponent as LiveIcon } from 'assets/svg/iko_live.svg';
+import LiveIcon from 'assets/svg/iko_live.svg?react';
 import { LoadSVG } from 'components/Assets';
 import { RouteRequired } from 'routes';
 
