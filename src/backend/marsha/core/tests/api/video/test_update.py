@@ -482,6 +482,7 @@ class VideoUpdateAPITest(TestCase):
                 "thumbnail": None,
                 "title": video.title,
                 "urls": {
+                    "manifests": {},
                     "mp4": {
                         "240": f"https://abc.cloudfront.net/{video.id}/"
                         "mp4/1569309880_240.mp4?response-content-disposition=attachment%3B+"

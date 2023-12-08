@@ -6,7 +6,7 @@ from unittest import mock
 
 from django.test import TestCase, override_settings
 
-from marsha.core import defaults, factories, models
+from marsha.core import factories, models
 from marsha.core.api import timezone
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
@@ -77,29 +77,27 @@ class VideoInitiateUploadAPITest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
-                "url": "https://test-marsha-source.s3.amazonaws.com/",
+                "url": "https://s3.fr-par.scw.cloud/test-marsha",
                 "fields": {
                     "acl": "private",
                     "key": (
-                        "27a23f52-3379-46a2-94fa-697b59cfe3c7/video/27a23f52-3379-46a2-94fa-"
-                        "697b59cfe3c7/1533686400"
+                        "tmp/27a23f52-3379-46a2-94fa-697b59cfe3c7/video/1533686400"
                     ),
                     "x-amz-algorithm": "AWS4-HMAC-SHA256",
-                    "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
+                    "x-amz-credential": "scw-access-key/20180808/fr-par/s3/aws4_request",
                     "x-amz-date": "20180808T000000Z",
                     "policy": (
                         "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBbe"
                         "yJhY2wiOiAicHJpdmF0ZSJ9LCBbInN0YXJ0cy13aXRoIiwgIiRDb250ZW50LVR5cGUiLCAidm"
                         "lkZW8vIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAxMDczNzQxODI0XSwgeyJidWN"
-                        "rZXQiOiAidGVzdC1tYXJzaGEtc291cmNlIn0sIHsia2V5IjogIjI3YTIzZjUyLTMzNzktNDZh"
-                        "Mi05NGZhLTY5N2I1OWNmZTNjNy92aWRlby8yN2EyM2Y1Mi0zMzc5LTQ2YTItOTRmYS02OTdiN"
-                        "TljZmUzYzcvMTUzMzY4NjQwMCJ9LCB7IngtYW16LWFsZ29yaXRobSI6ICJBV1M0LUhNQUMtU0"
-                        "hBMjU2In0sIHsieC1hbXotY3JlZGVudGlhbCI6ICJhd3MtYWNjZXNzLWtleS1pZC8yMDE4MDg"
-                        "wOC9ldS13ZXN0LTEvczMvYXdzNF9yZXF1ZXN0In0sIHsieC1hbXotZGF0ZSI6ICIyMDE4MDgw"
-                        "OFQwMDAwMDBaIn1dfQ=="
+                        "rZXQiOiAidGVzdC1tYXJzaGEifSwgeyJrZXkiOiAidG1wLzI3YTIzZjUyLTMzNzktNDZhMi05"
+                        "NGZhLTY5N2I1OWNmZTNjNy92aWRlby8xNTMzNjg2NDAwIn0sIHsieC1hbXotYWxnb3JpdGhtI"
+                        "jogIkFXUzQtSE1BQy1TSEEyNTYifSwgeyJ4LWFtei1jcmVkZW50aWFsIjogInNjdy1hY2Nlc3"
+                        "Mta2V5LzIwMTgwODA4L2ZyLXBhci9zMy9hd3M0X3JlcXVlc3QifSwgeyJ4LWFtei1kYXRlIjo"
+                        "gIjIwMTgwODA4VDAwMDAwMFoifV19"
                     ),
                     "x-amz-signature": (
-                        "8db66b80ad0afcaef57542df9da257976ab21bc3b8b0105f3bb6bdafe95964b9"
+                        "55c0c60a093f00b2936a14f8ac2629b150488c8078cbcbbbe7a1599134405825"
                     ),
                 },
             },
@@ -108,7 +106,6 @@ class VideoInitiateUploadAPITest(TestCase):
         # The upload state of the timed text track should have been reset
         video.refresh_from_db()
         self.assertEqual(video.upload_state, "pending")
-        self.assertEqual(video.transcode_pipeline, "AWS")
 
         # Check that the other timed text tracks are not reset
         other_video.refresh_from_db()
@@ -213,29 +210,27 @@ class VideoInitiateUploadAPITest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
-                "url": "https://test-marsha-source.s3.amazonaws.com/",
+                "url": "https://s3.fr-par.scw.cloud/test-marsha",
                 "fields": {
                     "acl": "private",
                     "key": (
-                        "27a23f52-3379-46a2-94fa-697b59cfe3c7/video/27a23f52-3379-46a2-94fa-"
-                        "697b59cfe3c7/1533686400"
+                        "tmp/27a23f52-3379-46a2-94fa-697b59cfe3c7/video/1533686400"
                     ),
                     "x-amz-algorithm": "AWS4-HMAC-SHA256",
-                    "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
+                    "x-amz-credential": "scw-access-key/20180808/fr-par/s3/aws4_request",
                     "x-amz-date": "20180808T000000Z",
                     "policy": (
                         "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBbe"
                         "yJhY2wiOiAicHJpdmF0ZSJ9LCBbInN0YXJ0cy13aXRoIiwgIiRDb250ZW50LVR5cGUiLCAidm"
                         "lkZW8vIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAxMDczNzQxODI0XSwgeyJidWN"
-                        "rZXQiOiAidGVzdC1tYXJzaGEtc291cmNlIn0sIHsia2V5IjogIjI3YTIzZjUyLTMzNzktNDZh"
-                        "Mi05NGZhLTY5N2I1OWNmZTNjNy92aWRlby8yN2EyM2Y1Mi0zMzc5LTQ2YTItOTRmYS02OTdiN"
-                        "TljZmUzYzcvMTUzMzY4NjQwMCJ9LCB7IngtYW16LWFsZ29yaXRobSI6ICJBV1M0LUhNQUMtU0"
-                        "hBMjU2In0sIHsieC1hbXotY3JlZGVudGlhbCI6ICJhd3MtYWNjZXNzLWtleS1pZC8yMDE4MDg"
-                        "wOC9ldS13ZXN0LTEvczMvYXdzNF9yZXF1ZXN0In0sIHsieC1hbXotZGF0ZSI6ICIyMDE4MDgw"
-                        "OFQwMDAwMDBaIn1dfQ=="
+                        "rZXQiOiAidGVzdC1tYXJzaGEifSwgeyJrZXkiOiAidG1wLzI3YTIzZjUyLTMzNzktNDZhMi05"
+                        "NGZhLTY5N2I1OWNmZTNjNy92aWRlby8xNTMzNjg2NDAwIn0sIHsieC1hbXotYWxnb3JpdGhtI"
+                        "jogIkFXUzQtSE1BQy1TSEEyNTYifSwgeyJ4LWFtei1jcmVkZW50aWFsIjogInNjdy1hY2Nlc3"
+                        "Mta2V5LzIwMTgwODA4L2ZyLXBhci9zMy9hd3M0X3JlcXVlc3QifSwgeyJ4LWFtei1kYXRlIjo"
+                        "gIjIwMTgwODA4VDAwMDAwMFoifV19"
                     ),
                     "x-amz-signature": (
-                        "8db66b80ad0afcaef57542df9da257976ab21bc3b8b0105f3bb6bdafe95964b9"
+                        "55c0c60a093f00b2936a14f8ac2629b150488c8078cbcbbbe7a1599134405825"
                     ),
                 },
             },
@@ -244,7 +239,6 @@ class VideoInitiateUploadAPITest(TestCase):
         # The upload state of the video has been reset
         video.refresh_from_db()
         self.assertEqual(video.upload_state, "pending")
-        self.assertEqual(video.transcode_pipeline, defaults.AWS_PIPELINE)
 
     def test_api_video_initiate_upload_by_playlist_instructor(self):
         """Playlist instructors cannot retrieve an upload policy."""
@@ -277,29 +271,27 @@ class VideoInitiateUploadAPITest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
-                "url": "https://test-marsha-source.s3.amazonaws.com/",
+                "url": "https://s3.fr-par.scw.cloud/test-marsha",
                 "fields": {
                     "acl": "private",
                     "key": (
-                        "27a23f52-3379-46a2-94fa-697b59cfe3c7/video/27a23f52-3379-46a2-94fa-"
-                        "697b59cfe3c7/1533686400"
+                        "tmp/27a23f52-3379-46a2-94fa-697b59cfe3c7/video/1533686400"
                     ),
                     "x-amz-algorithm": "AWS4-HMAC-SHA256",
-                    "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
+                    "x-amz-credential": "scw-access-key/20180808/fr-par/s3/aws4_request",
                     "x-amz-date": "20180808T000000Z",
                     "policy": (
                         "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBbe"
                         "yJhY2wiOiAicHJpdmF0ZSJ9LCBbInN0YXJ0cy13aXRoIiwgIiRDb250ZW50LVR5cGUiLCAidm"
                         "lkZW8vIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAxMDczNzQxODI0XSwgeyJidWN"
-                        "rZXQiOiAidGVzdC1tYXJzaGEtc291cmNlIn0sIHsia2V5IjogIjI3YTIzZjUyLTMzNzktNDZh"
-                        "Mi05NGZhLTY5N2I1OWNmZTNjNy92aWRlby8yN2EyM2Y1Mi0zMzc5LTQ2YTItOTRmYS02OTdiN"
-                        "TljZmUzYzcvMTUzMzY4NjQwMCJ9LCB7IngtYW16LWFsZ29yaXRobSI6ICJBV1M0LUhNQUMtU0"
-                        "hBMjU2In0sIHsieC1hbXotY3JlZGVudGlhbCI6ICJhd3MtYWNjZXNzLWtleS1pZC8yMDE4MDg"
-                        "wOC9ldS13ZXN0LTEvczMvYXdzNF9yZXF1ZXN0In0sIHsieC1hbXotZGF0ZSI6ICIyMDE4MDgw"
-                        "OFQwMDAwMDBaIn1dfQ=="
+                        "rZXQiOiAidGVzdC1tYXJzaGEifSwgeyJrZXkiOiAidG1wLzI3YTIzZjUyLTMzNzktNDZhMi05"
+                        "NGZhLTY5N2I1OWNmZTNjNy92aWRlby8xNTMzNjg2NDAwIn0sIHsieC1hbXotYWxnb3JpdGhtI"
+                        "jogIkFXUzQtSE1BQy1TSEEyNTYifSwgeyJ4LWFtei1jcmVkZW50aWFsIjogInNjdy1hY2Nlc3"
+                        "Mta2V5LzIwMTgwODA4L2ZyLXBhci9zMy9hd3M0X3JlcXVlc3QifSwgeyJ4LWFtei1kYXRlIjo"
+                        "gIjIwMTgwODA4VDAwMDAwMFoifV19"
                     ),
                     "x-amz-signature": (
-                        "8db66b80ad0afcaef57542df9da257976ab21bc3b8b0105f3bb6bdafe95964b9"
+                        "55c0c60a093f00b2936a14f8ac2629b150488c8078cbcbbbe7a1599134405825"
                     ),
                 },
             },
@@ -308,7 +300,6 @@ class VideoInitiateUploadAPITest(TestCase):
         # The upload state of the video has been reset
         video.refresh_from_db()
         self.assertEqual(video.upload_state, "pending")
-        self.assertEqual(video.transcode_pipeline, "AWS")
 
     def test_api_video_initiate_upload_by_playlist_admin(self):
         """Playlist admins can retrieve an upload policy."""
@@ -340,29 +331,27 @@ class VideoInitiateUploadAPITest(TestCase):
         self.assertEqual(
             json.loads(response.content),
             {
-                "url": "https://test-marsha-source.s3.amazonaws.com/",
+                "url": "https://s3.fr-par.scw.cloud/test-marsha",
                 "fields": {
                     "acl": "private",
                     "key": (
-                        "27a23f52-3379-46a2-94fa-697b59cfe3c7/video/27a23f52-3379-46a2-94fa-"
-                        "697b59cfe3c7/1533686400"
+                        "tmp/27a23f52-3379-46a2-94fa-697b59cfe3c7/video/1533686400"
                     ),
                     "x-amz-algorithm": "AWS4-HMAC-SHA256",
-                    "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
+                    "x-amz-credential": "scw-access-key/20180808/fr-par/s3/aws4_request",
                     "x-amz-date": "20180808T000000Z",
                     "policy": (
                         "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBbe"
                         "yJhY2wiOiAicHJpdmF0ZSJ9LCBbInN0YXJ0cy13aXRoIiwgIiRDb250ZW50LVR5cGUiLCAidm"
                         "lkZW8vIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAxMDczNzQxODI0XSwgeyJidWN"
-                        "rZXQiOiAidGVzdC1tYXJzaGEtc291cmNlIn0sIHsia2V5IjogIjI3YTIzZjUyLTMzNzktNDZh"
-                        "Mi05NGZhLTY5N2I1OWNmZTNjNy92aWRlby8yN2EyM2Y1Mi0zMzc5LTQ2YTItOTRmYS02OTdiN"
-                        "TljZmUzYzcvMTUzMzY4NjQwMCJ9LCB7IngtYW16LWFsZ29yaXRobSI6ICJBV1M0LUhNQUMtU0"
-                        "hBMjU2In0sIHsieC1hbXotY3JlZGVudGlhbCI6ICJhd3MtYWNjZXNzLWtleS1pZC8yMDE4MDg"
-                        "wOC9ldS13ZXN0LTEvczMvYXdzNF9yZXF1ZXN0In0sIHsieC1hbXotZGF0ZSI6ICIyMDE4MDgw"
-                        "OFQwMDAwMDBaIn1dfQ=="
+                        "rZXQiOiAidGVzdC1tYXJzaGEifSwgeyJrZXkiOiAidG1wLzI3YTIzZjUyLTMzNzktNDZhMi05"
+                        "NGZhLTY5N2I1OWNmZTNjNy92aWRlby8xNTMzNjg2NDAwIn0sIHsieC1hbXotYWxnb3JpdGhtI"
+                        "jogIkFXUzQtSE1BQy1TSEEyNTYifSwgeyJ4LWFtei1jcmVkZW50aWFsIjogInNjdy1hY2Nlc3"
+                        "Mta2V5LzIwMTgwODA4L2ZyLXBhci9zMy9hd3M0X3JlcXVlc3QifSwgeyJ4LWFtei1kYXRlIjo"
+                        "gIjIwMTgwODA4VDAwMDAwMFoifV19"
                     ),
                     "x-amz-signature": (
-                        "8db66b80ad0afcaef57542df9da257976ab21bc3b8b0105f3bb6bdafe95964b9"
+                        "55c0c60a093f00b2936a14f8ac2629b150488c8078cbcbbbe7a1599134405825"
                     ),
                 },
             },
@@ -371,7 +360,6 @@ class VideoInitiateUploadAPITest(TestCase):
         # The upload state of the video has been reset
         video.refresh_from_db()
         self.assertEqual(video.upload_state, "pending")
-        self.assertEqual(video.transcode_pipeline, "AWS")
 
     def test_api_video_initiate_upload_file_without_size(self):
         "With no size field provided, the request should fail"

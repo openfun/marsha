@@ -383,6 +383,8 @@ describe('<CreateVOD />', () => {
         modelName.VIDEOS,
         mockedVideo.id,
         videoFile,
+        undefined,
+        expect.any(Function),
       ),
     );
 
@@ -575,6 +577,8 @@ describe('<CreateVOD />', () => {
         modelName.VIDEOS,
         mockedVideo.id,
         videoFile,
+        undefined,
+        expect.any(Function),
       ),
     );
 

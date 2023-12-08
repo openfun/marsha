@@ -116,6 +116,8 @@ describe('<UploadVideo />', () => {
       modelName.VIDEOS,
       mockedVideo.id,
       file,
+      undefined,
+      expect.any(Function),
     );
   });
 

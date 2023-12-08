@@ -757,7 +757,13 @@ class Base(Configuration):
     TRANSCODING_RUNNER_MAX_FAILURE = 5
 
     # The callback path to a function that will be called when a video is published
-    TRANSCODING_VIDEO_IS_PUBLISHED_CALLBACK_PATH = ""
+    TRANSCODING_VIDEO_IS_PUBLISHED_CALLBACK_PATH = (
+        "marsha.core.utils.transcode.transcoding_ended_callback"
+    )
+
+    # Leaving it to None will fallback on the domain from the current request
+    TRANSCODING_CALLBACK_DOMAIN = values.Value()
+
     # LRS settings dedicated to the current site
     LRS_URL = values.Value()
     LRS_AUTH_TOKEN = values.Value()
@@ -927,18 +933,21 @@ class Development(Base):
     CACHES = {"default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"}}
     STAT_BACKEND = values.Value("marsha.core.stats.dummy_backend")
     # use marsha.core.storage.s3 for S3 storage
-    STORAGE_BACKEND = values.Value("marsha.core.storage.s3")
+    STORAGE_BACKEND = values.Value("marsha.core.storage.filesystem")
     DATA_UPLOAD_MAX_MEMORY_SIZE = 30 * 1024 * 1024  # 30MB
     STORAGES = Base.STORAGES | {
         "videos": {
             # This is the storage used by django_peertube_runner_connector
             # use marsha.core.storage.s3.S3VideoStorage for S3 storage
             "BACKEND": values.Value(
-                "marsha.core.storage.s3.S3VideoStorage",
+                "django.core.files.storage.FileSystemStorage",
                 environ_name="STORAGES_VIDEOS_BACKEND",
             ),
             "OPTIONS": values.DictValue(
-                {},
+                {
+                    "location": str(Base.VIDEOS_ROOT),
+                    "base_url": str(Base.VIDEOS_ROOT),
+                },
                 environ_name="STORAGES_VIDEOS_OPTIONS",
             ),
         },
@@ -952,6 +961,9 @@ class Development(Base):
 
     # P2P
     P2P_WEB_TORRENT_TRACKER_URLS = values.ListValue(["ws://localhost:8080"])
+
+    # Used by Peertube runner to download videos
+    TRANSCODING_CALLBACK_DOMAIN = values.Value("http://app:8000")
 
     # Development tools
     INSTALLED_APPS = (

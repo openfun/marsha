@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.utils.text import slugify
 
 from rest_framework import serializers
+from sentry_sdk import capture_message
 
 from marsha.core.defaults import (
     AWS_PIPELINE,
@@ -18,6 +19,7 @@ from marsha.core.defaults import (
     JITSI,
     LIVE_CHOICES,
     LIVE_TYPE_CHOICES,
+    PEERTUBE_PIPELINE,
     RUNNING,
     STOPPED,
 )
@@ -30,7 +32,9 @@ from marsha.core.serializers.shared_live_media import (
 )
 from marsha.core.serializers.thumbnail import ThumbnailSerializer
 from marsha.core.serializers.timed_text_track import TimedTextTrackSerializer
+from marsha.core.storage.storage_class import video_storage
 from marsha.core.utils import cloudfront_utils, jitsi_utils, time_utils, xmpp_utils
+from marsha.core.utils.time_utils import to_datetime
 
 
 MAX_DATETIME = timezone.datetime.max.replace(tzinfo=datetime.timezone.utc)
@@ -45,6 +49,26 @@ class UpdateLiveStateSerializer(serializers.Serializer):
     logGroupName = serializers.CharField()
     requestId = serializers.CharField()
     extraParameters = serializers.DictField(allow_null=True, required=False)
+
+
+class VideoUploadEndedSerializer(serializers.Serializer):
+    """A serializer to validate data submitted on the UploadEnded API endpoint."""
+
+    file_key = serializers.CharField()
+
+    def validate_file_key(self, value):
+        """Check if the file_key is valid."""
+        base_video_pk = self.context["pk"]
+        [tmp_dir, video_pk, video_dir, stamp] = value.split("/")
+
+        if base_video_pk != video_pk or tmp_dir != "tmp" or video_dir != "video":
+            raise serializers.ValidationError("file_key is not valid")
+        try:
+            to_datetime(stamp)
+        except serializers.ValidationError as error:
+            raise serializers.ValidationError("file_key is not valid") from error
+
+        return value
 
 
 class InitLiveStateSerializer(serializers.Serializer):
@@ -155,22 +179,45 @@ class VideoBaseSerializer(serializers.ModelSerializer):
 
         if obj.uploaded_on is None:
             return None
+        return self.get_vod_urls(obj)
 
+    def get_vod_urls(self, obj):
+        """Return URLS for a VOD video. Urls differ depending on the
+        transcode pipeline. If no pipeline is set, we use the default AWS one.
+
+        Parameters
+        ----------
+        obj : Type[models.Video]
+            The video that we want to serialize
+
+        """
         thumbnail_urls = {}
         if self.thumbnail_instance and self.thumbnail_instance.uploaded_on is not None:
             thumbnail_serialized = ThumbnailSerializer(self.thumbnail_instance)
             thumbnail_urls.update(thumbnail_serialized.data.get("urls"))
 
-        urls = {"mp4": {}, "thumbnails": {}}
+        urls = {"mp4": {}, "thumbnails": {}, "manifests": {}}
 
         base = f"{settings.AWS_S3_URL_PROTOCOL}://{settings.CLOUDFRONT_DOMAIN}/{obj.pk}"
         stamp = time_utils.to_timestamp(obj.uploaded_on)
-
         if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
             params = get_video_cloudfront_url_params(obj.pk)
 
         filename = f"{slugify(obj.playlist.title)}_{stamp}.mp4"
         content_disposition = quote_plus(f"attachment; filename={filename}")
+
+        # Trying to recover the transcoding pipeline
+        if obj.transcode_pipeline is None:
+            if video_storage.exists(f"scw/{obj.pk}/video/{stamp}/thumbnail.jpg"):
+                obj.transcode_pipeline = PEERTUBE_PIPELINE
+            else:  # Fallback to AWS_PIPELINE
+                obj.transcode_pipeline = AWS_PIPELINE
+            obj.save(update_fields=["transcode_pipeline"])
+            capture_message(
+                f"VOD {obj.pk} had no transcode_pipeline and "
+                f"was recovered to {obj.transcode_pipeline}",
+            )
+
         if obj.transcode_pipeline == AWS_PIPELINE:
             for resolution in obj.resolutions:
                 # MP4
@@ -199,12 +246,13 @@ class VideoBaseSerializer(serializers.ModelSerializer):
 
                 # Previews
                 urls["previews"] = f"{base}/previews/{stamp}_100.jpg"
-        else:
+        elif obj.transcode_pipeline == PEERTUBE_PIPELINE:
+            base = obj.get_videos_storage_prefix(stamp=stamp)
             for resolution in obj.resolutions:
                 # MP4
                 mp4_url = (
-                    f"{base}/{stamp}/{stamp}-{resolution}-fragmented.mp4"
-                    f"?response-content-disposition={content_disposition}"
+                    video_storage.url(f"{base}/{stamp}-{resolution}-fragmented.mp4")
+                    + f"?response-content-disposition={content_disposition}"
                 )
                 # Sign the urls of mp4 videos only if the functionality is activated
                 if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
@@ -212,10 +260,12 @@ class VideoBaseSerializer(serializers.ModelSerializer):
 
                 urls["mp4"][resolution] = mp4_url
 
-                urls["thumbnails"][resolution] = f"{base}/{stamp}/thumbnail.jpg"
-                urls["previews"] = f"{base}/{stamp}/thumbnail.jpg"
+                urls["thumbnails"][resolution] = thumbnail_urls.get(
+                    resolution, video_storage.url(f"{base}/thumbnail.jpg")
+                )
+                urls["previews"] = video_storage.url(f"{base}/thumbnail.jpg")
                 urls["manifests"] = {
-                    "hls": f"{base}/{stamp}/master.m3u8",
+                    "hls": video_storage.url(f"{base}/master.m3u8"),
                 }
 
         return urls
