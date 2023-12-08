@@ -8,10 +8,18 @@ import { playlistMockFactory, userMockFactory } from 'lib-components/tests';
 import fetchMockAuth from '__mock__/fetchMockAuth.mock';
 import { ConfigResponse } from 'api/useConfig';
 import { useContentFeatures } from 'features/Contents/';
+import { getTranslations } from 'features/Language/getTranslations';
 
 import App from './App';
 
 fetchMockAuth();
+
+jest.mock('features/Language/getTranslations', () => ({
+  getTranslations: jest.fn(),
+}));
+const mockedGetTranslations = getTranslations as jest.MockedFunction<
+  typeof getTranslations
+>;
 
 const consoleWarn = jest
   .spyOn(console, 'warn')
@@ -26,7 +34,6 @@ jest.mock('grommet', () => ({
 
 window.scrollTo = jest.fn();
 window.isCDNLoaded = true;
-
 const someResponse = {
   count: 1,
   next: null,
@@ -115,14 +122,16 @@ describe('<App />', () => {
         full_name: 'John Doe',
       }),
     });
-    jest.mock(
-      'translations/fr_FR.json',
-      () => ({
-        'features.HomePage.HomePage': 'Mon Accueil',
-        'routes.routes.menuHomePageLabel': 'Mon Tableau de bord',
-      }),
-      { virtual: true },
-    );
+
+    mockedGetTranslations.mockReturnValue({
+      '../../translations/fr_FR.json': async () =>
+        await Promise.resolve({
+          default: {
+            'features.HomePage.HomePage': 'Mon Accueil',
+            'routes.routes.menuHomePageLabel': 'Mon Tableau de bord',
+          },
+        }),
+    });
 
     render(<App />);
 

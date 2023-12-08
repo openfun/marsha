@@ -1,3 +1,5 @@
+import { getTranslations } from 'features/Language/getTranslations';
+
 import { DEFAULT_LOCALE, LANGUAGE_LOCAL_STORAGE, REACT_LOCALES } from './conf';
 
 // Turn a language name (en-us) into a locale name (en_US).
@@ -61,12 +63,17 @@ export const getLanguageFromLocale = (locale: string) => {
 };
 
 export const getCurrentTranslation = async (language: string) => {
+  const translations = getTranslations();
   let translation: Record<string, string> | undefined;
-  try {
-    translation = (await import(
-      `translations/${language}.json`
-    )) as unknown as Record<string, string>;
-  } catch (e) {
+  const key = `../../translations/${language}.json`;
+
+  if (translations && key in translations) {
+    const { default: data } = (await translations[
+      `../../translations/${language}.json`
+    ]()) as { default: Record<string, string> };
+
+    translation = data;
+  } else {
     console.warn(`[intl] No translation found for language ${language}`);
   }
 
