@@ -1,6 +1,10 @@
 const TerserPlugin = require('terser-webpack-plugin');
 const webpack = require('webpack');
 const { alias } = require('marsha-config');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
+const outputDir =
+  __dirname + '/../../../backend/marsha/static/js/build/lti_site';
 
 module.exports = (_, argv) => {
   process.env.NODE_ENV = argv.mode || 'development';
@@ -27,7 +31,7 @@ module.exports = (_, argv) => {
     // is on AWS.
     output: {
       filename: 'index.js',
-      path: __dirname + '/../../../backend/marsha/static/js/build/lti_site',
+      path: outputDir,
       chunkFilename: '[id].[fullhash].index.js',
       clean: true,
     },
@@ -48,7 +52,19 @@ module.exports = (_, argv) => {
 
     module: {
       rules: [
-        { test: /\.css$/, use: ['style-loader', 'css-loader'] },
+        {
+          test: /\.css$/,
+          use: [
+            {
+              loader: MiniCssExtractPlugin.loader,
+              options: {
+                publicPath: outputDir,
+              },
+            },
+            'css-loader',
+          ],
+          sideEffects: true,
+        },
         {
           test: /\.(png|svg|jpg|jpeg|gif)$/i,
           type: 'asset/resource',
@@ -102,6 +118,7 @@ module.exports = (_, argv) => {
         Buffer: ['buffer', 'Buffer'],
         process: 'process/browser.js',
       }),
+      new MiniCssExtractPlugin(),
     ],
   };
 

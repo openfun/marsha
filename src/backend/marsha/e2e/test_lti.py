@@ -673,11 +673,13 @@ def test_lti_video_play(page: Page, live_server: LiveServer, mock_video_cloud_st
         ).get("en-US")
 
     def check_xapi_played(request: Request):
-        """Check xapi played call."""
-        assert request.method == "POST"
-        assert (
-            request.post_data_json.get("verb").get("display").get("en-US") == "played"
-        )
+        # """Check xapi played call."""
+        if "/xapi/" in request.url:
+            assert request.method == "POST"
+            assert (
+                request.post_data_json.get("verb").get("display").get("en-US")
+                == "played"
+            )
 
     page.on("request", check_xapi_played)
 
