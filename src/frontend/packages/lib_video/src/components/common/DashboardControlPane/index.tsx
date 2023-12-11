@@ -1,4 +1,5 @@
-import { Tab, Tabs, ThemeContext } from 'grommet';
+import { Tab, Tabs } from 'grommet';
+import { ThemeContext } from 'grommet/contexts/ThemeContext/index';
 import { colorsTokens } from 'lib-common';
 import { Box } from 'lib-components';
 import React from 'react';

@@ -1,5 +1,5 @@
 import { Button, Input } from '@openfun/cunningham-react';
-import { ThemeContext } from 'grommet';
+import { ThemeContext } from 'grommet/contexts/ThemeContext/index';
 import { Maybe, colorsTokens } from 'lib-common';
 import {
   LiveSession,

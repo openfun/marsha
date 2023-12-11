@@ -1,4 +1,4 @@
-import { ThemeContext } from 'grommet';
+import { ThemeContext } from 'grommet/contexts/ThemeContext/index';
 import React, { PropsWithChildren, SVGProps, useContext } from 'react';
 import styled, { CSSProperties } from 'styled-components';
 

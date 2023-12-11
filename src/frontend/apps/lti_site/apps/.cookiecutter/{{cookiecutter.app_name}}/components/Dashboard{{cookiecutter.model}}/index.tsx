@@ -1,4 +1,5 @@
-import { Box, Spinner, Text, ThemeContext, ThemeType } from 'grommet';
+import { Box, Spinner, Text, ThemeType } from 'grommet';
+import { ThemeContext } from 'grommet/contexts/ThemeContext/index';
 import React, { Suspense, useRef } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
