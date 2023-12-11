@@ -1,5 +1,6 @@
 import { Button } from '@openfun/cunningham-react';
-import { Tab, Tabs, ThemeContext } from 'grommet';
+import { Tab, Tabs } from 'grommet';
+import { ThemeContext } from 'grommet/contexts/ThemeContext/index';
 import { colorsTokens } from 'lib-common';
 import { Box, Classroom } from 'lib-components';
 import React, { useState } from 'react';

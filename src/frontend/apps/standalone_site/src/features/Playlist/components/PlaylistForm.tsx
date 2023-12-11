@@ -1,5 +1,5 @@
 import { Button, Input, Select } from '@openfun/cunningham-react';
-import { ThemeContext } from 'grommet';
+import { ThemeContext } from 'grommet/contexts/ThemeContext/index';
 import { Nullable } from 'lib-common';
 import {
   Box,

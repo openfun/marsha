@@ -1,4 +1,5 @@
-import { Tabs, ThemeContext, ThemeType } from 'grommet';
+import { Tabs, ThemeType } from 'grommet';
+import { ThemeContext } from 'grommet/contexts/ThemeContext/index';
 import {
   Box,
   ShouldNotHappen,

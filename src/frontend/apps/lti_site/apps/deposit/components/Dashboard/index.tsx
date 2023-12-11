@@ -1,5 +1,6 @@
 import { Loader } from '@openfun/cunningham-react';
-import { ThemeContext, ThemeType } from 'grommet';
+import { ThemeType } from 'grommet';
+import { ThemeContext } from 'grommet/contexts/ThemeContext/index';
 import { colorsTokens } from 'lib-common';
 import { Box, UploadManager, useCurrentResourceContext } from 'lib-components';
 import React, { Fragment } from 'react';
