@@ -11,6 +11,7 @@
 
     <div id="marsha-frontend-root" style="height: 100%;"></div>
     <script src='{% static "js/build/lti_site/index.js" %}'></script>
+    <link href='{% static "js/build/lti_site/main.css" %}' rel="stylesheet" />
     {% for external_script in external_javascript_scripts %}
     <script src="{{ external_script }}"></script>
     {% endfor %}
