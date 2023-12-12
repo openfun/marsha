@@ -1,7 +1,7 @@
 module.exports = {
   extends: ['plugin:react/recommended', 'plugin:prettier/recommended', "plugin:@tanstack/eslint-plugin-query/recommended"],
   parserOptions: {
-    ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
+    ecmaVersion: "latest", // Allows for the parsing of modern ECMAScript features
     sourceType: 'module', // Allows for the use of imports
     ecmaFeatures: {
       jsx: true,
