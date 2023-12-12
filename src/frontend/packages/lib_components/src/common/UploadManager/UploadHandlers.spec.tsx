@@ -54,7 +54,7 @@ describe('<LTIUploadHandlers />', () => {
   beforeEach(() => jest.resetAllMocks());
 
   it('updates the object name to the file name upon upload success', async () => {
-    mockGetResource.mockResolvedValue(object);
+    mockGetResource.mockReturnValue(object);
 
     const { rerender } = render(
       <UploadManagerContext.Provider
@@ -104,7 +104,7 @@ describe('<LTIUploadHandlers />', () => {
   });
 
   it('does not update the object name to the file when the object title is already set', () => {
-    mockGetResource.mockResolvedValue({
+    mockGetResource.mockReturnValue({
       ...object,
       title: 'title already present',
     });
@@ -246,7 +246,7 @@ describe('<LTIUploadHandlers />', () => {
   });
 
   it('does not do anything unless the upload manager status for the object becomes SUCCESS', () => {
-    mockGetResource.mockResolvedValue(object);
+    mockGetResource.mockReturnValue(object);
 
     const { rerender } = render(
       <UploadManagerContext.Provider
@@ -283,7 +283,7 @@ describe('<LTIUploadHandlers />', () => {
   });
 
   it('does not do anything for objects which do not have a title', () => {
-    mockGetResource.mockResolvedValue({ id: object.id } as Thumbnail);
+    mockGetResource.mockReturnValue({ id: object.id } as Thumbnail);
 
     const { rerender } = render(
       <UploadManagerContext.Provider

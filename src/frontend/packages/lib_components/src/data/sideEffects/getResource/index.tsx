@@ -43,7 +43,7 @@ export async function getResource(
       );
     }
     const resource = (await response.json()) as UploadableObject;
-    await addResource(resourceName, resource);
+    addResource(resourceName, resource);
     return resource;
   } catch (error) {
     report(error);

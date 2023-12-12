@@ -45,7 +45,7 @@ export async function pollForTrack<
     const incomingTrack = (await response.json()) as PollForTrackType<T>;
 
     if (incomingTrack.is_ready_to_show) {
-      await addResource(resourceName, incomingTrack);
+      addResource(resourceName, incomingTrack);
       return requestStatus.SUCCESS;
     } else {
       counter++;

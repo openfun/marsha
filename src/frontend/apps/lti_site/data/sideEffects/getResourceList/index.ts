@@ -52,7 +52,7 @@ export const getResourceList = async (
       )} : ${response.status}.`,
     });
 
-    await addMultipleResources(resourceName, resourcesResponse.results);
+    addMultipleResources(resourceName, resourcesResponse.results);
     return requestStatus.SUCCESS;
   } catch (error) {
     report(error);

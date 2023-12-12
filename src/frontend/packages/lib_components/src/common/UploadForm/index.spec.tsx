@@ -109,7 +109,7 @@ describe('UploadForm', () => {
   afterEach(() => fetchMock.restore());
 
   it('renders the form by default', async () => {
-    mockGetResource.mockResolvedValue(object);
+    mockGetResource.mockReturnValue(object);
     render(<UploadForm objectId={object.id} objectType={modelName.VIDEOS} />);
 
     expect(await screen.findByText('Create a new video')).toBeInTheDocument();
@@ -131,7 +131,7 @@ describe('UploadForm', () => {
 
     fetchMock.mock(`/api/videos/${object.id}/`, 200, { method: 'PUT' });
 
-    mockGetResource.mockResolvedValue(object);
+    mockGetResource.mockReturnValue(object);
     mockUploadFile.mockResolvedValue(true);
 
     render(<UploadForm objectId={object.id} objectType={modelName.VIDEOS} />, {
@@ -147,9 +147,6 @@ describe('UploadForm', () => {
         ),
       },
     });
-
-    // First the form goes through a loading state as we get the object
-    screen.getByRole('status', { name: 'Preparing for upload...' });
 
     // The form is rendered as we receive the uploadable
     await screen.findByRole('heading', { name: 'Create a new video' });
@@ -171,7 +168,7 @@ describe('UploadForm', () => {
       `/api/videos/${object.id}/initiate-upload/`,
       400,
     );
-    mockGetResource.mockResolvedValue(object);
+    mockGetResource.mockReturnValue(object);
 
     render(<UploadForm objectId={object.id} objectType={modelName.VIDEOS} />, {
       routerOptions: {
@@ -213,7 +210,7 @@ describe('UploadForm', () => {
       },
     );
 
-    mockGetResource.mockResolvedValue(object);
+    mockGetResource.mockReturnValue(object);
     mockUploadFile.mockRejectedValue(new Error('failed to upload file'));
 
     render(<UploadForm objectId={object.id} objectType={modelName.VIDEOS} />, {

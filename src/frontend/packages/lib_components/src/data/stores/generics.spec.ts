@@ -31,16 +31,16 @@ describe('stores/generics', () => {
   });
 
   describe('addResource', () => {
-    it('adds a thumbnail resource', async () => {
-      await addResource(modelName.THUMBNAILS, { id: 'thumbnail' } as any);
+    it('adds a thumbnail resource', () => {
+      addResource(modelName.THUMBNAILS, { id: 'thumbnail' } as any);
 
       const state = useThumbnail.getState();
       expect(state[modelName.THUMBNAILS].thumbnail).toEqual({
         id: 'thumbnail',
       });
     });
-    it('adds a timed text track resource', async () => {
-      await addResource(modelName.TIMEDTEXTTRACKS, {
+    it('adds a timed text track resource', () => {
+      addResource(modelName.TIMEDTEXTTRACKS, {
         id: 'timedTextTrack',
       } as any);
 
@@ -49,20 +49,20 @@ describe('stores/generics', () => {
         id: 'timedTextTrack',
       });
     });
-    it('adds a video resource', async () => {
-      await addResource(modelName.VIDEOS, { id: 'video' } as any);
+    it('adds a video resource', () => {
+      addResource(modelName.VIDEOS, { id: 'video' } as any);
 
       const state = useVideo.getState();
       expect(state[modelName.VIDEOS].video).toEqual({ id: 'video' });
     });
-    it('adds a document resource', async () => {
-      await addResource(modelName.DOCUMENTS, { id: 'document' } as any);
+    it('adds a document resource', () => {
+      addResource(modelName.DOCUMENTS, { id: 'document' } as any);
 
       const state = useDocument.getState();
       expect(state[modelName.DOCUMENTS].document).toEqual({ id: 'document' });
     });
-    it('adds a shared live media resource', async () => {
-      await addResource(modelName.SHAREDLIVEMEDIAS, {
+    it('adds a shared live media resource', () => {
+      addResource(modelName.SHAREDLIVEMEDIAS, {
         id: 'sharedLiveMedia',
       } as any);
 
@@ -74,77 +74,69 @@ describe('stores/generics', () => {
   });
 
   describe('getResource', () => {
-    it('fetches an existing thumbnail resource and returns it', async () => {
-      await addResource(modelName.THUMBNAILS, { id: 'thumbnail' } as any);
+    it('fetches an existing thumbnail resource and returns it', () => {
+      addResource(modelName.THUMBNAILS, { id: 'thumbnail' } as any);
 
-      expect(await getStoreResource(modelName.THUMBNAILS, 'thumbnail')).toEqual(
-        {
-          id: 'thumbnail',
-        },
-      );
+      expect(getStoreResource(modelName.THUMBNAILS, 'thumbnail')).toEqual({
+        id: 'thumbnail',
+      });
     });
-    it('fetches a non existing thumbnail and should return undefined', async () => {
-      expect(
-        await getStoreResource(modelName.THUMBNAILS, 'foo'),
-      ).toBeUndefined();
+    it('fetches a non existing thumbnail and should return undefined', () => {
+      expect(getStoreResource(modelName.THUMBNAILS, 'foo')).toBeUndefined();
     });
-    it('fetches an existing timed text resource and returns it', async () => {
-      await addResource(modelName.TIMEDTEXTTRACKS, { id: 'timedtext' } as any);
+    it('fetches an existing timed text resource and returns it', () => {
+      addResource(modelName.TIMEDTEXTTRACKS, { id: 'timedtext' } as any);
 
-      expect(
-        await getStoreResource(modelName.TIMEDTEXTTRACKS, 'timedtext'),
-      ).toEqual({
+      expect(getStoreResource(modelName.TIMEDTEXTTRACKS, 'timedtext')).toEqual({
         id: 'timedtext',
       });
     });
-    it('fetches a non existing timed text and should return undefined', async () => {
+    it('fetches a non existing timed text and should return undefined', () => {
       expect(
-        await getStoreResource(modelName.TIMEDTEXTTRACKS, 'foo'),
+        getStoreResource(modelName.TIMEDTEXTTRACKS, 'foo'),
       ).toBeUndefined();
     });
-    it('fetches an existing video resource and returns it', async () => {
-      await addResource(modelName.VIDEOS, { id: 'video' } as any);
+    it('fetches an existing video resource and returns it', () => {
+      addResource(modelName.VIDEOS, { id: 'video' } as any);
 
-      expect(await getStoreResource(modelName.VIDEOS, 'video')).toEqual({
+      expect(getStoreResource(modelName.VIDEOS, 'video')).toEqual({
         id: 'video',
       });
     });
-    it('fetches a non existing video and should return undefined', async () => {
-      expect(await getStoreResource(modelName.VIDEOS, 'foo')).toBeUndefined();
+    it('fetches a non existing video and should return undefined', () => {
+      expect(getStoreResource(modelName.VIDEOS, 'foo')).toBeUndefined();
     });
-    it('fetches an existing document resource and returns it', async () => {
-      await addResource(modelName.DOCUMENTS, { id: 'document' } as any);
+    it('fetches an existing document resource and returns it', () => {
+      addResource(modelName.DOCUMENTS, { id: 'document' } as any);
 
-      expect(await getStoreResource(modelName.DOCUMENTS, 'document')).toEqual({
+      expect(getStoreResource(modelName.DOCUMENTS, 'document')).toEqual({
         id: 'document',
       });
     });
-    it('fetch a non existing document and should return undefined', async () => {
-      expect(
-        await getStoreResource(modelName.DOCUMENTS, 'foo'),
-      ).toBeUndefined();
+    it('fetch a non existing document and should return undefined', () => {
+      expect(getStoreResource(modelName.DOCUMENTS, 'foo')).toBeUndefined();
     });
-    it('fetches an existing shared live media resource and returns it', async () => {
-      await addResource(modelName.SHAREDLIVEMEDIAS, {
+    it('fetches an existing shared live media resource and returns it', () => {
+      addResource(modelName.SHAREDLIVEMEDIAS, {
         id: 'sharedLiveMedia',
       } as any);
 
       expect(
-        await getStoreResource(modelName.SHAREDLIVEMEDIAS, 'sharedLiveMedia'),
+        getStoreResource(modelName.SHAREDLIVEMEDIAS, 'sharedLiveMedia'),
       ).toEqual({
         id: 'sharedLiveMedia',
       });
     });
-    it('fetch a non existing shared live media and should return undefined', async () => {
+    it('fetch a non existing shared live media and should return undefined', () => {
       expect(
-        await getStoreResource(modelName.SHAREDLIVEMEDIAS, 'foo'),
+        getStoreResource(modelName.SHAREDLIVEMEDIAS, 'foo'),
       ).toBeUndefined();
     });
   });
 
   describe('addMultipleResources', () => {
-    it('adds multiple thumbnails', async () => {
-      await addMultipleResources(modelName.THUMBNAILS, [
+    it('adds multiple thumbnails', () => {
+      addMultipleResources(modelName.THUMBNAILS, [
         { id: 'multi1' } as any,
         { id: 'multi2' } as any,
         { id: 'multi3' } as any,
@@ -156,8 +148,8 @@ describe('stores/generics', () => {
       expect(state[modelName.THUMBNAILS].multi2).toEqual({ id: 'multi2' });
       expect(state[modelName.THUMBNAILS].multi3).toEqual({ id: 'multi3' });
     });
-    it('adds multiple timed text tracks', async () => {
-      await addMultipleResources(modelName.TIMEDTEXTTRACKS, [
+    it('adds multiple timed text tracks', () => {
+      addMultipleResources(modelName.TIMEDTEXTTRACKS, [
         { id: 'multi1' } as any,
         { id: 'multi2' } as any,
         { id: 'multi3' } as any,
@@ -169,8 +161,8 @@ describe('stores/generics', () => {
       expect(state[modelName.TIMEDTEXTTRACKS].multi2).toEqual({ id: 'multi2' });
       expect(state[modelName.TIMEDTEXTTRACKS].multi3).toEqual({ id: 'multi3' });
     });
-    it('adds multiple videos', async () => {
-      await addMultipleResources(modelName.VIDEOS, [
+    it('adds multiple videos', () => {
+      addMultipleResources(modelName.VIDEOS, [
         { id: 'multi1' } as any,
         { id: 'multi2' } as any,
         { id: 'multi3' } as any,
@@ -182,8 +174,8 @@ describe('stores/generics', () => {
       expect(state[modelName.VIDEOS].multi2).toEqual({ id: 'multi2' });
       expect(state[modelName.VIDEOS].multi3).toEqual({ id: 'multi3' });
     });
-    it('adds multiple documents', async () => {
-      await addMultipleResources(modelName.DOCUMENTS, [
+    it('adds multiple documents', () => {
+      addMultipleResources(modelName.DOCUMENTS, [
         { id: 'multi1' } as any,
         { id: 'multi2' } as any,
         { id: 'multi3' } as any,
@@ -195,8 +187,8 @@ describe('stores/generics', () => {
       expect(state[modelName.DOCUMENTS].multi2).toEqual({ id: 'multi2' });
       expect(state[modelName.DOCUMENTS].multi3).toEqual({ id: 'multi3' });
     });
-    it('adds multiple shared live medias', async () => {
-      await addMultipleResources(modelName.SHAREDLIVEMEDIAS, [
+    it('adds multiple shared live medias', () => {
+      addMultipleResources(modelName.SHAREDLIVEMEDIAS, [
         { id: 'multi1' } as any,
         { id: 'multi2' } as any,
         { id: 'multi3' } as any,
