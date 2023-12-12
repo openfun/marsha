@@ -5351,6 +5351,14 @@ babel-plugin-transform-react-jsx@7.0.0-beta.3:
     babel-helper-builder-react-jsx "7.0.0-beta.3"
     babel-plugin-syntax-jsx "7.0.0-beta.3"
 
+babel-plugin-transform-vite-meta-env@1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/babel-plugin-transform-vite-meta-env/-/babel-plugin-transform-vite-meta-env-1.0.3.tgz#cbf81becc95b71dcc170ee4863cb7f6919ed99bb"
+  integrity sha512-eyfuDEXrMu667TQpmctHeTlJrZA6jXYHyEJFjcM0yEa60LS/LXlOg2PBbMb8DVS+V9CnTj/j9itdlDVMcY2zEg==
+  dependencies:
+    "@babel/runtime" "^7.13.9"
+    "@types/babel__core" "^7.1.12"
+
 babel-plugin-transform-vite-meta-glob@1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/babel-plugin-transform-vite-meta-glob/-/babel-plugin-transform-vite-meta-glob-1.0.3.tgz#74320e0ea09b6325974109cab1c3fc6f3a6c8036"

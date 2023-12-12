@@ -4,7 +4,7 @@ import {
   useSentry,
   useSiteConfig,
 } from 'lib-components';
-import { PropsWithChildren, useEffect, useState } from 'react';
+import { PropsWithChildren, useEffect } from 'react';
 import { RawIntlProvider, defineMessages } from 'react-intl';
 
 import { useConfig } from 'api/useConfig';
@@ -26,7 +26,6 @@ const messages = defineMessages({
 
 const AppConfig = ({ children }: PropsWithChildren<unknown>) => {
   const intl = useLanguage();
-  const [isDomReady, setIsDomReady] = useState(false);
   const setSentry = useSentry((state) => state.setSentry);
   const setP2PConfig = useP2PConfig((state) => state.setP2PConfig);
   const setSiteConfig = useSiteConfig((state) => state.setSiteConfig);
@@ -35,19 +34,7 @@ const AppConfig = ({ children }: PropsWithChildren<unknown>) => {
     staleTime: Infinity,
   });
   const isFeatureLoaded = useContentFeatures((state) => state.isFeatureLoaded);
-  const isConfigReady = isFeatureLoaded && isDomReady && intl;
-
-  useEffect(() => {
-    const handleCDNLoaded = () => {
-      setIsDomReady(window.isCDNLoaded || false);
-    };
-
-    document.addEventListener('CDNLoaded', handleCDNLoaded);
-    handleCDNLoaded();
-    return () => {
-      document.removeEventListener('CDNLoaded', handleCDNLoaded);
-    };
-  }, []);
+  const isConfigReady = isFeatureLoaded && intl;
 
   useEffect(() => {
     if (!config) {

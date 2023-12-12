@@ -314,20 +314,4 @@ describe('AppConfig', () => {
     });
     expect(await screen.findByText(/Mon test/i)).toBeInTheDocument();
   });
-
-  it('should load when the CDN is ready', async () => {
-    window.isCDNLoaded = false;
-
-    deferredConfig.resolve(config);
-    render(<AppConfig>My app</AppConfig>);
-
-    expect(screen.getByLabelText('loader')).toBeInTheDocument();
-
-    window.isCDNLoaded = true;
-    act(() => {
-      document.dispatchEvent(new Event('CDNLoaded'));
-    });
-
-    expect(await screen.findByText('My app')).toBeInTheDocument();
-  });
 });

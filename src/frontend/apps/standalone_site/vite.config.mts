@@ -38,17 +38,40 @@ export default defineConfig(({ mode }) => {
     },
   };
 
-  if (process.env.NODE_ENV === 'production') {
+  /**
+   * Setup for production:
+   *  - CDN
+   *  - output directory
+   */
+  if (mode === 'production') {
     userConfig = {
       ...userConfig,
       build: {
         ...userConfig.build,
         outDir: process.env.VITE_DIR_PROD as string,
       },
+      base: process.env.VITE_CDN_REPLACE_KEYWORD as string,
+      experimental: {
+        renderBuiltUrl(
+          filename: string,
+          { hostType }: { hostType: 'js' | 'css' | 'html' },
+        ) {
+          if (hostType === 'js') {
+            return {
+              runtime: `window.__toCdnUrl(${JSON.stringify(filename)})`,
+            };
+          } else {
+            return { relative: true };
+          }
+        },
+      },
     };
   }
 
-  if (process.env.NODE_ENV !== 'production') {
+  /**
+   * Setup proxy for dev environment
+   */
+  if (mode !== 'production') {
     userConfig = {
       ...userConfig,
       server: {
