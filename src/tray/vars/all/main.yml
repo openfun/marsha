@@ -34,6 +34,7 @@ marsha_image_tag: "3.23.0"
 marsha_django_port: 8000
 marsha_app_replicas: 1
 marsha_xapi_replicas: 1
+marsha_celery_replicas: 1
 marsha_django_configuration: "Development"
 marsha_secret_name: "marsha-{{ marsha_vault_checksum | default('undefined_marsha_vault_checksum') }}"
 marsha_cloudfront_private_key_secret_name: "marsha-sshkey-{{ marsha_vault_checksum | default('undefined_marsha_vault_checksum') }}"
@@ -42,6 +43,13 @@ marsha_cloudfront_private_key_path: "/private/.ssh/aws/ssh-privatekey"
 # signature with the aforementioned SSH key
 marsha_should_sign_requests: true
 marsha_activate_http_basic_auth: false
+marsha_celery_command:
+  - celery
+  - -A
+  - marsha.celery_app
+  - worker
+  - -l
+  - INFO
 
 # -- marsha webtorrent
 
@@ -82,6 +90,21 @@ marsha_media_volume_size: 2Gi
 marsha_static_volume_size: 2Gi
 marsha_pvc_media_name: "marsha-pvc-media"
 marsha_pvc_static_name: "marsha-pvc-static"
+
+# -- probes
+
+marsha_celery_livenessprobe:
+  exec:
+    command: ["python", "manage.py", "check"]
+  initialDelaySeconds: 60
+  periodSeconds: 30
+  timeoutSeconds: 5
+marsha_celery_readynessprobe:
+  exec:
+    command: ["python", "manage.py", "check"]
+  initialDelaySeconds: 15
+  periodSeconds: 10
+  timeoutSeconds: 5
 
 # -- resource 
 marsha_app_resources:
