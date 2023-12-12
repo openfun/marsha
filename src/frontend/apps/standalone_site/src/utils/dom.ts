@@ -8,15 +8,13 @@ import { ROOT_APP } from 'conf/global';
  * The dom must be loaded before this function is called.
  * @returns static base url
  */
-export const getMetaPublicValue = () => {
+export const getMetaPublicValue = (cdnReplaceKeyword: string) => {
   const metaPublicPath = document.querySelector('meta[name="public-path"]');
 
   if (metaPublicPath) {
     const metaPublicPathValue = metaPublicPath.getAttribute('value') || '';
-    if (
-      metaPublicPathValue &&
-      metaPublicPathValue !== '{{ static_base_url }}'
-    ) {
+
+    if (metaPublicPathValue && metaPublicPathValue !== cdnReplaceKeyword) {
       return `${metaPublicPathValue || ROOT_APP}`;
     }
   }

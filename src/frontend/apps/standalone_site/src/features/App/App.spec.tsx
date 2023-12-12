@@ -33,7 +33,7 @@ jest.mock('grommet', () => ({
 }));
 
 window.scrollTo = jest.fn();
-window.isCDNLoaded = true;
+
 const someResponse = {
   count: 1,
   next: null,

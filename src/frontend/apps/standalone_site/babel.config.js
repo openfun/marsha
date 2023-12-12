@@ -14,6 +14,7 @@ module.exports = babelJest.createTransformer({
     ],
     'babel-plugin-import-remove-resource-query',
     '@babel/plugin-syntax-dynamic-import',
+    'babel-plugin-transform-vite-meta-env',
     'babel-plugin-transform-vite-meta-glob',
   ],
   presets: [
