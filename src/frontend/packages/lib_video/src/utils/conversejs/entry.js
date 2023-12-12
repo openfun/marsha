@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 // This file comes from converse.js github repository
 // This is the entrypoint to load converse headless
 // and then use it from window.converse
@@ -22,8 +19,8 @@ const converse = {
     },
   },
 
-  initialize(settings = {}) {
-    converse.load(settings).initialize(settings);
+  async initialize(settings = {}) {
+    (await converse.load(settings)).initialize(settings);
   },
 
   /**
@@ -48,11 +45,13 @@ const converse = {
    * @example
    * converse.load({assets_path: '/path/to/assets/'});
    */
-  load(settings = {}) {
+  async load(settings = {}) {
     if (settings.assets_path) {
       __webpack_public_path__ = settings.assets_path; // eslint-disable-line no-undef
     }
-    require('@converse/headless');
+
+    await import(`@converse/headless`);
+
     Object.keys(plugins).forEach((name) =>
       converse.plugins.add(name, plugins[name]),
     );
