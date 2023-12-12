@@ -49,25 +49,17 @@ spec:
       containers:
         - name: marsha
           image: "{{ marsha_image_name }}:{{ marsha_image_tag }}"
+{% if service_variant=="celery" %}
+          command: {{ marsha_celery_command }}
+{% endif %}
           imagePullPolicy: Always
-          livenessProbe:
-            httpGet:
-              path: /__heartbeat__
-              port: {{ marsha_django_port }}
-              httpHeaders:
-                - name: Host
-                  value: "{{ marsha_hosts[0] }}"
-            initialDelaySeconds: 60
-            periodSeconds: 30
-          readinessProbe:
-            httpGet:
-              path: /__lbheartbeat__
-              port: {{ marsha_django_port }}
-              httpHeaders:
-                - name: Host
-                  value: "{{ marsha_hosts[0] }}"
-            initialDelaySeconds: 10
-            periodSeconds: 5
+{% if service_variant!="celery" %}
+          ports:
+          - name: django-port
+            containerPort: {{ marsha_django_port }}
+{% endif %}
+          livenessProbe: {{ marsha_livenessprobe }}
+          readinessProbe: {{ marsha_readynessprobe }}
           env:
             - name: DJANGO_SETTINGS_MODULE
               value: marsha.configs.settings
