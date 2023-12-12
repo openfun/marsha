@@ -43,9 +43,9 @@ export const VideoWebSocketInitializer = ({
 
   //  every time we receive an update message within the socket, update the resource in the appropriate store
   const handleMessage = useCallback((message: MessageEvent<string>) => {
-    const handle = async () => {
+    const handle = () => {
       const data = JSON.parse(message.data) as WSMessageType;
-      await addResource(data.type, data.resource);
+      addResource(data.type, data.resource);
     };
     handle();
   }, []);

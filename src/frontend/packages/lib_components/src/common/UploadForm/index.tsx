@@ -135,7 +135,7 @@ export const UploadForm = ({
   }, [isMounted, objectId, resetUpload, uploadManagerState]);
 
   useEffect(() => {
-    (async () => setObject(await getStoreResource(objectType, objectId)))();
+    setObject(getStoreResource(objectType, objectId));
   }, [objectId, objectType]);
 
   useEffect(() => {

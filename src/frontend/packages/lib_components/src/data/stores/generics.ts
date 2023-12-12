@@ -7,57 +7,58 @@ import { MarkdownDocumentModelName } from '@lib-components/types/apps/markdown/m
 import { modelName, uploadableModelName } from '@lib-components/types/models';
 import { UploadableObject } from '@lib-components/types/tracks';
 
-const getStore = async (objectType: uploadableModelName) => {
+import { useClassroomDocument } from './useClassroomDocument';
+import { useDepositedFile } from './useDepositedFile';
+import { useDocument } from './useDocument';
+import { useMarkdownImage } from './useMarkdownImage';
+import { useSharedLiveMedia } from './useSharedLiveMedia';
+import { useThumbnail } from './useThumbnail';
+import { useTimedTextTrack } from './useTimedTextTrack';
+import { useVideo } from './useVideo';
+
+const getStore = (objectType: uploadableModelName) => {
   switch (objectType) {
     case modelName.THUMBNAILS:
-      const { useThumbnail } = await import('./useThumbnail');
       return useThumbnail;
     case modelName.TIMEDTEXTTRACKS:
-      const { useTimedTextTrack } = await import('./useTimedTextTrack');
       return useTimedTextTrack;
     case modelName.VIDEOS:
-      const { useVideo } = await import('./useVideo');
       return useVideo;
     case modelName.DOCUMENTS:
-      const { useDocument } = await import('./useDocument');
       return useDocument;
     case modelName.SHAREDLIVEMEDIAS:
-      const { useSharedLiveMedia } = await import('./useSharedLiveMedia');
       return useSharedLiveMedia;
     case MarkdownDocumentModelName.MARKDOWN_IMAGES:
-      const { useMarkdownImage } = await import('./useMarkdownImage');
       return useMarkdownImage;
     case FileDepositoryModelName.DepositedFiles:
-      const { useDepositedFile } = await import('./useDepositedFile');
       return useDepositedFile;
     case ClassroomModelName.CLASSROOM_DOCUMENTS:
     default:
-      const { useClassroomDocument } = await import('./useClassroomDocument');
       return useClassroomDocument;
   }
 };
 
-export const addMultipleResources = async (
+export const addMultipleResources = (
   objectType: uploadableModelName,
   objects: UploadableObject[],
 ) => {
-  const store = await getStore(objectType);
+  const store = getStore(objectType);
   store.getState().addMultipleResources(objects as any);
 };
 
-export const addResource = async (
+export const addResource = (
   objectType: uploadableModelName,
   object: UploadableObject,
 ) => {
-  const store = await getStore(objectType);
+  const store = getStore(objectType);
   store.getState().addResource(object as any);
 };
 
-export const getStoreResource = async (
+export const getStoreResource = (
   objectType: uploadableModelName,
   objectId: string,
 ) => {
-  const store = await getStore(objectType);
+  const store = getStore(objectType);
   const state = store.getState();
   const stateObjectType = state[objectType];
 
