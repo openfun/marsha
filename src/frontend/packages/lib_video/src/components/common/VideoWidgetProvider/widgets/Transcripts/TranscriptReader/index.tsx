@@ -1,6 +1,6 @@
 import { Box, Text, TimedTextTranscript } from 'lib-components';
 import React, { useEffect, useRef, useState } from 'react';
-import { VTTCue, WebVTT } from 'vtt.js';
+import { VTTCue } from 'vtt.js';
 
 import { useTranscriptReaderRequest } from '@lib-video/api/useTranscriptReaderRequest';
 import { useVideoProgress } from '@lib-video/hooks/useVideoProgress';
@@ -25,6 +25,8 @@ export const TranscriptReader = ({ transcript }: TranscriptReaderProps) => {
       return;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { WebVTT } = require('vtt.js') as typeof import('vtt.js');
     const parser = new WebVTT.Parser(window, WebVTT.StringDecoder());
 
     parser.oncue = (cue: VTTCue) => {
