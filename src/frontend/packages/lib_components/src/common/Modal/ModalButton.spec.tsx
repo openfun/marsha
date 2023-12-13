@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { render } from 'lib-tests';
 
-import ModalButton from './ModalButton';
+import { ModalButton } from './ModalButton';
 
 describe('<ModalButton />', () => {
   it('displays correctly without interaction props', () => {

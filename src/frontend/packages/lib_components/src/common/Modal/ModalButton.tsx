@@ -47,7 +47,7 @@ interface ModalButtonProps extends ButtonLoaderProps {
  *  - init onClickCancel will display the cancel button
  * @returns ModalButton component
  */
-const ModalButton = ({
+export const ModalButton = ({
   labelCancel,
   onClickCancel,
   ...buttonLabelProps
@@ -72,5 +72,3 @@ const ModalButton = ({
     </ModalButtonContainer>
   );
 };
-
-export default ModalButton;
