@@ -200,19 +200,12 @@ class SiteView(mixins.WaffleSwitchMixin, MarshaViewMixin, TemplateView):
                 content = re.sub(
                     r"/(static/css/main\..*\.css)", rf"{static_base_url}\1", content
                 )
+                content = re.sub(r"/__static_base_url__/", static_base_url, content)
 
                 engine = Engine.get_default()
                 template = engine.from_string(content)
 
-                return HttpResponse(
-                    template.render(
-                        Context(
-                            {
-                                "static_base_url": static_base_url,
-                            }
-                        )
-                    )
-                )
+                return HttpResponse(template.render(Context()))
         except FileNotFoundError:
             logger.exception("Production build of app not found")
             return HttpResponse(
