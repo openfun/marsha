@@ -19,6 +19,10 @@ module.exports = {
   ],
   testEnvironment: 'jsdom',
   testMatch: [__dirname + '/**/*.spec.+(ts|tsx|js)'],
+  transform: {
+    '^.+\\.(js|jsx|mjs|cjs|ts|tsx)$': '<rootDir>/babel.config.js',
+    '^.+\\.svg$': 'marsha-config/jest/transform/svgTransform.js',
+  },
   transformIgnorePatterns: [
     'node_modules/(?!(' +
       'trim-lines|' +

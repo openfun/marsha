@@ -5,10 +5,6 @@ import React from 'react';
 
 import { HeaderLight, HeaderLightLink } from './HeaderLight';
 
-jest.mock('assets/svg/logo_marsha.svg', () => ({
-  ReactComponent: () => <div>My LogoIcon</div>,
-}));
-
 describe('<HeaderLight />', () => {
   beforeEach(() => {
     useSiteConfig.setState({
@@ -30,10 +26,10 @@ describe('<HeaderLight />', () => {
   test('renders HeaderLight', () => {
     render(<HeaderLight />);
     expect(screen.getByRole('menubar')).toBeInTheDocument();
-    expect(screen.getByText(/My LogoIcon/i)).toBeInTheDocument();
+    expect(screen.getByText(/logo_marsha.svg/i)).toBeInTheDocument();
     expect(
       screen.queryByRole('link', {
-        name: /My LogoIcon/i,
+        name: /logo_marsha.svg/i,
       }),
     ).not.toBeInTheDocument();
     expect(screen.getByText(/Language Picker/i)).toBeInTheDocument();
@@ -76,7 +72,7 @@ describe('<HeaderLight />', () => {
       },
     });
     render(<HeaderLight />);
-    expect(screen.getByText(/My LogoIcon/i)).toBeInTheDocument();
+    expect(screen.getByText(/logo_marsha.svg/i)).toBeInTheDocument();
   });
 
   test('renders HeaderLightLink', () => {
@@ -84,7 +80,7 @@ describe('<HeaderLight />', () => {
     expect(screen.getByRole('menubar')).toBeInTheDocument();
     expect(
       screen.getByRole('link', {
-        name: /My LogoIcon/i,
+        name: /logo_marsha.svg/i,
       }),
     ).toBeInTheDocument();
   });
@@ -132,7 +128,7 @@ describe('<HeaderLight />', () => {
     expect(screen.getByRole('menubar')).toBeInTheDocument();
     expect(
       screen.getByRole('link', {
-        name: /My LogoIcon/i,
+        name: /logo_marsha.svg/i,
       }),
     ).toBeInTheDocument();
   });
