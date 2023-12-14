@@ -272,7 +272,9 @@ describe('liveContents', () => {
   test('liveContents object', () => {
     expect(liveContents('new-playlist-id')).toEqual({
       title: expect.objectContaining({
-        defaultMessage: 'My Webinars',
+        defaultMessage: expect.arrayContaining([
+          expect.objectContaining({ value: 'My Webinars' }),
+        ]),
       }),
       route: '/my-contents/webinars',
       component: (

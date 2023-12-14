@@ -271,7 +271,9 @@ describe('videoContents', () => {
   test('videoContents object', () => {
     expect(videoContents('new-playlist-id')).toEqual({
       title: expect.objectContaining({
-        defaultMessage: 'My Videos',
+        defaultMessage: expect.arrayContaining([
+          expect.objectContaining({ value: 'My Videos' }),
+        ]),
       }),
       route: '/my-contents/videos',
       component: (

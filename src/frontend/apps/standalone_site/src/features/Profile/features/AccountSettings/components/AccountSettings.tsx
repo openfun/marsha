@@ -147,77 +147,80 @@ export const AccountSettings = () => {
         <WhiteCard>
           <Heading level={4}>{intl.formatMessage(messages.title)}</Heading>
           <Box margin={{ left: '30%' }}>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                updatePassword(values);
-              }}
-              onChange={(e) => {
-                const { name, value } = e.target as HTMLInputElement;
-                setValues((_value) => ({ ..._value, [name]: value }));
-                setError(undefined);
-              }}
-            >
-              <Box gap="small">
-                <PrivateTextInputField
-                  autoComplete="current-password"
-                  id="currentPassword"
-                  name="currentPassword"
-                  label={intl.formatMessage(messages.currentPassword)}
-                  revealButtonLabel={intl.formatMessage(
-                    messages.revealCurrentPassword,
-                  )}
-                  hideButtonLabel={intl.formatMessage(
-                    messages.hideCurrentPassword,
-                  )}
-                  state={error?.old_password ? 'error' : undefined}
-                  text={error?.old_password?.join(' ')}
-                  value={values.currentPassword}
-                />
+            <Box gap="small">
+              <PrivateTextInputField
+                autoComplete="current-password"
+                label={intl.formatMessage(messages.currentPassword)}
+                revealButtonLabel={intl.formatMessage(
+                  messages.revealCurrentPassword,
+                )}
+                hideButtonLabel={intl.formatMessage(
+                  messages.hideCurrentPassword,
+                )}
+                state={error?.old_password ? 'error' : undefined}
+                text={error?.old_password?.join(' ')}
+                value={values.currentPassword}
+                onChange={(e) => {
+                  setValues((_value) => ({
+                    ..._value,
+                    currentPassword: e.target.value,
+                  }));
+                  setError(undefined);
+                }}
+              />
 
-                <PrivateTextInputField
-                  autoComplete="new-password"
-                  id="newPassword"
-                  name="newPassword"
-                  label={intl.formatMessage(messages.newPassword)}
-                  revealButtonLabel={intl.formatMessage(
-                    messages.revealNewPassword,
-                  )}
-                  hideButtonLabel={intl.formatMessage(messages.hideNewPassword)}
-                  state={error?.new_password1 ? 'error' : undefined}
-                  text={error?.new_password1?.join(' ')}
-                  value={values.newPassword}
-                />
+              <PrivateTextInputField
+                autoComplete="new-password"
+                label={intl.formatMessage(messages.newPassword)}
+                revealButtonLabel={intl.formatMessage(
+                  messages.revealNewPassword,
+                )}
+                hideButtonLabel={intl.formatMessage(messages.hideNewPassword)}
+                state={error?.new_password1 ? 'error' : undefined}
+                text={error?.new_password1?.join(' ')}
+                value={values.newPassword}
+                onChange={(e) => {
+                  setValues((_value) => ({
+                    ..._value,
+                    newPassword: e.target.value,
+                  }));
+                  setError(undefined);
+                }}
+              />
 
-                <PrivateTextInputField
-                  autoComplete="new-password"
-                  id="passwordValidation"
-                  name="passwordValidation"
-                  label={intl.formatMessage(messages.passwordValidation)}
-                  revealButtonLabel={intl.formatMessage(
-                    messages.revealPasswordValidation,
-                  )}
-                  hideButtonLabel={intl.formatMessage(
-                    messages.hidePasswordValidation,
-                  )}
-                  state={error?.new_password2 ? 'error' : undefined}
-                  text={error?.new_password2?.join(' ')}
-                  value={values.passwordValidation}
-                />
-              </Box>
-
-              <Box>
-                <Button
-                  className="mt-s"
-                  type="submit"
-                  title={intl.formatMessage(messages.submit)}
-                  aria-label={intl.formatMessage(messages.submit)}
-                  style={{ alignSelf: 'end' }}
-                >
-                  {intl.formatMessage(messages.submit)}
-                </Button>
-              </Box>
-            </form>
+              <PrivateTextInputField
+                autoComplete="new-password"
+                label={intl.formatMessage(messages.passwordValidation)}
+                revealButtonLabel={intl.formatMessage(
+                  messages.revealPasswordValidation,
+                )}
+                hideButtonLabel={intl.formatMessage(
+                  messages.hidePasswordValidation,
+                )}
+                state={error?.new_password2 ? 'error' : undefined}
+                text={error?.new_password2?.join(' ')}
+                value={values.passwordValidation}
+                onChange={(e) => {
+                  setValues((_value) => ({
+                    ..._value,
+                    passwordValidation: e.target.value,
+                  }));
+                  setError(undefined);
+                }}
+              />
+            </Box>
+            <Box>
+              <Button
+                className="mt-s"
+                type="submit"
+                title={intl.formatMessage(messages.submit)}
+                aria-label={intl.formatMessage(messages.submit)}
+                style={{ alignSelf: 'end' }}
+                onClick={() => updatePassword(values)}
+              >
+                {intl.formatMessage(messages.submit)}
+              </Button>
+            </Box>
           </Box>
         </WhiteCard>
       </Box>

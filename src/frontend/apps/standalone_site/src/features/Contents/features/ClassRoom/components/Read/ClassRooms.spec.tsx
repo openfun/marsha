@@ -260,7 +260,9 @@ describe('classRoomContents', () => {
   test('classRoomContents object', () => {
     expect(classRoomContents('new-playlist-id')).toEqual({
       title: expect.objectContaining({
-        defaultMessage: 'My Classrooms',
+        defaultMessage: expect.arrayContaining([
+          expect.objectContaining({ value: 'My Classrooms' }),
+        ]),
       }),
       route: '/my-contents/classroom',
       component: (
