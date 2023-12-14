@@ -1,4 +1,8 @@
-module.exports = {
+'use strict';
+
+const babelJest = require('babel-jest').default;
+
+module.exports = babelJest.createTransformer({
   plugins: [
     [
       'react-intl',
@@ -8,6 +12,7 @@ module.exports = {
         ast: true,
       },
     ],
+    'babel-plugin-import-remove-resource-query',
     '@babel/plugin-syntax-dynamic-import',
   ],
   presets: [
@@ -23,4 +28,6 @@ module.exports = {
     ['@babel/preset-react', { runtime: 'automatic' }],
     '@babel/preset-typescript',
   ],
-};
+  babelrc: false,
+  configFile: false,
+});

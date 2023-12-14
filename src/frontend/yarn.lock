@@ -5206,6 +5206,11 @@ babel-plugin-formatjs@10.5.10:
     "@types/babel__traverse" "^7.1.7"
     tslib "^2.4.0"
 
+babel-plugin-import-remove-resource-query@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-import-remove-resource-query/-/babel-plugin-import-remove-resource-query-1.0.0.tgz#a7c0226997a795a415af95344866ad709400a612"
+  integrity sha512-WWxioHi9MJlmOk7xVfbwUMCBITEB7vN/ZMoY79LUtAHsXjteLIwtePC1jORV+q6Tf8PeV25lcPlgEADKXdGiDA==
+
 babel-plugin-istanbul@^6.1.1:
   version "6.1.1"
   resolved "https://registry.yarnpkg.com/babel-plugin-istanbul/-/babel-plugin-istanbul-6.1.1.tgz#fa88ec59232fd9b4e36dbbc540a8ec9a9b47da73"

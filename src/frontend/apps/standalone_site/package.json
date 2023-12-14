@@ -50,6 +50,7 @@
     "@typescript-eslint/parser": "6.10.0",
     "@vitejs/plugin-react": "4.2.0",
     "babel-jest": "29.7.0",
+    "babel-plugin-import-remove-resource-query": "1.0.0",
     "cross-env": "7.0.3",
     "eslint": "*",
     "eslint-config-marsha": "*",
