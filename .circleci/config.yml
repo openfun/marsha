@@ -546,8 +546,13 @@ jobs:
       - run:
           name: Run tests on lti site
           command: yarn workspace marsha run test -w 3 --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
+      - run:
+          name: Run tests on standalone site
+          command: yarn workspace standalone_site run test -w 3 --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
       - store_artifacts:
           path: ~/marsha/src/frontend/apps/lti_site/__diff_output__
+      - store_artifacts:
+          path: ~/marsha/src/frontend/apps/standalone_site/__diff_output__
       - store_artifacts:
           path: ~/marsha/src/frontend/packages/lib_components/__diff_output__
       - store_artifacts:
@@ -556,24 +561,6 @@ jobs:
           path: ~/marsha/src/frontend/packages/lib_video/__diff_output__
       - store_artifacts:
           path: ~/marsha/src/frontend/packages/lib_markdown/__diff_output__
-
-  test-website:
-    docker:
-      - image: cimg/node:20.9
-        auth:
-          username: $DOCKER_HUB_USER
-          password: $DOCKER_HUB_PASS
-    working_directory: ~/marsha/src/frontend
-    resource_class: large
-    steps:
-      - checkout:
-          path: ~/marsha
-      - restore_cache:
-          keys:
-            - front-dependencies-<< pipeline.parameters.cache-version >>-{{ checksum "yarn.lock" }}
-      - run:
-          name: Run test on standalone site
-          command: yarn workspace standalone_site run test --watchAll=false --maxWorkers=2
 
   test-e2e:
     docker:
@@ -1469,12 +1456,6 @@ workflows:
             tags:
               only: /.*/
       - test-front:
-          requires:
-            - install-front-dependencies
-          filters:
-            tags:
-              only: /.*/
-      - test-website:
           requires:
             - install-front-dependencies
           filters:
