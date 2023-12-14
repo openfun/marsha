@@ -1,7 +1,5 @@
 """Tests for the `core.utils.transcode` module."""
 
-from unittest import mock
-
 from django.test import TestCase
 
 from django_peertube_runner_connector.models import (
@@ -30,8 +28,8 @@ class TranscodeTestCase(TestCase):
 
         # Create a test transcoded video
         self.transcoded_video = TranscodedVideo.objects.create(
-            state=VideoState.TO_TRANSCODE,
-            directory=f"scw/{self.video.pk}/video/1698941501",
+            state=VideoState.PUBLISHED,
+            directory=f"vod/{self.video.pk}/video/1698941501",
         )
         self.video_playlist = VideoStreamingPlaylist.objects.create(
             video=self.transcoded_video
@@ -53,11 +51,8 @@ class TranscodeTestCase(TestCase):
         )
 
     def test_transcoding_ended_callback(self):
-        """The marsha video should correctly be updated and dispatched."""
-        with mock.patch(
-            "marsha.websocket.utils.channel_layers_utils.dispatch_video"
-        ) as mock_dispatch_video:
-            transcoding_ended_callback(self.transcoded_video)
+        """The marsha video should correctly be updated."""
+        transcoding_ended_callback(self.transcoded_video)
 
         self.video.refresh_from_db()
 
@@ -67,4 +62,19 @@ class TranscodeTestCase(TestCase):
 
         self.assertEqual(self.video.upload_state, defaults.READY)
         self.assertEqual(self.video.transcode_pipeline, defaults.PEERTUBE_PIPELINE)
-        mock_dispatch_video.assert_called_once_with(self.video, to_admin=True)
+
+    def test_transcoding_ended_callback_with_error(self):
+        """The marsha video should be set with state on error and nothing else should be done."""
+        self.transcoded_video.state = VideoState.TRANSCODING_FAILED
+
+        transcoding_ended_callback(self.transcoded_video)
+
+        self.video.refresh_from_db()
+
+        self.assertEqual(self.video.upload_state, defaults.ERROR)
+
+        self.assertEqual(self.video.uploaded_on, None)
+
+        self.assertEqual(self.video.resolutions, [])
+
+        self.assertEqual(self.video.transcode_pipeline, None)

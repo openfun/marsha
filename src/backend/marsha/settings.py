@@ -757,7 +757,7 @@ class Base(Configuration):
     TRANSCODING_RUNNER_MAX_FAILURE = 5
 
     # The callback path to a function that will be called when a video is published
-    TRANSCODING_VIDEO_IS_PUBLISHED_CALLBACK_PATH = (
+    TRANSCODING_ENDED_CALLBACK_PATH = (
         "marsha.core.utils.transcode.transcoding_ended_callback"
     )
 
