@@ -74,6 +74,20 @@ server {
     proxy_set_header X-Forwarded-Proto $scheme;
   }
 
+  location /socket.io/ {
+    proxy_pass http://marsha-backend;
+
+    proxy_http_version 1.1;
+    proxy_set_header Connection "Upgrade";
+    proxy_set_header Upgrade $http_upgrade;
+
+    proxy_buffering off;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto https;
+    proxy_set_header Origin https://{{ marsha_hosts[0] }};
+  }
+
   location /xapi {
 {% if http_basic_auth_enabled and bypass_htaccess %}
     if ($http_x_forwarded_for !~ ^({{ marsha_nginx_bypass_htaccess_ip_whitelist | join("|") }})) {
