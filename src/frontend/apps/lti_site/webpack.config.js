@@ -105,10 +105,11 @@ module.exports = (_, argv) => {
         {
           enforce: 'pre',
           test: /\.js$/,
-          loader: 'source-map-loader',
+          use: ['source-map-loader'],
         },
       ],
     },
+    ignoreWarnings: [/Failed to parse source map/],
     watchOptions: {
       ignored: '**/node_modules',
       aggregateTimeout: 1000,

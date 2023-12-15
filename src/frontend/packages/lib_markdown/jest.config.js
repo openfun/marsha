@@ -72,7 +72,8 @@ module.exports = {
       'internmap|' +
       'delaunator|' +
       'robust-predicates|' +
-      'khroma' +
+      'khroma |' +
+      'devlop' +
       ')/)',
   ],
 };
