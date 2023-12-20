@@ -23,7 +23,12 @@ describe('<OnStageRequestToast />', () => {
       setPanelVisibility: mockSetPanelVisibility,
     });
 
-    render(<OnStageRequestToast participantsList={participants} />);
+    render(
+      <OnStageRequestToast
+        buttonLabel="Manage requests"
+        message={`${participants[1].name} and ${participants[0].name} want to go on stage.`}
+      />,
+    );
 
     screen.getByText(
       `${participants[1].name} and ${participants[0].name} want to go on stage.`,
