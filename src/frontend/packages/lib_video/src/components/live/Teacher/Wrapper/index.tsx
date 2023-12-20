@@ -7,6 +7,7 @@ import {
 } from 'lib-components';
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
+import { defineMessages, useIntl } from 'react-intl';
 
 import { TeacherVideoInfoBar } from '@lib-video/components/common/TeacherVideoInfoBar';
 import { VideoLayout } from '@lib-video/components/common/VideoLayout';
@@ -19,6 +20,7 @@ import {
   useLivePanelState,
 } from '@lib-video/hooks/useLivePanelState';
 import { usePictureInPicture } from '@lib-video/hooks/usePictureInPicture';
+import { onStageRequestMessage } from '@lib-video/utils/onStageRequestMessage';
 import { converse } from '@lib-video/utils/window';
 
 import { DashboardControlPane } from '../../../common/DashboardControlPane';
@@ -31,7 +33,17 @@ import {
 } from './OnStageRequestToast';
 import { TeacherLiveTypeSwitch } from './TeacherLiveTypeSwitch';
 
+const messages = defineMessages({
+  manageRequestBtnLabel: {
+    defaultMessage: 'Manage requests',
+    description:
+      'Label of the button used for opening the manage on-stage request tab.',
+    id: 'component.DashboardLive.manageRequestBtnLabel',
+  },
+});
+
 export const TeacherLiveWrapper = () => {
+  const intl = useIntl();
   const live = useCurrentLive();
   const appData = useAppConfig();
   const [showPanelTrigger, setShowPanelTrigger] = useState(true);
@@ -139,7 +151,11 @@ export const TeacherLiveWrapper = () => {
     if (shouldDisplayToast) {
       toast.custom(
         <OnStageRequestToast
-          participantsList={live.participants_asking_to_join}
+          buttonLabel={intl.formatMessage(messages.manageRequestBtnLabel)}
+          message={onStageRequestMessage(
+            live.participants_asking_to_join,
+            intl,
+          )}
         />,
         {
           id: ON_STAGE_REQUEST_TOAST_ID,
@@ -153,6 +169,7 @@ export const TeacherLiveWrapper = () => {
     live.join_mode,
     isPanelVisible,
     currentItem,
+    intl,
   ]);
 
   return (
