@@ -1,13 +1,15 @@
-import videojs from 'video.js';
+import videojs, { Player } from 'video.js';
 
 import './components/DownloadVideoButton';
 import './components/DownloadVideoQualityItem';
-import { DownloadVideoPluginOptions } from './types';
+import { DownloadVideoPluginOptions, DownloadVideoPluginType } from './types';
 
-const Plugin = videojs.getPlugin('plugin');
+const Plugin = videojs.getPlugin('plugin') as DownloadVideoPluginType;
 
 export class DownloadVideoPlugin extends Plugin {
-  constructor(player: videojs.Player, options: DownloadVideoPluginOptions) {
+  declare player: Player;
+
+  constructor(player: Player, options: DownloadVideoPluginOptions) {
     super(player, options);
 
     const controlBar = this.player.controlBar;

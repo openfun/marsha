@@ -1,22 +1,25 @@
-import videojs from 'video.js';
+import videojs, { Player } from 'video.js';
+import Component from 'video.js/dist/types/component';
+import MenuItem from 'video.js/dist/types/menu/menu-item';
 
 import { DownloadVideoQualityItemOptions } from '../types';
 
-const Component = videojs.getComponent('Component');
-const MenuItem = videojs.getComponent('MenuItem');
+const MenuItemClass = videojs.getComponent(
+  'MenuItem',
+) as unknown as typeof MenuItem;
 
-export class DownloadVideoQualityItem extends MenuItem {
+export class DownloadVideoQualityItem extends MenuItemClass {
   source: string | undefined;
 
   constructor(
-    player: videojs.Player,
-    options: DownloadVideoQualityItemOptions,
+    player: Player,
+    options: Partial<DownloadVideoQualityItemOptions>,
   ) {
     options.selectable = false;
     options.multiSelectable = false;
 
     super(player, options);
-    this.setAttribute('title', options.label);
+    this.setAttribute('title', options.label || '');
     this.source = options.src;
   }
 
@@ -34,4 +37,7 @@ export class DownloadVideoQualityItem extends MenuItem {
   }
 }
 
-Component.registerComponent('DownloadVideoMenuItem', DownloadVideoQualityItem);
+videojs.registerComponent(
+  'DownloadVideoMenuItem',
+  DownloadVideoQualityItem as unknown as typeof Component,
+);
