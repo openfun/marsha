@@ -47,6 +47,16 @@
         "urllib3"
       ],
       "allowedVersions": "<2.1.0"
+    },
+    {
+      "groupName": "allowed django versions",
+      "matchManagers": [
+        "setup-cfg"
+      ],
+      "matchPackageNames": [
+        "Django"
+      ],
+      "allowedVersions": "<5"
     }
   ]
 }
