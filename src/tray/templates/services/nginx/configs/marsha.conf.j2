@@ -99,6 +99,11 @@ server {
     try_files $uri @proxy_to_marsha_xapi;
   }
 
+  location /api/v1/runners {
+    client_max_body_size 4000m;
+    try_files $uri @proxy_to_marsha_app;
+  }
+
 {% if marsha_nginx_admin_ip_whitelist | length > 0 %}
   location /admin {
     {#
