@@ -23,6 +23,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Replace CRA by Vite (#2530)
 - Replace grommet Image and Grid component (#2518)
 - Optimized apps bundle (#2528)
+- Launch transcoding through a celery task
 
 ## [4.9.0] - 2023-12-04
 

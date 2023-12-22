@@ -15,10 +15,6 @@ from django.utils.module_loading import import_string
 
 from boto3.exceptions import Boto3Error
 import django_filters
-from django_peertube_runner_connector.transcode import (
-    VideoNotFoundError,
-    transcode_video,
-)
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import APIException, MethodNotAllowed
@@ -48,6 +44,7 @@ from marsha.core.services.video_recording import (
     start_recording,
     stop_recording,
 )
+from marsha.core.tasks.video import launch_video_transcoding
 from marsha.core.utils import jitsi_utils
 from marsha.core.utils.api_utils import validate_signature
 from marsha.core.utils.medialive_utils import (
@@ -442,15 +439,8 @@ class VideoViewSet(
             domain = settings.TRANSCODING_CALLBACK_DOMAIN
         else:
             domain = f"{request.scheme}://{request.get_host()}"
-        try:
-            transcode_video(
-                file_path=file_key,
-                destination=video.get_videos_storage_prefix(stamp=stamp),
-                base_name=stamp,
-                domain=domain,
-            )
-        except VideoNotFoundError:
-            return Response(status=404)
+
+        launch_video_transcoding.delay(video_pk=pk, stamp=stamp, domain=domain)
 
         video.upload_state = defaults.PROCESSING
         video.save(update_fields=["upload_state"])
