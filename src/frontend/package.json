@@ -40,6 +40,7 @@
   },
   "resolutions": {
     "@babel/plugin-proposal-private-property-in-object": "7.21.11",
+    "@babel/plugin-transform-typescript": "7.23.6",
     "@codemirror/lang-markdown": "6.2.4",
     "@codemirror/language": "6.10.1",
     "@codemirror/language-data": "6.4.1",

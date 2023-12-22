@@ -8,6 +8,12 @@ module.exports = {
         ast: true,
       },
     ],
+    [
+      '@babel/plugin-transform-typescript',
+      {
+        allowDeclareFields: true,
+      },
+    ],
     '@babel/proposal-class-properties',
     '@babel/plugin-syntax-dynamic-import',
     '@babel/plugin-transform-runtime',

@@ -1116,7 +1116,7 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.22.5"
 
-"@babel/plugin-transform-typescript@^7.23.3":
+"@babel/plugin-transform-typescript@*", "@babel/plugin-transform-typescript@7.23.6", "@babel/plugin-transform-typescript@^7.23.3":
   version "7.23.6"
   resolved "https://registry.yarnpkg.com/@babel/plugin-transform-typescript/-/plugin-transform-typescript-7.23.6.tgz#aa36a94e5da8d94339ae3a4e22d40ed287feb34c"
   integrity sha512-6cBG5mBvUu4VUD04OHKnYzbuHNP8huDsD3EDqqpIpsswTDoqHCjLoHb6+QgsV1WsT2nipRqCPgxD3LXnEO7XfA==
