@@ -13,7 +13,7 @@ from safedelete.queryset import SafeDeleteQueryset
 
 from marsha.core.models.account import ADMINISTRATOR, INSTRUCTOR, ROLE_CHOICES
 from marsha.core.models.base import BaseModel
-from marsha.core.tasks.video import delete_s3_video
+from marsha.core.tasks.s3 import delete_s3_video
 
 
 logger = logging.getLogger(__name__)
