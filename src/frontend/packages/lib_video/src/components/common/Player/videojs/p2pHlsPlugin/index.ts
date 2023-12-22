@@ -1,11 +1,11 @@
 import videojsHlsjsSourceHandler from '@streamroot/videojs-hlsjs-plugin';
 import { useJwt, useP2PConfig } from 'lib-components';
 import { Byterange, Engine } from 'p2p-media-loader-hlsjs';
-import videojs, { VideoJsPlayer } from 'video.js';
+import videojs, { Player } from 'video.js';
 
-import { ExtendedVideoJs, HlsData } from './types';
+import { ExtendedVideoJs, HlsData, P2pHlsPluginType } from './types';
 
-const Plugin = videojs.getPlugin('plugin');
+const PluginClass = videojs.getPlugin('plugin') as P2pHlsPluginType;
 
 /**
  * A VideoJS Plugin enabling the P2P for HLS.
@@ -22,8 +22,8 @@ const Plugin = videojs.getPlugin('plugin');
  * necessary metadata to make `p2p-media-loader-hlsjs` works.
  * @class P2pPlugin
  */
-export class P2pHlsPlugin extends Plugin {
-  constructor(player: videojs.Player, options: unknown) {
+export class P2pHlsPlugin extends PluginClass {
+  constructor(player: Player, options: unknown) {
     const { stunServersUrls, webTorrentServerTrackerUrls } =
       useP2PConfig.getState();
 
@@ -82,10 +82,9 @@ export class P2pHlsPlugin extends Plugin {
       This options will be passed to the `videojs-hlsjs-plugin` library.
       Example taken from: https://github.com/Novage/p2p-media-loader/blob/master/p2p-media-loader-hlsjs/demo/videojs-hlsjs-plugin.html
     */
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     player.options_.html5.hlsjsConfig = {
       liveSyncDurationCount: 7, // To have at least 7 segments in queue
-      loader: engine.createLoaderClass() as unknown,
+      loader: engine.createLoaderClass() as Engine,
     };
     super(player, options);
   }
@@ -96,8 +95,8 @@ export class P2pHlsPlugin extends Plugin {
    * @param {Engine} engine - The P2P engine
    * @private
    */
-  private initHlsJsEvents(player: VideoJsPlayer, engine: Engine) {
-    player.on('hlsFragChanged', (_event, data: HlsData) => {
+  private initHlsJsEvents(player: Player, engine: Engine) {
+    player.on('hlsFragChanged', (_event: string, data: HlsData) => {
       const frag = data.frag;
       const byterange: Byterange =
         frag.byteRange?.length !== 2
@@ -114,7 +113,7 @@ export class P2pHlsPlugin extends Plugin {
       await engine.destroy();
     });
 
-    player.on('hlsError', (_event, errorData: { details: string }) => {
+    player.on('hlsError', (_event: string, errorData: { details: string }) => {
       if (errorData.details === 'bufferStalledError') {
         if (player.media === undefined) {
           return;
