@@ -1,19 +1,22 @@
-import videojs from 'video.js';
+import videojs, { Player } from 'video.js';
+import Component from 'video.js/dist/types/component';
+import MenuItem from 'video.js/dist/types/menu/menu-item';
 
 import { SharedLiveMediaItemOptions } from '../types';
 
-const Component = videojs.getComponent('Component');
-const MenuItem = videojs.getComponent('MenuItem');
+const MenuItemClass = videojs.getComponent(
+  'MenuItem',
+) as unknown as typeof MenuItem;
 
-export class SharedMediaItem extends MenuItem {
+export class SharedMediaItem extends MenuItemClass {
   source: string | undefined;
 
-  constructor(player: videojs.Player, options: SharedLiveMediaItemOptions) {
+  constructor(player: Player, options: Partial<SharedLiveMediaItemOptions>) {
     options.selectable = false;
     options.multiSelectable = false;
 
     super(player, options);
-    this.setAttribute('title', options.label);
+    this.setAttribute('title', options.label || '');
     this.source = options.src;
   }
 
@@ -30,4 +33,7 @@ export class SharedMediaItem extends MenuItem {
   }
 }
 
-Component.registerComponent('SharedMediaItem', SharedMediaItem);
+videojs.registerComponent(
+  'SharedMediaItem',
+  SharedMediaItem as unknown as typeof Component,
+);
