@@ -13,19 +13,23 @@ module.exports = {
         '.eslintrc.{js,cjs}'
       ],
       parserOptions: {
-        sourceType: 'script',
-      },
+        sourceType: 'script'
+      }
     }
   ],
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
+    tsconfigRootDir: __dirname,
     project: [
       './tsconfig.json',
       './tsconfig-lint.json'
     ],
   },
   rules: {
-    "@typescript-eslint/semi": ["error", "always"]
-  }
-}
+    '@typescript-eslint/semi': ['error', 'always']
+  },
+  ignorePatterns: [
+    ".eslintrc.cjs"
+  ]
+};
