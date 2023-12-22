@@ -1,36 +1,35 @@
-import videojs from 'video.js';
+import videojs, { Player } from 'video.js';
+import Component from 'video.js/dist/types/component';
 
 import { QualitySelectorMenuButton } from './components/QualitySelectorMenuButton';
-import { QualitySelectorMenuItem } from './components/QualitySelectorMenuItem';
 import {
   Events,
   QualitySelectorMenuItemOptions,
   QualitySelectorOptions,
+  QualitySelectorType,
 } from './types';
 import './middleware';
 
-const Plugin = videojs.getPlugin('plugin');
+const PluginClass = videojs.getPlugin('plugin') as QualitySelectorType;
 
-export class QualitySelector extends Plugin {
-  constructor(player: videojs.Player, options?: QualitySelectorOptions) {
+export class QualitySelector extends PluginClass {
+  declare player: Player;
+
+  constructor(player: Player, options?: QualitySelectorOptions) {
     super(player, options);
 
     videojs.registerComponent(
       'QualitySelectorMenuButton',
-      QualitySelectorMenuButton,
+      QualitySelectorMenuButton as unknown as typeof Component,
     );
-    videojs.registerComponent(
-      'QualitySelectorMenuItem',
-      QualitySelectorMenuItem,
-    );
+
     if (options?.default) {
-      player.videojs_quality_selector_plugin_default = options.default;
+      this.player.videojs_quality_selector_plugin_default = options.default;
     }
 
-    this.on(player, 'loadedmetadata', this.initPlugin.bind(this));
-    this.on(player, Events.QUALITY_REQUESTED, this.changeQuality.bind(this));
-    this.on(
-      player,
+    this.player.on('loadedmetadata', this.initPlugin.bind(this));
+    this.player.on(Events.QUALITY_REQUESTED, this.changeQuality.bind(this));
+    this.player.on(
       Events.PLAYER_SOURCES_CHANGED,
       this.sourcesChanged.bind(this),
     );
@@ -40,6 +39,7 @@ export class QualitySelector extends Plugin {
     if (this.player.videojs_quality_selector_plugin_initialized) {
       return;
     }
+
     const controlBar = this.player.controlBar;
     const fullscreenToggle = controlBar.getChild('fullscreenToggle')?.el();
     controlBar
@@ -55,12 +55,13 @@ export class QualitySelector extends Plugin {
     _event: Events,
     selectedSource: QualitySelectorMenuItemOptions,
   ) {
-    const sources = this.player.currentSources();
     this.player.videojs_quality_selector_plugin_is_paused =
       this.player.paused();
+
     this.player.videojs_quality_selector_plugin_currentime =
       this.player.currentTime();
 
+    const { sources } = this.player.options_;
     const newSources = sources.map((source) => {
       source.selected = source.src === selectedSource.src;
 
