@@ -1,4 +1,4 @@
-"""Celery videos tasks for the core app."""
+"""Celery s3 tasks for the core app."""
 
 
 from marsha import settings
