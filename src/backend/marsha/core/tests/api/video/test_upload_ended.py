@@ -44,8 +44,8 @@ class VideoUploadEndedAPITest(TestCase):
         with mock.patch(
             "marsha.websocket.utils.channel_layers_utils.dispatch_video"
         ) as mock_dispatch_video, mock.patch(
-            "marsha.core.api.video.transcode_video"
-        ) as mock_transcode_video:
+            "marsha.core.api.video.launch_video_transcoding.delay"
+        ) as mock_launch_video_transcoding:
             response = self.client.post(
                 f"/api/videos/{video.id}/upload-ended/",
                 {
@@ -53,11 +53,8 @@ class VideoUploadEndedAPITest(TestCase):
                 },
                 HTTP_AUTHORIZATION=f"Bearer {token}",
             )
-            mock_transcode_video.assert_called_once_with(
-                file_path=f"tmp/{video.pk}/video/4564565456",
-                destination=f"vod/{video.pk}/video/4564565456",
-                base_name="4564565456",
-                domain="http://testserver",
+            mock_launch_video_transcoding.assert_called_once_with(
+                video_pk=str(video.pk), stamp="4564565456", domain="http://testserver"
             )
             mock_dispatch_video.assert_called_once_with(video, to_admin=True)
 
