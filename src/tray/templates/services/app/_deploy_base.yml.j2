@@ -72,9 +72,9 @@ spec:
             - name: POSTGRES_PORT
               value: "{{ marsha_postgresql_port }}"
             - name: DJANGO_ALLOWED_HOSTS
-              value: "{{ marsha_hosts | map('blue_green_hosts') | join(',') }}"
+              value: "{{ marsha_hosts | map('blue_green_hosts') | join(',') }},marsha-nginx-current"
             - name: DJANGO_CSRF_TRUSTED_ORIGINS
-              value: "{{ marsha_hosts | map('blue_green_hosts') | join(',') | split(',') | map('regex_replace', '^(.*)$', 'https://\\1') | join(',') }}"
+              value: "{{ marsha_hosts | map('blue_green_hosts') | join(',') | split(',') | map('regex_replace', '^(.*)$', 'https://\\1') | join(',') }},http://marsha-nginx-current"
             - name: DJANGO_CLOUDFRONT_PRIVATE_KEY_PATH
               value: "{{ marsha_cloudfront_private_key_path }}"
           envFrom:
@@ -82,7 +82,7 @@ spec:
                 name: "{{ marsha_secret_name }}"
             - configMapRef:
                 name: "marsha-app-dotenv-{{ deployment_stamp }}"
-          resources: {{ marsha_app_resources }}
+          resources: {{ marsha_resources }}
           volumeMounts:
             - name: marsha-configmap
               mountPath: /app/src/backend/marsha/configs

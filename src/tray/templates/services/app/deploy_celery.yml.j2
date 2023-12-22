@@ -2,5 +2,6 @@
 {% set marsha_replicas = marsha_celery_replicas %}
 {% set marsha_livenessprobe = marsha_celery_livenessprobe %}
 {% set marsha_readynessprobe = marsha_celery_readynessprobe %}
+{% set marsha_resources = marsha_celery_resources %}
 
 {% include "./_deploy_base.yml.j2" with context %}
