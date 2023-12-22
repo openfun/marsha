@@ -40,5 +40,5 @@ const server = app.listen(port, () => {
 });
 
 server.on('upgrade', (request, socket, head) => {
-  websocket.handleUpgrade(request, socket as any, head, ws => websocket.emit('connection', ws, request));
+  websocket.handleUpgrade(request, socket, head, ws => websocket.emit('connection', ws, request));
 });
