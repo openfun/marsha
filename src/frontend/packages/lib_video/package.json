@@ -93,7 +93,7 @@
     "react-icalendar-link": "3.0.2",
     "video.js": "8.7.0",
     "videojs-contrib-quality-levels": "4.0.0",
-    "videojs-http-source-selector": "1.1.6",
+    "videojs-http-source-selector": "https://github.com/FreeTubeApp/videojs-http-source-selector.git",
     "vtt.js": "0.13.0"
   },
   "volta": {

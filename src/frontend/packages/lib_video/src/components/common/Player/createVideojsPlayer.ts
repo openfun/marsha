@@ -115,6 +115,17 @@ export const createVideojsPlayer = (
     }
     player.transcriptPlugin({ video });
     player.httpSourceSelector();
+
+    // The icon of the quality selector is not displayed with the plugin httpSourceSelector,
+    // so we add the class vjs-icon-cog to the element to display the icon.
+    player.on('loadeddata', () => {
+      player
+        .getChild('controlBar')
+        ?.el()
+        ?.getElementsByClassName('vjs-http-source-selector')[0]
+        ?.getElementsByClassName('vjs-menu-button')[0]
+        ?.classList.add('vjs-icon-cog');
+    });
   }
   player.id3Plugin();
   player.xapiPlugin({ video, locale, dispatchPlayerTimeUpdate });
