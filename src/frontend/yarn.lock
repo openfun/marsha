@@ -2003,10 +2003,10 @@
   resolved "https://registry.yarnpkg.com/@fontsource-variable/roboto-flex/-/roboto-flex-5.0.8.tgz#d6685dbcdb9ba939717f995dfeb77cd22f7d82a3"
   integrity sha512-zSnE0htmk1tlKqVNfMGWJfxgLxLYQH9eYNvXFzWJ3GuDMXVBEiKuaYytkrItaP/svX3t5y8qsIXC+cpflsfvWQ==
 
-"@fontsource/material-icons@5.0.11":
-  version "5.0.11"
-  resolved "https://registry.yarnpkg.com/@fontsource/material-icons/-/material-icons-5.0.11.tgz#01b7cc91c2897d043acf4e5dc45ea190c098d72d"
-  integrity sha512-6JVVgGSrcDmst31WXaLG1MVNL6Sn0JLHwrGGLcg8u2KtXW+lTAJnscKEgj1pMpK73ks9Q193Mw2Oh9aebDj26g==
+"@fontsource/material-icons@5.0.7":
+  version "5.0.7"
+  resolved "https://registry.yarnpkg.com/@fontsource/material-icons/-/material-icons-5.0.7.tgz#9d3d5654871e32ef509c168e90ee9dc008eecfbe"
+  integrity sha512-QNEk24i1KhV1MoZqpLHfD+T90N2U8lzYxyeHbr6qAWTJG7KgOMib4TA+RonS9vtBT4sw59L9e9Wd1vebXxOhOQ==
 
 "@formatjs/cli@6.2.4":
   version "6.2.4"
@@ -2675,13 +2675,13 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@openfun/cunningham-react@*", "@openfun/cunningham-react@2.4.0":
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/@openfun/cunningham-react/-/cunningham-react-2.4.0.tgz#c539157782aa4b5d7228313d0b3c04a7393ebf28"
-  integrity sha512-5MxMCwPNim7z7aoHlUwEAcuC1lS+x5ub+zQIUWfeku5zV3kkUOAl2vRrxFa48gje3RYxHUlANytr3Q8pUsmkiQ==
+"@openfun/cunningham-react@*", "@openfun/cunningham-react@2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@openfun/cunningham-react/-/cunningham-react-2.3.0.tgz#33951f119c83a53f34a0d6b08370d2e3f31b4bcb"
+  integrity sha512-QsVRqWNJDuwtza39a6Eh9lKOQmR4zeFgtJaqIY5ky5ZvsA+hhMfWnUZ4RPu5IVg+OIm6kAubP1PHDwdHiu0apw==
   dependencies:
     "@fontsource-variable/roboto-flex" "5.0.8"
-    "@fontsource/material-icons" "5.0.11"
+    "@fontsource/material-icons" "5.0.7"
     "@internationalized/date" "3.5.0"
     "@openfun/cunningham-tokens" "*"
     "@react-aria/calendar" "3.5.3"
