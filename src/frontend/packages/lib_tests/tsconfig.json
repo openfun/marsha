@@ -4,9 +4,9 @@
     "baseUrl": "./src",
     "paths": {
       "@lib-tests/*": ["./*"],
-      "@lib-common/*": ["../../lib_common/src/*"]
-    }
+      "@lib-common/*": ["../../lib_common/src/*"],
+    },
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts"],
-  "exclude": ["lib", "node_modules"]
+  "exclude": ["lib", "node_modules"],
 }

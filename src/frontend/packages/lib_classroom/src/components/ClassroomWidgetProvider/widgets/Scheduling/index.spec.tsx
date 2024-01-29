@@ -137,8 +137,8 @@ describe('<Scheduling />', () => {
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(2));
 
-    expect(fetchMock.calls()[0]![0]).toEqual('/api/classrooms/1/');
-    expect(fetchMock.calls()[0]![1]).toEqual({
+    expect(fetchMock.calls()[0][0]).toEqual('/api/classrooms/1/');
+    expect(fetchMock.calls()[0][1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
         'Accept-Language': 'en',
@@ -149,8 +149,8 @@ describe('<Scheduling />', () => {
       }),
     });
 
-    expect(fetchMock.calls()[1]![0]).toEqual('/api/classrooms/1/');
-    expect(fetchMock.calls()[1]![1]).toEqual({
+    expect(fetchMock.calls()[1][0]).toEqual('/api/classrooms/1/');
+    expect(fetchMock.calls()[1][1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
         'Accept-Language': 'en',

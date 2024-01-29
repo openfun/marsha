@@ -9,13 +9,13 @@
       "@lib-tests/*": ["../../lib_tests/src/*"],
       "converse": ["../../lib_components/src/types/libs/converse"],
       "JitsiMeetExternalAPI": [
-        "../../lib_components/src/types/libs/JitsiMeetExternalAPI"
+        "../../lib_components/src/types/libs/JitsiMeetExternalAPI",
       ],
       "react-icalendar-link": [
-        "../../lib_components/src/types/libs/react-icalendar-link"
-      ]
-    }
+        "../../lib_components/src/types/libs/react-icalendar-link",
+      ],
+    },
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts"],
-  "exclude": ["lib", "node_modules"]
+  "exclude": ["lib", "node_modules"],
 }

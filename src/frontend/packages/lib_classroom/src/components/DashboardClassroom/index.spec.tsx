@@ -236,9 +236,9 @@ describe('<DashboardClassroom />', () => {
     deferredPatch.resolve({ url: 'server.bbb/classroom/url' });
 
     await waitFor(() =>
-      expect(fetchMock.calls()[1]![0]).toEqual('/api/classrooms/1/join/'),
+      expect(fetchMock.calls()[1][0]).toEqual('/api/classrooms/1/join/'),
     );
-    expect(fetchMock.calls()[1]![1]).toEqual({
+    expect(fetchMock.calls()[1][1]).toEqual({
       headers: {
         Authorization: 'Bearer token',
         'Content-Type': 'application/json',
@@ -322,7 +322,7 @@ describe('<DashboardClassroom />', () => {
 
     fireEvent.click(await screen.findByText('Launch the classroom now in BBB'));
 
-    expect(fetchMock.calls()[0]![0]).toEqual('/api/classrooms/1/');
+    expect(fetchMock.calls()[0][0]).toEqual('/api/classrooms/1/');
     const updatedClassroom = {
       ...classroom,
       started: true,
@@ -340,7 +340,7 @@ describe('<DashboardClassroom />', () => {
     };
     updatedClassroomDeferred.resolve(updatedClassroom);
 
-    expect(fetchMock.calls()[0]![0]).toEqual('/api/classrooms/1/');
+    expect(fetchMock.calls()[0][0]).toEqual('/api/classrooms/1/');
     expect(
       await screen.findByText(`You have joined the classroom as John Doe.`),
     ).toBeInTheDocument();

@@ -8,9 +8,9 @@
       "@lib-tests/*": ["../../lib_tests/src/*"],
       "converse": ["types/libs/converse"],
       "JitsiMeetExternalAPI": ["types/libs/JitsiMeetExternalAPI"],
-      "react-icalendar-link": ["types/libs/react-icalendar-link"]
-    }
+      "react-icalendar-link": ["types/libs/react-icalendar-link"],
+    },
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts"],
-  "exclude": ["lib", "node_modules"]
+  "exclude": ["lib", "node_modules"],
 }

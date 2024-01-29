@@ -7,12 +7,12 @@
       "@lib-components/*": ["../../lib_components/src/*"],
       "converse": ["../../lib_components/src/types/libs/converse"],
       "JitsiMeetExternalAPI": [
-        "../../lib_components/src/types/libs/JitsiMeetExternalAPI"
+        "../../lib_components/src/types/libs/JitsiMeetExternalAPI",
       ],
       "@lib-tests/*": ["../../lib_tests/src/*"],
-      "@lib-common/*": ["../../lib_common/src/*"]
-    }
+      "@lib-common/*": ["../../lib_common/src/*"],
+    },
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts"],
-  "exclude": ["lib", "node_modules"]
+  "exclude": ["lib", "node_modules"],
 }

@@ -331,7 +331,7 @@ describe('<UploadDocuments />', () => {
     await userEvent.click(setDefaultButton);
 
     await waitFor(() =>
-      expect(fetchMock.calls()[2]![1]!.body).toEqual(
+      expect(fetchMock.calls()[2][1]!.body).toEqual(
         JSON.stringify({ is_default: true }),
       ),
     );

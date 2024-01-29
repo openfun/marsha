@@ -87,8 +87,8 @@ describe('<Description />', () => {
       timeout: 2000,
     });
 
-    expect(fetchMock.calls()[0]![0]).toEqual('/api/classrooms/1/');
-    expect(fetchMock.calls()[0]![1]).toEqual({
+    expect(fetchMock.calls()[0][0]).toEqual('/api/classrooms/1/');
+    expect(fetchMock.calls()[0][1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
         'Accept-Language': 'en',
