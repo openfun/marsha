@@ -1,4 +1,5 @@
 """Utils to create MediaLive configuration."""
+
 from marsha.core.utils.medialive_utils.medialive_client_utils import (
     medialive_client,
     mediapackage_client,

@@ -1,4 +1,5 @@
 """Test update recording management command."""
+
 from datetime import timezone
 import logging
 

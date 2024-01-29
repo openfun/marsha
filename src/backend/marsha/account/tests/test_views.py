@@ -1,4 +1,5 @@
 """Test the ``account`` views."""
+
 from urllib.parse import parse_qs, urlparse
 
 from django.contrib.auth import get_user as auth_get_user

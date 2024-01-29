@@ -1,4 +1,5 @@
 """Declare API endpoints for LTI User Association with Django RestFramework viewsets."""
+
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 

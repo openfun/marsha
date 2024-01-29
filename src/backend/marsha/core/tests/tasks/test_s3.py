@@ -1,4 +1,5 @@
 """Test for s3 celery tasks"""
+
 # pylint: disable=protected-access
 from unittest import mock
 

@@ -1,4 +1,5 @@
 """Structure of liveSession related models API responses with DRF serializers."""
+
 import collections
 from datetime import datetime
 

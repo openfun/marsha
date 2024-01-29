@@ -1,4 +1,5 @@
 """Module for the permissions linked to Marsha's JWT"""
+
 from dataclasses import asdict, dataclass
 
 

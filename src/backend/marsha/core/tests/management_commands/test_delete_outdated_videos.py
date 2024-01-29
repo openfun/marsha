@@ -1,4 +1,5 @@
 """Test delete_outdated_videos command."""
+
 from datetime import date, datetime, timezone as baseTimezone
 from unittest.mock import patch
 

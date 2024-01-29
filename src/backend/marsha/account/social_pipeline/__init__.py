@@ -8,6 +8,7 @@ This also adds the organization creation step.
 Assertion (for development/test) is made to insure the step to replace exists in
 the original pipeline.
 """
+
 from social_edu_federation.pipeline import DEFAULT_EDU_FED_AUTH_PIPELINE
 
 

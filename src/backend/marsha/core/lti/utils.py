@@ -1,4 +1,5 @@
 """Helpers to create a dedicated resources."""
+
 from django.core.exceptions import FieldDoesNotExist, ValidationError
 from django.db.models import Q
 from django.utils.translation import gettext as _

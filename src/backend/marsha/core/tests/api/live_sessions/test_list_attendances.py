@@ -1,4 +1,5 @@
 """Tests for the livesession list-attendances API."""
+
 from datetime import timedelta
 import json
 import time

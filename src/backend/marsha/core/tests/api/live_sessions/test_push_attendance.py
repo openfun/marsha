@@ -1,4 +1,5 @@
 """Tests for the livesession push_attendance API."""
+
 import uuid
 
 from django.utils import timezone

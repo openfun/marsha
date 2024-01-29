@@ -1,4 +1,5 @@
 """For development purpose only, send test emails."""
+
 from django.conf import settings
 from django.core.management import BaseCommand
 from django.utils import timezone

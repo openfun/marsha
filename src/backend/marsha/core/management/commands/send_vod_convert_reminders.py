@@ -1,4 +1,5 @@
 """Check every existing medialive channel and check if the related video is still usable."""
+
 from datetime import timedelta
 
 from django.conf import settings

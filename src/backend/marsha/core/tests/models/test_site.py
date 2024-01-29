@@ -1,4 +1,5 @@
 """Tests for the models in the ``core`` app of the Marsha project."""
+
 from django.test import TestCase
 
 from marsha.core.factories import SiteConfigFactory

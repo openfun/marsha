@@ -1,4 +1,5 @@
 """Utils to handle dates and time."""
+
 import calendar
 from datetime import datetime, timezone
 

@@ -1,4 +1,5 @@
 """Test the LTI video view."""
+
 from html import unescape
 import json
 from logging import Logger

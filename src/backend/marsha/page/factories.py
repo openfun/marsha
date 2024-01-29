@@ -1,4 +1,5 @@
 """Factories for the ``page`` app of the Marsha project."""
+
 import factory
 from factory.django import DjangoModelFactory
 

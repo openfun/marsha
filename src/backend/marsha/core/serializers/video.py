@@ -1,4 +1,5 @@
 """Structure of Video related models API responses with Django Rest Framework serializers."""
+
 import datetime
 from datetime import timedelta
 from urllib.parse import quote_plus

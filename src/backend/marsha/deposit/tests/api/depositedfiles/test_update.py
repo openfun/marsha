@@ -1,4 +1,5 @@
 """Tests for the deposited files update API."""
+
 import json
 
 from django.test import TestCase, override_settings

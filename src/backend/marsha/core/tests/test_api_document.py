@@ -1,4 +1,5 @@
 """Tests for the document API."""
+
 from datetime import datetime, timezone as baseTimezone
 import json
 import random

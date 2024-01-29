@@ -1,4 +1,5 @@
 """Celery thumbnail tasks for the core app."""
+
 from io import BytesIO
 
 from django.core.files.base import ContentFile

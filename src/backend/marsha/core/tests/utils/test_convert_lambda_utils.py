@@ -1,4 +1,5 @@
 """Test convert_lambda utils functions."""
+
 import json
 
 from django.test import TestCase, override_settings

@@ -1,4 +1,5 @@
 """Tests for the models in the ``core`` app of the Marsha project."""
+
 from django.db import transaction
 from django.db.utils import IntegrityError
 from django.test import TestCase

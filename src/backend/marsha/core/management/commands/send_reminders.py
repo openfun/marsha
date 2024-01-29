@@ -1,4 +1,5 @@
 """Send reminders management command."""
+
 from datetime import timedelta
 from logging import getLogger
 import smtplib

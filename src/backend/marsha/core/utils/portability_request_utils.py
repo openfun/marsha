@@ -1,4 +1,5 @@
 """Helpers to manage portability requests states consistently."""
+
 from django.db.transaction import atomic
 
 from marsha.core.models import PlaylistPortability, PortabilityRequestState

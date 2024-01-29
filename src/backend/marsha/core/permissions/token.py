@@ -1,4 +1,5 @@
 """Custom permission classes for the Marsha project."""
+
 from django.core.exceptions import FieldError, ObjectDoesNotExist
 
 from rest_framework import permissions

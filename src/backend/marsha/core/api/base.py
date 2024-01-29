@@ -1,4 +1,5 @@
 """Declare API endpoints with Django RestFramework viewsets."""
+
 from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
@@ -133,9 +134,9 @@ def update_state(request):
     new_upload_state = serializer.validated_data["state"]
     object_instance.update_upload_state(
         upload_state=new_upload_state,
-        uploaded_on=key_elements.get("uploaded_on")
-        if new_upload_state == READY
-        else None,
+        uploaded_on=(
+            key_elements.get("uploaded_on") if new_upload_state == READY else None
+        ),
         **extra_parameters,
     )
     # send a signal when upload is finished

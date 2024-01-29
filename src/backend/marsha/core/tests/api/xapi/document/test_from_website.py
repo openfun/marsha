@@ -1,4 +1,5 @@
 """Tests for the document xAPI statement sent from the website."""
+
 import json
 from unittest import mock
 import uuid

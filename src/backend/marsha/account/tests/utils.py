@@ -1,4 +1,5 @@
 """Defines testing settings for the SAML FER authentication."""
+
 from django.test import override_settings
 
 from social_core.exceptions import AuthFailed

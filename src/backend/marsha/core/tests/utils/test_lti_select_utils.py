@@ -1,4 +1,5 @@
 """Tests for the `core.utils.lti_select_utils` module."""
+
 from django.test import TestCase, override_settings
 
 from marsha.core.utils.lti_select_utils import get_lti_select_resources

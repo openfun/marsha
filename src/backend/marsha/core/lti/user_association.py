@@ -1,4 +1,5 @@
 """Process module to manage association between LTI users and Marsha users."""
+
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db.transaction import atomic

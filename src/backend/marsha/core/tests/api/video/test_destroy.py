@@ -1,4 +1,5 @@
 """Tests for the Video destroy API of the Marsha project."""
+
 import json
 
 from django.test import TestCase

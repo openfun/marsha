@@ -1,4 +1,5 @@
 """Tests for the `core.api_utils` module."""
+
 import django.apps
 from django.test import TestCase
 

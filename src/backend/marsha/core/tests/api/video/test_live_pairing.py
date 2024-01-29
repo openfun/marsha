@@ -1,4 +1,5 @@
 """Tests for the pairing device endpoint on the API of the Marsha project."""
+
 from datetime import timedelta
 import json
 import time

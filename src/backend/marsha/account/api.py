@@ -1,4 +1,5 @@
 """Declare API endpoints with Django RestFramework viewsets."""
+
 from django.urls import reverse
 
 from rest_framework.permissions import AllowAny

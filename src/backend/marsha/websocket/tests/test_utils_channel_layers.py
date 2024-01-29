@@ -1,4 +1,5 @@
 """Module testing utils channel_layers"""
+
 from django.test import TestCase
 
 from asgiref.sync import async_to_sync

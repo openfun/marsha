@@ -1,4 +1,5 @@
 """Tests for the Markdown application render-latex API."""
+
 import json
 
 from django.test import TestCase, override_settings

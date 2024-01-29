@@ -1,4 +1,5 @@
 """Tests for the account password reset API."""
+
 import json
 
 from django.core import mail

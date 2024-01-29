@@ -1,4 +1,5 @@
 """Utils to create MediaLive configuration."""
+
 import json
 import os
 

@@ -1,4 +1,5 @@
 """Tests for the XAPIStatementSerializer serializer of the Marsha project."""
+
 from django.test import TestCase
 
 from marsha.core.serializers import (

@@ -1,4 +1,5 @@
 """Tests for the classroom API."""
+
 from datetime import datetime, timezone
 
 from django.test import TestCase, override_settings

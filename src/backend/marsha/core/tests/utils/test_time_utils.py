@@ -1,4 +1,5 @@
 """Test the time utils of the Marsha core app."""
+
 from datetime import datetime, timezone
 
 from django.test import TestCase

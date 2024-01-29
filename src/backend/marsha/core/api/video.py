@@ -1,4 +1,5 @@
 """Declare API endpoints for videos with Django RestFramework viewsets."""
+
 # pylint: disable=too-many-lines
 from copy import deepcopy
 

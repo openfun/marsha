@@ -1,4 +1,5 @@
 """Tests API for persisting the participants list asking to join a live."""
+
 from unittest import mock
 
 from django.test import TestCase

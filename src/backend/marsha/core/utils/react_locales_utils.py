@@ -1,4 +1,5 @@
 """Helper matching a django locale to a React locale."""
+
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import to_locale

@@ -1,4 +1,5 @@
 """Test the public video view."""
+
 from html import unescape
 import json
 import random

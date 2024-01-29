@@ -19,9 +19,9 @@ def migrate_live_attendance(apps, schema_editor):
                 try:
                     new_key = int(key) // 1000
                     datetime.fromtimestamp(new_key)
-                    livesession.live_attendance[
-                        str(new_key)
-                    ] = livesession.live_attendance.pop(key)
+                    livesession.live_attendance[str(new_key)] = (
+                        livesession.live_attendance.pop(key)
+                    )
                 except ValueError as error:  # shouldn't happen
                     livesession.live_attendance.pop(key)
 

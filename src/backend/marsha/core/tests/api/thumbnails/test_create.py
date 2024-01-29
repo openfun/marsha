@@ -1,4 +1,5 @@
 """Tests for the create Thumbnail API."""
+
 import json
 
 from django.test import TestCase, override_settings

@@ -1,4 +1,5 @@
 """Test clean_medialive_dev_stack command."""
+
 from datetime import datetime, timezone
 from unittest import mock
 

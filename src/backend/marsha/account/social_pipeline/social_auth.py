@@ -1,4 +1,5 @@
 """Marsha's specific Python Social Auth pipeline steps for authentication."""
+
 from social_core.pipeline.social_auth import (
     auth_allowed as social_auth_allowed,
     social_details as social_social_details,

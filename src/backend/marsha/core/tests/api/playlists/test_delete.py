@@ -1,4 +1,5 @@
 """Tests for the Playlist delete API of the Marsha project."""
+
 from django.test import TestCase
 
 from marsha.bbb.factories import ClassroomFactory

@@ -1,4 +1,5 @@
 """Tests for the PortabilityRequest accept API."""
+
 from django.test import TestCase
 
 from marsha.core.factories import (

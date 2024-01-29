@@ -1,5 +1,6 @@
 """For each pending classroom, get their meeting infos:
  update learning analytics, and end it if needed."""
+
 from django.core.management import BaseCommand
 
 from marsha.bbb.models import Classroom

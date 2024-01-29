@@ -1,4 +1,5 @@
 """Structure of Thumbnail related models API responses with Django Rest Framework serializers."""
+
 from django.conf import settings
 from django.db.utils import IntegrityError
 

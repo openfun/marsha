@@ -1,4 +1,5 @@
 """Test clean_aws_elemental_stack command."""
+
 from datetime import datetime, timezone
 from io import StringIO
 from unittest import mock

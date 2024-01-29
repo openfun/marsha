@@ -1,4 +1,5 @@
 """Factories for the ``bbb`` app of the Marsha project."""
+
 from datetime import timezone
 
 import factory

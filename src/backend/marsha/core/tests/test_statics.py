@@ -1,4 +1,5 @@
 """Test suite for Marsha's collectstatic command."""
+
 import os
 import tempfile
 

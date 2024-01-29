@@ -1,4 +1,5 @@
 """Utils for direct upload to AWS S3."""
+
 from django.conf import settings
 from django.utils import timezone
 

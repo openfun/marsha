@@ -1,4 +1,5 @@
 """This module holds the model for portability requests."""
+
 from functools import reduce
 from operator import or_
 

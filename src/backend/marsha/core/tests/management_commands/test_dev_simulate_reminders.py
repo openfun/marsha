@@ -1,4 +1,5 @@
 """Tests for dev_simulate_reminders command."""
+
 from io import StringIO
 
 from django.core.management import call_command

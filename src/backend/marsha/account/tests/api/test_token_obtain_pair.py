@@ -1,4 +1,5 @@
 """Tests for the obtain token pair (access/refresh) API."""
+
 import json
 
 from django.test import TestCase

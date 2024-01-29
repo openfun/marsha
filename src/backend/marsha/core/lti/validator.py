@@ -1,4 +1,5 @@
 """Validator for LTI requests."""
+
 import logging
 import time
 

@@ -1,4 +1,5 @@
 """Test marsha router."""
+
 from django.core.cache import cache
 from django.test import TestCase, override_settings
 

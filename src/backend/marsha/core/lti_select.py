@@ -1,4 +1,5 @@
 """Module dedicated to lti select feature for core."""
+
 from django.db.models import Q
 
 from marsha.core.defaults import ENDED, LTI_DOCUMENT_ROUTE, LTI_VIDEO_ROUTE

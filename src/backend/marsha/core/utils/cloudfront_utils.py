@@ -4,6 +4,7 @@ Utils to sign CloudFront urls and cookies.
 Following boto3's documentation to sign CloudFront urls
 https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/cloudfront.html
 """
+
 import base64
 
 from django.conf import settings

@@ -1,4 +1,5 @@
 """Test medialive utils functions."""
+
 from datetime import datetime, timezone as baseTimezone
 import json
 from unittest import mock

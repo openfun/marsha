@@ -1,4 +1,5 @@
 """Tests for the SharedLiveMedia create API of the Marsha project."""
+
 import json
 
 from django.test import TestCase

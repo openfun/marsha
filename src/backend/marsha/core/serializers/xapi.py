@@ -1,4 +1,5 @@
 """Structure of our XAPI responses with Django Rest Framework serializers."""
+
 import re
 import uuid
 

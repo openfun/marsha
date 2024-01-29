@@ -1,4 +1,5 @@
 """Tests for the UpdateStateSerializer serializer of the Marsha project."""
+
 from datetime import datetime, timezone
 import random
 from uuid import uuid4

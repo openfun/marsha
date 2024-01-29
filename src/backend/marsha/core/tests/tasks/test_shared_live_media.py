@@ -1,4 +1,5 @@
 """Test for shared live media celery tasks"""
+
 # pylint: disable=protected-access
 
 from io import BytesIO

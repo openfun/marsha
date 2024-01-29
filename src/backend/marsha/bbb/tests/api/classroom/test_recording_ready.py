@@ -1,4 +1,5 @@
 """Tests for the classroom API."""
+
 from django.conf import settings
 from django.test import TestCase, override_settings
 

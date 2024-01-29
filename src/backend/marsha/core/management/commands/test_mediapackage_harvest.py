@@ -1,4 +1,5 @@
 """Test recording slicing management command."""
+
 import datetime
 from pprint import pprint
 import time

@@ -1,4 +1,5 @@
 """Utils for jitsi"""
+
 from datetime import timedelta
 
 from django.conf import settings

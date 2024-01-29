@@ -1,4 +1,5 @@
 """Delete outdated classrooms that have reached their retention date."""
+
 from django.core.management.base import BaseCommand
 
 from marsha.bbb.models import Classroom

@@ -1,4 +1,5 @@
 """Tests for the Playlist retrieve API of the Marsha project."""
+
 from django.test import TestCase
 
 from marsha.core import factories, models

@@ -1,4 +1,5 @@
 """Specific Marsha JWT models"""
+
 from dataclasses import asdict
 
 from django.conf import settings

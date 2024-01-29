@@ -1,4 +1,5 @@
 """Test the development ``refresh_bbb_recordings` management command."""
+
 from datetime import datetime, timezone
 from logging import Logger
 from unittest import mock

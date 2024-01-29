@@ -1,4 +1,5 @@
 """Utils to send mail to users."""
+
 from datetime import timedelta
 from urllib.parse import urljoin
 

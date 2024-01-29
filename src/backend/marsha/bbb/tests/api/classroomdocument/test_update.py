@@ -1,4 +1,5 @@
 """Tests for the classroomdocument update API."""
+
 import json
 
 from django.test import TestCase, override_settings

@@ -1,4 +1,5 @@
 """Tests for the get_recordings service in the ``bbb`` app of the Marsha project."""
+
 from django.core.cache import cache
 from django.test import TestCase, override_settings
 

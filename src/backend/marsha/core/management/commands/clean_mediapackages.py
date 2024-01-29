@@ -1,4 +1,5 @@
 """Clean orphan mediapackages channel management command."""
+
 from django.core.management.base import BaseCommand
 
 from marsha.core.utils.medialive_utils import (

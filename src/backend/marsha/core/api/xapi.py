@@ -1,4 +1,5 @@
 """Declare API endpoints for xapi with Django RestFramework viewsets."""
+
 import json
 import logging
 

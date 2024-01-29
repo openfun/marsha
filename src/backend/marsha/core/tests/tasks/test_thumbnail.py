@@ -1,4 +1,5 @@
 """Test for thumbnail celery tasks"""
+
 # pylint: disable=protected-access
 from io import BytesIO
 from unittest import mock

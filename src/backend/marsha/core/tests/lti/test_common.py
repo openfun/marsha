@@ -1,4 +1,5 @@
 """Test LTI common methods"""
+
 import uuid
 
 from django.test import TestCase

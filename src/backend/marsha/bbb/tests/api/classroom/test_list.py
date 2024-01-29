@@ -1,4 +1,5 @@
 """Tests for the classroom API."""
+
 from django.test import TestCase, override_settings
 
 from marsha.bbb.factories import ClassroomFactory

@@ -1,4 +1,5 @@
 """This module holds the model for playlist resources."""
+
 from datetime import timedelta
 import logging
 

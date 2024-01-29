@@ -1,4 +1,5 @@
 """Specific classroom related simple JWT helpers."""
+
 from datetime import timedelta
 
 from django.conf import settings

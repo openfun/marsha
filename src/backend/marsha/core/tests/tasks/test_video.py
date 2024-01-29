@@ -1,4 +1,5 @@
 """Test for video celery tasks"""
+
 # pylint: disable=protected-access
 from unittest import mock
 

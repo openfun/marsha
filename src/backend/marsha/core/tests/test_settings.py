@@ -1,4 +1,5 @@
 """Test suite for Marsha's settings."""
+
 from unittest import mock
 
 from django.test import TestCase

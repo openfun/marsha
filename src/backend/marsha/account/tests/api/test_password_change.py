@@ -1,4 +1,5 @@
 """Tests for the account password change API."""
+
 import json
 
 from django.test import TestCase

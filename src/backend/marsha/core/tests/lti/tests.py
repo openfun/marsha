@@ -1,4 +1,5 @@
 """Test the LTI interconnection with Open edX."""
+
 from unittest import mock
 import uuid
 

@@ -1,4 +1,5 @@
 """Utils used by the api module."""
+
 from functools import cache
 import hashlib
 import hmac

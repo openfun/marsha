@@ -4,6 +4,7 @@ Models for the bbb app of the Marsha project.
 In this base model, we activate generic behaviours that apply to all our models and enforce
 checks and validation that go further than what Django is doing.
 """
+
 import json
 import logging
 from secrets import token_urlsafe

@@ -1,4 +1,5 @@
 """Live session services."""
+
 from marsha.core.models import ConsumerSite, LiveSession, User, Video
 from marsha.core.models.account import NONE
 

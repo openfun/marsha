@@ -1,6 +1,5 @@
 """Celery videos tasks for the core app."""
 
-
 from django_peertube_runner_connector.transcode import transcode_video
 from sentry_sdk import capture_exception
 

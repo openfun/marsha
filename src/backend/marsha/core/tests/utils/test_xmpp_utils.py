@@ -1,4 +1,5 @@
 """Test the xmpp module for marsha core app."""
+
 from unittest import mock
 
 from django.test import TestCase, override_settings

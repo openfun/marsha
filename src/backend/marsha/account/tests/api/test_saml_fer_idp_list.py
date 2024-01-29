@@ -1,4 +1,5 @@
 """Tests for the SAML FER identity provider API list."""
+
 from unittest import mock
 
 from django.test import TestCase

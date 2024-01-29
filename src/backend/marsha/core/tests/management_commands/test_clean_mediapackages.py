@@ -1,4 +1,5 @@
 """Tests for clean_mediapackages command."""
+
 from io import StringIO
 from unittest import mock
 

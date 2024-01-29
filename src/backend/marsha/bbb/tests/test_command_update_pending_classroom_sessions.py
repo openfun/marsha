@@ -1,4 +1,5 @@
 """Test the cronjob ``update_pending_classroom_sessions` management command."""
+
 from datetime import datetime, timezone
 from io import StringIO
 import json

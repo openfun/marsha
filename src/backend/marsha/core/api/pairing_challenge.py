@@ -1,4 +1,5 @@
 """Declare API endpoints for pairing challenge with Django RestFramework viewsets."""
+
 from django.conf import settings
 from django.core.exceptions import ValidationError
 

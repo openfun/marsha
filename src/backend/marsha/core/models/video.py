@@ -1,4 +1,5 @@
 """This module holds the models for the marsha project."""
+
 import secrets
 
 from django.conf import settings

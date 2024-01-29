@@ -1,4 +1,5 @@
 """Factories for the Marsha JWTs module"""
+
 import types
 import uuid
 

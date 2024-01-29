@@ -1,4 +1,5 @@
 """Tests for the deposited file options API."""
+
 from django.test import TestCase, override_settings
 
 from marsha.core.simple_jwt.factories import (

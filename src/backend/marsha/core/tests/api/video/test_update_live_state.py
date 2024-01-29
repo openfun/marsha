@@ -1,4 +1,5 @@
 """Tests for the Video update live state API of the Marsha project."""
+
 from datetime import datetime, timedelta, timezone as baseTimezone
 import json
 import random

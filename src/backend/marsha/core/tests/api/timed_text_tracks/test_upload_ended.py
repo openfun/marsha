@@ -1,4 +1,5 @@
 """Tests for the timed text track upload ended API of the Marsha project."""
+
 from unittest import mock
 
 from django.test import TestCase

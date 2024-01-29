@@ -1,4 +1,5 @@
 """Test the user_association module from core.lti."""
+
 import uuid
 
 from django.core.exceptions import ValidationError

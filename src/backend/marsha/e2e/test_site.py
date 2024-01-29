@@ -1,4 +1,5 @@
 """e2e tests for site."""
+
 from django.test import override_settings
 
 from playwright.sync_api import BrowserContext, Error, Page, expect

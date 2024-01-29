@@ -1,4 +1,5 @@
 """Custom permission classes for the "markdown" app in Marsha project."""
+
 from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework import permissions

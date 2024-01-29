@@ -1,4 +1,5 @@
 """Module dedicated to lti select feature for deposit."""
+
 from django.conf import settings
 
 from marsha.deposit.defaults import LTI_ROUTE

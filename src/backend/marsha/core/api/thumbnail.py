@@ -1,4 +1,5 @@
 """Declare API endpoints for thumbnails with Django RestFramework viewsets."""
+
 from django.conf import settings
 
 import django_filters

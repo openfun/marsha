@@ -1,4 +1,5 @@
 """Tests for the specific classroom related simple JWT helpers."""
+
 from datetime import datetime, timedelta, timezone as baseTimezone
 import json
 from unittest import mock

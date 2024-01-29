@@ -1,4 +1,5 @@
 """Tests for the TimedTextTrack create API of the Marsha project."""
+
 import json
 
 from django.test import TestCase, override_settings

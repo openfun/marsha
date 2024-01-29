@@ -1,4 +1,5 @@
 """Test for the view to cancel reminders view."""
+
 from datetime import timedelta
 
 from django.test import TestCase

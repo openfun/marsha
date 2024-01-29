@@ -1,4 +1,5 @@
 """Tests for the ClassroomRecording delete API."""
+
 from unittest.mock import patch
 
 from django.test import TestCase, override_settings

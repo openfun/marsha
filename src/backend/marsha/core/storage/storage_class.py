@@ -1,4 +1,5 @@
 """Class storage for the marsha app."""
+
 from django.core.files.storage import storages
 from django.utils.functional import LazyObject
 

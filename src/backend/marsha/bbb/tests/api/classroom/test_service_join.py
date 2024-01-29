@@ -1,4 +1,5 @@
 """Tests for the classroom API."""
+
 import json
 from unittest import mock
 

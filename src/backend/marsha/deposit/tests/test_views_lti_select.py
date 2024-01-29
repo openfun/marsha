@@ -1,4 +1,5 @@
 """Test the LTI select view."""
+
 from html import unescape
 import json
 import random

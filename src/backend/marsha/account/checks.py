@@ -1,4 +1,5 @@
 """Django checks for the account application of project marsha."""
+
 from django.conf import settings
 from django.core.checks import Warning as ChecksWarning
 

@@ -1,4 +1,5 @@
 """Tests for the livesession list API."""
+
 from datetime import timedelta
 import random
 import time

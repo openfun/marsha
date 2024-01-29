@@ -1,4 +1,5 @@
 """Utils for dummy upload."""
+
 from django.urls import reverse
 
 

@@ -1,4 +1,5 @@
 """Test the public marsha Site."""
+
 import os
 
 from django.core.cache import cache

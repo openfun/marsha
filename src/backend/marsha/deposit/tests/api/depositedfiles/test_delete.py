@@ -1,4 +1,5 @@
 """Tests for the deposited files delete API."""
+
 from django.test import TestCase, override_settings
 
 from marsha.core.factories import (

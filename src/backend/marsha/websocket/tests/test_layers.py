@@ -1,4 +1,5 @@
 """Test marsha layers use by django channels."""
+
 from django.test import TestCase
 
 from marsha.websocket.layers import JsonRedisChannelLayer

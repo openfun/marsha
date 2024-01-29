@@ -1,4 +1,5 @@
 """Tests for the models in the ``core`` app of the Marsha project."""
+
 from datetime import datetime, timedelta, timezone as baseTimezone
 import random
 from unittest import mock

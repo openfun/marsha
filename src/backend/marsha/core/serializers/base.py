@@ -1,4 +1,5 @@
 """This module holds serializers and constants used across the Marsha project."""
+
 from datetime import timedelta
 import re
 

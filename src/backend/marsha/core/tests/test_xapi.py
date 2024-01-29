@@ -1,4 +1,5 @@
 """Tests for the xapi module of the Marsha project."""
+
 from unittest import mock
 
 from django.test import TestCase, override_settings

@@ -1,4 +1,5 @@
 """Send reminders mails with simulated data to test the actual rendering."""
+
 from datetime import timedelta
 import uuid
 

@@ -1,4 +1,5 @@
 """Tests for the models in the ``bbb`` app of the Marsha project."""
+
 import json
 
 from django.db import transaction

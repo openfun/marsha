@@ -1,4 +1,5 @@
 """Test the marsha's account models."""
+
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 

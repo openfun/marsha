@@ -1,4 +1,5 @@
 """Tests for send_reminders command."""
+
 from datetime import datetime, timedelta, timezone as baseTimezone
 from io import StringIO
 import smtplib
