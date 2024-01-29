@@ -78,7 +78,7 @@ describe('Video <RetentionDate />', () => {
     expect(lastCall).not.toBe(undefined);
     expect(lastCall?.[0]).toBe(`/api/videos/${mockedVideo.id}/`);
     expect(lastCall?.[1]?.body).toEqual(
-      `{"retention_date":"${retentionDate.toISODate()!}"}`,
+      `{"retention_date":"${retentionDate.toISODate()}"}`,
     );
     expect(lastCall?.[1]?.method).toBe('PATCH');
 

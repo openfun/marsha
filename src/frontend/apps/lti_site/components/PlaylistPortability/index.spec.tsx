@@ -95,10 +95,10 @@ describe('<PlaylistPortability />', () => {
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(3));
 
-    expect(fetchMock.calls()[1]![0]).toEqual(
+    expect(fetchMock.calls()[1][0]).toEqual(
       `/api/playlists/${currentPlaylist.id}/`,
     );
-    expect(fetchMock.calls()[1]![1]).toEqual({
+    expect(fetchMock.calls()[1][1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',

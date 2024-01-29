@@ -52,12 +52,9 @@ export const StopRecording = () => {
       data?.live.segment_duration_seconds &&
       data.live.segment_duration_seconds > 0
     ) {
-      const timeoutId = window.setTimeout(
-        () => {
-          setRecordingActionEnabled(true);
-        },
-        data?.live.segment_duration_seconds * 1000,
-      );
+      const timeoutId = window.setTimeout(() => {
+        setRecordingActionEnabled(true);
+      }, data?.live.segment_duration_seconds * 1000);
 
       return () => {
         window.clearTimeout(timeoutId);

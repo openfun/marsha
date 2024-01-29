@@ -430,11 +430,11 @@ describe('<MarkdownEditor />', () => {
 
     await waitFor(() => expect(saveButton).toBeDisabled());
 
-    expect(fetchMock.calls()[2]![0]).toEqual(
+    expect(fetchMock.calls()[2][0]).toEqual(
       `/api/markdown-documents/${markdownDocument.id}/`,
     );
 
-    expect(fetchMock.calls()[2]![1]).toEqual({
+    expect(fetchMock.calls()[2][1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
@@ -528,11 +528,11 @@ describe('<MarkdownEditor />', () => {
 
     await waitFor(() => expect(saveButton).toBeDisabled());
 
-    expect(fetchMock.calls()[2]![0]).toEqual(
+    expect(fetchMock.calls()[2][0]).toEqual(
       `/api/markdown-documents/${markdownDocument.id}/`,
     );
 
-    expect(fetchMock.calls()[2]![1]).toEqual({
+    expect(fetchMock.calls()[2][1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',

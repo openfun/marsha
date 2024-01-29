@@ -75,7 +75,7 @@ describe('<Dashboard />', () => {
       <Dashboard video={mockedVideo} socketUrl="some_url" />,
     );
     // Video
-    const videoElement = container.getElementsByTagName('video')[0]!;
+    const videoElement = container.getElementsByTagName('video')[0];
     expect(videoElement).toHaveAttribute(
       'poster',
       'https://example.com/default_thumbnail/1080',
@@ -109,7 +109,7 @@ describe('<Dashboard />', () => {
     );
 
     // Video
-    const videoElement = container.getElementsByTagName('video')[0]!;
+    const videoElement = container.getElementsByTagName('video')[0];
     expect(videoElement).toHaveAttribute(
       'poster',
       'https://example.com/default_thumbnail/1080',
@@ -140,7 +140,7 @@ describe('<Dashboard />', () => {
       <Dashboard video={mockedVideo} socketUrl="some_url" />,
     );
     // Video
-    const videoElement = container.getElementsByTagName('video')[0]!;
+    const videoElement = container.getElementsByTagName('video')[0];
     expect(videoElement).toHaveAttribute(
       'poster',
       'https://example.com/default_thumbnail/1080',

@@ -99,8 +99,8 @@ describe('<DashboardClassroomInstructor />', () => {
     deferredPatch.resolve({ message: 'classroom ended' });
     await screen.findByText('Ending classroom…');
 
-    expect(fetchMock.calls()[0]![0]).toEqual('/api/classrooms/1/end/');
-    expect(fetchMock.calls()[0]![1]).toEqual({
+    expect(fetchMock.calls()[0][0]).toEqual('/api/classrooms/1/end/');
+    expect(fetchMock.calls()[0][1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
         'Accept-Language': 'en',
