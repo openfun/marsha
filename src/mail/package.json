@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "@html-to/text-cli": "0.5.4",
-    "mjml": "4.14.1"
+    "mjml": "4.15.2"
   },
   "scripts": {
     "build-mjml-to-html": "./bin/mjml-to-html",
