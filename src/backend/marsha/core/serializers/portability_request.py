@@ -1,4 +1,5 @@
 """Structure of portability request related models API ."""
+
 from rest_framework import serializers
 
 from marsha.core.lti.user_association import get_user_from_lti_user_id_and_consumer_site

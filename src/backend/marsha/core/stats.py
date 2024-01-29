@@ -1,4 +1,5 @@
 """Stats module for marsha"""
+
 import logging
 
 from django.conf import settings

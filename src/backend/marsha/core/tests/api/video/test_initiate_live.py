@@ -1,4 +1,5 @@
 """Tests for the Video initiate live API of the Marsha project."""
+
 from datetime import datetime, timezone as baseTimezone
 import json
 from unittest import mock

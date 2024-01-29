@@ -1,4 +1,5 @@
 """Services for video live participants."""
+
 from marsha.core.defaults import DENIED
 
 

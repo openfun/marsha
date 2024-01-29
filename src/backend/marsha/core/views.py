@@ -1,4 +1,5 @@
 """Views of the ``core`` app of the Marsha project."""
+
 from abc import ABC, abstractmethod
 import json
 from logging import getLogger
@@ -695,9 +696,9 @@ class BaseView(BaseModelResourceView, ABC):
         # with LTI passports
         if domain:
             response.xframe_options_exempt = True
-            response.headers[
-                "Content-Security-Policy"
-            ] = f"frame-ancestors {domain} *.{domain};"
+            response.headers["Content-Security-Policy"] = (
+                f"frame-ancestors {domain} *.{domain};"
+            )
 
         return response
 
@@ -844,9 +845,9 @@ class LTIConfigView(TemplateResponseMixin, View):
             else:
                 icon_url = f"//{request.get_host()}{static(icon_url)}"
         context = {
-            "code": settings.LTI_CONFIG_TITLE.lower()
-            if settings.LTI_CONFIG_TITLE
-            else None,
+            "code": (
+                settings.LTI_CONFIG_TITLE.lower() if settings.LTI_CONFIG_TITLE else None
+            ),
             "contact_email": settings.LTI_CONFIG_CONTACT_EMAIL,
             "description": settings.LTI_CONFIG_DESCRIPTION,
             "launch_url": launch_url,

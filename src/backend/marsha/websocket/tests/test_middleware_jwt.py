@@ -1,4 +1,5 @@
 """Test for the jwt middleware."""
+
 from datetime import timedelta
 
 from django.test import TestCase

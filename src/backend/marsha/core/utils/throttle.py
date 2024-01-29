@@ -1,4 +1,5 @@
 """Throttle Decorator module."""
+
 from datetime import datetime, timedelta
 from functools import wraps
 

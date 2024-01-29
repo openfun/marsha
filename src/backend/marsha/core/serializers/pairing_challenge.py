@@ -1,4 +1,5 @@
 """Structure of LivePairing related models API responses with Django Rest Framework serializers."""
+
 from django.conf import settings
 
 from rest_framework import serializers

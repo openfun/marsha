@@ -1,4 +1,5 @@
 """Tests for the `core.s3_utils` module."""
+
 from unittest import mock
 
 from django.test import TestCase

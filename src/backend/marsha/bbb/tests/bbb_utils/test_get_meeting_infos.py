@@ -1,4 +1,5 @@
 """Tests for the get_meeting_infos service in the ``bbb`` app of the Marsha project."""
+
 import json
 
 from django.test import TestCase, override_settings

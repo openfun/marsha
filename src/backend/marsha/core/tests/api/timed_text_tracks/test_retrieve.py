@@ -1,4 +1,5 @@
 """Tests for the TimedTextTrack retrieve API of the Marsha project."""
+
 from datetime import datetime, timezone as baseTimezone
 import json
 import random

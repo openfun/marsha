@@ -1,4 +1,5 @@
 """Test the send_emails functions."""
+
 from django.core import mail
 from django.test import TestCase, override_settings
 from django.utils import timezone

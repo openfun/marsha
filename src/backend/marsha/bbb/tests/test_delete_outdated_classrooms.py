@@ -1,4 +1,5 @@
 """Test delete_outdated_classrooms command."""
+
 from datetime import date, datetime, timezone as baseTimezone
 from unittest.mock import patch
 

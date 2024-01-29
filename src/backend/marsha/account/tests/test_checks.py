@@ -1,4 +1,5 @@
 """Tests the `account` application checks."""
+
 from django.core.checks import Warning as ChecksWarning
 from django.test import TestCase, override_settings
 

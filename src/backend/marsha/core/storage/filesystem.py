@@ -1,6 +1,5 @@
 """Utils for local upload."""
 
-
 from django.urls import reverse
 from django.utils import timezone
 

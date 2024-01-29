@@ -1,4 +1,5 @@
 """This module holds custom metadata class dedicated to Marsha."""
+
 from django.conf import settings
 
 from rest_framework.metadata import SimpleMetadata

@@ -1,4 +1,5 @@
 """Base test case for the livesession API tests."""
+
 from django.core import mail
 from django.core.cache import cache
 from django.test import TestCase

@@ -1,4 +1,5 @@
 """Utils to create MediaLive configuration."""
+
 from django.conf import settings
 
 import boto3

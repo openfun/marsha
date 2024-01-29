@@ -1,4 +1,5 @@
 """Structure of deposit related models API responses with Django Rest Framework serializers."""
+
 import mimetypes
 from os.path import splitext
 from urllib.parse import quote, quote_plus

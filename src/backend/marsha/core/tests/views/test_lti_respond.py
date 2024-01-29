@@ -1,4 +1,5 @@
 """Test the LTI select view."""
+
 import random
 from unittest import mock
 

@@ -1,4 +1,5 @@
 """Marsha specific authentication class for API."""
+
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 

@@ -1,4 +1,5 @@
 """Tests the react_locales utils for Marsha core app."""
+
 from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase
 from django.test.utils import override_settings

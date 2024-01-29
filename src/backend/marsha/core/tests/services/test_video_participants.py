@@ -1,4 +1,5 @@
 """Tests for the video_participants service in the ``core`` app of the Marsha project."""
+
 from django.test import TestCase
 
 from marsha.core.defaults import DENIED

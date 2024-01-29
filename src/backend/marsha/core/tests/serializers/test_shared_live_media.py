@@ -1,4 +1,5 @@
 """Tests for the SharedLiveMedia serializer of the Marsha project."""
+
 from datetime import datetime, timezone as baseTimezone
 
 from django.test import TestCase, override_settings

@@ -1,4 +1,5 @@
 """Tests for the Thumbnail initiate-upload API."""
+
 from datetime import datetime, timezone as baseTimezone
 import json
 from unittest import mock

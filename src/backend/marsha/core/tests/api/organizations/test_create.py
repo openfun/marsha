@@ -1,4 +1,5 @@
 """Tests for the Organization create API of the Marsha project."""
+
 from django.test import TestCase
 
 from marsha.core import models

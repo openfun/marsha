@@ -1,4 +1,5 @@
 """Tests for the Video metadata API of the Marsha project."""
+
 import json
 
 from django.test import TestCase, override_settings

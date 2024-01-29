@@ -1,4 +1,5 @@
 """Tests for the file_depositories retrieve API."""
+
 import json
 
 from django.test import TestCase, override_settings

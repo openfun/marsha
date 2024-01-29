@@ -1,4 +1,5 @@
 """Module dedicated to lti select feature for Markdown."""
+
 from django.conf import settings
 
 from marsha.markdown.defaults import LTI_ROUTE

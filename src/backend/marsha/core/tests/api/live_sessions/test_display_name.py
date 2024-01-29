@@ -1,4 +1,5 @@
 """Tests for the livesession display_name API."""
+
 import uuid
 
 from marsha.core.factories import (

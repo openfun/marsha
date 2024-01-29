@@ -1,4 +1,5 @@
 """Declare API endpoints for user and organisation with Django RestFramework viewsets."""
+
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 

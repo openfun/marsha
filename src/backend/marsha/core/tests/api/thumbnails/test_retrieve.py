@@ -1,4 +1,5 @@
 """Tests for the retrieve Thumbnail API."""
+
 from datetime import datetime, timezone
 import json
 

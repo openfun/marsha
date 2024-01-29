@@ -1,4 +1,5 @@
 """Tests for the get_frontend_configuration API."""
+
 from django.test import TestCase, override_settings
 
 from waffle.testutils import override_switch

@@ -1,4 +1,5 @@
 """Test for video consumers."""
+
 import json
 from uuid import uuid4
 

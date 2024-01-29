@@ -1,4 +1,5 @@
 """Marsha forms module."""
+
 from parler.forms import TranslatableModelForm
 
 from marsha.markdown import models

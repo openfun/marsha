@@ -1,4 +1,5 @@
 """Tests for the Markdown application update-translations API."""
+
 from django.test import TestCase, override_settings
 
 from marsha.core.factories import (

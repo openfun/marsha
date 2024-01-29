@@ -1,4 +1,5 @@
 """Test LTI xml configuration views in the ``bbb`` app of the Marsha project."""
+
 from django.test import TestCase, override_settings
 
 import xmltodict

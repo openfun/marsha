@@ -1,4 +1,5 @@
 """Tests for the admin helpers in the ``core`` app of the Marsha project."""
+
 from django.db import models
 from django.test import TestCase
 from django.urls import NoReverseMatch

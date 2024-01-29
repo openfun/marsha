@@ -1,4 +1,5 @@
 """Tests for the xAPI statement API of the marsha project."""
+
 import json
 from unittest import mock
 import uuid

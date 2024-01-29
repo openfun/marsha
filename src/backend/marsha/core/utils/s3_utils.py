@@ -1,4 +1,5 @@
 """Utils for direct upload to AWS S3."""
+
 from typing import Literal
 
 from django.conf import settings

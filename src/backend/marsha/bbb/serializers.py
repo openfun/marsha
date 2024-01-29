@@ -1,4 +1,5 @@
 """Structure of BBB related models API responses with Django Rest Framework serializers."""
+
 from datetime import datetime
 import mimetypes
 from os.path import splitext

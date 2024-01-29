@@ -1,4 +1,5 @@
 """Tests for the upload & processing state update API of the Marsha project."""
+
 from datetime import datetime, timezone
 import json
 import random

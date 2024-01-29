@@ -1,4 +1,5 @@
 """Tests for the Playlist create API of the Marsha project."""
+
 import uuid
 
 from django.test import TestCase

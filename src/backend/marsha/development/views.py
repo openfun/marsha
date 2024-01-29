@@ -1,4 +1,5 @@
 """Declare development views."""
+
 from logging import getLogger
 from urllib.parse import urlparse
 import uuid

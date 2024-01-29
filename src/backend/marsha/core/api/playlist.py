@@ -1,4 +1,5 @@
 """Declare API endpoints for playlist with Django RestFramework viewsets."""
+
 from django.conf import settings
 from django.db.models import Q
 from django.db.models.deletion import ProtectedError

@@ -1,4 +1,5 @@
 """Views of the ``bbb`` app of the Marsha project."""
+
 from django.templatetags.static import static
 
 from marsha.bbb.models import Classroom

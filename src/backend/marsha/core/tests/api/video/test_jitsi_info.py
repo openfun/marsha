@@ -1,4 +1,5 @@
 """Test endpoint to fetch jitsi info for a specific video."""
+
 from django.test import TestCase, override_settings
 
 import jwt

@@ -1,4 +1,5 @@
 """Specific fer saml implementation for marsha"""
+
 from django.conf import settings
 
 from social_edu_federation.backends.saml_fer import FERSAMLAuth

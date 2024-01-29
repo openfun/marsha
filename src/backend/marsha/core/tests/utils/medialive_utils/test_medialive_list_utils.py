@@ -1,4 +1,5 @@
 """Test medialive utils functions."""
+
 from django.test import TestCase
 
 from botocore.stub import Stubber

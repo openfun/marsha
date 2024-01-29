@@ -1,4 +1,5 @@
 """Module providing base classes for LTI views tests."""
+
 from html import unescape
 import json
 import random

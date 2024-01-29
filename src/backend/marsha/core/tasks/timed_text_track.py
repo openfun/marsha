@@ -1,4 +1,5 @@
 """Celery timed text track tasks for the core app."""
+
 from html import escape, unescape
 
 from django.core.files.base import ContentFile

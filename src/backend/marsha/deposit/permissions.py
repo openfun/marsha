@@ -1,4 +1,5 @@
 """Custom permission classes for the Deposit app."""
+
 from rest_framework import permissions
 
 from marsha.core import models

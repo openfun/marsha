@@ -1,4 +1,5 @@
 """Tests for the Video list API of the Marsha project."""
+
 from datetime import datetime, timezone
 
 from django.test import TestCase

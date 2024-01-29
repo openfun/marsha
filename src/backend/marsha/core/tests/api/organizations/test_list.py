@@ -1,4 +1,5 @@
 """Tests for the Organization list API of the Marsha project."""
+
 from django.test import TestCase
 from django.utils import timezone
 

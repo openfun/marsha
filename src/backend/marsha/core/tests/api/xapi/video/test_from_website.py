@@ -1,4 +1,5 @@
 """Tests for the video xAPI statement sent from the website."""
+
 import io
 import json
 import logging

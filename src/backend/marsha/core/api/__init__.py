@@ -1,4 +1,5 @@
 """Make all APIs available from marsha.core.apis."""
+
 # pylint: disable=wildcard-import,unused-wildcard-import
 from .account import *  # noqa isort:skip
 from .base import *  # noqa isort:skip

@@ -1,4 +1,5 @@
 """This module holds the model for files and derivated resources."""
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 

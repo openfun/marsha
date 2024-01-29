@@ -1,4 +1,5 @@
 """Check live state management command."""
+
 from datetime import datetime, timedelta, timezone
 import json
 import re

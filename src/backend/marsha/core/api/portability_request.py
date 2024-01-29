@@ -1,4 +1,5 @@
 """Declare API endpoints for portability requests with Django RestFramework viewsets."""
+
 from django.utils.encoding import force_str
 
 from django_filters.rest_framework import DjangoFilterBackend

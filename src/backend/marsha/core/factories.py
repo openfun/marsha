@@ -1,4 +1,5 @@
 """Factories for the ``core`` app of the Marsha project."""
+
 import datetime
 import uuid
 

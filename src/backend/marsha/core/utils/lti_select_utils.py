@@ -1,4 +1,5 @@
 """Utils for working with lti_select modules."""
+
 from functools import cache
 
 import django

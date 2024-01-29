@@ -1,4 +1,5 @@
 """Tests for the serializer base module of the Marsha project."""
+
 from datetime import datetime, timedelta, timezone as baseTimezone
 import time
 from unittest import mock

@@ -1,4 +1,5 @@
 """Test Marsha JWTs"""
+
 import uuid
 
 from django.test import RequestFactory, TestCase

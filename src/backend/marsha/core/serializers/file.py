@@ -1,4 +1,5 @@
 """Structure of Document related models API responses with Django Rest Framework serializers."""
+
 from datetime import timedelta
 import mimetypes
 from os.path import splitext

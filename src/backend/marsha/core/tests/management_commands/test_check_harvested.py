@@ -1,4 +1,5 @@
 """Tests for check_harvested command."""
+
 from datetime import timedelta
 from io import StringIO
 from unittest import mock

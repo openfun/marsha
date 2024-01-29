@@ -1,4 +1,5 @@
 """Tests for the account logout API."""
+
 import json
 
 from django.test import TestCase

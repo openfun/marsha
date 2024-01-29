@@ -1,4 +1,5 @@
 """ Common classes and methods for LTi module"""
+
 from logging import getLogger
 from urllib.parse import urlencode
 

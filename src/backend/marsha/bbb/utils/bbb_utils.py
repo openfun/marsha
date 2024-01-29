@@ -1,4 +1,5 @@
 """Utils for requesting BBB API"""
+
 from datetime import timezone
 import hashlib
 import json
@@ -130,9 +131,11 @@ def create(classroom: Classroom, recording_ready_callback_url: str, attempt=0):
         "welcome": classroom.welcome_text,
         "meta_bbb-recording-ready-url": recording_ready_callback_url,
         "record": classroom.enable_recordings,
-        "guestPolicy": GuestPolicyEnum.ASK_MODERATOR
-        if classroom.enable_waiting_room
-        else GuestPolicyEnum.ALWAYS_ACCEPT,
+        "guestPolicy": (
+            GuestPolicyEnum.ASK_MODERATOR
+            if classroom.enable_waiting_room
+            else GuestPolicyEnum.ALWAYS_ACCEPT
+        ),
         "disabledFeatures": classroom.generate_disabled_features(),
     }
 

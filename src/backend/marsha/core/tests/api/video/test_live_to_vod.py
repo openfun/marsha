@@ -1,4 +1,5 @@
 """Tests for the Video live to VOD API of the Marsha project."""
+
 import json
 import random
 from unittest import mock

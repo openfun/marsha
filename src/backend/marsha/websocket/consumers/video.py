@@ -1,4 +1,5 @@
 """Video consumer module"""
+
 from urllib.parse import parse_qs
 
 from django.db.models import Q

@@ -1,4 +1,5 @@
 """Test medialive utils functions."""
+
 from datetime import datetime, timezone
 from io import StringIO
 from unittest import mock

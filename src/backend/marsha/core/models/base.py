@@ -4,6 +4,7 @@ Base model for the core app of the Marsha project.
 In this base model, we activate generic behaviours that apply to all our models and enforce
 checks and validation that go further than what Django is doing.
 """
+
 from itertools import chain
 import uuid
 

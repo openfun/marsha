@@ -1,4 +1,5 @@
 """Module dedicated to lti select feature for BBB."""
+
 from django.conf import settings
 
 from marsha.bbb.defaults import LTI_ROUTE

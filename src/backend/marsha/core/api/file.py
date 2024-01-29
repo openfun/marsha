@@ -1,4 +1,5 @@
 """Declare API endpoints for documents with Django RestFramework viewsets."""
+
 from mimetypes import guess_extension
 from os.path import splitext
 

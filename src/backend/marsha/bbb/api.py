@@ -1,4 +1,5 @@
 """Declare API endpoints with Django RestFramework viewsets."""
+
 from uuid import uuid4
 
 from django.conf import settings

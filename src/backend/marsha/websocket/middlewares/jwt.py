@@ -1,4 +1,5 @@
 """Middleware checking if the JWT is valid."""
+
 import logging
 from urllib.parse import parse_qs
 

@@ -1,4 +1,5 @@
 """Tests for the Video recording API of the Marsha project."""
+
 from datetime import timedelta
 import random
 from unittest import mock

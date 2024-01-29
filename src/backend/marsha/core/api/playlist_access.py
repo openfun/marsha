@@ -1,4 +1,5 @@
 """Declare API endpoints for playlist access with Django RestFramework viewsets."""
+
 from django.db.models import Q
 
 import django_filters

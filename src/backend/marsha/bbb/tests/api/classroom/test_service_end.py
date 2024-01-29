@@ -1,4 +1,5 @@
 """Tests for the classroom API."""
+
 from unittest import mock
 
 from django.test import TestCase, override_settings

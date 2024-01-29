@@ -1,4 +1,5 @@
 """Declare API endpoints for live session with Django RestFramework viewsets."""
+
 from logging import getLogger
 import smtplib
 

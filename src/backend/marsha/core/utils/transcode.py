@@ -1,4 +1,5 @@
 """ Utils related to transcoding """
+
 from django_peertube_runner_connector.models import Video as TranscodedVideo, VideoState
 
 from marsha.core.defaults import ERROR, PEERTUBE_PIPELINE, READY

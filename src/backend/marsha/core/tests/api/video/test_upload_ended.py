@@ -1,4 +1,5 @@
 """Tests for the Video upload ended API of the Marsha project."""
+
 import json
 from unittest import mock
 

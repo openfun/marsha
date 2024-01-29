@@ -1,4 +1,5 @@
 """Test the development ``load_development_datasets` management command."""
+
 from io import StringIO
 
 from django.core.management import call_command

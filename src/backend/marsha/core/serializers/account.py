@@ -1,4 +1,5 @@
 """Structure of account related models API responses with Django Rest Framework serializers."""
+
 from django.contrib.auth import get_user_model
 
 from rest_framework import serializers

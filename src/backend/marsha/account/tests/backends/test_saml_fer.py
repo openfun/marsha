@@ -1,4 +1,5 @@
 """Test custom marsha samlf fer backend"""
+
 from django.test import TestCase, override_settings
 from django.test.client import RequestFactory
 

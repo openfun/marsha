@@ -1,4 +1,5 @@
 """Tests for the Schema endpoint on the API of the Marsha project."""
+
 from django.test import TestCase, override_settings
 
 from rest_framework.permissions import BasePermission

@@ -1,4 +1,5 @@
 """Tests for the file_depositories create API."""
+
 from django.test import TestCase, override_settings
 
 from marsha.core import factories as core_factories

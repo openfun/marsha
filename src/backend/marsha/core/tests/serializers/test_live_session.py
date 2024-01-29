@@ -1,4 +1,5 @@
 """Tests for the LiveSession serializers of the Marsha project."""
+
 from uuid import UUID
 
 from django.test import TestCase

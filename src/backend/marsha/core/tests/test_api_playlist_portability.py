@@ -1,4 +1,5 @@
 """Tests for the Playlist API of the Marsha project."""
+
 import json
 from uuid import uuid4
 

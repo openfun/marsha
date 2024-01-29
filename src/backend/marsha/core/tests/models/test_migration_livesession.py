@@ -1,4 +1,5 @@
 """Tests for the models in the ``core`` app of the Marsha project."""
+
 from importlib import import_module
 import uuid
 

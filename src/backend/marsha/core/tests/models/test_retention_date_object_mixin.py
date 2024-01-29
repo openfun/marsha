@@ -1,4 +1,5 @@
 """Tests for the RetentionDateObjectMixin in the ``core`` app of the Marsha project."""
+
 from datetime import date, datetime, timezone as baseTimezone
 from unittest.mock import Mock, patch
 

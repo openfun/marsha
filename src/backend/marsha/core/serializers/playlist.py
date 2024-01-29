@@ -1,4 +1,5 @@
 """Structure of Playlist model API responses with Django Rest Framework serializers."""
+
 from collections import OrderedDict
 
 from django.core.exceptions import ValidationError

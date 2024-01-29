@@ -1,4 +1,5 @@
 """Tests for the models in the ``core`` app of the Marsha project."""
+
 import uuid
 
 from django.db import transaction

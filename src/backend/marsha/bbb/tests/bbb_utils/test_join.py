@@ -1,4 +1,5 @@
 """Tests for the join service in the ``bbb`` app of the Marsha project."""
+
 from django.test import TestCase, override_settings
 
 from marsha.bbb.factories import ClassroomFactory

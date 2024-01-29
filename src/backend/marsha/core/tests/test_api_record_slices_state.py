@@ -1,4 +1,5 @@
 """Tests for the record slices harvesting states for a video API of the Marsha project."""
+
 import json
 import random
 

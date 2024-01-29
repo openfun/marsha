@@ -1,4 +1,5 @@
 """Tests for the classroom bulk destroy API."""
+
 import json
 
 from django.test import TestCase, override_settings

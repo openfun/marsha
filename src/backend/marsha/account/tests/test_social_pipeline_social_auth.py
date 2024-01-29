@@ -1,4 +1,5 @@
 """Tests for the social pipeline `social_auth` module."""
+
 from unittest import mock
 
 from django.conf import settings

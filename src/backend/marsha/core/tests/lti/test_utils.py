@@ -1,4 +1,5 @@
 """Test the LTI interconnection with Open edX."""
+
 from datetime import timedelta
 import random
 from unittest import mock

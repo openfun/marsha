@@ -1,4 +1,5 @@
 """Test caching LTI views in the ``core`` app of the Marsha project."""
+
 from html import unescape
 import json
 import random

@@ -1,4 +1,5 @@
 """Tests for the LtiUserAssociation create API."""
+
 import json
 
 from django.db.transaction import atomic

@@ -1,4 +1,5 @@
 """LTI module that supports LTI 1.0."""
+
 import re
 from urllib.parse import unquote_plus, urljoin, urlparse
 

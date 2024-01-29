@@ -1,4 +1,5 @@
 """Tests for the create service in the ``bbb`` app of the Marsha project."""
+
 from datetime import datetime, timezone
 from unittest import mock
 

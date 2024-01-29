@@ -1,4 +1,5 @@
 """Marsha's specific Python Social Auth pipeline steps for Organization"""
+
 import logging
 
 from django.conf import settings
@@ -131,15 +132,17 @@ def create_organization_from_saml(  # pylint:disable=too-many-arguments
         OrganizationAccess.objects.create(
             user=user,
             organization=association.organization,
-            role=INSTRUCTOR
-            if (
-                details.get("roles", None)
-                and any(
-                    role in details["roles"]
-                    for role in settings.SOCIAL_AUTH_SAML_FER_TEACHER_ROLES
+            role=(
+                INSTRUCTOR
+                if (
+                    details.get("roles", None)
+                    and any(
+                        role in details["roles"]
+                        for role in settings.SOCIAL_AUTH_SAML_FER_TEACHER_ROLES
+                    )
                 )
-            )
-            else STUDENT,
+                else STUDENT
+            ),
         )
     except IntegrityError:
         pass

@@ -1,4 +1,5 @@
 """This module holds the models for the marsha project."""
+
 import secrets
 import string
 
@@ -142,11 +143,11 @@ class LTIPassport(BaseModel):
         # pylint: disable=consider-using-f-string
         result = "{key:s}{type:s}".format(
             key=self.oauth_consumer_key,
-            type=" [cs]"
-            if self.consumer_site_id
-            else " [pl]"
-            if self.playlist_id
-            else "",
+            type=(
+                " [cs]"
+                if self.consumer_site_id
+                else " [pl]" if self.playlist_id else ""
+            ),
         )
         if self.deleted:
             result = _("{:s}[deleted]").format(result)

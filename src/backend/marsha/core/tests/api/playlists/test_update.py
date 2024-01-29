@@ -1,4 +1,5 @@
 """Tests for the Playlist update API of the Marsha project."""
+
 import json
 
 from django.test import TestCase

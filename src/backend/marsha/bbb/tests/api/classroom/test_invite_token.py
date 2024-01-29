@@ -1,4 +1,5 @@
 """Tests for the classroom invite token API."""
+
 import secrets
 
 from django.test import TestCase, override_settings

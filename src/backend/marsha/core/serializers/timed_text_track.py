@@ -1,4 +1,5 @@
 """Structure of TimedTextTrack related models API responses with DRF serializers."""
+
 from urllib.parse import quote_plus
 
 from django.conf import settings

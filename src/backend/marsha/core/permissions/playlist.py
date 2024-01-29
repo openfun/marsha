@@ -1,4 +1,5 @@
 """Custom permission classes for the Marsha project."""
+
 import uuid
 
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist

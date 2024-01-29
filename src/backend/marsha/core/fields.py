@@ -1,4 +1,5 @@
 """Marsha custom fields."""
+
 from django.contrib.postgres.fields import ArrayField
 from django.forms import CheckboxSelectMultiple, MultipleChoiceField
 

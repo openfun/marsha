@@ -1,4 +1,5 @@
 """Celery shared live media tasks for the core app."""
+
 from django.core.files.base import ContentFile
 
 import fitz  # PyMuPDF

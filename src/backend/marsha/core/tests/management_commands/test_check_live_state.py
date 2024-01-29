@@ -1,4 +1,5 @@
 """Tests for check_live_state command."""
+
 from datetime import datetime, timezone
 from io import StringIO
 from unittest import mock

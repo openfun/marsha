@@ -1,4 +1,5 @@
 """Check video in harvested state management command."""
+
 from datetime import timedelta
 
 from django.conf import settings

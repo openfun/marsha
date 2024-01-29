@@ -1,4 +1,5 @@
 """Test SocialAuthExceptionMiddleware."""
+
 from unittest import mock
 
 from django.conf import settings

@@ -1,4 +1,5 @@
 """Tests for the Markdown image create API."""
+
 import json
 
 from django.test import TestCase

@@ -1,4 +1,5 @@
 """Tests for the Video create API of the Marsha project."""
+
 from datetime import timedelta
 import random
 import uuid

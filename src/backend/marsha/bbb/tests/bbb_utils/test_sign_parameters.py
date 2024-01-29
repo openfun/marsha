@@ -1,4 +1,5 @@
 """Tests for the sign_parameters service in the ``bbb`` app of the Marsha project."""
+
 from django.test import TestCase, override_settings
 
 from marsha.bbb.utils.bbb_utils import sign_parameters

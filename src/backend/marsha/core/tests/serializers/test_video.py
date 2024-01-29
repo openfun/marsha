@@ -1,4 +1,5 @@
 """Tests for the VideoBaseSerializer serializer of the Marsha project."""
+
 from datetime import datetime, timezone as baseTimezone
 from unittest import mock
 

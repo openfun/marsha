@@ -1,4 +1,5 @@
 """Marsha forms module."""
+
 from django.forms import ModelForm
 
 from marsha.deposit import models

@@ -1,4 +1,5 @@
 """Tests for the refresh token API."""
+
 import json
 import uuid
 

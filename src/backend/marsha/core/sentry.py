@@ -1,4 +1,5 @@
 """Module dedicated to sentry filtering functions"""
+
 from urllib.parse import urlparse
 
 from django.conf import settings

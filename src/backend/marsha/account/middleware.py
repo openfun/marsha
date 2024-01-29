@@ -1,4 +1,5 @@
 """Account middleware dealing with social auth exception."""
+
 from urllib.parse import quote
 
 from django.conf import settings

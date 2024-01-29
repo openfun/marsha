@@ -1,4 +1,5 @@
 """Tests for the Video harvest live API of the Marsha project."""
+
 from datetime import timedelta
 import json
 import random

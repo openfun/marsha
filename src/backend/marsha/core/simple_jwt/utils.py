@@ -1,4 +1,5 @@
 """Helpers/API for Marsha JWT use"""
+
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 

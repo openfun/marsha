@@ -1,4 +1,5 @@
 """Marsha URLs configuration."""
+
 import re
 
 from django.conf import settings

@@ -1,4 +1,5 @@
 """Tests for the Video API for SharedLiveMedia navigation of the Marsha project."""
+
 from datetime import datetime, timezone
 import json
 from unittest import mock
