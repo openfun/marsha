@@ -15,6 +15,7 @@
         "@tanstack/react-query-devtools",
         "@tanstack/react-query",
         "@mdx-js/mdx2",
+        "@openfun/cunningham-react",
         "mermaid",
         "node",
         "node-fetch",
