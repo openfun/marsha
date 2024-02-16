@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Remove non existing fields in PortabilityRequestAdmin
+
 ## [4.9.0] - 2023-12-04
 
 ### Added
