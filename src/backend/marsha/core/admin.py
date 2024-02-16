@@ -497,8 +497,6 @@ class PortabilityRequestAdmin(admin.ModelAdmin):
 
     fields = (
         "for_playlist",
-        "for_resource_id",
-        "for_resource_model",
         "from_playlist",
         "from_lti_consumer_site",
         "from_lti_user_id",
