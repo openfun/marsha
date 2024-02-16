@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [4.9.1] - 2024-02-16
+
 ### Fixed
 
 - Remove non existing fields in PortabilityRequestAdmin
@@ -1897,7 +1899,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v4.9.0...master
+[unreleased]: https://github.com/openfun/marsha/compare/v4.9.1...master
+[4.9.1]: https://github.com/openfun/marsha/compare/v4.9.0...v4.9.1
 [4.9.0]: https://github.com/openfun/marsha/compare/v4.8.1...v4.9.0
 [4.8.1]: https://github.com/openfun/marsha/compare/v4.8.0...v4.8.1
 [4.8.0]: https://github.com/openfun/marsha/compare/v4.7.0...v4.8.0
