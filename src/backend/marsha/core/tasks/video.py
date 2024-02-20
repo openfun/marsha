@@ -1,11 +1,16 @@
 """Celery videos tasks for the core app."""
 
+import logging
+
 from django_peertube_runner_connector.transcode import transcode_video
 from sentry_sdk import capture_exception
 
 from marsha.celery_app import app
 from marsha.core.defaults import ERROR, TMP_VIDEOS_STORAGE_BASE_DIRECTORY
 from marsha.core.models.video import Video
+
+
+logger = logging.getLogger(__name__)
 
 
 @app.task
@@ -31,3 +36,4 @@ def launch_video_transcoding(video_pk: str, stamp: str, domain: str):
     except Exception as exception:  # pylint: disable=broad-except+
         capture_exception(exception)
         video.update_upload_state(ERROR, None)
+        logger.exception(exception)

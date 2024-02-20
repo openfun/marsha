@@ -1,8 +1,7 @@
 """Celery timed text track tasks for the core app."""
 
 from html import escape, unescape
-
-from django.core.files.base import ContentFile
+import logging
 
 from pycaption import (
     CaptionNode,
@@ -27,6 +26,9 @@ from marsha.core.defaults import (
 from marsha.core.models import TimedTextTrack
 from marsha.core.storage.storage_class import video_storage
 from marsha.core.utils.time_utils import to_datetime
+
+
+logger = logging.getLogger(__name__)
 
 
 class ReaderNotImplementedError(NotImplementedError):
@@ -93,10 +95,11 @@ def convert_timed_text_track(timed_text_track_pk, stamp):
             else:
                 vtt_timed_text = _convert_transcript(reader, timed_text)
 
-            video_storage.save(
-                f"{prefix_destination}/{stamp}.vtt",
-                ContentFile(vtt_timed_text),
-            )
+            with video_storage.open(
+                f"{prefix_destination}/{stamp}.vtt", "w"
+            ) as vtt_file:
+                vtt_file.write(vtt_timed_text)
+
             video_storage.save(
                 f"{prefix_destination}/source.{extension}", timed_text_file
             )
@@ -109,3 +112,4 @@ def convert_timed_text_track(timed_text_track_pk, stamp):
     except Exception as exception:  # pylint: disable=broad-except+
         capture_exception(exception)
         timed_text_track.update_upload_state(ERROR, None)
+        logger.exception(exception)
