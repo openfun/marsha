@@ -30,6 +30,8 @@ class S3VideoStorage(S3Storage):
 
     bucket_name = settings.VIDEOS_STORAGE_S3_BUCKET_NAME
 
+    object_parameters = settings.VIDEOS_STORAGE_S3_OBJECT_PARAMETERS
+
     custom_domain = settings.CLOUDFRONT_DOMAIN
     url_protocol = "https:"
 
