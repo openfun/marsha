@@ -1,9 +1,11 @@
 """Utils for direct upload to AWS S3."""
 
+import re
+
 from django.conf import settings
 from django.utils import timezone
 
-from storages.backends.s3boto3 import S3Boto3Storage
+from storages.backends.s3 import S3Storage
 
 from marsha.core.defaults import TMP_VIDEOS_STORAGE_BASE_DIRECTORY
 from marsha.core.models import Document
@@ -12,7 +14,10 @@ from marsha.core.utils.s3_utils import create_presigned_post
 from marsha.core.utils.time_utils import to_timestamp
 
 
-class S3VideoStorage(S3Boto3Storage):
+PROTECTED_NAME_REGEX = re.compile(r"^/?tmp/.*$")
+
+
+class S3VideoStorage(S3Storage):
     """
     Storage class to handle s3 storage for videos.
     """
@@ -35,17 +40,20 @@ class S3VideoStorage(S3Boto3Storage):
 
     def url(self, name, parameters=None, expire=None, http_method=None):
         """
-        Overload the url method to add a Content-Disposition header. This allows us
-        to download files in the browser, without having to use a different url method
-        for the S3VideoStorage and the FileSystemStorage.
+        Override the url method to remove signature part of the url if the resource
+        is not protected.
         """
-        filename = name.split("/")[-1]
-        return super().url(
-            name,
-            parameters={
-                "response-content-disposition": f'attachment; filename="{filename}"'
-            },
+        url = super().url(
+            name, parameters=parameters, expire=expire, http_method=http_method
         )
+
+        if not PROTECTED_NAME_REGEX.match(name):
+            # As explain in the _strip_signing_parameters docstring
+            # Boto3 does not currently support generating URLs that are unsigned.
+            # So if we want an unsign url we have to unsign it using this method.
+            return self._strip_signing_parameters(url)
+
+        return url
 
 
 # pylint: disable=unused-argument
