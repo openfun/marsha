@@ -50,6 +50,8 @@ marsha_celery_command:
   - worker
   - -l
   - INFO
+  - -n
+  - marsha@%h
 
 # -- marsha webtorrent
 
@@ -95,13 +97,19 @@ marsha_pvc_static_name: "marsha-pvc-static"
 
 marsha_celery_livenessprobe:
   exec:
-    command: ["python", "manage.py", "check"]
+    command: 
+      - /bin/bash
+      - -c
+      - "celery -A marsha.celery_app inspect ping -d marsha@$HOSTNAME"
   initialDelaySeconds: 60
   periodSeconds: 30
   timeoutSeconds: 5
 marsha_celery_readynessprobe:
   exec:
-    command: ["python", "manage.py", "check"]
+    command:
+      - /bin/bash
+      - -c
+      - "celery -A marsha.celery_app inspect ping -d marsha@$HOSTNAME"
   initialDelaySeconds: 15
   periodSeconds: 10
   timeoutSeconds: 5

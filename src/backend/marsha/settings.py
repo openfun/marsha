@@ -777,6 +777,7 @@ class Base(Configuration):
     CELERY_BROKER_URL = values.Value("redis://redis:6379/0")
     CELERY_RESULT_BACKEND = values.Value("redis://redis:6379/0")
     CELERY_BROKER_TRANSPORT_OPTIONS = values.DictValue({})
+    CELERY_DEFAULT_QUEUE = values.Value("celery")
 
     # pylint: disable=invalid-name
     @property
@@ -1005,6 +1006,11 @@ class Development(Base):
             },
             "loggers": {
                 "marsha": {
+                    "handlers": ["console"],
+                    "level": "DEBUG",
+                    "propagate": True,
+                },
+                "celery": {
                     "handlers": ["console"],
                     "level": "DEBUG",
                     "propagate": True,
