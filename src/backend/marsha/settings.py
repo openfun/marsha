@@ -379,6 +379,9 @@ class Base(Configuration):
     VIDEOS_STORAGE_S3_ENDPOINT_URL = values.Value("https://s3.fr-par.scw.cloud")
     VIDEOS_STORAGE_S3_REGION_NAME = values.Value("fr-par")
     VIDEOS_STORAGE_S3_BUCKET_NAME = values.Value()
+    VIDEOS_STORAGE_S3_OBJECT_PARAMETERS = values.DictValue(
+        {"ContentDisposition": "attachment"}
+    )
 
     # LTI Config
     LTI_CONFIG_TITLE = values.Value("Marsha")
