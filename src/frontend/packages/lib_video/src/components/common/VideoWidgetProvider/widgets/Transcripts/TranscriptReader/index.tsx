@@ -30,14 +30,8 @@ export const TranscriptReader = ({ transcript }: TranscriptReaderProps) => {
     const parser = new WebVTT.Parser(window, WebVTT.StringDecoder());
 
     parser.oncue = (cue: VTTCue) => {
-      setCues((prevCues) => {
-        // Dont insert duplicate cues
-        return !prevCues.filter((e) => e.id === cue.id).length
-          ? [...prevCues, cue]
-          : prevCues;
-      });
+      setCues((prevCues) => [...prevCues, cue]);
     };
-
     parser.parse(data);
     parser.flush();
   }, [data]);
