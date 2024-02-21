@@ -51,7 +51,7 @@
     "@testing-library/user-event": "*",
     "@types/clipboard": "2.0.1",
     "@types/humanize-duration": "^3.27.3",
-    "@types/jest": "29.5.11",
+    "@types/jest": "29.5.12",
     "@types/node": "*",
     "@types/react": "*",
     "@types/react-dom": "*",
