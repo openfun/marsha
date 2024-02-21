@@ -1,10 +1,8 @@
 """Celery timed text track tasks for the core app."""
 
-from html import escape, unescape
 import logging
 
 from pycaption import (
-    CaptionNode,
     DFXPReader,
     MicroDVDReader,
     SAMIReader,
@@ -35,25 +33,6 @@ class ReaderNotImplementedError(NotImplementedError):
     """Reader not implemented error."""
 
 
-def _convert_timed_text_track_file(reader, timed_text_track_file):
-    """Convert a timed text track from any format into a vtt."""
-    return WebVTTWriter().write(reader().read(timed_text_track_file))
-
-
-def _convert_transcript(reader, timed_text_reader):
-    """Transcript are directly injected in HTML, so we want to sanitize them
-    to avoid injecting unwanted HTML and then convert them into vtt."""
-
-    captions = reader().read(timed_text_reader)
-    languages = captions.get_languages()
-    for language in languages:
-        for caption in captions.get_captions(language):
-            for node in caption.nodes:
-                if node.type_ == CaptionNode.TEXT:
-                    node.content = escape(unescape(node.content))
-    return WebVTTWriter().write(captions)
-
-
 def _get_extension_from_reader(reader):
     """Get the extension of a timed text track."""
     if reader is SAMIReader:
@@ -77,7 +56,6 @@ def convert_timed_text_track(timed_text_track_pk, stamp):
     """Convert a timed text track into a vtt using video_storage."""
     timed_text_track = TimedTextTrack.objects.get(pk=timed_text_track_pk)
     try:
-        mode = timed_text_track.mode
         source = timed_text_track.get_videos_storage_prefix(
             stamp, TMP_VIDEOS_STORAGE_BASE_DIRECTORY
         )
@@ -90,10 +68,7 @@ def convert_timed_text_track(timed_text_track_pk, stamp):
                 raise ReaderNotImplementedError(f"Reader {reader} not supported")
             extension = _get_extension_from_reader(reader)
 
-            if mode in ("st", "cc"):
-                vtt_timed_text = _convert_timed_text_track_file(reader, timed_text)
-            else:
-                vtt_timed_text = _convert_transcript(reader, timed_text)
+            vtt_timed_text = WebVTTWriter().write(reader().read(timed_text))
 
             with video_storage.open(
                 f"{prefix_destination}/{stamp}.vtt", "w"
