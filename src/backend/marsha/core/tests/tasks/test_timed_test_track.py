@@ -151,14 +151,12 @@ class TestTimedTextTrackTask(TestCase):
                 (
                     "WEBVTT\n\n"
                     "00:01.000 --> 00:04.000\n"
-                    "&amp;lt;b&amp;gt;Hello&amp;lt;/b&amp;gt;, this "
-                    "is the &amp;lt;i&amp;gt;first&amp;lt;/i&amp;"
-                    "gt; subtitle.\n\n"
+                    "&lt;b>Hello&lt;/b>, this is the &lt;i>first&lt;/i> subtitle.\n\n"
                     "00:05.000 --> 00:08.000\n"
-                    "This is the &amp;lt;u&amp;gt;second&amp;lt;/u&amp;gt; subtitle.\n\n"
+                    "This is the &lt;u>second&lt;/u> subtitle.\n\n"
                     "00:09.000 --> 00:12.000\n"
-                    "And this is the &amp;lt;font color=&amp;quot;red&amp;quot;&amp;gt;third"
-                    "&amp;lt;/font&amp;gt; subtitle.\n"
+                    'And this is the &lt;font color="red">third'
+                    "&lt;/font> subtitle.\n"
                 ),
             )
         new_source_file = (
