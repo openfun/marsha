@@ -46,7 +46,7 @@
     "@testing-library/user-event": "*",
     "@types/clipboard": "2.0.1",
     "@types/iframe-resizer": "3.5.13",
-    "@types/jest": "29.5.11",
+    "@types/jest": "29.5.12",
     "@types/node": "*",
     "@types/rc-tooltip": "3.7.13",
     "@types/react": "*",
