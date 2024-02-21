@@ -3,9 +3,9 @@
   "compilerOptions": {
     "baseUrl": "./src",
     "paths": {
-      "@lib-commmon/*": ["./*"],
-    },
+      "@lib-commmon/*": ["./*"]
+    }
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts"],
-  "exclude": ["lib", "node_modules"],
+  "exclude": ["lib", "node_modules"]
 }
