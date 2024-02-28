@@ -47,7 +47,7 @@ spec:
         - name: "{{ image_pull_secret_name }}"
 {% endif %}
       containers:
-        - name: marsha
+        - name: "{{ dc_name }}"
           image: "{{ marsha_image_name }}:{{ marsha_image_tag }}"
 {% if service_variant=="celery" %}
           command: {{ marsha_celery_command }}
