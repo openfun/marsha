@@ -162,7 +162,7 @@ jobs:
 
   build-lambda-docker-and-test-lambda-convert:
     machine:
-      image: ubuntu-2004:202107-02
+      image: default
     working_directory: ~/marsha
     steps:
       # Checkout repository sources
@@ -1139,7 +1139,7 @@ jobs:
 
   lambda-publish:
     machine:
-      image: ubuntu-2004:202107-02
+      image: default
     working_directory: ~/marsha
     steps:
       - checkout
@@ -1190,7 +1190,7 @@ jobs:
   # ---- Tray jobs (k8s) ----
   tray:
     machine:
-      image: ubuntu-2004:2022.07.1
+      image: default
     working_directory: ~/marsha
     resource_class: large
     environment:
