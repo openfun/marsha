@@ -79,7 +79,7 @@ jobs:
   # Check that the CHANGELOG has been updated in the current branch
   check-changelog:
     docker:
-      - image: cimg/base:2022.04
+      - image: cimg/base:current
         auth:
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASS
@@ -126,7 +126,7 @@ jobs:
   # Build the Docker image ready for production
   build-docker:
     docker:
-      - image: cimg/base:2022.04
+      - image: cimg/base:current
         auth:
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASS
@@ -138,7 +138,7 @@ jobs:
       - <<: *generate-version-file
       # Activate docker-in-docker
       - setup_remote_docker:
-          version: 20.10.11
+          version: default
           docker_layer_caching: true
       - *docker_login
       # Each image is tagged with the current git commit sha1 to avoid
@@ -193,7 +193,7 @@ jobs:
 
   build-ffmpeg-transmux-docker:
     docker:
-      - image: cimg/base:2022.04
+      - image: cimg/base:current
         auth:
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASS
@@ -203,7 +203,7 @@ jobs:
       - checkout
       # Activate docker-in-docker
       - setup_remote_docker:
-          version: 20.10.11
+          version: default
           docker_layer_caching: true
       - *docker_login
       # Each image is tagged with the current git commit sha1 to avoid
@@ -1007,7 +1007,7 @@ jobs:
   # ---- DockerHub publication job ----
   hub:
     docker:
-      - image: cimg/base:2022.04
+      - image: cimg/base:current
         auth:
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASS
@@ -1018,7 +1018,7 @@ jobs:
       - <<: *generate-version-file
       # Activate docker-in-docker
       - setup_remote_docker:
-          version: 20.10.11
+          version: default
           docker_layer_caching: true
       - *docker_login
       - run:
@@ -1072,7 +1072,7 @@ jobs:
 
   hub-ffmpeg-transmux:
     docker:
-      - image: cimg/base:2022.04
+      - image: cimg/base:current
         auth:
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASS
@@ -1084,7 +1084,7 @@ jobs:
       - <<: *generate-version-file
       # Activate docker-in-docker
       - setup_remote_docker:
-          version: 20.10.11
+          version: default
           docker_layer_caching: true
       - *docker_login
       # Each image is tagged with the current git commit sha1 to avoid
@@ -1312,7 +1312,7 @@ jobs:
 
   webtorrent-docker:
     docker:
-      - image: cimg/base:2022.04
+      - image: cimg/base:current
         auth:
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASS
@@ -1322,7 +1322,7 @@ jobs:
       - checkout
       # Activate docker-in-docker
       - setup_remote_docker:
-          version: 20.10.11
+          version: default
           docker_layer_caching: true
       - *docker_login
       - run:
@@ -1338,7 +1338,7 @@ jobs:
 
   hub-webtorrent:
     docker:
-      - image: cimg/base:2022.04
+      - image: cimg/base:current
         auth:
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASS
@@ -1348,7 +1348,7 @@ jobs:
       - checkout
       # Activate docker-in-docker
       - setup_remote_docker:
-          version: 20.10.11
+          version: default
           docker_layer_caching: true
       - *docker_login
       - run:
