@@ -1,5 +1,5 @@
 import 'marsha-config/jest/testSetup';
-import { TransformStream } from 'web-streams-polyfill/ponyfill';
+import { TransformStream } from 'web-streams-polyfill/es5';
 
 const tds = {
   start() {
