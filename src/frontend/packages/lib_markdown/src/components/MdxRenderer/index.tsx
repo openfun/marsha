@@ -112,9 +112,6 @@ export const MdxRenderer = ({
         }
 
         evaluate(inputText, {
-          jsx: undefined,
-          jsxs: undefined,
-          Fragment: undefined,
           ...runtime,
           format,
           remarkPlugins,
