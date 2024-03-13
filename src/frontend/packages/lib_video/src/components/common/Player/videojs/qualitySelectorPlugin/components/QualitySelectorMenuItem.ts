@@ -1,18 +1,26 @@
-import videojs from 'video.js';
+import videojs, { Player, Source } from 'video.js';
+import Component from 'video.js/dist/types/component';
+import MenuItem from 'video.js/dist/types/menu/menu-item';
 
 import { Events, QualitySelectorMenuItemOptions } from '../types';
 
-const Component = videojs.getComponent('Component');
-const MenuItem = videojs.getComponent('MenuItem');
+const MenuItemClass = videojs.getComponent(
+  'MenuItem',
+) as unknown as typeof MenuItem;
 
-export class QualitySelectorMenuItem extends MenuItem {
-  constructor(player: videojs.Player, options: QualitySelectorMenuItemOptions) {
-    options.selectable = true;
-    options.multiSelectable = false;
+interface MenuItemSources extends Source {
+  label: string;
+}
 
-    super(player, options);
+export class QualitySelectorMenuItem extends MenuItemClass {
+  constructor(player: Player, options: MenuItemSources) {
+    super(player, {
+      ...options,
+      selectable: true,
+      multiSelectable: false,
+    });
 
-    this.on(player, Events.QUALITY_REQUESTED, this.qualityRequested.bind(this));
+    player.on(Events.QUALITY_REQUESTED, this.qualityRequested.bind(this));
   }
 
   qualityRequested(
@@ -23,11 +31,15 @@ export class QualitySelectorMenuItem extends MenuItem {
     this.selected(selectedItem.src === currentItem.src);
   }
 
-  handleClick(event: videojs.EventTarget.Event) {
+  handleClick(event: Event) {
     const selected = this.options_ as QualitySelectorMenuItemOptions;
     super.handleClick(event);
 
     this.player().trigger(Events.QUALITY_REQUESTED, selected);
   }
 }
-Component.registerComponent('QualitySelectorMenuItem', QualitySelectorMenuItem);
+
+videojs.registerComponent(
+  'QualitySelectorMenuItem',
+  QualitySelectorMenuItem as unknown as typeof Component,
+);

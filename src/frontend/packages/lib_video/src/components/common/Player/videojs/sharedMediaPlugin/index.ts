@@ -1,13 +1,13 @@
-import videojs from 'video.js';
+import videojs, { Player } from 'video.js';
 
 import './components/SharedMediaButton';
 import './components/SharedMediaItem';
-import { SharedLiveMediaOptions } from './types';
+import { SharedLiveMediaOptions, SharedLiveMediaType } from './types';
 
-const Plugin = videojs.getPlugin('plugin');
+const PluginClass = videojs.getPlugin('plugin') as SharedLiveMediaType;
 
-export class SharedMediaPlugin extends Plugin {
-  constructor(player: videojs.Player, options: SharedLiveMediaOptions) {
+export class SharedMediaPlugin extends PluginClass {
+  constructor(player: Player, options: SharedLiveMediaOptions) {
     super(player, options);
 
     const controlBar = this.player.controlBar;

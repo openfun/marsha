@@ -1,12 +1,17 @@
 import { getIntl } from 'lib-common';
 import { defineMessages } from 'react-intl';
-import videojs from 'video.js';
+import videojs, { Player } from 'video.js';
+import Component from 'video.js/dist/types/component';
+import MenuButton from 'video.js/dist/types/menu/menu-button';
+import MenuItemOptions from 'video.js/dist/types/menu/menu-item';
 
 import { SharedLiveMediaOptions } from '../types';
 
 import { SharedMediaItem } from './SharedMediaItem';
 
-const MenuButton = videojs.getComponent('MenuButton');
+const MenuButtonClass = videojs.getComponent(
+  'MenuButton',
+) as unknown as typeof MenuButton;
 
 const messages = defineMessages({
   sharedMediaButton: {
@@ -16,8 +21,10 @@ const messages = defineMessages({
   },
 });
 
-export class SharedMediaButton extends MenuButton {
-  constructor(player: videojs.Player, options?: videojs.MenuItemOptions) {
+export class SharedMediaButton extends MenuButtonClass {
+  declare player: () => Player;
+
+  constructor(player: Player, options?: MenuItemOptions) {
     super(player, options);
     this.menuButton_.setAttribute(
       'title',
@@ -39,7 +46,7 @@ export class SharedMediaButton extends MenuButton {
   createItems() {
     const { sharedLiveMedias } = this.options_ as SharedLiveMediaOptions;
     return sharedLiveMedias.map((item) => {
-      return new SharedMediaItem(this.player_, {
+      return new SharedMediaItem(this.player(), {
         label: item.title || '',
         src: item.urls ? item.urls.media : undefined,
       });
@@ -47,4 +54,7 @@ export class SharedMediaButton extends MenuButton {
   }
 }
 
-videojs.registerComponent('SharedMediaButton', SharedMediaButton);
+videojs.registerComponent(
+  'SharedMediaButton',
+  SharedMediaButton as unknown as typeof Component,
+);

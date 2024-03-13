@@ -1,4 +1,5 @@
-import { VideoJsPlayer } from 'video.js';
+import videojs, { Player } from 'video.js';
+import PluginType from 'video.js/dist/types/plugin';
 
 export interface HlsData {
   frag: {
@@ -13,7 +14,18 @@ export interface ExtendedVideoJs {
   Html5Hlsjs: {
     addHook: (
       action: string,
-      func: (videojsPlayer: VideoJsPlayer, hlsjs: VideoJsPlayer) => void,
+      func: (videojsPlayer: Player, hlsjs: Player) => void,
     ) => void;
   };
 }
+
+const Plugin = videojs.getPlugin('plugin') as typeof PluginType;
+export class P2pHlsPlugin extends Plugin {
+  declare player: Player;
+
+  constructor(player: Player, _options?: unknown) {
+    super(player);
+  }
+}
+
+export type P2pHlsPluginType = typeof P2pHlsPlugin;

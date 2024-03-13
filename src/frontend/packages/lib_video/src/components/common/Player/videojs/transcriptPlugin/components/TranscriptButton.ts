@@ -1,12 +1,17 @@
 import { getIntl } from 'lib-common';
 import { defineMessages } from 'react-intl';
-import videojs from 'video.js';
+import videojs, { Player } from 'video.js';
+import Component from 'video.js/dist/types/component';
+import MenuButton from 'video.js/dist/types/menu/menu-button';
+import MenuItemOptions from 'video.js/dist/types/menu/menu-item';
 
 import { TranscriptButtonOptions } from '../types';
 
 import { TranscriptItem } from './TranscriptItem';
 
-const MenuButton = videojs.getComponent('MenuButton');
+const MenuButtonClass = videojs.getComponent(
+  'MenuButton',
+) as unknown as typeof MenuButton;
 
 const messages = defineMessages({
   transcriptButton: {
@@ -16,8 +21,10 @@ const messages = defineMessages({
   },
 });
 
-export class TranscriptButton extends MenuButton {
-  constructor(player: videojs.Player, options: videojs.MenuButtonOptions) {
+export class TranscriptButton extends MenuButtonClass {
+  declare player: () => Player;
+
+  constructor(player: Player, options: MenuItemOptions) {
     super(player, options);
     this.menuButton_.setAttribute(
       'title',
@@ -35,12 +42,12 @@ export class TranscriptButton extends MenuButton {
       return [];
     }
     return [
-      new TranscriptItem(this.player_, {
+      new TranscriptItem(this.player(), {
         label: 'transcript off',
         transcript: null,
       }),
       ...transcripts.map((item) => {
-        return new TranscriptItem(this.player_, {
+        return new TranscriptItem(this.player(), {
           label: item.language,
           transcript: item,
         });
@@ -49,4 +56,7 @@ export class TranscriptButton extends MenuButton {
   }
 }
 
-videojs.registerComponent('TranscriptButton', TranscriptButton);
+videojs.registerComponent(
+  'TranscriptButton',
+  TranscriptButton as unknown as typeof Component,
+);

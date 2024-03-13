@@ -1,15 +1,13 @@
 import { Maybe } from 'lib-common';
-import videojs from 'video.js';
-
-import { VideoJsExtendedSourceObject } from '@lib-video/types/libs/video.js/extend';
+import videojs, { MiddlewareUse, Player, Source } from 'video.js';
 
 import { Events } from './types';
 
-videojs.use('video/mp4', (player: videojs.Player) => ({
+(videojs.use as typeof MiddlewareUse)('video/mp4', (player: Player) => ({
   setSource: (playerSource, next) => {
     const sources = player.currentSources();
 
-    let selectedSource: Maybe<VideoJsExtendedSourceObject>;
+    let selectedSource: Maybe<Source>;
 
     selectedSource = sources.find((source) => source.selected);
 

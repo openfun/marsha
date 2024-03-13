@@ -1,6 +1,6 @@
 import { Maybe } from 'lib-common';
 import { TimedText, Video } from 'lib-components';
-import { VideoJsPlayer } from 'video.js';
+import { Player } from 'video.js';
 
 export interface VideoPlayerInterface {
   addTrack(track: TimedText, languages: { [key: string]: string }): void;
@@ -17,5 +17,5 @@ export type VideoPlayerCreator = (
   dispatchPlayerTimeUpdate: (time: number) => void,
   video: Video,
   locale?: string,
-  onReady?: (player: VideoJsPlayer) => void,
+  onReady?: (player: Player) => void,
 ) => Maybe<VideoPlayerInterface>;

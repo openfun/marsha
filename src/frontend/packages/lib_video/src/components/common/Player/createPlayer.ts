@@ -23,7 +23,7 @@ export const createPlayer: VideoPlayerCreator = (
       );
 
       const trackTextKind: {
-        [key in timedTextMode]?: videojs.default.TextTrack.Kind;
+        [key in timedTextMode]?: string;
       } = {
         [timedTextMode.CLOSED_CAPTIONING]: 'captions',
         [timedTextMode.SUBTITLE]: 'subtitles',

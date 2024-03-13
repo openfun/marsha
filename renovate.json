@@ -24,9 +24,7 @@
         "rehype-highlight",
         "rehype-raw",
         "remark-math",
-        "styled-components",
-        "video.js",
-        "videojs-contrib-quality-levels"
+        "styled-components"
       ]
     },
     {

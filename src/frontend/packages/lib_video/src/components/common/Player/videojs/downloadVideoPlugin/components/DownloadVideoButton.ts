@@ -1,13 +1,18 @@
 import { videoSize } from '@lib-components/types';
 import { getIntl } from 'lib-common';
 import { defineMessages } from 'react-intl';
-import videojs from 'video.js';
+import videojs, { Player } from 'video.js';
+import Component from 'video.js/dist/types/component';
+import MenuButton from 'video.js/dist/types/menu/menu-button';
+import MenuItemOptions from 'video.js/dist/types/menu/menu-item';
 
 import { DownloadVideoPluginOptions } from '../types';
 
 import { DownloadVideoQualityItem } from './DownloadVideoQualityItem';
 
-const MenuButton = videojs.getComponent('MenuButton');
+const MenuButtonClass = videojs.getComponent(
+  'MenuButton',
+) as unknown as typeof MenuButton;
 const messages = defineMessages({
   downloadVideoButton: {
     defaultMessage: 'Download Video',
@@ -15,8 +20,10 @@ const messages = defineMessages({
     id: 'videojs.menu.downloadVideoButton',
   },
 });
-export class DownloadVideoButton extends MenuButton {
-  constructor(player: videojs.Player, options?: videojs.MenuItemOptions) {
+export class DownloadVideoButton extends MenuButtonClass {
+  declare player: () => Player;
+
+  constructor(player: Player, options?: MenuItemOptions) {
     super(player, options);
     this.menuButton_.setAttribute(
       'title',
@@ -42,7 +49,7 @@ export class DownloadVideoButton extends MenuButton {
       .sort((a, b) => b - a)
       .map(
         (size) =>
-          new DownloadVideoQualityItem(this.player_, {
+          new DownloadVideoQualityItem(this.player(), {
             label: `${size}p`,
             src: urls[size],
           }),
@@ -50,4 +57,7 @@ export class DownloadVideoButton extends MenuButton {
   }
 }
 
-videojs.registerComponent('DownloadVideoButton', DownloadVideoButton);
+videojs.registerComponent(
+  'DownloadVideoButton',
+  DownloadVideoButton as unknown as typeof Component,
+);
