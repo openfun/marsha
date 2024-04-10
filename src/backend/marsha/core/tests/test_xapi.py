@@ -1,8 +1,8 @@
 """Tests for the xapi module of the Marsha project."""
 
-from unittest import mock
-
 from django.test import TestCase, override_settings
+
+import responses
 
 from marsha.core.defaults import ENDED, RAW, READY, RUNNING
 from marsha.core.factories import DocumentFactory, VideoFactory
@@ -12,8 +12,10 @@ from marsha.core.xapi import (
     XAPIDocumentStatement,
     XAPIVideoStatement,
     get_xapi_statement,
-    requests,
 )
+
+
+# pylint: disable=unexpected-keyword-arg,no-value-for-parameter
 
 
 class XAPIVideoStatementTest(TestCase):
@@ -684,35 +686,69 @@ class XAPIDocumentStatementTest(TestCase):
 class XAPITest(TestCase):
     """Test the xapi module."""
 
-    @mock.patch.object(requests, "post")
-    def test_xapi_enrich_and_send_statement(self, mock_requests_post):
+    @responses.activate(assert_all_requests_are_fired=True)
+    def test_xapi_enrich_and_send_statement(self):
         """XAPI statement sent by the front application should be enriched.
 
         Before sending a statement, the xapi module is responsible for enriching it.
         """
-        xapi = XAPI("https://lrs.example.com", "auth_token")
+        xapi = XAPI("https://lrs.example.com", "Basic auth_token")
 
-        mock_response = mock.MagicMock()
-        mock_response.raise_for_status.return_value = 200
-        mock_requests_post.return_value = mock_response
-
-        statement = {"foo": "bar"}
-        mock_xapi_statement = mock.MagicMock()
-        mock_xapi_statement.get_statement.return_value = statement
-
-        xapi.send(mock_xapi_statement)
-
-        args, kwargs = mock_requests_post.call_args_list[0]
-        self.assertEqual(args[0], "https://lrs.example.com")
-        self.assertEqual(
-            kwargs["headers"],
-            {
-                "Authorization": "auth_token",
-                "Content-Type": "application/json",
-                "X-Experience-API-Version": "1.0.3",
-            },
+        video = VideoFactory(
+            id="68333c45-4b8c-4018-a195-5d5e1706b838",
+            playlist__consumer_site__domain="example.com",
+            title="test video xapi",
         )
-        self.assertEqual(kwargs["json"], statement)
+
+        jwt_token = LTIPlaylistAccessTokenFactory(
+            session_id="326c0689-48c1-493e-8d2d-9fb0c289de7f",
+            context_id="course-v1:ufr+mathematics+0001",
+            user__id="b2584aa405540758db2a6278521b6478",
+        )
+
+        base_statement = {
+            "context": {
+                "extensions": {
+                    "https://w3id.org/xapi/video/extensions/session-id": "a6151456-18b7-"
+                    "43b4-8452-2037fed588df"
+                }
+            },
+            "result": {
+                "extensions": {
+                    "https://w3id.org/xapi/video/extensions/time-from": 0,
+                    "https://w3id.org/xapi/video/extensions/time-to": 0,
+                    "https://w3id.org/xapi/video/extensions/length": 104.304,
+                    "https://w3id.org/xapi/video/extensions/progress": 0,
+                    "https://w3id.org/xapi/video/extensions/played-segments": "0",
+                }
+            },
+            "verb": {
+                "display": {"en-US": "seeked"},
+                "id": "https://w3id.org/xapi/video/verbs/seeked",
+            },
+            "id": "17dfcd44-b3e0-403d-ab96-e3ef7da616d4",
+        }
+
+        xapi_statement = XAPIVideoStatement()
+        statement = xapi_statement.from_lti(video, base_statement, jwt_token)
+
+        responses.add(
+            responses.POST,
+            "https://lrs.example.com",
+            match=[
+                responses.matchers.json_params_matcher(statement),
+                responses.matchers.header_matcher(
+                    {
+                        "Authorization": "Basic auth_token",
+                        "Content-Type": "application/json",
+                        "X-Experience-API-Version": "1.0.3",
+                    }
+                ),
+            ],
+            status=204,
+        )
+
+        xapi.send(statement)
 
 
 class GetXapiStatementTest(TestCase):
