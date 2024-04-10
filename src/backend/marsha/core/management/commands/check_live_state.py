@@ -67,7 +67,7 @@ class Command(BaseCommand):
             live_info = video.live_info
             logs = logs_client.filter_log_events(
                 logGroupName=live_info["cloudwatch"]["logGroupName"],
-                startTime=int(int(video.live_info.get("started_at")) * 1000),
+                startTime=int((int(video.live_info.get("started_at")) - 60) * 1000),
                 filterPattern=(
                     "{"
                     '($.detail-type = "MediaLive Channel Alert") && '
