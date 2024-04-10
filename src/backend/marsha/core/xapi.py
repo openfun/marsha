@@ -344,7 +344,7 @@ class XAPI:
 
         response = requests.post(
             self.url,
-            json=xapi_statement.get_statement(),
+            json=xapi_statement,
             headers=headers,
             timeout=settings.STAT_BACKEND_TIMEOUT,
         )
