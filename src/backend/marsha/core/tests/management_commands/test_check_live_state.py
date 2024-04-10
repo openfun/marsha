@@ -53,7 +53,7 @@ class CheckLiveStateTest(TestCase):
                 "filter_log_events",
                 expected_params={
                     "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
-                    "startTime": 1598313600000,
+                    "startTime": 1598313540000,
                     "filterPattern": (
                         "{"
                         '($.detail-type = "MediaLive Channel Alert") && '
@@ -151,7 +151,7 @@ class CheckLiveStateTest(TestCase):
                 "filter_log_events",
                 expected_params={
                     "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
-                    "startTime": 1598313600000,
+                    "startTime": 1598313540000,
                     "filterPattern": (
                         "{"
                         '($.detail-type = "MediaLive Channel Alert") && '
@@ -236,7 +236,7 @@ class CheckLiveStateTest(TestCase):
                 "filter_log_events",
                 expected_params={
                     "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
-                    "startTime": 1598313600000,
+                    "startTime": 1598313540000,
                     "filterPattern": (
                         "{"
                         '($.detail-type = "MediaLive Channel Alert") && '
