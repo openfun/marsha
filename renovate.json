@@ -60,16 +60,6 @@
       "allowedVersions": "<5"
     },
     {
-      "groupName": "allowed lxml versions",
-      "matchManagers": [
-        "setup-cfg"
-      ],
-      "matchPackageNames": [
-        "lxml"
-      ],
-      "allowedVersions": "<5"
-    },
-    {
       "groupName": "allowed pytest versions",
       "matchManagers": [
         "setup-cfg"
