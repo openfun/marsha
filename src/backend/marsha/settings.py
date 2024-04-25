@@ -252,6 +252,7 @@ class Base(Configuration):
         "OLD_PASSWORD_FIELD_ENABLED": True,
         "SESSION_LOGIN": False,  # consider LOGOUT_ON_PASSWORD_CHANGE if changing this
         "USE_JWT": True,
+        "JWT_AUTH_HTTPONLY": False,
         "TOKEN_MODEL": None,
         "PASSWORD_CHANGE_SERIALIZER": "marsha.account.serializers.PasswordChangeSerializer",
         "PASSWORD_RESET_SERIALIZER": "marsha.account.serializers.PasswordResetSerializer",
