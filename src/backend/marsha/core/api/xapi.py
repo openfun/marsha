@@ -17,6 +17,7 @@ from rest_framework.views import APIView
 from marsha.core import permissions, serializers
 from marsha.core.api.base import APIViewMixin
 from marsha.core.defaults import XAPI_STATEMENT_ID_CACHE
+from marsha.core.lti import LTI
 from marsha.core.xapi import XAPI, get_xapi_statement
 
 
@@ -41,10 +42,12 @@ class XAPIStatementView(APIViewMixin, APIView):
         xapi_logger = logging.getLogger(f"xapi.{consumer_site.domain}")
 
         # xapi statement enriched with video and jwt_token information
+        lti = LTI(request, object_instance)
         xapi_statement = statement_class.from_lti(
             object_instance,
             partial_xapi_statement.validated_data,
             request.resource.token,
+            lti.origin_url
         )
 
         # Log the statement in the xapi logger

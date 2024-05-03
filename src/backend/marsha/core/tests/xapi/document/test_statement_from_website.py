@@ -41,11 +41,11 @@ class XAPIStatementFromWebsite(TestCase):
         self.assertEqual(
             statement["actor"],
             {
+                "name": f"{user.username}",
                 "objectType": "Agent",
                 "account": {
                     "name": f"{user.id}",
                     "homePage": "http://marsha.education",
-                    "mbox": "mailto:john@example.org",
                 },
             },
         )
@@ -57,7 +57,6 @@ class XAPIStatementFromWebsite(TestCase):
                     "name": {"en-US": "test document xapi"},
                 },
                 "id": "uuid://68333c45-4b8c-4018-a195-5d5e1706b838",
-                "objectType": "Activity",
             },
         )
         self.assertEqual(
@@ -68,7 +67,14 @@ class XAPIStatementFromWebsite(TestCase):
                     "43b4-8452-2037fed588df"
                 },
                 "contextActivities": {
-                    "category": [{"id": "https://w3id.org/xapi/lms"}]
+                    "category": [
+                        {
+                            "definition": {
+                                "type": "http://adlnet.gov/expapi/activities/profile"
+                            },
+                            "id": "https://w3id.org/xapi/lms",
+                        }
+                    ]
                 },
             },
         )
