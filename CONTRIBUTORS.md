@@ -23,10 +23,11 @@
 - [Théo Clement](https://github.com/Kitero) <theoclementtheo@gmail.com>
 - [Henri Baudesson](https://github.com/polyhb) <henri.baudesson@polyconseil.fr>
 - [Antoine Lebaud](https://github.com/lebaudantoine) <lebaud.antoine131@gmail.com>
+- [Claude Dioudonnat](https://github.com/claudusd) <claude.dioudonnat@fun-mooc.fr>
+- [Wilfried Baradat](https://github.com/wilbrdt) <wilfried.baradat@fun-mooc.fr>
 
 - [Renovate Bot](https://renovatebot.com) <bot@renovateapp.com>
 - [Renovate Bot](https://renovatebot.com) <29139614+renovate[bot]@users.noreply.github.com>
 - [Pyup Bot](https://pyup.io) <github-bot@pyup.io>
 - [Dependabot](https://github.com/dependabot/dependabot-core) <49699333+dependabot[bot]@users.noreply.github.com>
 - [Snyk](https://snyk.io/) <snyk-bot@snyk.io>
--[Claude Dioudonnat](https://github.com/claudusd) <claude.dioudonnat@fun-mooc.fr>

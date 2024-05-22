@@ -1,4 +1,5 @@
 import { fireEvent, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { render } from 'lib-tests';
 import React from 'react';
 
@@ -11,7 +12,7 @@ const onJoin = jest.fn();
 const onCancel = jest.fn();
 
 describe('<DashboardClassroomAskUsername />', () => {
-  it('displays the form with cancel button', () => {
+  it('displays the form with cancel button', async () => {
     const userFullname = 'Initial value';
     const mockSetUserFullname = jest.fn();
 
@@ -31,9 +32,12 @@ describe('<DashboardClassroomAskUsername />', () => {
     fireEvent.change(inputUsername, { target: { value: 'Joe' } });
     expect(mockSetUserFullname).toHaveBeenCalledWith('Joe');
 
+    await userEvent.type(inputUsername, '{enter}');
+    expect(onJoin).toHaveBeenCalledTimes(1);
+
     const joinButton = screen.getByRole('button', { name: /join/i });
     fireEvent.click(joinButton);
-    expect(onJoin).toHaveBeenCalled();
+    expect(onJoin).toHaveBeenCalledTimes(2);
 
     const cancelButton = screen.getByRole('button', { name: /cancel/i });
     fireEvent.click(cancelButton);

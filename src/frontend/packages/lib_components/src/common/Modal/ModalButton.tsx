@@ -63,6 +63,7 @@ export const ModalButton = ({
           color="secondary"
           onClick={onClickCancel}
           style={{ flex: '1' }}
+          type="button"
           fullWidth
         >
           {labelCancel || intl.formatMessage(messages.ButtonCancelModal)}
