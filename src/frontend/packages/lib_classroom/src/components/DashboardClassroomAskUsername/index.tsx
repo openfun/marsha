@@ -45,25 +45,31 @@ interface DashboardClassroomAskUsernameProps {
 const DashboardClassroomAskUsernameWrapper = ({
   userFullname,
   setUserFullname,
+  onJoin,
   children,
 }: React.PropsWithChildren<
-  Pick<DashboardClassroomAskUsernameProps, 'userFullname' | 'setUserFullname'>
+  Pick<
+    DashboardClassroomAskUsernameProps,
+    'userFullname' | 'setUserFullname' | 'onJoin'
+  >
 >) => {
   const intl = useIntl();
 
   return (
     <Box pad="large" gap="medium" className="DashboardClassroomAskUsername">
-      <Input
-        aria-label={intl.formatMessage(messages.labelEnterYourName)}
-        label={intl.formatMessage(messages.labelEnterYourName)}
-        fullWidth
-        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-          setUserFullname(event.currentTarget.value);
-        }}
-        value={userFullname}
-        text={intl.formatMessage(messages.infoInput)}
-      />
-      {children}
+      <form onSubmit={onJoin}>
+        <Input
+          aria-label={intl.formatMessage(messages.labelEnterYourName)}
+          label={intl.formatMessage(messages.labelEnterYourName)}
+          fullWidth
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            setUserFullname(event.currentTarget.value);
+          }}
+          value={userFullname}
+          text={intl.formatMessage(messages.infoInput)}
+        />
+        {children}
+      </form>
     </Box>
   );
 };
@@ -91,6 +97,7 @@ export const DashboardClassroomAskUsernameStudent = ({
     <DashboardClassroomAskUsernameWrapper
       setUserFullname={setUserFullname}
       userFullname={userFullname}
+      onJoin={onJoin}
     >
       <Box>
         {isRecordingEnabled && (
@@ -121,7 +128,6 @@ export const DashboardClassroomAskUsernameStudent = ({
         <Button
           fullWidth
           aria-label={intl.formatMessage(messages.join)}
-          onClick={onJoin}
           disabled={!isStudentConsentRecord || !userFullname}
         >
           {intl.formatMessage(messages.join)}
@@ -143,10 +149,10 @@ export const DashboardClassroomAskUsername = ({
     <DashboardClassroomAskUsernameWrapper
       setUserFullname={setUserFullname}
       userFullname={userFullname}
+      onJoin={onJoin}
     >
       <ModalButton
         onClickCancel={onCancel || undefined}
-        onClickSubmit={onJoin}
         disabled={!userFullname}
         labelCancel={intl.formatMessage(messages.cancel)}
         aria-label={intl.formatMessage(messages.join)}
