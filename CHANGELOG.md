@@ -10,6 +10,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Integrate `ralph-malph` library for xAPI statements generation
 - Add scaleway storage configuration
 - Add Peertube pipeline to VOD
 - Celery task queue

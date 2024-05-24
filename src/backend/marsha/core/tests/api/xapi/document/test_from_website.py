@@ -24,6 +24,7 @@ class XAPIDocumentFromWebsiteTest(TestCase):
 
         session_id = str(uuid.uuid4())
         jwt_token = UserAccessTokenFactory()
+        print(jwt_token.__dict__)
 
         data = {
             "verb": {

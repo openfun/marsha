@@ -29,9 +29,10 @@ class XAPIVideoStatementTest(TestCase):
             title="test video xapi",
         )
 
+        context_id="course-v1:ufr+mathematics+0001"
         jwt_token = LTIPlaylistAccessTokenFactory(
             session_id="326c0689-48c1-493e-8d2d-9fb0c289de7f",
-            context_id="course-v1:ufr+mathematics+0001",
+            context_id=context_id,
         )
         del jwt_token.payload["user"]
 
@@ -59,7 +60,7 @@ class XAPIVideoStatementTest(TestCase):
         }
 
         xapi_statement = XAPIVideoStatement()
-        statement = xapi_statement.from_lti(video, base_statement, jwt_token)
+        statement = xapi_statement.from_lti(video, base_statement, jwt_token, course_url=f"http://testserver/course/{context_id}")
 
         self.assertIsNotNone(statement["timestamp"])
         self.assertEqual(
@@ -80,7 +81,6 @@ class XAPIVideoStatementTest(TestCase):
                     "name": {"en-US": "test video xapi"},
                 },
                 "id": "uuid://68333c45-4b8c-4018-a195-5d5e1706b838",
-                "objectType": "Activity",
             },
         )
         self.assertEqual(
@@ -91,11 +91,17 @@ class XAPIVideoStatementTest(TestCase):
                     "43b4-8452-2037fed588df"
                 },
                 "contextActivities": {
-                    "category": [{"id": "https://w3id.org/xapi/video"}],
+                    "category": [
+                        {
+                            "id": "https://w3id.org/xapi/video",
+                            "definition": {
+                                "type": "http://adlnet.gov/expapi/activities/profile"
+                            },
+                        }
+                    ],
                     "parent": [
                         {
-                            "id": "course-v1:ufr+mathematics+0001",
-                            "objectType": "Activity",
+                            "id": f"http://testserver/course/{context_id}",
                             "definition": {
                                 "type": "http://adlnet.gov/expapi/activities/course"
                             },
@@ -117,10 +123,12 @@ class XAPIVideoStatementTest(TestCase):
             title="test video xapi",
         )
 
+        context_id="course-v1:ufr+mathematics+0001"
         jwt_token = LTIPlaylistAccessTokenFactory(
             session_id="326c0689-48c1-493e-8d2d-9fb0c289de7f",
-            context_id="course-v1:ufr+mathematics+0001",
+            context_id=context_id,
             user__id="b2584aa405540758db2a6278521b6478",
+            user__username="johndoe",
         )
 
         base_statement = {
@@ -147,12 +155,13 @@ class XAPIVideoStatementTest(TestCase):
         }
 
         xapi_statement = XAPIVideoStatement()
-        statement = xapi_statement.from_lti(video, base_statement, jwt_token)
+        statement = xapi_statement.from_lti(video, base_statement, jwt_token, course_url=f"http://testserver/course/{context_id}")
 
         self.assertIsNotNone(statement["timestamp"])
         self.assertEqual(
             statement["actor"],
             {
+                "name": "johndoe",
                 "objectType": "Agent",
                 "account": {
                     "name": "b2584aa405540758db2a6278521b6478",
@@ -168,7 +177,6 @@ class XAPIVideoStatementTest(TestCase):
                     "name": {"en-US": "test video xapi"},
                 },
                 "id": "uuid://68333c45-4b8c-4018-a195-5d5e1706b838",
-                "objectType": "Activity",
             },
         )
         self.assertEqual(
@@ -179,11 +187,17 @@ class XAPIVideoStatementTest(TestCase):
                     "43b4-8452-2037fed588df"
                 },
                 "contextActivities": {
-                    "category": [{"id": "https://w3id.org/xapi/video"}],
+                    "category": [
+                        {
+                            "definition": {
+                                "type": "http://adlnet.gov/expapi/activities/profile"
+                            },
+                            "id": "https://w3id.org/xapi/video",
+                        }
+                    ],
                     "parent": [
                         {
-                            "id": "course-v1:ufr+mathematics+0001",
-                            "objectType": "Activity",
+                            "id": f"http://testserver/course/{context_id}",
                             "definition": {
                                 "type": "http://adlnet.gov/expapi/activities/course"
                             },
@@ -206,10 +220,12 @@ class XAPIVideoStatementTest(TestCase):
             live_type=RAW,
         )
 
+        context_id="course-v1:ufr+mathematics+0001"
         jwt_token = LTIPlaylistAccessTokenFactory(
             session_id="326c0689-48c1-493e-8d2d-9fb0c289de7f",
-            context_id="course-v1:ufr+mathematics+0001",
+            context_id=context_id,
             user__id="b2584aa405540758db2a6278521b6478",
+            user__username="johndoe",
         )
 
         base_statement = {
@@ -236,12 +252,13 @@ class XAPIVideoStatementTest(TestCase):
         }
 
         xapi_statement = XAPIVideoStatement()
-        statement = xapi_statement.from_lti(video, base_statement, jwt_token)
+        statement = xapi_statement.from_lti(video, base_statement, jwt_token, course_url=f"http://testserver/course/{context_id}")
 
         self.assertIsNotNone(statement["timestamp"])
         self.assertEqual(
             statement["actor"],
             {
+                "name": "johndoe",
                 "objectType": "Agent",
                 "account": {
                     "name": "b2584aa405540758db2a6278521b6478",
@@ -257,7 +274,6 @@ class XAPIVideoStatementTest(TestCase):
                     "name": {"en-US": "test video xapi"},
                 },
                 "id": "uuid://68333c45-4b8c-4018-a195-5d5e1706b838",
-                "objectType": "Activity",
             },
         )
         self.assertEqual(
@@ -268,11 +284,17 @@ class XAPIVideoStatementTest(TestCase):
                     "43b4-8452-2037fed588df"
                 },
                 "contextActivities": {
-                    "category": [{"id": "https://w3id.org/xapi/video"}],
+                    "category": [
+                        {
+                            "id": "https://w3id.org/xapi/video",
+                            "definition": {
+                                "type": "http://adlnet.gov/expapi/activities/profile"
+                            },
+                        }
+                    ],
                     "parent": [
                         {
-                            "id": "course-v1:ufr+mathematics+0001",
-                            "objectType": "Activity",
+                            "id": f"http://testserver/course/{context_id}",
                             "definition": {
                                 "type": "http://adlnet.gov/expapi/activities/course"
                             },
@@ -296,10 +318,12 @@ class XAPIVideoStatementTest(TestCase):
             upload_state=READY,
         )
 
+        context_id="course-v1:ufr+mathematics+0001"
         jwt_token = LTIPlaylistAccessTokenFactory(
             session_id="326c0689-48c1-493e-8d2d-9fb0c289de7f",
-            context_id="course-v1:ufr+mathematics+0001",
+            context_id=context_id,
             user__id="b2584aa405540758db2a6278521b6478",
+            user__username="johndoe",
         )
 
         base_statement = {
@@ -326,12 +350,13 @@ class XAPIVideoStatementTest(TestCase):
         }
 
         xapi_statement = XAPIVideoStatement()
-        statement = xapi_statement.from_lti(video, base_statement, jwt_token)
+        statement = xapi_statement.from_lti(video, base_statement, jwt_token, course_url=f"http://testserver/course/{context_id}")
 
         self.assertIsNotNone(statement["timestamp"])
         self.assertEqual(
             statement["actor"],
             {
+                "name": "johndoe",
                 "objectType": "Agent",
                 "account": {
                     "name": "b2584aa405540758db2a6278521b6478",
@@ -347,7 +372,6 @@ class XAPIVideoStatementTest(TestCase):
                     "name": {"en-US": "test video xapi"},
                 },
                 "id": "uuid://68333c45-4b8c-4018-a195-5d5e1706b838",
-                "objectType": "Activity",
             },
         )
         self.assertEqual(
@@ -358,11 +382,17 @@ class XAPIVideoStatementTest(TestCase):
                     "43b4-8452-2037fed588df"
                 },
                 "contextActivities": {
-                    "category": [{"id": "https://w3id.org/xapi/video"}],
+                    "category": [
+                        {
+                            "id": "https://w3id.org/xapi/video",
+                            "definition": {
+                                "type": "http://adlnet.gov/expapi/activities/profile"
+                            },
+                        }
+                    ],
                     "parent": [
                         {
-                            "id": "course-v1:ufr+mathematics+0001",
-                            "objectType": "Activity",
+                            "id": f"http://testserver/course/{context_id}",
                             "definition": {
                                 "type": "http://adlnet.gov/expapi/activities/course"
                             },
@@ -434,7 +464,6 @@ class XAPIVideoStatementTest(TestCase):
                     "name": {"en-US": "test video xapi"},
                 },
                 "id": "uuid://68333c45-4b8c-4018-a195-5d5e1706b838",
-                "objectType": "Activity",
             },
         )
         self.assertEqual(
@@ -445,7 +474,14 @@ class XAPIVideoStatementTest(TestCase):
                     "43b4-8452-2037fed588df"
                 },
                 "contextActivities": {
-                    "category": [{"id": "https://w3id.org/xapi/video"}]
+                    "category": [
+                        {
+                            "id": "https://w3id.org/xapi/video",
+                            "definition": {
+                                "type": "http://adlnet.gov/expapi/activities/profile"
+                            },
+                        }
+                    ]
                 },
             },
         )
@@ -466,10 +502,12 @@ class XAPIDocumentStatementTest(TestCase):
             title="test document xapi",
         )
 
+        context_id="course-v1:ufr+mathematics+0001"
         jwt_token = LTIPlaylistAccessTokenFactory(
             session_id="326c0689-48c1-493e-8d2d-9fb0c289de7f",
-            context_id="course-v1:ufr+mathematics+0001",
+            context_id=context_id,
             user__id="b2584aa405540758db2a6278521b6478",
+            user__username="johndoe",
         )
 
         base_statement = {
@@ -487,12 +525,13 @@ class XAPIDocumentStatementTest(TestCase):
         }
 
         xapi_statement = XAPIDocumentStatement()
-        statement = xapi_statement.from_lti(document, base_statement, jwt_token)
+        statement = xapi_statement.from_lti(document, base_statement, jwt_token, course_url=f"http://testserver/course/{context_id}")
 
         self.assertIsNotNone(statement["timestamp"])
         self.assertEqual(
             statement["actor"],
             {
+                "name": "johndoe",
                 "objectType": "Agent",
                 "account": {
                     "name": "b2584aa405540758db2a6278521b6478",
@@ -508,7 +547,6 @@ class XAPIDocumentStatementTest(TestCase):
                     "name": {"en-US": "test document xapi"},
                 },
                 "id": "uuid://68333c45-4b8c-4018-a195-5d5e1706b838",
-                "objectType": "Activity",
             },
         )
         self.assertEqual(
@@ -519,11 +557,17 @@ class XAPIDocumentStatementTest(TestCase):
                     "43b4-8452-2037fed588df"
                 },
                 "contextActivities": {
-                    "category": [{"id": "https://w3id.org/xapi/lms"}],
+                    "category": [
+                        {
+                            "definition": {
+                                "type": "http://adlnet.gov/expapi/activities/profile"
+                            },
+                            "id": "https://w3id.org/xapi/lms",
+                        }
+                    ],
                     "parent": [
                         {
-                            "id": "course-v1:ufr+mathematics+0001",
-                            "objectType": "Activity",
+                            "id": f"http://testserver/course/{context_id}",
                             "definition": {
                                 "type": "http://adlnet.gov/expapi/activities/course"
                             },
@@ -547,6 +591,7 @@ class XAPIDocumentStatementTest(TestCase):
         jwt_token = LTIPlaylistAccessTokenFactory(
             session_id="326c0689-48c1-493e-8d2d-9fb0c289de7f",
             user__id="b2584aa405540758db2a6278521b6478",
+            user__username="johndoe",
         )
         del jwt_token.payload["context_id"]
 
@@ -571,6 +616,7 @@ class XAPIDocumentStatementTest(TestCase):
         self.assertEqual(
             statement["actor"],
             {
+                "name": "johndoe",
                 "objectType": "Agent",
                 "account": {
                     "name": "b2584aa405540758db2a6278521b6478",
@@ -586,7 +632,6 @@ class XAPIDocumentStatementTest(TestCase):
                     "name": {"en-US": "test document xapi"},
                 },
                 "id": "uuid://68333c45-4b8c-4018-a195-5d5e1706b838",
-                "objectType": "Activity",
             },
         )
         self.assertEqual(
@@ -597,7 +642,14 @@ class XAPIDocumentStatementTest(TestCase):
                     "43b4-8452-2037fed588df"
                 },
                 "contextActivities": {
-                    "category": [{"id": "https://w3id.org/xapi/lms"}]
+                    "category": [
+                        {
+                            "id": "https://w3id.org/xapi/lms",
+                            "definition": {
+                                "type": "http://adlnet.gov/expapi/activities/profile"
+                            },
+                        }
+                    ]
                 },
             },
         )
@@ -613,9 +665,10 @@ class XAPIDocumentStatementTest(TestCase):
             title="test document xapi",
         )
 
+        context_id="course-v1:ufr+mathematics+0001"
         jwt_token = LTIPlaylistAccessTokenFactory(
             session_id="326c0689-48c1-493e-8d2d-9fb0c289de7f",
-            context_id="course-v1:ufr+mathematics+0001",
+            context_id=context_id,
         )
         del jwt_token.payload["user"]
 
@@ -634,7 +687,7 @@ class XAPIDocumentStatementTest(TestCase):
         }
 
         xapi_statement = XAPIDocumentStatement()
-        statement = xapi_statement.from_lti(document, base_statement, jwt_token)
+        statement = xapi_statement.from_lti(document, base_statement, jwt_token, course_url=f"http://testserver/course/{context_id}")
 
         self.assertIsNotNone(statement["timestamp"])
         self.assertEqual(
@@ -655,7 +708,6 @@ class XAPIDocumentStatementTest(TestCase):
                     "name": {"en-US": "test document xapi"},
                 },
                 "id": "uuid://68333c45-4b8c-4018-a195-5d5e1706b838",
-                "objectType": "Activity",
             },
         )
         self.assertEqual(
@@ -666,11 +718,17 @@ class XAPIDocumentStatementTest(TestCase):
                     "43b4-8452-2037fed588df"
                 },
                 "contextActivities": {
-                    "category": [{"id": "https://w3id.org/xapi/lms"}],
+                    "category": [
+                        {
+                            "id": "https://w3id.org/xapi/lms",
+                            "definition": {
+                                "type": "http://adlnet.gov/expapi/activities/profile"
+                            },
+                        }
+                    ],
                     "parent": [
                         {
-                            "id": "course-v1:ufr+mathematics+0001",
-                            "objectType": "Activity",
+                            "id": f"http://testserver/course/{context_id}",
                             "definition": {
                                 "type": "http://adlnet.gov/expapi/activities/course"
                             },
@@ -700,9 +758,10 @@ class XAPITest(TestCase):
             title="test video xapi",
         )
 
+        context_id="course-v1:ufr+mathematics+0001",
         jwt_token = LTIPlaylistAccessTokenFactory(
             session_id="326c0689-48c1-493e-8d2d-9fb0c289de7f",
-            context_id="course-v1:ufr+mathematics+0001",
+            context_id=context_id,
             user__id="b2584aa405540758db2a6278521b6478",
         )
 
@@ -730,7 +789,7 @@ class XAPITest(TestCase):
         }
 
         xapi_statement = XAPIVideoStatement()
-        statement = xapi_statement.from_lti(video, base_statement, jwt_token)
+        statement = xapi_statement.from_lti(video, base_statement, jwt_token, course_url=f"http://testserver/course/{context_id}")
 
         responses.add(
             responses.POST,

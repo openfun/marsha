@@ -12,7 +12,7 @@ from django.test import TestCase, override_settings
 from logging_ldp.formatters import LDPGELFFormatter
 
 from marsha.core.defaults import XAPI_STATEMENT_ID_CACHE
-from marsha.core.factories import VideoFactory
+from marsha.core.factories import VideoFactory, UserFactory
 from marsha.core.simple_jwt.factories import UserAccessTokenFactory
 
 
@@ -199,7 +199,8 @@ class XAPIVideoFromWebsiteTest(TestCase):
         """
         video = VideoFactory()
         jwt_token = UserAccessTokenFactory()
-
+        user=UserFactory(username="johndoe")
+        print(user)
         data = {
             "id": "7b18195e-e183-4bbf-b8ef-5145ef64ae19",
             "verb": {

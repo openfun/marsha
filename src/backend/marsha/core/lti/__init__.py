@@ -33,7 +33,7 @@ class LTI:
         request : django.http.request.HttpRequest
             The request that holds the LTI parameters
         resource_id : uuid.uuid4
-            The primary key of the video targetted by the LTI query as a UUID.
+            The primary key of the video targeted by the LTI query as a UUID.
 
         """
         self.resource_id = resource_id
