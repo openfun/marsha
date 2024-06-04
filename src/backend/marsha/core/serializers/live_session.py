@@ -42,6 +42,7 @@ class LiveSessionSerializer(serializers.ModelSerializer):
     """Serializer for liveSession model."""
 
     username = serializers.SerializerMethodField()
+    anonymous_id = serializers.UUIDField(required=False)
 
     class Meta:  # noqa
         model = LiveSession
