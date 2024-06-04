@@ -240,7 +240,7 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
 
         self.assertDictEqual(
             response.json(),
-            {"detail": "Not found."},
+            {"detail": "No ClassroomRecording matches the given query."},
         )
 
     def test_api_classroom_recording_create_vod_user_access_token(self):

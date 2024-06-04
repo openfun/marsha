@@ -107,7 +107,6 @@ class PlaylistUpdateAPITest(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
-
         self.assertEqual(response.status_code, 200)
         playlist.refresh_from_db()
         self.assertEqual(playlist.title, "new title for orga admin")

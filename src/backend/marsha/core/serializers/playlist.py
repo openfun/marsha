@@ -66,6 +66,7 @@ class PlaylistSerializer(serializers.ModelSerializer):
     # Field consuming the `can_edit` property filled by
     # the `PlaylistManager` `annotate_can_edit`
     can_edit = serializers.BooleanField(read_only=True)
+    lti_id = serializers.CharField(required=False)
 
     def get_portable_to(self, obj):
         """Getter for portable_to attribute instead of PlaylistSerializer to prevent recursion."""
