@@ -18,6 +18,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add shared live media celery task
 - Add timed text track celery task
 - Add form submission with enter key when entering a classroom
+- Persist username used on classroom join
 
 ### Changed
 
