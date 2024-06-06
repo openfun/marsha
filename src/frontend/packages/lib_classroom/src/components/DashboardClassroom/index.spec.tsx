@@ -3,6 +3,8 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
+  AnonymousUser,
+  LOCAL_STORAGE_KEYS,
   useCurrentResourceContext,
   useCurrentUser,
   useJwt,
@@ -47,6 +49,7 @@ describe('<DashboardClassroom />', () => {
   afterEach(() => {
     jest.clearAllMocks();
     fetchMock.restore();
+    localStorage.clear();
   });
 
   it('shows student dashboard', async () => {
@@ -179,8 +182,14 @@ describe('<DashboardClassroom />', () => {
     render(<DashboardClassroom classroomId="1" />);
     classroomDeferred.resolve(classroom);
     fireEvent.click(await screen.findByText('Click here to access classroom'));
+    expect(
+      localStorage.getItem(LOCAL_STORAGE_KEYS.CLASSROOM_USERNAME),
+    ).toBeNull();
     await screen.findByText('Please enter your name to join the classroom');
     expect(screen.queryByText('Cancel')).not.toBeInTheDocument();
+    expect(
+      localStorage.getItem(LOCAL_STORAGE_KEYS.CLASSROOM_USERNAME),
+    ).toBeNull();
 
     const inputUsername = screen.getByRole('textbox');
     fireEvent.change(inputUsername, { target: { value: 'Joe' } });
@@ -195,6 +204,9 @@ describe('<DashboardClassroom />', () => {
     fetchMock.patch('/api/classrooms/1/join/', deferredPatch.promise);
     fireEvent.click(screen.getByText('Join'));
     deferredPatch.resolve({ url: 'server.bbb/classroom/url' });
+    expect(localStorage.getItem(LOCAL_STORAGE_KEYS.CLASSROOM_USERNAME)).toBe(
+      'Joe',
+    );
     await waitFor(() => {
       expect(window.open).toHaveBeenCalledTimes(1);
     });
@@ -247,6 +259,60 @@ describe('<DashboardClassroom />', () => {
       method: 'PATCH',
       body: JSON.stringify({
         fullname: token.user?.user_fullname,
+      }),
+    });
+    expect(window.open).toHaveBeenCalledTimes(1);
+    expect(window.open).toHaveBeenCalledWith(
+      'server.bbb/classroom/url',
+      '_blank',
+    );
+    const urlMessage = screen.queryByText(
+      'please click bbb url to join classroom',
+    );
+    expect(urlMessage).not.toBeInTheDocument();
+
+    // multiple joining must be avoided
+    await userEvent.click(screen.getByText('Join classroom'));
+    expect(window.open).toHaveBeenCalledTimes(2);
+  });
+
+  it('uses local storage fullname when joining a classroom', async () => {
+    const token = ltiInstructorTokenMockFactory();
+    localStorage.setItem('classroom_username', 'John Doe');
+    useCurrentUser.setState({ currentUser: AnonymousUser.ANONYMOUS });
+    mockedUseCurrentResource.mockReturnValue([token] as any);
+    window.open = jest.fn(() => window);
+
+    const classroom = classroomMockFactory({ id: '1', started: true });
+    const classroomDeferred = new Deferred();
+    fetchMock.get('/api/classrooms/1/', classroomDeferred.promise);
+    fetchMock.get('/api/classrooms/1/classroomdocuments/?limit=999', {
+      count: 0,
+      next: null,
+      previous: null,
+      results: [],
+    });
+
+    const deferredPatch = new Deferred();
+    fetchMock.patch('/api/classrooms/1/join/', deferredPatch.promise);
+
+    render(<DashboardClassroom classroomId="1" />);
+    classroomDeferred.resolve(classroom);
+    await userEvent.click(await screen.findByText('Join classroom'));
+    deferredPatch.resolve({ url: 'server.bbb/classroom/url' });
+
+    await waitFor(() =>
+      expect(fetchMock.calls()[1][0]).toEqual('/api/classrooms/1/join/'),
+    );
+    expect(fetchMock.calls()[1][1]).toEqual({
+      headers: {
+        Authorization: 'Bearer token',
+        'Content-Type': 'application/json',
+        'Accept-Language': 'en',
+      },
+      method: 'PATCH',
+      body: JSON.stringify({
+        fullname: 'John Doe',
       }),
     });
     expect(window.open).toHaveBeenCalledTimes(1);
