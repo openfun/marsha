@@ -25,6 +25,7 @@
 - [Antoine Lebaud](https://github.com/lebaudantoine) <lebaud.antoine131@gmail.com>
 - [Claude Dioudonnat](https://github.com/claudusd) <claude.dioudonnat@fun-mooc.fr>
 - [Wilfried Baradat](https://github.com/wilbrdt) <wilfried.baradat@fun-mooc.fr>
+- [Jean-Baptiste Penrath](https://github.com/jbpenrath) <jb.penrath@gmail.com>
 
 - [Renovate Bot](https://renovatebot.com) <bot@renovateapp.com>
 - [Renovate Bot](https://renovatebot.com) <29139614+renovate[bot]@users.noreply.github.com>
