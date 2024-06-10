@@ -92,6 +92,7 @@ def exception_handler(exc, context):
     https://gist.github.com/twidi/9d55486c36b6a51bdcb05ce3a763e79f
     """
     if isinstance(exc, DjangoValidationError):
+        detail = None
         if hasattr(exc, "message_dict"):
             detail = exc.message_dict
         elif hasattr(exc, "message"):
