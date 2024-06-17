@@ -1,6 +1,5 @@
 import 'video.js/dist/video-js.css';
 
-import 'videojs-contrib-quality-levels';
 import 'videojs-http-source-selector';
 import './videojs/qualitySelectorPlugin';
 import './videojs/p2pHlsPlugin';
@@ -12,13 +11,8 @@ import './videojs/transcriptPlugin';
 
 import { Maybe } from 'lib-common';
 import { Video, useP2PConfig, videoSize } from 'lib-components';
-import videojs, {
-  VideoJsPlayer,
-  VideoJsPlayerOptions,
-  VideoJsPlayerPluginOptions,
-} from 'video.js';
+import videojs, { Player, Plugins, Source } from 'video.js';
 
-import { VideoJsExtendedSourceObject } from '@lib-video/types/libs/video.js/extend';
 import { isMSESupported } from '@lib-video/utils/isMSESupported';
 
 export const createVideojsPlayer = (
@@ -26,8 +20,8 @@ export const createVideojsPlayer = (
   dispatchPlayerTimeUpdate: (time: number) => void,
   video: Video,
   locale: Maybe<string>,
-  onReady: Maybe<(player: VideoJsPlayer) => void> = undefined,
-): VideoJsPlayer => {
+  onReady: Maybe<(player: Player) => void> = undefined,
+): Player => {
   const { isP2PEnabled } = useP2PConfig.getState();
   // This property should be deleted once the feature has been
   // deployed, tested and approved in a production environment
@@ -43,8 +37,8 @@ export const createVideojsPlayer = (
   // add the video-js class name to the video attribute.
   videoNode.classList.add('video-js', 'vjs-big-play-centered');
 
-  const sources: VideoJsExtendedSourceObject[] = [];
-  const plugins: VideoJsPlayerPluginOptions = {};
+  const sources: Source[] = [];
+  const plugins: Partial<Plugins> = {};
 
   if (!isMSESupported()) {
     plugins.qualitySelector = {
@@ -67,7 +61,7 @@ export const createVideojsPlayer = (
     });
   }
 
-  const options: VideoJsPlayerOptions = {
+  const options = {
     autoplay: video.is_live,
     controls: true,
     controlBar: {
@@ -98,12 +92,13 @@ export const createVideojsPlayer = (
     sources,
   };
 
-  const player = videojs(videoNode, options, function () {
-    if (video.is_live) {
-      this.play();
-    }
-    onReady?.(this);
-  });
+  const player = videojs(videoNode, options) as Player;
+
+  if (video.is_live) {
+    player.play();
+  }
+
+  onReady?.(player);
 
   // plugins initialization
   if (isMSESupported()) {
@@ -120,6 +115,17 @@ export const createVideojsPlayer = (
     }
     player.transcriptPlugin({ video });
     player.httpSourceSelector();
+
+    // The icon of the quality selector is not displayed with the plugin httpSourceSelector,
+    // so we add the class vjs-icon-cog to the element to display the icon.
+    player.on('loadeddata', () => {
+      player
+        .getChild('controlBar')
+        ?.el()
+        ?.getElementsByClassName('vjs-http-source-selector')[0]
+        ?.getElementsByClassName('vjs-menu-button')[0]
+        ?.classList.add('vjs-icon-cog');
+    });
   }
   player.id3Plugin();
   player.xapiPlugin({ video, locale, dispatchPlayerTimeUpdate });

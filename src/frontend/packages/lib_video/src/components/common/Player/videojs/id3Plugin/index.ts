@@ -1,28 +1,32 @@
 import { Id3VideoType, useVideo } from 'lib-components';
-import videojs from 'video.js';
-const Plugin = videojs.getPlugin('plugin');
+import videojs, { Player } from 'video.js';
+
+import { id3PluginType } from './type';
 
 type Id3MessageType = {
   video: Id3VideoType;
 };
 
-export class id3Plugin extends Plugin {
+const PluginClass = videojs.getPlugin('plugin') as id3PluginType;
+
+export class id3Plugin extends PluginClass {
   lastReceivedVideo: Id3VideoType | undefined;
   videoState;
+  declare player: Player;
 
-  constructor(player: videojs.Player, options: unknown) {
+  constructor(player: Player, options: unknown) {
     super(player, options);
 
     this.videoState = useVideo.getState();
     this.videoState.setIsWatchingVideo(true);
 
-    player.on('loadedmetadata', this.handleLoadedMetadata.bind(this));
+    this.player.on('loadedmetadata', this.handleLoadedMetadata.bind(this));
 
-    player.on('play', this.handleStart.bind(this));
+    this.player.on('play', this.handleStart.bind(this));
 
-    player.on('ended', this.handleEnded.bind(this));
+    this.player.on('ended', this.handleEnded.bind(this));
 
-    player.on('dispose', this.handleDispose.bind(this));
+    this.player.on('dispose', this.handleDispose.bind(this));
   }
 
   handleLoadedMetadata() {

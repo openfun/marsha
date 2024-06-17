@@ -9,7 +9,7 @@ import {
   useCurrentSession,
   useJwt,
 } from 'lib-components';
-import videojs from 'video.js';
+import videojs, { Player } from 'video.js';
 
 import { pushAttendance } from '@lib-video/api/pushAttendance';
 import { useAttendance } from '@lib-video/hooks/useAttendance';
@@ -19,11 +19,11 @@ import { isMSESupported } from '@lib-video/utils/isMSESupported';
 
 import { Events } from '../qualitySelectorPlugin/types';
 
-import { XapiPluginOptions } from './types';
+import { XapiPluginOptions, XapiPluginType } from './types';
 
-const Plugin = videojs.getPlugin('plugin');
+const PluginClass = videojs.getPlugin('plugin') as XapiPluginType;
 
-export class xapiPlugin extends Plugin {
+export class xapiPlugin extends PluginClass {
   private xapiStatement: VideoXAPIStatementInterface;
   video: Video;
   currentTime: number;
@@ -34,8 +34,9 @@ export class xapiPlugin extends Plugin {
   hasAttendance: boolean;
   currentTrack: Nullable<TextTrack>;
   locale: Maybe<string>;
+  declare player: Player;
 
-  constructor(player: videojs.Player, options: XapiPluginOptions) {
+  constructor(player: Player, options: XapiPluginOptions) {
     super(player, options);
 
     this.video = options.video;
@@ -74,20 +75,20 @@ export class xapiPlugin extends Plugin {
     player.on('canplaythrough', this.initialize.bind(this));
     player.on('play', () => {
       this.xapiStatement.played({
-        time: player.currentTime(),
+        time: player.currentTime() || 0,
       });
     });
     player.on('pause', () => {
       this.xapiStatement.paused({
-        time: player.currentTime(),
+        time: player.currentTime() || 0,
       });
     });
 
     player.on('timeupdate', () => {
       if (this.isInitialized && !player.seeking()) {
-        this.currentTime = player.currentTime();
+        this.currentTime = player.currentTime() || 0;
       }
-      options.dispatchPlayerTimeUpdate(player.currentTime());
+      options.dispatchPlayerTimeUpdate(player.currentTime() || 0);
     });
 
     player.on('seeking', () => {
@@ -102,7 +103,7 @@ export class xapiPlugin extends Plugin {
       this.hasSeeked = false;
       this.xapiStatement.seeked({
         timeFrom: this.seekingAt,
-        timeTo: player.currentTime(),
+        timeTo: player.currentTime() || 0,
       });
     });
     player.on('fullscreenchange', this.interacted.bind(this));
@@ -122,7 +123,7 @@ export class xapiPlugin extends Plugin {
         return;
       }
 
-      this.xapiStatement.terminated({ time: player.currentTime() });
+      this.xapiStatement.terminated({ time: player.currentTime() || 0 });
 
       if (this.interval) {
         player.clearInterval(this.interval);
@@ -165,7 +166,7 @@ export class xapiPlugin extends Plugin {
     const contextExtensions = {
       ccSubtitleEnabled: this.currentTrack !== null,
       fullScreen: this.player.isFullscreen(),
-      length: this.player.duration(),
+      length: this.player.duration() || 0,
       speed: `${this.player.playbackRate()}x`,
       volume: this.player.volume(),
     };
@@ -215,7 +216,7 @@ export class xapiPlugin extends Plugin {
     }
 
     this.xapiStatement.interacted(
-      { time: this.player.currentTime() },
+      { time: this.player.currentTime() || 0 },
       contextExtensions,
     );
   }

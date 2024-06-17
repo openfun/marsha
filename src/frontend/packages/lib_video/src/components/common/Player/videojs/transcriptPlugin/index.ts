@@ -3,20 +3,20 @@ import {
   timedTextMode,
   useTimedTextTrack,
 } from 'lib-components';
-import videojs from 'video.js';
+import videojs, { Player } from 'video.js';
 
 import './components/TranscriptButton';
 import './components/TranscriptItem';
 import { useTranscriptTimeSelector } from '@lib-video/hooks/useTranscriptTimeSelector';
 
-import { TranscriptPluginOptions } from './types';
+import { TranscriptPluginOptions, TranscriptPluginType } from './types';
 
-const Plugin = videojs.getPlugin('plugin');
+const PluginClass = videojs.getPlugin('plugin') as TranscriptPluginType;
 
-export class TranscriptPlugin extends Plugin {
+export class TranscriptPlugin extends PluginClass {
   unsubscribeTranscriptTimeSelector: () => void;
 
-  constructor(player: videojs.Player, options: TranscriptPluginOptions) {
+  constructor(player: Player, options: TranscriptPluginOptions) {
     super(player);
     const { video } = options;
     const timedTextTracks = useTimedTextTrack.getState().getTimedTextTracks();

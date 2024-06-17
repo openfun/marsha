@@ -22,6 +22,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Upgrade video.js to version 8 (#25350)
 - Replace CRA by Vite (#2530)
 - Replace grommet Image and Grid component (#2518)
 - Optimized apps bundle (#2528)

@@ -1,11 +1,17 @@
-import videojs from 'video.js';
+import videojs, { Player } from 'video.js';
+import MenuButton from 'video.js/dist/types/menu/menu-button';
+import MenuItemOptions from 'video.js/dist/types/menu/menu-item';
 
 import { QualitySelectorMenuItem } from './QualitySelectorMenuItem';
 
-const MenuButton = videojs.getComponent('MenuButton');
+const MenuButtonClass = videojs.getComponent(
+  'MenuButton',
+) as unknown as typeof MenuButton;
 
-export class QualitySelectorMenuButton extends MenuButton {
-  constructor(player: videojs.Player, options?: videojs.MenuItemOptions) {
+export class QualitySelectorMenuButton extends MenuButtonClass {
+  declare player: () => Player;
+
+  constructor(player: Player, options?: MenuItemOptions) {
     super(player, options);
   }
 
@@ -21,16 +27,16 @@ export class QualitySelectorMenuButton extends MenuButton {
   }
 
   createItems() {
-    return this.player()
-      .currentSources()
-      .map((source) => {
-        return new QualitySelectorMenuItem(this.player_, {
-          label: `${source.size ?? ''}p`,
-          size: source.size ?? '',
-          src: source.src,
-          type: source.type ?? '',
-          selected: source.src === this.player().currentSource().src,
-        });
+    const player = this.player();
+
+    return player.options_.sources.map((source) => {
+      return new QualitySelectorMenuItem(player, {
+        label: `${source.size ?? ''}p`,
+        size: source.size ?? '',
+        src: source.src,
+        type: source.type ?? '',
+        selected: player.currentSrc().includes(source.src),
       });
+    });
   }
 }

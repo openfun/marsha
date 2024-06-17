@@ -1,21 +1,25 @@
-import { TimedTextTranscript, useTimedTextTrack } from 'lib-components';
-import videojs from 'video.js';
+import { useTimedTextTrack } from 'lib-components';
+import videojs, { Player } from 'video.js';
+import Component from 'video.js/dist/types/component';
+import MenuItem from 'video.js/dist/types/menu/menu-item';
 
-import { SharedLiveMediaItemOptions } from '../types';
+import { TranscriptItemOptions } from '../types';
 
 import { TranscriptButton } from './TranscriptButton';
 
-const Component = videojs.getComponent('Component');
-const MenuItem = videojs.getComponent('MenuItem');
+const MenuItemClass = videojs.getComponent(
+  'MenuItem',
+) as unknown as typeof MenuItem;
 
-export class TranscriptItem extends MenuItem {
-  transcript: TimedTextTranscript | null;
+export class TranscriptItem extends MenuItemClass {
+  declare player: () => Player;
+  transcript?: TranscriptItemOptions['transcript'];
 
-  constructor(player: videojs.Player, options: SharedLiveMediaItemOptions) {
+  constructor(player: Player, options: Partial<TranscriptItemOptions>) {
     options.selectable = true;
     options.multiSelectable = false;
     super(player, options);
-    this.setAttribute('title', options.label);
+    this.setAttribute('title', options.label || '');
     this.transcript = options.transcript;
     this.selected(
       useTimedTextTrack.getState().selectedTranscript === this.transcript,
@@ -36,8 +40,14 @@ export class TranscriptItem extends MenuItem {
     }
 
     this.selected(true);
-    useTimedTextTrack.getState().setSelectedTranscript(this.transcript);
+
+    if (this.transcript) {
+      useTimedTextTrack.getState().setSelectedTranscript(this.transcript);
+    }
   }
 }
 
-Component.registerComponent('TranscriptItem', TranscriptItem);
+videojs.registerComponent(
+  'TranscriptItem',
+  TranscriptItem as unknown as typeof Component,
+);

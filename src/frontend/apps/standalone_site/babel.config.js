@@ -12,6 +12,12 @@ module.exports = babelJest.createTransformer({
         ast: true,
       },
     ],
+    [
+      '@babel/plugin-transform-typescript',
+      {
+        allowDeclareFields: true,
+      },
+    ],
     'babel-plugin-import-remove-resource-query',
     '@babel/plugin-syntax-dynamic-import',
     'babel-plugin-transform-vite-meta-env',
