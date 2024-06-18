@@ -20,6 +20,7 @@ import { getOrInitAnonymousId } from '@lib-video/utils/getOrInitAnonymousId';
 import { VideoPlayer } from '../../../VideoPlayer';
 import { createPlayer } from '../../createPlayer';
 import { createVideojsPlayer } from '../../createVideojsPlayer';
+import { Events } from '../downloadVideoPlugin/types';
 
 const mockXAPIStatementInterface: VideoXAPIStatementInterface = {
   initialized: jest.fn(),
@@ -158,6 +159,9 @@ describe('XAPI plugin', () => {
 
     player.trigger('timeupdate');
     expect(dispatchPlayerTimeUpdate).toHaveBeenCalled();
+
+    player.trigger(Events.DOWNLOAD);
+    expect(mockXAPIStatementInterface.downloaded).toHaveBeenCalled();
 
     // calling seeked without seeking before should not
     // send xapi statement

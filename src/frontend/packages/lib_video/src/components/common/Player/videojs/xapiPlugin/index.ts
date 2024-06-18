@@ -17,7 +17,8 @@ import { QualityLevels } from '@lib-video/types/libs/video.js/extend';
 import { getOrInitAnonymousId } from '@lib-video/utils/getOrInitAnonymousId';
 import { isMSESupported } from '@lib-video/utils/isMSESupported';
 
-import { Events } from '../qualitySelectorPlugin/types';
+import { Events as DownloadEvents } from '../downloadVideoPlugin/types';
+import { Events as QualityEvents } from '../qualitySelectorPlugin/types';
 
 import { XapiPluginOptions } from './types';
 
@@ -66,7 +67,7 @@ export class xapiPlugin extends Plugin {
       const qualityLevels = player.qualityLevels();
       qualityLevels.on('change', () => this.interacted(qualityLevels));
     } else {
-      player.on(Events.PLAYER_SOURCES_CHANGED, () => this.interacted());
+      player.on(QualityEvents.PLAYER_SOURCES_CHANGED, () => this.interacted());
     }
 
     /************************** EVENT BINDINGS **************************/
@@ -109,6 +110,9 @@ export class xapiPlugin extends Plugin {
     player.on('languagechange', this.interacted.bind(this));
     player.on('ratechange', this.interacted.bind(this));
     player.on('volumechange', this.interacted.bind(this));
+    player.on(DownloadEvents.DOWNLOAD, (_event, quality: string) => {
+      this.xapiStatement.downloaded(quality);
+    });
     const tracks = player.remoteTextTracks();
     tracks.addEventListener('change', () => {
       this.currentTrack = this.getCurrentTrack();

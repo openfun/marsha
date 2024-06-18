@@ -32,6 +32,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Correctly set startime with filtering medialive logs
 - Remove non existing fields in PortabilityRequestAdmin
 - Correctly send xapi statement to a configured LRS
+- Correctly send xapi video download statements
 
 ## [4.9.0] - 2023-12-04
 
