@@ -1,4 +1,6 @@
-import { screen } from '@testing-library/react';
+/* eslint-disable testing-library/no-node-access */
+/* eslint-disable testing-library/no-container */
+import { screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { useJwt } from 'lib-components';
 import { videoMockFactory } from 'lib-components/tests';
@@ -7,19 +9,41 @@ import React from 'react';
 
 import { VideoPlayer } from '@lib-video/components/common/VideoPlayer';
 
-import { DownloadVideoQualityItem } from './components/DownloadVideoQualityItem';
+import { createPlayer } from '../../createPlayer';
+import { createVideojsPlayer } from '../../createVideojsPlayer';
 
-const mockVideo = videoMockFactory({
-  id: '1234',
-});
+import { DownloadVideoQualityItem } from './components/DownloadVideoQualityItem';
+import { Events } from './types';
+
+jest.mock('../../createPlayer', () => ({
+  createPlayer: jest.fn(),
+}));
+
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  useAppConfig: () => ({
+    attendanceDelay: 10,
+    video: mockVideo,
+  }),
+  decodeJwt: () => ({}),
+  XAPIStatement: jest.fn(),
+}));
 
 jest.mock('utils/isMSESupported', () => ({
   isMSESupported: jest.fn().mockReturnValue(true),
 }));
 
+const mockCreatePlayer = createPlayer as jest.MockedFunction<
+  typeof createPlayer
+>;
+
 let mockedDownload = jest
   .spyOn(DownloadVideoQualityItem.prototype, 'downloadVideoQuality')
   .mockImplementation();
+
+const mockVideo = videoMockFactory({
+  id: '1234',
+});
 
 describe('Download Video Plugin', () => {
   beforeEach(() => {
@@ -48,9 +72,18 @@ describe('Download Video Plugin', () => {
       show_download: false,
     });
 
-    render(
+    const { container } = render(
       <VideoPlayer video={video} playerType="videojs" timedTextTracks={[]} />,
     );
+
+    await waitFor(() =>
+      // The player is created
+      expect(mockCreatePlayer).toHaveBeenCalled(),
+    );
+
+    const videoElement = container.querySelector('video');
+
+    createVideojsPlayer(videoElement!, jest.fn(), video, 'en');
 
     await screen.findByRole('button', {
       name: 'Fullscreen',
@@ -66,10 +99,25 @@ describe('Download Video Plugin', () => {
     const video = videoMockFactory({
       ...mockVideo,
     });
+    const dispatchPlayerTimeUpdate = jest.fn();
 
-    render(
+    const { container } = render(
       <VideoPlayer video={video} playerType="videojs" timedTextTracks={[]} />,
     );
+
+    await waitFor(() =>
+      // The player is created
+      expect(mockCreatePlayer).toHaveBeenCalled(),
+    );
+
+    const videoElement = container.querySelector('video');
+    const player = createVideojsPlayer(
+      videoElement!,
+      dispatchPlayerTimeUpdate,
+      video,
+      'en',
+    );
+    const handleTrigger = jest.fn();
 
     await screen.findByRole('button', {
       name: 'Fullscreen',
@@ -82,7 +130,9 @@ describe('Download Video Plugin', () => {
       name: '1080p',
     });
     expect(menuItemDownloadQuality).toBeInTheDocument();
+    player.on(Events.DOWNLOAD, handleTrigger);
     menuItemDownloadQuality.click();
     expect(mockedDownload).toHaveBeenCalledWith('https://example.com/mp4/1080');
+    expect(handleTrigger).toHaveBeenCalledTimes(1);
   });
 });

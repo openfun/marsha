@@ -93,6 +93,9 @@ export default defineConfig(({ mode }) => {
             target: process.env.VITE_BACKEND_WS_BASE_URL as string,
             ws: true,
           },
+          '/xapi': {
+            target: process.env.VITE_BACKEND_API_BASE_URL as string,
+          },
         },
       },
     };
