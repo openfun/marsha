@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [5.0.0] - 2024-06-24
+
 ### Added
 
 - Add scaleway storage configuration
@@ -1919,7 +1921,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v4.9.0...master
+[unreleased]: https://github.com/openfun/marsha/compare/v5.0.0...master
+[5.0.0]: https://github.com/openfun/marsha/compare/v4.9.0...v5.0.0
 [4.9.0]: https://github.com/openfun/marsha/compare/v4.8.1...v4.9.0
 [4.8.1]: https://github.com/openfun/marsha/compare/v4.8.0...v4.8.1
 [4.8.0]: https://github.com/openfun/marsha/compare/v4.7.0...v4.8.0
