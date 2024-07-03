@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Manage playlist constraint with DRF 3.15
+
 ## [5.0.0] - 2024-06-24
 
 ### Added

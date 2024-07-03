@@ -70,6 +70,7 @@ class Playlist(BaseModel):
         help_text=_("ID for synchronization with an external LTI tool"),
         null=True,
         blank=True,
+        default=None,
     )
     organization = models.ForeignKey(
         to="Organization",
