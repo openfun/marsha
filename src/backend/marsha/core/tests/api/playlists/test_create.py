@@ -201,3 +201,59 @@ class PlaylistCreateAPITest(TestCase):
         self.assertEqual(created_permission.user, user)
         self.assertEqual(created_permission.playlist, created_playlist)
         self.assertEqual(created_permission.role, ADMINISTRATOR)
+
+    def test_create_playlist_by_organization_administrator_without_lti_id(self):
+        """Organization administrators can create playlists without lti_id."""
+        user = factories.UserFactory()
+        org = factories.OrganizationFactory()
+        factories.OrganizationAccessFactory(
+            role=models.ADMINISTRATOR, organization=org, user=user
+        )
+
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        self.assertEqual(models.Playlist.objects.count(), 0)
+
+        response = self.client.post(
+            "/api/playlists/",
+            {
+                "consumer_site": "",
+                "organization": str(org.id),
+                "title": "Some playlist",
+            },
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(models.Playlist.objects.count(), 1)
+
+        self.assertEqual(response.status_code, 201)
+        created_playlist = models.Playlist.objects.first()
+        self.assertEqual(
+            response.json(),
+            {
+                "consumer_site": None,
+                "created_by": str(user.id),
+                "created_on": created_playlist.created_on.isoformat().replace(
+                    "+00:00", "Z"
+                ),
+                "duplicated_from": None,
+                "id": str(created_playlist.id),
+                "is_portable_to_playlist": False,
+                "is_portable_to_consumer_site": False,
+                "is_public": False,
+                "is_claimable": False,
+                "lti_id": None,
+                "organization": {
+                    "id": str(org.id),
+                    "name": org.name,
+                },
+                "portable_to": [],
+                "retention_duration": None,
+                "title": "Some playlist",
+                "users": [str(user.id)],
+            },
+        )
+
+        created_permission = models.PlaylistAccess.objects.first()
+        self.assertEqual(created_permission.user, user)
+        self.assertEqual(created_permission.playlist, created_playlist)
+        self.assertEqual(created_permission.role, ADMINISTRATOR)

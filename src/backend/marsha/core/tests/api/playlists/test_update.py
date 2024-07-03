@@ -49,7 +49,10 @@ class PlaylistUpdateAPITest(TestCase):
     def test_update_playlist_by_playlist_admin(self):
         """Playlist administrators can update playlists."""
         user = factories.UserFactory()
-        playlist = factories.PlaylistFactory(title="existing title")
+        org_1 = factories.OrganizationFactory()
+        playlist = factories.PlaylistFactory(
+            title="existing title", organization=org_1, lti_id=None, consumer_site=None
+        )
         factories.PlaylistAccessFactory(
             user=user, playlist=playlist, role=models.ADMINISTRATOR
         )
@@ -70,7 +73,13 @@ class PlaylistUpdateAPITest(TestCase):
     def test_update_playlist_by_playlist_instructor(self):
         """Playlist instructors can update playlists."""
         user = factories.UserFactory()
-        playlist = factories.PlaylistFactory(title="title for instructor")
+        org_1 = factories.OrganizationFactory()
+        playlist = factories.PlaylistFactory(
+            title="title for instructor",
+            organization=org_1,
+            lti_id=None,
+            consumer_site=None,
+        )
         factories.PlaylistAccessFactory(
             user=user, playlist=playlist, role=models.INSTRUCTOR
         )
@@ -96,7 +105,10 @@ class PlaylistUpdateAPITest(TestCase):
             user=user, organization=org_1, role=models.ADMINISTRATOR
         )
         playlist = factories.PlaylistFactory(
-            title="title for orga admin", organization=org_1
+            title="title for orga admin",
+            organization=org_1,
+            lti_id=None,
+            consumer_site=None,
         )
 
         jwt_token = UserAccessTokenFactory(user=user)
