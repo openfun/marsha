@@ -2,6 +2,8 @@
 
 import datetime
 from datetime import timedelta
+from hashlib import sha256
+from inspect import signature
 from urllib.parse import quote_plus
 
 from django.conf import settings
@@ -266,12 +268,27 @@ class VideoBaseSerializer(serializers.ModelSerializer):
                 urls["thumbnails"][resolution] = thumbnail_urls.get(
                     resolution, video_storage.url(f"{base}/thumbnail.jpg")
                 )
-                urls["previews"] = video_storage.url(f"{base}/thumbnail.jpg")
-                urls["manifests"] = {
-                    "hls": video_storage.url(f"{base}/master.m3u8"),
-                }
+
+            urls["manifests"] = {
+                "hls": self._get_hls_url(base, obj),
+            }
+            urls["previews"] = video_storage.url(f"{base}/thumbnail.jpg")
 
         return urls
+
+    def _get_hls_url(self, base_url, video):
+        """
+        Compute the HLS url for a video. if the url method of the video storage has parameters
+        we use it to have a different cache depending the resolutions available.
+        """
+        storage_url_signature = signature(video_storage.url)
+        if storage_url_signature.parameters.get("parameters"):
+            return video_storage.url(
+                f"{base_url}/master.m3u8",
+                parameters={"v": sha256(str(video.resolutions).encode()).hexdigest()},
+            )
+
+        return video_storage.url(f"{base_url}/master.m3u8")
 
 
 class VideoSerializer(VideoBaseSerializer):

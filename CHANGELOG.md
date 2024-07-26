@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Compute hls url based on video resolutions available
+
 ## [5.0.1] - 2024-07-04
 
 ### Fixed

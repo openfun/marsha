@@ -4,11 +4,12 @@ from datetime import datetime, timezone as baseTimezone
 from unittest import mock
 
 from django.test import TestCase, override_settings
+from django.utils.module_loading import import_string
 
 from marsha.core.defaults import AWS_PIPELINE, PEERTUBE_PIPELINE
 from marsha.core.factories import VideoFactory
 from marsha.core.serializers import VideoBaseSerializer
-from marsha.core.storage.storage_class import video_storage
+from marsha.core.storage import storage_class
 
 
 class VideoBaseSerializerTest(TestCase):
@@ -48,6 +49,7 @@ class VideoBaseSerializerTest(TestCase):
     )
     def test_video_serializer_urls_with_peertube_pipeline(self):
         """The VideoBaseSerializer should return the right URLs."""
+        # Reload the storage class to have the right storage class
         date = datetime(2022, 1, 1, tzinfo=baseTimezone.utc)
         video = VideoFactory(
             transcode_pipeline=PEERTUBE_PIPELINE,
@@ -56,25 +58,28 @@ class VideoBaseSerializerTest(TestCase):
             uploaded_on=date,
         )
 
-        serializer = VideoBaseSerializer(video)
+        storage = import_string("marsha.core.storage.s3.S3VideoStorage")()
+        with mock.patch("marsha.core.serializers.video.video_storage", new=storage):
+            serializer = VideoBaseSerializer(video)
 
-        self.assertEqual(
-            f"https://abc.cloudfront.net/vod/{video.pk}/video/1640995200/thumbnail.jpg",
-            serializer.data["urls"]["thumbnails"][1080],
-        )
-        self.assertEqual(
-            f"https://abc.cloudfront.net/vod/{video.pk}/video/1640995200/master.m3u8",
-            serializer.data["urls"]["manifests"]["hls"],
-        )
-        self.assertEqual(
-            f"https://abc.cloudfront.net/vod/{video.pk}/video/1640995200/thumbnail.jpg",
-            serializer.data["urls"]["previews"],
-        )
-        self.assertTrue(
-            f"https://abc.cloudfront.net/vod/{video.pk}/"
-            "video/1640995200/1640995200-1080-fragmented.mp4"
-            in serializer.data["urls"]["mp4"][1080]
-        )
+            self.assertEqual(
+                f"https://abc.cloudfront.net/vod/{video.pk}/video/1640995200/thumbnail.jpg",
+                serializer.data["urls"]["thumbnails"][1080],
+            )
+            self.assertEqual(
+                f"https://abc.cloudfront.net/vod/{video.pk}/video/1640995200/master.m3u8?"
+                "v=25301066da0654a2967176ea47c26f6735b2cfcbd206f49fe1379f5103bb7b1f",
+                serializer.data["urls"]["manifests"]["hls"],
+            )
+            self.assertEqual(
+                f"https://abc.cloudfront.net/vod/{video.pk}/video/1640995200/thumbnail.jpg",
+                serializer.data["urls"]["previews"],
+            )
+            self.assertTrue(
+                f"https://abc.cloudfront.net/vod/{video.pk}/"
+                "video/1640995200/1640995200-1080-fragmented.mp4"
+                in serializer.data["urls"]["mp4"][1080]
+            )
 
     def test_video_serializer_urls_with_no_pipeline(self):
         """The VideoBaseSerializer should default to AWS pipeline."""
@@ -129,7 +134,7 @@ class VideoBaseSerializerTest(TestCase):
         ) as sentry_capture_message, mock.patch(
             "marsha.core.serializers.video.video_storage"
         ) as mock_video_storage:
-            mock_video_storage.url = video_storage.url
+            mock_video_storage.url = storage_class.video_storage.url
             mock_video_storage.exists.return_value = True
 
             serializer = VideoBaseSerializer(video)
