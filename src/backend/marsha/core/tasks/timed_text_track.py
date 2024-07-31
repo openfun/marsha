@@ -62,7 +62,7 @@ def convert_timed_text_track(timed_text_track_pk, stamp):
         prefix_destination = timed_text_track.get_videos_storage_prefix(stamp)
 
         with video_storage.open(source, "rt") as timed_text_file:
-            timed_text = timed_text_file.read()
+            timed_text = timed_text_file.read().replace("\ufeff", "")
             reader = detect_format(timed_text)
             if not reader:
                 raise ReaderNotImplementedError(f"Reader {reader} not supported")
