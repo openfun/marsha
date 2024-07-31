@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Manage subtitles content starting with a BOM
+
 ## [5.0.2] - 2024-07-30
 
 ### Changed
