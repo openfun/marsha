@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [5.0.3] - 2024-08-01
+
 ### Fixed
 
 - Manage subtitles content starting with a BOM
@@ -1937,7 +1939,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v5.0.2...master
+[unreleased]: https://github.com/openfun/marsha/compare/v5.0.3...master
+[5.0.3]: https://github.com/openfun/marsha/compare/v5.0.2...v5.0.3
 [5.0.2]: https://github.com/openfun/marsha/compare/v5.0.1...v5.0.2
 [5.0.1]: https://github.com/openfun/marsha/compare/v5.0.0...v5.0.1
 [5.0.0]: https://github.com/openfun/marsha/compare/v4.9.0...v5.0.0
