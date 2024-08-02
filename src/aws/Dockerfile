@@ -1,4 +1,4 @@
-FROM alpine as mediainfo
+FROM alpine AS mediainfo
 
 ARG MEDIAINFO_VERSION=20.09
 
@@ -6,7 +6,7 @@ ARG MEDIAINFO_VERSION=20.09
 RUN wget https://mediaarea.net/download/binary/mediainfo/20.09/MediaInfo_CLI_${MEDIAINFO_VERSION}_Lambda.zip && \
     unzip MediaInfo_CLI_${MEDIAINFO_VERSION}_Lambda.zip -d /tmp/mediainfo
 
-FROM amazon/aws-lambda-nodejs:18 as core
+FROM amazon/aws-lambda-nodejs:18 AS core
 ARG POPPLER_VERSION
 ARG POPPLER_DATA_VERSION
 ARG OPENJPEG_VERSION
@@ -125,7 +125,7 @@ RUN npm install -g yarn
 VOLUME /mnt/transcoded_video
 
 # Image used in developement with development dependencies
-FROM core as development
+FROM core AS development
 
 RUN cd lambda-complete && yarn install && cd .. && \
     cd lambda-configure && yarn install && cd .. && \
@@ -139,7 +139,7 @@ RUN cd lambda-complete && yarn install && cd .. && \
 CMD [ "index.handler" ]
 
 # Image used in production without development dependencies
-FROM core as production
+FROM core AS production
 
 RUN cd lambda-complete && yarn install --frozen-lockfile --production=true && cd .. && \
     cd lambda-configure && yarn install --frozen-lockfile --production=true && cd .. && \

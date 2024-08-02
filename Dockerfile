@@ -1,10 +1,10 @@
 # Marsha, a FUN LTI video provider
 
 # ---- base image to inherit from ----
-FROM python:3.11-slim-bookworm as base
+FROM python:3.11-slim-bookworm AS base
 
 # ---- back-end builder image ----
-FROM base as back-builder
+FROM base AS back-builder
 
 # We want the most up-to-date stable pip release
 RUN pip install --upgrade pip
@@ -29,7 +29,7 @@ RUN mkdir /install && \
     pip install --prefix=/install .
 
 # ---- front-end builder image ----
-FROM node:20 as front-builder
+FROM node:20 AS front-builder
 
 WORKDIR /app
 
@@ -58,7 +58,7 @@ RUN yarn compile-translations && \
     yarn workspace marsha run build --mode=production --output-path /app/marsha/static/js/build/lti_site/
 
 # ---- mails ----
-FROM node:20 as mail-builder
+FROM node:20 AS mail-builder
 RUN mkdir -p /app/backend/marsha/core/templates/core/mail/html/ && \
     mkdir -p /app/backend/marsha/core/templates/core/mail/text/ && \
     mkdir -p /app/mail
@@ -71,7 +71,7 @@ RUN yarn install --frozen-lockfile && \
     yarn build-mails
 
 # ---- static link collector ----
-FROM base as link-collector
+FROM base AS link-collector
 ARG MARSHA_STATIC_ROOT=/data/static
 
 # Install rdfind & libxmlsec1 (required to run django)
