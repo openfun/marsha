@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Allow to change username if one is persisted on classroom join
+
 ## [5.0.3] - 2024-08-01
 
 ### Fixed

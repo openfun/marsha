@@ -1,3 +1,4 @@
+import { LOCAL_STORAGE_KEYS } from '@lib-components/settings';
 import { fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { render } from 'lib-tests';
@@ -12,6 +13,10 @@ const onJoin = jest.fn();
 const onCancel = jest.fn();
 
 describe('<DashboardClassroomAskUsername />', () => {
+  afterEach(() => {
+    localStorage.clear();
+  });
+
   it('displays the form with cancel button', async () => {
     const userFullname = 'Initial value';
     const mockSetUserFullname = jest.fn();
@@ -58,6 +63,26 @@ describe('<DashboardClassroomAskUsername />', () => {
     const cancelButton = screen.queryByText('Cancel');
     expect(cancelButton).toBeNull();
     expect(mockSetUserFullname).toHaveBeenCalledTimes(0);
+  });
+
+  it('populates fullname input value with local storage', () => {
+    const userFullname = '';
+    const mockSetUserFullname = jest.fn();
+    localStorage.setItem(LOCAL_STORAGE_KEYS.CLASSROOM_USERNAME, 'Joe');
+
+    render(
+      <DashboardClassroomAskUsername
+        userFullname={userFullname}
+        setUserFullname={mockSetUserFullname}
+        onJoin={onJoin}
+      />,
+    );
+
+    const userFullNameInput = screen.getByRole('textbox', {
+      name: 'Enter your name',
+    });
+
+    expect(userFullNameInput).toHaveValue('Joe');
   });
 
   describe('<DashboardClassroomAskUsernameStudent />', () => {

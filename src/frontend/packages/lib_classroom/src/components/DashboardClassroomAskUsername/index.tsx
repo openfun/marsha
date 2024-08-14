@@ -1,6 +1,12 @@
 import { colorsTokens } from '@lib-common/cunningham';
 import { Button, Checkbox, Input } from '@openfun/cunningham-react';
-import { Box, Classroom, ModalButton, Text } from 'lib-components';
+import {
+  Box,
+  Classroom,
+  LOCAL_STORAGE_KEYS,
+  ModalButton,
+  Text,
+} from 'lib-components';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -54,10 +60,20 @@ const DashboardClassroomAskUsernameWrapper = ({
   >
 >) => {
   const intl = useIntl();
+  const defaultUserName =
+    userFullname ||
+    localStorage.getItem(LOCAL_STORAGE_KEYS.CLASSROOM_USERNAME) ||
+    '';
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    localStorage.setItem(LOCAL_STORAGE_KEYS.CLASSROOM_USERNAME, userFullname);
+    onJoin();
+  };
 
   return (
     <Box pad="large" gap="medium" className="DashboardClassroomAskUsername">
-      <form onSubmit={onJoin}>
+      <form onSubmit={handleSubmit}>
         <Input
           aria-label={intl.formatMessage(messages.labelEnterYourName)}
           label={intl.formatMessage(messages.labelEnterYourName)}
@@ -65,7 +81,7 @@ const DashboardClassroomAskUsernameWrapper = ({
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             setUserFullname(event.currentTarget.value);
           }}
-          value={userFullname}
+          value={defaultUserName}
           text={intl.formatMessage(messages.infoInput)}
         />
         {children}
