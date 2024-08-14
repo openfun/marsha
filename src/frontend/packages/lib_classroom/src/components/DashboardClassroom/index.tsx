@@ -1,4 +1,3 @@
-import { LOCAL_STORAGE_KEYS } from '@lib-components/settings';
 import {
   AnonymousUser,
   Box,
@@ -74,9 +73,7 @@ const DashboardClassroom = ({ classroomId }: DashboardClassroomProps) => {
   const [askUsername, setAskUsername] = useState(false);
   const [classroomJoined, setClassroomJoined] = useState(false);
   const [userFullname, setUserFullname] = useState(
-    (user && user !== AnonymousUser.ANONYMOUS && user.full_name) ||
-      localStorage.getItem(LOCAL_STORAGE_KEYS.CLASSROOM_USERNAME) ||
-      '',
+    (user && user !== AnonymousUser.ANONYMOUS && user.full_name) || '',
   );
 
   const {
@@ -139,7 +136,6 @@ const DashboardClassroom = ({ classroomId }: DashboardClassroomProps) => {
     if (userFullname) {
       askUserNameAction(false);
       joinClassroomMutation.mutate({ fullname: userFullname });
-      localStorage.setItem(LOCAL_STORAGE_KEYS.CLASSROOM_USERNAME, userFullname);
     } else {
       askUserNameAction(true);
     }
