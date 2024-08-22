@@ -103,7 +103,7 @@ In the AWS pipeline, the client uploads a file on a source s3 bucket, then once 
 
 #### Transcode ended
 
-Once the transcode ended, the `django-peertube-runner-connector` will call the `TRANSCODING_VIDEO_IS_PUBLISHED_CALLBACK_PATH` function that will update the video object.
+Once the transcode ended, the `django-peertube-runner-connector` will call the `TRANSCODING_ENDED_CALLBACK_PATH` function that will update the video object.
 
 ## Dev environment
 
