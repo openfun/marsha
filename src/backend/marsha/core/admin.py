@@ -309,6 +309,26 @@ class VideoAdmin(BaseFileAdmin):
     verbose_name = _("Video")
 
 
+@admin.register(TimedTextTrack)
+class TimedTextTrackAdmin(admin.ModelAdmin):
+    """Admin class for the TimedTextTrack model."""
+
+    fields = (
+        "id",
+        "mode",
+        "extension",
+        "process_pipeline",
+        "video",
+        "language",
+        "uploaded_on",
+        "upload_state",
+        "created_on",
+        "updated_on",
+    )
+    readonly_fields = fields
+    list_display = ["language", "upload_state", "uploaded_on"]
+
+
 class VideosInline(BaseFileInline):
     """Inline for videos in a playlist."""
 
