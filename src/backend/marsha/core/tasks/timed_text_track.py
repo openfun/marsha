@@ -2,6 +2,8 @@
 
 import logging
 
+from django.core.files.base import ContentFile
+
 from pycaption import (
     DFXPReader,
     MicroDVDReader,
@@ -69,11 +71,11 @@ def convert_timed_text_track(timed_text_track_pk, stamp):
             extension = _get_extension_from_reader(reader)
 
             vtt_timed_text = WebVTTWriter().write(reader().read(timed_text))
+            vtt_bytes = vtt_timed_text.encode("utf-8")
 
-            with video_storage.open(
-                f"{prefix_destination}/{stamp}.vtt", "w"
-            ) as vtt_file:
-                vtt_file.write(vtt_timed_text)
+            video_storage.save(
+                f"{prefix_destination}/{stamp}.vtt", ContentFile(vtt_bytes)
+            )
 
             video_storage.save(
                 f"{prefix_destination}/source.{extension}", timed_text_file
