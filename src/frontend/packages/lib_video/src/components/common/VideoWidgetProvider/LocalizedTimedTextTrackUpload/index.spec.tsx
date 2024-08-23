@@ -300,4 +300,121 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
       }),
     ).toHaveLength(3);
   });
+
+  it('renders a generate transcription button in transcript mode if none exists', async () => {
+    const mockedVideo = videoMockFactory({
+      id: '1234',
+    });
+    fetchMock.mock(`/api/videos/1234/initiate-transcript/`, {
+      method: 'POST',
+    });
+    fetchMock.mock(
+      `/api/videos/1234/timedtexttracks/`,
+      {
+        actions: { POST: { language: { choices: languageChoices } } },
+      },
+      { method: 'OPTIONS' },
+    );
+
+    mockUseUploadManager.mockReturnValue({
+      addUpload: jest.fn(),
+      resetUpload: jest.fn(),
+      uploadManagerState: {},
+    });
+
+    render(
+      wrapInVideo(
+        <LocalizedTimedTextTrackUpload
+          timedTextModeWidget={timedTextMode.TRANSCRIPT}
+        />,
+        mockedVideo,
+      ),
+      { intlOptions: { locale: 'fr-FR' } },
+    );
+
+    const generateTranscriptButton = await screen.findByRole('button', {
+      name: 'Generate transcript',
+    });
+    await userEvent.click(generateTranscriptButton);
+
+    expect(fetchMock.calls()).toHaveLength(2);
+    expect(fetchMock.lastCall()![0]).toEqual(
+      `/api/videos/1234/initiate-transcript/`,
+    );
+  });
+
+  it('does not render a generate transcription button in transcript mode if one exists', () => {
+    const mockedVideo = videoMockFactory({
+      id: '1234',
+    });
+    fetchMock.mock(
+      `/api/videos/1234/timedtexttracks/`,
+      {
+        actions: { POST: { language: { choices: languageChoices } } },
+      },
+      { method: 'OPTIONS' },
+    );
+
+    mockUseUploadManager.mockReturnValue({
+      addUpload: jest.fn(),
+      resetUpload: jest.fn(),
+      uploadManagerState: {},
+    });
+
+    const mockedTimedTextTrackCompleted = timedTextMockFactory({
+      language: 'es-ES',
+      mode: timedTextMode.TRANSCRIPT,
+    });
+    useTimedTextTrack.getState().addResource(mockedTimedTextTrackCompleted);
+
+    render(
+      wrapInVideo(
+        <DeleteTimedTextTrackUploadModalProvider value={null}>
+          <LocalizedTimedTextTrackUpload
+            timedTextModeWidget={timedTextMode.SUBTITLE}
+          />
+          ,
+        </DeleteTimedTextTrackUploadModalProvider>,
+        mockedVideo,
+      ),
+      { intlOptions: { locale: 'fr-FR' } },
+    );
+
+    expect(
+      screen.queryByRole('button', { name: 'Generate transcript' }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('does not render a generate transcription button in subtitle mode if none exists', () => {
+    const mockedVideo = videoMockFactory({
+      id: '1234',
+    });
+    fetchMock.mock(
+      `/api/videos/1234/timedtexttracks/`,
+      {
+        actions: { POST: { language: { choices: languageChoices } } },
+      },
+      { method: 'OPTIONS' },
+    );
+
+    mockUseUploadManager.mockReturnValue({
+      addUpload: jest.fn(),
+      resetUpload: jest.fn(),
+      uploadManagerState: {},
+    });
+
+    render(
+      wrapInVideo(
+        <LocalizedTimedTextTrackUpload
+          timedTextModeWidget={timedTextMode.SUBTITLE}
+        />,
+        mockedVideo,
+      ),
+      { intlOptions: { locale: 'fr-FR' } },
+    );
+
+    expect(
+      screen.queryByRole('button', { name: 'Generate transcript' }),
+    ).not.toBeInTheDocument();
+  });
 });

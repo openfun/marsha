@@ -4,6 +4,7 @@ import {
   Box,
   ItemList,
   TimedTextTrackState,
+  actionOne,
   formatSizeErrorScale,
   modelName,
   report,
@@ -51,6 +52,12 @@ const messages = defineMessages({
     defaultMessage: 'An error occurred when uploading your file. Please retry.',
     description: 'Error message when file upload fails.',
     id: 'apps.deposit.components.DashboardStudent.UploadFiles.errorFileUpload',
+  },
+  generateButtonLabel: {
+    defaultMessage: 'Generate transcript',
+    description:
+      'Label of the button used to trigger the generation of the transcript.',
+    id: 'components.UploadWidgetGeneric.generateButtonLabel',
   },
 });
 
@@ -230,6 +237,24 @@ export const LocalizedTimedTextTrackUpload = ({
       >
         {intl.formatMessage(messages.uploadButtonLabel)}
       </Button>
+      {timedTextModeWidget === timedTextMode.TRANSCRIPT &&
+        filteredTimedTextTracks.length === 0 && (
+          <Button
+            aria-label={intl.formatMessage(messages.generateButtonLabel)}
+            onClick={() => {
+              actionOne({
+                name: 'videos',
+                id: video.id,
+                action: 'initiate-transcript',
+                method: 'POST',
+              });
+            }}
+            fullWidth
+            title={intl.formatMessage(messages.generateButtonLabel)}
+          >
+            {intl.formatMessage(messages.generateButtonLabel)}
+          </Button>
+        )}
     </Box>
   );
 };

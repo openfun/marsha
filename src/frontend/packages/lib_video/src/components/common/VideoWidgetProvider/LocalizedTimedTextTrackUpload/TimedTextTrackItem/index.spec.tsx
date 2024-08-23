@@ -6,6 +6,7 @@ import {
   UploadManagerStatus,
   UploadingObject,
   modelName,
+  timedTextMode,
   uploadState,
   useJwt,
 } from 'lib-components';
@@ -150,6 +151,56 @@ describe('<TimedTextTrackItem />', () => {
     screen.getByRole('button', {
       name: 'Click on this button to delete the timed text track.',
     });
+    screen.getByText('Processing');
+    expect(
+      screen.queryByRole('button', {
+        name: 'Click on this button to retry uploading your failed upload.',
+      }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders the component for a processing transcript', async () => {
+    const mockedTimedTextTrack = timedTextMockFactory({
+      language: 'fr-FR',
+      upload_state: uploadState.PROCESSING,
+      mode: timedTextMode.TRANSCRIPT,
+    });
+
+    const mockedUploadingObject: UploadingObject = {
+      file: new File([], 'subtitle.srt'),
+      objectType: modelName.TIMEDTEXTTRACKS,
+      objectId: mockedTimedTextTrack.id,
+      progress: 100,
+      status: UploadManagerStatus.SUCCESS,
+    };
+
+    render(
+      <UploadManagerContext.Provider
+        value={{
+          setUploadState: () => {},
+          uploadManagerState: {
+            [mockedTimedTextTrack.id]: mockedUploadingObject,
+          },
+        }}
+      >
+        <DeleteTimedTextTrackUploadModalProvider value={null}>
+          <TimedTextTrackItem
+            onRetryFailedUpload={mockedOnRetryFailedUpload}
+            timedTextTrack={mockedTimedTextTrack}
+            uploadingObject={mockedUploadingObject}
+            choices={languageChoices}
+          />
+        </DeleteTimedTextTrackUploadModalProvider>
+      </UploadManagerContext.Provider>,
+    );
+
+    // await screen.findByText('French');
+    expect(screen.queryByText('French')).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', {
+        name: 'Click on this button to delete the timed text track.',
+      }),
+    ).not.toBeInTheDocument();
     screen.getByText('Processing');
     expect(
       screen.queryByRole('button', {
