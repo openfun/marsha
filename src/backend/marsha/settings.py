@@ -766,6 +766,11 @@ class Base(Configuration):
         "marsha.core.utils.transcode.transcoding_ended_callback"
     )
 
+    # The callback path to a function that will be called when a transcription ends
+    TRANSCRIPTION_ENDED_CALLBACK_PATH = (
+        "marsha.core.utils.transcript.transcription_ended_callback"
+    )
+
     # Leaving it to None will fallback on the domain from the current request
     TRANSCODING_CALLBACK_DOMAIN = values.Value()
 
