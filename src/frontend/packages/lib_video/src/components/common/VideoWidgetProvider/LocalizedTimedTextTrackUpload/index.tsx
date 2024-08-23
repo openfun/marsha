@@ -1,9 +1,12 @@
 import { Button } from '@openfun/cunningham-react';
-import { Maybe, Nullable } from 'lib-common';
+import { Magic } from 'grommet-icons';
+import { Maybe, Nullable, colorsTokens } from 'lib-common';
 import {
   Box,
   ItemList,
+  Text,
   TimedTextTrackState,
+  actionOne,
   formatSizeErrorScale,
   modelName,
   report,
@@ -51,6 +54,18 @@ const messages = defineMessages({
     defaultMessage: 'An error occurred when uploading your file. Please retry.',
     description: 'Error message when file upload fails.',
     id: 'apps.deposit.components.DashboardStudent.UploadFiles.errorFileUpload',
+  },
+  generateButtonLabel: {
+    defaultMessage: 'Generate transcript',
+    description:
+      'Label of the button used to trigger the generation of the transcript.',
+    id: 'components.UploadWidgetGeneric.generateButtonLabel',
+  },
+  transcriptMessage: {
+    defaultMessage:
+      "By clicking this button, a transcript will be automatically generated. The transcript's language will be the one detected in the video.",
+    description: 'Message displayed for explaining the transcript generation.',
+    id: 'components.UploadWidgetGeneric.transcriptMessage',
   },
 });
 
@@ -230,6 +245,43 @@ export const LocalizedTimedTextTrackUpload = ({
       >
         {intl.formatMessage(messages.uploadButtonLabel)}
       </Button>
+
+      {video.upload_state === uploadState.READY &&
+        timedTextModeWidget === timedTextMode.TRANSCRIPT &&
+        filteredTimedTextTracks.length === 0 && (
+          <Box
+            align="center"
+            style={{
+              borderTop: `1px solid ${colorsTokens['info-500']}`,
+            }}
+            gap="small"
+            pad={{ top: 'small' }}
+          >
+            <Box align="center" width="100%">
+              <Text textAlign="center" size="medium">
+                {intl.formatMessage(messages.transcriptMessage)}
+              </Text>
+            </Box>
+
+            <Button
+              aria-label={intl.formatMessage(messages.generateButtonLabel)}
+              onClick={() => {
+                actionOne({
+                  name: 'videos',
+                  id: video.id,
+                  action: 'initiate-transcript',
+                  method: 'POST',
+                });
+              }}
+              fullWidth
+              title={intl.formatMessage(messages.generateButtonLabel)}
+              icon={<Magic color="white" size="20px" />}
+              iconPosition="right"
+            >
+              {intl.formatMessage(messages.generateButtonLabel)}
+            </Button>
+          </Box>
+        )}
     </Box>
   );
 };

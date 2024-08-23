@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Add peertube transcript generation
+
 ### Fixed
 
 - Allow to change username if one is persisted on classroom join
