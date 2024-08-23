@@ -2,12 +2,13 @@
 
 # pylint: disable=too-many-lines
 from copy import deepcopy
+import logging
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
-from django.db import OperationalError, transaction
+from django.db import IntegrityError, OperationalError, transaction
 from django.db.models import F, Func, Q, Value
 from django.http import Http404
 from django.shortcuts import get_object_or_404
@@ -31,6 +32,7 @@ from marsha.core.models import (
     LivePairing,
     LiveSession,
     SharedLiveMedia,
+    TimedTextTrack,
     Video,
 )
 from marsha.core.services.video_participants import (
@@ -45,7 +47,7 @@ from marsha.core.services.video_recording import (
     start_recording,
     stop_recording,
 )
-from marsha.core.tasks.video import launch_video_transcoding
+from marsha.core.tasks.video import launch_video_transcoding, launch_video_transcript
 from marsha.core.utils import jitsi_utils
 from marsha.core.utils.api_utils import validate_signature
 from marsha.core.utils.medialive_utils import (
@@ -69,6 +71,9 @@ from marsha.websocket.utils import channel_layers_utils
 
 
 # pylint: disable=too-many-public-methods
+
+
+logger = logging.getLogger(__name__)
 
 
 class VideoFilter(django_filters.FilterSet):
@@ -200,6 +205,7 @@ class VideoViewSet(
             "stats",
             "jitsi_info",
             "upload_ended",
+            "initiate_transcript",
         ]:
             permission_classes = [
                 # With LTI: playlist admin or instructor admin can access
@@ -1196,3 +1202,46 @@ class VideoViewSet(
         )
 
         return Response(jitsi_info)
+
+    @action(methods=["post"], detail=True, url_path="initiate-transcript")
+    # pylint: disable=unused-argument
+    def initiate_transcript(self, request, pk=None):
+        """Initiate the transcript process for the video."""
+        video = self.get_object()
+
+        if video.live_state is not None:
+            return Response(
+                {"detail": "Cannot initiate transcript on a live video"},
+                status=HTTPStatus.BAD_REQUEST,
+            )
+
+        try:
+            timed_text_track = TimedTextTrack.objects.create(
+                video=video,
+                language=settings.LANGUAGES[0][0],
+                mode=TimedTextTrack.TRANSCRIPT,
+                upload_state=defaults.PROCESSING,
+            )
+        except IntegrityError:
+            return Response(
+                {"detail": "Transcript already exists for this video"},
+                status=HTTPStatus.BAD_REQUEST,
+            )
+
+        stamp = video.get_source_s3_key().split("/")[-1]
+
+        # Launch the PeerTube transcription process
+        if settings.TRANSCODING_CALLBACK_DOMAIN:
+            domain = settings.TRANSCODING_CALLBACK_DOMAIN
+        else:
+            domain = f"{request.scheme}://{request.get_host()}"
+
+        launch_video_transcript.delay(video_pk=video.id, stamp=stamp, domain=domain)
+
+        video.timedtexttracks.add(timed_text_track)
+
+        serializer = self.get_serializer(video)
+
+        channel_layers_utils.dispatch_timed_text_track(timed_text_track)
+        channel_layers_utils.dispatch_video(video)
+        return Response(serializer.data)
