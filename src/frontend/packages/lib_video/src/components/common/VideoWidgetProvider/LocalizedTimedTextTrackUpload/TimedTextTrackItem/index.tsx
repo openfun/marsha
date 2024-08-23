@@ -7,6 +7,7 @@ import {
   Text,
   TimedText,
   UploadingObject,
+  timedTextMode,
   uploadState,
 } from 'lib-components';
 import React from 'react';
@@ -68,19 +69,26 @@ export const TimedTextTrackItem = ({
       justify="left"
       pad={{ horizontal: 'small', vertical: 'small' }}
     >
-      <Box align="center">
-        <DeleteTimedTextTrackItemUploadButton timedTextTrack={timedTextTrack} />
-      </Box>
+      {(timedTextTrack.upload_state !== uploadState.PROCESSING ||
+        timedTextTrack.mode !== timedTextMode.TRANSCRIPT) && (
+        <React.Fragment>
+          <Box align="center">
+            <DeleteTimedTextTrackItemUploadButton
+              timedTextTrack={timedTextTrack}
+            />
+          </Box>
 
-      <Box width={{ min: '0px' }}>
-        <Button
-          color="tertiary"
-          href={timedTextTrack.source_url ?? undefined}
-          download
-        >
-          {languageLabel}
-        </Button>
-      </Box>
+          <Box width={{ min: '0px' }}>
+            <Button
+              color="tertiary"
+              href={timedTextTrack.source_url ?? undefined}
+              download
+            >
+              {languageLabel}
+            </Button>
+          </Box>
+        </React.Fragment>
+      )}
 
       {timedTextTrack.upload_state !== uploadState.READY && (
         <Box align="center" direction="row" justify="end" flex="grow">
