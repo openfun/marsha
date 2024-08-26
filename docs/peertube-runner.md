@@ -138,3 +138,88 @@ The possible values for `STORAGE_BACKEND` are:
 - `marsha.core.storage.s3` (S3 process)
 - `marsha.core.storage.filesystem` (local filesystem process)
 - `marsha.core.storage.dummy` (testing purpose process)
+
+## Development configuration
+
+To run Marsha using local django-peertube-runner-connector, you need to modify Dockerfile and docker-compose.yml files.
+
+### Dockerfile
+
+Local django-peertube-runner-connector source code should be copied in the docker container.
+
+Copy the django-peertube-runner-connector source code to the Marsha project directory, and remove the .git folder.
+
+```bash
+cp -r /path/to/django-peertube-runner-connector /path/to/marsha/src/
+rm -rf /path/to/marsha/src/django-peertube-runner-connector/.git
+```
+
+Add the following line to the Dockerfile to copy the source code to the docker container in the back-end builder image.
+
+```Diff
+ # ---- back-end builder image ----
+ FROM base AS back-builder
+ […]
+
+RUN mkdir /install && \
+    pip install --prefix=/install .
+ 
++COPY src/django-peertube-runner-connector/src/django_peertube_runner_connector /install/lib/python3.11/site-packages/django_peertube_runner_connector/
+```
+
+As the .git folder is removed, you should not use it to develop the django-peertube-runner-connector library.
+Another path will be used.
+
+### docker-compose.yml
+
+#### Mount the development source code
+
+Add cloned django-peertube-runner-connector source code to the volumes in the docker-compose.yml file
+in the app and celery services.
+
+```Diff
+ app:
+   volumes:
++    - /path/to/django-peertube-runner-connector/src/django_peertube_runner_connector:/usr/local/lib/python3.11/site-packages/django_peertube_runner_connector/
+
+ app:
+   celery:
++    - /path/to/django-peertube-runner-connector/src/django_peertube_runner_connector:/usr/local/lib/python3.11/site-packages/django_peertube_runner_connector/
+```
+
+#### Use a custom peertube-runner image
+
+To use a custom peertube-runner image, you need to build the peertube-runner image with a custom Dockerfile.
+
+```Diff
+ peertube-runner:
+-  image: fundocker/peertube-runner:latest
++  build:
++    context: .
++    dockerfile: ./docker/images/peertube/Dockerfile
++    args:
++      DOCKER_USER: ${DOCKER_USER:-1000}
+```
+
+Create a Dockerfile in the docker/images/peertube directory with the following content.
+
+```Dockerfile
+FROM fundocker/peertube-runner:0.0.17
+
+USER root:root
+
+# install pip
+RUN apt-get update
+RUN apt install python3-pip -y
+RUN pip3 install whisper-ctranslate2 --break-system-packages
+
+# Un-privileged user running the application
+ARG DOCKER_USER
+USER ${DOCKER_USER}
+
+# run whisper-ctranslate2 just to install the models
+RUN whisper-ctranslate2 unknown
+
+ENTRYPOINT [ "entrypoint" ]
+CMD [ "peertube-runner", "server" ]
+```
