@@ -385,7 +385,7 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('does not render a generate transcription button in subtitle mode if none exists', () => {
+  it('does not render a generate transcription button in subtitle mode', () => {
     const mockedVideo = videoMockFactory({
       id: '1234',
     });
@@ -407,6 +407,39 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
       wrapInVideo(
         <LocalizedTimedTextTrackUpload
           timedTextModeWidget={timedTextMode.SUBTITLE}
+        />,
+        mockedVideo,
+      ),
+      { intlOptions: { locale: 'fr-FR' } },
+    );
+
+    expect(
+      screen.queryByRole('button', { name: 'Generate transcript' }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('does not render a generate transcription button in closed captions mode', () => {
+    const mockedVideo = videoMockFactory({
+      id: '1234',
+    });
+    fetchMock.mock(
+      `/api/videos/1234/timedtexttracks/`,
+      {
+        actions: { POST: { language: { choices: languageChoices } } },
+      },
+      { method: 'OPTIONS' },
+    );
+
+    mockUseUploadManager.mockReturnValue({
+      addUpload: jest.fn(),
+      resetUpload: jest.fn(),
+      uploadManagerState: {},
+    });
+
+    render(
+      wrapInVideo(
+        <LocalizedTimedTextTrackUpload
+          timedTextModeWidget={timedTextMode.CLOSED_CAPTIONING}
         />,
         mockedVideo,
       ),
