@@ -194,7 +194,6 @@ describe('<TimedTextTrackItem />', () => {
       </UploadManagerContext.Provider>,
     );
 
-    // await screen.findByText('French');
     expect(screen.queryByText('French')).not.toBeInTheDocument();
     expect(
       screen.queryByRole('button', {
