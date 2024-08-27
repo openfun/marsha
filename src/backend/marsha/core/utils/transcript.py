@@ -56,3 +56,4 @@ def transcription_ended_callback(
         )
 
     channel_layers_utils.dispatch_timed_text_track(timed_text_track)
+    channel_layers_utils.dispatch_video(video)

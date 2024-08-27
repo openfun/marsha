@@ -42,7 +42,9 @@ class TranscriptTestCase(TestCase):
 
         with mock.patch.object(
             channel_layers_utils, "dispatch_timed_text_track"
-        ) as mock_dispatch_timed_text_track:
+        ) as mock_dispatch_timed_text_track, mock.patch.object(
+            channel_layers_utils, "dispatch_video"
+        ) as mock_dispatch_video:
             transcription_ended_callback(transcripted_video, language, vtt_path)
 
         timed_text_track = video.timedtexttracks.get()
@@ -62,3 +64,4 @@ class TranscriptTestCase(TestCase):
         )
 
         mock_dispatch_timed_text_track.assert_called_once_with(timed_text_track)
+        mock_dispatch_video.assert_called_once_with(video)
