@@ -8,7 +8,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
-from django.db import OperationalError, transaction
+from django.db import IntegrityError, OperationalError, transaction
 from django.db.models import F, Func, Q, Value
 from django.http import Http404
 from django.shortcuts import get_object_or_404
@@ -1214,6 +1214,18 @@ class VideoViewSet(
                 {"detail": "Cannot initiate transcript on a live video"}, status=400
             )
 
+        try:
+            timed_text_track = TimedTextTrack.objects.create(
+                video=video,
+                language=settings.LANGUAGES[0][0],
+                mode=TimedTextTrack.TRANSCRIPT,
+                upload_state=defaults.PROCESSING,
+            )
+        except IntegrityError:
+            return Response(
+                {"detail": "Transcript already exists for this video"}, status=400
+            )
+
         stamp = video.get_source_s3_key().split("/")[-1]
 
         # Launch the PeerTube transcription process
@@ -1224,15 +1236,10 @@ class VideoViewSet(
 
         launch_video_transcript.delay(video_pk=video.id, stamp=stamp, domain=domain)
 
-        timed_text_track = TimedTextTrack.objects.create(
-            video=video,
-            language=settings.LANGUAGES[0][0],
-            mode=TimedTextTrack.TRANSCRIPT,
-            upload_state=defaults.PROCESSING,
-        )
         video.timedtexttracks.add(timed_text_track)
 
         serializer = self.get_serializer(video)
 
         channel_layers_utils.dispatch_timed_text_track(timed_text_track)
+        channel_layers_utils.dispatch_video(video)
         return Response(serializer.data)
