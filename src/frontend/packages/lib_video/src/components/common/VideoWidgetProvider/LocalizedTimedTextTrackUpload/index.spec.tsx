@@ -337,6 +337,10 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
     });
     await userEvent.click(generateTranscriptButton);
 
+    screen.getByText(
+      "By clicking this button, a transcript will be automatically generated. The transcript's language will be the one detected in the video.",
+    );
+
     expect(fetchMock.calls()).toHaveLength(2);
     expect(fetchMock.lastCall()![0]).toEqual(
       `/api/videos/1234/initiate-transcript/`,

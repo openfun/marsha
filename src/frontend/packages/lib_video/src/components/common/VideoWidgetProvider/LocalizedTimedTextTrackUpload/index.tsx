@@ -1,8 +1,10 @@
 import { Button } from '@openfun/cunningham-react';
-import { Maybe, Nullable } from 'lib-common';
+import { Magic } from 'grommet-icons';
+import { Maybe, Nullable, colorsTokens } from 'lib-common';
 import {
   Box,
   ItemList,
+  Text,
   TimedTextTrackState,
   actionOne,
   formatSizeErrorScale,
@@ -58,6 +60,12 @@ const messages = defineMessages({
     description:
       'Label of the button used to trigger the generation of the transcript.',
     id: 'components.UploadWidgetGeneric.generateButtonLabel',
+  },
+  transcriptMessage: {
+    defaultMessage:
+      "By clicking this button, a transcript will be automatically generated. The transcript's language will be the one detected in the video.",
+    description: 'Message displayed for explaining the transcript generation.',
+    id: 'components.UploadWidgetGeneric.transcriptMessage',
   },
 });
 
@@ -237,23 +245,42 @@ export const LocalizedTimedTextTrackUpload = ({
       >
         {intl.formatMessage(messages.uploadButtonLabel)}
       </Button>
-      {timedTextModeWidget === timedTextMode.TRANSCRIPT &&
+
+      {video.upload_state === uploadState.READY &&
+        timedTextModeWidget === timedTextMode.TRANSCRIPT &&
         filteredTimedTextTracks.length === 0 && (
-          <Button
-            aria-label={intl.formatMessage(messages.generateButtonLabel)}
-            onClick={() => {
-              actionOne({
-                name: 'videos',
-                id: video.id,
-                action: 'initiate-transcript',
-                method: 'POST',
-              });
+          <Box
+            align="center"
+            style={{
+              borderTop: `1px solid ${colorsTokens['info-500']}`,
             }}
-            fullWidth
-            title={intl.formatMessage(messages.generateButtonLabel)}
+            gap="small"
+            pad={{ top: 'small' }}
           >
-            {intl.formatMessage(messages.generateButtonLabel)}
-          </Button>
+            <Box align="center" width="100%">
+              <Text textAlign="center" size="medium">
+                {intl.formatMessage(messages.transcriptMessage)}
+              </Text>
+            </Box>
+
+            <Button
+              aria-label={intl.formatMessage(messages.generateButtonLabel)}
+              onClick={() => {
+                actionOne({
+                  name: 'videos',
+                  id: video.id,
+                  action: 'initiate-transcript',
+                  method: 'POST',
+                });
+              }}
+              fullWidth
+              title={intl.formatMessage(messages.generateButtonLabel)}
+              icon={<Magic color="white" size="20px" />}
+              iconPosition="right"
+            >
+              {intl.formatMessage(messages.generateButtonLabel)}
+            </Button>
+          </Box>
         )}
     </Box>
   );
