@@ -685,7 +685,7 @@
   },
   "component.TimedTrackModalWrapper.updateTimedTextTrackSucces": {
     "description": "Message displayed when a timed text track is successfully updated.",
-    "message": "La mise à jour de la piste de texte a échoué."
+    "message": "Piste de texte mise à jour."
   },
   "component.TitleDisplayer.noFilenameUploadFailed": {
     "description": "A message displayed when upload has failed, and so the file hasn't any filename.",
