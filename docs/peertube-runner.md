@@ -145,7 +145,7 @@ To run Marsha using local django-peertube-runner-connector, you need to modify D
 
 ### Dockerfile
 
-Local django-peertube-runner-connector source code should be mounted in the docker container.
+Local django-peertube-runner-connector source code should be copied in the docker container.
 
 Copy the django-peertube-runner-connector source code to the Marsha project directory, and remove the .git folder.
 
