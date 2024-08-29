@@ -160,6 +160,9 @@ Add the following line to the Dockerfile to copy the source code to the docker c
  # ---- back-end builder image ----
  FROM base AS back-builder
  […]
+
+RUN mkdir /install && \
+    pip install --prefix=/install .
  
 +COPY src/django-peertube-runner-connector/src/django_peertube_runner_connector /install/lib/python3.11/site-packages/django_peertube_runner_connector/
 ```
