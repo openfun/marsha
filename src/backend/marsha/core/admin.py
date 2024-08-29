@@ -337,6 +337,7 @@ class TimedTextTrackAdmin(admin.ModelAdmin):
         "created_on",
         "updated_on",
     )
+    list_display = ["language", "upload_state", "uploaded_on"]
 
 
 class VideosInline(BaseFileInline):
