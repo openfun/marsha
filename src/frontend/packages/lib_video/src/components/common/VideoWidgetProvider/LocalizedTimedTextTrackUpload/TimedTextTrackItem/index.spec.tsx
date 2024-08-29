@@ -200,7 +200,7 @@ describe('<TimedTextTrackItem />', () => {
         name: 'Click on this button to delete the timed text track.',
       }),
     ).not.toBeInTheDocument();
-    screen.getByText('Processing');
+    await screen.findByText('Processing');
     expect(
       screen.queryByRole('button', {
         name: 'Click on this button to retry uploading your failed upload.',
