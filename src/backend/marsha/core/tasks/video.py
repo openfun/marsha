@@ -42,18 +42,24 @@ def launch_video_transcoding(video_pk: str, stamp: str, domain: str):
 
 
 @app.task
-def launch_video_transcript(video_pk: str, stamp: str, domain: str):
+def launch_video_transcript(
+    video_pk: str, stamp: str, domain: str, video_url: str = None
+):
     """Transcripts a video using video_storage.
     Args:
         video_pk (UUID): The video to transcript.
         stamp (str): The stamp at which the thumbnail was uploaded
         which will be used to find the key.
         domain (str): The domain name used to construct the download URL for peerTube runners.
+        video_url (str): The video URL to transcript.
     """
     video = Video.objects.get(pk=video_pk)
     try:
         prefix_destination = video.get_videos_storage_prefix(stamp)
-        transcript_video(destination=prefix_destination, domain=domain)
+        transcript_args = {"destination": prefix_destination, "domain": domain}
+        if video_url:
+            transcript_args["video_url"] = video_url
+        transcript_video(**transcript_args)
     except Exception as exception:  # pylint: disable=broad-except+
         capture_exception(exception)
         logger.exception(exception)

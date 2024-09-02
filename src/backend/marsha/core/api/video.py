@@ -2,6 +2,7 @@
 
 # pylint: disable=too-many-lines
 from copy import deepcopy
+from http import HTTPStatus
 import logging
 
 from django.conf import settings
@@ -10,13 +11,16 @@ from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, OperationalError, transaction
 from django.db.models import F, Func, Q, Value
-from django.http import Http404
+from django.http import Http404, StreamingHttpResponse
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.module_loading import import_string
 
 from boto3.exceptions import Boto3Error
 import django_filters
+from django_peertube_runner_connector.models import RunnerJob
+import requests
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import APIException, MethodNotAllowed
@@ -217,6 +221,9 @@ class VideoViewSet(
             ]
         elif self.action in ["update_live_state"]:
             # This endpoint is only used by the AWS lambda function
+            permission_classes = []
+        elif self.action in ["transcript_source"]:
+            # Allow anyone to access the transcript source
             permission_classes = []
         elif self.action is None:
             if self.request.method not in self.allowed_methods:
@@ -1236,12 +1243,62 @@ class VideoViewSet(
         else:
             domain = f"{request.scheme}://{request.get_host()}"
 
-        launch_video_transcript.delay(video_pk=video.id, stamp=stamp, domain=domain)
+        serializer = self.get_serializer(video)
+
+        transcript_args = {"video_pk": video.id, "stamp": stamp, "domain": domain}
+        if video.transcode_pipeline != defaults.PEERTUBE_PIPELINE:
+            video_url = reverse("videos-transcript-source", kwargs={"pk": video.id})
+            video_url = request.build_absolute_uri(video_url)
+            transcript_args["video_url"] = video_url
+
+        launch_video_transcript.delay(**transcript_args)
 
         video.timedtexttracks.add(timed_text_track)
-
-        serializer = self.get_serializer(video)
 
         channel_layers_utils.dispatch_timed_text_track(timed_text_track)
         channel_layers_utils.dispatch_video(video)
         return Response(serializer.data)
+
+    @action(methods=["post"], detail=True, url_path="transcript-source")
+    # pylint: disable=unused-argument
+    def transcript_source(self, request, pk=None):
+        """Get the lowest quality video source for the transcript."""
+        # Check if the request comes from a runner job
+        if not RunnerJob.objects.filter(
+            runner__runnerToken=request.data.get("runnerToken"),
+            processingJobToken=request.data.get("jobToken"),
+        ).exists():
+            return Response(
+                {"detail": "RunnerJob not found."}, status=HTTPStatus.FORBIDDEN
+            )
+
+        # Get the lowest quality video source
+        video = self.get_object()
+        serializer = self.get_serializer(video)
+        video_urls = serializer.data.get("urls").get("mp4")
+        if not video_urls:
+            return Response(
+                {"detail": "No video source available for this video."},
+                status=HTTPStatus.NOT_FOUND,
+            )
+        video_url = video_urls.get(min(video_urls.keys()))
+
+        # stream the video source
+        try:
+            response = requests.get(
+                video_url,
+                stream=True,
+                timeout=settings.TRANSCRIPTION_VIDEO_SOURCE_TIMEOUT,
+            )
+            response.raise_for_status()
+        except (requests.HTTPError, requests.RequestException) as err:
+            return Response(
+                {"detail": f"Error occurred: {err}"}, status=HTTPStatus.BAD_REQUEST
+            )
+
+        return StreamingHttpResponse(
+            response.iter_content(
+                chunk_size=settings.TRANSCRIPTION_VIDEO_SOURCE_CHUNK_SIZE
+            ),
+            content_type=response.headers["Content-Type"],
+        )
