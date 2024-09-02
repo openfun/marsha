@@ -1234,11 +1234,16 @@ class VideoViewSet(
         else:
             domain = f"{request.scheme}://{request.get_host()}"
 
-        launch_video_transcript.delay(video_pk=video.id, stamp=stamp, domain=domain)
+        serializer = self.get_serializer(video)
+
+        transcript_args = {"video_pk": video.id, "stamp": stamp, "domain": domain}
+        if video.transcode_pipeline != defaults.PEERTUBE_PIPELINE:
+            video_urls = serializer.data.get("urls").get("mp4")
+            video_url = video_urls.get(min(video_urls.keys()))
+            transcript_args["video_url"] = video_url
+        launch_video_transcript.delay(**transcript_args)
 
         video.timedtexttracks.add(timed_text_track)
-
-        serializer = self.get_serializer(video)
 
         channel_layers_utils.dispatch_timed_text_track(timed_text_track)
         channel_layers_utils.dispatch_video(video)

@@ -69,3 +69,22 @@ class TestVideoTask(TestCase):
                 destination=f"vod/{video.pk}/video/{stamp}",
                 domain="http://127.0.0.1:8000",
             )
+
+    def test_launch_video_transcript_video_url(self):
+        """
+        Test the launch_video_transcoding task.
+        If a video_url is provided, it should be passed to the transcript_video function.
+        """
+        video = VideoFactory()
+        stamp = "1640995200"
+        with mock.patch(
+            "marsha.core.tasks.video.transcript_video"
+        ) as mock_transcript_video:
+            launch_video_transcript(
+                str(video.pk), stamp, "http://127.0.0.1:8000", "video_url"
+            )
+            mock_transcript_video.assert_called_once_with(
+                destination=f"vod/{video.pk}/video/{stamp}",
+                domain="http://127.0.0.1:8000",
+                video_url="video_url",
+            )

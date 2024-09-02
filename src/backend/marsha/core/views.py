@@ -778,6 +778,14 @@ class VideoView(BaseView):
 
         return self.render_to_response(self._build_context_data(app_data))
 
+    def post(self, request, *args, **kwargs):
+        """Respond to POST request.
+
+        Publicly accessible resources or direct access videos can be fetched
+        POST is allowed because it may be used with PeerTube Runner Connector
+        """
+        return super().get(request, *args, **kwargs)
+
 
 class VideoLTIView(BaseLTIView):
     """Video LTI view."""
