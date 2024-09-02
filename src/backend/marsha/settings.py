@@ -766,13 +766,17 @@ class Base(Configuration):
         "marsha.core.utils.transcode.transcoding_ended_callback"
     )
 
+    # Leaving it to None will fallback on the domain from the current request
+    TRANSCODING_CALLBACK_DOMAIN = values.Value()
+
     # The callback path to a function that will be called when a transcription ends
     TRANSCRIPTION_ENDED_CALLBACK_PATH = (
         "marsha.core.utils.transcript.transcription_ended_callback"
     )
 
-    # Leaving it to None will fallback on the domain from the current request
-    TRANSCODING_CALLBACK_DOMAIN = values.Value()
+    # Timeout for the transcription video source
+    TRANSCRIPTION_VIDEO_SOURCE_TIMEOUT = values.PositiveIntegerValue(10)
+    TRANSCRIPTION_VIDEO_SOURCE_CHUNK_SIZE = values.PositiveIntegerValue(8192)
 
     # LRS settings dedicated to the current site
     LRS_URL = values.Value()
