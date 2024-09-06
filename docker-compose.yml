@@ -69,7 +69,7 @@ services:
     tty: true
 
   peertube-runner:
-    image: fundocker/peertube-runner:latest
+    image: fundocker/peertube-runner:latest-whisper_ctranslate2
     env_file:
       - env.d/peertube_runner
 
