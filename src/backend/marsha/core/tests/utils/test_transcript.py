@@ -1,9 +1,10 @@
 """Tests for the `core.utils.transcript` module."""
 
-from unittest import mock
+from unittest.mock import patch
 
+from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 from django_peertube_runner_connector.models import (
     Video as TranscriptedVideo,
@@ -11,11 +12,15 @@ from django_peertube_runner_connector.models import (
 )
 
 from marsha.core import defaults
-from marsha.core.factories import UploadedVideoFactory
+from marsha.core.factories import (
+    TimedTextTrackFactory,
+    UploadedVideoFactory,
+    VideoFactory,
+)
 from marsha.core.models import TimedTextTrack
 from marsha.core.storage.storage_class import video_storage
+from marsha.core.utils import transcript_utils
 from marsha.core.utils.time_utils import to_timestamp
-from marsha.core.utils.transcript import transcription_ended_callback
 from marsha.websocket.utils import channel_layers_utils
 
 
@@ -40,12 +45,14 @@ class TranscriptTestCase(TestCase):
             f"{video_path}/{video_timestamp}-{language}.vtt", vtt_file
         )
 
-        with mock.patch.object(
+        with patch.object(
             channel_layers_utils, "dispatch_timed_text_track"
-        ) as mock_dispatch_timed_text_track, mock.patch.object(
+        ) as mock_dispatch_timed_text_track, patch.object(
             channel_layers_utils, "dispatch_video"
         ) as mock_dispatch_video:
-            transcription_ended_callback(transcripted_video, language, vtt_path)
+            transcript_utils.transcription_ended_callback(
+                transcripted_video, language, vtt_path
+            )
 
         timed_text_track = video.timedtexttracks.get()
         self.assertEqual(timed_text_track.language, language)
@@ -65,3 +72,152 @@ class TranscriptTestCase(TestCase):
 
         mock_dispatch_timed_text_track.assert_called_once_with(timed_text_track)
         mock_dispatch_video.assert_called_once_with(video)
+
+    @patch.object(transcript_utils, "launch_video_transcript")
+    def test_transcript_video_no_video(self, mock_launch_video_transcript):
+        """
+        Should not call the launch_video_transcript function
+        if there is no video to transcript.
+        """
+
+        with self.assertRaises(transcript_utils.TranscriptError) as context:
+            transcript_utils.transcript(None)
+
+        self.assertEqual(str(context.exception), "No video to transcript")
+        mock_launch_video_transcript.delay.assert_not_called()
+
+    @patch.object(transcript_utils, "launch_video_transcript")
+    def test_transcript_video_already_transcript(self, mock_launch_video_transcript):
+        """
+        Should not call the launch_video_transcript function
+        if the video already has a transcript.
+        """
+        timed_text_track = TimedTextTrackFactory(
+            video=VideoFactory(upload_state=defaults.READY),
+            language=settings.LANGUAGES[0][0],
+            mode=TimedTextTrack.TRANSCRIPT,
+        )
+
+        with self.assertRaises(transcript_utils.TranscriptError) as context:
+            transcript_utils.transcript(timed_text_track.video)
+
+        self.assertEqual(
+            str(context.exception),
+            f"A transcript already exists for video {timed_text_track.video.id}",
+        )
+        mock_launch_video_transcript.delay.assert_not_called()
+
+    @patch.object(transcript_utils, "launch_video_transcript")
+    def test_transcript_video_already_subtitle(self, mock_launch_video_transcript):
+        """
+        Should call the launch_video_transcript function
+        if the video has a subtitle.
+        """
+        timed_text_track = TimedTextTrackFactory(
+            video=VideoFactory(
+                upload_state=defaults.READY,
+                transcode_pipeline=defaults.PEERTUBE_PIPELINE,
+            ),
+            language=settings.LANGUAGES[0][0],
+            mode=TimedTextTrack.SUBTITLE,
+        )
+
+        transcript_utils.transcript(timed_text_track.video)
+
+        mock_launch_video_transcript.delay.assert_called_once_with(
+            video_pk=timed_text_track.video.id,
+            stamp=timed_text_track.video.uploaded_on_stamp(),
+            domain="https://example.com",
+        )
+        self.assertEqual(timed_text_track.video.timedtexttracks.count(), 2)
+        self.assertTrue(
+            timed_text_track.video.timedtexttracks.filter(
+                mode=TimedTextTrack.TRANSCRIPT
+            ).exists()
+        )
+
+    @patch.object(transcript_utils, "launch_video_transcript")
+    def test_transcript_video_already_closed_caption(
+        self, mock_launch_video_transcript
+    ):
+        """
+        Should call the launch_video_transcript function
+        if the video has a closed caption.
+        """
+        timed_text_track = TimedTextTrackFactory(
+            video=VideoFactory(
+                upload_state=defaults.READY,
+                transcode_pipeline=defaults.PEERTUBE_PIPELINE,
+            ),
+            language=settings.LANGUAGES[0][0],
+            mode=TimedTextTrack.CLOSED_CAPTIONING,
+        )
+
+        transcript_utils.transcript(timed_text_track.video)
+
+        mock_launch_video_transcript.delay.assert_called_once_with(
+            video_pk=timed_text_track.video.id,
+            stamp=timed_text_track.video.uploaded_on_stamp(),
+            domain="https://example.com",
+        )
+        self.assertEqual(timed_text_track.video.timedtexttracks.count(), 2)
+        self.assertTrue(
+            timed_text_track.video.timedtexttracks.filter(
+                mode=TimedTextTrack.TRANSCRIPT
+            ).exists()
+        )
+
+    @patch.object(transcript_utils, "launch_video_transcript")
+    def test_transcript_video_peertube_pipeline(self, mock_launch_video_transcript):
+        """
+        Should call the launch_video_transcript function
+        if the video pipeline is peertube.
+        """
+        video = VideoFactory(transcode_pipeline=defaults.PEERTUBE_PIPELINE)
+
+        transcript_utils.transcript(video)
+
+        mock_launch_video_transcript.delay.assert_called_once_with(
+            video_pk=video.id,
+            stamp=video.uploaded_on_stamp(),
+            domain="https://example.com",
+        )
+        self.assertEqual(video.timedtexttracks.count(), 1)
+
+    @patch.object(transcript_utils, "launch_video_transcript")
+    def test_transcript_video_not_peertube_pipeline(self, mock_launch_video_transcript):
+        """
+        Should call the launch_video_transcript function
+        if the video pipeline is not peertube.
+        """
+        video = VideoFactory(transcode_pipeline=defaults.AWS_PIPELINE)
+
+        transcript_utils.transcript(video)
+
+        mock_launch_video_transcript.delay.assert_called_once_with(
+            video_pk=video.id,
+            stamp=video.uploaded_on_stamp(),
+            domain="https://example.com",
+            video_url=f"https://example.com/api/videos/{video.id}/transcript-source/",
+        )
+        self.assertEqual(video.timedtexttracks.count(), 1)
+
+    @patch.object(transcript_utils, "launch_video_transcript")
+    @override_settings(TRANSCODING_CALLBACK_DOMAIN="https://callback.com")
+    def test_transcript_video_callback_domain_setting(
+        self, mock_launch_video_transcript
+    ):
+        """
+        Should call the launch_video_transcript function
+        with the callback domain setting.
+        """
+        video = VideoFactory(transcode_pipeline=defaults.PEERTUBE_PIPELINE)
+
+        transcript_utils.transcript(video)
+
+        mock_launch_video_transcript.delay.assert_called_once_with(
+            video_pk=video.id,
+            stamp=video.uploaded_on_stamp(),
+            domain="https://callback.com",
+        )
+        self.assertEqual(video.timedtexttracks.count(), 1)
