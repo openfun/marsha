@@ -1,12 +1,58 @@
 """Utils related to transcoding"""
 
+from django.conf import settings
+from django.contrib.sites.models import Site
+from django.db import IntegrityError
+from django.urls import reverse
+
 from django_peertube_runner_connector.models import Video as TranscriptedVideo
 
 from marsha.core import defaults
 from marsha.core.models import TimedTextTrack, Video
 from marsha.core.storage.storage_class import video_storage
+from marsha.core.tasks.video import launch_video_transcript
 from marsha.core.utils.time_utils import to_datetime
 from marsha.websocket.utils import channel_layers_utils
+
+
+class TranscriptError(Exception):
+    """Error raised when an error occurs during the transcript process"""
+
+
+def transcript(video):
+    """Create a transcript for a video."""
+    if not video:
+        raise TranscriptError("No video to transcript")
+
+    try:
+        TimedTextTrack.objects.create(
+            video=video,
+            language=settings.LANGUAGES[0][0],
+            mode=TimedTextTrack.TRANSCRIPT,
+            upload_state=defaults.PROCESSING,
+        )
+    except IntegrityError as e:
+        raise TranscriptError(
+            f"A transcript already exists for video {video.id}"
+        ) from e
+
+    domain = (
+        settings.TRANSCODING_CALLBACK_DOMAIN
+        or f"https://{Site.objects.get_current().domain}"
+    )
+
+    transcript_args = {
+        "video_pk": video.id,
+        "stamp": video.uploaded_on_stamp(),
+        "domain": domain,
+    }
+
+    if video.transcode_pipeline != defaults.PEERTUBE_PIPELINE:
+        transcript_args["video_url"] = domain + reverse(
+            "videos-transcript-source", kwargs={"pk": video.id}
+        )
+
+    launch_video_transcript.delay(**transcript_args)
 
 
 def transcription_ended_callback(
