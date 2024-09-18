@@ -1235,8 +1235,6 @@ class VideoViewSet(
                 status=HTTPStatus.BAD_REQUEST,
             )
 
-        stamp = video.get_source_s3_key().split("/")[-1]
-
         # Launch the PeerTube transcription process
         if settings.TRANSCODING_CALLBACK_DOMAIN:
             domain = settings.TRANSCODING_CALLBACK_DOMAIN
@@ -1245,7 +1243,11 @@ class VideoViewSet(
 
         serializer = self.get_serializer(video)
 
-        transcript_args = {"video_pk": video.id, "stamp": stamp, "domain": domain}
+        transcript_args = {
+            "video_pk": video.id,
+            "stamp": video.uploaded_on_stamp(),
+            "domain": domain,
+        }
         if video.transcode_pipeline != defaults.PEERTUBE_PIPELINE:
             video_url = reverse("videos-transcript-source", kwargs={"pk": video.id})
             video_url = request.build_absolute_uri(video_url)
