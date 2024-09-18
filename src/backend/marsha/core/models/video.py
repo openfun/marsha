@@ -291,7 +291,7 @@ class Video(BaseFile, RetentionDateObjectMixin):
             they are converted to the destination bucket.
 
         """
-        stamp = stamp or to_timestamp(self.uploaded_on)
+        stamp = stamp or self.uploaded_on_stamp()
         return f"{self.pk}/video/{self.pk}/{stamp}"
 
     def get_videos_storage_prefix(
@@ -318,7 +318,7 @@ class Video(BaseFile, RetentionDateObjectMixin):
         string
             The videos storage prefix for the video, depending on the base directory passed.
         """
-        stamp = stamp or to_timestamp(self.uploaded_on)
+        stamp = stamp or self.uploaded_on_stamp()
         base = base_dir
         if base == DELETED_VIDEOS_STORAGE_BASE_DIRECTORY:
             base = f"{base}/{VOD_VIDEOS_STORAGE_BASE_DIRECTORY}"
@@ -639,7 +639,7 @@ class TimedTextTrack(BaseTrack):
             stored before they are converted and copied to the destination bucket.
 
         """
-        stamp = stamp or to_timestamp(self.uploaded_on)
+        stamp = stamp or self.uploaded_on_stamp()
         mode = f"_{self.mode}" if self.mode else ""
         return f"{self.video.pk}/timedtexttrack/{self.pk}/{stamp}_{self.language}{mode}"
 
@@ -667,7 +667,7 @@ class TimedTextTrack(BaseTrack):
         string
             The videos storage prefix for the video, depending on the base directory passed.
         """
-        stamp = stamp or to_timestamp(self.uploaded_on)
+        stamp = stamp or self.uploaded_on_stamp()
         base = base_dir
         if base_dir == DELETED_VIDEOS_STORAGE_BASE_DIRECTORY:
             base = f"{DELETED_VIDEOS_STORAGE_BASE_DIRECTORY}/{VOD_VIDEOS_STORAGE_BASE_DIRECTORY}"
@@ -791,7 +791,7 @@ class Thumbnail(AbstractImage):
             stored before they are converted and copied to the destination bucket.
 
         """
-        stamp = stamp or to_timestamp(self.uploaded_on)
+        stamp = stamp or self.uploaded_on_stamp()
         return f"{self.video.pk}/thumbnail/{self.pk}/{stamp}"
 
     def get_videos_storage_prefix(
@@ -819,7 +819,7 @@ class Thumbnail(AbstractImage):
         string
             The videos storage prefix for the thumbnail.
         """
-        stamp = stamp or to_timestamp(self.uploaded_on)
+        stamp = stamp or self.uploaded_on_stamp()
         base = base_dir
         if base_dir == DELETED_VIDEOS_STORAGE_BASE_DIRECTORY:
             base = f"{DELETED_VIDEOS_STORAGE_BASE_DIRECTORY}/{VOD_VIDEOS_STORAGE_BASE_DIRECTORY}"
@@ -1273,7 +1273,7 @@ class SharedLiveMedia(UploadableFileMixin, BaseModel):
         if extension and not extension.startswith("."):
             extension = "." + extension
 
-        stamp = stamp or to_timestamp(self.uploaded_on)
+        stamp = stamp or self.uploaded_on_stamp()
         return f"{self.video.pk}/sharedlivemedia/{self.pk}/{stamp}{extension}"
 
     def get_videos_storage_prefix(
@@ -1301,7 +1301,7 @@ class SharedLiveMedia(UploadableFileMixin, BaseModel):
         string
             The videos storage prefix for the shared live media.
         """
-        stamp = stamp or to_timestamp(self.uploaded_on)
+        stamp = stamp or self.uploaded_on_stamp()
         base = base_dir
         if base_dir == DELETED_VIDEOS_STORAGE_BASE_DIRECTORY:
             base = f"{DELETED_VIDEOS_STORAGE_BASE_DIRECTORY}/{VOD_VIDEOS_STORAGE_BASE_DIRECTORY}"

@@ -1,5 +1,6 @@
 """Tests for the models in the ``core`` app of the Marsha project."""
 
+from datetime import datetime
 import random
 
 from django.core.exceptions import ValidationError
@@ -65,3 +66,20 @@ class TimedTextTrackModelsTestCase(TestCase):
         TimedTextTrackFactory(
             video=timed_text_track.video, language="fr", mode=timed_text_track.mode
         )
+
+    def test_models_timedtexttrack_uploaded_on_stamp(self):
+        """The `uploaded_on_stamp` method should return the timestamp of the file upload."""
+        uploaded_on_timestamp = 1727249410
+        uploaded_on = datetime.fromtimestamp(uploaded_on_timestamp)
+        timed_text_track = TimedTextTrackFactory(
+            uploaded_on=uploaded_on,
+        )
+        self.assertEqual(
+            timed_text_track.uploaded_on_stamp(),
+            str(uploaded_on_timestamp),
+        )
+
+    def test_models_timedtexttrack_uploaded_on_stamp_no_uploaded_on(self):
+        """The `uploaded_on_stamp` method should return None if there is no uploaded_on date."""
+        timed_text_track = TimedTextTrackFactory()
+        self.assertIsNone(timed_text_track.uploaded_on_stamp())

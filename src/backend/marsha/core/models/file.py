@@ -64,6 +64,10 @@ class UploadableFileMixin(models.Model):
         """
         return self.uploaded_on is not None
 
+    def uploaded_on_stamp(self):
+        """Return the timestamp of the file upload."""
+        return to_timestamp(self.uploaded_on)
+
 
 class BaseFile(UploadableFileMixin, BaseModel):
     """Base file model used by all our File based models."""
@@ -199,7 +203,7 @@ class Document(BaseFile):
             before they are moved to the destination bucket.
 
         """
-        stamp = stamp or to_timestamp(self.uploaded_on)
+        stamp = stamp or self.uploaded_on_stamp()
 
         # We don't want to deal with None value so we set it with an empty string
         extension = extension or ""
