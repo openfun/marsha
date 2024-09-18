@@ -771,7 +771,7 @@ class Base(Configuration):
 
     # The callback path to a function that will be called when a transcription ends
     TRANSCRIPTION_ENDED_CALLBACK_PATH = (
-        "marsha.core.utils.transcript.transcription_ended_callback"
+        "marsha.core.utils.transcript_utils.transcription_ended_callback"
     )
 
     # Timeout for the transcription video source
