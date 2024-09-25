@@ -90,7 +90,7 @@ class LTIRequestValidator(RequestValidator):
             oauth_consumer_key=client_key, is_enabled=True
         ).exists()
 
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
     def validate_timestamp_and_nonce(
         self,
         client_key: str,

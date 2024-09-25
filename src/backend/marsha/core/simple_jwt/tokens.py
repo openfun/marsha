@@ -261,7 +261,7 @@ class PlaylistAccessMixin:
         return token
 
     @classmethod
-    def for_playlist_id(  # pylint: disable=too-many-arguments
+    def for_playlist_id(  # pylint: disable=too-many-arguments,too-many-positional-arguments
         cls,
         playlist_id,
         session_id,

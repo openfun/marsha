@@ -82,7 +82,7 @@ class XAPIStatementMixin:
 class XAPIDocumentStatement(XAPIStatementMixin):
     """Object managing statement for document objects."""
 
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
     def _build_statement(self, document, statement, homepage, user=None, user_id=None):
         """Build all common properties for a document."""
 
@@ -182,7 +182,7 @@ class XAPIVideoStatement(XAPIStatementMixin):
 
         return activity_type
 
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
     def _build_statement(self, video, statement, homepage, user=None, user_id=None):
         """Build all common properties for a video."""
         if re.match(r"^http(s?):\/\/.*", homepage) is None:

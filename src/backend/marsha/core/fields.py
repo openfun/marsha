@@ -12,6 +12,7 @@ class InvertedCheckboxSelectMultiple(CheckboxSelectMultiple):
     Modified CheckboxSelectMultiple to invert the choices.
     """
 
+    # pylint: disable=too-many-positional-arguments
     def create_option(
         self, name, value, label, selected, index, subindex=None, attrs=None
     ):
