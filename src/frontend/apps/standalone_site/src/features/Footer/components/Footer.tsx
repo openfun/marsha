@@ -8,12 +8,41 @@ import {
   useSiteConfig,
 } from 'lib-components';
 import React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 
+import europe from 'assets/img/europe.png';
+import franceRelance from 'assets/img/france-relance.png';
+import MinistereIcon from 'assets/img/ministere.svg?react';
 import { usePagesApi } from 'features/PagesApi';
 
 import WaveIcon from '../assets/svg/footer-wave.svg?react';
 
+const messages = defineMessages({
+  financedBy: {
+    defaultMessage: 'Financed by the recovery plan',
+    description:
+      'Text displayed on the footer to indicate that the project is financed by the recovery plan',
+    id: 'features.Footer.financedBy',
+  },
+  altMinistryLogo: {
+    defaultMessage: 'Ministry logo',
+    description: 'Accessible description for the Ministry logo',
+    id: 'features.Footer.altMinistryLogo',
+  },
+  altFranceRelanceLogo: {
+    defaultMessage: 'France Relance logo',
+    description: 'Accessible description for the France Relance logo',
+    id: 'features.Footer.altFranceRelanceLogo',
+  },
+  altEuropeLogo: {
+    defaultMessage: 'Europe logo',
+    description: 'Accessible description for the Europe logo',
+    id: 'features.Footer.altEuropeLogo',
+  },
+});
+
 const Footer = ({ withoutWave }: { withoutWave?: boolean }) => {
+  const intl = useIntl();
   const { isSmallerBreakpoint, breakpoint } = useResponsive();
   const theme = {
     color: '#253961',
@@ -32,7 +61,7 @@ const Footer = ({ withoutWave }: { withoutWave?: boolean }) => {
   const { getSiteConfig } = useSiteConfig();
   const siteConfig = getSiteConfig();
 
-  const defaultFooterCopyright = '© 2023 Marsha Education';
+  const defaultFooterCopyright = '© 2024 Marsha Education';
 
   return (
     <Box type="footer" margin={{ top: 'auto' }} color="white" fill="horizontal">
@@ -67,6 +96,36 @@ const Footer = ({ withoutWave }: { withoutWave?: boolean }) => {
               <Text color="white">{page.name}</Text>
             </StyledLink>
           ))}
+          <Box
+            align="center"
+            display="flex"
+            direction={
+              isSmallerBreakpoint(breakpoint, Breakpoints.xsmedium)
+                ? 'column'
+                : 'row'
+            }
+            gap="xsmall"
+            margin={{ top: 'small' }}
+          >
+            <Text color="white" display="inline-block" width="5em">
+              {intl.formatMessage(messages.financedBy)}
+            </Text>
+            <MinistereIcon
+              width="5em"
+              role="img"
+              aria-label={intl.formatMessage(messages.altMinistryLogo)}
+            />
+            <img
+              src={franceRelance}
+              alt={intl.formatMessage(messages.altFranceRelanceLogo)}
+              width="55"
+            />
+            <img
+              src={europe}
+              alt={intl.formatMessage(messages.altEuropeLogo)}
+              width="150"
+            />
+          </Box>
         </Box>
         <Box
           height="1px"
