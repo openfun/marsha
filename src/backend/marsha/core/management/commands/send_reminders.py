@@ -51,7 +51,7 @@ class Command(BaseCommand):
             )
         )
 
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
     def send_reminders_and_update_livesessions_step(
         self, livesessions, step, mail_object, trans_context=None, template="reminder"
     ):

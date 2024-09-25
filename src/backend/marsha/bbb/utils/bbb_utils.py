@@ -378,7 +378,7 @@ def process_recording(classroom, recording_data):
                 )
 
 
-def process_recordings(  # pylint: disable=too-many-arguments
+def process_recordings(  # pylint: disable=too-many-arguments,too-many-positional-arguments
     classroom,
     recordings_data,
     record_id=None,
