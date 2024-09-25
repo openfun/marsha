@@ -49,7 +49,17 @@ describe('<Footer />', () => {
     render(<Footer />);
     expect(await screen.findByText(/Test Page/i)).toBeInTheDocument();
     expect(screen.getByText(/General Conditions/i)).toBeInTheDocument();
-    expect(screen.getByText(/© 2023 Marsha Education/i)).toBeInTheDocument();
+    expect(screen.getByText(/© 2024 Marsha Education/i)).toBeInTheDocument();
+    expect(
+      screen.getByText('Financed by the recovery plan'),
+    ).toBeInTheDocument();
+    const images = screen.getAllByRole('img');
+
+    expect(images).toHaveLength(3);
+    expect(images[0]).toHaveAttribute('aria-label', 'Ministry logo');
+    expect(images[1]).toHaveAttribute('alt', 'France Relance logo');
+    expect(images[2]).toHaveAttribute('alt', 'Europe logo');
+
     expect(screen.getByRole('link', { name: 'Twitter' })).toHaveAttribute(
       'href',
       'https://twitter.com/FunMooc',
@@ -94,7 +104,7 @@ describe('<Footer />', () => {
     render(<Footer />);
     expect(await screen.findByText(/custom copyright/i)).toBeInTheDocument();
     expect(
-      screen.queryByText(/© 2023 Marsha Education/i),
+      screen.queryByText(/© 2024 Marsha Education/i),
     ).not.toBeInTheDocument();
     expect(
       screen.queryByRole('link', { name: 'Twitter' }),
@@ -122,7 +132,7 @@ describe('<Footer />', () => {
 
     render(<Footer />);
     expect(
-      await screen.findByText(/© 2023 Marsha Education/i),
+      await screen.findByText(/© 2024 Marsha Education/i),
     ).toBeInTheDocument();
     expect(
       screen.queryByRole('link', { name: 'Twitter' }),
