@@ -15,6 +15,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Allow to change username if one is persisted on classroom join
+- Webkit e2e tests in CI
 
 ## [5.0.3] - 2024-08-01
 
