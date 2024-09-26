@@ -564,7 +564,7 @@ jobs:
 
   test-e2e:
     docker:
-      - image: mcr.microsoft.com/playwright:v1.40.0-jammy
+      - image: mcr.microsoft.com/playwright:v1.47.0-noble
         auth:
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASS
