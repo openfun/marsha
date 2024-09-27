@@ -33,6 +33,7 @@ marsha_image_name: "fundocker/marsha"
 marsha_image_tag: "3.23.0"
 marsha_django_port: 8000
 marsha_app_replicas: 1
+marsha_ws_replicas: 1
 marsha_xapi_replicas: 1
 marsha_celery_replicas: 1
 marsha_django_configuration: "Development"
@@ -116,6 +117,14 @@ marsha_celery_readynessprobe:
 
 # -- resource 
 marsha_app_resources:
+  requests:
+    cpu: 0.3
+    memory: 500Mi
+  limits:
+    cpu: 0.8
+    memory: 1Gi
+
+marsha_ws_resources:
   requests:
     cpu: 0.3
     memory: 500Mi

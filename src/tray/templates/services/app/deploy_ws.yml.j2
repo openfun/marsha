@@ -1,0 +1,29 @@
+{% set service_variant = "ws" %}
+{% set marsha_replicas = marsha_ws_replicas %}
+{% set marsha_livenessprobe = {
+    "httpGet": {
+        "path": "/__heartbeat__",
+        "port": "django-port",
+        "httpHeaders": [{
+            "name": "Host",
+            "value": marsha_hosts[0],
+        }],
+    },
+    "initialDelaySeconds": 60,
+    "periodSeconds": 30 ,
+} %}
+{% set marsha_readynessprobe = {
+    "httpGet": {
+        "path": "/__lbheartbeat__",
+        "port": "django-port",
+        "httpHeaders": [{
+            "name": "Host",
+            "value": marsha_hosts[0],
+        }],
+    },
+    "initialDelaySeconds": 10,
+    "periodSeconds": 5,
+} %}
+{% set marsha_resources = marsha_ws_resources %}
+
+{% include "./_deploy_base.yml.j2" with context %}
