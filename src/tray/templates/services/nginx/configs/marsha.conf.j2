@@ -4,6 +4,10 @@ upstream marsha-backend {
   server marsha-app-{{ deployment_stamp }}:{{ marsha_django_port }} fail_timeout=0;
 }
 
+upstream marsha-ws {
+  server marsha-ws-{{ deployment_stamp }}:{{ marsha_django_port }} fail_timeout=0;
+}
+
 upstream marsha-xapi {
   server marsha-xapi-{{ deployment_stamp }}:{{ marsha_django_port }} fail_timeout=0;
 }
@@ -62,7 +66,7 @@ server {
   }
 
   location /ws/ {
-    proxy_pass http://marsha-backend;
+    proxy_pass http://marsha-ws;
 
     proxy_http_version 1.1;
     proxy_set_header Connection "Upgrade";

@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: marsha
+    service: ws
+    version: "{{ marsha_image_tag }}"
+    deployment_stamp: "{{ deployment_stamp }}"
+  name: marsha-ws-{{ deployment_stamp }}  # name of the service should be host name in nginx
+  namespace: "{{ namespace_name }}"
+spec:
+  ports:
+  - name: {{ marsha_django_port }}-tcp
+    port: {{ marsha_django_port }}
+    protocol: TCP
+    targetPort: {{ marsha_django_port }}
+  selector:
+    app: marsha
+    deployment: "marsha-ws-{{ deployment_stamp }}"
+  type: ClusterIP

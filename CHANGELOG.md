@@ -12,6 +12,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Add peertube transcript generation
 
+### Changed
+
+- Split websocket and asgi apps in tray
+
 ### Fixed
 
 - Allow to change username if one is persisted on classroom join
