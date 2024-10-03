@@ -456,7 +456,7 @@ class Command(BaseCommand):
             registrationToken="49c0e9f4-d0c1-41bc-8559-a59baf1a40b6",
         )
         Runner.objects.get_or_create(
-            name="local-peertube-runner",
+            name="local_peertube_runner",
             defaults={
                 "runnerRegistrationToken": registration_token,
                 "runnerToken": "ptrt-a8d27afb-ea3f-4746-9040-875a9b53f4d4",
