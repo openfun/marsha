@@ -73,6 +73,33 @@ class TranscriptTestCase(TestCase):
         mock_dispatch_timed_text_track.assert_called_once_with(timed_text_track)
         mock_dispatch_video.assert_called_once_with(video)
 
+    def test_transcription_error_callback(self):
+        """The marsha video should correctly be updated."""
+        video = UploadedVideoFactory()
+        TimedTextTrackFactory(
+            video=video,
+            mode=TimedTextTrack.TRANSCRIPT,
+            upload_state=defaults.PROCESSING,
+        )
+        video_timestamp = to_timestamp(video.uploaded_on)
+        video_path = f"vod/{video.pk}/video/{video_timestamp}"
+
+        transcripted_video = TranscriptedVideo.objects.create(
+            state=VideoState.PUBLISHED,
+            directory=video_path,
+        )
+
+        with patch.object(
+            channel_layers_utils, "dispatch_video"
+        ) as mock_dispatch_video:
+            transcript_utils.transcription_error_callback(transcripted_video)
+
+        video.refresh_from_db()
+        self.assertFalse(
+            video.timedtexttracks.filter(mode=TimedTextTrack.TRANSCRIPT).exists()
+        )
+        mock_dispatch_video.assert_called_once_with(video)
+
     @patch.object(transcript_utils, "launch_video_transcript")
     def test_transcript_video_no_video(self, mock_launch_video_transcript):
         """

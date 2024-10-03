@@ -773,6 +773,9 @@ class Base(Configuration):
     TRANSCRIPTION_ENDED_CALLBACK_PATH = (
         "marsha.core.utils.transcript_utils.transcription_ended_callback"
     )
+    TRANSCRIPTION_ERROR_CALLBACK_PATH = (
+        "marsha.core.utils.transcript_utils.transcription_error_callback"
+    )
 
     # Timeout for the transcription video source
     TRANSCRIPTION_VIDEO_SOURCE_TIMEOUT = values.PositiveIntegerValue(10)

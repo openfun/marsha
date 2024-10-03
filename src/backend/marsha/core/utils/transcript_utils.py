@@ -103,3 +103,20 @@ def transcription_ended_callback(
 
     channel_layers_utils.dispatch_timed_text_track(timed_text_track)
     channel_layers_utils.dispatch_video(video)
+
+
+def transcription_error_callback(transcripted_video: TranscriptedVideo):
+    """
+    Callback used when a Peertube runner has failed to transcript a video.
+    """
+    # Directory format: "vod/<video_id>/video/<stamp>"
+    directory = transcripted_video.directory.split("/")
+    video_id = directory[-3]
+    video = Video.objects.get(pk=video_id)
+
+    timed_text_track = video.timedtexttracks.get(
+        upload_state=defaults.PROCESSING, mode=TimedTextTrack.TRANSCRIPT
+    )
+    timed_text_track.delete()
+
+    channel_layers_utils.dispatch_video(video)
