@@ -15,6 +15,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Split websocket and asgi apps in tray
+- Remove websocket connection in VOD student dashboard
 
 ### Fixed
 
