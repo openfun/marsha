@@ -46,6 +46,7 @@ from marsha.core.defaults import (
     LIVE_RAW,
     MARKDOWN,
     SENTRY,
+    TRANSCRIPTION,
     VIDEO,
     WEBINAR,
 )
@@ -135,6 +136,7 @@ class MarshaViewMixin:
                 VIDEO: True,
                 WEBINAR: True,
                 DOCUMENT: True,
+                TRANSCRIPTION: switch_is_active(TRANSCRIPTION),
             },
             "release": settings.RELEASE,
             "sentry_dsn": settings.SENTRY_DSN,

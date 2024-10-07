@@ -41,7 +41,7 @@ class DocumentPublicViewTestCase(TestCase):
         )
 
         # First response has no cache
-        with self.assertNumQueries(6):
+        with self.assertNumQueries(11):
             response = self.client.get(f"/documents/{document.pk}")
 
         self.assertEqual(response.status_code, 200)

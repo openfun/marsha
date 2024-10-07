@@ -26,6 +26,7 @@ export enum flags {
   DOCUMENT = 'document',
   SENTRY = 'sentry',
   LIVE_RAW = 'live_raw',
+  TRANSCRIPTION = 'transcription',
 }
 
 /**

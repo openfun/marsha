@@ -8,6 +8,7 @@ import {
   modelName,
   timedTextMode,
   uploadState,
+  useAppConfig,
   useJwt,
   useTimedTextTrack,
   useUploadManager,
@@ -24,12 +25,17 @@ import { LocalizedTimedTextTrackUpload } from '.';
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
+  useAppConfig: jest.fn(),
   useUploadManager: jest.fn(),
   UploadManagerContext: {
     Provider: ({ children }: PropsWithChildren<{}>) => children,
   },
   report: jest.fn(),
 }));
+
+const mockedUseAppConfig = useAppConfig as jest.MockedFunction<
+  typeof useAppConfig
+>;
 
 const mockUseUploadManager = useUploadManager as jest.MockedFunction<
   typeof useUploadManager
@@ -72,6 +78,10 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
       },
       { method: 'OPTIONS' },
     );
+
+    mockedUseAppConfig.mockReturnValue({
+      flags: { transcription: true },
+    } as any);
 
     mockUseUploadManager.mockReturnValue({
       addUpload: jest.fn(),
@@ -122,6 +132,10 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
       url: 'url',
       video: mockedVideo.id,
     };
+
+    mockedUseAppConfig.mockReturnValue({
+      flags: { transcription: true },
+    } as any);
 
     mockCreateTimedTextTrack.mockImplementation(() =>
       Promise.resolve(mockTimedTextTrack),
@@ -316,6 +330,10 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
       { method: 'OPTIONS' },
     );
 
+    mockedUseAppConfig.mockReturnValue({
+      flags: { transcription: true },
+    } as any);
+
     mockUseUploadManager.mockReturnValue({
       addUpload: jest.fn(),
       resetUpload: jest.fn(),
@@ -450,6 +468,45 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
       { intlOptions: { locale: 'fr-FR' } },
     );
 
+    expect(
+      screen.queryByRole('button', { name: 'Generate transcript' }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('does not render a generate transcription button in transcript mode if flag disabled', () => {
+    const mockedVideo = videoMockFactory({
+      id: '1234',
+    });
+    fetchMock.mock(`/api/videos/1234/initiate-transcript/`, {
+      method: 'POST',
+    });
+    fetchMock.mock(
+      `/api/videos/1234/timedtexttracks/`,
+      {
+        actions: { POST: { language: { choices: languageChoices } } },
+      },
+      { method: 'OPTIONS' },
+    );
+
+    mockedUseAppConfig.mockReturnValue({
+      flags: { transcription: false },
+    } as any);
+
+    mockUseUploadManager.mockReturnValue({
+      addUpload: jest.fn(),
+      resetUpload: jest.fn(),
+      uploadManagerState: {},
+    });
+
+    render(
+      wrapInVideo(
+        <LocalizedTimedTextTrackUpload
+          timedTextModeWidget={timedTextMode.TRANSCRIPT}
+        />,
+        mockedVideo,
+      ),
+      { intlOptions: { locale: 'fr-FR' } },
+    );
     expect(
       screen.queryByRole('button', { name: 'Generate transcript' }),
     ).not.toBeInTheDocument();

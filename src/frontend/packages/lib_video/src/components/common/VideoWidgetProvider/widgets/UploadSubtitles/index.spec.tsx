@@ -9,6 +9,13 @@ import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
 import { UploadSubtitles } from '.';
 
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  useAppConfig: () => ({
+    flags: { transcription: false },
+  }),
+}));
+
 const languageChoices = [
   { display_name: 'English', value: 'en' },
   { display_name: 'French', value: 'fr' },
