@@ -12,7 +12,7 @@ from django.test import TestCase
 
 from waffle.testutils import override_switch
 
-from marsha.core.defaults import AWS_PIPELINE, SENTRY, STATE_CHOICES
+from marsha.core.defaults import AWS_PIPELINE, SENTRY, STATE_CHOICES, TRANSCRIPTION
 from marsha.core.factories import ConsumerSiteFactory, LiveSessionFactory, VideoFactory
 from marsha.core.lti import LTI
 
@@ -40,6 +40,7 @@ class CacheLTIViewTestCase(TestCase):
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
     @override_switch(SENTRY, active=True)
+    @override_switch(TRANSCRIPTION, active=True)
     def test_views_lti_cache_student(self, mock_get_consumer_site, mock_verify):
         """Validate that responses are cached for students."""
         video1, video2 = VideoFactory.create_batch(
@@ -63,7 +64,7 @@ class CacheLTIViewTestCase(TestCase):
             "lis_person_sourcedid": "jane_doe",
         }
 
-        with self.assertNumQueries(5):
+        with self.assertNumQueries(6):
             elapsed, resource_origin = self._fetch_lti_request(url, data)
         self.assertEqual(resource_origin["id"], str(video1.id))
         self.assertLess(elapsed, 0.1)
@@ -123,6 +124,7 @@ class CacheLTIViewTestCase(TestCase):
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
     @override_switch(SENTRY, active=True)
+    @override_switch(TRANSCRIPTION, active=True)
     def test_views_lti_cache_instructor(self, mock_get_consumer_site, mock_verify):
         """Validate that responses are not cached for instructors."""
         video = VideoFactory(
@@ -143,7 +145,7 @@ class CacheLTIViewTestCase(TestCase):
             "lis_person_sourcedid": "jane_doe",
         }
 
-        with self.assertNumQueries(5):
+        with self.assertNumQueries(6):
             elapsed, resource_origin = self._fetch_lti_request(url, data)
         self.assertEqual(resource_origin["id"], str(video.id))
         self.assertLess(elapsed, 0.1)
@@ -156,6 +158,7 @@ class CacheLTIViewTestCase(TestCase):
         self.assertLess(elapsed, 0.1)
 
     @override_switch(SENTRY, active=True)
+    @override_switch(TRANSCRIPTION, active=True)
     def test_views_public_resource(self):
         """Validate that response for public resources are cached."""
         video = VideoFactory(
@@ -167,7 +170,7 @@ class CacheLTIViewTestCase(TestCase):
         )
         url = f"/videos/{video.pk}"
 
-        with self.assertNumQueries(5):
+        with self.assertNumQueries(6):
             elapsed, resource_origin = self._fetch_lti_request(url)
         self.assertEqual(resource_origin["id"], str(video.id))
         self.assertLess(elapsed, 0.1)
@@ -178,6 +181,7 @@ class CacheLTIViewTestCase(TestCase):
         self.assertLess(elapsed, 0.1)
 
     @override_switch(SENTRY, active=True)
+    @override_switch(TRANSCRIPTION, active=True)
     def test_views_direct_access_lti_resource(self):
         """Validate that response for public resources on direct access are cached."""
         video = VideoFactory()
@@ -194,7 +198,7 @@ class CacheLTIViewTestCase(TestCase):
             f"{livesession.get_generate_salted_hmac()}"
         )
 
-        with self.assertNumQueries(8):
+        with self.assertNumQueries(9):
             elapsed, resource_origin = self._fetch_lti_request(url)
 
         self.assertEqual(resource_origin["id"], str(video.id))
@@ -206,6 +210,7 @@ class CacheLTIViewTestCase(TestCase):
         self.assertLess(elapsed, 0.1)
 
     @override_switch(SENTRY, active=True)
+    @override_switch(TRANSCRIPTION, active=True)
     def test_views_direct_access_public_resource(self):
         """Validate that response for lti resources on direct access are cached."""
         video = VideoFactory()
@@ -222,7 +227,7 @@ class CacheLTIViewTestCase(TestCase):
             f"{public_registration.get_generate_salted_hmac()}"
         )
 
-        with self.assertNumQueries(7):
+        with self.assertNumQueries(8):
             elapsed, resource_origin = self._fetch_lti_request(url)
 
         self.assertEqual(resource_origin["id"], str(video.id))

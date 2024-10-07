@@ -94,6 +94,7 @@ WEBINAR = "webinar"
 DOCUMENT = "document"
 RENATER_FER_SAML = "renater_fer_saml"
 VOD_CONVERT = "vod_convert"
+TRANSCRIPTION = "transcription"
 
 # LTI view states expected by the frontend LTI application
 APP_DATA_STATE_ERROR = "error"

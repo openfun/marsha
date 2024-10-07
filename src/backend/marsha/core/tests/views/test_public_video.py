@@ -57,7 +57,7 @@ class VideoPublicViewTestCase(TestCase):
         )
 
         # First response has no cache
-        with self.assertNumQueries(9):
+        with self.assertNumQueries(14):
             response = self.client.get(f"/videos/{video.pk}")
 
         self.assertEqual(response.status_code, 200)

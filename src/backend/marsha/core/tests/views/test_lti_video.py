@@ -24,6 +24,7 @@ from marsha.core.defaults import (
     RUNNING,
     SENTRY,
     STATE_CHOICES,
+    TRANSCRIPTION,
 )
 from marsha.core.factories import (
     ConsumerSiteAccessFactory,
@@ -60,6 +61,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
     @override_settings(ATTENDANCE_PUSH_DELAY=10)
     @override_settings(FRONTEND_HOME_URL="https://marsha.education")
     @override_switch(SENTRY, active=True)
+    @override_switch(TRANSCRIPTION, active=True)
     def test_views_lti_video_post_instructor_no_video(
         self, mock_get_consumer_site, mock_verify
     ):
@@ -183,6 +185,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
         self.assertEqual(context.get("attendanceDelay"), 10 * 1000)
         self.assertFalse(context.get("flags").get("live_raw"))
         self.assertTrue(context.get("flags").get("sentry"))
+        self.assertTrue(context.get("flags").get("transcription"))
         self.assertFalse(context.get("dashboardCollapsed"))
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
@@ -196,6 +199,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
     @override_settings(ATTENDANCE_PUSH_DELAY=10)
     @override_settings(FRONTEND_HOME_URL="https://marsha.education")
     @override_switch(SENTRY, active=True)
+    @override_switch(TRANSCRIPTION, active=True)
     def test_views_lti_video_post_instructor_no_video_generic(
         self, mock_get_consumer_site, mock_verify
     ):
@@ -336,6 +340,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
         self.assertEqual(context.get("attendanceDelay"), 10 * 1000)
         self.assertFalse(context.get("flags").get("live_raw"))
         self.assertTrue(context.get("flags").get("sentry"))
+        self.assertTrue(context.get("flags").get("transcription"))
         self.assertFalse(context.get("dashboardCollapsed"))
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
@@ -360,6 +365,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
     @override_settings(ATTENDANCE_PUSH_DELAY=10)
     @override_settings(FRONTEND_HOME_URL="https://marsha.education")
     @override_switch(SENTRY, active=True)
+    @override_switch(TRANSCRIPTION, active=True)
     def test_views_lti_video_post_instructor(self, mock_get_consumer_site, mock_verify):
         """Validate the format of the response returned by the view for an instructor request."""
         passport = ConsumerSiteLTIPassportFactory()
@@ -483,6 +489,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
         self.assertEqual(context.get("attendanceDelay"), 10 * 1000)
         self.assertFalse(context.get("flags").get("live_raw"))
         self.assertTrue(context.get("flags").get("sentry"))
+        self.assertTrue(context.get("flags").get("transcription"))
         self.assertFalse(context.get("dashboardCollapsed"))
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
@@ -856,6 +863,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
     @override_settings(VIDEO_PLAYER="videojs")
     @override_settings(ATTENDANCE_PUSH_DELAY=10)
     @override_switch(SENTRY, active=True)
+    @override_switch(TRANSCRIPTION, active=True)
     def test_views_lti_video_post_instructor_dashboard_collapsed(
         self, mock_get_consumer_site, mock_verify
     ):
@@ -2120,6 +2128,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
     @override_settings(SENTRY_DSN="https://sentry.dsn")
     @override_settings(RELEASE="1.2.3")
     @override_switch(SENTRY, active=True)
+    @override_switch(TRANSCRIPTION, active=True)
     @mock.patch.object(Logger, "warning")
     @mock.patch.object(LTI, "verify", side_effect=LTIException("lti error"))
     def test_views_lti_video_post_error(self, mock_verify, mock_logger):
@@ -2152,6 +2161,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
         self.assertEqual(context.get("environment"), "test")
         self.assertFalse(context.get("flags").get("live_raw"))
         self.assertTrue(context.get("flags").get("sentry"))
+        self.assertTrue(context.get("flags").get("transcription"))
         self.assertEqual(context.get("frontend"), "LTI")
         self.assertEqual(context.get("release"), "1.2.3")
         self.assertEqual(context.get("sentry_dsn"), "https://sentry.dsn")
