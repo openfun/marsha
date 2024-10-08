@@ -11,6 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Add peertube transcript generation
+- Manage feature flags in /api/config endpoint
 
 ### Changed
 

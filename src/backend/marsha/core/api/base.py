@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from waffle import switch_is_active
 
 from marsha.core import serializers
-from marsha.core.defaults import READY, SENTRY, VOD_CONVERT
+from marsha.core.defaults import READY, SENTRY, TRANSCRIPTION, VOD_CONVERT
 from marsha.core.models import SiteConfig, Video
 from marsha.core.signals import signal_object_uploaded
 from marsha.core.simple_jwt.tokens import PlaylistAccessToken
@@ -235,6 +235,9 @@ def get_frontend_configuration(request):
         "inactive_resources": inactive_resources,
         "vod_conversion_enabled": vod_conversion_enabled,
         "is_default_site": is_default_site,
+        "flags": {
+            TRANSCRIPTION: switch_is_active(TRANSCRIPTION),
+        },
     }
 
     if not is_default_site:
