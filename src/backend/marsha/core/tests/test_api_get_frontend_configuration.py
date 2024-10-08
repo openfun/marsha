@@ -4,7 +4,7 @@ from django.test import TestCase, override_settings
 
 from waffle.testutils import override_switch
 
-from marsha.core.defaults import SENTRY, VOD_CONVERT
+from marsha.core.defaults import SENTRY, TRANSCRIPTION, VOD_CONVERT
 from marsha.core.factories import SiteConfigFactory
 
 
@@ -45,6 +45,9 @@ class TestGetFrontendConfiguration(TestCase):
                     "webTorrentTrackerUrls": ["wss://tracker.webtorrent.io"],
                 },
                 "is_default_site": False,
+                "flags": {
+                    "transcription": False,
+                },
             },
         )
 
@@ -72,6 +75,40 @@ class TestGetFrontendConfiguration(TestCase):
                     "webTorrentTrackerUrls": ["wss://tracker.webtorrent.io"],
                 },
                 "is_default_site": False,
+                "flags": {
+                    "transcription": False,
+                },
+            },
+        )
+
+    @override_switch(TRANSCRIPTION, active=True)
+    def test_api_get_frontend_configuration_transcription_active(self):
+        """
+        Anonymous users should be able to access the API.
+
+        With transcription active, the response should contain the transcription
+        flag set to True.
+        """
+        response = self.client.get("/api/config/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertDictEqual(
+            response.json(),
+            {
+                "environment": "development",
+                "release": "1.2.3",
+                "sentry_dsn": None,
+                "inactive_resources": [],
+                "vod_conversion_enabled": True,
+                "p2p": {
+                    "isEnabled": True,
+                    "stunServerUrls": ["stun:stun.l.google.com:19302"],
+                    "webTorrentTrackerUrls": ["wss://tracker.webtorrent.io"],
+                },
+                "is_default_site": False,
+                "flags": {
+                    "transcription": True,
+                },
             },
         )
 
@@ -98,6 +135,9 @@ class TestGetFrontendConfiguration(TestCase):
                     "webTorrentTrackerUrls": ["wss://tracker.webtorrent.io"],
                 },
                 "is_default_site": False,
+                "flags": {
+                    "transcription": False,
+                },
             },
         )
 
@@ -145,6 +185,9 @@ class TestGetFrontendConfiguration(TestCase):
                 "homepage_banner_text": "banner text",
                 "meta_title": "meta title",
                 "meta_description": "meta description",
+                "flags": {
+                    "transcription": False,
+                },
             },
         )
 
@@ -170,5 +213,8 @@ class TestGetFrontendConfiguration(TestCase):
                     "webTorrentTrackerUrls": ["wss://tracker.webtorrent.io"],
                 },
                 "is_default_site": True,
+                "flags": {
+                    "transcription": False,
+                },
             },
         )
