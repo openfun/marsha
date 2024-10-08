@@ -8,3 +8,4 @@ export * from './useSentry';
 export * from './generics';
 export * from './useP2PVideoConfig';
 export * from './useSiteConfig';
+export * from './useFlags';
