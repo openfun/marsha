@@ -1,7 +1,7 @@
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Tab } from 'grommet';
-import { LiveModeType, liveState, uploadState } from 'lib-components';
+import { LiveModeType, liveState, uploadState, useFlags } from 'lib-components';
 import {
   documentMockFactory,
   liveMockFactory,
@@ -10,8 +10,6 @@ import {
 } from 'lib-components/tests';
 import { render } from 'lib-tests';
 import React, { Suspense } from 'react';
-
-import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
 
 import { buildContentItems } from '../utils';
 
@@ -35,8 +33,8 @@ jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
   useAppconfig: () => mockAppData,
   appNames: {
-    custom_app: 'custom_app',
-    other_custom_app: 'other_custom_app',
+    classroom: 'classroom',
+    deposit: 'deposit',
   },
   useAppConfig: () => ({}),
 }));
@@ -63,11 +61,8 @@ const mockCustomSelectContentTab = ({
 );
 
 jest.mock(
-  'apps/custom_app/components/SelectContent/SelectContentTab',
+  'apps/classroom/components/SelectContent/SelectContentTab',
   () => mockCustomSelectContentTab,
-  {
-    virtual: true,
-  },
 );
 
 const mockOtherCustomSelectContentTab = ({
@@ -92,26 +87,11 @@ const mockOtherCustomSelectContentTab = ({
 );
 
 jest.mock(
-  'apps/other_custom_app/components/SelectContent/SelectContentTab',
+  'apps/deposit/components/SelectContent/SelectContentTab',
   () => mockOtherCustomSelectContentTab,
-  {
-    virtual: true,
-  },
 );
 
 const mockSetContentItemsValue = jest.fn();
-
-jest.mock(
-  'data/hooks/useIsFeatureEnabled',
-  () =>
-    ({
-      useIsFeatureEnabled: jest.fn(),
-    }) as any,
-);
-
-const mockUseIsFeatureEnabled = useIsFeatureEnabled as jest.MockedFunction<
-  typeof useIsFeatureEnabled
->;
 
 describe('SelectContentTabs', () => {
   afterEach(() => {
@@ -119,11 +99,12 @@ describe('SelectContentTabs', () => {
   });
 
   it('renders all tabs', async () => {
-    mockUseIsFeatureEnabled.mockImplementation(() => {
-      return (flag) => {
-        const activeResources = ['webinar', 'video', 'document', 'custom_app'];
-        return activeResources.includes(flag);
-      };
+    useFlags.getState().setFlags({
+      video: true,
+      document: true,
+      webinar: true,
+      classroom: true,
+      deposit: true,
     });
     render(
       <Suspense fallback="Loading...">
@@ -187,7 +168,7 @@ describe('SelectContentTabs', () => {
     expect(screen.getByRole('tab', { name: 'Videos' })).toBeInTheDocument();
     expect(screen.getByRole('tab', { name: 'Documents' })).toBeInTheDocument();
     expect(
-      await screen.findByRole('tab', { name: 'Other custom app tab' }),
+      await screen.findByRole('tab', { name: 'Custom app tab' }),
     ).toBeInTheDocument();
 
     // Webinars tab
@@ -264,11 +245,12 @@ describe('SelectContentTabs', () => {
   });
 
   it('renders only active tabs', () => {
-    mockUseIsFeatureEnabled.mockImplementation(() => {
-      return (flag) => {
-        const activeResources = ['video'];
-        return activeResources.includes(flag);
-      };
+    useFlags.getState().setFlags({
+      video: true,
+      document: false,
+      webinar: false,
+      classroom: false,
+      deposit: false,
     });
     render(
       <Suspense fallback="Loading...">

@@ -102,9 +102,7 @@ export interface AppConfig {
   player?: string;
   playlist?: Playlist;
   targeted_resource?: LtiSelectResource;
-  flags?: {
-    [key in flags]?: boolean;
-  };
+  flags?: Partial<Record<flags, boolean>>;
   uploadPollInterval: number;
   portability?: PortabilityConfig;
   dashboardCollapsed?: boolean;

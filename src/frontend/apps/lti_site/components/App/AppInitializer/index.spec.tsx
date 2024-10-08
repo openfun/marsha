@@ -1,6 +1,8 @@
 import { screen } from '@testing-library/react';
 import {
+  flags,
   useDocument,
+  useFlags,
   useJwt,
   useMaintenance,
   useP2PConfig,
@@ -62,6 +64,7 @@ describe('<AppInitializer />', () => {
     expect(useMaintenance.getState().isActive).toEqual(false);
     expect(useJwt.getState().getJwt()).toBeUndefined();
     expect(useJwt.getState().getRefreshJwt()).toBeUndefined();
+    expect(useFlags.getState().isFlagEnabled(flags.SENTRY)).toEqual(false);
 
     render(
       <AppInitializer jwt="jwt" refresh_token="refresh_token">
@@ -98,5 +101,6 @@ describe('<AppInitializer />', () => {
     expect(useMaintenance.getState().isActive).toEqual(true);
     expect(useJwt.getState().getJwt()).toEqual('jwt');
     expect(useJwt.getState().getRefreshJwt()).toEqual('refresh_token');
+    expect(useFlags.getState().isFlagEnabled(flags.SENTRY)).toEqual(true);
   });
 });

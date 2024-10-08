@@ -16,13 +16,13 @@ import {
   appNames,
   flags,
   uploadState,
+  useFlags,
 } from 'lib-components';
 import { initiateLive, useCreateVideo } from 'lib-video';
 import React, { ComponentType, Suspense, lazy } from 'react';
 import { useIntl } from 'react-intl';
 
 import { appConfigs } from 'data/appConfigs';
-import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
 import { useCreateDocument } from 'data/queries';
 
 import { SelectContentSection } from '../SelectContentSection';
@@ -113,14 +113,14 @@ export const SelectContentTabs = ({
         setContentItemsValue,
       ),
   });
-  const isFeatureEnabled = useIsFeatureEnabled();
+  const isFlagEnabled = useFlags((state) => state.isFlagEnabled);
 
   const appTabs: React.LazyExoticComponent<
     React.ComponentType<SelectContentTabProps>
   >[] = [];
   Object.values(appNames).forEach((appName) => {
     const appConfig = appConfigs[appName];
-    if (appConfig?.flag && !isFeatureEnabled(appConfig.flag)) {
+    if (appConfig?.flag && !isFlagEnabled(appConfig.flag)) {
       return;
     }
     appTabs.push(
@@ -137,11 +137,11 @@ export const SelectContentTabs = ({
   // calculate the initial active tab based on the feature flags, and use a
   // controlled Tabs component to update the active tab.
   let initialActiveTab: number;
-  if (isFeatureEnabled(flags.WEBINAR)) {
+  if (isFlagEnabled(flags.WEBINAR)) {
     initialActiveTab = 0;
-  } else if (isFeatureEnabled(flags.VIDEO)) {
+  } else if (isFlagEnabled(flags.VIDEO)) {
     initialActiveTab = 1;
-  } else if (isFeatureEnabled(flags.DOCUMENT)) {
+  } else if (isFlagEnabled(flags.DOCUMENT)) {
     initialActiveTab = 2;
   } else {
     initialActiveTab = 3;
@@ -152,7 +152,7 @@ export const SelectContentTabs = ({
   return (
     <Grommet theme={customTheme}>
       <Tabs activeIndex={activeTab} onActive={onTabChange}>
-        {isFeatureEnabled(flags.WEBINAR) && (
+        {isFlagEnabled(flags.WEBINAR) && (
           <Tab
             title={
               <RichTabTitle
@@ -184,7 +184,7 @@ export const SelectContentTabs = ({
             />
           </Tab>
         )}
-        {isFeatureEnabled(flags.VIDEO) && (
+        {isFlagEnabled(flags.VIDEO) && (
           <Tab
             title={
               <RichTabTitle
@@ -216,7 +216,7 @@ export const SelectContentTabs = ({
             />
           </Tab>
         )}
-        {isFeatureEnabled(flags.DOCUMENT) && (
+        {isFlagEnabled(flags.DOCUMENT) && (
           <Tab
             title={
               <RichTabTitle

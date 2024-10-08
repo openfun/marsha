@@ -5,6 +5,7 @@ import {
   flags,
   useAppConfig,
   useDocument,
+  useFlags,
   useJwt,
   useMaintenance,
   useP2PConfig,
@@ -19,8 +20,6 @@ import React, {
   useState,
 } from 'react';
 
-import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
-
 interface AppInitializerProps {
   jwt: Maybe<string>;
   refresh_token: Maybe<string>;
@@ -33,6 +32,10 @@ export const AppInitializer = (
   const [isJwtInitialized, setIsJwtInitialized] = useState(false);
 
   const appConfig = useAppConfig();
+  const [setFlags, isFlagEnabled] = useFlags((state) => [
+    state.setFlags,
+    state.isFlagEnabled,
+  ]);
   const jwt = useJwt((state) => state.getJwt());
   const setSentry = useSentry((state) => state.setSentry);
   const setP2PConfig = useP2PConfig((state) => state.setP2PConfig);
@@ -41,14 +44,20 @@ export const AppInitializer = (
   const addDocument = useDocument((state) => state.addResource);
   const setAttendanceDelay = useAttendance((state) => state.setDelay);
 
-  const isFeatureEnabled = useIsFeatureEnabled();
-
   const decodedJwt = useMemo(() => {
     if (jwt && isJwtInitialized) {
       return decodeJwt(jwt) as DecodedJwtLTI;
     }
     return null;
   }, [jwt, isJwtInitialized]);
+
+  useEffect(() => {
+    if (!appConfig.flags) {
+      return;
+    }
+
+    setFlags(appConfig.flags);
+  }, [setFlags, appConfig.flags]);
 
   useEffect(() => {
     if (isJwtInitialized) {
@@ -60,7 +69,7 @@ export const AppInitializer = (
   }, [isJwtInitialized, props.jwt, props.refresh_token]);
 
   useEffect(() => {
-    if (isFeatureEnabled(flags.SENTRY) && appConfig.sentry_dsn) {
+    if (isFlagEnabled(flags.SENTRY) && appConfig.sentry_dsn) {
       setSentry(
         appConfig.sentry_dsn,
         appConfig.environment,
@@ -73,7 +82,7 @@ export const AppInitializer = (
     appConfig.environment,
     appConfig.release,
     setSentry,
-    isFeatureEnabled,
+    isFlagEnabled,
   ]);
 
   useEffect(() => {

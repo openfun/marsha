@@ -67,6 +67,9 @@ const frontendConfiguration: ConfigResponse = {
     webTorrentTrackerUrls: [],
   },
   is_default_site: true,
+  flags: {
+    transcription: true,
+  },
 };
 
 describe('<App />', () => {

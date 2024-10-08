@@ -13,10 +13,10 @@ import {
   report,
   timedTextMode,
   uploadState,
+  useFlags,
   useTimedTextTrack,
   useUploadManager,
 } from 'lib-components';
-import { useIsFeatureEnabled } from 'marsha/data/hooks/useIsFeatureEnabled';
 import React, {
   useCallback,
   useEffect,
@@ -80,7 +80,7 @@ export const LocalizedTimedTextTrackUpload = ({
 }: UploadWidgetGenericProps) => {
   const intl = useIntl();
   const video = useCurrentVideo();
-  const isFeatureEnabled = useIsFeatureEnabled();
+  const { isFlagEnabled } = useFlags();
   const { addUpload, resetUpload, uploadManagerState } = useUploadManager();
 
   const timedTextTrackFn = useCallback(
@@ -249,7 +249,7 @@ export const LocalizedTimedTextTrackUpload = ({
         {intl.formatMessage(messages.uploadButtonLabel)}
       </Button>
 
-      {isFeatureEnabled(flags.TRANSCRIPTION) &&
+      {isFlagEnabled(flags.TRANSCRIPTION) &&
         video.upload_state === uploadState.READY &&
         timedTextModeWidget === timedTextMode.TRANSCRIPT &&
         filteredTimedTextTracks.length === 0 && (

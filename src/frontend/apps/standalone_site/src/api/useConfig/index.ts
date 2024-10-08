@@ -17,6 +17,7 @@ export interface ConfigResponse extends SiteConfig {
   environment: string;
   release: string;
   inactive_resources: string[];
+  flags: Partial<Record<string, boolean>>;
 }
 
 export const getConfig = async () => {
