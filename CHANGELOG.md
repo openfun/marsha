@@ -17,6 +17,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Split websocket and asgi apps in tray
 - Remove websocket connection in VOD student dashboard
+- Remove useIsFeatureEnabled and use new store useFlags instead
 
 ### Fixed
 

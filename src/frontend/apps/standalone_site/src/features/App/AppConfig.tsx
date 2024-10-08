@@ -1,5 +1,6 @@
 import {
   BoxLoader,
+  useFlags,
   useP2PConfig,
   useSentry,
   useSiteConfig,
@@ -29,6 +30,7 @@ const AppConfig = ({ children }: PropsWithChildren<unknown>) => {
   const setSentry = useSentry((state) => state.setSentry);
   const setP2PConfig = useP2PConfig((state) => state.setP2PConfig);
   const setSiteConfig = useSiteConfig((state) => state.setSiteConfig);
+  const setFlags = useFlags((state) => state.setFlags);
   const { data: config } = useConfig({
     keepPreviousData: true,
     staleTime: Infinity,
@@ -69,7 +71,8 @@ const AppConfig = ({ children }: PropsWithChildren<unknown>) => {
       meta_description: config.meta_description,
       meta_title: config.meta_title,
     });
-  }, [setSentry, setP2PConfig, config, setSiteConfig]);
+    setFlags(config.flags);
+  }, [setSentry, setP2PConfig, config, setSiteConfig, setFlags]);
 
   useEffect(() => {
     if (!intl) {

@@ -5,6 +5,7 @@ import {
   WithParams,
   appState,
   useAppConfig,
+  useFlags,
 } from 'lib-components';
 import { render } from 'lib-tests';
 
@@ -20,16 +21,19 @@ const mockedUseAppConfig = useAppConfig as jest.MockedFunction<
   typeof useAppConfig
 >;
 
+const initFlags = useFlags.getState().flags;
+
 describe('<RedirectOnLoad />', () => {
   afterEach(() => {
     jest.resetAllMocks();
+    useFlags.getState().setFlags(initFlags);
   });
 
   it('redirects users to the error view on LTI error', () => {
     mockedUseAppConfig.mockReturnValue({
       state: appState.ERROR,
-      flags: { classroom: true },
     } as any);
+    useFlags.getState().setFlags({ classroom: true });
 
     render(<RedirectOnLoad />, {
       routerOptions: {
@@ -51,8 +55,9 @@ describe('<RedirectOnLoad />', () => {
 
   it('shows not found error when feature is disabled', () => {
     mockedUseAppConfig.mockReturnValue({
-      flags: { classroom: false },
+      state: appState.SUCCESS,
     } as any);
+    useFlags.getState().setFlags({ classroom: false });
 
     render(<RedirectOnLoad />, {
       routerOptions: {
@@ -74,8 +79,9 @@ describe('<RedirectOnLoad />', () => {
 
   it('shows dashboard', () => {
     mockedUseAppConfig.mockReturnValue({
-      flags: { classroom: true },
+      state: appState.SUCCESS,
     } as any);
+    useFlags.getState().setFlags({ classroom: true });
 
     render(<RedirectOnLoad />, {
       routerOptions: {
@@ -93,9 +99,9 @@ describe('<RedirectOnLoad />', () => {
 
   it('redirects to portability if app state requires it', () => {
     mockedUseAppConfig.mockReturnValue({
-      flags: { classroom: true },
       state: appState.PORTABILITY,
     } as any);
+    useFlags.getState().setFlags({ classroom: true });
 
     render(<RedirectOnLoad />, {
       routerOptions: {

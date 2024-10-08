@@ -6,6 +6,7 @@ import {
   flags,
   useAppConfig,
   useCurrentResourceContext,
+  useFlags,
   useJwt,
 } from 'lib-components';
 import {
@@ -16,7 +17,6 @@ import {
 import { Navigate } from 'react-router-dom';
 
 import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
-import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
 
 import { MARKDOWN_WIZARD_ROUTE } from '../MarkdownWizard/route';
 
@@ -28,7 +28,7 @@ type RedirectOnLoadProps = {
 // route to load in the Router
 export const RedirectOnLoad = ({ markdownDocument }: RedirectOnLoadProps) => {
   const appData = useAppConfig();
-  const isFeatureEnabled = useIsFeatureEnabled();
+  const isFlagEnabled = useFlags((state) => state.isFlagEnabled);
   const [context] = useCurrentResourceContext();
 
   // Get LTI errors out of the way
@@ -36,7 +36,7 @@ export const RedirectOnLoad = ({ markdownDocument }: RedirectOnLoadProps) => {
     return <Navigate to={builderFullScreenErrorRoute(ErrorComponents.lti)} />;
   }
 
-  if (!isFeatureEnabled(flags.MARKDOWN)) {
+  if (!isFlagEnabled(flags.MARKDOWN)) {
     return <Navigate to={MARKDOWN_NOT_FOUND_ROUTE()} />;
   }
 

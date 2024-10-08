@@ -1,6 +1,12 @@
 import { act, screen, waitFor, within } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { useP2PConfig, useSentry, useSiteConfig } from 'lib-components';
+import {
+  flags,
+  useFlags,
+  useP2PConfig,
+  useSentry,
+  useSiteConfig,
+} from 'lib-components';
 import { Deferred, render } from 'lib-tests';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -38,8 +44,11 @@ const config: ConfigResponse = {
     webTorrentTrackerUrls: [],
   },
   is_default_site: true,
+  flags: {
+    transcription: true,
+  },
 };
-
+const initFlags = useFlags.getState().flags;
 describe('AppConfig', () => {
   beforeEach(() => {
     useSentry.setState({
@@ -57,6 +66,7 @@ describe('AppConfig', () => {
       featureShuffles: [],
       isFeatureLoaded: false,
     });
+    useFlags.getState().setFlags(initFlags);
 
     deferredConfig = new Deferred();
     fetchMock.get('/api/config/', deferredConfig.promise);
@@ -127,6 +137,23 @@ describe('AppConfig', () => {
     expect(fetchMock.called('/api/config/')).toBe(true);
     await waitFor(() => {
       expect(useSentry.getState().isSentryReady).toEqual(true);
+    });
+  });
+
+  it('should init flags', async () => {
+    deferredConfig.resolve(config);
+
+    expect(useFlags.getState().isFlagEnabled(flags.TRANSCRIPTION)).toEqual(
+      false,
+    );
+
+    render(<AppConfig />);
+
+    expect(fetchMock.called('/api/config/')).toBe(true);
+    await waitFor(() => {
+      expect(useFlags.getState().isFlagEnabled(flags.TRANSCRIPTION)).toEqual(
+        true,
+      );
     });
   });
 

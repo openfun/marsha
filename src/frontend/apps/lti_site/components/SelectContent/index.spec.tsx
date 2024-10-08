@@ -7,6 +7,7 @@ import {
   liveState,
   selectableBaseResource,
   uploadState,
+  useFlags,
 } from 'lib-components';
 import {
   documentMockFactory,
@@ -22,14 +23,6 @@ import { SelectContentTabProps } from './SelectContentTabs';
 import { buildContentItems } from './utils';
 
 import { SelectContent } from '.';
-
-jest.mock(
-  'data/hooks/useIsFeatureEnabled',
-  () =>
-    ({
-      useIsFeatureEnabled: () => () => true,
-    }) as any,
-);
 
 const mockAppData = {
   new_document_url: 'https://example.com/lti/documents/',
@@ -51,8 +44,8 @@ jest.mock('lib-components', () => ({
   Loader: () => <span>Loader</span>,
   useAppConfig: () => ({}),
   appNames: {
-    custom_app: 'custom_app',
-    other_custom_app: 'other_custom_app',
+    classroom: 'classroom',
+    deposit: 'deposit',
   },
 }));
 
@@ -86,11 +79,8 @@ const mockCustomSelectContentTab = ({
 );
 
 jest.mock(
-  'apps/custom_app/components/SelectContent/SelectContentTab',
+  'apps/classroom/components/SelectContent/SelectContentTab',
   () => mockCustomSelectContentTab,
-  {
-    virtual: true,
-  },
 );
 
 const mockOtherCustomSelectContentTab = ({
@@ -115,14 +105,19 @@ const mockOtherCustomSelectContentTab = ({
 );
 
 jest.mock(
-  'apps/other_custom_app/components/SelectContent/SelectContentTab',
+  'apps/deposit/components/SelectContent/SelectContentTab',
   () => mockOtherCustomSelectContentTab,
-  {
-    virtual: true,
-  },
 );
 
 window.HTMLFormElement.prototype.submit = jest.fn();
+
+useFlags.getState().setFlags({
+  video: true,
+  document: true,
+  webinar: true,
+  classroom: true,
+  deposit: true,
+});
 
 describe('<SelectContent />', () => {
   afterEach(() => {

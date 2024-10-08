@@ -8,7 +8,7 @@ import {
   modelName,
   timedTextMode,
   uploadState,
-  useAppConfig,
+  useFlags,
   useJwt,
   useTimedTextTrack,
   useUploadManager,
@@ -32,10 +32,6 @@ jest.mock('lib-components', () => ({
   },
   report: jest.fn(),
 }));
-
-const mockedUseAppConfig = useAppConfig as jest.MockedFunction<
-  typeof useAppConfig
->;
 
 const mockUseUploadManager = useUploadManager as jest.MockedFunction<
   typeof useUploadManager
@@ -65,6 +61,9 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
     });
     jest.clearAllMocks();
     fetchMock.restore();
+    useFlags.getState().setFlags({
+      transcription: false,
+    });
   });
 
   it('renders the component without any uploaded timed text track', async () => {
@@ -78,10 +77,6 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
       },
       { method: 'OPTIONS' },
     );
-
-    mockedUseAppConfig.mockReturnValue({
-      flags: { transcription: true },
-    } as any);
 
     mockUseUploadManager.mockReturnValue({
       addUpload: jest.fn(),
@@ -133,9 +128,9 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
       video: mockedVideo.id,
     };
 
-    mockedUseAppConfig.mockReturnValue({
-      flags: { transcription: true },
-    } as any);
+    useFlags.getState().setFlags({
+      transcription: true,
+    });
 
     mockCreateTimedTextTrack.mockImplementation(() =>
       Promise.resolve(mockTimedTextTrack),
@@ -330,9 +325,9 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
       { method: 'OPTIONS' },
     );
 
-    mockedUseAppConfig.mockReturnValue({
-      flags: { transcription: true },
-    } as any);
+    useFlags.getState().setFlags({
+      transcription: true,
+    });
 
     mockUseUploadManager.mockReturnValue({
       addUpload: jest.fn(),
@@ -376,6 +371,9 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
       },
       { method: 'OPTIONS' },
     );
+    useFlags.getState().setFlags({
+      transcription: true,
+    });
 
     mockUseUploadManager.mockReturnValue({
       addUpload: jest.fn(),
@@ -418,6 +416,9 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
       },
       { method: 'OPTIONS' },
     );
+    useFlags.getState().setFlags({
+      transcription: true,
+    });
 
     mockUseUploadManager.mockReturnValue({
       addUpload: jest.fn(),
@@ -458,6 +459,10 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
       uploadManagerState: {},
     });
 
+    useFlags.getState().setFlags({
+      transcription: true,
+    });
+
     render(
       wrapInVideo(
         <LocalizedTimedTextTrackUpload
@@ -488,9 +493,9 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
       { method: 'OPTIONS' },
     );
 
-    mockedUseAppConfig.mockReturnValue({
-      flags: { transcription: false },
-    } as any);
+    useFlags.getState().setFlags({
+      transcription: false,
+    });
 
     mockUseUploadManager.mockReturnValue({
       addUpload: jest.fn(),

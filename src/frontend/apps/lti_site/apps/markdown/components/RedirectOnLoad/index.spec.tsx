@@ -6,6 +6,7 @@ import {
   appState,
   useAppConfig,
   useCurrentResourceContext,
+  useFlags,
   useJwt,
 } from 'lib-components';
 import {
@@ -39,6 +40,8 @@ const mockedUseCurrentResourceContext =
     typeof useCurrentResourceContext
   >;
 
+const initFlags = useFlags.getState().flags;
+
 describe('<RedirectOnLoad />', () => {
   beforeEach(() => {
     useJwt.getState().setJwt('some token');
@@ -46,13 +49,14 @@ describe('<RedirectOnLoad />', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+    useFlags.getState().setFlags(initFlags);
   });
 
   it('redirects users to the error view on LTI error', () => {
     mockedUseAppConfig.mockReturnValue({
       state: appState.ERROR,
-      flags: { markdown: true },
     } as any);
+    useFlags.getState().setFlags({ markdown: true });
     mockedUseCurrentResourceContext.mockReturnValue([] as any);
 
     render(<RedirectOnLoad />, {
@@ -75,8 +79,9 @@ describe('<RedirectOnLoad />', () => {
 
   it('shows not found when feature is disabled', () => {
     mockedUseAppConfig.mockReturnValue({
-      flags: { markdown: false },
+      state: appState.SUCCESS,
     } as any);
+    useFlags.getState().setFlags({ markdown: false });
     mockedUseCurrentResourceContext.mockReturnValue([] as any);
 
     render(<RedirectOnLoad />, {
@@ -95,8 +100,9 @@ describe('<RedirectOnLoad />', () => {
 
   it('shows editor for instructor who can update an existing document', () => {
     mockedUseAppConfig.mockReturnValue({
-      flags: { markdown: true },
+      state: appState.SUCCESS,
     } as any);
+    useFlags.getState().setFlags({ markdown: true });
     mockedUseCurrentResourceContext.mockReturnValue([
       {
         permissions: {
@@ -123,8 +129,9 @@ describe('<RedirectOnLoad />', () => {
 
   it('shows wizard for instructor who can update a document without translation', () => {
     mockedUseAppConfig.mockReturnValue({
-      flags: { markdown: true },
+      appState: appState.SUCCESS,
     } as any);
+    useFlags.getState().setFlags({ markdown: true });
     mockedUseCurrentResourceContext.mockReturnValue([
       {
         permissions: {
@@ -154,8 +161,9 @@ describe('<RedirectOnLoad />', () => {
 
   it('shows wizard for instructor who can update a document which translation has no title', () => {
     mockedUseAppConfig.mockReturnValue({
-      flags: { markdown: true },
+      appState: appState.SUCCESS,
     } as any);
+    useFlags.getState().setFlags({ markdown: true });
     mockedUseCurrentResourceContext.mockReturnValue([
       {
         permissions: {
@@ -191,8 +199,9 @@ describe('<RedirectOnLoad />', () => {
 
   it('shows editor for instructor who can update a document if a translation has a title', () => {
     mockedUseAppConfig.mockReturnValue({
-      flags: { markdown: true },
+      appState: appState.SUCCESS,
     } as any);
+    useFlags.getState().setFlags({ markdown: true });
     mockedUseCurrentResourceContext.mockReturnValue([
       {
         permissions: {
@@ -233,8 +242,9 @@ describe('<RedirectOnLoad />', () => {
 
   it('shows viewer for student or instructor who cannot update', () => {
     mockedUseAppConfig.mockReturnValue({
-      flags: { markdown: true },
+      appState: appState.SUCCESS,
     } as any);
+    useFlags.getState().setFlags({ markdown: true });
     mockedUseCurrentResourceContext.mockReturnValue([
       {
         permissions: {
@@ -261,8 +271,9 @@ describe('<RedirectOnLoad />', () => {
 
   it('shows not found for student if still draft', () => {
     mockedUseAppConfig.mockReturnValue({
-      flags: { markdown: true },
+      appState: appState.SUCCESS,
     } as any);
+    useFlags.getState().setFlags({ markdown: true });
     useJwt.setState({
       jwt: undefined,
     });
@@ -284,9 +295,9 @@ describe('<RedirectOnLoad />', () => {
 
   it('redirects to portability if app state requires it', () => {
     mockedUseAppConfig.mockReturnValue({
-      flags: { markdown: true },
       state: appState.PORTABILITY,
     } as any);
+    useFlags.getState().setFlags({ markdown: true });
     useJwt.setState({
       jwt: undefined,
     });
