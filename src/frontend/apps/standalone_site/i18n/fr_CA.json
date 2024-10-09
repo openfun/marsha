@@ -491,6 +491,22 @@
     "description": "Text of the webinar delete confirmation toast.",
     "message": "{item_count, plural, one {# webinar} other {# webinars}} successfully deleted"
   },
+  "features.Footer.altEuropeLogo": {
+    "description": "Accessible description for the Europe logo",
+    "message": "Europe logo"
+  },
+  "features.Footer.altFranceRelanceLogo": {
+    "description": "Accessible description for the France Relance logo",
+    "message": "France Relance logo"
+  },
+  "features.Footer.altMinistryLogo": {
+    "description": "Accessible description for the Ministry logo",
+    "message": "Ministry logo"
+  },
+  "features.Footer.financedBy": {
+    "description": "Text displayed on the footer to indicate that the project is financed by the recovery plan",
+    "message": "Financed by the recovery plan"
+  },
   "features.Header.iconTitle": {
     "description": "Menu user icon title.",
     "message": "Account"

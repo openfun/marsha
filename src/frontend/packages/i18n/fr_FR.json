@@ -1746,9 +1746,17 @@
     "description": "Button's label offering the user to go validate is form and create a new video.",
     "message": "Une erreur s'est produite lors du téléversement de votre vidéo. Veuillez réessayer."
   },
+  "components.UploadWidgetGeneric.generateButtonLabel": {
+    "description": "Label of the button used to trigger the generation of the transcript.",
+    "message": "Générer la transcription"
+  },
   "components.UploadWidgetGeneric.noUploadFilesMessage": {
     "description": "Message displayed when there is no uploaded document.",
     "message": "Aucun fichier téléversé"
+  },
+  "components.UploadWidgetGeneric.transcriptMessage": {
+    "description": "Message displayed for explaining the transcript generation.",
+    "message": "En cliquant sur ce bouton, une transcription sera générée automatiquement en utilisant une IA. La langue de la transcription sera celle détectée dans la vidéo."
   },
   "components.UploadWidgetGeneric.uploadButtonLabel": {
     "description": "Label of the button used to upload the timed text file.",
