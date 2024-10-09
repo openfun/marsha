@@ -1,6 +1,7 @@
 """Celery s3 tasks for the core app."""
 
-from marsha import settings
+from django.conf import settings
+
 from marsha.celery_app import app
 from marsha.core.defaults import (
     DELETED_VIDEOS_STORAGE_BASE_DIRECTORY,
