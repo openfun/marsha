@@ -1746,9 +1746,17 @@
     "description": "Button's label offering the user to go validate is form and create a new video.",
     "message": "An error occured when uploading your video. Please retry."
   },
+  "components.UploadWidgetGeneric.generateButtonLabel": {
+    "description": "Label of the button used to trigger the generation of the transcript.",
+    "message": "Generate transcript"
+  },
   "components.UploadWidgetGeneric.noUploadFilesMessage": {
     "description": "Message displayed when there is no uploaded document.",
     "message": "No uploaded files"
+  },
+  "components.UploadWidgetGeneric.transcriptMessage": {
+    "description": "Message displayed for explaining the transcript generation.",
+    "message": "By clicking this button, a transcript will be automatically generated. The transcript's language will be the one detected in the video."
   },
   "components.UploadWidgetGeneric.uploadButtonLabel": {
     "description": "Label of the button used to upload the timed text file.",
