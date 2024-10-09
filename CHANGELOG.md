@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [5.1.0] - 2024-10-09
+
 ### Added
 
 - Add peertube transcript generation
@@ -1955,7 +1957,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v5.0.3...master
+[unreleased]: https://github.com/openfun/marsha/compare/v5.1.0...master
+[5.1.0]: https://github.com/openfun/marsha/compare/v5.0.3...v5.1.0
 [5.0.3]: https://github.com/openfun/marsha/compare/v5.0.2...v5.0.3
 [5.0.2]: https://github.com/openfun/marsha/compare/v5.0.1...v5.0.2
 [5.0.1]: https://github.com/openfun/marsha/compare/v5.0.0...v5.0.1
