@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Cleanup transcoding temp files
+
 ## [5.2.0] - 2024-10-22
 
 ### Added
