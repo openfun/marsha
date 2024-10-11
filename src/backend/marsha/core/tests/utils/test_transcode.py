@@ -7,6 +7,7 @@ from django_peertube_runner_connector.models import (
     VideoFile,
     VideoState,
     VideoStreamingPlaylist,
+    VideoResolution,
 )
 
 from marsha.core import defaults
@@ -31,6 +32,16 @@ class TranscodeTestCase(TestCase):
             state=VideoState.PUBLISHED,
             directory=f"vod/{self.video.pk}/video/1698941501",
         )
+        # A temporary source video file should exist on tmp directory
+        self.transcoded_video_source = VideoFile.objects.create(
+            video=self.transcoded_video,
+            streamingPlaylist=None,
+            resolution=VideoResolution.H_NOVIDEO,
+            size=123456,
+            extname="",
+            filename=f"tmp/{self.video.pk}/video/1698941501",
+        )
+
         self.video_playlist = VideoStreamingPlaylist.objects.create(
             video=self.transcoded_video
         )
@@ -63,6 +74,17 @@ class TranscodeTestCase(TestCase):
         self.assertEqual(self.video.upload_state, defaults.READY)
         self.assertEqual(self.video.transcode_pipeline, defaults.PEERTUBE_PIPELINE)
 
+        # Temporary source video file should be deleted
+        with self.assertRaises(VideoFile.DoesNotExist):
+            VideoFile.objects.get(id=self.transcoded_video_source.id)
+
+        self.assertEqual(self.transcoded_video.files.count(), 2)
+        self.assertQuerySetEqual(
+            self.transcoded_video.files.all(),
+            [self.video_file1, self.video_file2],
+            ordered=False,
+        )
+
     def test_transcoding_ended_callback_with_error(self):
         """The marsha video should be set with state on error and nothing else should be done."""
         self.transcoded_video.state = VideoState.TRANSCODING_FAILED
@@ -78,3 +100,14 @@ class TranscodeTestCase(TestCase):
         self.assertEqual(self.video.resolutions, [])
 
         self.assertEqual(self.video.transcode_pipeline, None)
+
+        # Temporary source video file should be deleted
+        with self.assertRaises(VideoFile.DoesNotExist):
+            VideoFile.objects.get(id=self.transcoded_video_source.id)
+
+        self.assertEqual(self.transcoded_video.files.count(), 2)
+        self.assertQuerySetEqual(
+            self.transcoded_video.files.all(),
+            [self.video_file1, self.video_file2],
+            ordered=False,
+        )
