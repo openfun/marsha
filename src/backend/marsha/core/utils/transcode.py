@@ -1,13 +1,15 @@
 """ Utils related to transcoding """
 
-from django_peertube_runner_connector.models import (
-    Video as TranscodedVideo,
-    VideoState,
-    VideoFile,
-    VideoResolution,
-)
+from django_peertube_runner_connector.models import Video as TranscodedVideo, VideoState
+from django_peertube_runner_connector.utils.files import delete_temp_file
 
-from marsha.core.defaults import ERROR, PEERTUBE_PIPELINE, READY
+from marsha.core.defaults import (
+    ERROR,
+    PEERTUBE_PIPELINE,
+    READY,
+    TMP_VIDEOS_STORAGE_BASE_DIRECTORY,
+    VOD_VIDEOS_STORAGE_BASE_DIRECTORY,
+)
 from marsha.core.models.video import Video
 from marsha.core.utils.time_utils import to_datetime
 
@@ -28,16 +30,11 @@ def transcoding_ended_callback(transcoded_video: TranscodedVideo):
     uploaded_on = directory[-1]
     video_id = directory[-3]
     video = Video.objects.get(pk=video_id)
-
-    temp_video_file = VideoFile.objects.get(
-        video=transcoded_video,
-        streamingPlaylist=None,
-        resolution=VideoResolution.H_NOVIDEO,
-        extname="",
-        filename=f"tmp/{video_id}/video/{uploaded_on}",
+    tmp_filename = transcoded_video.directory.replace(
+        VOD_VIDEOS_STORAGE_BASE_DIRECTORY, TMP_VIDEOS_STORAGE_BASE_DIRECTORY
     )
-    temp_video_file.remove_web_video_file()
-    temp_video_file.delete()
+
+    delete_temp_file(transcoded_video, tmp_filename)
 
     if transcoded_video.state == VideoState.TRANSCODING_FAILED:
         video.update_upload_state(ERROR, None)
