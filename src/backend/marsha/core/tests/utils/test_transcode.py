@@ -1,5 +1,7 @@
 """Tests for the `core.utils.transcode` module."""
 
+from unittest.mock import patch
+
 from django.test import TestCase
 
 from django_peertube_runner_connector.models import (
@@ -7,7 +9,6 @@ from django_peertube_runner_connector.models import (
     VideoFile,
     VideoState,
     VideoStreamingPlaylist,
-    VideoResolution,
 )
 
 from marsha.core import defaults
@@ -32,15 +33,6 @@ class TranscodeTestCase(TestCase):
             state=VideoState.PUBLISHED,
             directory=f"vod/{self.video.pk}/video/1698941501",
         )
-        # A temporary source video file should exist on tmp directory
-        self.transcoded_video_source = VideoFile.objects.create(
-            video=self.transcoded_video,
-            streamingPlaylist=None,
-            resolution=VideoResolution.H_NOVIDEO,
-            size=123456,
-            extname="",
-            filename=f"tmp/{self.video.pk}/video/1698941501",
-        )
 
         self.video_playlist = VideoStreamingPlaylist.objects.create(
             video=self.transcoded_video
@@ -61,53 +53,32 @@ class TranscodeTestCase(TestCase):
             extname="mp4",
         )
 
-    def test_transcoding_ended_callback(self):
+    @patch("marsha.core.utils.transcode.delete_temp_file")
+    def test_transcoding_ended_callback(self, mock_delete_temp_file):
         """The marsha video should correctly be updated."""
         transcoding_ended_callback(self.transcoded_video)
 
         self.video.refresh_from_db()
-
         self.assertEqual(self.video.uploaded_on, to_datetime("1698941501"))
-
         self.assertEqual(self.video.resolutions, [720, 1080])
-
         self.assertEqual(self.video.upload_state, defaults.READY)
         self.assertEqual(self.video.transcode_pipeline, defaults.PEERTUBE_PIPELINE)
-
-        # Temporary source video file should be deleted
-        with self.assertRaises(VideoFile.DoesNotExist):
-            VideoFile.objects.get(id=self.transcoded_video_source.id)
-
-        self.assertEqual(self.transcoded_video.files.count(), 2)
-        self.assertQuerySetEqual(
-            self.transcoded_video.files.all(),
-            [self.video_file1, self.video_file2],
-            ordered=False,
+        mock_delete_temp_file.assert_called_once_with(
+            self.transcoded_video, f"tmp/{self.video.pk}/video/1698941501"
         )
 
-    def test_transcoding_ended_callback_with_error(self):
+    @patch("marsha.core.utils.transcode.delete_temp_file")
+    def test_transcoding_ended_callback_with_error(self, mock_delete_temp_file):
         """The marsha video should be set with state on error and nothing else should be done."""
         self.transcoded_video.state = VideoState.TRANSCODING_FAILED
 
         transcoding_ended_callback(self.transcoded_video)
 
         self.video.refresh_from_db()
-
         self.assertEqual(self.video.upload_state, defaults.ERROR)
-
         self.assertEqual(self.video.uploaded_on, None)
-
         self.assertEqual(self.video.resolutions, [])
-
         self.assertEqual(self.video.transcode_pipeline, None)
-
-        # Temporary source video file should be deleted
-        with self.assertRaises(VideoFile.DoesNotExist):
-            VideoFile.objects.get(id=self.transcoded_video_source.id)
-
-        self.assertEqual(self.transcoded_video.files.count(), 2)
-        self.assertQuerySetEqual(
-            self.transcoded_video.files.all(),
-            [self.video_file1, self.video_file2],
-            ordered=False,
+        mock_delete_temp_file.assert_called_once_with(
+            self.transcoded_video, f"tmp/{self.video.pk}/video/1698941501"
         )
