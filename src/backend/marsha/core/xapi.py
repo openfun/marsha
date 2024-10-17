@@ -140,13 +140,13 @@ class XAPIDocumentStatement(XAPIStatementMixin):
             document, statement, homepage=current_site.domain, user=user
         )
 
-    def from_lti(self, document, statement, jwt_token):
+    def from_lti(self, document, statement, jwt_token, domain):
         """Compute a valid xapi download activity statement."""
 
         statement = self._build_statement(
             document,
             statement,
-            homepage=self.get_homepage(document),
+            homepage=domain,
             user_id=self.get_user_id(jwt_token),
         )
 
@@ -251,7 +251,7 @@ class XAPIVideoStatement(XAPIStatementMixin):
             video, statement, homepage=current_site.domain, user=user
         )
 
-    def from_lti(self, video, statement, jwt_token):
+    def from_lti(self, video, statement, jwt_token, domain):
         """Compute a valid xapi statement in an LTI context.
 
         Parameters
@@ -284,7 +284,7 @@ class XAPIVideoStatement(XAPIStatementMixin):
         statement = self._build_statement(
             video,
             statement,
-            homepage=self.get_homepage(video),
+            homepage=domain,
             user_id=self.get_user_id(jwt_token),
         )
 

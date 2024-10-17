@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Use domain from lti jwt token when no consumer site used
+
 ## [5.1.0] - 2024-10-09
 
 ### Added
