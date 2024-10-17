@@ -33,11 +33,6 @@ class XAPIStatementMixin:
             else jwt_token.payload["session_id"]
         )
 
-    @staticmethod
-    def get_homepage(resource):
-        """Return the domain associated to the playlist consumer site."""
-        return resource.playlist.consumer_site.domain
-
     def get_locale(self):
         """Return the locale formatted with a - instead of _"""
 
@@ -140,13 +135,19 @@ class XAPIDocumentStatement(XAPIStatementMixin):
             document, statement, homepage=current_site.domain, user=user
         )
 
-    def from_lti(self, document, statement, jwt_token):
+    def from_lti(
+        self,
+        document,
+        statement,
+        jwt_token,
+        domain=None,
+    ):
         """Compute a valid xapi download activity statement."""
 
         statement = self._build_statement(
             document,
             statement,
-            homepage=self.get_homepage(document),
+            homepage=domain or document.playlist.consumer_site.domain,
             user_id=self.get_user_id(jwt_token),
         )
 
@@ -251,7 +252,7 @@ class XAPIVideoStatement(XAPIStatementMixin):
             video, statement, homepage=current_site.domain, user=user
         )
 
-    def from_lti(self, video, statement, jwt_token):
+    def from_lti(self, video, statement, jwt_token, domain=None):
         """Compute a valid xapi statement in an LTI context.
 
         Parameters
@@ -281,10 +282,11 @@ class XAPIVideoStatement(XAPIStatementMixin):
             A jwt token containing the context used to enrich the xapi statement
 
         """
+
         statement = self._build_statement(
             video,
             statement,
-            homepage=self.get_homepage(video),
+            homepage=domain or video.playlist.consumer_site.domain,
             user_id=self.get_user_id(jwt_token),
         )
 

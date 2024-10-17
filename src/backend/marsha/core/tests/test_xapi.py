@@ -59,7 +59,12 @@ class XAPIVideoStatementTest(TestCase):
         }
 
         xapi_statement = XAPIVideoStatement()
-        statement = xapi_statement.from_lti(video, base_statement, jwt_token)
+        statement = xapi_statement.from_lti(
+            video,
+            base_statement,
+            jwt_token,
+            video.playlist.consumer_site.domain,
+        )
 
         self.assertIsNotNone(statement["timestamp"])
         self.assertEqual(
@@ -147,7 +152,12 @@ class XAPIVideoStatementTest(TestCase):
         }
 
         xapi_statement = XAPIVideoStatement()
-        statement = xapi_statement.from_lti(video, base_statement, jwt_token)
+        statement = xapi_statement.from_lti(
+            video,
+            base_statement,
+            jwt_token,
+            video.playlist.consumer_site.domain,
+        )
 
         self.assertIsNotNone(statement["timestamp"])
         self.assertEqual(
@@ -236,7 +246,12 @@ class XAPIVideoStatementTest(TestCase):
         }
 
         xapi_statement = XAPIVideoStatement()
-        statement = xapi_statement.from_lti(video, base_statement, jwt_token)
+        statement = xapi_statement.from_lti(
+            video,
+            base_statement,
+            jwt_token,
+            video.playlist.consumer_site.domain,
+        )
 
         self.assertIsNotNone(statement["timestamp"])
         self.assertEqual(
@@ -326,7 +341,12 @@ class XAPIVideoStatementTest(TestCase):
         }
 
         xapi_statement = XAPIVideoStatement()
-        statement = xapi_statement.from_lti(video, base_statement, jwt_token)
+        statement = xapi_statement.from_lti(
+            video,
+            base_statement,
+            jwt_token,
+            video.playlist.consumer_site.domain,
+        )
 
         self.assertIsNotNone(statement["timestamp"])
         self.assertEqual(
@@ -413,7 +433,12 @@ class XAPIVideoStatementTest(TestCase):
         }
 
         xapi_statement = XAPIVideoStatement()
-        statement = xapi_statement.from_lti(video, base_statement, jwt_token)
+        statement = xapi_statement.from_lti(
+            video,
+            base_statement,
+            jwt_token,
+            video.playlist.consumer_site.domain,
+        )
 
         self.assertIsNotNone(statement["timestamp"])
         self.assertEqual(
@@ -487,7 +512,94 @@ class XAPIDocumentStatementTest(TestCase):
         }
 
         xapi_statement = XAPIDocumentStatement()
-        statement = xapi_statement.from_lti(document, base_statement, jwt_token)
+        statement = xapi_statement.from_lti(
+            document,
+            base_statement,
+            jwt_token,
+            document.playlist.consumer_site.domain,
+        )
+
+        self.assertIsNotNone(statement["timestamp"])
+        self.assertEqual(
+            statement["actor"],
+            {
+                "objectType": "Agent",
+                "account": {
+                    "name": "b2584aa405540758db2a6278521b6478",
+                    "homePage": "http://example.com",
+                },
+            },
+        )
+        self.assertEqual(
+            statement["object"],
+            {
+                "definition": {
+                    "type": "http://id.tincanapi.com/activitytype/document",
+                    "name": {"en-US": "test document xapi"},
+                },
+                "id": "uuid://68333c45-4b8c-4018-a195-5d5e1706b838",
+                "objectType": "Activity",
+            },
+        )
+        self.assertEqual(
+            statement["context"],
+            {
+                "extensions": {
+                    "https://w3id.org/xapi/video/extensions/session-id": "a6151456-18b7-"
+                    "43b4-8452-2037fed588df"
+                },
+                "contextActivities": {
+                    "category": [{"id": "https://w3id.org/xapi/lms"}],
+                    "parent": [
+                        {
+                            "id": "course-v1:ufr+mathematics+0001",
+                            "objectType": "Activity",
+                            "definition": {
+                                "type": "http://adlnet.gov/expapi/activities/course"
+                            },
+                        }
+                    ],
+                },
+            },
+        )
+        self.assertEqual(statement["verb"], base_statement["verb"])
+        self.assertEqual(statement["id"], base_statement["id"])
+
+    @override_settings(LANGUAGE_CODE="en-us")
+    def test_xapi_statement_enrich_statement_no_domain(self):
+        """XAPI statement sent by the front application should be enriched."""
+        document = DocumentFactory(
+            id="68333c45-4b8c-4018-a195-5d5e1706b838",
+            playlist__consumer_site__domain="example.com",
+            title="test document xapi",
+        )
+
+        jwt_token = LTIPlaylistAccessTokenFactory(
+            session_id="326c0689-48c1-493e-8d2d-9fb0c289de7f",
+            context_id="course-v1:ufr+mathematics+0001",
+            user__id="b2584aa405540758db2a6278521b6478",
+        )
+
+        base_statement = {
+            "context": {
+                "extensions": {
+                    "https://w3id.org/xapi/video/extensions/session-id": "a6151456-18b7-"
+                    "43b4-8452-2037fed588df"
+                }
+            },
+            "verb": {
+                "display": {"en-US": "downloaded"},
+                "id": "http://id.tincanapi.com/verb/downloaded",
+            },
+            "id": "17dfcd44-b3e0-403d-ab96-e3ef7da616d4",
+        }
+
+        xapi_statement = XAPIDocumentStatement()
+        statement = xapi_statement.from_lti(
+            document,
+            base_statement,
+            jwt_token,
+        )
 
         self.assertIsNotNone(statement["timestamp"])
         self.assertEqual(
@@ -565,7 +677,12 @@ class XAPIDocumentStatementTest(TestCase):
         }
 
         xapi_statement = XAPIDocumentStatement()
-        statement = xapi_statement.from_lti(document, base_statement, jwt_token)
+        statement = xapi_statement.from_lti(
+            document,
+            base_statement,
+            jwt_token,
+            document.playlist.consumer_site.domain,
+        )
 
         self.assertIsNotNone(statement["timestamp"])
         self.assertEqual(
@@ -634,7 +751,12 @@ class XAPIDocumentStatementTest(TestCase):
         }
 
         xapi_statement = XAPIDocumentStatement()
-        statement = xapi_statement.from_lti(document, base_statement, jwt_token)
+        statement = xapi_statement.from_lti(
+            document,
+            base_statement,
+            jwt_token,
+            document.playlist.consumer_site.domain,
+        )
 
         self.assertIsNotNone(statement["timestamp"])
         self.assertEqual(
@@ -730,7 +852,80 @@ class XAPITest(TestCase):
         }
 
         xapi_statement = XAPIVideoStatement()
-        statement = xapi_statement.from_lti(video, base_statement, jwt_token)
+        statement = xapi_statement.from_lti(
+            video,
+            base_statement,
+            jwt_token,
+            video.playlist.consumer_site.domain,
+        )
+
+        responses.add(
+            responses.POST,
+            "https://lrs.example.com",
+            match=[
+                responses.matchers.json_params_matcher(statement),
+                responses.matchers.header_matcher(
+                    {
+                        "Authorization": "Basic auth_token",
+                        "Content-Type": "application/json",
+                        "X-Experience-API-Version": "1.0.3",
+                    }
+                ),
+            ],
+            status=204,
+        )
+
+        xapi.send(statement)
+
+    @responses.activate(assert_all_requests_are_fired=True)
+    def test_xapi_enrich_and_send_statement_no_domain(self):
+        """XAPI statement sent by the front application should be enriched.
+
+        Before sending a statement, the xapi module is responsible for enriching it.
+        """
+        xapi = XAPI("https://lrs.example.com", "Basic auth_token")
+
+        video = VideoFactory(
+            id="68333c45-4b8c-4018-a195-5d5e1706b838",
+            playlist__consumer_site__domain="example.com",
+            title="test video xapi",
+        )
+
+        jwt_token = LTIPlaylistAccessTokenFactory(
+            session_id="326c0689-48c1-493e-8d2d-9fb0c289de7f",
+            context_id="course-v1:ufr+mathematics+0001",
+            user__id="b2584aa405540758db2a6278521b6478",
+        )
+
+        base_statement = {
+            "context": {
+                "extensions": {
+                    "https://w3id.org/xapi/video/extensions/session-id": "a6151456-18b7-"
+                    "43b4-8452-2037fed588df"
+                }
+            },
+            "result": {
+                "extensions": {
+                    "https://w3id.org/xapi/video/extensions/time-from": 0,
+                    "https://w3id.org/xapi/video/extensions/time-to": 0,
+                    "https://w3id.org/xapi/video/extensions/length": 104.304,
+                    "https://w3id.org/xapi/video/extensions/progress": 0,
+                    "https://w3id.org/xapi/video/extensions/played-segments": "0",
+                }
+            },
+            "verb": {
+                "display": {"en-US": "seeked"},
+                "id": "https://w3id.org/xapi/video/verbs/seeked",
+            },
+            "id": "17dfcd44-b3e0-403d-ab96-e3ef7da616d4",
+        }
+
+        xapi_statement = XAPIVideoStatement()
+        statement = xapi_statement.from_lti(
+            video,
+            base_statement,
+            jwt_token,
+        )
 
         responses.add(
             responses.POST,
