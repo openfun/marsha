@@ -51,3 +51,15 @@ def transcoding_ended_callback(transcoded_video: TranscodedVideo):
         to_datetime(uploaded_on),
         **{"resolutions": resolutions},
     )
+
+
+def delete_transcoding_temp_files():
+    """Delete all transcoding temp files."""
+    transcoded_videos = TranscodedVideo.objects.filter(
+        state=VideoState.PUBLISHED, jobInfo__pendingTranscode=0
+    )
+    for transcoded_video in transcoded_videos:
+        tmp_filename = transcoded_video.directory.replace(
+            VOD_VIDEOS_STORAGE_BASE_DIRECTORY, TMP_VIDEOS_STORAGE_BASE_DIRECTORY
+        )
+        delete_temp_file(transcoded_video, tmp_filename)
