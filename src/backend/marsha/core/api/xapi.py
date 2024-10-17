@@ -17,6 +17,7 @@ from rest_framework.views import APIView
 from marsha.core import permissions, serializers
 from marsha.core.api.base import APIViewMixin
 from marsha.core.defaults import XAPI_STATEMENT_ID_CACHE
+from marsha.core.models import ConsumerSite
 from marsha.core.xapi import XAPI, get_xapi_statement
 
 
@@ -34,6 +35,14 @@ class XAPIStatementView(APIViewMixin, APIView):
     ):
         consumer_site = object_instance.playlist.consumer_site
 
+        if consumer_site is None:
+            # The resource is used in a LTI context but have been created in the website context
+            # so the consumer site does not exists on the playlist.
+            # We have to find it directly from the LTI information we have in the JWT token.
+            consumer_site = ConsumerSite.objects.get(
+                pk=request.resource.token.payload.get("consumer_site")
+            )
+
         # xapi statements are sent to a consumer-site-specific logger. We assume that the logger
         # name respects the following convention: "xapi.[consumer site domain]",
         # _e.g._ `xapi.foo.education` for the `foo.education` consumer site domain. Note that this
@@ -45,6 +54,7 @@ class XAPIStatementView(APIViewMixin, APIView):
             object_instance,
             partial_xapi_statement.validated_data,
             request.resource.token,
+            consumer_site.domain,
         )
 
         # Log the statement in the xapi logger
