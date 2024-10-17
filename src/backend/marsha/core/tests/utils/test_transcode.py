@@ -1,12 +1,12 @@
 """Tests for the `core.utils.transcode` module."""
 
 from unittest.mock import patch
+from uuid import uuid4
 
 from django.test import TestCase
 
 from django_peertube_runner_connector.factories import (
     VideoFactory as TranscodedVideoFactory,
-    VideoJobInfoFactory,
 )
 from django_peertube_runner_connector.models import (
     Video as TranscodedVideo,
@@ -24,8 +24,8 @@ from marsha.core.utils.transcode import (
 )
 
 
-class TranscodeTestCase(TestCase):
-    """Test the `transcode` functions."""
+class TranscodingEndedCallbackTestCase(TestCase):
+    """Test the `transcoding_ended_callback` function."""
 
     def setUp(self):
         # Create a test video
@@ -90,55 +90,29 @@ class TranscodeTestCase(TestCase):
             self.transcoded_video, f"tmp/{self.video.pk}/video/1698941501"
         )
 
+
+class DeleteTranscodingTempFilesTestCase(TestCase):
+    """Test the `delete_transcoding_temp_files` function."""
+
     @patch("marsha.core.utils.transcode.delete_temp_file")
     def test_transcoding_delete_transcoding_temp_files(self, mock_delete_temp_file):
         """The temp files should be deleted."""
-        VideoJobInfoFactory(pendingTranscode=0, video=self.transcoded_video)
-        temp_video_file = TranscodedVideoFactory(
-            directory=self.transcoded_video.directory.replace(
-                defaults.VOD_VIDEOS_STORAGE_BASE_DIRECTORY,
-                defaults.TMP_VIDEOS_STORAGE_BASE_DIRECTORY,
-            )
+        video_id = uuid4()
+        video_file = TranscodedVideoFactory(
+            directory=f"vod/{video_id}/video/1698941501"
         )
 
         delete_transcoding_temp_files()
 
         mock_delete_temp_file.assert_called_once_with(
-            self.transcoded_video, temp_video_file.directory
+            video_file, f"tmp/{video_id}/video/1698941501"
         )
 
     @patch("marsha.core.utils.transcode.delete_temp_file")
-    def test_transcoding_delete_transcoding_temp_files_pending_transcode(
-        self, mock_delete_temp_file
-    ):
-        """The temp files should not be deleted if there is a pending transcode."""
-        VideoJobInfoFactory(pendingTranscode=1, video=self.transcoded_video)
-        TranscodedVideoFactory(
-            directory=self.transcoded_video.directory.replace(
-                defaults.VOD_VIDEOS_STORAGE_BASE_DIRECTORY,
-                defaults.TMP_VIDEOS_STORAGE_BASE_DIRECTORY,
-            )
-        )
+    def test_transcoding_delete_transcoding_temp_files_all(self, mock_delete_temp_file):
+        """All video files should be processed."""
+        TranscodedVideoFactory.create_batch(15)
 
         delete_transcoding_temp_files()
 
-        mock_delete_temp_file.assert_not_called()
-
-    @patch("marsha.core.utils.transcode.delete_temp_file")
-    def test_transcoding_delete_transcoding_temp_files_not_published(
-        self, mock_delete_temp_file
-    ):
-        """The temp files should be deleted."""
-        self.transcoded_video.state = VideoState.TO_TRANSCODE
-        self.transcoded_video.save()
-        VideoJobInfoFactory(pendingTranscode=0, video=self.transcoded_video)
-        TranscodedVideoFactory(
-            directory=self.transcoded_video.directory.replace(
-                defaults.VOD_VIDEOS_STORAGE_BASE_DIRECTORY,
-                defaults.TMP_VIDEOS_STORAGE_BASE_DIRECTORY,
-            )
-        )
-
-        delete_transcoding_temp_files()
-
-        mock_delete_temp_file.assert_not_called()
+        self.assertEqual(mock_delete_temp_file.call_count, 15)
