@@ -113,10 +113,11 @@ describe('<TimedTextTrackItem />', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('renders the component for a processing timed text track', async () => {
+  it('renders the component for a processing transcript', async () => {
     const mockedTimedTextTrack = timedTextMockFactory({
       language: 'fr-FR',
       upload_state: uploadState.PROCESSING,
+      mode: timedTextMode.TRANSCRIPT,
     });
 
     const mockedUploadingObject: UploadingObject = {
@@ -159,11 +160,58 @@ describe('<TimedTextTrackItem />', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('renders the component for a processing transcript', async () => {
+  it('renders the component for a processing closed caption', async () => {
     const mockedTimedTextTrack = timedTextMockFactory({
       language: 'fr-FR',
       upload_state: uploadState.PROCESSING,
-      mode: timedTextMode.TRANSCRIPT,
+      mode: timedTextMode.CLOSED_CAPTIONING,
+    });
+
+    const mockedUploadingObject: UploadingObject = {
+      file: new File([], 'subtitle.srt'),
+      objectType: modelName.TIMEDTEXTTRACKS,
+      objectId: mockedTimedTextTrack.id,
+      progress: 100,
+      status: UploadManagerStatus.SUCCESS,
+    };
+
+    render(
+      <UploadManagerContext.Provider
+        value={{
+          setUploadState: () => {},
+          uploadManagerState: {
+            [mockedTimedTextTrack.id]: mockedUploadingObject,
+          },
+        }}
+      >
+        <DeleteTimedTextTrackUploadModalProvider value={null}>
+          <TimedTextTrackItem
+            onRetryFailedUpload={mockedOnRetryFailedUpload}
+            timedTextTrack={mockedTimedTextTrack}
+            uploadingObject={mockedUploadingObject}
+            choices={languageChoices}
+          />
+        </DeleteTimedTextTrackUploadModalProvider>
+      </UploadManagerContext.Provider>,
+    );
+
+    await screen.findByText('French');
+    screen.getByRole('button', {
+      name: 'Click on this button to delete the timed text track.',
+    });
+    screen.getByText('Processing');
+    expect(
+      screen.queryByRole('button', {
+        name: 'Click on this button to retry uploading your failed upload.',
+      }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders the component for a processing subtitle', async () => {
+    const mockedTimedTextTrack = timedTextMockFactory({
+      language: 'fr-FR',
+      upload_state: uploadState.PROCESSING,
+      mode: timedTextMode.SUBTITLE,
     });
 
     const mockedUploadingObject: UploadingObject = {
