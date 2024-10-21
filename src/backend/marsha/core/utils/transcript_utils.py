@@ -28,13 +28,11 @@ def transcript(video):
         TimedTextTrack.objects.create(
             video=video,
             language=settings.LANGUAGES[0][0],
-            mode=TimedTextTrack.TRANSCRIPT,
+            mode=TimedTextTrack.SUBTITLE,
             upload_state=defaults.PROCESSING,
         )
     except IntegrityError as e:
-        raise TranscriptError(
-            f"A transcript already exists for video {video.id}"
-        ) from e
+        raise TranscriptError(f"A subtitle already exists for video {video.id}") from e
 
     domain = (
         settings.TRANSCODING_CALLBACK_DOMAIN
@@ -78,7 +76,7 @@ def transcription_ended_callback(
 
     timed_text_track, created = video.timedtexttracks.get_or_create(
         upload_state=defaults.PROCESSING,
-        mode=TimedTextTrack.TRANSCRIPT,
+        mode=TimedTextTrack.SUBTITLE,
         defaults={
             "language": language,
             "extension": "vtt",
@@ -86,6 +84,8 @@ def transcription_ended_callback(
             "upload_state": defaults.READY,
         },
     )
+    video.should_use_subtitle_as_transcript = True
+    video.save()
     if not created:
         timed_text_track.upload_state = defaults.READY
         timed_text_track.uploaded_on = to_datetime(uploaded_on)

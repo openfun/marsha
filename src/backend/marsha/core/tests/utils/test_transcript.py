@@ -56,9 +56,12 @@ class TranscriptTestCase(TestCase):
 
         timed_text_track = video.timedtexttracks.get()
         self.assertEqual(timed_text_track.language, language)
-        self.assertEqual(timed_text_track.mode, TimedTextTrack.TRANSCRIPT)
+        self.assertEqual(timed_text_track.mode, TimedTextTrack.SUBTITLE)
         self.assertEqual(timed_text_track.upload_state, defaults.READY)
         self.assertEqual(timed_text_track.extension, "vtt")
+
+        video.refresh_from_db()
+        self.assertTrue(video.should_use_subtitle_as_transcript)
 
         ttt_path = timed_text_track.get_videos_storage_prefix()
         self.assertTrue(
@@ -114,15 +117,15 @@ class TranscriptTestCase(TestCase):
         mock_launch_video_transcript.delay.assert_not_called()
 
     @patch.object(transcript_utils, "launch_video_transcript")
-    def test_transcript_video_already_transcript(self, mock_launch_video_transcript):
+    def test_transcript_video_already_subtitle(self, mock_launch_video_transcript):
         """
         Should not call the launch_video_transcript function
-        if the video already has a transcript.
+        if the video already has a subtitle.
         """
         timed_text_track = TimedTextTrackFactory(
             video=VideoFactory(upload_state=defaults.READY),
             language=settings.LANGUAGES[0][0],
-            mode=TimedTextTrack.TRANSCRIPT,
+            mode=TimedTextTrack.SUBTITLE,
         )
 
         with self.assertRaises(transcript_utils.TranscriptError) as context:
@@ -130,15 +133,15 @@ class TranscriptTestCase(TestCase):
 
         self.assertEqual(
             str(context.exception),
-            f"A transcript already exists for video {timed_text_track.video.id}",
+            f"A subtitle already exists for video {timed_text_track.video.id}",
         )
         mock_launch_video_transcript.delay.assert_not_called()
 
     @patch.object(transcript_utils, "launch_video_transcript")
-    def test_transcript_video_already_subtitle(self, mock_launch_video_transcript):
+    def test_transcript_video_already_transcript(self, mock_launch_video_transcript):
         """
         Should call the launch_video_transcript function
-        if the video has a subtitle.
+        if the video has a transcript.
         """
         timed_text_track = TimedTextTrackFactory(
             video=VideoFactory(
@@ -146,7 +149,7 @@ class TranscriptTestCase(TestCase):
                 transcode_pipeline=defaults.PEERTUBE_PIPELINE,
             ),
             language=settings.LANGUAGES[0][0],
-            mode=TimedTextTrack.SUBTITLE,
+            mode=TimedTextTrack.TRANSCRIPT,
         )
 
         transcript_utils.transcript(timed_text_track.video)
@@ -159,7 +162,7 @@ class TranscriptTestCase(TestCase):
         self.assertEqual(timed_text_track.video.timedtexttracks.count(), 2)
         self.assertTrue(
             timed_text_track.video.timedtexttracks.filter(
-                mode=TimedTextTrack.TRANSCRIPT
+                mode=TimedTextTrack.SUBTITLE
             ).exists()
         )
 
@@ -190,7 +193,7 @@ class TranscriptTestCase(TestCase):
         self.assertEqual(timed_text_track.video.timedtexttracks.count(), 2)
         self.assertTrue(
             timed_text_track.video.timedtexttracks.filter(
-                mode=TimedTextTrack.TRANSCRIPT
+                mode=TimedTextTrack.SUBTITLE
             ).exists()
         )
 
