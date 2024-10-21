@@ -70,7 +70,7 @@ export const TimedTextTrackItem = ({
       pad={{ horizontal: 'small', vertical: 'small' }}
     >
       {(timedTextTrack.upload_state !== uploadState.PROCESSING ||
-        timedTextTrack.mode !== timedTextMode.TRANSCRIPT) && (
+        timedTextTrack.mode !== timedTextMode.SUBTITLE) && (
         <React.Fragment>
           <Box align="center">
             <DeleteTimedTextTrackItemUploadButton

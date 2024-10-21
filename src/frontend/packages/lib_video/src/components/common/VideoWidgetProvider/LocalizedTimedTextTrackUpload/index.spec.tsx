@@ -298,7 +298,7 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
 
     await screen.findByText('French');
     screen.getByText('Uploading');
-    screen.getByText('English');
+    // screen.getByText('English');
     screen.getByText('Processing');
     screen.getByText('Spanish');
     screen.getByText('Uploading');
@@ -307,10 +307,10 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
       screen.getAllByRole('button', {
         name: 'Click on this button to delete the timed text track.',
       }),
-    ).toHaveLength(3);
+    ).toHaveLength(2);
   });
 
-  it('renders a generate transcription button in transcript mode if none exists', async () => {
+  it('renders a generate transcription button in subtitle mode if none exists', async () => {
     const mockedVideo = videoMockFactory({
       id: '1234',
     });
@@ -338,7 +338,7 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
     render(
       wrapInVideo(
         <LocalizedTimedTextTrackUpload
-          timedTextModeWidget={timedTextMode.TRANSCRIPT}
+          timedTextModeWidget={timedTextMode.SUBTITLE}
         />,
         mockedVideo,
       ),
@@ -351,7 +351,7 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
     await userEvent.click(generateTranscriptButton);
 
     screen.getByText(
-      "By clicking this button, a transcript will be automatically generated. The transcript's language will be the one detected in the video.",
+      "By clicking this button, a transcript will be automatically generated and used as a subtitle. The transcript's language will be the one detected in the video.",
     );
 
     expect(fetchMock.calls()).toHaveLength(2);
@@ -360,7 +360,7 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
     );
   });
 
-  it('does not render a generate transcription button in transcript mode if one exists', () => {
+  it('does not render a generate transcription button in subtitle mode if one exists', () => {
     const mockedVideo = videoMockFactory({
       id: '1234',
     });
@@ -383,7 +383,7 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
 
     const mockedTimedTextTrackCompleted = timedTextMockFactory({
       language: 'es-ES',
-      mode: timedTextMode.TRANSCRIPT,
+      mode: timedTextMode.SUBTITLE,
     });
     useTimedTextTrack.getState().addResource(mockedTimedTextTrackCompleted);
 
@@ -405,7 +405,7 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('does not render a generate transcription button in subtitle mode', () => {
+  it('does not render a generate transcription button in transcript mode', () => {
     const mockedVideo = videoMockFactory({
       id: '1234',
     });
@@ -429,7 +429,7 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
     render(
       wrapInVideo(
         <LocalizedTimedTextTrackUpload
-          timedTextModeWidget={timedTextMode.SUBTITLE}
+          timedTextModeWidget={timedTextMode.TRANSCRIPT}
         />,
         mockedVideo,
       ),
@@ -478,7 +478,7 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('does not render a generate transcription button in transcript mode if flag disabled', () => {
+  it('does not render a generate transcription button in subtitle mode if flag disabled', () => {
     const mockedVideo = videoMockFactory({
       id: '1234',
     });
@@ -506,7 +506,7 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
     render(
       wrapInVideo(
         <LocalizedTimedTextTrackUpload
-          timedTextModeWidget={timedTextMode.TRANSCRIPT}
+          timedTextModeWidget={timedTextMode.SUBTITLE}
         />,
         mockedVideo,
       ),

@@ -65,7 +65,7 @@ const messages = defineMessages({
   },
   transcriptMessage: {
     defaultMessage:
-      "By clicking this button, a transcript will be automatically generated. The transcript's language will be the one detected in the video.",
+      "By clicking this button, a transcript will be automatically generated and used as a subtitle. The transcript's language will be the one detected in the video.",
     description: 'Message displayed for explaining the transcript generation.',
     id: 'components.UploadWidgetGeneric.transcriptMessage',
   },
@@ -251,7 +251,7 @@ export const LocalizedTimedTextTrackUpload = ({
 
       {isFlagEnabled(flags.TRANSCRIPTION) &&
         video.upload_state === uploadState.READY &&
-        timedTextModeWidget === timedTextMode.TRANSCRIPT &&
+        timedTextModeWidget === timedTextMode.SUBTITLE &&
         filteredTimedTextTracks.length === 0 && (
           <Box
             align="center"
