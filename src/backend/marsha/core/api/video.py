@@ -1226,7 +1226,7 @@ class VideoViewSet(
             timed_text_track = TimedTextTrack.objects.create(
                 video=video,
                 language=settings.LANGUAGES[0][0],
-                mode=TimedTextTrack.TRANSCRIPT,
+                mode=TimedTextTrack.SUBTITLE,
                 upload_state=defaults.PROCESSING,
             )
         except IntegrityError:

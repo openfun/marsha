@@ -83,7 +83,7 @@ class VideoInitiateTranscriptAPITest(TestCase):
         mock_dispatch_video.assert_called_once_with(video)
 
         self.assertEqual(timed_text_track.language, "en")
-        self.assertEqual(timed_text_track.mode, models.TimedTextTrack.TRANSCRIPT)
+        self.assertEqual(timed_text_track.mode, models.TimedTextTrack.SUBTITLE)
         self.assertEqual(timed_text_track.upload_state, defaults.PROCESSING)
 
     def test_api_video_initiate_transcript_staff_or_user(self):
@@ -136,7 +136,7 @@ class VideoInitiateTranscriptAPITest(TestCase):
         factories.TimedTextTrackFactory(
             video=video,
             language="en",
-            mode=models.TimedTextTrack.TRANSCRIPT,
+            mode=models.TimedTextTrack.SUBTITLE,
             upload_state=defaults.READY,
         )
         jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
@@ -204,5 +204,5 @@ class VideoInitiateTranscriptAPITest(TestCase):
         mock_dispatch_video.assert_called_once_with(video)
 
         self.assertEqual(timed_text_track.language, "en")
-        self.assertEqual(timed_text_track.mode, models.TimedTextTrack.TRANSCRIPT)
+        self.assertEqual(timed_text_track.mode, models.TimedTextTrack.SUBTITLE)
         self.assertEqual(timed_text_track.upload_state, defaults.PROCESSING)
