@@ -5,10 +5,12 @@ import random
 from django.test import TestCase
 
 from social_django.utils import load_strategy
+from waffle.testutils import override_switch
 
 from marsha.account.factories import IdpOrganizationAssociationFactory
 from marsha.account.social_pipeline.playlist import create_playlist_from_saml
 from marsha.account.tests.utils import MockedFERSAMLAuth, override_saml_fer_settings
+from marsha.core.defaults import ALLOW_PLAYLIST_CREATION_FOR_ALL_ROLES
 from marsha.core.factories import PlaylistAccessFactory, UserFactory
 from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, Playlist, PlaylistAccess
 
@@ -58,6 +60,7 @@ class PlaylistPipelineTestCase(TestCase):
         self.assertEqual(Playlist.objects.count(), 0)
         self.assertEqual(PlaylistAccess.objects.count(), 0)
 
+    @override_switch(ALLOW_PLAYLIST_CREATION_FOR_ALL_ROLES, active=False)
     def test_create_playlist_from_saml_student_or_unknown_new(self):
         """No playlist should be created when the user is a student."""
 
@@ -75,6 +78,7 @@ class PlaylistPipelineTestCase(TestCase):
         self.assertEqual(Playlist.objects.count(), 0)
         self.assertEqual(PlaylistAccess.objects.count(), 0)
 
+    @override_switch(ALLOW_PLAYLIST_CREATION_FOR_ALL_ROLES, active=False)
     def test_create_playlist_no_new_association(self):
         """When new_association is False, no playlist should be created."""
         saml_details = {"roles": ["teacher"], **self.default_saml_details}
@@ -91,6 +95,7 @@ class PlaylistPipelineTestCase(TestCase):
         self.assertEqual(Playlist.objects.count(), 0)
         self.assertEqual(PlaylistAccess.objects.count(), 0)
 
+    @override_switch(ALLOW_PLAYLIST_CREATION_FOR_ALL_ROLES, active=False)
     def test_create_playlist_new_association_no_existing_idporganization(self):
         """With a new association but no existing IdpOrganizationAssociation
         an exception should be raised"""
@@ -107,6 +112,7 @@ class PlaylistPipelineTestCase(TestCase):
                 new_association=True,
             )
 
+    @override_switch(ALLOW_PLAYLIST_CREATION_FOR_ALL_ROLES, active=False)
     def test_create_playlist_new_association_existing_idporganization(self):
         """A new playlist should be created when new_association is True
         and an idpOrganizationAssociation exists."""
@@ -136,6 +142,7 @@ class PlaylistPipelineTestCase(TestCase):
         self.assertEqual(playlist_access.user, self.user)
         self.assertEqual(playlist_access.role, ADMINISTRATOR)
 
+    @override_switch(ALLOW_PLAYLIST_CREATION_FOR_ALL_ROLES, active=False)
     def test_create_playlist_new_association_existing_idp_organization_user_full_name(
         self,
     ):
@@ -182,6 +189,7 @@ class PlaylistPipelineTestCase(TestCase):
         self.assertEqual(playlist_access.user, user)
         self.assertEqual(playlist_access.role, ADMINISTRATOR)
 
+    @override_switch(ALLOW_PLAYLIST_CREATION_FOR_ALL_ROLES, active=False)
     def test_create_playlist_already_existing_playlist_access(self):
         """No playlist should be created if an existing playlist access for the user and the
         organization is found."""
@@ -211,3 +219,48 @@ class PlaylistPipelineTestCase(TestCase):
 
         self.assertEqual(Playlist.objects.count(), 1)
         self.assertEqual(PlaylistAccess.objects.count(), 1)
+
+    @override_switch(ALLOW_PLAYLIST_CREATION_FOR_ALL_ROLES, active=True)
+    def test_create_playlist_student_active_flag(
+        self,
+    ):
+        """A new playlist hsould be created for a student when the flag is active."""
+
+        saml_details = {
+            "roles": ["student"],
+            "first_name": "jon",
+            "last_name": "snow",
+            "username": "jsnow@samltest.id",  # unused
+            "email": "jsnow@samltest.id",  # unused
+        }
+
+        user = UserFactory(
+            first_name=saml_details["first_name"],
+            last_name=saml_details["last_name"],
+            username=saml_details["username"],
+            email=saml_details["email"],
+        )
+
+        idp_organization_association = IdpOrganizationAssociationFactory(
+            idp_identifier="http://marcha.local/idp/"
+        )
+
+        create_playlist_from_saml(
+            None,  # strategy is unused
+            saml_details,
+            self.backend,
+            user=user,
+            response=self.saml_response,
+            new_association=True,
+        )
+
+        playlist = Playlist.objects.last()
+        playlist_access = PlaylistAccess.objects.last()
+
+        self.assertEqual(
+            playlist.organization, idp_organization_association.organization
+        )
+        self.assertEqual(playlist.title, user.get_full_name())
+        self.assertEqual(playlist_access.playlist, playlist)
+        self.assertEqual(playlist_access.user, user)
+        self.assertEqual(playlist_access.role, ADMINISTRATOR)

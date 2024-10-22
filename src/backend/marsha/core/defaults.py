@@ -95,6 +95,7 @@ DOCUMENT = "document"
 RENATER_FER_SAML = "renater_fer_saml"
 VOD_CONVERT = "vod_convert"
 TRANSCRIPTION = "transcription"
+ALLOW_PLAYLIST_CREATION_FOR_ALL_ROLES = "allow_playlist_creation_for_all_roles"
 
 # LTI view states expected by the frontend LTI application
 APP_DATA_STATE_ERROR = "error"
