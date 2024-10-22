@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Allow all users created via shibboleth to have their own playlist
+
 ## [5.1.0] - 2024-10-09
 
 ### Added

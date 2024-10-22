@@ -3,7 +3,10 @@
 from django.conf import settings
 from django.db.transaction import atomic
 
+from waffle import switch_is_active
+
 from marsha.account.models import IdpOrganizationAssociation
+from marsha.core.defaults import ALLOW_PLAYLIST_CREATION_FOR_ALL_ROLES
 from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, Playlist, PlaylistAccess
 
 
@@ -90,13 +93,15 @@ def create_playlist_from_saml(  # pylint:disable=too-many-arguments
         # Only create a new playlist for new user association.
         return
 
-    is_instructor = details.get("roles", None) and any(
-        role in details["roles"] for role in settings.SOCIAL_AUTH_SAML_FER_TEACHER_ROLES
-    )
+    if not switch_is_active(ALLOW_PLAYLIST_CREATION_FOR_ALL_ROLES):
+        is_instructor = details.get("roles", None) and any(
+            role in details["roles"]
+            for role in settings.SOCIAL_AUTH_SAML_FER_TEACHER_ROLES
+        )
 
-    # If the user has no instructor role we don't create a new playlist.
-    if not is_instructor:
-        return
+        # If the user has no instructor role we don't create a new playlist.
+        if not is_instructor:
+            return
 
     idp = backend.get_idp(response["idp_name"])
 
