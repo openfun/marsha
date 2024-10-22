@@ -59,7 +59,12 @@ class XAPIVideoStatementTest(TestCase):
         }
 
         xapi_statement = XAPIVideoStatement()
-        statement = xapi_statement.from_lti(video, base_statement, jwt_token)
+        statement = xapi_statement.from_lti(
+            video,
+            base_statement,
+            jwt_token,
+            video.playlist.consumer_site.domain,
+        )
 
         self.assertIsNotNone(statement["timestamp"])
         self.assertEqual(
@@ -147,7 +152,12 @@ class XAPIVideoStatementTest(TestCase):
         }
 
         xapi_statement = XAPIVideoStatement()
-        statement = xapi_statement.from_lti(video, base_statement, jwt_token)
+        statement = xapi_statement.from_lti(
+            video,
+            base_statement,
+            jwt_token,
+            video.playlist.consumer_site.domain,
+        )
 
         self.assertIsNotNone(statement["timestamp"])
         self.assertEqual(
@@ -236,7 +246,12 @@ class XAPIVideoStatementTest(TestCase):
         }
 
         xapi_statement = XAPIVideoStatement()
-        statement = xapi_statement.from_lti(video, base_statement, jwt_token)
+        statement = xapi_statement.from_lti(
+            video,
+            base_statement,
+            jwt_token,
+            video.playlist.consumer_site.domain,
+        )
 
         self.assertIsNotNone(statement["timestamp"])
         self.assertEqual(
@@ -326,7 +341,12 @@ class XAPIVideoStatementTest(TestCase):
         }
 
         xapi_statement = XAPIVideoStatement()
-        statement = xapi_statement.from_lti(video, base_statement, jwt_token)
+        statement = xapi_statement.from_lti(
+            video,
+            base_statement,
+            jwt_token,
+            video.playlist.consumer_site.domain,
+        )
 
         self.assertIsNotNone(statement["timestamp"])
         self.assertEqual(
@@ -413,7 +433,12 @@ class XAPIVideoStatementTest(TestCase):
         }
 
         xapi_statement = XAPIVideoStatement()
-        statement = xapi_statement.from_lti(video, base_statement, jwt_token)
+        statement = xapi_statement.from_lti(
+            video,
+            base_statement,
+            jwt_token,
+            video.playlist.consumer_site.domain,
+        )
 
         self.assertIsNotNone(statement["timestamp"])
         self.assertEqual(
@@ -487,7 +512,12 @@ class XAPIDocumentStatementTest(TestCase):
         }
 
         xapi_statement = XAPIDocumentStatement()
-        statement = xapi_statement.from_lti(document, base_statement, jwt_token)
+        statement = xapi_statement.from_lti(
+            document,
+            base_statement,
+            jwt_token,
+            document.playlist.consumer_site.domain,
+        )
 
         self.assertIsNotNone(statement["timestamp"])
         self.assertEqual(
@@ -565,7 +595,12 @@ class XAPIDocumentStatementTest(TestCase):
         }
 
         xapi_statement = XAPIDocumentStatement()
-        statement = xapi_statement.from_lti(document, base_statement, jwt_token)
+        statement = xapi_statement.from_lti(
+            document,
+            base_statement,
+            jwt_token,
+            document.playlist.consumer_site.domain,
+        )
 
         self.assertIsNotNone(statement["timestamp"])
         self.assertEqual(
@@ -634,7 +669,12 @@ class XAPIDocumentStatementTest(TestCase):
         }
 
         xapi_statement = XAPIDocumentStatement()
-        statement = xapi_statement.from_lti(document, base_statement, jwt_token)
+        statement = xapi_statement.from_lti(
+            document,
+            base_statement,
+            jwt_token,
+            document.playlist.consumer_site.domain,
+        )
 
         self.assertIsNotNone(statement["timestamp"])
         self.assertEqual(
@@ -730,7 +770,12 @@ class XAPITest(TestCase):
         }
 
         xapi_statement = XAPIVideoStatement()
-        statement = xapi_statement.from_lti(video, base_statement, jwt_token)
+        statement = xapi_statement.from_lti(
+            video,
+            base_statement,
+            jwt_token,
+            video.playlist.consumer_site.domain,
+        )
 
         responses.add(
             responses.POST,
