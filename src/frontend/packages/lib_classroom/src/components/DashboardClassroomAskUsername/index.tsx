@@ -7,7 +7,7 @@ import {
   ModalButton,
   Text,
 } from 'lib-components';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
@@ -70,6 +70,15 @@ const DashboardClassroomAskUsernameWrapper = ({
     localStorage.setItem(LOCAL_STORAGE_KEYS.CLASSROOM_USERNAME, userFullname);
     onJoin();
   };
+
+  useEffect(() => {
+    // On mount, if the userFullname is not set, we update it with the value retrieved
+    // in the local storage if it exists.
+    if (!userFullname && defaultUserName) {
+      setUserFullname(defaultUserName);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Box pad="large" gap="medium" className="DashboardClassroomAskUsername">

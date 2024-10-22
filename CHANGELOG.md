@@ -12,6 +12,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Cleanup transcoding temp files
 
+### Fixed
+
+- Enable join classroom button if username is populated from local storage
+
 ## [5.2.0] - 2024-10-22
 
 ### Added

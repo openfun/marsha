@@ -66,23 +66,28 @@ describe('<DashboardClassroomAskUsername />', () => {
   });
 
   it('populates fullname input value with local storage', () => {
-    const userFullname = '';
-    const mockSetUserFullname = jest.fn();
     localStorage.setItem(LOCAL_STORAGE_KEYS.CLASSROOM_USERNAME, 'Joe');
 
-    render(
-      <DashboardClassroomAskUsername
-        userFullname={userFullname}
-        setUserFullname={mockSetUserFullname}
-        onJoin={onJoin}
-      />,
-    );
+    const Component = () => {
+      const [userFullname, setUserFullname] = React.useState('');
+      return (
+        <DashboardClassroomAskUsername
+          userFullname={userFullname}
+          setUserFullname={setUserFullname}
+          onJoin={onJoin}
+        />
+      );
+    };
+
+    render(<Component />);
 
     const userFullNameInput = screen.getByRole('textbox', {
       name: 'Enter your name',
     });
 
     expect(userFullNameInput).toHaveValue('Joe');
+    const joinButton = screen.getByRole('button', { name: 'Join' });
+    expect(joinButton).toBeEnabled();
   });
 
   describe('<DashboardClassroomAskUsernameStudent />', () => {
