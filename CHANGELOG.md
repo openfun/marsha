@@ -12,6 +12,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Cleanup transcoding temp files
 
+### Changed
+
+- Connect runner to ws pods in tray
+
 ### Fixed
 
 - Enable join classroom button if username is populated from local storage
