@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [5.3.0] - 2024-11-04
+
 ### Added
 
 - Cleanup transcoding temp files
@@ -1976,7 +1978,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v5.2.0...master
+[unreleased]: https://github.com/openfun/marsha/compare/v5.3.0...master
+[5.3.0]: https://github.com/openfun/marsha/compare/v5.2.0...v5.3.0
 [5.2.0]: https://github.com/openfun/marsha/compare/v5.1.0...v5.2.0
 [5.1.0]: https://github.com/openfun/marsha/compare/v5.0.3...v5.1.0
 [5.0.3]: https://github.com/openfun/marsha/compare/v5.0.2...v5.0.3
