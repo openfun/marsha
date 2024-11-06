@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Ignore XAPI statements from public view without consumer_site
+
 ## [5.3.0] - 2024-11-04
 
 ### Added
