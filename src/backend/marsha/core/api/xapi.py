@@ -24,6 +24,10 @@ from marsha.core.xapi import XAPI, get_xapi_statement
 logger = logging.getLogger(__name__)
 
 
+class NoConsumerSiteError(Exception):
+    """Error raised when no consumer site is found."""
+
+
 class XAPIStatementView(APIViewMixin, APIView):
     """Viewset managing xAPI requests."""
 
@@ -39,6 +43,13 @@ class XAPIStatementView(APIViewMixin, APIView):
             # The resource is used in a LTI context but have been created in the website context
             # so the consumer site does not exists on the playlist.
             # We have to find it directly from the LTI information we have in the JWT token.
+            if not request.resource.token.payload.get("consumer_site"):
+                # If the consumer site is not present in the JWT token, we have no information
+                # from what context the statement is sent. So we stop here the process.
+                raise NoConsumerSiteError(
+                    "Consumer site is mandatory in the LTI token."
+                )
+
             consumer_site = ConsumerSite.objects.get(
                 pk=request.resource.token.payload.get("consumer_site")
             )
@@ -121,16 +132,20 @@ class XAPIStatementView(APIViewMixin, APIView):
             return Response(partial_xapi_statement.errors, status=400)
 
         if request.resource:
+            # consumer site in a LTI token is mandatory.
             if request.resource.playlist_id != str(object_instance.playlist.id):
                 return HttpResponseNotFound()
-            (
-                statement,
-                lrs_url,
-                lrs_auth_token,
-                lrs_xapi_version,
-            ) = self._statement_from_lti(
-                request, partial_xapi_statement, statement_class, object_instance
-            )
+            try:
+                (
+                    statement,
+                    lrs_url,
+                    lrs_auth_token,
+                    lrs_xapi_version,
+                ) = self._statement_from_lti(
+                    request, partial_xapi_statement, statement_class, object_instance
+                )
+            except NoConsumerSiteError:
+                return Response(status=400)
         else:
             statement = self._statement_from_website(
                 request, partial_xapi_statement, statement_class, object_instance

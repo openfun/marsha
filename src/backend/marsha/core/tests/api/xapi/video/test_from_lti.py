@@ -15,7 +15,10 @@ from marsha.core.factories import (
     PlaylistFactory,
     VideoFactory,
 )
-from marsha.core.simple_jwt.factories import StudentLtiTokenFactory
+from marsha.core.simple_jwt.factories import (
+    PlaylistAccessTokenFactory,
+    StudentLtiTokenFactory,
+)
 
 
 class XAPIVideoFromLTITest(TestCase):
@@ -188,3 +191,44 @@ class XAPIVideoFromLTITest(TestCase):
                 "objectType": "Activity",
             },
         )
+
+    def test_send_xapi_statement_from_public_video_view_created_from_website(self):
+        """
+        The XAPI statement should be ignored when the video has been created from the website
+        and used in a public view.
+        """
+        organization = OrganizationFactory()
+        playlist = PlaylistFactory(
+            organization=organization, consumer_site=None, lti_id=None
+        )
+        video = VideoFactory(
+            id="7b18195e-e183-4bbf-b8ef-5145ef64ae19",
+            title="Video 000",
+            playlist=playlist,
+        )
+        # JWT Token used in a public view
+        jwt_token = PlaylistAccessTokenFactory(
+            playlist=video.playlist,
+        )
+        self.assertIsNotNone(video.playlist.organization)
+        self.assertIsNone(video.playlist.consumer_site)
+
+        data = {
+            "verb": {
+                "id": "http://adlnet.gov/expapi/verbs/initialized",
+                "display": {"en-US": "initialized"},
+            },
+            "context": {
+                "extensions": {"https://w3id.org/xapi/video/extensions/volume": 1}
+            },
+        }
+
+        response = self.client.post(
+            f"/xapi/video/{video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            data=json.dumps(data),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(self.log_stream.getvalue(), "")
