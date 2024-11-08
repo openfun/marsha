@@ -739,15 +739,14 @@ class Base(Configuration):
     # Django Peertube connector settings
 
     # Transcoding resolution settings
-    TRANSCODING_ALWAYS_TRANSCODE_ORIGINAL_RESOLUTION = False
-    TRANSCODING_RESOLUTIONS_144P = False
-    TRANSCODING_RESOLUTIONS_240P = True
-    TRANSCODING_RESOLUTIONS_360P = True
-    TRANSCODING_RESOLUTIONS_480P = True
-    TRANSCODING_RESOLUTIONS_720P = True
-    TRANSCODING_RESOLUTIONS_1080P = False
-    TRANSCODING_RESOLUTIONS_1440P = False
-    TRANSCODING_RESOLUTIONS_2160P = False
+    TRANSCODING_RESOLUTIONS_144P = values.BooleanValue(False)
+    TRANSCODING_RESOLUTIONS_240P = values.BooleanValue(True)
+    TRANSCODING_RESOLUTIONS_360P = values.BooleanValue(True)
+    TRANSCODING_RESOLUTIONS_480P = values.BooleanValue(True)
+    TRANSCODING_RESOLUTIONS_720P = values.BooleanValue(True)
+    TRANSCODING_RESOLUTIONS_1080P = values.BooleanValue(False)
+    TRANSCODING_RESOLUTIONS_1440P = values.BooleanValue(False)
+    TRANSCODING_RESOLUTIONS_2160P = values.BooleanValue(False)
 
     # Transcoding fps settings
     TRANSCODING_FPS_MIN = 1
