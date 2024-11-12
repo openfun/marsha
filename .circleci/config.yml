@@ -223,7 +223,7 @@ jobs:
   # Build backend development environment
   build-back:
     docker:
-      - image: cimg/python:3.11
+      - image: cimg/python:3.12
         auth:
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASS
@@ -245,7 +245,7 @@ jobs:
   # Build backend translations
   build-back-i18n:
     docker:
-      - image: cimg/python:3.11
+      - image: cimg/python:3.12
         auth:
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASS
@@ -296,7 +296,7 @@ jobs:
 
   lint-back:
     docker:
-      - image: cimg/python:3.11
+      - image: cimg/python:3.12
         auth:
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASS
@@ -325,7 +325,7 @@ jobs:
 
   test-back:
     docker:
-      - image: cimg/python:3.11
+      - image: cimg/python:3.12
         auth:
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASS
@@ -564,7 +564,7 @@ jobs:
 
   test-e2e:
     docker:
-      - image: mcr.microsoft.com/playwright:v1.47.0-noble
+      - image: cimg/python:3.12-node
         auth:
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASS
@@ -622,50 +622,44 @@ jobs:
       - restore_cache:
           keys:
             - build-front-<< pipeline.parameters.cache-version >>-{{ checksum "frontend-last-commit.txt" }}
-      - run: # Can be removed when switching to mcr.microsoft.com/playwright:lunar
-          name: Install Python 3.11
-          command: apt update && apt upgrade -y && apt install -y software-properties-common && add-apt-repository -y ppa:deadsnakes/ppa && DEBIAN_FRONTEND=noninteractive apt install -y python3.11 python3.11-dev build-essential
-      - run: # Can be removed when switching to mcr.microsoft.com/playwright:lunar
-          name: Install pip for Python 3.11
-          command: curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11
       - run:
           name: Install xmlsec1 requirements
-          command: apt-get update && apt-get install -y pkg-config libxml2-dev libxmlsec1-openssl libxmlsec1-dev
+          command: |
+            sudo apt update 
+            sudo apt install -y pkg-config libxml2-dev libxmlsec1-openssl libxmlsec1-dev
       - run:
           name: Install e2e dependencies
           working_directory: /home/circleci/marsha/src/backend
-          command: python3.11 -m pip install --user .[dev,e2e]
+          command: python3.12 -m pip install --user .[dev,e2e]
       - run:
           name: Copy iframe resizer
           command: yarn workspace marsha run copy-iframe-resizer
       - run:
+          name: install playwright
+          command: npx -y playwright@1.48.0 install --with-deps
+      - run:
           name: Ensure << parameters.browser >> browser is installed
           working_directory: /home/circleci/marsha/src/backend
           command: |
-            python3.11 -m playwright install-deps "<< parameters.browser >>"
-            python3.11 -m playwright install "<< parameters.browser >>"
-      - run:
-          name: Install dockerize
-          command: |
-            curl -LO https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-            && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-            && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+            python3.12 -m playwright install-deps "<< parameters.browser >>"
+            python3.12 -m playwright install "<< parameters.browser >>"
       - run:
           name: Copy e2e media files
           command: |
-            mkdir -p /data/media \
-            && cp -r /home/circleci/marsha/src/backend/marsha/e2e/media /data/media/e2e
+            sudo mkdir -p /data/media
+            sudo chmod -R 777 /data 
+            cp -r /home/circleci/marsha/src/backend/marsha/e2e/media /data/media/e2e
       - when:
           condition:
             equal: [chrome, << parameters.browser_channel >>]
           steps:
             - run:
                 name: Build apt cache
-                command: apt update
+                command: sudo apt update
             - run:
                 name: Install chrome
                 working_directory: ~/marsha/src/backend
-                command: python3.11 -m playwright install chrome
+                command: python3.12 -m playwright install chrome
       # webkit browser is kind of broken with jammy
       # see https://github.com/microsoft/playwright/issues/15764#issuecomment-1462787720
       # - when:

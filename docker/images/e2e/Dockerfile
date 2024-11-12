@@ -1,34 +1,16 @@
-FROM marsha:dev as marsha
+FROM marsha:dev AS marsha
 
-FROM mcr.microsoft.com/playwright:v1.47.0-noble
+USER root:root
 
-COPY --from=marsha /app /app
-COPY src/backend/setup.cfg /app/src/backend/
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash && \
+    NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")" && \
+    [ -s "$NVM_DIR/nvm.sh" ] && \
+    \. "$NVM_DIR/nvm.sh" # This loads nvm && \
+    nvm install 20 --default && \
+    npx -y playwright@1.48.0 install --with-deps
 
-WORKDIR /app/src/backend
 
-# Install python 3.11 and Ensure pip is installed
-# Install xmlsec1 dependencies required for xmlsec (for SAML)
-# Needs to be kept before the `pip install`
-RUN apt-get update && \
-    apt-get upgrade -y && \
-    apt install -y software-properties-common && \
-    add-apt-repository -y ppa:deadsnakes/ppa && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y \
-        python3.11 \
-        python3.11-dev \
-        build-essential \
-        pkg-config \
-        libxml2-dev \
-        libxmlsec1-openssl \
-        libxmlsec1-dev && \
-    curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11 && \
-    rm -rf /var/lib/apt/lists/*
+RUN pip install .[e2e]
 
-# Install development dependencies
-# and forcibly remove the marsha package
-RUN pip install .[dev,e2e] && \
-    pip uninstall -y marsha
-
-RUN playwright install-deps chrome firefox webkit
-RUN playwright install chrome firefox webkit
+RUN playwright install-deps chrome firefox webkit && \
+    playwright install chrome firefox webkit
