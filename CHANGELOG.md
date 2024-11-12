@@ -11,6 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Allow to configure transcoding resolutions
+- Upgrade to python 3.12
 
 ## [5.3.1] - 2024-11-07
 
