@@ -12,6 +12,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Allow to configure transcoding resolutions
 - Upgrade to python 3.12
+- Redirect video url instead of streaming it on /transcript-source
 
 ## [5.3.1] - 2024-11-07
 

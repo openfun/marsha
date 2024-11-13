@@ -11,8 +11,8 @@ from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, OperationalError, transaction
 from django.db.models import F, Func, Q, Value
-from django.http import Http404, StreamingHttpResponse
-from django.shortcuts import get_object_or_404
+from django.http import Http404
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.module_loading import import_string
@@ -20,7 +20,6 @@ from django.utils.module_loading import import_string
 from boto3.exceptions import Boto3Error
 import django_filters
 from django_peertube_runner_connector.models import RunnerJob
-import requests
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import APIException, MethodNotAllowed
@@ -1283,24 +1282,6 @@ class VideoViewSet(
                 {"detail": "No video source available for this video."},
                 status=HTTPStatus.NOT_FOUND,
             )
-        video_url = video_urls.get(min(video_urls.keys()))
+        video_url = video_urls.get(max(video_urls.keys()))
 
-        # stream the video source
-        try:
-            response = requests.get(
-                video_url,
-                stream=True,
-                timeout=settings.TRANSCRIPTION_VIDEO_SOURCE_TIMEOUT,
-            )
-            response.raise_for_status()
-        except (requests.HTTPError, requests.RequestException) as err:
-            return Response(
-                {"detail": f"Error occurred: {err}"}, status=HTTPStatus.BAD_REQUEST
-            )
-
-        return StreamingHttpResponse(
-            response.iter_content(
-                chunk_size=settings.TRANSCRIPTION_VIDEO_SOURCE_CHUNK_SIZE
-            ),
-            content_type=response.headers["Content-Type"],
-        )
+        return redirect(video_url, permanent=True)
