@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:13
+    image: postgres:16.4
     env_file: env.d/db
     volumes:
       - ./docker/files/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d

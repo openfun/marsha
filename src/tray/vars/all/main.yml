@@ -19,9 +19,9 @@ marsha_nginx_bypass_htaccess_ip_whitelist: []
 marsha_nginx_static_cache_expires: "1M"
 
 # -- postgresql
-marsha_postgresql_version: "12"
+marsha_postgresql_version: "16"
 marsha_postgresql_image_name: "postgres"
-marsha_postgresql_image_tag: "12"
+marsha_postgresql_image_tag: "16.4"
 marsha_postgresql_host: "postgresql"
 marsha_postgresql_port: 5432
 marsha_postgresql_database: "marsha"

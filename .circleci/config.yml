@@ -348,7 +348,7 @@ jobs:
           DJANGO_AWS_MEDIAPACKAGE_HARVEST_JOB_ARN: aws:mediapackage:arn:role
           DJANGO_BBB_API_SECRET: bbb-api-secret
           DJANGO_MARKDOWN_ENABLED: 1
-      - image: cimg/postgres:13.16
+      - image: cimg/postgres:16.4
         auth:
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASS
@@ -592,7 +592,7 @@ jobs:
           DJANGO_MARKDOWN_ENABLED: 1
           DEBUG: pw:browser*
           BUILD_PATH: ../../../backend/marsha/static/js/build/site/
-      - image: cimg/postgres:13.16
+      - image: cimg/postgres:16.4
         auth:
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASS
