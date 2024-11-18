@@ -184,6 +184,7 @@ class DevelopmentLTIViewTestCase(TestCase):
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -274,6 +275,7 @@ class DevelopmentLTIViewTestCase(TestCase):
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
         self.assertEqual(context.get("modelName"), "videos")

@@ -341,6 +341,7 @@ class VideoAPITest(TestCase):
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
         video.refresh_from_db()
@@ -510,6 +511,7 @@ class VideoAPITest(TestCase):
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
         video.refresh_from_db()

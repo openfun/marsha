@@ -516,6 +516,7 @@ class TestApiVideoRecording(TestCase):
                 },
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
 
@@ -783,5 +784,6 @@ class TestApiVideoRecording(TestCase):
                 },
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )

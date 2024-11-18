@@ -35,6 +35,7 @@ from marsha.core.defaults import (
     RUNNING,
     STOPPING,
     TRANSCODE_PIPELINE_CHOICES,
+    UPLOAD_ERROR_REASON_CHOICES,
     VIDEOS_STORAGE_BASE_DIRECTORY,
     VOD_VIDEOS_STORAGE_BASE_DIRECTORY,
 )
@@ -249,6 +250,15 @@ class Video(BaseFile, RetentionDateObjectMixin):
         verbose_name=_("transcode pipeline"),
         help_text=_("Transcode pipeline for this video"),
         choices=TRANSCODE_PIPELINE_CHOICES,
+        null=True,
+        blank=True,
+    )
+
+    upload_error_reason = models.CharField(
+        max_length=50,
+        verbose_name=_("upload error reason"),
+        help_text=_("Reason why an upload is in error state."),
+        choices=UPLOAD_ERROR_REASON_CHOICES,
         null=True,
         blank=True,
     )

@@ -141,6 +141,7 @@ class VideoInitiateLiveAPITest(TestCase):
                 "live_type": "raw",
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
 
@@ -219,6 +220,7 @@ class VideoInitiateLiveAPITest(TestCase):
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
 
@@ -309,5 +311,6 @@ class VideoInitiateLiveAPITest(TestCase):
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )

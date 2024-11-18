@@ -130,6 +130,7 @@ class VideoCreateAPITest(TestCase):
                 "xmpp": None,
                 "tags": [],
                 "license": "CC_BY-ND",
+                "upload_error_reason": None,
             },
         )
 
@@ -227,6 +228,7 @@ class VideoCreateAPITest(TestCase):
                 "xmpp": None,
                 "tags": [],
                 "license": "CC_BY-ND",
+                "upload_error_reason": None,
             },
         )
 
@@ -304,6 +306,7 @@ class VideoCreateAPITest(TestCase):
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
 
@@ -383,6 +386,7 @@ class VideoCreateAPITest(TestCase):
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
 
@@ -495,6 +499,7 @@ class VideoCreateAPITest(TestCase):
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
 
@@ -597,5 +602,6 @@ class VideoCreateAPITest(TestCase):
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )

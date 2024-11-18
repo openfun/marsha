@@ -850,6 +850,7 @@ class TestVideoSharedLiveMedia(TestCase):
                     },
                     "tags": [],
                     "license": None,
+                    "upload_error_reason": None,
                 },
             )
             self.assertEqual(video.active_shared_live_media, shared_live_media)
@@ -1197,6 +1198,7 @@ class TestVideoSharedLiveMedia(TestCase):
                     },
                     "tags": [],
                     "license": None,
+                    "upload_error_reason": None,
                 },
                 content,
             )
@@ -1589,6 +1591,7 @@ class TestVideoSharedLiveMedia(TestCase):
                     },
                     "tags": [],
                     "license": None,
+                    "upload_error_reason": None,
                 },
                 content,
             )

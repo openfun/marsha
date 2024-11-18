@@ -507,6 +507,7 @@ class VideoConsumerTest(TransactionTestCase):
                     "shared_live_medias": [],
                     "tags": [],
                     "license": None,
+                    "upload_error_reason": None,
                 },
             },
         )
@@ -652,6 +653,7 @@ class VideoConsumerTest(TransactionTestCase):
                     "shared_live_medias": [],
                     "tags": [],
                     "license": None,
+                    "upload_error_reason": None,
                 },
             },
         )

@@ -324,6 +324,7 @@ class VideoRetrieveAPITest(TestCase):
                 "xmpp": None,
                 "tags": ["mathematics", "algebra"],
                 "license": CC_BY,
+                "upload_error_reason": None,
             },
         )
 
@@ -546,6 +547,7 @@ class VideoRetrieveAPITest(TestCase):
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
 
@@ -762,6 +764,7 @@ class VideoRetrieveAPITest(TestCase):
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
 
@@ -846,6 +849,7 @@ class VideoRetrieveAPITest(TestCase):
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
 
@@ -928,6 +932,7 @@ class VideoRetrieveAPITest(TestCase):
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
 
@@ -995,6 +1000,7 @@ class VideoRetrieveAPITest(TestCase):
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
 
@@ -1142,6 +1148,7 @@ class VideoRetrieveAPITest(TestCase):
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
 
@@ -1206,6 +1213,7 @@ class VideoRetrieveAPITest(TestCase):
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
 
@@ -1270,6 +1278,7 @@ class VideoRetrieveAPITest(TestCase):
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
 
@@ -1449,6 +1458,7 @@ class VideoRetrieveAPITest(TestCase):
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
 
@@ -1562,6 +1572,7 @@ class VideoRetrieveAPITest(TestCase):
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
 
@@ -1686,5 +1697,6 @@ class VideoRetrieveAPITest(TestCase):
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )

@@ -11,6 +11,7 @@ from marsha.core.simple_jwt.factories import (
     UserAccessTokenFactory,
 )
 
+# pylint: disable=too-many-lines
 
 class VideoListAPITest(TestCase):
     """Test the list API of the video object."""
@@ -147,6 +148,7 @@ class VideoListAPITest(TestCase):
                         "xmpp": None,
                         "tags": [],
                         "license": None,
+                        "upload_error_reason": None,
                     }
                 ],
             },
@@ -239,6 +241,7 @@ class VideoListAPITest(TestCase):
                         "xmpp": None,
                         "tags": [],
                         "license": None,
+                        "upload_error_reason": None,
                     },
                     {
                         "active_shared_live_media": None,
@@ -282,6 +285,7 @@ class VideoListAPITest(TestCase):
                         "xmpp": None,
                         "tags": [],
                         "license": None,
+                        "upload_error_reason": None,
                     },
                 ],
             },
@@ -381,6 +385,7 @@ class VideoListAPITest(TestCase):
                         "xmpp": None,
                         "tags": [],
                         "license": None,
+                        "upload_error_reason": None,
                     }
                 ],
             },
@@ -462,6 +467,7 @@ class VideoListAPITest(TestCase):
                         "xmpp": None,
                         "tags": [],
                         "license": None,
+                        "upload_error_reason": None,
                     }
                 ],
             },
@@ -566,6 +572,7 @@ class VideoListAPITest(TestCase):
                         "xmpp": None,
                         "tags": [],
                         "license": None,
+                        "upload_error_reason": None,
                     }
                 ],
             },
@@ -646,6 +653,7 @@ class VideoListAPITest(TestCase):
                         "xmpp": None,
                         "tags": [],
                         "license": None,
+                        "upload_error_reason": None,
                     },
                     {
                         "active_shared_live_media": None,
@@ -689,6 +697,7 @@ class VideoListAPITest(TestCase):
                         "xmpp": None,
                         "tags": [],
                         "license": None,
+                        "upload_error_reason": None,
                     },
                 ],
             },
