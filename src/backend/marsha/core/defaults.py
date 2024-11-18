@@ -71,6 +71,11 @@ LIVE_CHOICES = (
     (STOPPING, _("stopping")),
 )
 
+# UPLOAD ERROR REASONS
+MAX_RESOLUTION_EXCEDEED = "max_resolution_excedeed"
+
+UPLOAD_ERROR_REASON_CHOICES = ((MAX_RESOLUTION_EXCEDEED, _("max_resolution_excedeed")),)
+
 # LIVE TYPE
 (RAW, JITSI) = ("raw", "jitsi")
 

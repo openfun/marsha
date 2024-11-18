@@ -164,6 +164,7 @@ class VideoPublicViewTestCase(TestCase):
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
         self.assertEqual(context.get("state"), "success")
@@ -363,6 +364,7 @@ class VideoPublicViewTestCase(TestCase):
                 },
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
         self.assertEqual(context.get("state"), "success")
@@ -678,6 +680,7 @@ class VideoPublicViewTestCase(TestCase):
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
         self.assertEqual(context.get("state"), "success")

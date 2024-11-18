@@ -332,6 +332,7 @@ class VideoSerializer(VideoBaseSerializer):
             "shared_live_medias",
             "tags",
             "license",
+            "upload_error_reason",
             # Non-model fields
             "can_edit",
         )
@@ -351,6 +352,7 @@ class VideoSerializer(VideoBaseSerializer):
             "live_state",
             "participants_asking_to_join",
             "participants_in_discussion",
+            "upload_error_reason",
         )
 
     active_shared_live_media = SharedLiveMediaSerializer(read_only=True)

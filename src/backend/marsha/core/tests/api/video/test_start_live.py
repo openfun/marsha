@@ -344,6 +344,7 @@ class VideoStartLiveAPITest(TestCase):
                 },
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
 
@@ -493,6 +494,7 @@ class VideoStartLiveAPITest(TestCase):
                 },
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
 
@@ -650,6 +652,7 @@ class VideoStartLiveAPITest(TestCase):
                 },
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
         self.assertEqual(
@@ -876,6 +879,7 @@ class VideoStartLiveAPITest(TestCase):
                 },
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
         video.refresh_from_db()

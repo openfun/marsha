@@ -175,6 +175,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -330,6 +331,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -479,6 +481,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -656,6 +659,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -843,6 +847,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
                 },
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -1050,6 +1055,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -1189,6 +1195,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -1325,6 +1332,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -1466,6 +1474,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -1580,6 +1589,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -1724,6 +1734,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -1875,6 +1886,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -2032,6 +2044,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -2359,6 +2372,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
 
@@ -2459,6 +2473,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
 

@@ -386,6 +386,7 @@ class VideoHarvestLiveAPITest(TestCase):
                 },
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
         video.refresh_from_db()
@@ -583,6 +584,7 @@ class VideoHarvestLiveAPITest(TestCase):
                 "xmpp": None,
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
         video.refresh_from_db()

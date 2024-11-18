@@ -261,6 +261,7 @@ class VideoLivetoVodAPITest(TestCase):
                 },
                 "tags": [],
                 "license": None,
+                "upload_error_reason": None,
             },
         )
         video.refresh_from_db()
