@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Reject transcoding job for video with too high resolution
+
 ### Fixed
 
 - Authorize ended live to initiate a transcription

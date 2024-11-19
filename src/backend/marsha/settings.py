@@ -339,7 +339,6 @@ class Base(Configuration):
     # Admin tabs don't show up when only Site `None` is defined
     PARLER_LANGUAGES[SITE_ID] = PARLER_LANGUAGES[None]
 
-    VIDEO_RESOLUTIONS = [144, 240, 480, 720, 1080]
     STORAGE_BACKEND = values.Value("marsha.core.storage.s3")
 
     # Logging
@@ -744,7 +743,7 @@ class Base(Configuration):
     TRANSCODING_RESOLUTIONS_360P = values.BooleanValue(True)
     TRANSCODING_RESOLUTIONS_480P = values.BooleanValue(True)
     TRANSCODING_RESOLUTIONS_720P = values.BooleanValue(True)
-    TRANSCODING_RESOLUTIONS_1080P = values.BooleanValue(False)
+    TRANSCODING_RESOLUTIONS_1080P = values.BooleanValue(True)
     TRANSCODING_RESOLUTIONS_1440P = values.BooleanValue(False)
     TRANSCODING_RESOLUTIONS_2160P = values.BooleanValue(False)
 
@@ -858,6 +857,27 @@ class Base(Configuration):
             "BLACKLIST_AFTER_ROTATION": True,
             "TOKEN_REFRESH_SERIALIZER": "marsha.account.serializers.TokenRefreshSerializer",
         }
+
+    @property
+    def VIDEO_RESOLUTIONS(self):
+        """Return the list of enabled resolutions."""
+        AVAILABLE_RESOLUTIONS = {
+            144: self.TRANSCODING_RESOLUTIONS_144P,
+            240: self.TRANSCODING_RESOLUTIONS_240P,
+            360: self.TRANSCODING_RESOLUTIONS_360P,
+            480: self.TRANSCODING_RESOLUTIONS_480P,
+            720: self.TRANSCODING_RESOLUTIONS_720P,
+            1080: self.TRANSCODING_RESOLUTIONS_1080P,
+            1440: self.TRANSCODING_RESOLUTIONS_1440P,
+            2160: self.TRANSCODING_RESOLUTIONS_2160P,
+        }
+        return sorted(
+            [
+                resolution
+                for resolution, resolution_enabled in AVAILABLE_RESOLUTIONS.items()
+                if resolution_enabled
+            ]
+        )
 
     # pylint: disable=invalid-name
     @property

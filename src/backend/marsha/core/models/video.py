@@ -24,6 +24,7 @@ from marsha.core.defaults import (
     DELETED,
     DELETED_VIDEOS_STORAGE_BASE_DIRECTORY,
     ENDED,
+    ERROR,
     HARVESTED,
     IDLE,
     JOIN_MODE_CHOICES,
@@ -351,6 +352,9 @@ class Video(BaseFile, RetentionDateObjectMixin):
         """
         if "resolutions" in extra_parameters:
             self.resolutions = extra_parameters.get("resolutions")
+
+        if upload_state not in [ERROR]:
+            self.upload_error_reason = None
 
         super().update_upload_state(upload_state, uploaded_on, **extra_parameters)
 

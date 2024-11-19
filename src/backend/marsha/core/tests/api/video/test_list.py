@@ -11,7 +11,9 @@ from marsha.core.simple_jwt.factories import (
     UserAccessTokenFactory,
 )
 
+
 # pylint: disable=too-many-lines
+
 
 class VideoListAPITest(TestCase):
     """Test the list API of the video object."""

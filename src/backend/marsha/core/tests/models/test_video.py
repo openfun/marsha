@@ -12,10 +12,12 @@ from django.utils import timezone
 from marsha.core.defaults import (
     DELETED,
     ENDED,
+    ERROR,
     HARVESTED,
     IDLE,
     LIVE_CHOICES,
     LIVE_TYPE_CHOICES,
+    MAX_RESOLUTION_EXCEDEED,
     PENDING,
     PROCESSING,
     RAW,
@@ -727,3 +729,15 @@ class VideoModelsTestCase(TestCase):
             self.assertEqual(video.live_duration, 99)
             self.assertEqual(video.live_ended_at, started + 99)
             self.assertEqual(video.get_list_timestamps_attendances(), {})
+
+    def test_update_upload_state_should_reset_upload_error_reason(self):
+        """
+        The upload_error_reason should be reset when the upload state is changed and is not ERROR.
+        """
+        video = VideoFactory(
+            upload_error_reason=MAX_RESOLUTION_EXCEDEED, upload_state=ERROR
+        )
+        self.assertEqual(video.upload_error_reason, MAX_RESOLUTION_EXCEDEED)
+        video.update_upload_state(PENDING, None)
+        video.refresh_from_db()
+        self.assertIsNone(video.upload_error_reason)
