@@ -1290,7 +1290,7 @@ class VideoRetrieveAPITest(TestCase):
             uploaded_on=datetime(2018, 8, 8, tzinfo=baseTimezone.utc),
             upload_state="ready",
             transcode_pipeline="AWS",
-            resolutions=[144, 240, 480, 720, 1080],
+            resolutions=[240, 360, 480, 720, 1080],
         )
         thumbnail = factories.ThumbnailFactory(
             video=video,
@@ -1317,10 +1317,10 @@ class VideoRetrieveAPITest(TestCase):
                 "is_ready_to_show": True,
                 "upload_state": "ready",
                 "urls": {
-                    "144": "https://abc.cloudfront.net/38a91911-9aee-41e2-94dd-573abda6f48f/"
-                    "thumbnails/1533686400_144.jpg",
                     "240": "https://abc.cloudfront.net/38a91911-9aee-41e2-94dd-573abda6f48f/"
                     "thumbnails/1533686400_240.jpg",
+                    "360": "https://abc.cloudfront.net/38a91911-9aee-41e2-94dd-573abda6f48f/"
+                    "thumbnails/1533686400_360.jpg",
                     "480": "https://abc.cloudfront.net/38a91911-9aee-41e2-94dd-573abda6f48f/"
                     "thumbnails/1533686400_480.jpg",
                     "720": "https://abc.cloudfront.net/38a91911-9aee-41e2-94dd-573abda6f48f/"
@@ -1335,10 +1335,10 @@ class VideoRetrieveAPITest(TestCase):
         self.assertEqual(
             content["urls"]["thumbnails"],
             {
-                "144": "https://abc.cloudfront.net/38a91911-9aee-41e2-94dd-573abda6f48f/"
-                "thumbnails/1533686400_144.jpg",
                 "240": "https://abc.cloudfront.net/38a91911-9aee-41e2-94dd-573abda6f48f/"
                 "thumbnails/1533686400_240.jpg",
+                "360": "https://abc.cloudfront.net/38a91911-9aee-41e2-94dd-573abda6f48f/"
+                "thumbnails/1533686400_360.jpg",
                 "480": "https://abc.cloudfront.net/38a91911-9aee-41e2-94dd-573abda6f48f/"
                 "thumbnails/1533686400_480.jpg",
                 "720": "https://abc.cloudfront.net/38a91911-9aee-41e2-94dd-573abda6f48f/"

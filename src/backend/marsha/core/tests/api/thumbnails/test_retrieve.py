@@ -310,10 +310,10 @@ class ThumbnailRetrieveApiTest(TestCase):
                 "is_ready_to_show": True,
                 "upload_state": "ready",
                 "urls": {
-                    "144": "https://abc.cloudfront.net/78338c1c-356e-4156-bd95-5bed71ffb655/"
-                    "thumbnails/1533686400_144.jpg",
                     "240": "https://abc.cloudfront.net/78338c1c-356e-4156-bd95-5bed71ffb655/"
                     "thumbnails/1533686400_240.jpg",
+                    "360": "https://abc.cloudfront.net/78338c1c-356e-4156-bd95-5bed71ffb655/"
+                    "thumbnails/1533686400_360.jpg",
                     "480": "https://abc.cloudfront.net/78338c1c-356e-4156-bd95-5bed71ffb655/"
                     "thumbnails/1533686400_480.jpg",
                     "720": "https://abc.cloudfront.net/78338c1c-356e-4156-bd95-5bed71ffb655/"

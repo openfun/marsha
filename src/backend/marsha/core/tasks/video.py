@@ -2,16 +2,31 @@
 
 import logging
 
+from django.conf import settings
+
 from django_peertube_runner_connector.transcode import transcode_video
 from django_peertube_runner_connector.transcript import transcript_video
+from django_peertube_runner_connector.utils.ffprobe import (
+    get_video_stream_dimensions_info,
+)
+import ffmpeg
 from sentry_sdk import capture_exception
 
 from marsha.celery_app import app
-from marsha.core.defaults import ERROR, TMP_VIDEOS_STORAGE_BASE_DIRECTORY
+from marsha.core.defaults import (
+    ERROR,
+    MAX_RESOLUTION_EXCEDEED,
+    TMP_VIDEOS_STORAGE_BASE_DIRECTORY,
+)
 from marsha.core.models.video import Video
+from marsha.core.storage.storage_class import video_storage
 
 
 logger = logging.getLogger(__name__)
+
+
+class MaxResolutionError(Exception):
+    """Raised when the resolution of a video is higher than the maximum enabled resolution."""
 
 
 @app.task
@@ -28,6 +43,18 @@ def launch_video_transcoding(video_pk: str, stamp: str, domain: str):
         source = video.get_videos_storage_prefix(
             stamp, TMP_VIDEOS_STORAGE_BASE_DIRECTORY
         )
+        probe = ffmpeg.probe(video_storage.url(source))
+        dimensions_info = get_video_stream_dimensions_info(
+            path=source, existing_probe=probe
+        )
+        resolution = dimensions_info["resolution"]
+        max_enabled_resolution = settings.VIDEO_RESOLUTIONS[-1]
+        if resolution > max_enabled_resolution:
+            raise MaxResolutionError(
+                f"Video resolution {resolution} is higher than the maximum enabled resolution "
+                f"{max_enabled_resolution}. video {video.id} will not be transcoded."
+            )
+
         prefix_destination = video.get_videos_storage_prefix(stamp)
         transcode_video(
             file_path=source,
@@ -35,6 +62,10 @@ def launch_video_transcoding(video_pk: str, stamp: str, domain: str):
             base_name=stamp,
             domain=domain,
         )
+    except MaxResolutionError as exception:
+        video.upload_error_reason = MAX_RESOLUTION_EXCEDEED
+        video.update_upload_state(ERROR, None)
+        logger.info(exception)
     except Exception as exception:  # pylint: disable=broad-except+
         capture_exception(exception)
         video.update_upload_state(ERROR, None)

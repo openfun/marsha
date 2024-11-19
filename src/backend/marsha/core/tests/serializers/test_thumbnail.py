@@ -27,7 +27,7 @@ class ThumbnailSerializerTest(TestCase):
             process_pipeline=AWS_PIPELINE,
         )
         serializer = ThumbnailSerializer(thumbnail)
-        sizes = [1080, 720, 480, 240, 144]
+        sizes = [240, 360, 480, 720, 1080]
         for size in sizes:
             self.assertEqual(
                 f"https://abc.cloudfront.net/{video.pk}/thumbnails/1640995200_{size}.jpg",
@@ -53,7 +53,7 @@ class ThumbnailSerializerTest(TestCase):
         )
         serializer = ThumbnailSerializer(thumbnail)
 
-        sizes = [1080, 720, 480, 240, 144]
+        sizes = [240, 360, 480, 720, 1080]
         for size in sizes:
             self.assertEqual(
                 f"https://abc.cloudfront.net/vod/{video.pk}/thumbnail/1640995200/{size}.jpg",
