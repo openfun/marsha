@@ -300,6 +300,7 @@ jobs:
         auth:
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASS
+    resource_class: large
     working_directory: ~/marsha/src/backend
     steps:
       - checkout:
@@ -318,7 +319,7 @@ jobs:
           command: ~/.local/bin/flake8 marsha
       - run:
           name: Lint code with pylint
-          command: ~/.local/bin/pylint --rcfile=pylintrc marsha
+          command: ~/.local/bin/pylint -j 4 --rcfile=pylintrc marsha
       - run:
           name: Lint code with bandit
           command: ~/.local/bin/bandit -c .bandit -qr marsha
