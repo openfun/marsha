@@ -5,9 +5,15 @@ from unittest import mock
 
 from django.test import TestCase
 
-from marsha.core.defaults import ERROR, MAX_RESOLUTION_EXCEDEED
+from marsha.core.defaults import (
+    ERROR,
+    MAX_RESOLUTION_EXCEDEED,
+    PEERTUBE_PIPELINE,
+    READY,
+)
 from marsha.core.factories import VideoFactory
 from marsha.core.tasks.video import (
+    compute_video_information,
     ffmpeg,
     launch_video_transcoding,
     launch_video_transcript,
@@ -366,3 +372,45 @@ class TestVideoTask(TestCase):
                 domain="http://127.0.0.1:8000",
                 video_url="video_url",
             )
+
+    def test_compute_video_information(self):
+        """Update the size and duration of a video when upload_state is ready."""
+        video = VideoFactory(
+            id="6da65e16-dbdf-4b92-9e22-0852bfffba11",
+            size=None,
+            duration=None,
+            upload_state=READY,
+            uploaded_on="2020-07-22T10:18:45.000000Z",
+            resolutions=[240, 260, 480, 720, 1080],
+            transcode_pipeline=PEERTUBE_PIPELINE,
+        )
+
+        with mock.patch.object(ffmpeg, "probe") as mock_ffmpeg_probe:
+            mock_ffmpeg_probe.return_value = FFMPEG_PROBE_VALID
+            compute_video_information(str(video.pk))
+            mock_ffmpeg_probe.assert_called_once_with(
+                "/media/vod/6da65e16-dbdf-4b92-9e22-0852bfffba11/video/1595413125/"
+                "1595413125-1080-fragmented.mp4"
+            )
+        video.refresh_from_db()
+        self.assertEqual(video.duration, 22.2222)
+        self.assertEqual(video.size, 2964950)
+
+    def test_compute_video_information_not_ready(self):
+        """Do not update the size and duration of a video when upload_state is not ready."""
+        video = VideoFactory(
+            id="6da65e16-dbdf-4b92-9e22-0852bfffba11",
+            size=None,
+            duration=None,
+            upload_state=ERROR,
+            uploaded_on="2020-07-22T10:18:45.000000Z",
+            resolutions=[240, 260, 480, 720, 1080],
+            transcode_pipeline=PEERTUBE_PIPELINE,
+        )
+
+        with mock.patch.object(ffmpeg, "probe") as mock_ffmpeg_probe:
+            compute_video_information(str(video.pk))
+            mock_ffmpeg_probe.assert_not_called()
+        video.refresh_from_db()
+        self.assertIsNone(video.duration)
+        self.assertIsNone(video.size)

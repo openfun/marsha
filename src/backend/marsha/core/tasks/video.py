@@ -16,9 +16,11 @@ from marsha.celery_app import app
 from marsha.core.defaults import (
     ERROR,
     MAX_RESOLUTION_EXCEDEED,
+    READY,
     TMP_VIDEOS_STORAGE_BASE_DIRECTORY,
 )
 from marsha.core.models.video import Video
+from marsha.core.serializers import VideoSerializer
 from marsha.core.storage.storage_class import video_storage
 
 
@@ -98,3 +100,25 @@ def launch_video_transcript(
     except Exception as exception:  # pylint: disable=broad-except+
         capture_exception(exception)
         logger.exception(exception)
+
+
+@app.task
+def compute_video_information(video_pk: str):
+    """
+    Get probes from the video and update its size and duration
+    """
+
+    video = Video.objects.get(pk=video_pk)
+
+    if video.upload_state != READY:
+        return
+
+    serializer = VideoSerializer(video)
+    video_urls = serializer.data.get("urls").get("mp4")
+    video_url = video_urls.get(max(video_urls.keys()))
+
+    probe = ffmpeg.probe(video_url)
+
+    video.duration = probe.get("format", {}).get("duration")
+    video.size = probe.get("format", {}).get("size")
+    video.save()
