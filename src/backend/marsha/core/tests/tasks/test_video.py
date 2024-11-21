@@ -253,6 +253,10 @@ class TestVideoTask(TestCase):
                 domain="http://127.0.0.1:8000",
             )
 
+        video.refresh_from_db()
+        self.assertEqual(video.duration, 22.2222)
+        self.assertEqual(video.size, 2964950)
+
     def test_launch_video_transcode_without_video_streams(self):
         """
         Test the the launch_video_transcoding task. It should simply call
@@ -274,6 +278,10 @@ class TestVideoTask(TestCase):
                 base_name=stamp,
                 domain="http://127.0.0.1:8000",
             )
+
+        video.refresh_from_db()
+        self.assertEqual(video.duration, 22.2222)
+        self.assertEqual(video.size, 2964950)
 
     def test_launch_video_transcode_fail(self):
         """

@@ -55,6 +55,10 @@ def launch_video_transcoding(video_pk: str, stamp: str, domain: str):
                 f"{max_enabled_resolution}. video {video.id} will not be transcoded."
             )
 
+        video.duration = probe.get("format", {}).get("duration")
+        video.size = probe.get("format", {}).get("size")
+        video.save()
+
         prefix_destination = video.get_videos_storage_prefix(stamp)
         transcode_video(
             file_path=source,
