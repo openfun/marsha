@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Authorize ended live to initiate a transcription
+
 ## [5.4.0] - 2024-11-13
 
 ### Changed
