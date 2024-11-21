@@ -254,12 +254,21 @@ class Video(BaseFile, RetentionDateObjectMixin):
         null=True,
         blank=True,
     )
-
     upload_error_reason = models.CharField(
         max_length=50,
         verbose_name=_("upload error reason"),
         help_text=_("Reason why an upload is in error state."),
         choices=UPLOAD_ERROR_REASON_CHOICES,
+        null=True,
+        blank=True,
+    )
+    duration = models.FloatField(
+        help_text=_("Duration of the video in seconds"),
+        null=True,
+        blank=True,
+    )
+    size = models.IntegerField(
+        help_text=_("Size of the video in bytes"),
         null=True,
         blank=True,
     )

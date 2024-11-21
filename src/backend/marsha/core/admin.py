@@ -1,5 +1,7 @@
 """Admin of the ``core`` app of the Marsha project."""
 
+import datetime
+
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DefaultUserAdmin
 from django.contrib.sites.models import Site
@@ -292,6 +294,8 @@ class VideoAdmin(BaseFileAdmin):
         "tags",
         "license",
         "transcode_pipeline",
+        "display_duration",
+        "display_size",
     )
     list_display = BaseFileAdmin.list_display + (
         "starting_at",
@@ -304,9 +308,33 @@ class VideoAdmin(BaseFileAdmin):
         "live_info",
         "join_mode",
         "transcode_pipeline",
+        "display_duration",
+        "display_size",
     )
     inlines = [AudioTrackInline, TimedTextTrackInline, SignTrackInline]
     verbose_name = _("Video")
+
+    @admin.display(description=_("Size"))
+    def display_size(self, obj):
+        """Return the size of the video."""
+        if obj.size is None:
+            return "-"
+
+        suffixes = ["B", "KB", "MB", "GB", "TB", "PB"]
+        size = obj.size
+        while size >= 1024:
+            size /= 1024
+            suffixes.pop(0)
+
+        return f"{size:.2f} {suffixes[0]}"
+
+    @admin.display(description=_("Duration"))
+    def display_duration(self, obj):
+        """Return the duration of the video."""
+        if obj.duration is None:
+            return "-"
+
+        return str(datetime.timedelta(seconds=obj.duration))
 
 
 @admin.register(TimedTextTrack)
