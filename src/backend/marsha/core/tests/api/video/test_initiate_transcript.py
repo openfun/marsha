@@ -3,6 +3,7 @@
 from datetime import datetime, timezone as baseTimezone
 from http import HTTPStatus
 import json
+import random
 from unittest import mock
 
 from django.db.transaction import atomic
@@ -49,10 +50,69 @@ class VideoInitiateTranscriptAPITest(TestCase):
 
         self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
 
+    def test_api_video_instructor_initiate_transcript_for_live_video(self):
+        """A video in a live state can not initiate a transcription."""
+        video = factories.VideoFactory(
+            live_type=defaults.JITSI,
+            live_state=random.choice(
+                [s[0] for s in defaults.LIVE_CHOICES if s[0] not in [defaults.ENDED]]
+            ),
+        )
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
+
+        response = self.client.post(
+            f"/api/videos/{video.id}/initiate-transcript/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
+
     def test_api_video_initiate_transcript_token_user(self):
         """A token user associated to a video should be able to initiate a transcript."""
         video = factories.VideoFactory(
             pk="a2f27fde-973a-4e89-8dca-cc59e01d255c",
+            upload_state=defaults.READY,
+            uploaded_on=datetime(2018, 8, 8, tzinfo=baseTimezone.utc),
+            transcode_pipeline=defaults.PEERTUBE_PIPELINE,
+            resolutions=[720, 1080],
+            playlist__title="foo bar",
+        )
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
+
+        with self.settings(LANGUAGES=(("en", "English"),)), mock.patch(
+            "marsha.core.api.video.launch_video_transcript.delay"
+        ) as mock_launch_video_transcript, mock.patch.object(
+            channel_layers_utils, "dispatch_timed_text_track"
+        ) as mock_dispatch_timed_text_track, mock.patch.object(
+            channel_layers_utils, "dispatch_video"
+        ) as mock_dispatch_video:
+            response = self.client.post(
+                f"/api/videos/{video.id}/initiate-transcript/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        mock_launch_video_transcript.assert_called_once_with(
+            video_pk=video.pk, stamp="1533686400", domain="http://testserver"
+        )
+
+        timed_text_track = video.timedtexttracks.get()
+        mock_dispatch_timed_text_track.assert_called_once_with(timed_text_track)
+        mock_dispatch_video.assert_called_once_with(video)
+
+        self.assertEqual(timed_text_track.language, "en")
+        self.assertEqual(timed_text_track.mode, models.TimedTextTrack.TRANSCRIPT)
+        self.assertEqual(timed_text_track.upload_state, defaults.PROCESSING)
+
+    def test_api_video_initiate_transcript_token_user_live_state_ended(self):
+        """
+        A token user associated to a video with live_state ended should be able to initiate
+        a transcript.
+        """
+        video = factories.VideoFactory(
+            pk="a2f27fde-973a-4e89-8dca-cc59e01d255c",
+            live_type=defaults.JITSI,
+            live_state=defaults.ENDED,
             upload_state=defaults.READY,
             uploaded_on=datetime(2018, 8, 8, tzinfo=baseTimezone.utc),
             transcode_pipeline=defaults.PEERTUBE_PIPELINE,

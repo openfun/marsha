@@ -1215,7 +1215,7 @@ class VideoViewSet(
         """Initiate the transcript process for the video."""
         video = self.get_object()
 
-        if video.live_state is not None:
+        if video.live_state and video.live_state != defaults.ENDED:
             return Response(
                 {"detail": "Cannot initiate transcript on a live video"},
                 status=HTTPStatus.BAD_REQUEST,
