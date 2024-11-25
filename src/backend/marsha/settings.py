@@ -189,22 +189,24 @@ class Base(Configuration):
     # For sentinels:
     # CHANNEL_LAYERS = {
     #     "default": {
-    #         "BACKEND": "marsha.websocket.layers.JsonRedisChannelLayer",
+    #         "BACKEND": "channels_redis.core.RedisChannelLayer",
     #         "CONFIG": {
     #             "hosts": [{
     #                 "sentinels": [(SENTINEL_HOST, SENTINEL_PORT)],
     #                 "master_name": SENTINEL_MASTER,
     #             }],
+    #             "serializer_format": "json",
     #         },
     #     },
     # }
     CHANNEL_LAYERS = {
         "default": {
-            "BACKEND": "marsha.websocket.layers.JsonRedisChannelLayer",
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
             "CONFIG": {
                 "hosts": values.ListValue(
                     [("redis", 6379)], environ_name="REDIS_HOST", environ_prefix=None
                 ),
+                "serializer_format": "json",
             },
         },
     }
