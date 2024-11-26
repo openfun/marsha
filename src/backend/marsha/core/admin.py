@@ -5,6 +5,7 @@ import datetime
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DefaultUserAdmin
 from django.contrib.sites.models import Site
+from django.db.models import Sum
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
@@ -77,6 +78,27 @@ def link_field(field_name):
 
     _link_field.short_description = field_name
     return _link_field
+
+
+def display_human_size(size):
+    """Format a size in bytes into a human readable string."""
+    if size is None:
+        return "-"
+
+    suffixes = ["B", "KB", "MB", "GB", "TB", "PB"]
+    while size >= 1024:
+        size /= 1024
+        suffixes.pop(0)
+
+    return f"{size:.2f} {suffixes[0]}"
+
+
+def display_human_duration(duration):
+    """Format a duration in seconds into a human readable string."""
+    if duration is None:
+        return "-"
+
+    return str(datetime.timedelta(seconds=duration))
 
 
 class BaseFileAdmin(admin.ModelAdmin):
@@ -227,8 +249,34 @@ class ConsumerSiteAdmin(admin.ModelAdmin):
         "video_show_download_default",
         "inactive_resources",
         "inactive_features",
+        "duration_usage",
+        "size_usage",
     )
-    readonly_fields = ["id", "created_on", "updated_on"]
+    readonly_fields = [
+        "id",
+        "created_on",
+        "updated_on",
+        "duration_usage",
+        "size_usage",
+    ]
+
+    @admin.display(description=_("Size"))
+    def size_usage(self, instance):
+        """Return the size of the videos in the consumer site."""
+        size_usage = Video.objects.filter(playlist__consumer_site=instance).aggregate(
+            Sum("size")
+        )["size__sum"]
+
+        return display_human_size(size_usage)
+
+    @admin.display(description=_("Duration"))
+    def duration_usage(self, instance):
+        """Return the duration of the videos in the consumer site."""
+        duration_usage = Video.objects.filter(
+            playlist__consumer_site=instance
+        ).aggregate(Sum("duration"))["duration__sum"]
+
+        return display_human_duration(duration_usage)
 
 
 class OrganizationUsersInline(admin.TabularInline):
@@ -253,6 +301,29 @@ class OrganizationAdmin(admin.ModelAdmin):
 
     list_display = ("name",)
     inlines = [OrganizationUsersInline, OrganizationConsumerSitesInline]
+
+    readonly_fields = [
+        "duration_usage",
+        "size_usage",
+    ]
+
+    @admin.display(description=_("Size"))
+    def size_usage(self, instance):
+        """Return the size of the videos in the organization."""
+        size_usage = Video.objects.filter(playlist__organization=instance).aggregate(
+            Sum("size")
+        )["size__sum"]
+
+        return display_human_size(size_usage)
+
+    @admin.display(description=_("Duration"))
+    def duration_usage(self, instance):
+        """Return the duration of the videos in the organization."""
+        duration_usage = Video.objects.filter(
+            playlist__organization=instance
+        ).aggregate(Sum("duration"))["duration__sum"]
+
+        return display_human_duration(duration_usage)
 
 
 class AudioTrackInline(admin.TabularInline):
@@ -317,24 +388,12 @@ class VideoAdmin(BaseFileAdmin):
     @admin.display(description=_("Size"))
     def display_size(self, obj):
         """Return the size of the video."""
-        if obj.size is None:
-            return "-"
-
-        suffixes = ["B", "KB", "MB", "GB", "TB", "PB"]
-        size = obj.size
-        while size >= 1024:
-            size /= 1024
-            suffixes.pop(0)
-
-        return f"{size:.2f} {suffixes[0]}"
+        return display_human_size(obj.size)
 
     @admin.display(description=_("Duration"))
     def display_duration(self, obj):
         """Return the duration of the video."""
-        if obj.duration is None:
-            return "-"
-
-        return str(datetime.timedelta(seconds=obj.duration))
+        return display_human_duration(obj.duration)
 
 
 @admin.register(TimedTextTrack)
@@ -440,6 +499,8 @@ class PlaylistAdmin(admin.ModelAdmin):
         "retention_duration",
         "updated_on",
         "created_on",
+        "duration_usage",
+        "size_usage",
     )
     readonly_fields = [
         "id",
@@ -447,6 +508,8 @@ class PlaylistAdmin(admin.ModelAdmin):
         "created_on",
         "duplicated_from",
         "updated_on",
+        "duration_usage",
+        "size_usage",
     ]
     list_filter = (
         "consumer_site__domain",
@@ -466,6 +529,24 @@ class PlaylistAdmin(admin.ModelAdmin):
         "title",
     )
     verbose_name = _("Playlist")
+
+    @admin.display(description=_("Size"))
+    def size_usage(self, instance):
+        """Return the size of the videos in the playlist."""
+        size_usage = Video.objects.filter(playlist=instance).aggregate(Sum("size"))[
+            "size__sum"
+        ]
+
+        return display_human_size(size_usage)
+
+    @admin.display(description=_("Duration"))
+    def duration_usage(self, instance):
+        """Return the duration of the videos in the playlist."""
+        duration_usage = Video.objects.filter(playlist=instance).aggregate(
+            Sum("duration")
+        )["duration__sum"]
+
+        return display_human_duration(duration_usage)
 
 
 @admin.register(LTIPassport)

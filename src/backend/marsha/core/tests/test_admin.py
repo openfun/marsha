@@ -4,7 +4,7 @@ from django.db import models
 from django.test import TestCase
 from django.urls import NoReverseMatch
 
-from marsha.core.admin import link_field
+from marsha.core.admin import display_human_duration, display_human_size, link_field
 from marsha.core.factories import (
     ConsumerSiteLTIPassportFactory,
     PlaylistLTIPassportFactory,
@@ -16,8 +16,8 @@ from marsha.core.models import BaseModel
 # pylint: disable=unused-argument
 
 
-class AdminLinkFieldTestCase(TestCase):
-    """Test the `link_field` helper works as expected."""
+class AdminTestCase(TestCase):
+    """Test all admin helpers."""
 
     def test_link_field_no_linked_object(self):
         """Assert `link_field` works properly when no instance is linked."""
@@ -64,3 +64,27 @@ class AdminLinkFieldTestCase(TestCase):
             link_field("linked_object")(instance_with_linked_object)
         reverse_exception = exc_context_mgr.exception
         self.assertIn("one_app_amodel_change", str(reverse_exception))
+
+    def test_display_human_duration(self):
+        """Assert `display_human_duration` works properly."""
+
+        self.assertEqual(display_human_duration(0), "0:00:00")
+        self.assertEqual(display_human_duration(1), "0:00:01")
+        self.assertEqual(display_human_duration(60), "0:01:00")
+        self.assertEqual(display_human_duration(61), "0:01:01")
+        self.assertEqual(display_human_duration(3600), "1:00:00")
+        self.assertEqual(display_human_duration(3661), "1:01:01")
+        self.assertEqual(display_human_duration(7500), "2:05:00")
+        self.assertEqual(display_human_duration(None), "-")
+
+    def test_display_human_size(self):
+        """Assert `display_human_size` works properly."""
+
+        self.assertEqual(display_human_size(0), "0.00 B")
+        self.assertEqual(display_human_size(1), "1.00 B")
+        self.assertEqual(display_human_size(1024), "1.00 KB")
+        self.assertEqual(display_human_size(1024**2), "1.00 MB")
+        self.assertEqual(display_human_size(1024**3), "1.00 GB")
+        self.assertEqual(display_human_size(1024**4), "1.00 TB")
+        self.assertEqual(display_human_size(1024**5), "1.00 PB")
+        self.assertEqual(display_human_size(None), "-")
