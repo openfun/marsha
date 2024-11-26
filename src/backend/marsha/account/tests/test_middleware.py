@@ -1,5 +1,7 @@
 """Test SocialAuthExceptionMiddleware."""
 
+from importlib import reload
+import sys
 from unittest import mock
 
 from django.conf import settings
@@ -22,6 +24,12 @@ class TestMiddleware(TestCase):
             "account:social:complete", kwargs={"backend": "saml_fer"}
         )
         self.complete_url += "?RelayState=marsha-local-idp"
+
+        # Reload module social_core.backends.utils, it makes a global
+        # cache with already loaded backend defined in settings.AUTHENTICATION_BACKENDS.
+        # In this test we want to change it.
+        if "social_core.backends.utils" in sys.modules:
+            reload(sys.modules["social_core.backends.utils"])
 
     @override_settings()
     def test_exception(self):

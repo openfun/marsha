@@ -60,16 +60,6 @@
       "allowedVersions": "<5"
     },
     {
-      "groupName": "allowed pytest versions",
-      "matchManagers": [
-        "setup-cfg"
-      ],
-      "matchPackageNames": [
-        "pytest"
-      ],
-      "allowedVersions": "<8.0.0"
-    },
-    {
       "enabled": false,
       "groupName": "ignored python dependencies",
       "matchManagers": [
