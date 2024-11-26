@@ -20,6 +20,10 @@ aliases:
       name: Login to DockerHub
       command: echo "$DOCKER_HUB_PASS" | docker login -u "$DOCKER_HUB_USER" --password-stdin
 
+  - &count_cpus
+    run:
+      name: Count the number of available cpu cores
+      command: echo "export NB_CPUS=$(cat /proc/cpuinfo | grep processor | wc -l)" >> $BASH_ENV
 # Configuration file anchors
 generate-version-file: &generate-version-file
   run:
@@ -308,6 +312,7 @@ jobs:
       - restore_cache:
           keys:
             - v4-back-dependencies-{{ .Revision }}
+      - *count_cpus
       - run:
           name: Lint code with isort
           command: ~/.local/bin/isort --check-only marsha
@@ -319,7 +324,7 @@ jobs:
           command: ~/.local/bin/flake8 marsha
       - run:
           name: Lint code with pylint
-          command: ~/.local/bin/pylint -j 4 --rcfile=pylintrc marsha
+          command: ~/.local/bin/pylint -j "${NB_CPUS}" --rcfile=pylintrc marsha
       - run:
           name: Lint code with bandit
           command: ~/.local/bin/bandit -c .bandit -qr marsha
@@ -532,24 +537,25 @@ jobs:
       - restore_cache:
           keys:
             - front-dependencies-<< pipeline.parameters.cache-version >>-{{ checksum "yarn.lock" }}
+      - *count_cpus
       - run:
           name: Run tests on libs-components
-          command: yarn workspace lib-components run test -w 3 --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
+          command: yarn workspace lib-components run test -w "${NB_CPUS}" --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
       - run:
           name: Run tests on lib-classroom
-          command: yarn workspace lib-classroom run test -w 3 --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
+          command: yarn workspace lib-classroom run test -w "${NB_CPUS}" --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
       - run:
           name: Run tests on lib-video
-          command: yarn workspace lib-video run test -w 3 --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
+          command: yarn workspace lib-video run test -w "${NB_CPUS}" --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
       - run:
           name: Run tests on lib-markdown
-          command: yarn workspace lib-markdown run test -w 3 --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
+          command: yarn workspace lib-markdown run test -w "${NB_CPUS}" --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
       - run:
           name: Run tests on lti site
-          command: yarn workspace marsha run test -w 3 --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
+          command: yarn workspace marsha run test -w "${NB_CPUS}" --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
       - run:
           name: Run tests on standalone site
-          command: yarn workspace standalone_site run test -w 3 --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
+          command: yarn workspace standalone_site run test -w "${NB_CPUS}" --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
       - store_artifacts:
           path: ~/marsha/src/frontend/apps/lti_site/__diff_output__
       - store_artifacts:
