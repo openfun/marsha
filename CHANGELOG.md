@@ -12,6 +12,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Reject transcoding job for video with too high resolution
 - Add fields to video to store its size and duration
+- Display in admin video duration and size
 
 ### Fixed
 
