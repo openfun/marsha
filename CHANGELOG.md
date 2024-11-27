@@ -14,6 +14,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add fields to video to store its size and duration
 - Display in admin video duration and size
 
+### Changed
+
+- Upgrade to django 5.0
+
 ### Fixed
 
 - Authorize ended live to initiate a transcription

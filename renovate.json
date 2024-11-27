@@ -47,7 +47,7 @@
       "matchPackageNames": [
         "Django"
       ],
-      "allowedVersions": "<5"
+      "allowedVersions": "<5.1.0"
     },
     {
       "enabled": false,

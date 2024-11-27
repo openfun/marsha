@@ -26,7 +26,7 @@ class ClassroomServiceTestCase(TestCase):
             title="Classroom 001",
             meeting_id="7a567d67-29d3-4547-96f3-035733a4dfaa",
         )
-        self.assertQuerysetEqual(classroom.sessions.all(), [])
+        self.assertQuerySetEqual(classroom.sessions.all(), [])
 
         responses.add(
             responses.GET,
