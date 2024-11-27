@@ -1,12 +1,11 @@
 """Tests for the classroom retrieve API."""
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import json
 import zoneinfo
 
 from django.core.cache import cache
 from django.test import TestCase, override_settings
-from django.utils import timezone
 
 import responses
 

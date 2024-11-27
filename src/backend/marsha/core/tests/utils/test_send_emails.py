@@ -1,9 +1,9 @@
 """Test the send_emails functions."""
 
+from datetime import datetime, timezone
+
 from django.core import mail
 from django.test import TestCase, override_settings
-from django.utils import timezone
-from django.utils.datetime_safe import datetime
 
 from marsha.core.factories import VideoFactory
 from marsha.core.utils.send_emails import (

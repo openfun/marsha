@@ -1,13 +1,13 @@
 """Test send_vod_convert_reminders command."""
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from io import StringIO
 from unittest import mock
 
 from django.core import mail
 from django.core.management import call_command
 from django.test import TestCase
-from django.utils import timezone
+from django.utils import timezone as django_timezone
 
 from marsha.core.defaults import HARVESTED, IDLE, JITSI, RUNNING, STOPPED
 from marsha.core.factories import VideoFactory
@@ -27,7 +27,7 @@ class SendVodConvertRemindersCommandTest(TestCase):
         """Test send_vod_convert_reminders command."""
         expiration_reminder_date = datetime(2022, 11, 1, 15, 00, tzinfo=timezone.utc)
 
-        start = timezone.now() - timedelta(minutes=20)
+        start = django_timezone.now() - timedelta(minutes=20)
         stop = start + timedelta(minutes=10)
 
         # first live not started yet, should not be reminded.
