@@ -1,7 +1,7 @@
 {
   "author": "France Université Numérique",
   "name": "aws-marsha-convert",
-  "version": "5.5.0",
+  "version": "5.5.1",
   "engines": {
     "node": "18"
   },
