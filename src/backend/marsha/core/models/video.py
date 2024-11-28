@@ -267,7 +267,7 @@ class Video(BaseFile, RetentionDateObjectMixin):
         null=True,
         blank=True,
     )
-    size = models.IntegerField(
+    size = models.BigIntegerField(
         help_text=_("Size of the video in bytes"),
         null=True,
         blank=True,
