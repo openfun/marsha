@@ -121,4 +121,4 @@ def compute_video_information(video_pk: str):
 
     video.duration = probe.get("format", {}).get("duration")
     video.size = probe.get("format", {}).get("size")
-    video.save()
+    video.save(update_fields=["duration", "size"])

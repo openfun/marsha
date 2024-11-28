@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- use a big int for video size field
+
 ## [5.5.0] - 2024-11-28
 
 ### Added
