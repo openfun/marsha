@@ -8,9 +8,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [5.5.1] - 2024-11-29
+
 ### Fixed
 
-- use a big int for video size field
+- Use a big int for video size field
 
 ## [5.5.0] - 2024-11-28
 
@@ -2012,7 +2014,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v5.5.0...master
+[unreleased]: https://github.com/openfun/marsha/compare/v5.5.1...master
+[5.5.1]: https://github.com/openfun/marsha/compare/v5.5.0...v5.5.1
 [5.5.0]: https://github.com/openfun/marsha/compare/v5.4.0...v5.5.0
 [5.4.0]: https://github.com/openfun/marsha/compare/v5.3.1...v5.4.0
 [5.3.1]: https://github.com/openfun/marsha/compare/v5.3.0...v5.3.1
