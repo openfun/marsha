@@ -112,7 +112,7 @@
     "lib-common": "*",
     "lib-components": "*",
     "mdast": "3.0.0",
-    "mermaid": "9.1.7",
+    "mermaid": "10.9.3",
     "parse5": "7.1.2",
     "rehype-highlight": "6.0.0",
     "rehype-katex": "6.0.3",
