@@ -15,11 +15,11 @@
     "test": "jest"
   },
   "dependencies": {
-    "aws-sdk": "2.1569.0"
+    "aws-sdk": "2.1692.0"
   },
   "devDependencies": {
     "jest": "29.7.0",
-    "prettier": "3.2.5"
+    "prettier": "3.4.2"
   },
   "volta": {
     "node": "18.18.0"
