@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Support for the IMS LIS role format in the LTI launch
+
 ## [5.5.1] - 2024-11-29
 
 ### Fixed
