@@ -96,6 +96,7 @@ class LTITestCase(TestCase):
             "student, Instructor",  # a space after the comma is allowed
             ", staff",  # a leading comma should be ignored
             "staff,",  # a trailing comma should be ignored
+            "urn:lti:instrole:ims/lis/Instructor",  # the LIS role identifier should be recognized
         ]:
             request = self.factory.post("/", {"roles": roles_string})
             lti = LTI(request, uuid.uuid4())
