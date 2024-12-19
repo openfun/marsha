@@ -1,6 +1,6 @@
 {
   "name": "lib-video",
-  "version": "5.5.1",
+  "version": "5.5.2",
   "description": "",
   "license": "MIT",
   "main": "./src/index.ts",
