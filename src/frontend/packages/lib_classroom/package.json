@@ -40,7 +40,7 @@
     "@babel/plugin-transform-runtime": "7.25.9",
     "@babel/polyfill": "7.12.1",
     "@babel/preset-env": "7.26.0",
-    "@babel/preset-typescript": "7.26.0",
+    "@babel/preset-typescript": "7.23.3",
     "@faker-js/faker": "*",
     "@formatjs/cli": "6.3.15",
     "@openfun/cunningham-react": "*",

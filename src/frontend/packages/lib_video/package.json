@@ -88,7 +88,7 @@
     "lib-common": "*",
     "lib-components": "*",
     "linkifyjs": "4.2.0",
-    "p2p-media-loader-hlsjs": "2.1.0",
+    "p2p-media-loader-hlsjs": "0.6.2",
     "process": "0.11.10",
     "react-icalendar-link": "3.0.2",
     "video.js": "7.21.1",
