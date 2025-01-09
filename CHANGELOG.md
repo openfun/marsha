@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix blackboard LTI roles parsing
+
 ## [5.5.2] - 2024-12-19
 
 ### Added
