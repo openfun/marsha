@@ -97,15 +97,16 @@ class LTITestCase(TestCase):
             ", staff",  # a leading comma should be ignored
             "staff,",  # a trailing comma should be ignored
             "urn:lti:instrole:ims/lis/Instructor",  # the LIS role identifier should be recognized
+            "urn:lti:role:ims/lis/Instructor,urn:lti:instrole:ims/lis/Faculty",
         ]:
             request = self.factory.post("/", {"roles": roles_string})
             lti = LTI(request, uuid.uuid4())
-            self.assertTrue(lti.is_instructor)
+            self.assertTrue(lti.is_instructor, roles_string)
 
         for roles_string in ["", "instructori", "student", "administrator,student"]:
             request = self.factory.post("/", {"roles": roles_string})
             lti = LTI(request, uuid.uuid4())
-            self.assertFalse(lti.is_instructor)
+            self.assertFalse(lti.is_instructor, roles_string)
 
     @mock.patch.object(lti_module, "verify_request_common", return_value=True)
     def test_lti_passport_unknown(self, mock_verify):

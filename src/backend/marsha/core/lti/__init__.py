@@ -265,7 +265,7 @@ class LTI:
         """
         roles = self.request.POST.get("roles", "")
         # remove LIS roles prefix
-        roles = re.sub(r"^urn:lti:instrole:ims/lis/", "", roles)
+        roles = re.sub(r"urn:lti:(inst)?role:ims/lis/", "", roles)
         # Remove all spaces from the string and extra trailing or leading commas
         roles = re.sub(r"[\s+]", "", roles).strip(",")
         # Return a set of the roles mentioned in the request
