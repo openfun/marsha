@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [5.5.3] - 2025-01-09
+
 ### Fixed
 
 - Fix blackboard LTI roles parsing
@@ -2024,7 +2026,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v5.5.2...master
+[unreleased]: https://github.com/openfun/marsha/compare/v5.5.3...master
+[5.5.3]: https://github.com/openfun/marsha/compare/v5.5.2...v5.5.3
 [5.5.2]: https://github.com/openfun/marsha/compare/v5.5.1...v5.5.2
 [5.5.1]: https://github.com/openfun/marsha/compare/v5.5.0...v5.5.1
 [5.5.0]: https://github.com/openfun/marsha/compare/v5.4.0...v5.5.0
