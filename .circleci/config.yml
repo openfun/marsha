@@ -5,7 +5,7 @@
 parameters:
   cache-version:
     type: string
-    default: '{{ .Environment.CACHE_VERSION }}.0'
+    default: '{{ .Environment.CACHE_VERSION }}.1'
 
 aliases:
   - &docker_login
