@@ -539,6 +539,9 @@ jobs:
             - front-dependencies-<< pipeline.parameters.cache-version >>-{{ checksum "yarn.lock" }}
       - *count_cpus
       - run:
+          name: Run tests on lib-markdown
+          command: yarn workspace lib-markdown run test -w "${NB_CPUS}" --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
+      - run:
           name: Run tests on libs-components
           command: yarn workspace lib-components run test -w "${NB_CPUS}" --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
       - run:
@@ -547,9 +550,6 @@ jobs:
       - run:
           name: Run tests on lib-video
           command: yarn workspace lib-video run test -w "${NB_CPUS}" --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
-      - run:
-          name: Run tests on lib-markdown
-          command: yarn workspace lib-markdown run test -w "${NB_CPUS}" --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
       - run:
           name: Run tests on lti site
           command: yarn workspace marsha run test -w "${NB_CPUS}" --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
