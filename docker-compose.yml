@@ -17,6 +17,13 @@ services:
     # it is run (no server).
     command: echo "I should exit now. Bye."
 
+  test-front:
+    image: cimg/node:20.9
+    working_dir: /app/src/frontend/packages/lib_markdown
+    command: ["yarn", "test"]
+    volumes:
+      - .:/app
+
   app:
     build:
       context: .
