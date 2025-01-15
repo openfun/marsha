@@ -297,7 +297,8 @@ describe('<VideoCreateForm />', () => {
           description: 'my description',
           license: 'CC_BY',
           videoFile: {
-            path: 'course.mp4',
+            path: './course.mp4',
+            relativePath: './course.mp4',
           },
         }),
       });
