@@ -14,10 +14,8 @@ if (sentryDsn != null) {
     environment: process.env.WEBTORRENT_ENVIRONMENT,
     release: process.env.WEBTORRENT_RELEASE
   });
-  Sentry.configureScope((scope) => scope.setExtra('application', 'webtorrent'));
-
-  app.use(Sentry.Handlers.requestHandler());
-  app.use(Sentry.Handlers.errorHandler());
+  Sentry.getCurrentScope().setExtra('application', 'webtorrent');
+  Sentry.setupExpressErrorHandler(app);
 }
 
 const webtorrentServer = new Server({
