@@ -11,7 +11,7 @@
     "aws-sdk": "2.1692.0",
     "clamscan": "2.4.0",
     "he": "1.2.0",
-    "jimp": "1.6.0",
+    "jimp": "0.22.12",
     "jsdom": "25.0.1",
     "node-poppler": "7.2.2",
     "update-state": "file:../utils/update-state"
