@@ -30,6 +30,21 @@
       ]
     },
     {
+      "enabled": false,
+      "groupName": "ignored webtorrent js dependencies",
+      "includePaths": [
+        "src/webtorrent/package.json"
+      ],
+      "matchManagers": [
+        "npm"
+      ],
+      "matchPackageNames": [
+        "@typescript-eslint/eslint-plugin",
+        "eslint",
+        "eslint-config-standard-with-typescript"
+      ]
+    },
+    {
       "groupName": "allowed docker images",
       "matchDatasources": [
         "docker"
