@@ -1,4 +1,4 @@
-import { ErrorEvent } from '@sentry/types/types/event';
+import { ErrorEvent } from '@sentry/core';
 
 import { beforeSendSentry } from './beforeSendSentry';
 

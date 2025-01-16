@@ -1,18 +1,19 @@
-import { configureScope, init } from '@sentry/browser';
+import { getCurrentScope, init } from '@sentry/browser';
 
 import { beforeSendSentry } from '@lib-components/utils';
 
 import { useSentry } from '.';
 
+const mockSetExtra = jest.fn();
+
 jest.mock('@sentry/browser', () => ({
   init: jest.fn(),
-  configureScope: jest.fn(),
+  getCurrentScope: jest.fn(() => ({
+    setExtra: mockSetExtra,
+  })),
 }));
 
 const mockInit = init as jest.MockedFunction<typeof init>;
-const mockConfigureScope = configureScope as jest.MockedFunction<
-  typeof configureScope
->;
 
 describe('useSentry', () => {
   it('checks isSentryReady', () => {
@@ -28,12 +29,10 @@ describe('useSentry', () => {
       environment: 'environment',
       release: 'release',
     });
-    expect(mockConfigureScope).toHaveBeenCalledWith(expect.any(Function));
-    expect(mockConfigureScope.mock.calls[0][0]).toEqual(expect.any(Function));
-    const passedFunction = mockConfigureScope.mock.calls[0][0];
-    const scope = { setExtra: jest.fn() } as any;
-    passedFunction(scope);
-    expect(scope.setExtra).toHaveBeenCalledWith('application', 'test');
+    expect(getCurrentScope().setExtra).toHaveBeenCalledWith(
+      'application',
+      'test',
+    );
     expect(useSentry.getState().isSentryReady).toBeTruthy();
   });
 });

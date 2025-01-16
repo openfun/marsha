@@ -1,4 +1,4 @@
-import { ErrorEvent, EventHint } from '@sentry/types/types/event';
+import { ErrorEvent, EventHint } from '@sentry/core';
 
 export const beforeSendSentry = (event: ErrorEvent, hint: EventHint) => {
   const error = hint.originalException;
