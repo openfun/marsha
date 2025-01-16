@@ -1,4 +1,4 @@
-import { configureScope, init } from '@sentry/browser';
+import { getCurrentScope, init } from '@sentry/browser';
 import { create } from 'zustand';
 
 import { beforeSendSentry } from '@lib-components/utils';
@@ -28,7 +28,7 @@ export const useSentry = create<SentryStore>((set) => ({
       beforeSend: beforeSendSentry,
     });
 
-    configureScope((scope) => scope.setExtra('application', application));
+    getCurrentScope().setExtra('application', application);
 
     set((state) => ({ ...state, isSentryReady: true }));
   },
