@@ -10,6 +10,7 @@ import {
 import { videoMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
 import { act } from 'react-dom/test-utils';
+// @ts-expect-error: somethings wrong with the vtt.js import
 import { VTTCue } from 'vtt.js';
 
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
