@@ -16,6 +16,7 @@
         "@tanstack/react-query",
         "@mdx-js/mdx2",
         "@openfun/cunningham-react",
+        "fetch-mock",
         "mermaid",
         "node",
         "node-fetch",
