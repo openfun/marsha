@@ -35,7 +35,6 @@
     "@testing-library/react": "*",
     "@testing-library/user-event": "*",
     "@types/clipboard": "2.0.10",
-    "@types/fetch-mock": "7.3.8",
     "@types/iframe-resizer": "3.5.13",
     "@types/intl": "1.2.2",
     "@types/jest": "29.5.14",
