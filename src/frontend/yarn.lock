@@ -4752,11 +4752,6 @@
   resolved "https://registry.yarnpkg.com/@types/estree/-/estree-1.0.6.tgz#628effeeae2064a1b4e79f78e81d87b7e5fc7b50"
   integrity sha512-AYnb1nQyY49te+VRAVgmzfcgjYS91mY5P0TKUDCLEM+gNnA+3T6rWITXRLYCpahpqSQbN5cE+gHpnPyXjHWxcw==
 
-"@types/fetch-mock@7.3.8":
-  version "7.3.8"
-  resolved "https://registry.yarnpkg.com/@types/fetch-mock/-/fetch-mock-7.3.8.tgz#2fd769cb7881ac029d06ab2c23a254a9f208a034"
-  integrity sha512-ztsIGiyUvD0GaqPc9/hb8k20gnr6lupqA6SFtqt+8v2mtHhNO/Ebb6/b7N6af/7x0A7s1C8nxrEGzajMBqz8qA==
-
 "@types/graceful-fs@^4.1.3":
   version "4.1.6"
   resolved "https://registry.yarnpkg.com/@types/graceful-fs/-/graceful-fs-4.1.6.tgz#e14b2576a1c25026b7f02ede1de3b84c3a1efeae"
