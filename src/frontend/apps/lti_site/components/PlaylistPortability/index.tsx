@@ -107,7 +107,7 @@ export const PlaylistPortabilityList = ({
           <FormattedMessage {...messages.sharedListTitle} />
         </Text>
         <List
-          data={playlist.portable_to}
+          data={playlist.portable_to as { title: string; id: string }[]}
           pad={{ left: 'small', right: 'none' }}
           action={(item, index) => (
             <Button
