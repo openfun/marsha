@@ -45,7 +45,6 @@
     "@types/react": "*",
     "@types/react-datepicker": "7.0.0",
     "@types/react-dom": "*",
-    "@types/react-router-dom": "*",
     "@types/styled-components": "5.1.34",
     "@types/uuid": "10.0.0",
     "babel-jest": "29.7.0",
