@@ -27,7 +27,8 @@
         "remark-math",
         "styled-components",
         "video.js",
-        "videojs-contrib-quality-levels"
+        "videojs-contrib-quality-levels",
+        "zustand"
       ]
     },
     {
