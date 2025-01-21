@@ -1,4 +1,4 @@
-import { act } from 'react-dom/test-utils';
+import { act } from '@testing-library/react';
 
 export const advanceJestTimersByTime = (
   incrementMs: number,

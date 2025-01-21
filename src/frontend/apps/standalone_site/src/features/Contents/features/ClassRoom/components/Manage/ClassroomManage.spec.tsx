@@ -1,10 +1,9 @@
 import { useJwt } from '@lib-components/hooks';
-import { screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { render } from 'lib-tests';
 import React from 'react';
-import { act } from 'react-dom/test-utils';
 
 import { useSelectFeatures } from 'features/Contents/store/selectionStore';
 
