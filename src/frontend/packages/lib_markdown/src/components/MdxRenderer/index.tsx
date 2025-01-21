@@ -49,6 +49,10 @@ type MdxRendererProps = {
   mardownImages: MarkdownImage[];
 };
 
+const isElement = (node: Node): node is Element => {
+  return node.nodeType === node.ELEMENT_NODE;
+};
+
 export const MdxRenderer = ({
   markdownText,
   markdownDocumentId,
@@ -146,6 +150,9 @@ export const MdxRenderer = ({
 
             // - prevent click-jacking (this is quite naive), don't allow styling href.
             DOMPurify.addHook('beforeSanitizeElements', (node) => {
+              if (!isElement(node)) {
+                return;
+              }
               if (
                 node.hasAttribute &&
                 node.hasAttribute('style') &&
