@@ -1,5 +1,5 @@
 import { colorsTokens } from '@lib-common/cunningham';
-import React, { Fragment } from 'react';
+import React, { Fragment, JSX } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { Box } from '@lib-components/common';

@@ -2,6 +2,7 @@ import { Button } from '@openfun/cunningham-react';
 import React, {
   ComponentPropsWithRef,
   Dispatch,
+  JSX,
   SetStateAction,
   useCallback,
   useEffect,

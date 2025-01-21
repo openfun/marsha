@@ -1,5 +1,5 @@
 import { Maybe } from 'lib-common';
-import { Fragment } from 'react';
+import { Fragment, JSX } from 'react';
 import { MemoryRouter, Route, RouteProps, Routes } from 'react-router-dom';
 
 const defaultWrapper = (routing: JSX.Element) => routing;

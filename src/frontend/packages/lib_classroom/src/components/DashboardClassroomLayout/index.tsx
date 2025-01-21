@@ -1,6 +1,6 @@
 import { Nullable, colorsTokens } from 'lib-common';
 import { Box, Text, useAppConfig, useResponsive } from 'lib-components';
-import React from 'react';
+import React, { JSX } from 'react';
 
 interface DashboardClassroomMessageProps {
   message: string;

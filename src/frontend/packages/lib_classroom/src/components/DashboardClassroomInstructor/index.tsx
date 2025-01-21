@@ -1,7 +1,7 @@
 import { Button } from '@openfun/cunningham-react';
 import { Breakpoints, Nullable } from 'lib-common';
 import { Box, BoxLoader, Classroom, Grid, useResponsive } from 'lib-components';
-import React, { Suspense, lazy } from 'react';
+import React, { JSX, Suspense, lazy } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 

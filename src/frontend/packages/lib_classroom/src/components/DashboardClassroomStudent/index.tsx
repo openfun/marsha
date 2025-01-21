@@ -3,7 +3,7 @@ import { Schedule } from 'grommet-icons';
 import { Nullable, colorsTokens } from 'lib-common';
 import { Box, Classroom, Heading, Text, useResponsive } from 'lib-components';
 import { DateTime, Duration, Settings } from 'luxon';
-import React, { Fragment, useEffect, useMemo } from 'react';
+import React, { Fragment, JSX, useEffect, useMemo } from 'react';
 import ICalendarLink from 'react-icalendar-link';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';

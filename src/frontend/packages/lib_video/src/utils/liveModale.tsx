@@ -15,7 +15,7 @@ const TestLiveModale = () => {
   );
 };
 
-export const wrapInLiveModaleProvider = (Component: JSX.Element) => (
+export const wrapInLiveModaleProvider = (Component: React.JSX.Element) => (
   <LiveModaleConfigurationProvider value={null}>
     <TestLiveModale />
     {Component}
