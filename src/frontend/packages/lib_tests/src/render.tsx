@@ -23,7 +23,7 @@ interface RouterOptions {
   componentPath?: string;
   header?: React.ReactElement;
   history?: string[];
-  wrapper?: (routing: JSX.Element) => JSX.Element;
+  wrapper?: (routing: React.JSX.Element) => React.JSX.Element;
 }
 interface QueryOptions {
   client: QueryClient;

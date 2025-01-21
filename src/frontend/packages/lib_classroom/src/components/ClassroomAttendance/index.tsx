@@ -10,7 +10,7 @@ import {
   Text,
 } from 'lib-components';
 import { DateTime } from 'luxon';
-import { useMemo, useState } from 'react';
+import { JSX, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 

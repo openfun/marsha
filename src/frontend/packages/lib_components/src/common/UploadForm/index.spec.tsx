@@ -1,6 +1,7 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { render } from 'lib-tests';
+import { JSX } from 'react';
 
 import { builderFullScreenErrorRoute } from '@lib-components/common/ErrorComponents/route';
 import { UploadManager } from '@lib-components/common/UploadManager';

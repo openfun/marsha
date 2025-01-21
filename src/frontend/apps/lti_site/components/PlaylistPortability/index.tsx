@@ -13,7 +13,7 @@ import {
   Text,
   Video,
 } from 'lib-components';
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, JSX, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
 

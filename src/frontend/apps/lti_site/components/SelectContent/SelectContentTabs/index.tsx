@@ -19,7 +19,7 @@ import {
   useFlags,
 } from 'lib-components';
 import { initiateLive, useCreateVideo } from 'lib-video';
-import React, { ComponentType, Suspense, lazy } from 'react';
+import React, { ComponentType, JSX, Suspense, lazy } from 'react';
 import { useIntl } from 'react-intl';
 
 import { appConfigs } from 'data/appConfigs';

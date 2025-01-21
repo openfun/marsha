@@ -1,4 +1,4 @@
-import { ComponentProps } from 'react';
+import { ComponentProps, JSX } from 'react';
 import { IntlProvider, ReactIntlErrorCode } from 'react-intl';
 
 type IntlProviderProps = ComponentProps<typeof IntlProvider>;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { JSX } from 'react';
 import { IntlProvider } from 'react-intl';
 
 export const wrapInIntlProvider = (Component: JSX.Element, locale = 'en') => (

@@ -1,7 +1,7 @@
 import { Pagination } from '@openfun/cunningham-react';
 import { UseQueryResult } from '@tanstack/react-query';
 import { APIList, Box, ContentCards } from 'lib-components';
-import { Fragment } from 'react';
+import { Fragment, JSX } from 'react';
 import styled from 'styled-components';
 
 import useContentPerPage from '../../hooks/useContentPerPage';
