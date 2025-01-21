@@ -24,6 +24,7 @@
         "mermaid",
         "node",
         "node-fetch",
+        "p2p-media-loader-hlsjs",
         "react-router-dom",
         "rehype-katex",
         "rehype-mathjax",
