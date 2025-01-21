@@ -1,8 +1,7 @@
-import { screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { thumbnailMockFactory, videoMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
-import { act } from 'react-dom/test-utils';
 
 import { useSelectFeatures } from 'features/Contents/store/selectionStore';
 

@@ -1,4 +1,4 @@
-import { fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import {
   InfoWidgetModalProvider,
@@ -9,7 +9,6 @@ import {
 } from 'lib-components';
 import { videoMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
-import { act } from 'react-dom/test-utils';
 // @ts-expect-error: somethings wrong with the vtt.js import
 import { VTTCue } from 'vtt.js';
 

@@ -1,6 +1,7 @@
 // https://github.com/pmndrs/zustand/wiki/Testing
+import { act } from '@testing-library/react';
+
 const actualCreate = jest.requireActual('zustand').create;
-import { act } from 'react-dom/test-utils';
 
 // a variable to hold reset functions for all stores declared in the app
 const storeResetFns = new Set();
@@ -9,7 +10,9 @@ const stores = new Set();
 
 // when creating a store, we get its initial state, create a reset function and add it in the set
 export const create = (createState) => {
-  if (!createState) return create;
+  if (!createState) {
+    return create;
+  }
   const store = actualCreate(createState);
   const initialState = store.getState();
   storeResetFns.add(() => {

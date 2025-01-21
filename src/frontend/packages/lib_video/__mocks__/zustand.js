@@ -1,6 +1,7 @@
 // https://github.com/pmndrs/zustand/wiki/Testing
+import { act } from '@testing-library/react';
+
 const actualCreate = jest.requireActual('zustand').create;
-import { act } from 'react-dom/test-utils';
 
 // a variable to hold reset functions for all stores declared in the app
 const storeResetFns = new Set();
