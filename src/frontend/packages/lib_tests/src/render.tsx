@@ -3,7 +3,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   RenderResult,
   RenderOptions as TestingLibraryRenderOptions,
-  act,
   screen,
   render as testingLibraryRender,
 } from '@testing-library/react';
@@ -11,6 +10,7 @@ import { Grommet, ResponsiveContext, ThemeType } from 'grommet';
 import MatchMediaMock from 'jest-matchmedia-mock';
 import { BreadCrumbsProvider, GlobalStyles, Nullable, theme } from 'lib-common';
 import React, { CSSProperties, ComponentProps, ReactElement } from 'react';
+import { act } from 'react-dom/test-utils';
 import toast, { Toast, Toaster, useToaster } from 'react-hot-toast';
 import { IntlProvider } from 'react-intl';
 import { RouteProps } from 'react-router-dom';
