@@ -108,7 +108,7 @@ def test_render(page: Page, live_server: LiveServer, settings) -> None:
     page.get_by_role("button", name="Create your course").click()
 
     editor_container = page.get_by_test_id("editor_container")
-    editor_container.get_by_role("textbox").click()
+    editor_container.get_by_role("textbox").locator("div").click()
     page.keyboard.type("this should be rendered")
 
     page.get_by_role("tab", name="Preview").click()
@@ -117,7 +117,7 @@ def test_render(page: Page, live_server: LiveServer, settings) -> None:
     ).to_be_visible()
 
     page.get_by_role("tab", name="Markdown").click()
-    editor_container.get_by_role("textbox").focus()
+    editor_container.get_by_role("textbox").locator("div").click()
     page.keyboard.press("Home")
     page.keyboard.type("# ")
 
