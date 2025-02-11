@@ -42,6 +42,8 @@ spec:
               value: "{{ marsha_postgresql_port }}"
             - name: DJANGO_ALLOWED_HOSTS
               value: "{{ marsha_hosts[0] }}"
+            - name: DJANGO_CLOUDFRONT_SIGNED_URLS_ACTIVE
+              value: "{{ marsha_should_sign_requests }}"
             - name: DJANGO_CLOUDFRONT_PRIVATE_KEY_PATH
               value: "{{ marsha_cloudfront_private_key_path }}"
           envFrom:

@@ -11,6 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Increase connection timeout on Nginx for peertube runner success request
+- Allow disabling Cloudfront signed URLs
 
 ## [5.5.3] - 2025-01-09
 
