@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Increase connection timeout on Nginx for peertube runner success request
+
 ## [5.5.3] - 2025-01-09
 
 ### Fixed
