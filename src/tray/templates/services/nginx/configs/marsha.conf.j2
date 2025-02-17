@@ -105,6 +105,11 @@ server {
 
   location /api/v1/runners {
     client_max_body_size 4000m;
+
+    proxy_connect_timeout 300s;
+    proxy_send_timeout 300s;
+    proxy_read_timeout 300s;
+
     try_files $uri @proxy_to_marsha_app;
   }
 
