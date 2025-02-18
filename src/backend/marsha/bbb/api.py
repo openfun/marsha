@@ -763,7 +763,7 @@ class ClassroomRecordingViewSet(
         classroom_recording.vod = Video.objects.create(
             title=request.data.get("title"),
             playlist=classroom_recording.classroom.playlist,
-            transcode_pipeline=defaults.AWS_PIPELINE,
+            transcode_pipeline=defaults.PEERTUBE_PIPELINE,
         )
         classroom_recording.save()
 
