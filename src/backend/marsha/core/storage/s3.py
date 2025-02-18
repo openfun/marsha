@@ -32,7 +32,7 @@ class S3VideoStorage(S3Storage):
 
     object_parameters = settings.VIDEOS_STORAGE_S3_OBJECT_PARAMETERS
 
-    custom_domain = settings.CLOUDFRONT_DOMAIN
+    custom_domain = settings.SCW_EDGE_SERVICE_DOMAIN
     url_protocol = "https:"
 
     if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:

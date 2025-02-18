@@ -207,13 +207,7 @@ class VideoBaseSerializer(serializers.ModelSerializer):
 
         urls = {"mp4": {}, "thumbnails": {}, "manifests": {}}
 
-        base = f"{settings.AWS_S3_URL_PROTOCOL}://{settings.CLOUDFRONT_DOMAIN}/{obj.pk}"
         stamp = time_utils.to_timestamp(obj.uploaded_on)
-        if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
-            params = get_video_cloudfront_url_params(obj.pk)
-
-        filename = f"{slugify(obj.playlist.title)}_{stamp}.mp4"
-        content_disposition = quote_plus(f"attachment; filename={filename}")
 
         # Trying to recover the transcoding pipeline
         if obj.transcode_pipeline is None:
@@ -228,6 +222,13 @@ class VideoBaseSerializer(serializers.ModelSerializer):
             )
 
         if obj.transcode_pipeline == AWS_PIPELINE:
+            base = f"{settings.AWS_S3_URL_PROTOCOL}://{settings.CLOUDFRONT_DOMAIN}/{obj.pk}"
+            if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
+                params = get_video_cloudfront_url_params(obj.pk)
+
+            filename = f"{slugify(obj.playlist.title)}_{stamp}.mp4"
+            content_disposition = quote_plus(f"attachment; filename={filename}")
+
             for resolution in obj.resolutions:
                 # MP4
                 mp4_url = (
@@ -255,6 +256,7 @@ class VideoBaseSerializer(serializers.ModelSerializer):
 
                 # Previews
                 urls["previews"] = f"{base}/previews/{stamp}_100.jpg"
+
         elif obj.transcode_pipeline == PEERTUBE_PIPELINE:
             base = obj.get_videos_storage_prefix(stamp=stamp)
             for resolution in obj.resolutions:
