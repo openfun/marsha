@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Add SCW_EDGE_SERVICE_DOMAIN setting for serving videos with SCW Edge Services
+
 ### Changed
 
 - Increase connection timeout on Nginx for peertube runner success request

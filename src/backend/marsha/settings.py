@@ -385,6 +385,8 @@ class Base(Configuration):
         {"ContentDisposition": "attachment"}
     )
 
+    SCW_EDGE_SERVICE_DOMAIN = values.Value(None)
+
     # LTI Config
     LTI_CONFIG_TITLE = values.Value("Marsha")
     LTI_CONFIG_TITLES = values.DictValue(

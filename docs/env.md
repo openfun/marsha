@@ -291,6 +291,15 @@ that will be used to distribute processed files to end users.
 - Required: Yes
 - Default: None
 
+#### DJANGO_SCW_EDGE_SERVICE_DOMAIN
+
+The domain for the Scaleway Edge Service.
+This is the domain that will be used to distribute videos from Scaleway S3 to end users.
+
+- Type: string
+- Required: Yes
+- Default: None
+
 ### XMPP settings
 
 #### DJANGO_LIVE_CHAT_ENABLED

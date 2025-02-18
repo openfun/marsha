@@ -45,7 +45,7 @@ class VideoBaseSerializerTest(TestCase):
         )
 
     @override_settings(
-        MEDIA_URL="https://abc.cloudfront.net/",
+        MEDIA_URL="https://abc.svc.edge.scw.cloud/",
     )
     def test_video_serializer_urls_with_peertube_pipeline(self):
         """The VideoBaseSerializer should return the right URLs."""
@@ -63,20 +63,20 @@ class VideoBaseSerializerTest(TestCase):
             serializer = VideoBaseSerializer(video)
 
             self.assertEqual(
-                f"https://abc.cloudfront.net/vod/{video.pk}/video/1640995200/thumbnail.jpg",
+                f"https://abc.svc.edge.scw.cloud/vod/{video.pk}/video/1640995200/thumbnail.jpg",
                 serializer.data["urls"]["thumbnails"][1080],
             )
             self.assertEqual(
-                f"https://abc.cloudfront.net/vod/{video.pk}/video/1640995200/master.m3u8?"
+                f"https://abc.svc.edge.scw.cloud/vod/{video.pk}/video/1640995200/master.m3u8?"
                 "v=25301066da0654a2967176ea47c26f6735b2cfcbd206f49fe1379f5103bb7b1f",
                 serializer.data["urls"]["manifests"]["hls"],
             )
             self.assertEqual(
-                f"https://abc.cloudfront.net/vod/{video.pk}/video/1640995200/thumbnail.jpg",
+                f"https://abc.svc.edge.scw.cloud/vod/{video.pk}/video/1640995200/thumbnail.jpg",
                 serializer.data["urls"]["previews"],
             )
             self.assertTrue(
-                f"https://abc.cloudfront.net/vod/{video.pk}/"
+                f"https://abc.svc.edge.scw.cloud/vod/{video.pk}/"
                 "video/1640995200/1640995200-1080-fragmented.mp4"
                 in serializer.data["urls"]["mp4"][1080]
             )
@@ -117,7 +117,7 @@ class VideoBaseSerializerTest(TestCase):
             )
 
     @override_settings(
-        MEDIA_URL="https://abc.cloudfront.net/",
+        MEDIA_URL="https://abc.svc.edge.scw.cloud/",
     )
     def test_video_serializer_urls_with_no_pipeline_recovered_to_peertube(self):
         """The VideoBaseSerializer should return the right URLs with Peertube pipeline."""
@@ -129,29 +129,32 @@ class VideoBaseSerializerTest(TestCase):
             uploaded_on=date,
         )
 
-        with mock.patch(
-            "marsha.core.serializers.video.capture_message"
-        ) as sentry_capture_message, mock.patch(
-            "marsha.core.serializers.video.video_storage"
-        ) as mock_video_storage:
+        with (
+            mock.patch(
+                "marsha.core.serializers.video.capture_message"
+            ) as sentry_capture_message,
+            mock.patch(
+                "marsha.core.serializers.video.video_storage"
+            ) as mock_video_storage,
+        ):
             mock_video_storage.url = storage_class.video_storage.url
             mock_video_storage.exists.return_value = True
 
             serializer = VideoBaseSerializer(video)
             self.assertEqual(
-                f"https://abc.cloudfront.net/vod/{video.pk}/video/1640995200/thumbnail.jpg",
+                f"https://abc.svc.edge.scw.cloud/vod/{video.pk}/video/1640995200/thumbnail.jpg",
                 serializer.data["urls"]["thumbnails"][1080],
             )
             self.assertEqual(
-                f"https://abc.cloudfront.net/vod/{video.pk}/video/1640995200/master.m3u8",
+                f"https://abc.svc.edge.scw.cloud/vod/{video.pk}/video/1640995200/master.m3u8",
                 serializer.data["urls"]["manifests"]["hls"],
             )
             self.assertEqual(
-                f"https://abc.cloudfront.net/vod/{video.pk}/video/1640995200/thumbnail.jpg",
+                f"https://abc.svc.edge.scw.cloud/vod/{video.pk}/video/1640995200/thumbnail.jpg",
                 serializer.data["urls"]["previews"],
             )
             self.assertTrue(
-                f"https://abc.cloudfront.net/vod/{video.pk}/"
+                f"https://abc.svc.edge.scw.cloud/vod/{video.pk}/"
                 "video/1640995200/1640995200-1080-fragmented.mp4"
                 in serializer.data["urls"]["mp4"][1080]
             )
