@@ -163,12 +163,12 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
             status=200,
         )
 
-        with (
-            mock.patch(
-                "marsha.bbb.api.invoke_lambda_convert"
-            ) as mock_invoke_lambda_convert,
-            mock.patch.object(timezone, "now", return_value=now),
-            self.assertNumQueries(9),
+        with mock.patch(
+            "marsha.bbb.api.invoke_lambda_convert"
+        ) as mock_invoke_lambda_convert, mock.patch.object(
+            timezone, "now", return_value=now
+        ), self.assertNumQueries(
+            9
         ):
             response = self.client.post(
                 f"/api/classrooms/{recording.classroom.id}/recordings/{recording.id}/create-vod/",
@@ -177,7 +177,7 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
             )
 
         self.assertEqual(Video.objects.count(), 1)
-        self.assertEqual(Video.objects.first().transcode_pipeline, "peertube")
+        self.assertEqual(Video.objects.first().transcode_pipeline, "AWS")
         self.assertEqual(response.status_code, 201)
 
         recording.refresh_from_db()
@@ -225,10 +225,9 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
 
         now = timezone.now()
 
-        with (
-            mock.patch.object(timezone, "now", return_value=now),
-            self.assertNumQueries(1),
-        ):
+        with mock.patch.object(
+            timezone, "now", return_value=now
+        ), self.assertNumQueries(1):
             response = self.client.post(
                 f"/api/classrooms/{recording.classroom.id}"
                 f"/recordings/{recording.classroom.id}/create-vod/",
@@ -332,7 +331,7 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
 
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Video.objects.count(), 1)
-        self.assertEqual(Video.objects.first().transcode_pipeline, "peertube")
+        self.assertEqual(Video.objects.first().transcode_pipeline, "AWS")
 
     @responses.activate
     def test_api_classroom_recording_create_vod_from_standalone_site_no_consumer_site(
@@ -411,7 +410,7 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
 
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Video.objects.count(), 1)
-        self.assertEqual(Video.objects.first().transcode_pipeline, "peertube")
+        self.assertEqual(Video.objects.first().transcode_pipeline, "AWS")
 
     def test_api_classroom_recording_create_vod_from_standalone_site_inactive_conversion(
         self,
@@ -511,7 +510,7 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
 
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Video.objects.count(), 1)
-        self.assertEqual(Video.objects.first().transcode_pipeline, "peertube")
+        self.assertEqual(Video.objects.first().transcode_pipeline, "AWS")
 
     @responses.activate
     def test_api_classroom_recording_create_vod_user_access_token_playlist_instructor(
@@ -585,7 +584,7 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
 
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Video.objects.count(), 1)
-        self.assertEqual(Video.objects.first().transcode_pipeline, "peertube")
+        self.assertEqual(Video.objects.first().transcode_pipeline, "AWS")
 
     def test_api_classroom_recording_create_vod_user_access_token_playlist_student(
         self,
@@ -667,12 +666,12 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
 
         now = timezone.now()
 
-        with (
-            mock.patch(
-                "marsha.bbb.api.invoke_lambda_convert"
-            ) as mock_invoke_lambda_convert,
-            mock.patch.object(timezone, "now", return_value=now),
-            self.assertNumQueries(1),
+        with mock.patch(
+            "marsha.bbb.api.invoke_lambda_convert"
+        ) as mock_invoke_lambda_convert, mock.patch.object(
+            timezone, "now", return_value=now
+        ), self.assertNumQueries(
+            1
         ):
             response = self.client.post(
                 f"/api/classrooms/{recording.classroom.id}/recordings/{recording.id}/create-vod/",
