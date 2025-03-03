@@ -96,8 +96,6 @@ resource "aws_cloudfront_distribution" "marsha_cloudfront_distribution" {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
     target_origin_id = local.s3_destination_origin_id
-    trusted_signers  = []
-    trusted_key_groups = [aws_cloudfront_key_group.marsha_cloudfront_signer_key_group.id]
 
     forwarded_values {
       query_string = false
@@ -115,14 +113,11 @@ resource "aws_cloudfront_distribution" "marsha_cloudfront_distribution" {
     viewer_protocol_policy = "redirect-to-https"
   }
 
-  # Destination bucket: access to MP4 videos is restricted to signed urls/cookies
   ordered_cache_behavior {
     path_pattern     = "*/mp4/*"
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
     target_origin_id = local.s3_destination_origin_id
-    trusted_signers  = []
-    trusted_key_groups = [aws_cloudfront_key_group.marsha_cloudfront_signer_key_group.id]
 
     forwarded_values {
       query_string = true
@@ -145,8 +140,6 @@ resource "aws_cloudfront_distribution" "marsha_cloudfront_distribution" {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
     target_origin_id = local.s3_destination_origin_id
-    trusted_signers  = []
-    trusted_key_groups = [aws_cloudfront_key_group.marsha_cloudfront_signer_key_group.id]
 
     forwarded_values {
       query_string = true
@@ -169,8 +162,6 @@ resource "aws_cloudfront_distribution" "marsha_cloudfront_distribution" {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
     target_origin_id = local.s3_destination_origin_id
-    trusted_signers  = []
-    trusted_key_groups = [aws_cloudfront_key_group.marsha_cloudfront_signer_key_group.id]
 
     forwarded_values {
       query_string = true
@@ -193,8 +184,6 @@ resource "aws_cloudfront_distribution" "marsha_cloudfront_distribution" {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
     target_origin_id = local.s3_destination_origin_id
-    trusted_signers  = []
-    trusted_key_groups = [aws_cloudfront_key_group.marsha_cloudfront_signer_key_group.id]
 
     forwarded_values {
       query_string = true
@@ -217,8 +206,6 @@ resource "aws_cloudfront_distribution" "marsha_cloudfront_distribution" {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
     target_origin_id = local.s3_destination_origin_id
-    trusted_signers  = []
-    trusted_key_groups = [aws_cloudfront_key_group.marsha_cloudfront_signer_key_group.id]
 
     forwarded_values {
       query_string = true
@@ -259,14 +246,11 @@ resource "aws_cloudfront_distribution" "marsha_cloudfront_distribution" {
     viewer_protocol_policy = "redirect-to-https"
   }
 
-  # Destination bucket: access to timed text tracks is restricted to signed urls/cookies
   ordered_cache_behavior {
     path_pattern     = "*/timedtext/*"
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
     target_origin_id = local.s3_destination_origin_id
-    trusted_signers  = []
-    trusted_key_groups = [aws_cloudfront_key_group.marsha_cloudfront_signer_key_group.id]
 
     forwarded_values {
       query_string = true
@@ -383,8 +367,6 @@ resource "aws_cloudfront_distribution" "marsha_cloudfront_distribution" {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
     target_origin_id = local.scw_object_storage_origin_id
-    trusted_signers  = []
-    trusted_key_groups = [aws_cloudfront_key_group.marsha_cloudfront_signer_key_group.id]
 
     forwarded_values {
       query_string = false
