@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+
+declare MARSHA_TERRAFORM_ENV_FILE
+declare -r TERRAFORM_VERSION="1.5.2"
+
+function _check_workspace() {
+    current_workspace=$(
+        docker run --rm -i \
+            -u "$(id -u)" \
+            -v "${PWD}/:/app" \
+            -w "/app" \
+            "hashicorp/terraform:${TERRAFORM_VERSION}" \
+            workspace show
+    ) 
+
+    # If an environment file is specified, it must match the current workspace
+    if [[ -n ${MARSHA_TERRAFORM_ENV_FILE} ]]; then
+        if [[ ${current_workspace} != "${MARSHA_TERRAFORM_ENV_FILE}" ]]; then
+            echo -e "workspace ${current_workspace} does not match environment file ${MARSHA_TERRAFORM_ENV_FILE}"
+            exit 1
+        fi
+    else
+        # Else we fallback to the development file and the current workspace must start with "dev-"
+        if [[ ! ${current_workspace} =~ ^dev-.*$ ]]; then
+            echo "workspace used must start with \"dev-\""
+            exit 1
+        fi
+        
+        export MARSHA_TERRAFORM_ENV_FILE="development"
+    fi
+}
+
+function terraform() {
+    case ${1} in
+        apply|destroy|import|plan)
+            _check_workspace
+            ;;
+        *)
+            MARSHA_TERRAFORM_ENV_FILE="development"
+            ;;
+    esac
+
+
+
+    declare TUNNEL_URL
+    declare DIR_NAME
+
+    DIR_NAME=$(dirname "$0")
+    TUNNEL_URL=$("$DIR_NAME"/../../../bin/get_tunnel_url)
+
+    # Run Terraform commands in the docker container passing our environment variables
+
+    if [[ -z ${TUNNEL_URL} ]] || [[ ${MARSHA_TERRAFORM_ENV_FILE} != "development" ]]; then
+        docker run --rm -it \
+        -u "$(id -u)" \
+        -v "${PWD}/:/app" \
+        -w "/app" \
+        --env-file ./env.d/${MARSHA_TERRAFORM_ENV_FILE} \
+        "hashicorp/terraform:${TERRAFORM_VERSION}" \
+        "$@"
+    else
+        docker run --rm -it \
+        -u "$(id -u)" \
+        -v "${PWD}/:/app" \
+        -w "/app" \
+        --env-file ./env.d/${MARSHA_TERRAFORM_ENV_FILE} \
+        -e TF_VAR_marsha_base_url="${TUNNEL_URL}" \
+        "hashicorp/terraform:${TERRAFORM_VERSION}" \
+        "$@"
+    fi
+}
+
+OPTS=$(getopt -o "e:" --long "env:" -- "$@")
+eval set -- "$OPTS"
+# Parse options
+while true; do
+    case "${1}" in
+        -e|--env)
+            export MARSHA_TERRAFORM_ENV_FILE="${2}"
+            shift 2;;
+        --)
+            shift; break;;
+    esac
+done
+
+terraform "$@"

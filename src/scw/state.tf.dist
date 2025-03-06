@@ -1,0 +1,15 @@
+# documentation to manage the state in SCW:  
+# https://www.terraform.io/docs/backends/types/s3.html
+# and 
+# https://registry.terraform.io/providers/scaleway/scaleway/latest/docs/guides/backend_guide
+terraform {
+  backend "s3" {
+    endpoint                    = "https://s3.fr-par.scw.cloud"
+    bucket                      = "bucketname-storing-the-state"
+    key                         = "marsha.tfstate"
+    region                      = "fr-par"
+    skip_credentials_validation = true    
+    skip_region_validation      = true
+    encrypt                     = true
+  }
+}

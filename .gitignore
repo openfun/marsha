@@ -145,6 +145,7 @@ tsconfig.tsbuildinfo
 *.tfstate
 *.tfstate.backup
 src/aws/**/state.tf
+src/scw/**/state.tf
 
 # Lambda build
 dist

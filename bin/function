@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+
+BASE_DIR=$(dirname "${BASH_SOURCE[0]}")
+
+# Using the env file is not mandatory. Variables can be already set in the current environment
+if [[ -f "${BASE_DIR}/../env.d/function" ]]; then
+  # shellcheck source=env.d/function
+  source "${BASE_DIR}/../env.d/function"
+fi
+
+# usage: display usage with the appropriate exit code
+#
+# usage: usage [EXIT_CODE]
+#
+#   EXIT_CODE: program exit code (default: 0)
+function usage(){
+  declare -i exit_code="${1:-0}"
+
+  echo -e "Usage: bin/function [OPTIONS] COMMAND
+
+OPTIONS:
+  -h, --help    print this message
+
+COMMANDS:
+  build         build the image marsha/function
+"
+
+  # shellcheck disable=SC2086
+  exit ${exit_code}
+}
+
+function build() {
+  while true; do
+    case "${1}" in
+      -h|--help)
+        echo -e "Usage: build [OPTIONS] [TAG]
+build the ${FUNCTION_IMAGE_NAME} image containing all serverless functions.
+By default, the development tag is used on this image. You can override it using the
+optional TAG argument.
+
+OPTIONS:
+  -h, --help
+         print this message
+      
+TAG: optional tag used for the marsha/function image (default: development)
+
+" 1>&2
+        return;;
+      *)
+        break
+        ;;
+    esac
+  done
+
+  tag="${1:-development}"
+  target="${2:-development}"
+  DOCKER_BUILDKIT=1 docker build \
+    -t "${FUNCTION_IMAGE_NAME}:${tag}" --target "${target}" "${BASE_DIR}"/../src/scw/
+}
+
+while true; do
+  case "${1}" in
+    -h|--help|help)
+      usage 0
+      ;;
+    build)
+      # Perform action
+      "$@"
+      exit 0;
+      ;;
+    *)
+      usage 1
+      ;;
+  esac
+done
