@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [5.6.0] - 2025-03-06
+
 ### Added
 
 - Add SCW_EDGE_SERVICE_DOMAIN setting for serving videos with SCW Edge Services
@@ -2035,7 +2037,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v5.5.3...master
+[unreleased]: https://github.com/openfun/marsha/compare/v5.6.0...master
+[5.6.0]: https://github.com/openfun/marsha/compare/v5.5.3...v5.6.0
 [5.5.3]: https://github.com/openfun/marsha/compare/v5.5.2...v5.5.3
 [5.5.2]: https://github.com/openfun/marsha/compare/v5.5.1...v5.5.2
 [5.5.1]: https://github.com/openfun/marsha/compare/v5.5.0...v5.5.1
