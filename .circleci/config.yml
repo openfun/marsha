@@ -231,6 +231,8 @@ jobs:
         auth:
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASS
+        environment:
+          PIP_NO_BINARY: lxml,xmlsec
     working_directory: ~/marsha/src/backend
     steps:
       - checkout:
@@ -602,6 +604,7 @@ jobs:
           DJANGO_MARKDOWN_ENABLED: 1
           DEBUG: pw:browser*
           BUILD_PATH: ../../../backend/marsha/static/js/build/site/
+          PIP_NO_BINARY: lxml,xmlsec
       - image: cimg/postgres:16.4
         auth:
           username: $DOCKER_HUB_USER

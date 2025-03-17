@@ -22,8 +22,11 @@ RUN apt-get update && \
         gcc \
         libxml2-dev \
         libxmlsec1-dev \
-        libxmlsec1-openssl && \
+        libxmlsec1-openssl \
+        zlib1g-dev && \
     rm -rf /var/lib/apt/lists/*
+
+ENV PIP_NO_BINARY=lxml,xmlsec
 
 RUN mkdir /install && \
     pip install --prefix=/install .
