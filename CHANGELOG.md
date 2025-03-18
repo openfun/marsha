@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Restore download, transcription and shared media icons on the video player 
+
 ## [5.6.0] - 2025-03-06
 
 ### Added

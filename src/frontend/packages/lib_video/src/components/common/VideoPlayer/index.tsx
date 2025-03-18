@@ -39,19 +39,19 @@ export const StyledBox = styled(Box)`
   }
 
   .vjs-icon-download {
-    background-image: url(${DownloadIcon});
+    background-image: url(\"${DownloadIcon}\");
     background-repeat: no-repeat;
     background-position: center;
   }
 
   .vjs-icon-transcript {
-    background-image: url(${TranscriptIcon});
+    background-image: url(\"${TranscriptIcon}\");
     background-repeat: no-repeat;
     background-position: center;
   }
 
   .vjs-icon-shared-media {
-    background-image: url(${SharedMediaIcon});
+    background-image: url(\"${SharedMediaIcon}\");
     background-repeat: no-repeat;
     background-position: center;
   }
