@@ -245,6 +245,29 @@ services:
     depends_on:
       - lambda_base
 
+  function_base:
+    build:
+      context: ./src/scw/
+      target: development
+    image: marsha/function:dev
+    # Override the default command so that the container exists immediately when
+    # it is run (no server).
+    entrypoint: ""
+    command: echo "I should exit now. Bye."
+
+
+  function_transfer:
+    image: marsha/function:dev
+    working_dir: /var/task/function-transfer
+    command: ["node", "index.js"]
+    network_mode: "host"
+    env_file:
+      - env.d/function
+    volumes:
+      - "./src/scw/function-transfer:/var/task/function-transfer"
+    depends_on:
+      - function_base
+
   mailcatcher:
     image: sj26/mailcatcher:latest
     ports:

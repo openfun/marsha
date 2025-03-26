@@ -60,6 +60,7 @@ bootstrap: \
 	env.d/lambda \
 	build \
 	build-lambda-dev \
+	build-function-dev \
 	run \
 	migrate \
 	i18n-compile-back \
@@ -84,6 +85,10 @@ build-backend-dev: ## build the app container
 build-lambda-dev: ## build all aws lambda
 	@bin/lambda build dev development
 .PHONY: build-lambda-dev
+
+build-function-dev: ## build all SCW functions
+	@bin/function build dev development
+.PHONY: build-function-dev
 
 down: ## Stop and remove containers, networks, images, and volumes
 	@$(COMPOSE) down
@@ -417,6 +422,35 @@ lint-lambda-migrate: ## run linter on lambda complete function
 	@$(COMPOSE_RUN_LAMBDA) lambda_migrate yarn lint
 .PHONY: lint-lambda-migrate
 
+## -- SCW
+
+function-install-dev-dependencies: ## Install all function dependencies
+function-install-dev-dependencies: \
+	function-install-dev-dependencies-transfer
+.PHONY: function-install-dev-dependencies
+
+function-install-dev-dependencies-transfer: ## Install dependencies for function complete
+	@$(COMPOSE_RUN) function_transfer yarn install
+.PHONY: function-install-dev-dependencies-transfer
+
+test-function: ## Run all aws function tests
+test-function: \
+	test-function-transfer
+.PHONY: test-function
+
+test-function-transfer: ## test aws function transfer
+	@$(COMPOSE_RUN) function_transfer yarn test
+.PHONY: test-function-transfer
+
+lint-function: ## Run linter an all function functions
+lint-function: \
+	lint-function-transfer
+.PHONY: lint-function
+
+lint-function-transfer: ## run linter on function transfer function
+	@$(COMPOSE_RUN) function_transfer yarn lint
+.PHONY: lint-function-transfer
+
 # -- Internationalization
 
 crowdin-download: ## Download translated message from crowdin
@@ -496,6 +530,9 @@ env.d/localtunnel:
 
 env.d/lambda:
 	cp env.d/lambda.dist env.d/lambda
+
+env.d/function:
+	cp env.d/function.dist env.d/function
 
 h: # short default help task
 	@echo "$(BOLD)Marsha Makefile$(RESET)"
