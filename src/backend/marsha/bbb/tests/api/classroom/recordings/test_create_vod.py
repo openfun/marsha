@@ -46,7 +46,7 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
         """An anonymous should not be able to convert a recording to a VOD."""
         recording = ClassroomRecordingFactory()
 
-        with mock.patch("marsha.bbb.api.invoke_lambda_convert"):
+        with mock.patch("marsha.bbb.api.invoke_function_transfer"):
             response = self.client.post(
                 f"/api/classrooms/{recording.classroom.id}/recordings/{recording.id}/create-vod/",
             )
@@ -63,7 +63,7 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
         """An anonymous should not be able to convert an unknown recording to a VOD."""
         recording = ClassroomRecordingFactory()
 
-        with mock.patch("marsha.bbb.api.invoke_lambda_convert"):
+        with mock.patch("marsha.bbb.api.invoke_function_transfer"):
             response = self.client.post(
                 f"/api/classrooms/{recording.classroom.id}"
                 f"/recordings/{recording.classroom.id}/create-vod/",
@@ -82,7 +82,7 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
         recording = ClassroomRecordingFactory()
         jwt_token = StudentLtiTokenFactory(playlist=recording.classroom.playlist)
 
-        with mock.patch("marsha.bbb.api.invoke_lambda_convert"):
+        with mock.patch("marsha.bbb.api.invoke_function_transfer"):
             response = self.client.post(
                 f"/api/classrooms/{recording.classroom.id}/recordings/{recording.id}/create-vod/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -163,12 +163,12 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
             status=200,
         )
 
-        with mock.patch(
-            "marsha.bbb.api.invoke_lambda_convert"
-        ) as mock_invoke_lambda_convert, mock.patch.object(
-            timezone, "now", return_value=now
-        ), self.assertNumQueries(
-            9
+        with (
+            mock.patch(
+                "marsha.bbb.api.invoke_function_transfer"
+            ) as mock_invoke_function_transfer,
+            mock.patch.object(timezone, "now", return_value=now),
+            self.assertNumQueries(9),
         ):
             response = self.client.post(
                 f"/api/classrooms/{recording.classroom.id}/recordings/{recording.id}/create-vod/",
@@ -177,7 +177,7 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
             )
 
         self.assertEqual(Video.objects.count(), 1)
-        self.assertEqual(Video.objects.first().transcode_pipeline, "AWS")
+        self.assertEqual(Video.objects.first().transcode_pipeline, "peertube")
         self.assertEqual(response.status_code, 201)
 
         recording.refresh_from_db()
@@ -202,7 +202,7 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
 
         self.assertEqual(Video.objects.first(), recording.vod)
         self.assertEqual(recording.vod.upload_state, PENDING)
-        mock_invoke_lambda_convert.assert_called_once_with(
+        mock_invoke_function_transfer.assert_called_once_with(
             (
                 "https://10.7.7.1/presentation/"
                 "c62c9c205d37815befe1b75ae6ef5878d8da5bb6-1673282694493/meeting.mp4"
@@ -225,9 +225,10 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
 
         now = timezone.now()
 
-        with mock.patch.object(
-            timezone, "now", return_value=now
-        ), self.assertNumQueries(1):
+        with (
+            mock.patch.object(timezone, "now", return_value=now),
+            self.assertNumQueries(1),
+        ):
             response = self.client.post(
                 f"/api/classrooms/{recording.classroom.id}"
                 f"/recordings/{recording.classroom.id}/create-vod/",
@@ -251,7 +252,7 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
         )
         jwt_token = UserAccessTokenFactory(user=organization_access.user)
 
-        with mock.patch("marsha.bbb.api.invoke_lambda_convert"):
+        with mock.patch("marsha.bbb.api.invoke_function_transfer"):
             response = self.client.post(
                 f"/api/classrooms/{recording.classroom.id}/recordings/{recording.id}/create-vod/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -323,7 +324,7 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
             status=200,
         )
 
-        with mock.patch("marsha.bbb.api.invoke_lambda_convert"):
+        with mock.patch("marsha.bbb.api.invoke_function_transfer"):
             response = self.client.post(
                 f"/api/classrooms/{recording.classroom.id}/recordings/{recording.id}/create-vod/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -331,7 +332,7 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
 
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Video.objects.count(), 1)
-        self.assertEqual(Video.objects.first().transcode_pipeline, "AWS")
+        self.assertEqual(Video.objects.first().transcode_pipeline, "peertube")
 
     @responses.activate
     def test_api_classroom_recording_create_vod_from_standalone_site_no_consumer_site(
@@ -402,7 +403,7 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
             status=200,
         )
 
-        with mock.patch("marsha.bbb.api.invoke_lambda_convert"):
+        with mock.patch("marsha.bbb.api.invoke_function_transfer"):
             response = self.client.post(
                 f"/api/classrooms/{recording.classroom.id}/recordings/{recording.id}/create-vod/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -410,7 +411,7 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
 
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Video.objects.count(), 1)
-        self.assertEqual(Video.objects.first().transcode_pipeline, "AWS")
+        self.assertEqual(Video.objects.first().transcode_pipeline, "peertube")
 
     def test_api_classroom_recording_create_vod_from_standalone_site_inactive_conversion(
         self,
@@ -430,7 +431,7 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
         )
         jwt_token = UserAccessTokenFactory(user=organization_access.user)
 
-        with mock.patch("marsha.bbb.api.invoke_lambda_convert"):
+        with mock.patch("marsha.bbb.api.invoke_function_transfer"):
             response = self.client.post(
                 f"/api/classrooms/{recording.classroom.id}/recordings/{recording.id}/create-vod/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -502,7 +503,7 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
             status=200,
         )
 
-        with mock.patch("marsha.bbb.api.invoke_lambda_convert"):
+        with mock.patch("marsha.bbb.api.invoke_function_transfer"):
             response = self.client.post(
                 f"/api/classrooms/{recording.classroom.id}/recordings/{recording.id}/create-vod/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -510,7 +511,7 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
 
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Video.objects.count(), 1)
-        self.assertEqual(Video.objects.first().transcode_pipeline, "AWS")
+        self.assertEqual(Video.objects.first().transcode_pipeline, "peertube")
 
     @responses.activate
     def test_api_classroom_recording_create_vod_user_access_token_playlist_instructor(
@@ -576,7 +577,7 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
             status=200,
         )
 
-        with mock.patch("marsha.bbb.api.invoke_lambda_convert"):
+        with mock.patch("marsha.bbb.api.invoke_function_transfer"):
             response = self.client.post(
                 f"/api/classrooms/{recording.classroom.id}/recordings/{recording.id}/create-vod/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -584,7 +585,7 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
 
         self.assertEqual(response.status_code, 201)
         self.assertEqual(Video.objects.count(), 1)
-        self.assertEqual(Video.objects.first().transcode_pipeline, "AWS")
+        self.assertEqual(Video.objects.first().transcode_pipeline, "peertube")
 
     def test_api_classroom_recording_create_vod_user_access_token_playlist_student(
         self,
@@ -617,7 +618,7 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
         classroom_other = ClassroomFactory(playlist=playlist_access.playlist)
         jwt_token = UserAccessTokenFactory(user=playlist_access.user)
 
-        with mock.patch("marsha.bbb.api.invoke_lambda_convert"):
+        with mock.patch("marsha.bbb.api.invoke_function_transfer"):
             response = self.client.post(
                 f"/api/classrooms/{classroom_other.id}/recordings/{recording.id}/create-vod/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -639,7 +640,7 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
         )
         jwt_token = UserAccessTokenFactory(user=other_playlist_access.user)
 
-        with mock.patch("marsha.bbb.api.invoke_lambda_convert"):
+        with mock.patch("marsha.bbb.api.invoke_function_transfer"):
             response = self.client.post(
                 f"/api/classrooms/{recording.classroom.id}/recordings/{recording.id}/create-vod/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -666,12 +667,12 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
 
         now = timezone.now()
 
-        with mock.patch(
-            "marsha.bbb.api.invoke_lambda_convert"
-        ) as mock_invoke_lambda_convert, mock.patch.object(
-            timezone, "now", return_value=now
-        ), self.assertNumQueries(
-            1
+        with (
+            mock.patch(
+                "marsha.bbb.api.invoke_function_transfer"
+            ) as mock_invoke_function_transfer,
+            mock.patch.object(timezone, "now", return_value=now),
+            self.assertNumQueries(1),
         ):
             response = self.client.post(
                 f"/api/classrooms/{recording.classroom.id}/recordings/{recording.id}/create-vod/",
@@ -688,4 +689,4 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
             {"error": "VOD conversion is disabled."},
         )
         self.assertEqual(Video.objects.count(), 0)
-        mock_invoke_lambda_convert.assert_not_called()
+        mock_invoke_function_transfer.assert_not_called()

@@ -15,6 +15,10 @@ DJANGO_AWS_MEDIAPACKAGE_HARVEST_JOB_ARN=aws:mediapackage:arn:role
 
 # AWS
 DJANGO_CLOUDFRONT_DOMAIN=abc.cloudfront.net
+
+# Scaleway
+DJANGO_SCW_FUNCTION_TRANSFER_URL=https://example.scw.com
+DJANGO_SCW_AUTH_TOKEN=yourScwAuthToken
 DJANGO_SCW_EDGE_SERVICE_DOMAIN=abc.svc.edge.scw.cloud
 DJANGO_UPDATE_STATE_SHARED_SECRETS=dummy,secret
 

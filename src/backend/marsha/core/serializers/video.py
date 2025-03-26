@@ -55,8 +55,8 @@ class UpdateLiveStateSerializer(serializers.Serializer):
     extraParameters = serializers.DictField(allow_null=True, required=False)
 
 
-class VideosStorageUploadEndedSerializer(serializers.Serializer):
-    """A serializer to validate data submitted on the UploadEnded API endpoint."""
+class VideosStorageBaseSerializer(serializers.Serializer):
+    """Base Serializer to factorize common validation."""
 
     file_key = serializers.CharField()
 
@@ -78,6 +78,14 @@ class VideosStorageUploadEndedSerializer(serializers.Serializer):
         ):
             raise serializers.ValidationError("file_key is not valid")
         return value
+
+
+class VideosStorageUploadEndedSerializer(VideosStorageBaseSerializer):
+    """A serializer to validate data submitted on the UploadEnded API endpoint."""
+
+
+class VideosStorageTransferEndedSerializer(VideosStorageBaseSerializer):
+    """A serializer to validate data submitted on the TransferEnded API endpoint."""
 
 
 class InitLiveStateSerializer(serializers.Serializer):

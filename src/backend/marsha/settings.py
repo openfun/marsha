@@ -375,6 +375,11 @@ class Base(Configuration):
     AWS_MEDIALIVE_INPUT_WAITER_MAX_ATTEMPTS = values.PositiveIntegerValue(84)
     AWS_S3_EXPIRATION_DURATION = values.PositiveIntegerValue(30)  # 30 days
 
+    # Scaleway
+    SCW_QUEUE_ACCESS_KEY = values.SecretValue()
+    SCW_QUEUE_SECRET_KEY = values.SecretValue()
+    SCW_QUEUE_TRANSFER_URL = values.Value()
+
     # VIDEOS_STORAGE_S3
     VIDEOS_STORAGE_S3_ACCESS_KEY = values.SecretValue()
     VIDEOS_STORAGE_S3_SECRET_KEY = values.SecretValue()

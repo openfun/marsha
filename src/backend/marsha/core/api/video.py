@@ -224,6 +224,9 @@ class VideoViewSet(
         elif self.action in ["transcript_source"]:
             # Allow anyone to access the transcript source
             permission_classes = []
+        elif self.action in ["transfer_ended"]:
+            # This endpoint is only used by the Scaleway serverless function
+            permission_classes = []
         elif self.action is None:
             if self.request.method not in self.allowed_methods:
                 raise MethodNotAllowed(self.request.method)
@@ -452,6 +455,63 @@ class VideoViewSet(
             domain = settings.TRANSCODING_CALLBACK_DOMAIN
         else:
             domain = f"{request.scheme}://{request.get_host()}"
+
+        launch_video_transcoding.delay(video_pk=pk, stamp=stamp, domain=domain)
+
+        video.upload_state = defaults.PROCESSING
+        video.save(update_fields=["upload_state"])
+
+        channel_layers_utils.dispatch_video(video, to_admin=True)
+        serializer = self.get_serializer(video)
+
+        return Response(serializer.data)
+
+    @action(methods=["post"], detail=True, url_path="transfer-ended")
+    # pylint: disable=unused-argument
+    def transfer_ended(self, request, pk=None):
+        """Notify the API that the video transfer has ended.
+
+        Scaleway serverless function calls this endpoint after transferring the video
+        file. Calling the endpoint will start the transcoding process of the video. The
+        request should have a file_key in the body, which is the key of the transferred
+        file. It will be used in the transcoding process to name the generated files,
+        and set the uploaded_on property.
+
+        Parameters
+        ----------
+        request : Type[django.http.request.HttpRequest]
+            The request on the API endpoint
+        pk: string
+            The primary key of the video
+
+        Returns
+        -------
+        Type[rest_framework.response.Response]
+            HttpResponse with the serialized video.
+        """
+        msg = request.body
+
+        # Ensure object exists
+        video = self.get_object()
+
+        serializer = serializers.VideosStorageTransferEndedSerializer(
+            data=request.data, context={"obj": video}
+        )
+        serializer.is_valid(raise_exception=True)
+
+        # Check if the provided signature is valid against any secret in our list
+        if not validate_signature(request.headers.get("X-Marsha-Signature"), msg):
+            return Response("Forbidden", status=403)
+
+        file_key = serializer.validated_data["file_key"]
+        # The file_key have the "tmp/{video_pk}/video/{stamp}" format
+        stamp = file_key.split("/")[-1]
+
+        # Launch the PeerTube transcoding process
+        if not settings.TRANSCODING_CALLBACK_DOMAIN:
+            return Response({"error": "Transcoding callback domain not defined."}, 400)
+
+        domain = settings.TRANSCODING_CALLBACK_DOMAIN
 
         launch_video_transcoding.delay(video_pk=pk, stamp=stamp, domain=domain)
 

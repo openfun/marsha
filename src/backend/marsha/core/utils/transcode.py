@@ -1,4 +1,4 @@
-""" Utils related to transcoding """
+"""Utils related to transcoding"""
 
 from django_peertube_runner_connector.models import Video as TranscodedVideo, VideoState
 from django_peertube_runner_connector.utils.files import delete_temp_file
@@ -11,6 +11,7 @@ from marsha.core.defaults import (
     VOD_VIDEOS_STORAGE_BASE_DIRECTORY,
 )
 from marsha.core.models.video import Video
+from marsha.core.signals import signal_object_uploaded
 from marsha.core.utils.time_utils import to_datetime
 
 
@@ -51,6 +52,9 @@ def transcoding_ended_callback(transcoded_video: TranscodedVideo):
         to_datetime(uploaded_on),
         **{"resolutions": resolutions},
     )
+
+    # Send a signal when transcoding is finished to delete the BBB recording
+    signal_object_uploaded.send(sender="transcoding_ended_callback", instance=video)
 
 
 def delete_transcoding_temp_files():
