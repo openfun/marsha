@@ -8,9 +8,13 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Add Celery task to fetch recording from Scalelite API
+
 ### Fixed
 
-- Restore download, transcription and shared media icons on the video player 
+- Restore download, transcription and shared media icons on the video player
 
 ## [5.6.0] - 2025-03-06
 

@@ -73,8 +73,12 @@ LIVE_CHOICES = (
 
 # UPLOAD ERROR REASONS
 MAX_RESOLUTION_EXCEDEED = "max_resolution_excedeed"
+RECORDING_SOURCE_ERROR = "recording_source_error"
 
-UPLOAD_ERROR_REASON_CHOICES = ((MAX_RESOLUTION_EXCEDEED, _("max_resolution_excedeed")),)
+UPLOAD_ERROR_REASON_CHOICES = (
+    (MAX_RESOLUTION_EXCEDEED, _("max_resolution_excedeed")),
+    (RECORDING_SOURCE_ERROR, _("recording_source_error")),
+)
 
 # LIVE TYPE
 (RAW, JITSI) = ("raw", "jitsi")
