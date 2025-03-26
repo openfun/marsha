@@ -10,6 +10,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from celery import chain
 import django_filters
 import jwt
 from rest_framework import filters, mixins, viewsets
@@ -38,7 +39,8 @@ from marsha.core import defaults, permissions as core_permissions
 from marsha.core.api import APIViewMixin, BulkDestroyModelMixin, ObjectPkMixin
 from marsha.core.defaults import VOD_CONVERT
 from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, Video
-from marsha.core.utils.convert_lambda_utils import invoke_lambda_convert
+from marsha.core.tasks.recording import copy_video_recording
+from marsha.core.tasks.video import launch_video_transcoding
 from marsha.core.utils.s3_utils import create_presigned_post
 from marsha.core.utils.time_utils import to_timestamp
 
@@ -763,7 +765,7 @@ class ClassroomRecordingViewSet(
         classroom_recording.vod = Video.objects.create(
             title=request.data.get("title"),
             playlist=classroom_recording.classroom.playlist,
-            transcode_pipeline=defaults.AWS_PIPELINE,
+            transcode_pipeline=defaults.PEERTUBE_PIPELINE,
         )
         classroom_recording.save()
 
@@ -774,11 +776,25 @@ class ClassroomRecordingViewSet(
         now = timezone.now()
         stamp = to_timestamp(now)
 
-        # we need an used url to convert the record in VOD
-        invoke_lambda_convert(
-            get_recording_url(record_id=classroom_recording.record_id),
-            classroom_recording.vod.get_source_s3_key(stamp=stamp),
+        if settings.TRANSCODING_CALLBACK_DOMAIN:
+            domain = settings.TRANSCODING_CALLBACK_DOMAIN
+        else:
+            domain = f"{request.scheme}://{request.get_host()}"
+
+        process_chain = chain(
+            copy_video_recording.si(
+                record_url=get_recording_url(record_id=classroom_recording.record_id),
+                video_pk=classroom_recording.vod.pk,
+                stamp=stamp,
+            ),
+            launch_video_transcoding.si(
+                video_pk=classroom_recording.vod.pk,
+                stamp=stamp,
+                domain=domain,
+            ),
         )
+
+        process_chain.delay()
 
         return Response(serializer.data, status=201)
 
