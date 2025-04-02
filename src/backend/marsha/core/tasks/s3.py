@@ -4,8 +4,8 @@ from django.conf import settings
 
 from marsha.celery_app import app
 from marsha.core.defaults import (
-    DELETED_VIDEOS_STORAGE_BASE_DIRECTORY,
-    VOD_VIDEOS_STORAGE_BASE_DIRECTORY,
+    DELETED_STORAGE_BASE_DIRECTORY,
+    VOD_STORAGE_BASE_DIRECTORY,
 )
 from marsha.core.utils.s3_utils import move_s3_directory
 
@@ -24,15 +24,15 @@ def delete_s3_video(video_pk: str):
     # Video on AWS_DESTINATION_BUCKET_NAME has {video_pk}/ as prefix
     move_s3_directory(
         video_pk,
-        DELETED_VIDEOS_STORAGE_BASE_DIRECTORY,
+        DELETED_STORAGE_BASE_DIRECTORY,
         "AWS",
         settings.AWS_DESTINATION_BUCKET_NAME,
     )
 
-    # Video on VIDEOS_STORAGE_S3 has {VOD_VIDEOS_STORAGE_BASE_DIRECTORY}/{video_pk}/ as prefix
+    # Video on STORAGE_S3 has {VOD_STORAGE_BASE_DIRECTORY}/{video_pk}/ as prefix
     move_s3_directory(
-        f"{VOD_VIDEOS_STORAGE_BASE_DIRECTORY}/{video_pk}",
-        DELETED_VIDEOS_STORAGE_BASE_DIRECTORY,
-        "VIDEOS_S3",
-        settings.VIDEOS_STORAGE_S3_BUCKET_NAME,
+        f"{VOD_STORAGE_BASE_DIRECTORY}/{video_pk}",
+        DELETED_STORAGE_BASE_DIRECTORY,
+        "STORAGE_S3",
+        settings.STORAGE_S3_BUCKET_NAME,
     )

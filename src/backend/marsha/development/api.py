@@ -9,9 +9,9 @@ from django.http import HttpRequest
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from marsha.core.defaults import TMP_VIDEOS_STORAGE_BASE_DIRECTORY
+from marsha.core.defaults import TMP_STORAGE_BASE_DIRECTORY
 from marsha.core.models import Document, Video
-from marsha.core.storage.storage_class import video_storage
+from marsha.core.storage.storage_class import file_storage
 from marsha.core.utils import time_utils
 
 
@@ -45,11 +45,11 @@ def local_videos_storage_upload(
     object_model = apps.get_model("core", model)
     object_instance = object_model.objects.get(id=uuid)
 
-    destination = object_instance.get_videos_storage_prefix(
-        stamp=stamp, base_dir=TMP_VIDEOS_STORAGE_BASE_DIRECTORY
+    destination = object_instance.get_storage_prefix(
+        stamp=stamp, base_dir=TMP_STORAGE_BASE_DIRECTORY
     )
 
-    video_storage.save(destination, uploaded_video_file)
+    file_storage.save(destination, uploaded_video_file)
     return Response(status=204)
 
 

@@ -17,11 +17,11 @@ from marsha.core.defaults import (
     ERROR,
     MAX_RESOLUTION_EXCEDEED,
     READY,
-    TMP_VIDEOS_STORAGE_BASE_DIRECTORY,
+    TMP_STORAGE_BASE_DIRECTORY,
 )
 from marsha.core.models.video import Video
 from marsha.core.serializers import VideoSerializer
-from marsha.core.storage.storage_class import video_storage
+from marsha.core.storage.storage_class import file_storage
 
 
 logger = logging.getLogger(__name__)
@@ -33,7 +33,7 @@ class MaxResolutionError(Exception):
 
 @app.task
 def launch_video_transcoding(video_pk: str, stamp: str, domain: str):
-    """Transcodes a video using video_storage.
+    """Transcodes a video using file_storage.
     Args:
         video_pk (UUID): The video to transcode.
         stamp (str): The stamp at which the thumbnail was uploaded
@@ -42,10 +42,8 @@ def launch_video_transcoding(video_pk: str, stamp: str, domain: str):
     """
     video = Video.objects.get(pk=video_pk)
     try:
-        source = video.get_videos_storage_prefix(
-            stamp, TMP_VIDEOS_STORAGE_BASE_DIRECTORY
-        )
-        probe = ffmpeg.probe(video_storage.url(source))
+        source = video.get_storage_prefix(stamp, TMP_STORAGE_BASE_DIRECTORY)
+        probe = ffmpeg.probe(file_storage.url(source))
         dimensions_info = get_video_stream_dimensions_info(
             path=source, existing_probe=probe
         )
@@ -61,7 +59,7 @@ def launch_video_transcoding(video_pk: str, stamp: str, domain: str):
         video.size = probe.get("format", {}).get("size")
         video.save()
 
-        prefix_destination = video.get_videos_storage_prefix(stamp)
+        prefix_destination = video.get_storage_prefix(stamp)
         transcode_video(
             file_path=source,
             destination=prefix_destination,
@@ -82,7 +80,7 @@ def launch_video_transcoding(video_pk: str, stamp: str, domain: str):
 def launch_video_transcript(
     video_pk: str, stamp: str, domain: str, video_url: str = None
 ):
-    """Transcripts a video using video_storage.
+    """Transcripts a video using file_storage.
     Args:
         video_pk (UUID): The video to transcript.
         stamp (str): The stamp at which the thumbnail was uploaded
@@ -92,7 +90,7 @@ def launch_video_transcript(
     """
     video = Video.objects.get(pk=video_pk)
     try:
-        prefix_destination = video.get_videos_storage_prefix(stamp)
+        prefix_destination = video.get_storage_prefix(stamp)
         transcript_args = {"destination": prefix_destination, "domain": domain}
         if video_url:
             transcript_args["video_url"] = video_url

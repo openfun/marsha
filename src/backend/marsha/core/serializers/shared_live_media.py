@@ -13,7 +13,7 @@ from marsha.core.serializers.base import (
     UploadableFileWithExtensionSerializerMixin,
     get_video_cloudfront_url_params,
 )
-from marsha.core.storage.storage_class import video_storage
+from marsha.core.storage.storage_class import file_storage
 from marsha.core.utils import cloudfront_utils, time_utils
 
 
@@ -135,18 +135,18 @@ class SharedLiveMediaSerializer(
         urls = {}
 
         stamp = time_utils.to_timestamp(obj.uploaded_on)
-        base = obj.get_videos_storage_prefix()
+        base = obj.get_storage_prefix()
 
         pages = {}
         for page_number in range(1, obj.nb_pages + 1):
             url = f"{base}/{stamp}_{page_number}.svg"
-            pages[page_number] = video_storage.url(url)
+            pages[page_number] = file_storage.url(url)
 
         urls["pages"] = pages
 
         if self.context.get("is_admin") or obj.show_download:
             url = f"{base}/{stamp}.pdf"
-            urls["media"] = video_storage.url(url)
+            urls["media"] = file_storage.url(url)
 
         return urls
 

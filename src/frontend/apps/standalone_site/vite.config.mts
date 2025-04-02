@@ -86,7 +86,7 @@ export default defineConfig(({ mode }) => {
           '/account/api': {
             target: process.env.VITE_BACKEND_API_BASE_URL as string,
           },
-          '/data/videos/': {
+          '/data/files/': {
             target: process.env.VITE_BACKEND_API_BASE_URL as string,
           },
           '/ws/': {

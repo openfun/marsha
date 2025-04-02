@@ -194,7 +194,7 @@ elif "filesystem" in settings.STORAGE_BACKEND:
             name="local-videos-storage-upload",
         )
     ]
-    urlpatterns += static(settings.VIDEOS_ROOT, document_root=settings.VIDEOS_ROOT)
+    urlpatterns += static(settings.FILES_ROOT, document_root=settings.FILES_ROOT)
 
 
 urlpatterns += django_peertube_runner_connector_urls

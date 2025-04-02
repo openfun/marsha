@@ -10,7 +10,7 @@ from rest_framework import serializers
 from marsha.core.defaults import CELERY_PIPELINE
 from marsha.core.models import TimedTextTrack
 from marsha.core.serializers.base import TimestampField, get_video_cloudfront_url_params
-from marsha.core.storage.storage_class import video_storage
+from marsha.core.storage.storage_class import file_storage
 from marsha.core.utils import cloudfront_utils, time_utils
 
 
@@ -146,9 +146,9 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
         stamp = time_utils.to_timestamp(obj.uploaded_on)
 
         if obj.process_pipeline == CELERY_PIPELINE:
-            base = obj.get_videos_storage_prefix()
+            base = obj.get_storage_prefix()
 
-            return video_storage.url(f"{base}/source.{obj.extension}")
+            return file_storage.url(f"{base}/source.{obj.extension}")
 
         # Default AWS fallback
         filename = f"{slugify(obj.video.playlist.title)}_{stamp}.{obj.extension}"
@@ -183,9 +183,9 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
 
         if obj.process_pipeline == CELERY_PIPELINE:
             stamp = time_utils.to_timestamp(obj.uploaded_on)
-            base = obj.get_videos_storage_prefix()
+            base = obj.get_storage_prefix()
 
-            return video_storage.url(f"{base}/{stamp}.vtt")
+            return file_storage.url(f"{base}/{stamp}.vtt")
 
         # Default AWS fallback
         url = self._generate_url(obj, "timedtext", extension="vtt")

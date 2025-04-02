@@ -27,17 +27,17 @@ def get_videos_s3_client():
     """Return a boto3 s3 client connected to Videos S3."""
     return boto3.client(
         "s3",
-        aws_access_key_id=settings.VIDEOS_STORAGE_S3_ACCESS_KEY,
-        aws_secret_access_key=settings.VIDEOS_STORAGE_S3_SECRET_KEY,
-        endpoint_url=settings.VIDEOS_STORAGE_S3_ENDPOINT_URL,
+        aws_access_key_id=settings.STORAGE_S3_ACCESS_KEY,
+        aws_secret_access_key=settings.STORAGE_S3_SECRET_KEY,
+        endpoint_url=settings.STORAGE_S3_ENDPOINT_URL,
         config=Config(
-            region_name=settings.VIDEOS_STORAGE_S3_REGION_NAME,
+            region_name=settings.STORAGE_S3_REGION_NAME,
             signature_version="s3v4",
         ),
     )
 
 
-ClientType = Literal["AWS", "VIDEOS_S3"]
+ClientType = Literal["AWS", "STORAGE_S3"]
 
 
 def get_s3_client(client_type: ClientType):
@@ -56,7 +56,7 @@ def get_s3_client(client_type: ClientType):
     """
     if client_type == "AWS":
         return get_aws_s3_client()
-    if client_type == "VIDEOS_S3":
+    if client_type == "STORAGE_S3":
         return get_videos_s3_client()
     raise ValueError(f"Unknown s3 client type: {client_type}")
 
@@ -105,7 +105,7 @@ def create_presigned_post(
         settings.AWS_SOURCE_BUCKET_NAME.
 
     client_type: Type[ClientType]
-        The type of client to use. Can be "AWS" or "VIDEOS_S3". If not specified, it will default
+        The type of client to use. Can be "AWS" or "STORAGE_S3". If not specified, it will default
         to "AWS".
 
     Returns

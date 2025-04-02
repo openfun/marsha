@@ -21,10 +21,10 @@ from marsha.core.defaults import (
     CELERY_PIPELINE,
     ERROR,
     READY,
-    TMP_VIDEOS_STORAGE_BASE_DIRECTORY,
+    TMP_STORAGE_BASE_DIRECTORY,
 )
 from marsha.core.models import TimedTextTrack
-from marsha.core.storage.storage_class import video_storage
+from marsha.core.storage.storage_class import file_storage
 from marsha.core.utils.time_utils import to_datetime
 
 
@@ -55,15 +55,13 @@ def _get_extension_from_reader(reader):
 
 @app.task
 def convert_timed_text_track(timed_text_track_pk, stamp):
-    """Convert a timed text track into a vtt using video_storage."""
+    """Convert a timed text track into a vtt using file_storage."""
     timed_text_track = TimedTextTrack.objects.get(pk=timed_text_track_pk)
     try:
-        source = timed_text_track.get_videos_storage_prefix(
-            stamp, TMP_VIDEOS_STORAGE_BASE_DIRECTORY
-        )
-        prefix_destination = timed_text_track.get_videos_storage_prefix(stamp)
+        source = timed_text_track.get_storage_prefix(stamp, TMP_STORAGE_BASE_DIRECTORY)
+        prefix_destination = timed_text_track.get_storage_prefix(stamp)
 
-        with video_storage.open(source, "rt") as timed_text_file:
+        with file_storage.open(source, "rt") as timed_text_file:
             timed_text = timed_text_file.read().replace("\ufeff", "")
             reader = detect_format(timed_text)
             if not reader:
@@ -73,11 +71,11 @@ def convert_timed_text_track(timed_text_track_pk, stamp):
             vtt_timed_text = WebVTTWriter().write(reader().read(timed_text))
             vtt_bytes = vtt_timed_text.encode("utf-8")
 
-            video_storage.save(
+            file_storage.save(
                 f"{prefix_destination}/{stamp}.vtt", ContentFile(vtt_bytes)
             )
 
-            video_storage.save(
+            file_storage.save(
                 f"{prefix_destination}/source.{extension}", timed_text_file
             )
 

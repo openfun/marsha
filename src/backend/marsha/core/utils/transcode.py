@@ -7,8 +7,8 @@ from marsha.core.defaults import (
     ERROR,
     PEERTUBE_PIPELINE,
     READY,
-    TMP_VIDEOS_STORAGE_BASE_DIRECTORY,
-    VOD_VIDEOS_STORAGE_BASE_DIRECTORY,
+    TMP_STORAGE_BASE_DIRECTORY,
+    VOD_STORAGE_BASE_DIRECTORY,
 )
 from marsha.core.models.video import Video
 from marsha.core.signals import signal_object_uploaded
@@ -32,7 +32,7 @@ def transcoding_ended_callback(transcoded_video: TranscodedVideo):
     video_id = directory[-3]
     video = Video.objects.get(pk=video_id)
     tmp_filename = transcoded_video.directory.replace(
-        VOD_VIDEOS_STORAGE_BASE_DIRECTORY, TMP_VIDEOS_STORAGE_BASE_DIRECTORY
+        VOD_STORAGE_BASE_DIRECTORY, TMP_STORAGE_BASE_DIRECTORY
     )
 
     delete_temp_file(transcoded_video, tmp_filename)
@@ -61,6 +61,6 @@ def delete_transcoding_temp_files():
     """Delete all transcoding temp files."""
     for transcoded_video in TranscodedVideo.objects.all():
         tmp_filename = transcoded_video.directory.replace(
-            VOD_VIDEOS_STORAGE_BASE_DIRECTORY, TMP_VIDEOS_STORAGE_BASE_DIRECTORY
+            VOD_STORAGE_BASE_DIRECTORY, TMP_STORAGE_BASE_DIRECTORY
         )
         delete_temp_file(transcoded_video, tmp_filename)
