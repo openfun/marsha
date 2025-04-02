@@ -11,10 +11,10 @@ from marsha.core.defaults import (
     ERROR,
     PROCESSING,
     RECORDING_SOURCE_ERROR,
-    TMP_VIDEOS_STORAGE_BASE_DIRECTORY,
+    TMP_STORAGE_BASE_DIRECTORY,
 )
 from marsha.core.models.video import Video
-from marsha.core.storage.storage_class import video_storage
+from marsha.core.storage.storage_class import file_storage
 
 
 class RecordingSourceError(Exception):
@@ -61,10 +61,8 @@ def copy_video_recording(record_url: str, video_pk: str, stamp: str):
             timeout=10,
         ) as video_response:
             video_response.raise_for_status()
-            source = video.get_videos_storage_prefix(
-                stamp, TMP_VIDEOS_STORAGE_BASE_DIRECTORY
-            )
-            video_storage.save(source, video_response.raw)
+            source = video.get_storage_prefix(stamp, TMP_STORAGE_BASE_DIRECTORY)
+            file_storage.save(source, video_response.raw)
 
         video.update_upload_state(PROCESSING, None)
 

@@ -9,7 +9,7 @@ from django_peertube_runner_connector.models import Video as TranscriptedVideo
 
 from marsha.core import defaults
 from marsha.core.models import TimedTextTrack, Video
-from marsha.core.storage.storage_class import video_storage
+from marsha.core.storage.storage_class import file_storage
 from marsha.core.tasks.video import launch_video_transcript
 from marsha.core.utils.time_utils import to_datetime
 from marsha.websocket.utils import channel_layers_utils
@@ -93,11 +93,11 @@ def transcription_ended_callback(
         timed_text_track.extension = "vtt"
         timed_text_track.save()
 
-    with video_storage.open(vtt_path, "rt") as vtt_file:
-        base = timed_text_track.get_videos_storage_prefix()
+    with file_storage.open(vtt_path, "rt") as vtt_file:
+        base = timed_text_track.get_storage_prefix()
 
-        video_storage.save(f"{base}/source.{timed_text_track.extension}", vtt_file)
-        video_storage.save(
+        file_storage.save(f"{base}/source.{timed_text_track.extension}", vtt_file)
+        file_storage.save(
             f"{base}/{uploaded_on}.{timed_text_track.extension}", vtt_file
         )
 

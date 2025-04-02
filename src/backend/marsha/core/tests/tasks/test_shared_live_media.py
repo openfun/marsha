@@ -13,10 +13,10 @@ import fitz  # PyMuPDF
 from marsha.core.defaults import (
     CELERY_PIPELINE,
     ERROR,
-    TMP_VIDEOS_STORAGE_BASE_DIRECTORY,
+    TMP_STORAGE_BASE_DIRECTORY,
 )
 from marsha.core.factories import SharedLiveMediaFactory
-from marsha.core.storage.storage_class import video_storage
+from marsha.core.storage.storage_class import file_storage
 from marsha.core.tasks.shared_live_media import convert_shared_live_media
 
 
@@ -40,24 +40,22 @@ class TestSharedLiveMediaTask(TestCase):
                 doc.new_page()
             doc.save(buffer)
             content_file = ContentFile(buffer.getvalue())
-            video_storage.save(
-                shared_live_media.get_videos_storage_prefix(
-                    stamp, TMP_VIDEOS_STORAGE_BASE_DIRECTORY
-                ),
+            file_storage.save(
+                shared_live_media.get_storage_prefix(stamp, TMP_STORAGE_BASE_DIRECTORY),
                 content_file,
             )
 
         for page_number in range(1, 4):
             self.assertFalse(
-                video_storage.exists(
-                    f"{shared_live_media.get_videos_storage_prefix(stamp)}/"
+                file_storage.exists(
+                    f"{shared_live_media.get_storage_prefix(stamp)}/"
                     f"{stamp}_{page_number}.svg"
                 )
             )
 
         self.assertFalse(
-            video_storage.exists(
-                f"{shared_live_media.get_videos_storage_prefix(stamp)}/{stamp}.pdf"
+            file_storage.exists(
+                f"{shared_live_media.get_storage_prefix(stamp)}/{stamp}.pdf"
             )
         )
 
@@ -65,14 +63,14 @@ class TestSharedLiveMediaTask(TestCase):
 
         for page_number in range(1, 4):
             self.assertTrue(
-                video_storage.exists(
-                    f"{shared_live_media.get_videos_storage_prefix(stamp)}/"
+                file_storage.exists(
+                    f"{shared_live_media.get_storage_prefix(stamp)}/"
                     f"{stamp}_{page_number}.svg"
                 )
             )
         self.assertTrue(
-            video_storage.exists(
-                f"{shared_live_media.get_videos_storage_prefix(stamp)}/{stamp}.pdf"
+            file_storage.exists(
+                f"{shared_live_media.get_storage_prefix(stamp)}/{stamp}.pdf"
             )
         )
         shared_live_media.refresh_from_db()
@@ -93,18 +91,19 @@ class TestSharedLiveMediaTask(TestCase):
                 doc.new_page()
             doc.save(buffer)
             content_file = ContentFile(buffer.getvalue())
-            video_storage.save(
-                shared_live_media.get_videos_storage_prefix(
-                    stamp, TMP_VIDEOS_STORAGE_BASE_DIRECTORY
-                ),
+            file_storage.save(
+                shared_live_media.get_storage_prefix(stamp, TMP_STORAGE_BASE_DIRECTORY),
                 content_file,
             )
 
-        with mock.patch(
-            "marsha.core.tasks.shared_live_media.fitz.open", side_effect=Exception
-        ), mock.patch(
-            "marsha.core.tasks.shared_live_media.capture_exception"
-        ) as mock_capture_exception:
+        with (
+            mock.patch(
+                "marsha.core.tasks.shared_live_media.fitz.open", side_effect=Exception
+            ),
+            mock.patch(
+                "marsha.core.tasks.shared_live_media.capture_exception"
+            ) as mock_capture_exception,
+        ):
             convert_shared_live_media(str(shared_live_media.pk), stamp)
             shared_live_media.refresh_from_db()
             self.assertEqual(shared_live_media.upload_state, ERROR)

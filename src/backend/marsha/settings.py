@@ -64,7 +64,7 @@ class Base(Configuration):
     # Allow to configure location of static/media files for non-Docker installation
     MEDIA_ROOT = values.Value(os.path.join(str(DATA_DIR), "media"))
     STATIC_ROOT = values.Value(os.path.join(str(DATA_DIR), "static"))
-    VIDEOS_ROOT = values.Value(os.path.join(str(DATA_DIR), "videos"))
+    FILES_ROOT = values.Value(os.path.join(str(DATA_DIR), "files"))
 
     SECRET_KEY = values.SecretValue()
 
@@ -375,13 +375,13 @@ class Base(Configuration):
     AWS_MEDIALIVE_INPUT_WAITER_MAX_ATTEMPTS = values.PositiveIntegerValue(84)
     AWS_S3_EXPIRATION_DURATION = values.PositiveIntegerValue(30)  # 30 days
 
-    # VIDEOS_STORAGE_S3
-    VIDEOS_STORAGE_S3_ACCESS_KEY = values.SecretValue()
-    VIDEOS_STORAGE_S3_SECRET_KEY = values.SecretValue()
-    VIDEOS_STORAGE_S3_ENDPOINT_URL = values.Value("https://s3.fr-par.scw.cloud")
-    VIDEOS_STORAGE_S3_REGION_NAME = values.Value("fr-par")
-    VIDEOS_STORAGE_S3_BUCKET_NAME = values.Value()
-    VIDEOS_STORAGE_S3_OBJECT_PARAMETERS = values.DictValue(
+    # STORAGE_S3
+    STORAGE_S3_ACCESS_KEY = values.SecretValue()
+    STORAGE_S3_SECRET_KEY = values.SecretValue()
+    STORAGE_S3_ENDPOINT_URL = values.Value("https://s3.fr-par.scw.cloud")
+    STORAGE_S3_REGION_NAME = values.Value("fr-par")
+    STORAGE_S3_BUCKET_NAME = values.Value()
+    STORAGE_S3_OBJECT_PARAMETERS = values.DictValue(
         {"ContentDisposition": "attachment"}
     )
 
@@ -945,8 +945,8 @@ class Build(Base):
     AWS_MEDIALIVE_ROLE_ARN = values.Value("")
     AWS_MEDIAPACKAGE_HARVEST_JOB_ARN = values.Value("")
     CLOUDFRONT_SIGNED_URLS_ACTIVE = values.BooleanValue(False)
-    VIDEOS_STORAGE_S3_ACCESS_KEY = values.Value("DummyKey")
-    VIDEOS_STORAGE_S3_SECRET_KEY = values.Value("DummyKey")
+    STORAGE_S3_ACCESS_KEY = values.Value("DummyKey")
+    STORAGE_S3_SECRET_KEY = values.Value("DummyKey")
     BBB_API_SECRET = values.Value("")
     SECRET_KEY = values.Value("DummyKey")
     STORAGES = {
@@ -985,15 +985,28 @@ class Development(Base):
     STORAGES = Base.STORAGES | {
         "videos": {
             # This is the storage used by django_peertube_runner_connector
-            # use marsha.core.storage.s3.S3VideoStorage for S3 storage
+            # use marsha.core.storage.s3.S3FileStorage for S3 storage
             "BACKEND": values.Value(
                 "django.core.files.storage.FileSystemStorage",
                 environ_name="STORAGES_VIDEOS_BACKEND",
             ),
             "OPTIONS": values.DictValue(
                 {
-                    "location": str(Base.VIDEOS_ROOT),
-                    "base_url": str(Base.VIDEOS_ROOT),
+                    "location": str(Base.FILES_ROOT),
+                    "base_url": str(Base.FILES_ROOT),
+                },
+                environ_name="STORAGES_VIDEOS_OPTIONS",
+            ),
+        },
+        "files": {
+            "BACKEND": values.Value(
+                "django.core.files.storage.FileSystemStorage",
+                environ_name="STORAGES_FILES_BACKEND",
+            ),
+            "OPTIONS": values.DictValue(
+                {
+                    "location": str(Base.FILES_ROOT),
+                    "base_url": str(Base.FILES_ROOT),
                 },
                 environ_name="STORAGES_VIDEOS_OPTIONS",
             ),
@@ -1095,12 +1108,12 @@ class Test(Base):
         "default": {"BACKEND": "channels.layers.InMemoryChannelLayer"},
     }
 
-    VIDEOS_STORAGE_S3_ACCESS_KEY = values.Value("scw-access-key")
-    VIDEOS_STORAGE_S3_SECRET_KEY = values.Value("scw-secret-key")
-    VIDEOS_STORAGE_S3_BUCKET_NAME = values.Value("test-marsha")
+    STORAGE_S3_ACCESS_KEY = values.Value("scw-access-key")
+    STORAGE_S3_SECRET_KEY = values.Value("scw-secret-key")
+    STORAGE_S3_BUCKET_NAME = values.Value("test-marsha")
 
     STORAGES = Base.STORAGES | {
-        "videos": {
+        "files": {
             "BACKEND": "django.core.files.storage.InMemoryStorage",
         }
     }
@@ -1126,12 +1139,22 @@ class Production(Base):
     STORAGES = {
         "videos": {  # This is the storage used by django_peertube_runner_connector
             "BACKEND": values.Value(
-                "marsha.core.storage.s3.S3VideoStorage",
+                "marsha.core.storage.s3.S3FileStorage",
                 environ_name="STORAGES_VIDEOS_BACKEND",
             ),
             "OPTIONS": values.DictValue(
                 {},
                 environ_name="STORAGES_VIDEOS_OPTIONS",
+            ),
+        },
+        "files": {
+            "BACKEND": values.Value(
+                "marsha.core.storage.s3.S3FileStorage",
+                environ_name="STORAGES_FILES_BACKEND",
+            ),
+            "OPTIONS": values.DictValue(
+                {},
+                environ_name="STORAGES_FILES_OPTIONS",
             ),
         },
         "staticfiles": {

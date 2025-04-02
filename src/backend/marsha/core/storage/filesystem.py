@@ -3,7 +3,7 @@
 from django.urls import reverse
 from django.utils import timezone
 
-from marsha.core.defaults import TMP_VIDEOS_STORAGE_BASE_DIRECTORY
+from marsha.core.defaults import TMP_STORAGE_BASE_DIRECTORY
 from marsha.core.utils.time_utils import to_timestamp
 
 
@@ -30,9 +30,7 @@ def initiate_object_videos_storage_upload(request, obj, conditions):
     """
     now = timezone.now()
     stamp = to_timestamp(now)
-    key = obj.get_videos_storage_prefix(
-        stamp=stamp, base_dir=TMP_VIDEOS_STORAGE_BASE_DIRECTORY
-    )
+    key = obj.get_storage_prefix(stamp=stamp, base_dir=TMP_STORAGE_BASE_DIRECTORY)
     return {
         "fields": {
             "key": key,
