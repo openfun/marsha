@@ -18,7 +18,7 @@ from marsha.core.factories import (
     VideoFactory,
 )
 from marsha.core.models import TimedTextTrack
-from marsha.core.storage.storage_class import video_storage
+from marsha.core.storage.storage_class import file_storage
 from marsha.core.utils import transcript_utils
 from marsha.core.utils.time_utils import to_timestamp
 from marsha.websocket.utils import channel_layers_utils
@@ -41,15 +41,16 @@ class TranscriptTestCase(TestCase):
         vtt_file = SimpleUploadedFile(
             "file.vtt", b"file_content", content_type="text/vtt"
         )
-        vtt_path = video_storage.save(
+        vtt_path = file_storage.save(
             f"{video_path}/{video_timestamp}-{language}.vtt", vtt_file
         )
 
-        with patch.object(
-            channel_layers_utils, "dispatch_timed_text_track"
-        ) as mock_dispatch_timed_text_track, patch.object(
-            channel_layers_utils, "dispatch_video"
-        ) as mock_dispatch_video:
+        with (
+            patch.object(
+                channel_layers_utils, "dispatch_timed_text_track"
+            ) as mock_dispatch_timed_text_track,
+            patch.object(channel_layers_utils, "dispatch_video") as mock_dispatch_video,
+        ):
             transcript_utils.transcription_ended_callback(
                 transcripted_video, language, vtt_path
             )
@@ -60,12 +61,12 @@ class TranscriptTestCase(TestCase):
         self.assertEqual(timed_text_track.upload_state, defaults.READY)
         self.assertEqual(timed_text_track.extension, "vtt")
 
-        ttt_path = timed_text_track.get_videos_storage_prefix()
+        ttt_path = timed_text_track.get_storage_prefix()
         self.assertTrue(
-            video_storage.exists(f"{ttt_path}/source.{timed_text_track.extension}")
+            file_storage.exists(f"{ttt_path}/source.{timed_text_track.extension}")
         )
         self.assertTrue(
-            video_storage.exists(
+            file_storage.exists(
                 f"{ttt_path}/{video_timestamp}.{timed_text_track.extension}"
             )
         )

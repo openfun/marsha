@@ -37,7 +37,7 @@ services:
       - .:/app
       - ./data/static:/data/static
       - ./data/media:/data/media
-      - ./data/videos:/data/videos
+      - ./data/files:/data/files
     depends_on:
       - "base"
       - "db"
@@ -57,7 +57,7 @@ services:
       - .:/app
       - ./data/static:/data/static
       - ./data/media:/data/media
-      - ./data/videos:/data/videos
+      - ./data/files:/data/files
     depends_on:
       - "base"
       - "db"

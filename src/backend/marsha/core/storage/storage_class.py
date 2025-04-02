@@ -4,12 +4,12 @@ from django.core.files.storage import storages
 from django.utils.functional import LazyObject
 
 
-class ConfiguredVideoStorage(LazyObject):
-    """Lazy object for the video storage."""
+class ConfiguredFileStorage(LazyObject):
+    """Lazy object for the file storage."""
 
     def _setup(self):
-        """Setup the video storage."""
-        self._wrapped = storages["videos"]
+        """Setup the file storage."""
+        self._wrapped = storages["files"]
 
 
-video_storage = ConfiguredVideoStorage()
+file_storage = ConfiguredFileStorage()

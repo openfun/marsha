@@ -7,6 +7,10 @@ not skip minor/major releases while upgrading (fix releases can be skipped).
 The format is inspired from [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### 5.7.x to 5.8.0
+
+Environment variables previously prefixed with `DJANGO_VIDEOS_STORAGE_` are now prefixed with `DJANGO_STORAGE_`. Make sure to update your configuration accordingly.
+
 ### 4.2.x to 4.3.0
 
 `DJANGO_STATICFILES_STORAGE` environment variable is not used anymore. You have to replace it by `DJANGO_STORAGES_STATICFILES_BACKEND`.

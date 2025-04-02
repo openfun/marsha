@@ -58,8 +58,8 @@ class VideoBaseSerializerTest(TestCase):
             uploaded_on=date,
         )
 
-        storage = import_string("marsha.core.storage.s3.S3VideoStorage")()
-        with mock.patch("marsha.core.serializers.video.video_storage", new=storage):
+        storage = import_string("marsha.core.storage.s3.S3FileStorage")()
+        with mock.patch("marsha.core.serializers.video.file_storage", new=storage):
             serializer = VideoBaseSerializer(video)
 
             self.assertEqual(
@@ -134,11 +134,11 @@ class VideoBaseSerializerTest(TestCase):
                 "marsha.core.serializers.video.capture_message"
             ) as sentry_capture_message,
             mock.patch(
-                "marsha.core.serializers.video.video_storage"
-            ) as mock_video_storage,
+                "marsha.core.serializers.video.file_storage"
+            ) as mock_file_storage,
         ):
-            mock_video_storage.url = storage_class.video_storage.url
-            mock_video_storage.exists.return_value = True
+            mock_file_storage.url = storage_class.file_storage.url
+            mock_file_storage.exists.return_value = True
 
             serializer = VideoBaseSerializer(video)
             self.assertEqual(

@@ -25,7 +25,7 @@ from marsha.core.defaults import (
     PEERTUBE_PIPELINE,
     RUNNING,
     STOPPED,
-    TMP_VIDEOS_STORAGE_BASE_DIRECTORY,
+    TMP_STORAGE_BASE_DIRECTORY,
 )
 from marsha.core.models import TimedTextTrack, Video
 from marsha.core.serializers.base import TimestampField, get_video_cloudfront_url_params
@@ -36,7 +36,7 @@ from marsha.core.serializers.shared_live_media import (
 )
 from marsha.core.serializers.thumbnail import ThumbnailSerializer
 from marsha.core.serializers.timed_text_track import TimedTextTrackSerializer
-from marsha.core.storage.storage_class import video_storage
+from marsha.core.storage.storage_class import file_storage
 from marsha.core.utils import cloudfront_utils, jitsi_utils, time_utils, xmpp_utils
 from marsha.core.utils.time_utils import to_datetime
 
@@ -71,9 +71,7 @@ class VideosStorageUploadEndedSerializer(serializers.Serializer):
             raise serializers.ValidationError("file_key is not valid") from error
 
         if (
-            self.context["obj"].get_videos_storage_prefix(
-                stamp, TMP_VIDEOS_STORAGE_BASE_DIRECTORY
-            )
+            self.context["obj"].get_storage_prefix(stamp, TMP_STORAGE_BASE_DIRECTORY)
             != value
         ):
             raise serializers.ValidationError("file_key is not valid")
@@ -211,7 +209,7 @@ class VideoBaseSerializer(serializers.ModelSerializer):
 
         # Trying to recover the transcoding pipeline
         if obj.transcode_pipeline is None:
-            if video_storage.exists(f"scw/{obj.pk}/video/{stamp}/thumbnail.jpg"):
+            if file_storage.exists(f"scw/{obj.pk}/video/{stamp}/thumbnail.jpg"):
                 obj.transcode_pipeline = PEERTUBE_PIPELINE
             else:  # Fallback to AWS_PIPELINE
                 obj.transcode_pipeline = AWS_PIPELINE
@@ -258,23 +256,23 @@ class VideoBaseSerializer(serializers.ModelSerializer):
                 urls["previews"] = f"{base}/previews/{stamp}_100.jpg"
 
         elif obj.transcode_pipeline == PEERTUBE_PIPELINE:
-            base = obj.get_videos_storage_prefix(stamp=stamp)
+            base = obj.get_storage_prefix(stamp=stamp)
             for resolution in obj.resolutions:
                 # MP4
-                mp4_url = video_storage.url(
+                mp4_url = file_storage.url(
                     f"{base}/{stamp}-{resolution}-fragmented.mp4"
                 )
 
                 urls["mp4"][resolution] = mp4_url
 
                 urls["thumbnails"][resolution] = thumbnail_urls.get(
-                    resolution, video_storage.url(f"{base}/thumbnail.jpg")
+                    resolution, file_storage.url(f"{base}/thumbnail.jpg")
                 )
 
             urls["manifests"] = {
                 "hls": self._get_hls_url(base, obj),
             }
-            urls["previews"] = video_storage.url(f"{base}/thumbnail.jpg")
+            urls["previews"] = file_storage.url(f"{base}/thumbnail.jpg")
 
         return urls
 
@@ -283,14 +281,14 @@ class VideoBaseSerializer(serializers.ModelSerializer):
         Compute the HLS url for a video. if the url method of the video storage has parameters
         we use it to have a different cache depending the resolutions available.
         """
-        storage_url_signature = signature(video_storage.url)
+        storage_url_signature = signature(file_storage.url)
         if storage_url_signature.parameters.get("parameters"):
-            return video_storage.url(
+            return file_storage.url(
                 f"{base_url}/master.m3u8",
                 parameters={"v": sha256(str(video.resolutions).encode()).hexdigest()},
             )
 
-        return video_storage.url(f"{base_url}/master.m3u8")
+        return file_storage.url(f"{base_url}/master.m3u8")
 
 
 class VideoSerializer(VideoBaseSerializer):

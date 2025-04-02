@@ -7,7 +7,7 @@ from django.utils import timezone
 
 from storages.backends.s3 import S3Storage
 
-from marsha.core.defaults import TMP_VIDEOS_STORAGE_BASE_DIRECTORY
+from marsha.core.defaults import TMP_STORAGE_BASE_DIRECTORY
 from marsha.core.models import Document
 from marsha.core.utils.cloudfront_utils import get_cloudfront_private_key
 from marsha.core.utils.s3_utils import create_presigned_post
@@ -17,20 +17,20 @@ from marsha.core.utils.time_utils import to_timestamp
 PROTECTED_NAME_REGEX = re.compile(r"^/?tmp/.*$")
 
 
-class S3VideoStorage(S3Storage):
+class S3FileStorage(S3Storage):
     """
-    Storage class to handle s3 storage for videos.
+    Storage class to handle s3 storage for Marsha files.
     """
 
-    access_key = settings.VIDEOS_STORAGE_S3_ACCESS_KEY
-    secret_key = settings.VIDEOS_STORAGE_S3_SECRET_KEY
-    endpoint_url = settings.VIDEOS_STORAGE_S3_ENDPOINT_URL
-    region_name = settings.VIDEOS_STORAGE_S3_REGION_NAME
+    access_key = settings.STORAGE_S3_ACCESS_KEY
+    secret_key = settings.STORAGE_S3_SECRET_KEY
+    endpoint_url = settings.STORAGE_S3_ENDPOINT_URL
+    region_name = settings.STORAGE_S3_REGION_NAME
     signature_version = "s3v4"
 
-    bucket_name = settings.VIDEOS_STORAGE_S3_BUCKET_NAME
+    bucket_name = settings.STORAGE_S3_BUCKET_NAME
 
-    object_parameters = settings.VIDEOS_STORAGE_S3_OBJECT_PARAMETERS
+    object_parameters = settings.STORAGE_S3_OBJECT_PARAMETERS
 
     custom_domain = settings.SCW_EDGE_SERVICE_DOMAIN
     url_protocol = "https:"
@@ -62,7 +62,7 @@ class S3VideoStorage(S3Storage):
 def initiate_object_videos_storage_upload(request, obj, conditions):
     """Get an upload policy for a video.
 
-    The object must implement the get_videos_storage_prefix method.
+    The object must implement the get_storage_prefix method.
     Returns an upload policy to our AWS S3 source bucket.
 
     Returns
@@ -76,16 +76,14 @@ def initiate_object_videos_storage_upload(request, obj, conditions):
     now = timezone.now()
     stamp = to_timestamp(now)
 
-    key = obj.get_videos_storage_prefix(
-        stamp=stamp, base_dir=TMP_VIDEOS_STORAGE_BASE_DIRECTORY
-    )
+    key = obj.get_storage_prefix(stamp=stamp, base_dir=TMP_STORAGE_BASE_DIRECTORY)
 
     return create_presigned_post(
         conditions,
         {},
         key,
-        S3VideoStorage.bucket_name,
-        "VIDEOS_S3",
+        S3FileStorage.bucket_name,
+        "STORAGE_S3",
     )
 
 

@@ -12,16 +12,16 @@ from marsha.core.defaults import (
     CELERY_PIPELINE,
     ERROR,
     READY,
-    TMP_VIDEOS_STORAGE_BASE_DIRECTORY,
+    TMP_STORAGE_BASE_DIRECTORY,
 )
 from marsha.core.models import Thumbnail
-from marsha.core.storage.storage_class import video_storage
+from marsha.core.storage.storage_class import file_storage
 from marsha.core.utils.time_utils import to_datetime
 
 
 @app.task
 def resize_thumbnails(thumbnail_pk, stamp: str):
-    """Resize a thumbnail using video_storage.
+    """Resize a thumbnail using file_storage.
 
     Args:
         thumbnail_pk (UUID): The thumbnail to resize.
@@ -30,13 +30,11 @@ def resize_thumbnails(thumbnail_pk, stamp: str):
     """
     thumbnail = Thumbnail.objects.get(pk=thumbnail_pk)
     try:
-        source = thumbnail.get_videos_storage_prefix(
-            stamp, TMP_VIDEOS_STORAGE_BASE_DIRECTORY
-        )
-        prefix_destination = thumbnail.get_videos_storage_prefix(stamp)
+        source = thumbnail.get_storage_prefix(stamp, TMP_STORAGE_BASE_DIRECTORY)
+        prefix_destination = thumbnail.get_storage_prefix(stamp)
         sizes = [1080, 720, 480, 240, 144]
 
-        with video_storage.open(source, "rb") as img_file:
+        with file_storage.open(source, "rb") as img_file:
             for size in sizes:
                 with Image.open(img_file) as img:
                     # Remove transparency to be save as JPEG
@@ -49,7 +47,7 @@ def resize_thumbnails(thumbnail_pk, stamp: str):
                     with BytesIO() as buffer:
                         img.save(buffer, "JPEG")
                         content_file = ContentFile(buffer.getvalue())
-                        video_storage.save(
+                        file_storage.save(
                             f"{prefix_destination}/{size}.jpg", content_file
                         )
 

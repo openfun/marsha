@@ -10,10 +10,10 @@ from marsha.core.defaults import (
     CELERY_PIPELINE,
     ERROR,
     READY,
-    TMP_VIDEOS_STORAGE_BASE_DIRECTORY,
+    TMP_STORAGE_BASE_DIRECTORY,
 )
 from marsha.core.factories import TimedTextTrackFactory
-from marsha.core.storage.storage_class import video_storage
+from marsha.core.storage.storage_class import file_storage
 from marsha.core.tasks.timed_text_track import convert_timed_text_track
 
 
@@ -78,16 +78,14 @@ class TestTimedTextTrackTask(TestCase):
         with BytesIO() as buffer:
             buffer.write(SRT_EXAMPLE)
             content_file = ContentFile(buffer.getvalue())
-            video_storage.save(
-                timed_text_track.get_videos_storage_prefix(
-                    stamp, TMP_VIDEOS_STORAGE_BASE_DIRECTORY
-                ),
+            file_storage.save(
+                timed_text_track.get_storage_prefix(stamp, TMP_STORAGE_BASE_DIRECTORY),
                 content_file,
             )
 
         self.assertFalse(
-            video_storage.exists(
-                f"{timed_text_track.get_videos_storage_prefix(stamp)}/{stamp}_fr.vtt"
+            file_storage.exists(
+                f"{timed_text_track.get_storage_prefix(stamp)}/{stamp}_fr.vtt"
             )
         )
 
@@ -96,11 +94,9 @@ class TestTimedTextTrackTask(TestCase):
         timed_text_track.refresh_from_db()
         self.assertEqual(timed_text_track.upload_state, READY)
         self.assertEqual(timed_text_track.process_pipeline, CELERY_PIPELINE)
-        new_vtt_file = (
-            f"{timed_text_track.get_videos_storage_prefix(stamp)}/{stamp}.vtt"
-        )
-        self.assertTrue(video_storage.exists(new_vtt_file))
-        with video_storage.open(new_vtt_file, "rt") as new_vtt_file:
+        new_vtt_file = f"{timed_text_track.get_storage_prefix(stamp)}/{stamp}.vtt"
+        self.assertTrue(file_storage.exists(new_vtt_file))
+        with file_storage.open(new_vtt_file, "rt") as new_vtt_file:
             content = new_vtt_file.read()
             self.assertEqual(
                 content,
@@ -114,10 +110,8 @@ class TestTimedTextTrackTask(TestCase):
                     "And this is the third subtitle.\n"
                 ),
             )
-        new_source_file = (
-            f"{timed_text_track.get_videos_storage_prefix(stamp)}/source.srt"
-        )
-        self.assertTrue(video_storage.exists(new_source_file))
+        new_source_file = f"{timed_text_track.get_storage_prefix(stamp)}/source.srt"
+        self.assertTrue(file_storage.exists(new_source_file))
 
     def test_timed_text_track_with_transcript(self):
         """
@@ -135,16 +129,14 @@ class TestTimedTextTrackTask(TestCase):
         with BytesIO() as buffer:
             buffer.write(SRT_EXAMPLE_WITH_HTML)
             content_file = ContentFile(buffer.getvalue())
-            video_storage.save(
-                timed_text_track.get_videos_storage_prefix(
-                    stamp, TMP_VIDEOS_STORAGE_BASE_DIRECTORY
-                ),
+            file_storage.save(
+                timed_text_track.get_storage_prefix(stamp, TMP_STORAGE_BASE_DIRECTORY),
                 content_file,
             )
 
         self.assertFalse(
-            video_storage.exists(
-                f"{timed_text_track.get_videos_storage_prefix(stamp)}/{stamp}_fr.vtt"
+            file_storage.exists(
+                f"{timed_text_track.get_storage_prefix(stamp)}/{stamp}_fr.vtt"
             )
         )
 
@@ -153,11 +145,9 @@ class TestTimedTextTrackTask(TestCase):
         timed_text_track.refresh_from_db()
         self.assertEqual(timed_text_track.upload_state, READY)
         self.assertEqual(timed_text_track.process_pipeline, CELERY_PIPELINE)
-        new_vtt_file = (
-            f"{timed_text_track.get_videos_storage_prefix(stamp)}/{stamp}.vtt"
-        )
-        self.assertTrue(video_storage.exists(new_vtt_file))
-        with video_storage.open(new_vtt_file, "rt") as new_vtt_file:
+        new_vtt_file = f"{timed_text_track.get_storage_prefix(stamp)}/{stamp}.vtt"
+        self.assertTrue(file_storage.exists(new_vtt_file))
+        with file_storage.open(new_vtt_file, "rt") as new_vtt_file:
             content = new_vtt_file.read()
             self.assertEqual(
                 content,
@@ -172,10 +162,8 @@ class TestTimedTextTrackTask(TestCase):
                     "&lt;/font> subtitle.\n"
                 ),
             )
-        new_source_file = (
-            f"{timed_text_track.get_videos_storage_prefix(stamp)}/source.srt"
-        )
-        self.assertTrue(video_storage.exists(new_source_file))
+        new_source_file = f"{timed_text_track.get_storage_prefix(stamp)}/source.srt"
+        self.assertTrue(file_storage.exists(new_source_file))
 
     def test_timed_text_track_with_bom_transcript(self):
         """
@@ -193,16 +181,14 @@ class TestTimedTextTrackTask(TestCase):
         with BytesIO() as buffer:
             buffer.write(SRT_EXAMPLE_WITH_BOM)
             content_file = ContentFile(buffer.getvalue())
-            video_storage.save(
-                timed_text_track.get_videos_storage_prefix(
-                    stamp, TMP_VIDEOS_STORAGE_BASE_DIRECTORY
-                ),
+            file_storage.save(
+                timed_text_track.get_storage_prefix(stamp, TMP_STORAGE_BASE_DIRECTORY),
                 content_file,
             )
 
         self.assertFalse(
-            video_storage.exists(
-                f"{timed_text_track.get_videos_storage_prefix(stamp)}/{stamp}_fr.vtt"
+            file_storage.exists(
+                f"{timed_text_track.get_storage_prefix(stamp)}/{stamp}_fr.vtt"
             )
         )
 
@@ -211,11 +197,9 @@ class TestTimedTextTrackTask(TestCase):
         timed_text_track.refresh_from_db()
         self.assertEqual(timed_text_track.upload_state, READY)
         self.assertEqual(timed_text_track.process_pipeline, CELERY_PIPELINE)
-        new_vtt_file = (
-            f"{timed_text_track.get_videos_storage_prefix(stamp)}/{stamp}.vtt"
-        )
-        self.assertTrue(video_storage.exists(new_vtt_file))
-        with video_storage.open(new_vtt_file, "rt") as new_vtt_file:
+        new_vtt_file = f"{timed_text_track.get_storage_prefix(stamp)}/{stamp}.vtt"
+        self.assertTrue(file_storage.exists(new_vtt_file))
+        with file_storage.open(new_vtt_file, "rt") as new_vtt_file:
             content = new_vtt_file.read()
             self.assertEqual(
                 content,
@@ -229,10 +213,8 @@ class TestTimedTextTrackTask(TestCase):
                     "And this is the third subtitle.\n"
                 ),
             )
-        new_source_file = (
-            f"{timed_text_track.get_videos_storage_prefix(stamp)}/source.srt"
-        )
-        self.assertTrue(video_storage.exists(new_source_file))
+        new_source_file = f"{timed_text_track.get_storage_prefix(stamp)}/source.srt"
+        self.assertTrue(file_storage.exists(new_source_file))
 
     def test_timed_text_track_with_invalid_transcript(self):
         """
@@ -250,16 +232,14 @@ class TestTimedTextTrackTask(TestCase):
         with BytesIO() as buffer:
             buffer.write(b"INVALID SRT FILE")
             content_file = ContentFile(buffer.getvalue())
-            video_storage.save(
-                timed_text_track.get_videos_storage_prefix(
-                    stamp, TMP_VIDEOS_STORAGE_BASE_DIRECTORY
-                ),
+            file_storage.save(
+                timed_text_track.get_storage_prefix(stamp, TMP_STORAGE_BASE_DIRECTORY),
                 content_file,
             )
 
         self.assertFalse(
-            video_storage.exists(
-                f"{timed_text_track.get_videos_storage_prefix(stamp)}/{stamp}.vtt"
+            file_storage.exists(
+                f"{timed_text_track.get_storage_prefix(stamp)}/{stamp}.vtt"
             )
         )
 
@@ -272,7 +252,5 @@ class TestTimedTextTrackTask(TestCase):
         timed_text_track.refresh_from_db()
         self.assertEqual(timed_text_track.upload_state, ERROR)
 
-        new_vtt_file = (
-            f"{timed_text_track.get_videos_storage_prefix(stamp)}/{stamp}.vtt"
-        )
-        self.assertFalse(video_storage.exists(new_vtt_file))
+        new_vtt_file = f"{timed_text_track.get_storage_prefix(stamp)}/{stamp}.vtt"
+        self.assertFalse(file_storage.exists(new_vtt_file))
