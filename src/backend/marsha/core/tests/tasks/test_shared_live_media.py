@@ -10,11 +10,7 @@ from django.test import TestCase
 
 import fitz  # PyMuPDF
 
-from marsha.core.defaults import (
-    CELERY_PIPELINE,
-    ERROR,
-    TMP_STORAGE_BASE_DIRECTORY,
-)
+from marsha.core.defaults import CELERY_PIPELINE, ERROR, TMP_STORAGE_BASE_DIRECTORY
 from marsha.core.factories import SharedLiveMediaFactory
 from marsha.core.storage.storage_class import file_storage
 from marsha.core.tasks.shared_live_media import convert_shared_live_media

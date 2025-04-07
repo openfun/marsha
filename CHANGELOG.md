@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Add support for storing classroom documents on Scaleway S3
+
 ### Fixed
 
 - Fix timeout increase on Nginx for peertube runner success request

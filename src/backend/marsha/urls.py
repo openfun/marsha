@@ -51,6 +51,7 @@ from marsha.core.views import (
 )
 from marsha.development.api import (
     dummy_video_upload,
+    local_classroom_document_upload,
     local_document_upload,
     local_videos_storage_upload,
 )
@@ -185,6 +186,11 @@ if "dummy" in settings.STORAGE_BACKEND:
             local_document_upload,
             name="local-document-upload",
         ),
+        path(
+            "api/classroomdocument-upload/<uuid:uuid>",
+            local_classroom_document_upload,
+            name="local-classroom-document-upload",
+        ),
     ]
 elif "filesystem" in settings.STORAGE_BACKEND:
     urlpatterns += [
@@ -192,7 +198,12 @@ elif "filesystem" in settings.STORAGE_BACKEND:
             "api/videos-storage-upload/<uuid:uuid>/<str:stamp>/<str:model>",
             local_videos_storage_upload,
             name="local-videos-storage-upload",
-        )
+        ),
+        path(
+            "api/classroomdocument-upload/<uuid:uuid>/<str:stamp>",
+            local_classroom_document_upload,
+            name="local-classroom-document-upload",
+        ),
     ]
     urlpatterns += static(settings.FILES_ROOT, document_root=settings.FILES_ROOT)
 

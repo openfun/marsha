@@ -53,9 +53,10 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
         )
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
-        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
-            "datetime.datetime"
-        ) as mock_dt:
+        with (
+            mock.patch.object(timezone, "now", return_value=now),
+            mock.patch("datetime.datetime") as mock_dt,
+        ):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/classrooms/{classroom_document.classroom.id}"
@@ -69,29 +70,29 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
         self.assertEqual(
             response.json(),
             {
-                "url": "https://test-marsha-source.s3.amazonaws.com/",
+                "url": "https://s3.fr-par.scw.cloud/test-marsha",
                 "fields": {
                     "acl": "private",
                     "key": (
-                        "ed08da34-7447-4141-96ff-5740315d7b99/classroomdocument/"
-                        "27a23f52-3379-46a2-94fa-697b59cfe3c7/1533686400.pdf"
+                        "classroom/ed08da34-7447-4141-96ff-5740315d7b99/classroomdocument/"
+                        "27a23f52-3379-46a2-94fa-697b59cfe3c7/1533686400"
                     ),
                     "x-amz-algorithm": "AWS4-HMAC-SHA256",
-                    "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
+                    "x-amz-credential": "scw-access-key/20180808/fr-par/s3/aws4_request",
                     "x-amz-date": "20180808T000000Z",
                     "policy": (
-                        "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBb"
-                        "eyJhY2wiOiAicHJpdmF0ZSJ9LCBbImVxIiwgIiRDb250ZW50LVR5cGUiLCAiYXBwbGljYXRp"
-                        "b24vcGRmIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAzMTQ1NzI4MDBdLCB7ImJ1"
-                        "Y2tldCI6ICJ0ZXN0LW1hcnNoYS1zb3VyY2UifSwgeyJrZXkiOiAiZWQwOGRhMzQtNzQ0Ny00"
-                        "MTQxLTk2ZmYtNTc0MDMxNWQ3Yjk5L2NsYXNzcm9vbWRvY3VtZW50LzI3YTIzZjUyLTMzNzkt"
-                        "NDZhMi05NGZhLTY5N2I1OWNmZTNjNy8xNTMzNjg2NDAwLnBkZiJ9LCB7IngtYW16LWFsZ29y"
-                        "aXRobSI6ICJBV1M0LUhNQUMtU0hBMjU2In0sIHsieC1hbXotY3JlZGVudGlhbCI6ICJhd3Mt"
-                        "YWNjZXNzLWtleS1pZC8yMDE4MDgwOC9ldS13ZXN0LTEvczMvYXdzNF9yZXF1ZXN0In0sIHsi"
-                        "eC1hbXotZGF0ZSI6ICIyMDE4MDgwOFQwMDAwMDBaIn1dfQ=="
+                        "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMi"
+                        "OiBbeyJhY2wiOiAicHJpdmF0ZSJ9LCBbImVxIiwgIiRDb250ZW50LVR5cGUiLCAiYXBw"
+                        "bGljYXRpb24vcGRmIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAzMTQ1NzI4"
+                        "MDBdLCB7ImJ1Y2tldCI6ICJ0ZXN0LW1hcnNoYSJ9LCB7ImtleSI6ICJjbGFzc3Jvb20v"
+                        "ZWQwOGRhMzQtNzQ0Ny00MTQxLTk2ZmYtNTc0MDMxNWQ3Yjk5L2NsYXNzcm9vbWRvY3Vt"
+                        "ZW50LzI3YTIzZjUyLTMzNzktNDZhMi05NGZhLTY5N2I1OWNmZTNjNy8xNTMzNjg2NDAw"
+                        "In0sIHsieC1hbXotYWxnb3JpdGhtIjogIkFXUzQtSE1BQy1TSEEyNTYifSwgeyJ4LWFt"
+                        "ei1jcmVkZW50aWFsIjogInNjdy1hY2Nlc3Mta2V5LzIwMTgwODA4L2ZyLXBhci9zMy9h"
+                        "d3M0X3JlcXVlc3QifSwgeyJ4LWFtei1kYXRlIjogIjIwMTgwODA4VDAwMDAwMFoifV19"
                     ),
                     "x-amz-signature": (
-                        "c34ed8fa1461564740c402c32bed7e8b579eeac71756c3dd505397c14ffac412"
+                        "2179d8240c968466004bcc18ab12c0ae652edad49bf1e994d89fed33493a9265"
                     ),
                 },
             },
@@ -112,9 +113,10 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
         )
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
-        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
-            "datetime.datetime"
-        ) as mock_dt:
+        with (
+            mock.patch.object(timezone, "now", return_value=now),
+            mock.patch("datetime.datetime") as mock_dt,
+        ):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/classrooms/{classroom_document.classroom.id}"
@@ -128,29 +130,29 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
         self.assertEqual(
             response.json(),
             {
-                "url": "https://test-marsha-source.s3.amazonaws.com/",
+                "url": "https://s3.fr-par.scw.cloud/test-marsha",
                 "fields": {
                     "acl": "private",
                     "key": (
-                        "ed08da34-7447-4141-96ff-5740315d7b99/classroomdocument/"
-                        "27a23f52-3379-46a2-94fa-697b59cfe3c7/1533686400.pdf"
+                        "classroom/ed08da34-7447-4141-96ff-5740315d7b99/classroomdocument/"
+                        "27a23f52-3379-46a2-94fa-697b59cfe3c7/1533686400"
                     ),
                     "x-amz-algorithm": "AWS4-HMAC-SHA256",
-                    "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
+                    "x-amz-credential": "scw-access-key/20180808/fr-par/s3/aws4_request",
                     "x-amz-date": "20180808T000000Z",
                     "policy": (
-                        "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBb"
-                        "eyJhY2wiOiAicHJpdmF0ZSJ9LCBbImVxIiwgIiRDb250ZW50LVR5cGUiLCAiYXBwbGljYXRp"
-                        "b24vcGRmIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAzMTQ1NzI4MDBdLCB7ImJ1"
-                        "Y2tldCI6ICJ0ZXN0LW1hcnNoYS1zb3VyY2UifSwgeyJrZXkiOiAiZWQwOGRhMzQtNzQ0Ny00"
-                        "MTQxLTk2ZmYtNTc0MDMxNWQ3Yjk5L2NsYXNzcm9vbWRvY3VtZW50LzI3YTIzZjUyLTMzNzkt"
-                        "NDZhMi05NGZhLTY5N2I1OWNmZTNjNy8xNTMzNjg2NDAwLnBkZiJ9LCB7IngtYW16LWFsZ29y"
-                        "aXRobSI6ICJBV1M0LUhNQUMtU0hBMjU2In0sIHsieC1hbXotY3JlZGVudGlhbCI6ICJhd3Mt"
-                        "YWNjZXNzLWtleS1pZC8yMDE4MDgwOC9ldS13ZXN0LTEvczMvYXdzNF9yZXF1ZXN0In0sIHsi"
-                        "eC1hbXotZGF0ZSI6ICIyMDE4MDgwOFQwMDAwMDBaIn1dfQ=="
+                        "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMi"
+                        "OiBbeyJhY2wiOiAicHJpdmF0ZSJ9LCBbImVxIiwgIiRDb250ZW50LVR5cGUiLCAiYXBw"
+                        "bGljYXRpb24vcGRmIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAzMTQ1NzI4"
+                        "MDBdLCB7ImJ1Y2tldCI6ICJ0ZXN0LW1hcnNoYSJ9LCB7ImtleSI6ICJjbGFzc3Jvb20v"
+                        "ZWQwOGRhMzQtNzQ0Ny00MTQxLTk2ZmYtNTc0MDMxNWQ3Yjk5L2NsYXNzcm9vbWRvY3Vt"
+                        "ZW50LzI3YTIzZjUyLTMzNzktNDZhMi05NGZhLTY5N2I1OWNmZTNjNy8xNTMzNjg2NDAw"
+                        "In0sIHsieC1hbXotYWxnb3JpdGhtIjogIkFXUzQtSE1BQy1TSEEyNTYifSwgeyJ4LWFt"
+                        "ei1jcmVkZW50aWFsIjogInNjdy1hY2Nlc3Mta2V5LzIwMTgwODA4L2ZyLXBhci9zMy9h"
+                        "d3M0X3JlcXVlc3QifSwgeyJ4LWFtei1kYXRlIjogIjIwMTgwODA4VDAwMDAwMFoifV19"
                     ),
                     "x-amz-signature": (
-                        "c34ed8fa1461564740c402c32bed7e8b579eeac71756c3dd505397c14ffac412"
+                        "2179d8240c968466004bcc18ab12c0ae652edad49bf1e994d89fed33493a9265"
                     ),
                 },
             },
@@ -171,9 +173,10 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
         )
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
-        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
-            "datetime.datetime"
-        ) as mock_dt:
+        with (
+            mock.patch.object(timezone, "now", return_value=now),
+            mock.patch("datetime.datetime") as mock_dt,
+        ):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/classrooms/{classroom_document.classroom.id}"
@@ -202,9 +205,10 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
         )
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
-        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
-            "datetime.datetime"
-        ) as mock_dt:
+        with (
+            mock.patch.object(timezone, "now", return_value=now),
+            mock.patch("datetime.datetime") as mock_dt,
+        ):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/classrooms/{classroom_document.classroom.id}"
@@ -235,9 +239,10 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=organization_access.user)
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
-        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
-            "datetime.datetime"
-        ) as mock_dt:
+        with (
+            mock.patch.object(timezone, "now", return_value=now),
+            mock.patch("datetime.datetime") as mock_dt,
+        ):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/classrooms/{classroom_document.classroom.id}"
@@ -265,9 +270,10 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=organization_access.user)
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
-        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
-            "datetime.datetime"
-        ) as mock_dt:
+        with (
+            mock.patch.object(timezone, "now", return_value=now),
+            mock.patch("datetime.datetime") as mock_dt,
+        ):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/classrooms/{classroom_document.classroom.id}"
@@ -281,29 +287,29 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
         self.assertEqual(
             response.json(),
             {
-                "url": "https://test-marsha-source.s3.amazonaws.com/",
+                "url": "https://s3.fr-par.scw.cloud/test-marsha",
                 "fields": {
                     "acl": "private",
                     "key": (
-                        "ed08da34-7447-4141-96ff-5740315d7b99/classroomdocument/"
-                        "27a23f52-3379-46a2-94fa-697b59cfe3c7/1533686400.pdf"
+                        "classroom/ed08da34-7447-4141-96ff-5740315d7b99/classroomdocument/"
+                        "27a23f52-3379-46a2-94fa-697b59cfe3c7/1533686400"
                     ),
                     "x-amz-algorithm": "AWS4-HMAC-SHA256",
-                    "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
+                    "x-amz-credential": "scw-access-key/20180808/fr-par/s3/aws4_request",
                     "x-amz-date": "20180808T000000Z",
                     "policy": (
-                        "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBb"
-                        "eyJhY2wiOiAicHJpdmF0ZSJ9LCBbImVxIiwgIiRDb250ZW50LVR5cGUiLCAiYXBwbGljYXRp"
-                        "b24vcGRmIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAzMTQ1NzI4MDBdLCB7ImJ1"
-                        "Y2tldCI6ICJ0ZXN0LW1hcnNoYS1zb3VyY2UifSwgeyJrZXkiOiAiZWQwOGRhMzQtNzQ0Ny00"
-                        "MTQxLTk2ZmYtNTc0MDMxNWQ3Yjk5L2NsYXNzcm9vbWRvY3VtZW50LzI3YTIzZjUyLTMzNzkt"
-                        "NDZhMi05NGZhLTY5N2I1OWNmZTNjNy8xNTMzNjg2NDAwLnBkZiJ9LCB7IngtYW16LWFsZ29y"
-                        "aXRobSI6ICJBV1M0LUhNQUMtU0hBMjU2In0sIHsieC1hbXotY3JlZGVudGlhbCI6ICJhd3Mt"
-                        "YWNjZXNzLWtleS1pZC8yMDE4MDgwOC9ldS13ZXN0LTEvczMvYXdzNF9yZXF1ZXN0In0sIHsi"
-                        "eC1hbXotZGF0ZSI6ICIyMDE4MDgwOFQwMDAwMDBaIn1dfQ=="
+                        "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMi"
+                        "OiBbeyJhY2wiOiAicHJpdmF0ZSJ9LCBbImVxIiwgIiRDb250ZW50LVR5cGUiLCAiYXBw"
+                        "bGljYXRpb24vcGRmIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAzMTQ1NzI4"
+                        "MDBdLCB7ImJ1Y2tldCI6ICJ0ZXN0LW1hcnNoYSJ9LCB7ImtleSI6ICJjbGFzc3Jvb20v"
+                        "ZWQwOGRhMzQtNzQ0Ny00MTQxLTk2ZmYtNTc0MDMxNWQ3Yjk5L2NsYXNzcm9vbWRvY3Vt"
+                        "ZW50LzI3YTIzZjUyLTMzNzktNDZhMi05NGZhLTY5N2I1OWNmZTNjNy8xNTMzNjg2NDAw"
+                        "In0sIHsieC1hbXotYWxnb3JpdGhtIjogIkFXUzQtSE1BQy1TSEEyNTYifSwgeyJ4LWFt"
+                        "ei1jcmVkZW50aWFsIjogInNjdy1hY2Nlc3Mta2V5LzIwMTgwODA4L2ZyLXBhci9zMy9h"
+                        "d3M0X3JlcXVlc3QifSwgeyJ4LWFtei1kYXRlIjogIjIwMTgwODA4VDAwMDAwMFoifV19"
                     ),
                     "x-amz-signature": (
-                        "c34ed8fa1461564740c402c32bed7e8b579eeac71756c3dd505397c14ffac412"
+                        "2179d8240c968466004bcc18ab12c0ae652edad49bf1e994d89fed33493a9265"
                     ),
                 },
             },
@@ -327,9 +333,10 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=playlist_access.user)
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
-        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
-            "datetime.datetime"
-        ) as mock_dt:
+        with (
+            mock.patch.object(timezone, "now", return_value=now),
+            mock.patch("datetime.datetime") as mock_dt,
+        ):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/classrooms/{classroom_document.classroom.id}"
@@ -343,29 +350,29 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
         self.assertEqual(
             response.json(),
             {
-                "url": "https://test-marsha-source.s3.amazonaws.com/",
+                "url": "https://s3.fr-par.scw.cloud/test-marsha",
                 "fields": {
                     "acl": "private",
                     "key": (
-                        "ed08da34-7447-4141-96ff-5740315d7b99/classroomdocument/"
-                        "27a23f52-3379-46a2-94fa-697b59cfe3c7/1533686400.pdf"
+                        "classroom/ed08da34-7447-4141-96ff-5740315d7b99/classroomdocument/"
+                        "27a23f52-3379-46a2-94fa-697b59cfe3c7/1533686400"
                     ),
                     "x-amz-algorithm": "AWS4-HMAC-SHA256",
-                    "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
+                    "x-amz-credential": "scw-access-key/20180808/fr-par/s3/aws4_request",
                     "x-amz-date": "20180808T000000Z",
                     "policy": (
-                        "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBb"
-                        "eyJhY2wiOiAicHJpdmF0ZSJ9LCBbImVxIiwgIiRDb250ZW50LVR5cGUiLCAiYXBwbGljYXRp"
-                        "b24vcGRmIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAzMTQ1NzI4MDBdLCB7ImJ1"
-                        "Y2tldCI6ICJ0ZXN0LW1hcnNoYS1zb3VyY2UifSwgeyJrZXkiOiAiZWQwOGRhMzQtNzQ0Ny00"
-                        "MTQxLTk2ZmYtNTc0MDMxNWQ3Yjk5L2NsYXNzcm9vbWRvY3VtZW50LzI3YTIzZjUyLTMzNzkt"
-                        "NDZhMi05NGZhLTY5N2I1OWNmZTNjNy8xNTMzNjg2NDAwLnBkZiJ9LCB7IngtYW16LWFsZ29y"
-                        "aXRobSI6ICJBV1M0LUhNQUMtU0hBMjU2In0sIHsieC1hbXotY3JlZGVudGlhbCI6ICJhd3Mt"
-                        "YWNjZXNzLWtleS1pZC8yMDE4MDgwOC9ldS13ZXN0LTEvczMvYXdzNF9yZXF1ZXN0In0sIHsi"
-                        "eC1hbXotZGF0ZSI6ICIyMDE4MDgwOFQwMDAwMDBaIn1dfQ=="
+                        "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMi"
+                        "OiBbeyJhY2wiOiAicHJpdmF0ZSJ9LCBbImVxIiwgIiRDb250ZW50LVR5cGUiLCAiYXBw"
+                        "bGljYXRpb24vcGRmIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAzMTQ1NzI4"
+                        "MDBdLCB7ImJ1Y2tldCI6ICJ0ZXN0LW1hcnNoYSJ9LCB7ImtleSI6ICJjbGFzc3Jvb20v"
+                        "ZWQwOGRhMzQtNzQ0Ny00MTQxLTk2ZmYtNTc0MDMxNWQ3Yjk5L2NsYXNzcm9vbWRvY3Vt"
+                        "ZW50LzI3YTIzZjUyLTMzNzktNDZhMi05NGZhLTY5N2I1OWNmZTNjNy8xNTMzNjg2NDAw"
+                        "In0sIHsieC1hbXotYWxnb3JpdGhtIjogIkFXUzQtSE1BQy1TSEEyNTYifSwgeyJ4LWFt"
+                        "ei1jcmVkZW50aWFsIjogInNjdy1hY2Nlc3Mta2V5LzIwMTgwODA4L2ZyLXBhci9zMy9h"
+                        "d3M0X3JlcXVlc3QifSwgeyJ4LWFtei1kYXRlIjogIjIwMTgwODA4VDAwMDAwMFoifV19"
                     ),
                     "x-amz-signature": (
-                        "c34ed8fa1461564740c402c32bed7e8b579eeac71756c3dd505397c14ffac412"
+                        "2179d8240c968466004bcc18ab12c0ae652edad49bf1e994d89fed33493a9265"
                     ),
                 },
             },
@@ -389,9 +396,10 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=playlist_access.user)
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
-        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
-            "datetime.datetime"
-        ) as mock_dt:
+        with (
+            mock.patch.object(timezone, "now", return_value=now),
+            mock.patch("datetime.datetime") as mock_dt,
+        ):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/classrooms/{classroom_document.classroom.id}"
@@ -405,29 +413,29 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
         self.assertEqual(
             response.json(),
             {
-                "url": "https://test-marsha-source.s3.amazonaws.com/",
+                "url": "https://s3.fr-par.scw.cloud/test-marsha",
                 "fields": {
                     "acl": "private",
                     "key": (
-                        "ed08da34-7447-4141-96ff-5740315d7b99/classroomdocument/"
-                        "27a23f52-3379-46a2-94fa-697b59cfe3c7/1533686400.pdf"
+                        "classroom/ed08da34-7447-4141-96ff-5740315d7b99/classroomdocument/"
+                        "27a23f52-3379-46a2-94fa-697b59cfe3c7/1533686400"
                     ),
                     "x-amz-algorithm": "AWS4-HMAC-SHA256",
-                    "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
+                    "x-amz-credential": "scw-access-key/20180808/fr-par/s3/aws4_request",
                     "x-amz-date": "20180808T000000Z",
                     "policy": (
-                        "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBb"
-                        "eyJhY2wiOiAicHJpdmF0ZSJ9LCBbImVxIiwgIiRDb250ZW50LVR5cGUiLCAiYXBwbGljYXRp"
-                        "b24vcGRmIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAzMTQ1NzI4MDBdLCB7ImJ1"
-                        "Y2tldCI6ICJ0ZXN0LW1hcnNoYS1zb3VyY2UifSwgeyJrZXkiOiAiZWQwOGRhMzQtNzQ0Ny00"
-                        "MTQxLTk2ZmYtNTc0MDMxNWQ3Yjk5L2NsYXNzcm9vbWRvY3VtZW50LzI3YTIzZjUyLTMzNzkt"
-                        "NDZhMi05NGZhLTY5N2I1OWNmZTNjNy8xNTMzNjg2NDAwLnBkZiJ9LCB7IngtYW16LWFsZ29y"
-                        "aXRobSI6ICJBV1M0LUhNQUMtU0hBMjU2In0sIHsieC1hbXotY3JlZGVudGlhbCI6ICJhd3Mt"
-                        "YWNjZXNzLWtleS1pZC8yMDE4MDgwOC9ldS13ZXN0LTEvczMvYXdzNF9yZXF1ZXN0In0sIHsi"
-                        "eC1hbXotZGF0ZSI6ICIyMDE4MDgwOFQwMDAwMDBaIn1dfQ=="
+                        "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMi"
+                        "OiBbeyJhY2wiOiAicHJpdmF0ZSJ9LCBbImVxIiwgIiRDb250ZW50LVR5cGUiLCAiYXBw"
+                        "bGljYXRpb24vcGRmIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAzMTQ1NzI4"
+                        "MDBdLCB7ImJ1Y2tldCI6ICJ0ZXN0LW1hcnNoYSJ9LCB7ImtleSI6ICJjbGFzc3Jvb20v"
+                        "ZWQwOGRhMzQtNzQ0Ny00MTQxLTk2ZmYtNTc0MDMxNWQ3Yjk5L2NsYXNzcm9vbWRvY3Vt"
+                        "ZW50LzI3YTIzZjUyLTMzNzktNDZhMi05NGZhLTY5N2I1OWNmZTNjNy8xNTMzNjg2NDAw"
+                        "In0sIHsieC1hbXotYWxnb3JpdGhtIjogIkFXUzQtSE1BQy1TSEEyNTYifSwgeyJ4LWFt"
+                        "ei1jcmVkZW50aWFsIjogInNjdy1hY2Nlc3Mta2V5LzIwMTgwODA4L2ZyLXBhci9zMy9h"
+                        "d3M0X3JlcXVlc3QifSwgeyJ4LWFtei1kYXRlIjogIjIwMTgwODA4VDAwMDAwMFoifV19"
                     ),
                     "x-amz-signature": (
-                        "c34ed8fa1461564740c402c32bed7e8b579eeac71756c3dd505397c14ffac412"
+                        "2179d8240c968466004bcc18ab12c0ae652edad49bf1e994d89fed33493a9265"
                     ),
                 },
             },
@@ -452,9 +460,10 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=playlist_access.user)
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
-        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
-            "datetime.datetime"
-        ) as mock_dt:
+        with (
+            mock.patch.object(timezone, "now", return_value=now),
+            mock.patch("datetime.datetime") as mock_dt,
+        ):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/classrooms/{classroom_document.classroom.id}"
@@ -481,9 +490,10 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
         )
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
-        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
-            "datetime.datetime"
-        ) as mock_dt:
+        with (
+            mock.patch.object(timezone, "now", return_value=now),
+            mock.patch("datetime.datetime") as mock_dt,
+        ):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/classrooms/{classroom_document.classroom.id}"
