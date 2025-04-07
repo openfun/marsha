@@ -35,9 +35,9 @@ from marsha.core.defaults import (
     PROCESS_PIPELINE_CHOICES,
     RUNNING,
     STOPPING,
+    STORAGE_BASE_DIRECTORY,
     TRANSCODE_PIPELINE_CHOICES,
     UPLOAD_ERROR_REASON_CHOICES,
-    STORAGE_BASE_DIRECTORY,
     VOD_STORAGE_BASE_DIRECTORY,
 )
 from marsha.core.models.account import ADMINISTRATOR, INSTRUCTOR, OrganizationAccess

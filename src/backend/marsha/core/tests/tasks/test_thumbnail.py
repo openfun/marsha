@@ -9,11 +9,7 @@ from django.test import TestCase
 
 from PIL import Image
 
-from marsha.core.defaults import (
-    CELERY_PIPELINE,
-    ERROR,
-    TMP_STORAGE_BASE_DIRECTORY,
-)
+from marsha.core.defaults import CELERY_PIPELINE, ERROR, TMP_STORAGE_BASE_DIRECTORY
 from marsha.core.factories import ThumbnailFactory
 from marsha.core.storage.storage_class import file_storage
 from marsha.core.tasks.thumbnail import resize_thumbnails
