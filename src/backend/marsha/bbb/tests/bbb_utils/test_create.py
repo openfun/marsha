@@ -609,6 +609,9 @@ class ClassroomServiceTestCase(TestCase):
         self.assertEqual(classroom.started, False)
 
     @responses.activate
+    @override_settings(
+        MEDIA_URL="https://abc.cloudfront.net/",
+    )
     def test_bbb_create_new_classroom_with_document(self):
         """Create a classroom with one document."""
         now = datetime(2018, 8, 8, tzinfo=timezone.utc)
@@ -703,8 +706,8 @@ class ClassroomServiceTestCase(TestCase):
             responses.calls[0].request.body,
             b'<modules><module name="presentation">'
             b"<document "
-            b'url="https://abc.cloudfront.net/9b3df0bd-240c-49fe-85e0-caa47420f3eb/'
-            b'classroomdocument/c5c84f7b-7f1a-4689-8da8-28fae7c7e8d9/1533686400.pdf" '
+            b'url="https://abc.cloudfront.net/classroom/9b3df0bd-240c-49fe-85e0-caa47420f3eb/'
+            b'classroomdocument/c5c84f7b-7f1a-4689-8da8-28fae7c7e8d9/1533686400/1533686400.pdf" '
             b'filename="file.pdf" '
             b'current="true" '
             b"/>"
@@ -734,6 +737,9 @@ class ClassroomServiceTestCase(TestCase):
         self.assertEqual(classroom.started, True)
         self.assertEqual(classroom.ended, False)
 
+    @override_settings(
+        MEDIA_URL="https://abc.cloudfront.net/",
+    )
     @responses.activate
     def test_bbb_create_new_classroom_with_documents(self):
         """Create a classroom with multiple documents."""
@@ -832,18 +838,19 @@ class ClassroomServiceTestCase(TestCase):
         api_response = create(
             classroom, "https://example.com/api/classrooms/recording-ready/"
         )
+
         self.assertEqual(
             responses.calls[0].request.body,
             b'<modules><module name="presentation">'
             b"<document "
-            b'url="https://abc.cloudfront.net/9b3df0bd-240c-49fe-85e0-caa47420f3eb/'
-            b'classroomdocument/a753faf5-5d6a-4091-856b-71d2c600e1cd/1533686400.pdf" '
+            b'url="https://abc.cloudfront.net/classroom/9b3df0bd-240c-49fe-85e0-caa47420f3eb/'
+            b'classroomdocument/a753faf5-5d6a-4091-856b-71d2c600e1cd/1533686400/1533686400.pdf" '
             b'filename="file2.pdf" '
             b'current="false" '
             b"/>"
             b"<document "
-            b'url="https://abc.cloudfront.net/9b3df0bd-240c-49fe-85e0-caa47420f3eb/'
-            b'classroomdocument/c5c84f7b-7f1a-4689-8da8-28fae7c7e8d9/1533686400.pdf" '
+            b'url="https://abc.cloudfront.net/classroom/9b3df0bd-240c-49fe-85e0-caa47420f3eb/'
+            b'classroomdocument/c5c84f7b-7f1a-4689-8da8-28fae7c7e8d9/1533686400/1533686400.pdf" '
             b'filename="file.pdf" '
             b'current="true" '
             b"/>"

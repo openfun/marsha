@@ -16,6 +16,8 @@ from requests.exceptions import MissingSchema
 import xmltodict
 
 from marsha.bbb.models import Classroom, ClassroomRecording, ClassroomSession
+from marsha.core.defaults import SCW_S3
+from marsha.core.storage.storage_class import file_storage
 from marsha.core.utils import time_utils
 
 
@@ -115,11 +117,19 @@ def get_url(obj):
     if "." in obj.filename:
         extension = splitext(obj.filename)[1]
 
-    return (
+    stamp = time_utils.to_timestamp(obj.uploaded_on)
+
+    if obj.storage_location == SCW_S3:
+        base = obj.get_storage_prefix()
+        return file_storage.url(f"{base}/{stamp}{extension}")
+
+    # Default AWS fallback
+    url = (
         f"{settings.AWS_S3_URL_PROTOCOL}://{settings.CLOUDFRONT_DOMAIN}/"
-        f"{obj.classroom.pk}/classroomdocument/{obj.pk}/"
-        f"{time_utils.to_timestamp(obj.uploaded_on)}{extension}"
+        f"{obj.classroom.pk}/classroomdocument/{obj.pk}/{stamp}{extension}"
     )
+
+    return url
 
 
 def create(classroom: Classroom, recording_ready_callback_url: str, attempt=0):

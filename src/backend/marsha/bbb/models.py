@@ -16,6 +16,13 @@ from django.utils.translation import gettext_lazy as _
 
 from safedelete.managers import SafeDeleteManager
 
+from marsha.core.defaults import (
+    CLASSROOM_STORAGE_BASE_DIRECTORY,
+    DELETED_STORAGE_BASE_DIRECTORY,
+    SCW_S3,
+    STORAGE_BASE_DIRECTORY,
+    STORAGE_LOCATION_CHOICES,
+)
 from marsha.core.models import (
     BaseModel,
     Playlist,
@@ -329,6 +336,14 @@ class ClassroomDocument(UploadableFileMixin, BaseModel):
         help_text=_("is displayed by default in the classroom"),
     )
 
+    storage_location = models.CharField(
+        max_length=255,
+        verbose_name=_("storage location"),
+        help_text=_("Location used to store the classroom document"),
+        choices=STORAGE_LOCATION_CHOICES,
+        default=SCW_S3,
+    )
+
     class Meta:
         """Options for the ``ClassroomDocument`` model."""
 
@@ -368,6 +383,37 @@ class ClassroomDocument(UploadableFileMixin, BaseModel):
 
         stamp = stamp or to_timestamp(self.uploaded_on)
         return f"{self.classroom.pk}/classroomdocument/{self.pk}/{stamp}{extension}"
+
+    def get_storage_prefix(
+        self,
+        stamp=None,
+        base_dir: STORAGE_BASE_DIRECTORY = CLASSROOM_STORAGE_BASE_DIRECTORY,
+    ):
+        """Compute the storage prefix for the classroom document.
+
+        Parameters
+        ----------
+        stamp: Type[string]
+            Passing a value for this argument will return the storage prefix for the
+            classroom document assuming its active stamp is set to this value. This is
+            useful to create an upload policy for this prospective version of the
+            classroom, so that the client can upload the file to S3.
+
+        base: Type[STORAGE_BASE_DIRECTORY]
+            The storage base directory. Defaults to Classroom. It will be used to
+            compute the storage prefix.
+
+        Returns
+        -------
+        string
+            The storage prefix for the classroom document, depending on the base directory passed.
+        """
+        stamp = stamp or self.uploaded_on_stamp()
+        base = base_dir
+        if base == DELETED_STORAGE_BASE_DIRECTORY:
+            base = f"{base}/{CLASSROOM_STORAGE_BASE_DIRECTORY}"
+
+        return f"{base}/{self.classroom.pk}/classroomdocument/{self.pk}/{stamp}"
 
 
 class ClassroomRecording(BaseModel):

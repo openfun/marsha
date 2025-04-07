@@ -35,14 +35,13 @@ from marsha.bbb.utils.bbb_utils import (
     process_recordings,
 )
 from marsha.bbb.utils.tokens import create_classroom_stable_invite_jwt
-from marsha.core import defaults, permissions as core_permissions
+from marsha.core import defaults, permissions as core_permissions, storage
 from marsha.core.api import APIViewMixin, BulkDestroyModelMixin, ObjectPkMixin
-from marsha.core.defaults import VOD_CONVERT
+from marsha.core.defaults import READY, VOD_CONVERT
 from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, Video
 from marsha.core.tasks.recording import copy_video_recording
 from marsha.core.tasks.video import launch_video_transcoding
-from marsha.core.utils.s3_utils import create_presigned_post
-from marsha.core.utils.time_utils import to_timestamp
+from marsha.core.utils.time_utils import to_datetime, to_timestamp
 
 
 class ObjectClassroomRelatedMixin:
@@ -615,7 +614,7 @@ class ClassroomDocumentViewSet(
             HttpResponse carrying the AWS S3 upload policy as a JSON object.
 
         """
-        classroom = self.get_object()  # check permissions first
+        classroom_document = self.get_object()  # check permissions first
 
         serializer = serializers.ClassroomDocumentInitiateUploadSerializer(
             data=request.data
@@ -623,24 +622,19 @@ class ClassroomDocumentViewSet(
         if serializer.is_valid() is not True:
             return Response(serializer.errors, status=400)
 
-        now = timezone.now()
-        stamp = to_timestamp(now)
-
-        key = classroom.get_source_s3_key(
-            stamp=stamp, extension=serializer.validated_data["extension"]
-        )
-
-        presigned_post = create_presigned_post(
-            [
-                ["eq", "$Content-Type", serializer.validated_data["mimetype"]],
+        presigned_post = (
+            storage.get_initiate_backend().initiate_classroom_document_storage_upload(
+                request,
+                classroom_document,
                 [
-                    "content-length-range",
-                    0,
-                    settings.CLASSROOM_DOCUMENT_SOURCE_MAX_SIZE,
+                    ["eq", "$Content-Type", serializer.validated_data["mimetype"]],
+                    [
+                        "content-length-range",
+                        0,
+                        settings.CLASSROOM_DOCUMENT_SOURCE_MAX_SIZE,
+                    ],
                 ],
-            ],
-            {},
-            key,
+            )
         )
 
         # Reset the upload state of the classroom document
@@ -650,6 +644,44 @@ class ClassroomDocumentViewSet(
         )
 
         return Response(presigned_post)
+
+    @action(methods=["post"], detail=True, url_path="upload-ended")
+    # pylint: disable=unused-argument
+    def upload_ended(self, request, pk=None, classroom_id=None):
+        """Notify the API that the classroom document upload has ended.
+
+        Calling the endpoint will update the upload state of the classroom document.
+        The request should have a file_key in the body, which is the key of the
+        uploaded file.
+
+        Parameters
+        ----------
+        request : Type[django.http.request.HttpRequest]
+            The request on the API endpoint
+        pk: string
+            The primary key of the classroom document
+
+        Returns
+        -------
+        Type[rest_framework.response.Response]
+            HttpResponse with the serialized classroom document.
+        """
+        # Ensure object exists and user has access to it
+        classroom_document = self.get_object()
+
+        serializer = serializers.ClassroomDocumentUploadEndedSerializer(
+            data=request.data, context={"obj": classroom_document}
+        )
+        serializer.is_valid(raise_exception=True)
+
+        file_key = serializer.validated_data["file_key"]
+        # The file_key have the "classroom/{classroom_pk}/classroomdocument/{stamp}"
+        # format
+        stamp = file_key.split("/")[-1]
+
+        classroom_document.update_upload_state(READY, to_datetime(stamp))
+
+        return Response(serializer.data)
 
     def perform_destroy(self, instance):
         """Change the default document if the instance is the default one"""

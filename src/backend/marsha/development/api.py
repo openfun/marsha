@@ -9,7 +9,11 @@ from django.http import HttpRequest
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from marsha.core.defaults import TMP_STORAGE_BASE_DIRECTORY
+from marsha.bbb.models import ClassroomDocument
+from marsha.core.defaults import (
+    CLASSROOM_STORAGE_BASE_DIRECTORY,
+    TMP_STORAGE_BASE_DIRECTORY,
+)
 from marsha.core.models import Document, Video
 from marsha.core.storage.storage_class import file_storage
 from marsha.core.utils import time_utils
@@ -67,3 +71,21 @@ def local_document_upload(request: HttpRequest, uuid=None):
     )
 
     return Response({"success": True}, status=204)
+
+
+@api_view(["POST"])
+def local_classroom_document_upload(request: HttpRequest, uuid=None, stamp=None):
+    """Endpoint to mock s3 classroom document upload."""
+    uploaded_classroom_document = request.FILES["file"]
+
+    try:
+        object_instance = ClassroomDocument.objects.get(id=uuid)
+    except ClassroomDocument.DoesNotExist:
+        return Response({"success": False}, status=404)
+
+    destination = object_instance.get_storage_prefix(
+        stamp=stamp, base_dir=CLASSROOM_STORAGE_BASE_DIRECTORY
+    )
+
+    file_storage.save(destination, uploaded_classroom_document)
+    return Response(status=204)
