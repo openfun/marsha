@@ -9,6 +9,7 @@ import {
   formatSizeErrorScale,
   ClassroomModelName as modelName,
   report,
+  uploadEnded,
   useUploadManager,
 } from 'lib-components';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -124,7 +125,20 @@ export const UploadDocuments = ({ classroomId }: UploadDocumentsProps) => {
         size: file.size,
         classroom_id: classroomId,
       });
-      addUpload(modelName.CLASSROOM_DOCUMENTS, document.id, file, classroomId);
+      addUpload(
+        modelName.CLASSROOM_DOCUMENTS,
+        document.id,
+        file,
+        classroomId,
+        (presignedPost) => {
+          uploadEnded(
+            modelName.CLASSROOM_DOCUMENTS,
+            document.id,
+            presignedPost.fields['key'],
+            classroomId,
+          );
+        },
+      );
       refreshClassroomDocuments();
     } catch (error) {
       if ((error as object).hasOwnProperty('size') && metadata.data) {

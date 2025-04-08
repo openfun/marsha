@@ -7,11 +7,11 @@ import {
   WhiteCard,
   modelName,
   report,
+  uploadEnded,
   useResponsive,
   useUploadManager,
   useVideo,
 } from 'lib-components';
-import { uploadEnded } from 'lib-video';
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -144,7 +144,11 @@ export const CreateVOD = ({
         wizardedVideo.videoFile,
         undefined,
         (presignedPost) => {
-          uploadEnded(currentVideo.id, presignedPost.fields['key']);
+          uploadEnded(
+            modelName.VIDEOS,
+            currentVideo.id,
+            presignedPost.fields['key'],
+          );
         },
       );
     }
