@@ -8,15 +8,11 @@ import {
   UploadManagerStatus,
   Video,
   modelName,
+  uploadEnded,
   useResponsive,
   useUploadManager,
 } from 'lib-components';
-import {
-  LicenseSelect,
-  UploadVideoForm,
-  uploadEnded,
-  useCreateVideo,
-} from 'lib-video';
+import { LicenseSelect, UploadVideoForm, useCreateVideo } from 'lib-video';
 import { Fragment, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
@@ -93,7 +89,7 @@ const VideoCreateForm = () => {
           video.videoFile,
           undefined,
           (presignedPost) => {
-            uploadEnded(data.id, presignedPost.fields['key']);
+            uploadEnded(modelName.VIDEOS, data.id, presignedPost.fields['key']);
           },
         );
         setIsUploading(true);

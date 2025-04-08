@@ -5,6 +5,7 @@ import {
   FoldableItem,
   ItemList,
   modelName,
+  uploadEnded,
   useSharedLiveMedia,
   useUploadManager,
 } from 'lib-components';
@@ -12,7 +13,6 @@ import React, { useEffect, useRef } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { createSharedLiveMedia } from '@lib-video/api/createSharedLiveMedia';
-import { sharedLiveMediaUploadEnded } from '@lib-video/api/sharedLiveMediaUploadEnded';
 import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
 
 import { SharedLiveMediaItem } from './SharedLiveMediaItem';
@@ -111,10 +111,11 @@ export const SharedLiveMedia = ({ isLive, isTeacher }: SharedMediaProps) => {
         event.target.files[0],
         video.id,
         (presignedPost) => {
-          sharedLiveMediaUploadEnded(
-            video.id,
+          uploadEnded(
+            modelName.SHAREDLIVEMEDIAS,
             sharedLiveMediaId as string,
             presignedPost.fields['key'],
+            video.id,
           );
         },
       );

@@ -9,13 +9,13 @@ import {
   UploadManagerStatus,
   ValidSVG,
   modelName,
+  uploadEnded,
   uploadState,
   useUploadManager,
 } from 'lib-components';
 import React, { useEffect, useRef } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { uploadEnded } from '@lib-video/api/uploadEnded';
 import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
 
 const messages = defineMessages({
@@ -64,7 +64,7 @@ export const UploadVideo = () => {
         event.target.files[0],
         undefined,
         (presignedPost) => {
-          uploadEnded(video.id, presignedPost.fields['key']);
+          uploadEnded(modelName.VIDEOS, video.id, presignedPost.fields['key']);
         },
       );
     }

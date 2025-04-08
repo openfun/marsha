@@ -11,6 +11,7 @@ import {
   formatSizeErrorScale,
   modelName,
   report,
+  uploadEnded,
   uploadState,
   useAppConfig,
   useThumbnail,
@@ -21,7 +22,6 @@ import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { createThumbnail } from '@lib-video/api/createThumbnail';
-import { thumbnailUploadEnded } from '@lib-video/api/thumbnailUploadEnded';
 import { useThumbnailMetadata } from '@lib-video/api/useThumbnailMetadata';
 import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
 
@@ -101,10 +101,11 @@ export const WidgetThumbnail = ({ isLive = true }: WidgetThumbnailProps) => {
             event.target.files[0],
             video.id,
             (presignedPost) => {
-              thumbnailUploadEnded(
-                video.id,
+              uploadEnded(
+                modelName.THUMBNAILS,
                 thumbnailId as string,
                 presignedPost.fields['key'],
+                video.id,
               );
             },
           );
