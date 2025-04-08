@@ -12,6 +12,7 @@ import {
   modelName,
   report,
   timedTextMode,
+  uploadEnded,
   uploadState,
   useFlags,
   useTimedTextTrack,
@@ -28,7 +29,6 @@ import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { createTimedTextTrack } from '@lib-video/api/createTimedTextTrack';
-import { timedTextTrackUploadEnded } from '@lib-video/api/timedTextTrackUploadEnded';
 import { useTimedTextMetadata } from '@lib-video/api/useTimedTextMetadata';
 import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
 import { LanguageChoice } from '@lib-video/types/SelectOptions';
@@ -132,10 +132,11 @@ export const LocalizedTimedTextTrackUpload = ({
             event.target.files[0],
             video.id,
             (presignedPost) => {
-              timedTextTrackUploadEnded(
-                video.id,
+              uploadEnded(
+                modelName.TIMEDTEXTTRACKS,
                 timedTextTrackId as string,
                 presignedPost.fields['key'],
+                video.id,
               );
             },
           );
