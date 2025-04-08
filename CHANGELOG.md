@@ -8,9 +8,12 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [5.7.0] - 2025-04-08
+
 ### Added
 
 - Add Celery task to fetch recording from Scalelite API
+- Add Peertube pipeline for BBB recordings
 
 ### Fixed
 
@@ -2045,7 +2048,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v5.6.0...master
+[unreleased]: https://github.com/openfun/marsha/compare/v5.7.0...master
+[5.7.0]: https://github.com/openfun/marsha/compare/v5.6.0...v5.7.0
 [5.6.0]: https://github.com/openfun/marsha/compare/v5.5.3...v5.6.0
 [5.5.3]: https://github.com/openfun/marsha/compare/v5.5.2...v5.5.3
 [5.5.2]: https://github.com/openfun/marsha/compare/v5.5.1...v5.5.2
