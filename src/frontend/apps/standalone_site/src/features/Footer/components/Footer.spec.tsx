@@ -49,7 +49,7 @@ describe('<Footer />', () => {
     render(<Footer />);
     expect(await screen.findByText(/Test Page/i)).toBeInTheDocument();
     expect(screen.getByText(/General Conditions/i)).toBeInTheDocument();
-    expect(screen.getByText(/© 2024 Marsha Education/i)).toBeInTheDocument();
+    expect(screen.getByText(/© 2025 Marsha Education/i)).toBeInTheDocument();
     expect(
       screen.getByText('Financed by the recovery plan'),
     ).toBeInTheDocument();
@@ -104,7 +104,7 @@ describe('<Footer />', () => {
     render(<Footer />);
     expect(await screen.findByText(/custom copyright/i)).toBeInTheDocument();
     expect(
-      screen.queryByText(/© 2024 Marsha Education/i),
+      screen.queryByText(/© 2025 Marsha Education/i),
     ).not.toBeInTheDocument();
     expect(
       screen.queryByRole('link', { name: 'Twitter' }),
@@ -132,7 +132,7 @@ describe('<Footer />', () => {
 
     render(<Footer />);
     expect(
-      await screen.findByText(/© 2024 Marsha Education/i),
+      await screen.findByText(/© 2025 Marsha Education/i),
     ).toBeInTheDocument();
     expect(
       screen.queryByRole('link', { name: 'Twitter' }),

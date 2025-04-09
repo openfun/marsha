@@ -61,7 +61,7 @@ const Footer = ({ withoutWave }: { withoutWave?: boolean }) => {
   const { getSiteConfig } = useSiteConfig();
   const siteConfig = getSiteConfig();
 
-  const defaultFooterCopyright = '© 2024 Marsha Education';
+  const defaultFooterCopyright = '© 2025 Marsha Education';
 
   return (
     <Box type="footer" margin={{ top: 'auto' }} color="white" fill="horizontal">
