@@ -22,7 +22,11 @@ from marsha.bbb.models import (
     ClassroomSession,
 )
 from marsha.bbb.utils.bbb_utils import get_recording_url, get_url as get_document_url
-from marsha.core.defaults import CLASSROOM_RECORDINGS_KEY_CACHE, VOD_CONVERT
+from marsha.core.defaults import (
+    CLASSROOM_RECORDINGS_KEY_CACHE,
+    CLASSROOM_STORAGE_BASE_DIRECTORY,
+    VOD_CONVERT,
+)
 from marsha.core.serializers import (
     BaseInitiateUploadSerializer,
     PlaylistLiteSerializer,
@@ -30,6 +34,7 @@ from marsha.core.serializers import (
     UploadableFileWithExtensionSerializerMixin,
     VideoFromRecordingSerializer,
 )
+from marsha.core.utils import time_utils
 
 
 class ClassroomRecordingSerializer(ReadOnlyModelSerializer):
@@ -453,3 +458,28 @@ class ClassroomDocumentInitiateUploadSerializer(BaseInitiateUploadSerializer):
             attrs["mimetype"] = mimetype
 
         return attrs
+
+
+class ClassroomDocumentUploadEndedSerializer(serializers.Serializer):
+    """A serializer to validate data submitted on the UploadEnded API endpoint."""
+
+    file_key = serializers.CharField()
+
+    def validate_file_key(self, value):
+        """Check if the file_key is valid."""
+
+        stamp = value.split("/")[-1]
+
+        try:
+            time_utils.to_datetime(stamp)
+        except serializers.ValidationError as error:
+            raise serializers.ValidationError("file_key is not valid") from error
+
+        if (
+            self.context["obj"].get_storage_prefix(
+                stamp, CLASSROOM_STORAGE_BASE_DIRECTORY
+            )
+            != value
+        ):
+            raise serializers.ValidationError("file_key is not valid")
+        return value

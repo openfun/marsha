@@ -31,11 +31,14 @@ class S3UtilsTestCase(TestCase):
         """
 
         mocked_config = mock.Mock()
-        with mock.patch(
-            "boto3.client", return_value=self.mock_s3_client
-        ) as mock_boto3_client, mock.patch(
-            "marsha.core.utils.s3_utils.Config", return_value=mocked_config
-        ) as mock_config:
+        with (
+            mock.patch(
+                "boto3.client", return_value=self.mock_s3_client
+            ) as mock_boto3_client,
+            mock.patch(
+                "marsha.core.utils.s3_utils.Config", return_value=mocked_config
+            ) as mock_config,
+        ):
             client = get_aws_s3_client()
 
         self.assertEqual(client, self.mock_s3_client)
@@ -56,11 +59,14 @@ class S3UtilsTestCase(TestCase):
         """
 
         mocked_config = mock.Mock()
-        with mock.patch(
-            "boto3.client", return_value=self.mock_s3_client
-        ) as mock_boto3_client, mock.patch(
-            "marsha.core.utils.s3_utils.Config", return_value=mocked_config
-        ) as mock_config:
+        with (
+            mock.patch(
+                "boto3.client", return_value=self.mock_s3_client
+            ) as mock_boto3_client,
+            mock.patch(
+                "marsha.core.utils.s3_utils.Config", return_value=mocked_config
+            ) as mock_config,
+        ):
             client = get_videos_s3_client()
 
         self.assertEqual(client, self.mock_s3_client)
@@ -96,7 +102,7 @@ class S3UtilsTestCase(TestCase):
         with mock.patch(
             "marsha.core.utils.s3_utils.get_videos_s3_client"
         ) as mock_get_videos_s3_client:
-            get_s3_client("VIDEOS_S3")
+            get_s3_client("STORAGE_S3")
 
             mock_get_videos_s3_client.assert_called_once()
 

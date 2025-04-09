@@ -37,16 +37,16 @@ In Marsha app, anything that should be done through Peertube runners should have
 
 In our case we need to set the `STORAGES["videos"]["BACKEND"]` setting with the right storage class, and the `STORAGE_BACKEND` setting with the right value. See [storage](#storage), to understand why we need this second setting.
 
-#### S3VideoStorage
+#### S3FileStorage
 
-A storage used to store videos in a S3 like bucket. It can be used locally, and should be used in production.
+A storage used to store files in a S3 like bucket. It can be used locally, and should be used in production.
 
 ```Python
 STORAGES = {
     "videos": {
         "BACKEND": values.Value(
-            "marsha.core.storage.s3.S3VideoStorage",
-            environ_name="STORAGES_VIDEOS_BACKEND",
+            "marsha.core.storage.s3.S3FileStorage",
+            environ_name="STORAGES_BACKEND",
         ),
     },
 }
@@ -68,8 +68,8 @@ STORAGES = {
         ),
         "OPTIONS": values.DictValue(
             {
-                "location": str(Base.VIDEOS_ROOT),
-                "base_url": str(Base.VIDEOS_ROOT),
+                "location": str(Base.FILES_ROOT),
+                "base_url": str(Base.FILES_ROOT),
             },
             environ_name="STORAGES_VIDEOS_OPTIONS",
         ),
@@ -93,7 +93,7 @@ STORAGES = {
 
 #### URLS
 
-When a video object is returned to the client, it contains URLs to access the video playlist and mp4. These URLs are built in the video serializer. Before, they were manually created by combining the cloudfront domain and the video object key. It cannot work anymore because local files cannot be behind a cloudfront domain. BUT, we can simply make use `django-storages` and call the `video_storage.url(key)` method that will return the appropriate URL depending on the class used for videos.
+When a video object is returned to the client, it contains URLs to access the video playlist and mp4. These URLs are built in the video serializer. Before, they were manually created by combining the cloudfront domain and the video object key. It cannot work anymore because local files cannot be behind a cloudfront domain. BUT, we can simply make use `django-storages` and call the `storage.url(key)` method that will return the appropriate URL depending on the class used for videos.
 
 ### Callbacks
 

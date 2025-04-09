@@ -10,7 +10,7 @@ import responses
 
 from marsha.core import defaults
 from marsha.core.factories import VideoFactory
-from marsha.core.storage.storage_class import video_storage
+from marsha.core.storage.storage_class import file_storage
 from marsha.core.tasks.recording import copy_video_recording
 
 
@@ -89,8 +89,8 @@ class TestRecordingTask(TestCase):
         self.assertEqual(video.upload_state, defaults.PROCESSING)
 
         expected_key = f"tmp/{str(video.pk)}/video/{stamp}"
-        self.assertTrue(video_storage.exists(expected_key))
-        with video_storage.open(expected_key, "rb") as video_file:
+        self.assertTrue(file_storage.exists(expected_key))
+        with file_storage.open(expected_key, "rb") as video_file:
             self.assertEqual(
                 video_file.read(),
                 self.video_content,

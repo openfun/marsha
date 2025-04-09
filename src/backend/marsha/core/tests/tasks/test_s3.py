@@ -37,7 +37,7 @@ class TestS3Task(TestCase):
                     mock.call(
                         f"vod/{video.pk}",
                         "deleted",
-                        "VIDEOS_S3",
+                        "STORAGE_S3",
                         "test-marsha",
                     ),
                 ]

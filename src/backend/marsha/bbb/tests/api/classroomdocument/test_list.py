@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 from django.test import TestCase, override_settings
 
 from marsha.bbb.factories import ClassroomDocumentFactory, ClassroomFactory
+from marsha.core.defaults import AWS_S3, SCW_S3
 from marsha.core.factories import (
     OrganizationAccessFactory,
     PlaylistAccessFactory,
@@ -114,18 +115,22 @@ class ClassroomClassroomdocumentsAPITest(TestCase):
         CLOUDFRONT_SIGNED_URLS_ACTIVE=True,
         CLOUDFRONT_SIGNED_PUBLIC_KEY_ID="cloudfront-access-key-id",
     )
-    def test_api_list_classroom_documents_instructor_urls(self):
+    def test_api_list_classroom_documents_on_aws(self):
         """Classroom documents should not been signed."""
         classroom = ClassroomFactory(id="4e126eac-9ca8-47b1-8dcd-157686b43c60")
         now = datetime(2018, 8, 8, tzinfo=timezone.utc)
         classroom_documents = ClassroomDocumentFactory.create_batch(
-            3, classroom=classroom, uploaded_on=now
+            3,
+            classroom=classroom,
+            uploaded_on=now,
+            storage_location=AWS_S3,
         )
         classroom_documents.append(
             ClassroomDocumentFactory(
                 classroom=classroom,
                 filename="no_extension_file",
                 uploaded_on=now,
+                storage_location=AWS_S3,
             )
         )
         jwt_token = InstructorOrAdminLtiTokenFactory(playlist=classroom.playlist)
@@ -204,6 +209,59 @@ class ClassroomClassroomdocumentsAPITest(TestCase):
                     },
                 ],
             },
+        )
+
+    @override_settings(
+        MEDIA_URL="https://abc.cloudfront.net/",
+    )
+    def test_api_list_classroom_documents_instructor_urls_on_scw(self):
+        """Classroom documents should not been signed."""
+        classroom = ClassroomFactory(id="4e126eac-9ca8-47b1-8dcd-157686b43c60")
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        classroom_documents_one = ClassroomDocumentFactory.create(
+            classroom=classroom,
+            uploaded_on=now,
+            filename="no_extension_file",
+            storage_location=SCW_S3,
+        )
+        classroom_documents_two = ClassroomDocumentFactory.create(
+            classroom=classroom,
+            filename="extension.pdf",
+            uploaded_on=now,
+            storage_location=SCW_S3,
+        )
+
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=classroom.playlist)
+
+        response = self.client.get(
+            f"/api/classrooms/{classroom.id}/classroomdocuments/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        document_list = response.json()
+        self.assertEqual(len(document_list["results"]), 2)
+        self.assertEqual(document_list["count"], 2)
+        self.assertTrue(
+            str(classroom_documents_one.id) in doc["id"]
+            for doc in document_list["results"]
+        )
+        self.assertTrue(
+            str(classroom_documents_two.id) in doc["id"]
+            for doc in document_list["results"]
+        )
+
+        self.assertTrue(
+            f"https://abc.cloudfront.net/classroom/{classroom.id}/classroomdocument/"
+            f"{classroom_documents_one.id}/1533686400/1533686400?response-content-disposition"
+            f"=attachment%3B+filename%3D{classroom_documents_one.filename}"
+            in (doc["url"] for doc in document_list["results"])
+        )
+        self.assertTrue(
+            f"https://abc.cloudfront.net/classroom/{classroom.id}/classroomdocument/"
+            f"{classroom_documents_two.id}/1533686400/1533686400.pdf?response-content-disposition"
+            f"=attachment%3B+filename%3D{classroom_documents_two.filename}"
+            in (doc["url"] for doc in document_list["results"])
         )
 
     def test_api_list_classroom_documents_user_access(self):

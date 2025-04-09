@@ -132,6 +132,7 @@ describe('<UploadDocuments />', () => {
       classroomDocument.id,
       file,
       '1',
+      expect.any(Function),
     );
   });
 

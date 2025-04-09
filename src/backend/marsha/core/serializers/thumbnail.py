@@ -8,7 +8,7 @@ from rest_framework import serializers
 from marsha.core.defaults import CELERY_PIPELINE
 from marsha.core.models import Thumbnail
 from marsha.core.serializers.base import TimestampField
-from marsha.core.storage.storage_class import video_storage
+from marsha.core.storage.storage_class import file_storage
 from marsha.core.utils import time_utils
 
 
@@ -115,11 +115,11 @@ class ThumbnailSerializer(serializers.ModelSerializer):
 
         if obj.process_pipeline == CELERY_PIPELINE:
             stamp = time_utils.to_timestamp(obj.uploaded_on)
-            base = obj.get_videos_storage_prefix(stamp=stamp)
+            base = obj.get_storage_prefix(stamp=stamp)
 
             urls = {}
             for resolution in settings.VIDEO_RESOLUTIONS:
-                urls[resolution] = video_storage.url(f"{base}/{resolution}.jpg")
+                urls[resolution] = file_storage.url(f"{base}/{resolution}.jpg")
             return urls
 
         # Default AWS fallback:
