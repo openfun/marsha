@@ -41,6 +41,9 @@ server {
   location @proxy_to_marsha_app {
     proxy_set_header Host $http_host;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_connect_timeout 300s;
+    proxy_send_timeout 300s;
+    proxy_read_timeout 300s;
 
     proxy_redirect off;
     proxy_pass http://marsha-backend;
@@ -105,10 +108,6 @@ server {
 
   location /api/v1/runners {
     client_max_body_size 4000m;
-
-    proxy_connect_timeout 300s;
-    proxy_send_timeout 300s;
-    proxy_read_timeout 300s;
 
     try_files $uri @proxy_to_marsha_app;
   }
