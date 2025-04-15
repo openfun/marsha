@@ -58,6 +58,7 @@ resource "scaleway_object_bucket_policy" "policy" {
           Principal = "*",
           Action = "s3:GetObject",
           Resource = [
+            "${scaleway_object_bucket.marsha_object_bucket.name}/classroom/*",
             "${scaleway_object_bucket.marsha_object_bucket.name}/vod/*",
             "${scaleway_object_bucket.marsha_object_bucket.name}/tmp/*"
           ]
