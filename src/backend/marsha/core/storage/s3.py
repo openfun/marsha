@@ -7,10 +7,7 @@ from django.utils import timezone
 
 from storages.backends.s3 import S3Storage
 
-from marsha.core.defaults import (
-    CLASSROOM_STORAGE_BASE_DIRECTORY,
-    TMP_STORAGE_BASE_DIRECTORY,
-)
+from marsha.core.defaults import TMP_STORAGE_BASE_DIRECTORY
 from marsha.core.models import Document
 from marsha.core.utils.cloudfront_utils import get_cloudfront_private_key
 from marsha.core.utils.s3_utils import create_presigned_post
@@ -118,10 +115,10 @@ def initiate_document_upload(request, pk, extension):
 
 
 # pylint: disable=unused-argument
-def initiate_classroom_document_storage_upload(request, obj, conditions):
+def initiate_classroom_document_storage_upload(request, obj, filename, conditions):
     """Get an upload policy for a classroom document.
 
-    The object must implement the get_storage_prefix method.
+    The object must implement the get_storage_key method.
     Returns an upload policy to our storage S3 destination bucket.
 
     Returns
@@ -132,10 +129,7 @@ def initiate_classroom_document_storage_upload(request, obj, conditions):
         the post.
 
     """
-    now = timezone.now()
-    stamp = to_timestamp(now)
-
-    key = obj.get_storage_prefix(stamp=stamp, base_dir=CLASSROOM_STORAGE_BASE_DIRECTORY)
+    key = obj.get_storage_key(filename=filename)
 
     return create_presigned_post(
         conditions,

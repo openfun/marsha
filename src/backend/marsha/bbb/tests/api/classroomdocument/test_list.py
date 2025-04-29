@@ -212,7 +212,7 @@ class ClassroomClassroomdocumentsAPITest(TestCase):
         )
 
     @override_settings(
-        MEDIA_URL="https://abc.cloudfront.net/",
+        MEDIA_URL="https://abc.svc.edge.scw.cloud/",
     )
     def test_api_list_classroom_documents_instructor_urls_on_scw(self):
         """Classroom documents should not been signed."""
@@ -242,26 +242,43 @@ class ClassroomClassroomdocumentsAPITest(TestCase):
         document_list = response.json()
         self.assertEqual(len(document_list["results"]), 2)
         self.assertEqual(document_list["count"], 2)
-        self.assertTrue(
-            str(classroom_documents_one.id) in doc["id"]
-            for doc in document_list["results"]
-        )
-        self.assertTrue(
-            str(classroom_documents_two.id) in doc["id"]
-            for doc in document_list["results"]
+
+        document_ids = [doc["id"] for doc in document_list["results"]]
+        document_urls = [doc["url"] for doc in document_list["results"]]
+
+        self.assertIn(
+            str(classroom_documents_one.id),
+            str(document_ids),
+            f"Document one ID {classroom_documents_one.id} not found in results: {document_ids}",
         )
 
-        self.assertTrue(
-            f"https://abc.cloudfront.net/classroom/{classroom.id}/classroomdocument/"
-            f"{classroom_documents_one.id}/1533686400/1533686400?response-content-disposition"
-            f"=attachment%3B+filename%3D{classroom_documents_one.filename}"
-            in (doc["url"] for doc in document_list["results"])
+        self.assertIn(
+            str(classroom_documents_two.id),
+            str(document_ids),
+            f"Document two ID {classroom_documents_two.id} not found in results: {document_ids}",
         )
-        self.assertTrue(
-            f"https://abc.cloudfront.net/classroom/{classroom.id}/classroomdocument/"
-            f"{classroom_documents_two.id}/1533686400/1533686400.pdf?response-content-disposition"
-            f"=attachment%3B+filename%3D{classroom_documents_two.filename}"
-            in (doc["url"] for doc in document_list["results"])
+
+        expected_url_one = (
+            f"https://abc.svc.edge.scw.cloud/classroom/{classroom.id}/classroomdocument/"
+            f"{classroom_documents_one.id}/{classroom_documents_one.filename}"
+        )
+        expected_url_two = (
+            f"https://abc.svc.edge.scw.cloud/classroom/{classroom.id}/classroomdocument/"
+            f"{classroom_documents_two.id}/{classroom_documents_two.filename}"
+        )
+
+        self.assertIn(
+            expected_url_one,
+            document_urls,
+            f"Expected URL not found for document one: {expected_url_one}\n"
+            "Available URLs: {document_urls}",
+        )
+
+        self.assertIn(
+            expected_url_two,
+            document_urls,
+            f"Expected URL not found for document two: {expected_url_two}\n"
+            "Available URLs: {document_urls}",
         )
 
     def test_api_list_classroom_documents_user_access(self):

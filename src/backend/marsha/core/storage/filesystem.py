@@ -3,10 +3,7 @@
 from django.urls import reverse
 from django.utils import timezone
 
-from marsha.core.defaults import (
-    CLASSROOM_STORAGE_BASE_DIRECTORY,
-    TMP_STORAGE_BASE_DIRECTORY,
-)
+from marsha.core.defaults import TMP_STORAGE_BASE_DIRECTORY
 from marsha.core.utils.time_utils import to_timestamp
 
 
@@ -48,7 +45,7 @@ def initiate_object_videos_storage_upload(request, obj, conditions):
 
 
 # pylint: disable=unused-argument
-def initiate_classroom_document_storage_upload(request, obj, conditions):
+def initiate_classroom_document_storage_upload(request, obj, filename, conditions):
     """Get an upload policy for a classroom document.
 
     Returns an upload policy for the filesystem backend.
@@ -68,9 +65,7 @@ def initiate_classroom_document_storage_upload(request, obj, conditions):
         the post.
 
     """
-    now = timezone.now()
-    stamp = to_timestamp(now)
-    key = obj.get_storage_prefix(stamp=stamp, base_dir=CLASSROOM_STORAGE_BASE_DIRECTORY)
+    key = obj.get_storage_key(filename=filename)
     return {
         "fields": {
             "key": key,
@@ -78,7 +73,7 @@ def initiate_classroom_document_storage_upload(request, obj, conditions):
         "url": request.build_absolute_uri(
             reverse(
                 "local-classroom-document-upload",
-                args=[obj.pk, stamp],
+                args=[obj.pk],
             )
         ),
     }
