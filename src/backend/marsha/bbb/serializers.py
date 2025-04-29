@@ -22,11 +22,7 @@ from marsha.bbb.models import (
     ClassroomSession,
 )
 from marsha.bbb.utils.bbb_utils import get_recording_url, get_url as get_document_url
-from marsha.core.defaults import (
-    CLASSROOM_RECORDINGS_KEY_CACHE,
-    CLASSROOM_STORAGE_BASE_DIRECTORY,
-    VOD_CONVERT,
-)
+from marsha.core.defaults import CLASSROOM_RECORDINGS_KEY_CACHE, SCW_S3, VOD_CONVERT
 from marsha.core.serializers import (
     BaseInitiateUploadSerializer,
     PlaylistLiteSerializer,
@@ -34,7 +30,7 @@ from marsha.core.serializers import (
     UploadableFileWithExtensionSerializerMixin,
     VideoFromRecordingSerializer,
 )
-from marsha.core.utils import time_utils
+from marsha.core.storage.storage_class import file_storage
 
 
 class ClassroomRecordingSerializer(ReadOnlyModelSerializer):
@@ -409,16 +405,25 @@ class ClassroomDocumentSerializer(
         Returns
         -------
         String or None
-            the url to fetch the classroom document on CloudFront
+            the url to fetch the classroom document on CloudFront/Storage
             None if the classroom document is still not uploaded to S3 with success
 
         """
-        if url := get_document_url(obj):
-            return (
-                f"{url}?response-content-disposition="
-                f"{quote_plus('attachment; filename=' + obj.filename)}"
-            )
-        return None
+        if not obj.uploaded_on:
+            return None
+
+        if obj.storage_location == SCW_S3:
+            file_key = obj.get_storage_key(obj.filename)
+
+            return file_storage.url(file_key)
+
+        # Default AWS fallback
+        url = get_document_url(obj)
+
+        return (
+            f"{url}?response-content-disposition="
+            f"{quote_plus('attachment; filename=' + obj.filename)}"
+        )
 
 
 class ClassroomDocumentInitiateUploadSerializer(BaseInitiateUploadSerializer):
@@ -433,6 +438,19 @@ class ClassroomDocumentInitiateUploadSerializer(BaseInitiateUploadSerializer):
         an upload with a size higher than the one defined in the settings
         """
         return settings.CLASSROOM_DOCUMENT_SOURCE_MAX_SIZE
+
+    def validate_filename(self, value):
+        """Check if the filename is valid."""
+        if "/" in value or "\\" in value:
+            raise serializers.ValidationError("Filename must not contain slashes.")
+
+        if value.startswith("."):
+            raise serializers.ValidationError("Filename must not start with a dot.")
+
+        if len(value) > 255:
+            raise serializers.ValidationError("Filename is too long.")
+
+        return value
 
     def validate(self, attrs):
         """Validate if the mimetype is allowed or not."""
@@ -467,19 +485,13 @@ class ClassroomDocumentUploadEndedSerializer(serializers.Serializer):
 
     def validate_file_key(self, value):
         """Check if the file_key is valid."""
+        filename = value.split("/")[-1]
+        _, extension = splitext(filename)
 
-        stamp = value.split("/")[-1]
+        if not extension:
+            raise serializers.ValidationError("Filename must include an extension.")
 
-        try:
-            time_utils.to_datetime(stamp)
-        except serializers.ValidationError as error:
-            raise serializers.ValidationError("file_key is not valid") from error
-
-        if (
-            self.context["obj"].get_storage_prefix(
-                stamp, CLASSROOM_STORAGE_BASE_DIRECTORY
-            )
-            != value
-        ):
+        if self.context["obj"].get_storage_key(filename=filename) != value:
             raise serializers.ValidationError("file_key is not valid")
+
         return value

@@ -106,22 +106,22 @@ def get_url(obj):
     Returns
     -------
     String or None
-        the url to fetch the classroom document on CloudFront
+        the url to fetch the classroom document on CloudFront or Edge Service
         None if the classroom document is still not uploaded to S3 with success
 
     """
     if obj.uploaded_on is None:
         return None
 
+    if obj.storage_location == SCW_S3:
+        file_key = obj.get_storage_key(obj.filename)
+        return file_storage.url(file_key)
+
     extension = ""
     if "." in obj.filename:
         extension = splitext(obj.filename)[1]
 
     stamp = time_utils.to_timestamp(obj.uploaded_on)
-
-    if obj.storage_location == SCW_S3:
-        base = obj.get_storage_prefix()
-        return file_storage.url(f"{base}/{stamp}{extension}")
 
     # Default AWS fallback
     url = (

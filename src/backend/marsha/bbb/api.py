@@ -622,10 +622,17 @@ class ClassroomDocumentViewSet(
         if serializer.is_valid() is not True:
             return Response(serializer.errors, status=400)
 
+        filename = serializer.validated_data["filename"]
+        extension = serializer.validated_data["extension"]
+
+        if not filename.endswith(extension):
+            filename = f"{filename}{extension}"
+
         presigned_post = (
             storage.get_initiate_backend().initiate_classroom_document_storage_upload(
                 request,
                 classroom_document,
+                filename,
                 [
                     ["eq", "$Content-Type", serializer.validated_data["mimetype"]],
                     [
@@ -674,10 +681,8 @@ class ClassroomDocumentViewSet(
         )
         serializer.is_valid(raise_exception=True)
 
-        file_key = serializer.validated_data["file_key"]
-        # The file_key have the "classroom/{classroom_pk}/classroomdocument/{stamp}"
-        # format
-        stamp = file_key.split("/")[-1]
+        now = timezone.now()
+        stamp = to_timestamp(now)
 
         classroom_document.update_upload_state(READY, to_datetime(stamp))
 

@@ -352,68 +352,33 @@ class ClassroomDocument(UploadableFileMixin, BaseModel):
         verbose_name = _("Classroom document")
         verbose_name_plural = _("Classroom documents")
 
-    def get_source_s3_key(self, stamp=None, extension=None):
-        """Compute the S3 key in the source bucket.
-        It is built from the classroom ID + ID of the classroom document + version stamp.
-        Parameters
-        ----------
-        stamp: Type[string]
-            Passing a value for this argument will return the source S3 key for the classroom
-            document assuming its active stamp is set to this value. This is useful to create an
-            upload policy for this prospective version of the track, so that the client can
-            upload the file to S3 and the confirmation lambda can set the `uploaded_on` field
-            to this value only after the file upload and processing is successful.
-        extension: Type[string]
-            The extension used by the uploaded media. This extension is added at the end of the key
-            to keep a record of the extension. We will use it in the update-state endpoint to
-            record it in the database.
-        Returns
-        -------
-        string
-            The S3 key for the classroom document in the source bucket, where uploaded files are
-            stored before they are converted and copied to the destination bucket.
-        """
-        # We don't want to deal with None value, so we set it with an empty string
-        extension = extension or ""
-
-        # We check if the extension starts with a leading dot or not. If it's not the case we add
-        # it at the beginning of the string
-        if extension and not extension.startswith("."):
-            extension = "." + extension
-
-        stamp = stamp or to_timestamp(self.uploaded_on)
-        return f"{self.classroom.pk}/classroomdocument/{self.pk}/{stamp}{extension}"
-
-    def get_storage_prefix(
+    def get_storage_key(
         self,
-        stamp=None,
+        filename,
         base_dir: STORAGE_BASE_DIRECTORY = CLASSROOM_STORAGE_BASE_DIRECTORY,
     ):
-        """Compute the storage prefix for the classroom document.
+        """Compute the storage key for the classroom document.
 
         Parameters
         ----------
-        stamp: Type[string]
-            Passing a value for this argument will return the storage prefix for the
-            classroom document assuming its active stamp is set to this value. This is
-            useful to create an upload policy for this prospective version of the
-            classroom, so that the client can upload the file to S3.
-
+        filename: Type[string]
+            The filename of the uploaded media. For classroom documents, the filename is
+            directly set into the key.
         base: Type[STORAGE_BASE_DIRECTORY]
             The storage base directory. Defaults to Classroom. It will be used to
-            compute the storage prefix.
+            compute the storage key.
 
         Returns
         -------
         string
-            The storage prefix for the classroom document, depending on the base directory passed.
+            The storage key for the classroom document, depending on the base directory
+            passed.
         """
-        stamp = stamp or self.uploaded_on_stamp()
         base = base_dir
         if base == DELETED_STORAGE_BASE_DIRECTORY:
             base = f"{base}/{CLASSROOM_STORAGE_BASE_DIRECTORY}"
 
-        return f"{base}/{self.classroom.pk}/classroomdocument/{self.pk}/{stamp}"
+        return f"{base}/{self.classroom.pk}/classroomdocument/{self.pk}/{filename}"
 
 
 class ClassroomRecording(BaseModel):

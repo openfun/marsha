@@ -40,7 +40,7 @@ class ClassroomDocumentUploadEndedAPITest(TestCase):
             f"{classroom_document.pk}/upload-ended/",
             {
                 "file_key": f"classroom/{classroom.pk}/classroomdocument/"
-                f"{classroom_document.pk}/4564565456",
+                f"{classroom_document.pk}/foo.pdf",
             },
             HTTP_AUTHORIZATION=f"Bearer {token}",
         )
@@ -54,7 +54,7 @@ class ClassroomDocumentUploadEndedAPITest(TestCase):
             f"{classroom_document.pk}/upload-ended/",
             {
                 "file_key": f"classroom/{classroom.pk}/classroomdocument/"
-                f"{classroom_document.pk}/4564565456",
+                f"{classroom_document.pk}/{classroom_document.filename}",
             },
             HTTP_AUTHORIZATION=f"Bearer {token}",
         )
