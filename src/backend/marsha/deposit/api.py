@@ -9,11 +9,10 @@ from rest_framework import filters, mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from marsha.core import defaults, permissions as core_permissions
+from marsha.core import defaults, permissions as core_permissions, storage
 from marsha.core.api import APIViewMixin, ObjectPkMixin, ObjectRelatedMixin
 from marsha.core.models import ADMINISTRATOR, LTI_ROLES, STUDENT
-from marsha.core.utils.s3_utils import create_presigned_post
-from marsha.core.utils.time_utils import to_timestamp
+from marsha.core.utils.time_utils import to_datetime, to_timestamp
 from marsha.deposit import permissions, serializers
 from marsha.deposit.defaults import LTI_ROUTE
 from marsha.deposit.forms import FileDepositoryForm
@@ -301,20 +300,20 @@ class DepositedFileViewSet(
     ):
         """Get an upload policy for a deposited file.
 
-        Calling the endpoint resets the upload state to `pending` and returns an upload policy to
-        our AWS S3 source bucket.
+        Calling the endpoint resets the upload state to `pending` and returns an upload
+        policy to our S3 storage bucket.
 
         Parameters
         ----------
         request : Type[django.http.request.HttpRequest]
             The request on the API endpoint
         pk: string
-            The primary key of the shared live media
+            The primary key of the deposited file
 
         Returns
         -------
         Type[rest_framework.response.Response]
-            HttpResponse carrying the AWS S3 upload policy as a JSON object.
+            HttpResponse carrying the S3 storage upload policy as a JSON object.
 
         """
         deposited_file = self.get_object()  # check permissions first
@@ -326,20 +325,26 @@ class DepositedFileViewSet(
         if serializer.is_valid() is not True:
             return Response(serializer.errors, status=400)
 
-        now = timezone.now()
-        stamp = to_timestamp(now)
+        filename = serializer.validated_data["filename"]
+        extension = serializer.validated_data["extension"]
 
-        key = deposited_file.get_source_s3_key(
-            stamp=stamp, extension=serializer.validated_data["extension"]
-        )
+        if not filename.endswith(extension):
+            filename = f"{filename}{extension}"
 
-        presigned_post = create_presigned_post(
-            [
-                ["eq", "$Content-Type", serializer.validated_data["mimetype"]],
-                ["content-length-range", 0, settings.DEPOSITED_FILE_SOURCE_MAX_SIZE],
-            ],
-            {},
-            key,
+        presigned_post = (
+            storage.get_initiate_backend().initiate_deposited_file_storage_upload(
+                request,
+                deposited_file,
+                filename,
+                [
+                    ["eq", "$Content-Type", serializer.validated_data["mimetype"]],
+                    [
+                        "content-length-range",
+                        0,
+                        settings.DEPOSITED_FILE_SOURCE_MAX_SIZE,
+                    ],
+                ],
+            )
         )
 
         # Reset the upload state of the deposited file
@@ -349,3 +354,44 @@ class DepositedFileViewSet(
         )
 
         return Response(presigned_post)
+
+    @action(methods=["post"], detail=True, url_path="upload-ended")
+    # pylint: disable=unused-argument
+    def upload_ended(
+        self,
+        request,
+        pk=None,
+        filedepository_id=None,
+    ):
+        """Notify the API that the deposited file upload has ended.
+
+        Calling the endpoint will update the upload state of the deposited file.
+        The request should have a file_key in the body, which is the key of the
+        uploaded file.
+
+        Parameters
+        ----------
+        request : Type[django.http.request.HttpRequest]
+            The request on the API endpoint
+        pk: string
+            The primary key of the deposited file
+
+        Returns
+        -------
+        Type[rest_framework.response.Response]
+            HttpResponse with the serialized deposited file.
+        """
+        deposited_file = self.get_object()  # check permissions first
+
+        serializer = serializers.DepositedFileUploadEndedSerializer(
+            data=request.data, context={"obj": deposited_file}
+        )
+
+        serializer.is_valid(raise_exception=True)
+
+        now = timezone.now()
+        stamp = to_timestamp(now)
+
+        deposited_file.update_upload_state(defaults.READY, to_datetime(stamp))
+
+        return Response(serializer.data)

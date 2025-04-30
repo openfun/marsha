@@ -11,6 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Add support for storing classroom documents on Scaleway S3
+- Add support for storing deposited files on Scaleway S3
 
 ### Fixed
 

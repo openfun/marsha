@@ -9,6 +9,7 @@ from django.urls import reverse
 
 from rest_framework import serializers
 
+from marsha.core.defaults import SCW_S3
 from marsha.core.models import User
 from marsha.core.serializers import (
     BaseInitiateUploadSerializer,
@@ -16,6 +17,7 @@ from marsha.core.serializers import (
     get_resource_cloudfront_url_params,
 )
 from marsha.core.serializers.playlist import PlaylistLiteSerializer
+from marsha.core.storage.storage_class import file_storage
 from marsha.core.utils import cloudfront_utils, time_utils
 from marsha.deposit.models import DepositedFile, FileDepository
 
@@ -139,8 +141,13 @@ class DepositedFileSerializer(
             None if the deposited file is still not uploaded to S3 with success
 
         """
-        if obj.uploaded_on is None:
+        if not obj.uploaded_on:
             return None
+
+        if obj.storage_location == SCW_S3:
+            file_key = obj.get_storage_key(obj.filename)
+
+            return file_storage.url(file_key)
 
         base = (
             f"{settings.AWS_S3_URL_PROTOCOL}://{settings.CLOUDFRONT_DOMAIN}/"
@@ -177,6 +184,19 @@ class DepositedFileInitiateUploadSerializer(BaseInitiateUploadSerializer):
         """
         return settings.DEPOSITED_FILE_SOURCE_MAX_SIZE
 
+    def validate_filename(self, value):
+        """Check if the filename is valid."""
+        if "/" in value or "\\" in value:
+            raise serializers.ValidationError("Filename must not contain slashes.")
+
+        if value.startswith("."):
+            raise serializers.ValidationError("Filename must not start with a dot.")
+
+        if len(value) > 255:
+            raise serializers.ValidationError("Filename is too long.")
+
+        return value
+
     def validate(self, attrs):
         """Validate if the mimetype is allowed or not."""
         # mimetype is provided, we directly check it
@@ -193,6 +213,25 @@ class DepositedFileInitiateUploadSerializer(BaseInitiateUploadSerializer):
             attrs["mimetype"] = mimetype
 
         return attrs
+
+
+class DepositedFileUploadEndedSerializer(serializers.Serializer):
+    """A serializer to validate data submitted on the UploadEnded API endpoint."""
+
+    file_key = serializers.CharField()
+
+    def validate_file_key(self, value):
+        """Check if the file_key is valid."""
+        filename = value.split("/")[-1]
+        _, extension = splitext(filename)
+
+        if not extension:
+            raise serializers.ValidationError("Filename must include an extension.")
+
+        if self.context["obj"].get_storage_key(filename=filename) != value:
+            raise serializers.ValidationError("file_key is not valid")
+
+        return value
 
 
 class FileDepositorySerializer(serializers.ModelSerializer):

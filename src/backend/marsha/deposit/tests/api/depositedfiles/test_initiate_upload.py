@@ -55,9 +55,10 @@ class DepositedFileInitiateUploadAPITest(TestCase):
         )
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
-        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
-            "datetime.datetime"
-        ) as mock_dt:
+        with (
+            mock.patch.object(timezone, "now", return_value=now),
+            mock.patch("datetime.datetime") as mock_dt,
+        ):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/filedepositories/{deposited_file.file_depository.id}"
@@ -68,36 +69,25 @@ class DepositedFileInitiateUploadAPITest(TestCase):
             )
 
         self.assertEqual(response.status_code, 200)
+        response_json = response.json()
+        fields = response_json["fields"]
+
         self.assertEqual(
-            response.json(),
-            {
-                "url": "https://test-marsha-source.s3.amazonaws.com/",
-                "fields": {
-                    "acl": "private",
-                    "key": (
-                        "ed08da34-7447-4141-96ff-5740315d7b99/depositedfile/"
-                        "27a23f52-3379-46a2-94fa-697b59cfe3c7/1533686400.pdf"
-                    ),
-                    "x-amz-algorithm": "AWS4-HMAC-SHA256",
-                    "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
-                    "x-amz-date": "20180808T000000Z",
-                    "policy": (
-                        "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBb"
-                        "eyJhY2wiOiAicHJpdmF0ZSJ9LCBbImVxIiwgIiRDb250ZW50LVR5cGUiLCAiYXBwbGljYXRp"
-                        "b24vcGRmIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAxMDczNzQxODI0XSwgeyJi"
-                        "dWNrZXQiOiAidGVzdC1tYXJzaGEtc291cmNlIn0sIHsia2V5IjogImVkMDhkYTM0LTc0NDct"
-                        "NDE0MS05NmZmLTU3NDAzMTVkN2I5OS9kZXBvc2l0ZWRmaWxlLzI3YTIzZjUyLTMzNzktNDZh"
-                        "Mi05NGZhLTY5N2I1OWNmZTNjNy8xNTMzNjg2NDAwLnBkZiJ9LCB7IngtYW16LWFsZ29yaXRo"
-                        "bSI6ICJBV1M0LUhNQUMtU0hBMjU2In0sIHsieC1hbXotY3JlZGVudGlhbCI6ICJhd3MtYWNj"
-                        "ZXNzLWtleS1pZC8yMDE4MDgwOC9ldS13ZXN0LTEvczMvYXdzNF9yZXF1ZXN0In0sIHsieC1h"
-                        "bXotZGF0ZSI6ICIyMDE4MDgwOFQwMDAwMDBaIn1dfQ=="
-                    ),
-                    "x-amz-signature": (
-                        "c8e119c968d586a465ee73b391c8533a4664d2849fb07381e390413f2952887f"
-                    ),
-                },
-            },
+            response_json["url"], "https://s3.fr-par.scw.cloud/test-marsha"
         )
+        self.assertEqual(fields["acl"], "private")
+        self.assertEqual(
+            fields["key"],
+            "filedepository/ed08da34-7447-4141-96ff-5740315d7b99/depositedfile/"
+            "27a23f52-3379-46a2-94fa-697b59cfe3c7/foo.pdf",
+        )
+        self.assertEqual(fields["x-amz-algorithm"], "AWS4-HMAC-SHA256")
+        self.assertEqual(
+            fields["x-amz-credential"],
+            "scw-access-key/20180808/fr-par/s3/aws4_request",
+        )
+        self.assertEqual(fields["x-amz-date"], "20180808T000000Z")
+
         deposited_file.refresh_from_db()
         self.assertEqual(deposited_file.filename, "foo.pdf")
         self.assertEqual(deposited_file.upload_state, "pending")
@@ -114,9 +104,10 @@ class DepositedFileInitiateUploadAPITest(TestCase):
         )
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
-        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
-            "datetime.datetime"
-        ) as mock_dt:
+        with (
+            mock.patch.object(timezone, "now", return_value=now),
+            mock.patch("datetime.datetime") as mock_dt,
+        ):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/filedepositories/{deposited_file.file_depository.id}"
@@ -144,9 +135,10 @@ class DepositedFileInitiateUploadAPITest(TestCase):
         )
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
-        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
-            "datetime.datetime"
-        ) as mock_dt:
+        with (
+            mock.patch.object(timezone, "now", return_value=now),
+            mock.patch("datetime.datetime") as mock_dt,
+        ):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/filedepositories/{deposited_file.file_depository.id}"
@@ -179,9 +171,10 @@ class DepositedFileInitiateUploadAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=organization_access.user)
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
-        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
-            "datetime.datetime"
-        ) as mock_dt:
+        with (
+            mock.patch.object(timezone, "now", return_value=now),
+            mock.patch("datetime.datetime") as mock_dt,
+        ):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/filedepositories/{deposited_file.file_depository.id}"
@@ -192,36 +185,25 @@ class DepositedFileInitiateUploadAPITest(TestCase):
             )
 
         self.assertEqual(response.status_code, 200)
+        response_json = response.json()
+        fields = response_json["fields"]
+
         self.assertEqual(
-            response.json(),
-            {
-                "url": "https://test-marsha-source.s3.amazonaws.com/",
-                "fields": {
-                    "acl": "private",
-                    "key": (
-                        "ed08da34-7447-4141-96ff-5740315d7b99/depositedfile/"
-                        "27a23f52-3379-46a2-94fa-697b59cfe3c7/1533686400.pdf"
-                    ),
-                    "x-amz-algorithm": "AWS4-HMAC-SHA256",
-                    "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
-                    "x-amz-date": "20180808T000000Z",
-                    "policy": (
-                        "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBb"
-                        "eyJhY2wiOiAicHJpdmF0ZSJ9LCBbImVxIiwgIiRDb250ZW50LVR5cGUiLCAiYXBwbGljYXRp"
-                        "b24vcGRmIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAxMDczNzQxODI0XSwgeyJi"
-                        "dWNrZXQiOiAidGVzdC1tYXJzaGEtc291cmNlIn0sIHsia2V5IjogImVkMDhkYTM0LTc0NDct"
-                        "NDE0MS05NmZmLTU3NDAzMTVkN2I5OS9kZXBvc2l0ZWRmaWxlLzI3YTIzZjUyLTMzNzktNDZh"
-                        "Mi05NGZhLTY5N2I1OWNmZTNjNy8xNTMzNjg2NDAwLnBkZiJ9LCB7IngtYW16LWFsZ29yaXRo"
-                        "bSI6ICJBV1M0LUhNQUMtU0hBMjU2In0sIHsieC1hbXotY3JlZGVudGlhbCI6ICJhd3MtYWNj"
-                        "ZXNzLWtleS1pZC8yMDE4MDgwOC9ldS13ZXN0LTEvczMvYXdzNF9yZXF1ZXN0In0sIHsieC1h"
-                        "bXotZGF0ZSI6ICIyMDE4MDgwOFQwMDAwMDBaIn1dfQ=="
-                    ),
-                    "x-amz-signature": (
-                        "c8e119c968d586a465ee73b391c8533a4664d2849fb07381e390413f2952887f"
-                    ),
-                },
-            },
+            response_json["url"], "https://s3.fr-par.scw.cloud/test-marsha"
         )
+        self.assertEqual(fields["acl"], "private")
+        self.assertEqual(
+            fields["key"],
+            "filedepository/ed08da34-7447-4141-96ff-5740315d7b99/depositedfile/"
+            "27a23f52-3379-46a2-94fa-697b59cfe3c7/foo.pdf",
+        )
+        self.assertEqual(fields["x-amz-algorithm"], "AWS4-HMAC-SHA256")
+        self.assertEqual(
+            fields["x-amz-credential"],
+            "scw-access-key/20180808/fr-par/s3/aws4_request",
+        )
+        self.assertEqual(fields["x-amz-date"], "20180808T000000Z")
+
         deposited_file.refresh_from_db()
         self.assertEqual(deposited_file.filename, "foo.pdf")
         self.assertEqual(deposited_file.upload_state, "pending")
@@ -245,9 +227,10 @@ class DepositedFileInitiateUploadAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=organization_access.user)
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
-        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
-            "datetime.datetime"
-        ) as mock_dt:
+        with (
+            mock.patch.object(timezone, "now", return_value=now),
+            mock.patch("datetime.datetime") as mock_dt,
+        ):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/filedepositories/{deposited_file.file_depository.id}"
@@ -258,36 +241,25 @@ class DepositedFileInitiateUploadAPITest(TestCase):
             )
 
         self.assertEqual(response.status_code, 200)
+        response_json = response.json()
+        fields = response_json["fields"]
+
         self.assertEqual(
-            response.json(),
-            {
-                "url": "https://test-marsha-source.s3.amazonaws.com/",
-                "fields": {
-                    "acl": "private",
-                    "key": (
-                        "ed08da34-7447-4141-96ff-5740315d7b99/depositedfile/"
-                        "27a23f52-3379-46a2-94fa-697b59cfe3c7/1533686400.pdf"
-                    ),
-                    "x-amz-algorithm": "AWS4-HMAC-SHA256",
-                    "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
-                    "x-amz-date": "20180808T000000Z",
-                    "policy": (
-                        "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBb"
-                        "eyJhY2wiOiAicHJpdmF0ZSJ9LCBbImVxIiwgIiRDb250ZW50LVR5cGUiLCAiYXBwbGljYXRp"
-                        "b24vcGRmIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAxMDczNzQxODI0XSwgeyJi"
-                        "dWNrZXQiOiAidGVzdC1tYXJzaGEtc291cmNlIn0sIHsia2V5IjogImVkMDhkYTM0LTc0NDct"
-                        "NDE0MS05NmZmLTU3NDAzMTVkN2I5OS9kZXBvc2l0ZWRmaWxlLzI3YTIzZjUyLTMzNzktNDZh"
-                        "Mi05NGZhLTY5N2I1OWNmZTNjNy8xNTMzNjg2NDAwLnBkZiJ9LCB7IngtYW16LWFsZ29yaXRo"
-                        "bSI6ICJBV1M0LUhNQUMtU0hBMjU2In0sIHsieC1hbXotY3JlZGVudGlhbCI6ICJhd3MtYWNj"
-                        "ZXNzLWtleS1pZC8yMDE4MDgwOC9ldS13ZXN0LTEvczMvYXdzNF9yZXF1ZXN0In0sIHsieC1h"
-                        "bXotZGF0ZSI6ICIyMDE4MDgwOFQwMDAwMDBaIn1dfQ=="
-                    ),
-                    "x-amz-signature": (
-                        "c8e119c968d586a465ee73b391c8533a4664d2849fb07381e390413f2952887f"
-                    ),
-                },
-            },
+            response_json["url"], "https://s3.fr-par.scw.cloud/test-marsha"
         )
+        self.assertEqual(fields["acl"], "private")
+        self.assertEqual(
+            fields["key"],
+            "filedepository/ed08da34-7447-4141-96ff-5740315d7b99/depositedfile/"
+            "27a23f52-3379-46a2-94fa-697b59cfe3c7/foo.pdf",
+        )
+        self.assertEqual(fields["x-amz-algorithm"], "AWS4-HMAC-SHA256")
+        self.assertEqual(
+            fields["x-amz-credential"],
+            "scw-access-key/20180808/fr-par/s3/aws4_request",
+        )
+        self.assertEqual(fields["x-amz-date"], "20180808T000000Z")
+
         deposited_file.refresh_from_db()
         self.assertEqual(deposited_file.filename, "foo.pdf")
         self.assertEqual(deposited_file.upload_state, "pending")
@@ -308,9 +280,10 @@ class DepositedFileInitiateUploadAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=playlist_access.user)
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
-        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
-            "datetime.datetime"
-        ) as mock_dt:
+        with (
+            mock.patch.object(timezone, "now", return_value=now),
+            mock.patch("datetime.datetime") as mock_dt,
+        ):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/filedepositories/{deposited_file.file_depository.id}"
@@ -321,36 +294,25 @@ class DepositedFileInitiateUploadAPITest(TestCase):
             )
 
         self.assertEqual(response.status_code, 200)
+        response_json = response.json()
+        fields = response_json["fields"]
+
         self.assertEqual(
-            response.json(),
-            {
-                "url": "https://test-marsha-source.s3.amazonaws.com/",
-                "fields": {
-                    "acl": "private",
-                    "key": (
-                        "ed08da34-7447-4141-96ff-5740315d7b99/depositedfile/"
-                        "27a23f52-3379-46a2-94fa-697b59cfe3c7/1533686400.pdf"
-                    ),
-                    "x-amz-algorithm": "AWS4-HMAC-SHA256",
-                    "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
-                    "x-amz-date": "20180808T000000Z",
-                    "policy": (
-                        "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBb"
-                        "eyJhY2wiOiAicHJpdmF0ZSJ9LCBbImVxIiwgIiRDb250ZW50LVR5cGUiLCAiYXBwbGljYXRp"
-                        "b24vcGRmIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAxMDczNzQxODI0XSwgeyJi"
-                        "dWNrZXQiOiAidGVzdC1tYXJzaGEtc291cmNlIn0sIHsia2V5IjogImVkMDhkYTM0LTc0NDct"
-                        "NDE0MS05NmZmLTU3NDAzMTVkN2I5OS9kZXBvc2l0ZWRmaWxlLzI3YTIzZjUyLTMzNzktNDZh"
-                        "Mi05NGZhLTY5N2I1OWNmZTNjNy8xNTMzNjg2NDAwLnBkZiJ9LCB7IngtYW16LWFsZ29yaXRo"
-                        "bSI6ICJBV1M0LUhNQUMtU0hBMjU2In0sIHsieC1hbXotY3JlZGVudGlhbCI6ICJhd3MtYWNj"
-                        "ZXNzLWtleS1pZC8yMDE4MDgwOC9ldS13ZXN0LTEvczMvYXdzNF9yZXF1ZXN0In0sIHsieC1h"
-                        "bXotZGF0ZSI6ICIyMDE4MDgwOFQwMDAwMDBaIn1dfQ=="
-                    ),
-                    "x-amz-signature": (
-                        "c8e119c968d586a465ee73b391c8533a4664d2849fb07381e390413f2952887f"
-                    ),
-                },
-            },
+            response_json["url"], "https://s3.fr-par.scw.cloud/test-marsha"
         )
+        self.assertEqual(fields["acl"], "private")
+        self.assertEqual(
+            fields["key"],
+            "filedepository/ed08da34-7447-4141-96ff-5740315d7b99/depositedfile/"
+            "27a23f52-3379-46a2-94fa-697b59cfe3c7/foo.pdf",
+        )
+        self.assertEqual(fields["x-amz-algorithm"], "AWS4-HMAC-SHA256")
+        self.assertEqual(
+            fields["x-amz-credential"],
+            "scw-access-key/20180808/fr-par/s3/aws4_request",
+        )
+        self.assertEqual(fields["x-amz-date"], "20180808T000000Z")
+
         deposited_file.refresh_from_db()
         self.assertEqual(deposited_file.filename, "foo.pdf")
         self.assertEqual(deposited_file.upload_state, "pending")

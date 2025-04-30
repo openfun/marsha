@@ -14,6 +14,7 @@ from marsha.core.defaults import TMP_STORAGE_BASE_DIRECTORY
 from marsha.core.models import Document, Video
 from marsha.core.storage.storage_class import file_storage
 from marsha.core.utils import time_utils
+from marsha.deposit.models import DepositedFile
 
 
 logger = logging.getLogger(__name__)
@@ -23,11 +24,11 @@ logger = logging.getLogger(__name__)
 def dummy_video_upload(request: HttpRequest, uuid=None):
     """Dummy endpoint to mock s3 video upload."""
     try:
-        object_instance = Video.objects.get(id=uuid)
+        video = Video.objects.get(id=uuid)
     except Video.DoesNotExist:
         return Response({"success": False}, status=404)
 
-    object_instance.update_upload_state(
+    video.update_upload_state(
         upload_state="ready",
         uploaded_on=time_utils.to_datetime(1533686400),
         resolutions=settings.VIDEO_RESOLUTIONS,
@@ -58,11 +59,11 @@ def local_videos_storage_upload(
 def local_document_upload(request: HttpRequest, uuid=None):
     """Endpoint to mock s3 document upload."""
     try:
-        object_instance = Document.objects.get(id=uuid)
+        document = Document.objects.get(id=uuid)
     except Document.DoesNotExist:
         return Response({"success": False}, status=404)
 
-    object_instance.update_upload_state(
+    document.update_upload_state(
         upload_state="ready",
         uploaded_on=time_utils.to_datetime(1533686400),
     )
@@ -76,11 +77,29 @@ def local_classroom_document_upload(request: HttpRequest, uuid=None):
     uploaded_classroom_document = request.FILES["file"]
 
     try:
-        object_instance = ClassroomDocument.objects.get(id=uuid)
+        classroom_document = ClassroomDocument.objects.get(id=uuid)
     except ClassroomDocument.DoesNotExist:
         return Response({"success": False}, status=404)
 
-    destination = object_instance.get_storage_key(filename=object_instance.filename)
+    destination = classroom_document.get_storage_key(
+        filename=classroom_document.filename
+    )
 
     file_storage.save(destination, uploaded_classroom_document)
+    return Response(status=204)
+
+
+@api_view(["POST"])
+def local_deposited_file_upload(request: HttpRequest, uuid=None):
+    """Endpoint to mock s3 deposited file upload."""
+    uploaded_deposited_file = request.FILES["file"]
+
+    try:
+        deposited_file = DepositedFile.objects.get(id=uuid)
+    except DepositedFile.DoesNotExist:
+        return Response({"success": False}, status=404)
+
+    destination = deposited_file.get_storage_key(filename=deposited_file.filename)
+
+    file_storage.save(destination, uploaded_deposited_file)
     return Response(status=204)
