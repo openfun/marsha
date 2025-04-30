@@ -10,8 +10,14 @@ import logging
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from marsha.core.defaults import (
+    DELETED_STORAGE_BASE_DIRECTORY,
+    FILE_DEPOSITORY_STORAGE_BASE_DIRECTORY,
+    SCW_S3,
+    STORAGE_BASE_DIRECTORY,
+    STORAGE_LOCATION_CHOICES,
+)
 from marsha.core.models import BaseModel, Playlist, UploadableFileMixin
-from marsha.core.utils.time_utils import to_timestamp
 
 
 logger = logging.getLogger(__name__)
@@ -152,6 +158,14 @@ class DepositedFile(UploadableFileMixin, BaseModel):
         verbose_name=_("read"),
     )
 
+    storage_location = models.CharField(
+        max_length=255,
+        verbose_name=_("storage location"),
+        help_text=_("Location used to store the deposited file"),
+        choices=STORAGE_LOCATION_CHOICES,
+        default=SCW_S3,
+    )
+
     class Meta:
         """Options for the ``DepositedFile`` model."""
 
@@ -160,43 +174,33 @@ class DepositedFile(UploadableFileMixin, BaseModel):
         verbose_name = _("Deposited file")
         verbose_name_plural = _("Deposited files")
 
-    def get_source_s3_key(self, stamp=None, extension=None):
-        """Compute the S3 key in the source bucket.
-
-        It is built from the file deposit ID + ID of the deposited file + version stamp.
+    def get_storage_key(
+        self,
+        filename,
+        base_dir: STORAGE_BASE_DIRECTORY = FILE_DEPOSITORY_STORAGE_BASE_DIRECTORY,
+    ):
+        """Compute the storage key for the classroom document.
 
         Parameters
         ----------
-        stamp: Type[string]
-            Passing a value for this argument will return the source S3 key for the deposited file
-            assuming its active stamp is set to this value. This is useful to create an
-            upload policy for this prospective version of the track, so that the client can
-            upload the file to S3 and the confirmation lambda can set the `uploaded_on` field
-            to this value only after the file upload and processing is successful.
-
-
-        extension: Type[string]
-            The extension used by the uploaded media. This extension is added at the end of the key
-            to keep a record of the extension. We will use it in the update-state endpoint to
-            record it in the database.
+        filename: Type[string]
+            The filename of the uploaded media. For classroom documents, the filename is
+            directly set into the key.
+        base: Type[STORAGE_BASE_DIRECTORY]
+            The storage base directory. Defaults to Classroom. It will be used to
+            compute the storage key.
 
         Returns
         -------
         string
-            The S3 key for the deposited file in the source bucket, where uploaded files are
-            stored before they are converted and copied to the destination bucket.
-
+            The storage key for the classroom document, depending on the base directory
+            passed.
         """
-        # We don't want to deal with None value so we set it with an empty string
-        extension = extension or ""
+        base = base_dir
+        if base == DELETED_STORAGE_BASE_DIRECTORY:
+            base = f"{base}/{FILE_DEPOSITORY_STORAGE_BASE_DIRECTORY}"
 
-        # We check if the extension starts with a leading dot or not. If it's not the case we add
-        # it at the beginning of the string
-        if extension and not extension.startswith("."):
-            extension = "." + extension
-
-        stamp = stamp or to_timestamp(self.uploaded_on)
-        return f"{self.file_depository.pk}/depositedfile/{self.pk}/{stamp}{extension}"
+        return f"{base}/{self.file_depository.pk}/depositedfile/{self.pk}/{filename}"
 
     def update_upload_state(self, upload_state, uploaded_on, **extra_parameters):
         """Manage upload state.

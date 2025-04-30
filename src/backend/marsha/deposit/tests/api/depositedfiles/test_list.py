@@ -2,10 +2,12 @@
 
 from datetime import datetime, timezone as baseTimezone
 from unittest import mock
+from urllib.parse import quote
 
 from django.test import TestCase, override_settings
 
 from marsha.core.api import timezone
+from marsha.core.defaults import AWS_S3, SCW_S3
 from marsha.core.factories import (
     OrganizationAccessFactory,
     PlaylistAccessFactory,
@@ -294,23 +296,32 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
         CLOUDFRONT_SIGNED_URLS_ACTIVE=True,
         CLOUDFRONT_SIGNED_PUBLIC_KEY_ID="cloudfront-access-key-id",
     )
-    def test_api_file_depository_list_deposited_files_instructor_signed_urls(self):
+    def test_api_file_depository_list_deposited_files_instructor_signed_urls_aws(self):
         """All deposited files should have the same signature."""
         file_depository = FileDepositoryFactory(
             id="4e126eac-9ca8-47b1-8dcd-157686b43c60"
         )
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         deposited_files = DepositedFileFactory.create_batch(
-            3, file_depository=file_depository, uploaded_on=now
+            3,
+            file_depository=file_depository,
+            uploaded_on=now,
+            storage_location=AWS_S3,
         )
         unicode_deposited_file = DepositedFileFactory(
-            file_depository=file_depository, uploaded_on=now, filename="test’.pdf"
+            file_depository=file_depository,
+            uploaded_on=now,
+            filename="test’.pdf",
+            storage_location=AWS_S3,
         )
         jwt_token = InstructorOrAdminLtiTokenFactory(playlist=file_depository.playlist)
 
         now = datetime(2021, 11, 30, tzinfo=baseTimezone.utc)
-        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
-            "builtins.open", new_callable=mock.mock_open, read_data=RSA_KEY_MOCK
+        with (
+            mock.patch.object(timezone, "now", return_value=now),
+            mock.patch(
+                "builtins.open", new_callable=mock.mock_open, read_data=RSA_KEY_MOCK
+            ),
         ):
             response = self.client.get(
                 f"/api/filedepositories/{file_depository.id}/depositedfiles/",
@@ -398,6 +409,113 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
                             f"{deposited_files[0].id}/1533686400?response-content-disposition"
                             f"=attachment%3B+filename%3D{deposited_files[0].filename}"
                             f"&{expected_cloudfront_signature}"
+                        ),
+                    },
+                ],
+            },
+        )
+
+    @override_settings(
+        MEDIA_URL="https://abc.svc.edge.scw.cloud/",
+    )
+    def test_api_file_depository_list_deposited_files_instructor_urls_scw(self):
+        """Deposited files on Scaleway should not be signed."""
+        file_depository = FileDepositoryFactory(
+            id="4e126eac-9ca8-47b1-8dcd-157686b43c60"
+        )
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
+        deposited_files = DepositedFileFactory.create_batch(
+            3,
+            file_depository=file_depository,
+            uploaded_on=now,
+            storage_location=SCW_S3,
+        )
+        unicode_deposited_file = DepositedFileFactory(
+            file_depository=file_depository,
+            uploaded_on=now,
+            filename="test’.pdf",
+            storage_location=SCW_S3,
+        )
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=file_depository.playlist)
+
+        now = datetime(2021, 11, 30, tzinfo=baseTimezone.utc)
+        with (
+            mock.patch.object(timezone, "now", return_value=now),
+            mock.patch(
+                "builtins.open", new_callable=mock.mock_open, read_data=RSA_KEY_MOCK
+            ),
+        ):
+            response = self.client.get(
+                f"/api/filedepositories/{file_depository.id}/depositedfiles/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(
+            response.json(),
+            {
+                "count": 4,
+                "next": None,
+                "previous": None,
+                "results": [
+                    {
+                        "author_name": unicode_deposited_file.author_name,
+                        "file_depository_id": str(file_depository.id),
+                        "filename": unicode_deposited_file.filename,
+                        "id": str(unicode_deposited_file.id),
+                        "read": False,
+                        "size": unicode_deposited_file.size,
+                        "upload_state": "pending",
+                        "uploaded_on": "2018-08-08T00:00:00Z",
+                        "url": (
+                            f"https://abc.svc.edge.scw.cloud/filedepository/{file_depository.id}/"
+                            f"depositedfile/{unicode_deposited_file.id}/"
+                            f"{quote(unicode_deposited_file.filename)}"
+                        ),
+                    },
+                    {
+                        "author_name": deposited_files[2].author_name,
+                        "file_depository_id": str(file_depository.id),
+                        "filename": deposited_files[2].filename,
+                        "id": str(deposited_files[2].id),
+                        "read": False,
+                        "size": deposited_files[2].size,
+                        "upload_state": "pending",
+                        "uploaded_on": "2018-08-08T00:00:00Z",
+                        "url": (
+                            f"https://abc.svc.edge.scw.cloud/filedepository/{file_depository.id}/"
+                            f"depositedfile/{deposited_files[2].id}/"
+                            f"{deposited_files[2].filename}"
+                        ),
+                    },
+                    {
+                        "author_name": deposited_files[1].author_name,
+                        "file_depository_id": str(file_depository.id),
+                        "filename": deposited_files[1].filename,
+                        "id": str(deposited_files[1].id),
+                        "read": False,
+                        "size": deposited_files[1].size,
+                        "upload_state": "pending",
+                        "uploaded_on": "2018-08-08T00:00:00Z",
+                        "url": (
+                            f"https://abc.svc.edge.scw.cloud/filedepository/{file_depository.id}/"
+                            f"depositedfile/{deposited_files[1].id}/"
+                            f"{deposited_files[1].filename}"
+                        ),
+                    },
+                    {
+                        "author_name": deposited_files[0].author_name,
+                        "file_depository_id": str(file_depository.id),
+                        "filename": deposited_files[0].filename,
+                        "id": str(deposited_files[0].id),
+                        "read": False,
+                        "size": deposited_files[0].size,
+                        "upload_state": "pending",
+                        "uploaded_on": "2018-08-08T00:00:00Z",
+                        "url": (
+                            f"https://abc.svc.edge.scw.cloud/filedepository/{file_depository.id}/"
+                            f"depositedfile/{deposited_files[0].id}/"
+                            f"{deposited_files[0].filename}"
                         ),
                     },
                 ],

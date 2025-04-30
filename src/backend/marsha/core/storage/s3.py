@@ -138,3 +138,29 @@ def initiate_classroom_document_storage_upload(request, obj, filename, condition
         S3FileStorage.bucket_name,
         "STORAGE_S3",
     )
+
+
+# pylint: disable=unused-argument
+def initiate_deposited_file_storage_upload(request, obj, filename, conditions):
+    """Get an upload policy for a deposited file.
+
+    The object must implement the get_storage_key method.
+    Returns an upload policy to our storage S3 destination bucket.
+
+    Returns
+    -------
+    Dictionary
+        A dictionary with two elements: url and fields. Url is the url to post to. Fields is a
+        dictionary filled with the form fields and respective values to use when submitting
+        the post.
+
+    """
+    key = obj.get_storage_key(filename=filename)
+
+    return create_presigned_post(
+        conditions,
+        {},
+        key,
+        S3FileStorage.bucket_name,
+        "STORAGE_S3",
+    )

@@ -77,3 +77,38 @@ def initiate_classroom_document_storage_upload(request, obj, filename, condition
             )
         ),
     }
+
+
+# pylint: disable=unused-argument
+def initiate_deposited_file_storage_upload(request, obj, filename, conditions):
+    """Get an upload policy for a deposited file.
+
+    Returns an upload policy for the filesystem backend.
+
+    Parameters
+    ----------
+    request : Type[django.http.request.HttpRequest]
+        The request on the API endpoint
+    pk: string
+        The primary key of the video
+
+    Returns
+    -------
+    Dictionary
+        A dictionary with two elements: url and fields. Url is the url to post to. Fields is a
+        dictionary filled with the form fields and respective values to use when submitting
+        the post.
+
+    """
+    key = obj.get_storage_key(filename=filename)
+    return {
+        "fields": {
+            "key": key,
+        },
+        "url": request.build_absolute_uri(
+            reverse(
+                "local-deposited_file-upload",
+                args=[obj.pk],
+            )
+        ),
+    }
