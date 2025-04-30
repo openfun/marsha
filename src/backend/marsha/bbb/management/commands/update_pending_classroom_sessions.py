@@ -1,5 +1,5 @@
 """For each pending classroom, get their meeting infos:
- update learning analytics, and end it if needed."""
+update learning analytics, and end it if needed."""
 
 from django.core.management import BaseCommand
 
