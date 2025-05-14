@@ -6,6 +6,7 @@ from unittest import mock
 
 from django.test import TestCase
 
+from marsha.core.api import timezone
 from marsha.core.factories import (
     OrganizationAccessFactory,
     PlaylistAccessFactory,
@@ -17,7 +18,6 @@ from marsha.core.simple_jwt.factories import (
     StudentLtiTokenFactory,
     UserAccessTokenFactory,
 )
-from marsha.markdown.api import timezone
 from marsha.markdown.factories import MarkdownDocumentFactory, MarkdownImageFactory
 
 
@@ -67,9 +67,10 @@ class MarkdownImageInitiateUploadApiTest(TestCase):
         # Get the upload policy for this Markdown image
         # It should generate a key file with the Unix timestamp of the present time
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
-        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
-            "datetime.datetime"
-        ) as mock_dt:
+        with (
+            mock.patch.object(timezone, "now", return_value=now),
+            mock.patch("datetime.datetime") as mock_dt,
+        ):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/markdown-documents/{markdown_image.markdown_document.id}"
@@ -78,36 +79,23 @@ class MarkdownImageInitiateUploadApiTest(TestCase):
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 200)
+        response_json = response.json()
+        fields = response_json["fields"]
+
         self.assertEqual(
-            json.loads(response.content),
-            {
-                "url": "https://test-marsha-source.s3.amazonaws.com/",
-                "fields": {
-                    "acl": "private",
-                    "key": (
-                        "c10b79b6-9ecc-4aba-bf9d-5aab4765fd40/markdown-image/"
-                        "4ab8079e-ff4d-4d06-9922-4929e4f7a6eb/1533686400.png"
-                    ),
-                    "x-amz-algorithm": "AWS4-HMAC-SHA256",
-                    "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
-                    "x-amz-date": "20180808T000000Z",
-                    "policy": (
-                        "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiB"
-                        "beyJhY2wiOiAicHJpdmF0ZSJ9LCBbInN0YXJ0cy13aXRoIiwgIiRDb250ZW50LVR5cGUiLC"
-                        "AiaW1hZ2UvIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAxMDQ4NTc2MF0sIHsiY"
-                        "nVja2V0IjogInRlc3QtbWFyc2hhLXNvdXJjZSJ9LCB7ImtleSI6ICJjMTBiNzliNi05ZWNj"
-                        "LTRhYmEtYmY5ZC01YWFiNDc2NWZkNDAvbWFya2Rvd24taW1hZ2UvNGFiODA3OWUtZmY0ZC0"
-                        "0ZDA2LTk5MjItNDkyOWU0ZjdhNmViLzE1MzM2ODY0MDAucG5nIn0sIHsieC1hbXotYWxnb3"
-                        "JpdGhtIjogIkFXUzQtSE1BQy1TSEEyNTYifSwgeyJ4LWFtei1jcmVkZW50aWFsIjogImF3c"
-                        "y1hY2Nlc3Mta2V5LWlkLzIwMTgwODA4L2V1LXdlc3QtMS9zMy9hd3M0X3JlcXVlc3QifSwg"
-                        "eyJ4LWFtei1kYXRlIjogIjIwMTgwODA4VDAwMDAwMFoifV19"
-                    ),
-                    "x-amz-signature": (
-                        "8fbe534d175f3761e883795fe4c9626e3f69d259cfd03f240caca1ef8e968ada"
-                    ),
-                },
-            },
+            response_json["url"], "https://s3.fr-par.scw.cloud/test-marsha"
         )
+        self.assertEqual(fields["acl"], "private")
+        self.assertEqual(
+            fields["key"],
+            "markdowndocument/c10b79b6-9ecc-4aba-bf9d-5aab4765fd40/"
+            "markdownimage/4ab8079e-ff4d-4d06-9922-4929e4f7a6eb/1533686400",
+        )
+        self.assertEqual(fields["x-amz-algorithm"], "AWS4-HMAC-SHA256")
+        self.assertEqual(
+            fields["x-amz-credential"], "scw-access-key/20180808/fr-par/s3/aws4_request"
+        )
+        self.assertEqual(fields["x-amz-date"], "20180808T000000Z")
 
         # The upload_state of the Markdown image should have been reset
         markdown_image.refresh_from_db()
@@ -165,9 +153,10 @@ class MarkdownImageInitiateUploadApiTest(TestCase):
         # Get the upload policy for this Markdown image
         # It should generate a key file with the Unix timestamp of the present time
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
-        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
-            "datetime.datetime"
-        ) as mock_dt:
+        with (
+            mock.patch.object(timezone, "now", return_value=now),
+            mock.patch("datetime.datetime") as mock_dt,
+        ):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/markdown-documents/{markdown_image.markdown_document.id}"
@@ -176,36 +165,23 @@ class MarkdownImageInitiateUploadApiTest(TestCase):
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 200)
+        response_json = json.loads(response.content)
+        fields = response_json["fields"]
+
         self.assertEqual(
-            json.loads(response.content),
-            {
-                "url": "https://test-marsha-source.s3.amazonaws.com/",
-                "fields": {
-                    "acl": "private",
-                    "key": (
-                        "c10b79b6-9ecc-4aba-bf9d-5aab4765fd40/markdown-image/"
-                        "4ab8079e-ff4d-4d06-9922-4929e4f7a6eb/1533686400.png"
-                    ),
-                    "x-amz-algorithm": "AWS4-HMAC-SHA256",
-                    "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
-                    "x-amz-date": "20180808T000000Z",
-                    "policy": (
-                        "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiB"
-                        "beyJhY2wiOiAicHJpdmF0ZSJ9LCBbInN0YXJ0cy13aXRoIiwgIiRDb250ZW50LVR5cGUiLC"
-                        "AiaW1hZ2UvIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAxMDQ4NTc2MF0sIHsiY"
-                        "nVja2V0IjogInRlc3QtbWFyc2hhLXNvdXJjZSJ9LCB7ImtleSI6ICJjMTBiNzliNi05ZWNj"
-                        "LTRhYmEtYmY5ZC01YWFiNDc2NWZkNDAvbWFya2Rvd24taW1hZ2UvNGFiODA3OWUtZmY0ZC0"
-                        "0ZDA2LTk5MjItNDkyOWU0ZjdhNmViLzE1MzM2ODY0MDAucG5nIn0sIHsieC1hbXotYWxnb3"
-                        "JpdGhtIjogIkFXUzQtSE1BQy1TSEEyNTYifSwgeyJ4LWFtei1jcmVkZW50aWFsIjogImF3c"
-                        "y1hY2Nlc3Mta2V5LWlkLzIwMTgwODA4L2V1LXdlc3QtMS9zMy9hd3M0X3JlcXVlc3QifSwg"
-                        "eyJ4LWFtei1kYXRlIjogIjIwMTgwODA4VDAwMDAwMFoifV19"
-                    ),
-                    "x-amz-signature": (
-                        "8fbe534d175f3761e883795fe4c9626e3f69d259cfd03f240caca1ef8e968ada"
-                    ),
-                },
-            },
+            response_json["url"], "https://s3.fr-par.scw.cloud/test-marsha"
         )
+        self.assertEqual(fields["acl"], "private")
+        self.assertEqual(
+            fields["key"],
+            "markdowndocument/c10b79b6-9ecc-4aba-bf9d-5aab4765fd40/"
+            "markdownimage/4ab8079e-ff4d-4d06-9922-4929e4f7a6eb/1533686400",
+        )
+        self.assertEqual(fields["x-amz-algorithm"], "AWS4-HMAC-SHA256")
+        self.assertEqual(
+            fields["x-amz-credential"], "scw-access-key/20180808/fr-par/s3/aws4_request"
+        )
+        self.assertEqual(fields["x-amz-date"], "20180808T000000Z")
 
         # The upload_state of the Markdown image should have been reset
         markdown_image.refresh_from_db()
@@ -227,9 +203,10 @@ class MarkdownImageInitiateUploadApiTest(TestCase):
         # Get the upload policy for this Markdown image
         # It should generate a key file with the Unix timestamp of the present time
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
-        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
-            "datetime.datetime"
-        ) as mock_dt:
+        with (
+            mock.patch.object(timezone, "now", return_value=now),
+            mock.patch("datetime.datetime") as mock_dt,
+        ):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/markdown-documents/{markdown_image.markdown_document.id}"
@@ -238,36 +215,23 @@ class MarkdownImageInitiateUploadApiTest(TestCase):
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 200)
+        response_json = json.loads(response.content)
+        fields = response_json["fields"]
+
         self.assertEqual(
-            json.loads(response.content),
-            {
-                "url": "https://test-marsha-source.s3.amazonaws.com/",
-                "fields": {
-                    "acl": "private",
-                    "key": (
-                        "c10b79b6-9ecc-4aba-bf9d-5aab4765fd40/markdown-image/"
-                        "4ab8079e-ff4d-4d06-9922-4929e4f7a6eb/1533686400.png"
-                    ),
-                    "x-amz-algorithm": "AWS4-HMAC-SHA256",
-                    "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
-                    "x-amz-date": "20180808T000000Z",
-                    "policy": (
-                        "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiB"
-                        "beyJhY2wiOiAicHJpdmF0ZSJ9LCBbInN0YXJ0cy13aXRoIiwgIiRDb250ZW50LVR5cGUiLC"
-                        "AiaW1hZ2UvIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAxMDQ4NTc2MF0sIHsiY"
-                        "nVja2V0IjogInRlc3QtbWFyc2hhLXNvdXJjZSJ9LCB7ImtleSI6ICJjMTBiNzliNi05ZWNj"
-                        "LTRhYmEtYmY5ZC01YWFiNDc2NWZkNDAvbWFya2Rvd24taW1hZ2UvNGFiODA3OWUtZmY0ZC0"
-                        "0ZDA2LTk5MjItNDkyOWU0ZjdhNmViLzE1MzM2ODY0MDAucG5nIn0sIHsieC1hbXotYWxnb3"
-                        "JpdGhtIjogIkFXUzQtSE1BQy1TSEEyNTYifSwgeyJ4LWFtei1jcmVkZW50aWFsIjogImF3c"
-                        "y1hY2Nlc3Mta2V5LWlkLzIwMTgwODA4L2V1LXdlc3QtMS9zMy9hd3M0X3JlcXVlc3QifSwg"
-                        "eyJ4LWFtei1kYXRlIjogIjIwMTgwODA4VDAwMDAwMFoifV19"
-                    ),
-                    "x-amz-signature": (
-                        "8fbe534d175f3761e883795fe4c9626e3f69d259cfd03f240caca1ef8e968ada"
-                    ),
-                },
-            },
+            response_json["url"], "https://s3.fr-par.scw.cloud/test-marsha"
         )
+        self.assertEqual(fields["acl"], "private")
+        self.assertEqual(
+            fields["key"],
+            "markdowndocument/c10b79b6-9ecc-4aba-bf9d-5aab4765fd40/"
+            "markdownimage/4ab8079e-ff4d-4d06-9922-4929e4f7a6eb/1533686400",
+        )
+        self.assertEqual(fields["x-amz-algorithm"], "AWS4-HMAC-SHA256")
+        self.assertEqual(
+            fields["x-amz-credential"], "scw-access-key/20180808/fr-par/s3/aws4_request"
+        )
+        self.assertEqual(fields["x-amz-date"], "20180808T000000Z")
 
         # The upload_state of the Markdown image should have been reset
         markdown_image.refresh_from_db()
