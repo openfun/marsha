@@ -13,8 +13,14 @@ from django.utils.translation import gettext_lazy as _
 from parler.managers import TranslatableManager
 from parler.models import TranslatableModelMixin, TranslatedFields
 
+from marsha.core.defaults import (
+    DELETED_STORAGE_BASE_DIRECTORY,
+    MARKDOWN_DOCUMENT_STORAGE_BASE_DIRECTORY,
+    SCW_S3,
+    STORAGE_BASE_DIRECTORY,
+    STORAGE_LOCATION_CHOICES,
+)
 from marsha.core.models import AbstractImage, BaseModel, Playlist, User
-from marsha.core.utils.time_utils import to_timestamp
 
 
 logger = logging.getLogger(__name__)
@@ -156,14 +162,14 @@ class MarkdownImage(AbstractImage):
 
     Lifecycle looks like:
      - The markdown document writer ask to add an image.
-     - The backend returns an access policy to allow
-       frontend to upload the image.
+     - The backend returns an access policy to allow frontend to upload the image.
      - The frontend starts uploading the image.
-     - When uploaded to the bucket, a lambda is triggered
-       to move the image to the destination bucket.
-     - When the image is on the final bucket, AWS (for now)
-       will trigger the `update_upload_state` method, which
-       in turn will send Channel message to the frontend.
+     - If on AWS:
+        - When uploaded to the bucket, a lambda is triggered to move the image to the
+          destination bucket.
+        - When the image is on the final bucket, AWS (for now) will trigger the
+        `update_upload_state` method, which in turn will send Channel message to the
+        frontend.
     """
 
     RESOURCE_NAME = "markdown-images"
@@ -189,6 +195,14 @@ class MarkdownImage(AbstractImage):
         help_text=_('image extension (like "png", "jpg", etc.'),
     )
 
+    storage_location = models.CharField(
+        max_length=255,
+        verbose_name=_("storage location"),
+        help_text=_("Location used to store the Markdown image"),
+        choices=STORAGE_LOCATION_CHOICES,
+        default=SCW_S3,
+    )
+
     class Meta:
         """Options for the ``MarkdownImage`` model."""
 
@@ -196,38 +210,37 @@ class MarkdownImage(AbstractImage):
         verbose_name = _("image")
         ordering = ["-created_on", "id"]
 
-    def get_source_s3_key(self, stamp=None, extension=None):
-        """Compute the S3 key in the source bucket.
-
-        It is built from the document ID + ID of the image.
+    def get_storage_key(
+        self,
+        stamp=None,
+        base_dir: STORAGE_BASE_DIRECTORY = MARKDOWN_DOCUMENT_STORAGE_BASE_DIRECTORY,
+    ):
+        """Compute the storage key for the markdown image.
 
         Parameters
         ----------
+        filename: Type[string]
+            The filename of the uploaded media. For markdown images, the filename is
+            directly set into the key.
         stamp: Type[string]
-            Passing a value for this argument will return the source S3 key for the image
-            assuming its active stamp is set to this value. This is not for versioning but
-            so client can upload the file to S3 and the confirmation lambda can set the
-            `uploaded_on` field to this value only after the file upload and processing
-            is successful.
+            Passing a value for this argument will return the storage key for the
+            markdown image assuming its active stamp is set to this value. This is
+            useful to create an upload policy for this prospective version of the
+            markdown image, so that the client can upload the file to S3.
+        base: Type[STORAGE_BASE_DIRECTORY]
+            The storage base directory. Defaults to Markdown Document. It will be used to
+            compute the storage key.
 
         Returns
         -------
         string
-            The S3 key for the image file in the source bucket, where uploaded files are
-            stored before they are converted and copied to the destination bucket.
+            The storage key for the image file, depending on the base directory passed.
 
         """
-        stamp = stamp or to_timestamp(self.uploaded_on)
+        stamp = stamp or self.uploaded_on_stamp()
 
-        # We don't want to deal with None value, so we set it with an empty string
-        extension = extension or ""
+        base = base_dir
+        if base == DELETED_STORAGE_BASE_DIRECTORY:
+            base = f"{base}/{MARKDOWN_DOCUMENT_STORAGE_BASE_DIRECTORY}"
 
-        # We check if the extension starts with a leading dot or not. If it's not the case we add
-        # it at the beginning of the string
-        if extension and extension[:1] != ".":
-            extension = "." + extension
-
-        return (
-            f"{self.markdown_document_id}/markdown-image/"
-            f"{self.pk}/{stamp}{extension}"
-        )
+        return f"{base}/{self.markdown_document.pk}/markdownimage/{self.pk}/{stamp}"

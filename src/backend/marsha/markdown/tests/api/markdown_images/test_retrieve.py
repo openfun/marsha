@@ -5,6 +5,7 @@ import json
 
 from django.test import TestCase, override_settings
 
+from marsha.core.defaults import AWS_S3, SCW_S3
 from marsha.core.factories import (
     OrganizationAccessFactory,
     PlaylistAccessFactory,
@@ -164,8 +165,11 @@ class MarkdownImageRetrieveApiTest(TestCase):
             },
         )
 
+    @override_settings(
+        MEDIA_URL="https://abc.svc.edge.scw.cloud/",
+    )
     def test_api_markdown_image_read_ready_markdown_image(self):
-        """A ready Markdown image should have computed urls."""
+        """A ready Markdown image on SCW should have computed urls."""
         markdown_document = MarkdownDocumentFactory(
             pk="78338c1c-356e-4156-bd95-5bed71ffb655",
         )
@@ -175,6 +179,51 @@ class MarkdownImageRetrieveApiTest(TestCase):
             uploaded_on=datetime(2018, 8, 8, tzinfo=timezone.utc),
             upload_state="ready",
             extension="gif",
+            storage_location=SCW_S3,
+        )
+
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            playlist=markdown_document.playlist
+        )
+
+        response = self.client.get(
+            f"/api/markdown-documents/{markdown_image.markdown_document.id}"
+            f"/markdown-images/{markdown_image.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content)
+
+        self.assertEqual(
+            content,
+            {
+                "id": str(markdown_image.id),
+                "filename": "9ddf9c1f-ec88-4a3a-bfa0-423c4fe89b15.gif",
+                "active_stamp": "1533686400",
+                "is_ready_to_show": True,
+                "upload_state": "ready",
+                "url": (
+                    "https://abc.svc.edge.scw.cloud/"
+                    "markdowndocument/78338c1c-356e-4156-bd95-5bed71ffb655/"
+                    "markdownimage/9ddf9c1f-ec88-4a3a-bfa0-423c4fe89b15/1533686400"
+                ),
+                "markdown_document": str(markdown_document.id),
+            },
+        )
+
+    def test_api_markdown_image_read_ready_markdown_image_aws(self):
+        """A ready Markdown image on AWS should have computed urls."""
+        markdown_document = MarkdownDocumentFactory(
+            pk="78338c1c-356e-4156-bd95-5bed71ffb655",
+        )
+        markdown_image = MarkdownImageFactory(
+            pk="9ddf9c1f-ec88-4a3a-bfa0-423c4fe89b15",
+            markdown_document=markdown_document,
+            uploaded_on=datetime(2018, 8, 8, tzinfo=timezone.utc),
+            upload_state="ready",
+            extension="gif",
+            storage_location=AWS_S3,
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
