@@ -54,6 +54,7 @@ from marsha.development.api import (
     local_classroom_document_upload,
     local_deposited_file_upload,
     local_document_upload,
+    local_markdown_image_upload,
     local_videos_storage_upload,
 )
 
@@ -197,6 +198,11 @@ if "dummy" in settings.STORAGE_BACKEND:
             local_deposited_file_upload,
             name="local-deposited-file-upload",
         ),
+        path(
+            "api/markdownimage-upload/<uuid:uuid>",
+            local_markdown_image_upload,
+            name="local-markdown-image-upload",
+        ),
     ]
 elif "filesystem" in settings.STORAGE_BACKEND:
     urlpatterns += [
@@ -214,6 +220,11 @@ elif "filesystem" in settings.STORAGE_BACKEND:
             "api/depositedfile-upload/<uuid:uuid>",
             local_deposited_file_upload,
             name="local-deposited-file-upload",
+        ),
+        path(
+            "api/markdownimage-upload/<uuid:uuid>",
+            local_markdown_image_upload,
+            name="local-markdown-image-upload",
         ),
     ]
     urlpatterns += static(settings.FILES_ROOT, document_root=settings.FILES_ROOT)

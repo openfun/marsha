@@ -4,10 +4,12 @@ import mimetypes
 from os.path import splitext
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.urls import reverse
 
 from rest_framework import serializers
 
+from marsha.core.defaults import MARKDOWN_DOCUMENT_STORAGE_BASE_DIRECTORY, SCW_S3
 from marsha.core.serializers import (
     BaseInitiateUploadSerializer,
     ReadOnlyModelSerializer,
@@ -16,6 +18,7 @@ from marsha.core.serializers import (
     get_resource_cloudfront_url_params,
 )
 from marsha.core.serializers.playlist import PlaylistLiteSerializer
+from marsha.core.storage.storage_class import file_storage
 from marsha.core.utils import cloudfront_utils, time_utils
 from marsha.markdown.models import MarkdownDocument, MarkdownImage
 
@@ -96,6 +99,11 @@ class MarkdownImageSerializer(
         if not obj.uploaded_on:
             return None
 
+        if obj.storage_location == SCW_S3:
+            file_key = obj.get_storage_key()
+
+            return file_storage.url(file_key)
+
         base = f"{settings.AWS_S3_URL_PROTOCOL}://{settings.CLOUDFRONT_DOMAIN}"
         base = f"{base}/{obj.markdown_document_id}/markdown-image"
         stamp = time_utils.to_timestamp(obj.uploaded_on)
@@ -110,7 +118,7 @@ class MarkdownImageSerializer(
         return cloudfront_utils.build_signed_url(url, params)
 
 
-class MarkdownImageUploadSerializer(BaseInitiateUploadSerializer):
+class MarkdownImageInitiateUploadSerializer(BaseInitiateUploadSerializer):
     """An initiate-upload serializer dedicated to Markdown image."""
 
     @property
@@ -144,6 +152,31 @@ class MarkdownImageUploadSerializer(BaseInitiateUploadSerializer):
             )
 
         return attrs
+
+
+class MarkdownImageUploadEndedSerializer(serializers.Serializer):
+    """A serializer to validate data submitted on the UploadEnded API endpoint."""
+
+    file_key = serializers.CharField()
+
+    def validate_file_key(self, value):
+        """Check if the file_key is valid."""
+
+        stamp = value.split("/")[-1]
+
+        try:
+            time_utils.to_datetime(stamp)
+        except ValidationError as error:
+            raise serializers.ValidationError("file_key is not valid") from error
+
+        if (
+            self.context["obj"].get_storage_key(
+                stamp, MARKDOWN_DOCUMENT_STORAGE_BASE_DIRECTORY
+            )
+            != value
+        ):
+            raise serializers.ValidationError("file_key is not valid")
+        return value
 
 
 class MarkdownPreviewSerializer(serializers.Serializer):

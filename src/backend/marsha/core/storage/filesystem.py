@@ -3,7 +3,10 @@
 from django.urls import reverse
 from django.utils import timezone
 
-from marsha.core.defaults import TMP_STORAGE_BASE_DIRECTORY
+from marsha.core.defaults import (
+    MARKDOWN_DOCUMENT_STORAGE_BASE_DIRECTORY,
+    TMP_STORAGE_BASE_DIRECTORY,
+)
 from marsha.core.utils.time_utils import to_timestamp
 
 
@@ -55,7 +58,7 @@ def initiate_classroom_document_storage_upload(request, obj, filename, condition
     request : Type[django.http.request.HttpRequest]
         The request on the API endpoint
     pk: string
-        The primary key of the video
+        The primary key of the classroom document
 
     Returns
     -------
@@ -90,7 +93,7 @@ def initiate_deposited_file_storage_upload(request, obj, filename, conditions):
     request : Type[django.http.request.HttpRequest]
         The request on the API endpoint
     pk: string
-        The primary key of the video
+        The primary key of the deposited file
 
     Returns
     -------
@@ -108,6 +111,45 @@ def initiate_deposited_file_storage_upload(request, obj, filename, conditions):
         "url": request.build_absolute_uri(
             reverse(
                 "local-deposited_file-upload",
+                args=[obj.pk],
+            )
+        ),
+    }
+
+
+# pylint: disable=unused-argument
+def initiate_markdown_image_storage_upload(request, obj, conditions):
+    """Get an upload policy for a markdown image.
+
+    Returns an upload policy for the filesystem backend.
+
+    Parameters
+    ----------
+    request : Type[django.http.request.HttpRequest]
+        The request on the API endpoint
+    pk: string
+        The primary key of the markdown image
+
+    Returns
+    -------
+    Dictionary
+        A dictionary with two elements: url and fields. Url is the url to post to. Fields is a
+        dictionary filled with the form fields and respective values to use when submitting
+        the post.
+
+    """
+    now = timezone.now()
+    stamp = to_timestamp(now)
+    key = obj.get_storage_key(
+        stamp=stamp, base_dir=MARKDOWN_DOCUMENT_STORAGE_BASE_DIRECTORY
+    )
+    return {
+        "fields": {
+            "key": key,
+        },
+        "url": request.build_absolute_uri(
+            reverse(
+                "local-markdown-image-upload",
                 args=[obj.pk],
             )
         ),
