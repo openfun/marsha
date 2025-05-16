@@ -15,6 +15,7 @@ from marsha.core.models import Document, Video
 from marsha.core.storage.storage_class import file_storage
 from marsha.core.utils import time_utils
 from marsha.deposit.models import DepositedFile
+from marsha.markdown.models import MarkdownImage
 
 
 logger = logging.getLogger(__name__)
@@ -102,4 +103,20 @@ def local_deposited_file_upload(request: HttpRequest, uuid=None):
     destination = deposited_file.get_storage_key(filename=deposited_file.filename)
 
     file_storage.save(destination, uploaded_deposited_file)
+    return Response(status=204)
+
+
+@api_view(["POST"])
+def local_markdown_image_upload(request: HttpRequest, uuid=None):
+    """Endpoint to mock s3 markdown image upload."""
+    uploaded_markdown_image = request.FILES["file"]
+
+    try:
+        markdown_image = MarkdownImage.objects.get(id=uuid)
+    except MarkdownImage.DoesNotExist:
+        return Response({"success": False}, status=404)
+
+    destination = markdown_image.get_storage_key(filename=markdown_image.filename)
+
+    file_storage.save(destination, uploaded_markdown_image)
     return Response(status=204)

@@ -2,7 +2,6 @@
 
 from django.conf import settings
 from django.db.models import Q
-from django.utils import timezone
 
 import django_filters
 from rest_framework import filters, mixins, viewsets
@@ -10,11 +9,10 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 
-from marsha.core import defaults, permissions as core_permissions
+from marsha.core import defaults, permissions as core_permissions, storage
 from marsha.core.api import APIViewMixin, ObjectPkMixin, ObjectRelatedMixin
 from marsha.core.models import ADMINISTRATOR
-from marsha.core.utils.s3_utils import create_presigned_post
-from marsha.core.utils.time_utils import to_timestamp
+from marsha.core.utils.time_utils import to_datetime
 from marsha.markdown import permissions as markdown_permissions, serializers
 from marsha.markdown.defaults import LTI_ROUTE
 from marsha.markdown.forms import MarkdownDocumentForm
@@ -333,7 +331,7 @@ class MarkdownImageViewSet(
         """Get an upload policy for a Markdown image.
 
         Calling the endpoint resets the upload state to `pending` and returns an upload policy to
-        our AWS S3 source bucket.
+        our S3 storage bucket.
 
         Parameters
         ----------
@@ -345,33 +343,31 @@ class MarkdownImageViewSet(
         Returns
         -------
         Type[rest_framework.response.Response]
-            HttpResponse carrying the AWS S3 upload policy as a JSON object.
+            HttpResponse carrying the S3 storage upload policy as a JSON object.
 
         """
         markdown_image = self.get_object()  # check permissions first
 
-        serializer = serializers.MarkdownImageUploadSerializer(
+        serializer = serializers.MarkdownImageInitiateUploadSerializer(
             data=request.data,
         )
 
         if not serializer.is_valid():
             return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
-        now = timezone.now()
-        stamp = to_timestamp(now)
-
-        key = markdown_image.get_source_s3_key(
-            stamp=stamp,
-            extension=serializer.validated_data["extension"],
-        )
-
-        presigned_post = create_presigned_post(
-            [
-                ["starts-with", "$Content-Type", "image/"],
-                ["content-length-range", 0, settings.MARKDOWN_IMAGE_SOURCE_MAX_SIZE],
-            ],
-            {},
-            key,
+        presigned_post = (
+            storage.get_initiate_backend().initiate_markdown_image_storage_upload(
+                request,
+                markdown_image,
+                [
+                    ["starts-with", "$Content-Type", "image/"],
+                    [
+                        "content-length-range",
+                        0,
+                        settings.MARKDOWN_IMAGE_SOURCE_MAX_SIZE,
+                    ],
+                ],
+            )
         )
 
         # Reset the upload state of the Markdown image
@@ -381,3 +377,46 @@ class MarkdownImageViewSet(
         )
 
         return Response(presigned_post)
+
+    @action(methods=["post"], detail=True, url_path="upload-ended")
+    # pylint: disable=unused-argument
+    def upload_ended(
+        self,
+        request,
+        pk=None,
+        markdown_document_id=None,
+    ):
+        """Notify the API that the markdown image upload has ended.
+
+        Calling the endpoint will update the upload state of the markdown image.
+        The request should have a file_key in the body, which is the key of the
+        uploaded file.
+
+        Parameters
+        ----------
+        request : Type[django.http.request.HttpRequest]
+            The request on the API endpoint
+        pk: string
+            The primary key of the markdown image
+
+        Returns
+        -------
+        Type[rest_framework.response.Response]
+            HttpResponse with the serialized markdown image.
+        """
+        markdown_image = self.get_object()  # check permissions first
+
+        serializer = serializers.MarkdownImageUploadEndedSerializer(
+            data=request.data, context={"obj": markdown_image}
+        )
+
+        serializer.is_valid(raise_exception=True)
+
+        file_key = serializer.validated_data["file_key"]
+        # The file_key have the "markdown/{markdown_pk}/markdownimage/{markdownimage}/
+        # {stamp}" format
+        stamp = file_key.split("/")[-1]
+
+        markdown_image.update_upload_state(defaults.READY, to_datetime(stamp))
+
+        return Response(serializer.data)

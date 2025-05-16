@@ -7,7 +7,10 @@ from django.utils import timezone
 
 from storages.backends.s3 import S3Storage
 
-from marsha.core.defaults import TMP_STORAGE_BASE_DIRECTORY
+from marsha.core.defaults import (
+    MARKDOWN_DOCUMENT_STORAGE_BASE_DIRECTORY,
+    TMP_STORAGE_BASE_DIRECTORY,
+)
 from marsha.core.models import Document
 from marsha.core.utils.cloudfront_utils import get_cloudfront_private_key
 from marsha.core.utils.s3_utils import create_presigned_post
@@ -156,6 +159,36 @@ def initiate_deposited_file_storage_upload(request, obj, filename, conditions):
 
     """
     key = obj.get_storage_key(filename=filename)
+
+    return create_presigned_post(
+        conditions,
+        {},
+        key,
+        S3FileStorage.bucket_name,
+        "STORAGE_S3",
+    )
+
+
+# pylint: disable=unused-argument
+def initiate_markdown_image_storage_upload(request, obj, conditions):
+    """Get an upload policy for a markdown image.
+
+    The object must implement the get_storage_key method.
+    Returns an upload policy to our storage S3 destination bucket.
+
+    Returns
+    -------
+    Dictionary
+        A dictionary with two elements: url and fields. Url is the url to post to. Fields is a
+        dictionary filled with the form fields and respective values to use when submitting
+        the post.
+
+    """
+    now = timezone.now()
+    stamp = to_timestamp(now)
+    key = obj.get_storage_key(
+        stamp=stamp, base_dir=MARKDOWN_DOCUMENT_STORAGE_BASE_DIRECTORY
+    )
 
     return create_presigned_post(
         conditions,
