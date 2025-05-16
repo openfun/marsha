@@ -186,7 +186,6 @@ def initiate_markdown_image_storage_upload(request, obj, conditions):
     """
     now = timezone.now()
     stamp = to_timestamp(now)
-
     key = obj.get_storage_key(
         stamp=stamp, base_dir=MARKDOWN_DOCUMENT_STORAGE_BASE_DIRECTORY
     )

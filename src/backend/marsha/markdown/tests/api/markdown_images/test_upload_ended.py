@@ -40,7 +40,7 @@ class MarkdownImageUploadEndedAPITest(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {token}",
         )
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 403, response.json())
 
     def assert_user_can_end_an_upload(self, markdown_document, markdown_image, token):
         """Assert the user can end an upload."""
@@ -54,7 +54,7 @@ class MarkdownImageUploadEndedAPITest(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {token}",
         )
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200, response.json())
 
     def test_end_upload_by_anonymous_user(self):
         """Anonymous users cannot end an upload."""
@@ -63,7 +63,7 @@ class MarkdownImageUploadEndedAPITest(TestCase):
             f"markdown-images/{self.markdown_image.pk}/upload-ended/"
         )
 
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 401, response.json())
 
     def test_end_upload_by_random_user(self):
         """Authenticated user without access cannot end an upload."""
@@ -189,7 +189,7 @@ class MarkdownImageUploadEndedAPITest(TestCase):
             },
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 400, response.json())
 
     def test_end_upload_with_forged_path(self):
         """Playlist administrator can end an upload."""
@@ -207,7 +207,7 @@ class MarkdownImageUploadEndedAPITest(TestCase):
             },
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 400, response.json())
 
     def test_end_upload_with_forged_stamp(self):
         """Playlist administrator can end an upload."""
@@ -225,4 +225,4 @@ class MarkdownImageUploadEndedAPITest(TestCase):
             },
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 400, response.json())

@@ -4,6 +4,7 @@ import mimetypes
 from os.path import splitext
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.urls import reverse
 
 from rest_framework import serializers
@@ -165,7 +166,7 @@ class MarkdownImageUploadEndedSerializer(serializers.Serializer):
 
         try:
             time_utils.to_datetime(stamp)
-        except serializers.ValidationError as error:
+        except ValidationError as error:
             raise serializers.ValidationError("file_key is not valid") from error
 
         if (
