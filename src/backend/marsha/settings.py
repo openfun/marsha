@@ -416,6 +416,11 @@ class Base(Configuration):
     LTI_REPLAY_PROTECTION_CACHE_DURATION = values.PositiveIntegerValue(3600)  # 1 hour
     LTI_REPLAY_PROTECTION_ENABLED = values.BooleanValue(True)
 
+    # Core applications
+    DOCUMENT_ENABLED = values.BooleanValue(True)
+    VIDEO_ENABLED = values.BooleanValue(True)
+    WEBINAR_ENABLED = values.BooleanValue(True)
+
     # BBB
     BBB_ENABLED = values.BooleanValue(False)
     BBB_API_ENDPOINT = values.Value()
