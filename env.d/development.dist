@@ -31,6 +31,11 @@ DJANGO_LTI_CONFIG_DESCRIPTION=marsha_32x32_blue.png
 DJANGO_LTI_CONFIG_URL=https://github.com/openfun/marsha
 DJANGO_LTI_CONFIG_CONTACT_EMAIL=fun.dev@fun-mooc.fr
 
+# Core applications
+DJANGO_DOCUMENT_ENABLED=True
+DJANGO_VIDEO_ENABLED=True
+DJANGO_WEBINAR_ENABLED=True
+
 # BBB server credentials
 DJANGO_BBB_ENABLED=False
 DJANGO_BBB_API_ENDPOINT=https://example.com/bbb/api

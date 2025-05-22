@@ -149,6 +149,74 @@ class SelectLTIViewTestCase(TestCase):
             {"can_access_dashboard": False, "can_update": True},
         )
 
+    @override_settings(
+        DOCUMENT_ENABLED=False, VIDEO_ENABLED=False, WEBINAR_ENABLED=False
+    )
+    def test_views_lti_select_disabled(self):
+        """Frontend context flags should be disabled when flags are disabled."""
+        lti_consumer_parameters = {
+            "roles": random.choice(["instructor", "administrator"]),
+            "content_item_return_url": "https://lti-consumer.site/lti",
+            "context_id": "sent_lti_context_id",
+            "title": "Sent LMS activity title",
+            "text": "Sent LMS activity text",
+        }
+        lti_parameters, passport = generate_passport_and_signed_lti_parameters(
+            url="http://testserver/lti/select/",
+            lti_parameters=lti_consumer_parameters,
+        )
+
+        resolutions = [144]
+        playlist = PlaylistFactory(
+            lti_id=lti_parameters.get("context_id"),
+            consumer_site=passport.consumer_site,
+        )
+        VideoFactory(
+            playlist=playlist,
+            uploaded_on=timezone.now(),
+            resolutions=resolutions,
+            position=1,
+        )
+        DocumentFactory(
+            playlist=playlist,
+            uploaded_on=timezone.now(),
+        )
+        VideoFactory(
+            playlist=playlist,
+            live_state=IDLE,
+            live_type=JITSI,
+            position=2,
+        )
+        VideoFactory(
+            playlist=playlist,
+            live_state=ENDED,
+            live_type=JITSI,
+            position=3,
+        )
+
+        response = self.client.post(
+            "/lti/select/",
+            lti_parameters,
+            HTTP_REFERER="http://testserver",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+
+        match = re.search(
+            '<div id="marsha-frontend-data" data-context="(.*)">',
+            response.content.decode("utf-8"),
+        )
+        context = json.loads(unescape(match.group(1)))
+
+        self.assertFalse(context.get("flags").get("document"))
+        self.assertIsNone(context.get("document"))
+
+        self.assertFalse(context.get("flags").get("video"))
+        self.assertIsNone(context.get("video"))
+
+        self.assertFalse(context.get("flags").get("webinar"))
+        self.assertIsNone(context.get("webinar"))
+
     def test_views_lti_select_video(self):
         """
         Validate the context passed to the frontend app for an LTI Content selection targeting
@@ -241,6 +309,60 @@ class SelectLTIViewTestCase(TestCase):
             jwt_token.get("permissions"),
             {"can_access_dashboard": False, "can_update": True},
         )
+
+    @override_settings(VIDEO_ENABLED=False)
+    def test_views_lti_select_video_disabled(self):
+        """
+        Frontend context flag should be disabled when flag is disabled."""
+        lti_consumer_parameters = {
+            "roles": random.choice(["instructor", "administrator"]),
+            "content_item_return_url": "https://lti-consumer.site/lti",
+            "context_id": "sent_lti_context_id",
+            "title": "Sent LMS activity title",
+            "text": "Sent LMS activity text",
+        }
+        lti_parameters, passport = generate_passport_and_signed_lti_parameters(
+            url="http://testserver/lti/select/video/",
+            lti_parameters=lti_consumer_parameters,
+        )
+
+        playlist = PlaylistFactory(
+            lti_id=lti_parameters.get("context_id"),
+            consumer_site=passport.consumer_site,
+        )
+        VideoFactory(
+            playlist=playlist,
+            uploaded_on=timezone.now(),
+            resolutions=[144],
+            position=1,
+        )
+        DocumentFactory(
+            playlist=playlist,
+            uploaded_on=timezone.now(),
+        )
+        VideoFactory(
+            playlist=playlist,
+            live_state=IDLE,
+            live_type=JITSI,
+            position=2,
+        )
+
+        response = self.client.post(
+            "/lti/select/video/",
+            lti_parameters,
+            HTTP_REFERER="http://testserver",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+
+        match = re.search(
+            '<div id="marsha-frontend-data" data-context="(.*)">',
+            response.content.decode("utf-8"),
+        )
+        context = json.loads(unescape(match.group(1)))
+
+        self.assertFalse(context.get("flags").get("video"))
+        self.assertIsNone(context.get("video"))
 
     @override_settings(LTI_CONFIG_TITLE="Marsha")
     def test_views_lti_select_default_title(self):
