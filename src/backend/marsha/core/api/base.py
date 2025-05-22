@@ -10,7 +10,15 @@ from rest_framework.response import Response
 from waffle import switch_is_active
 
 from marsha.core import serializers
-from marsha.core.defaults import READY, SENTRY, TRANSCRIPTION, VOD_CONVERT
+from marsha.core.defaults import (
+    DOCUMENT,
+    READY,
+    SENTRY,
+    TRANSCRIPTION,
+    VIDEO,
+    VOD_CONVERT,
+    WEBINAR,
+)
 from marsha.core.models import SiteConfig, Video
 from marsha.core.signals import signal_object_uploaded
 from marsha.core.simple_jwt.tokens import PlaylistAccessToken
@@ -219,6 +227,14 @@ def get_frontend_configuration(request):
 
     domain = request.get_host()
     inactive_resources = []
+
+    if not settings.DOCUMENT_ENABLED:
+        inactive_resources.append(DOCUMENT)
+    if not settings.VIDEO_ENABLED:
+        inactive_resources.append(VIDEO)
+    if not settings.WEBINAR_ENABLED:
+        inactive_resources.append(WEBINAR)
+
     vod_conversion_enabled = True
 
     is_default_site = domain in settings.FRONTEND_HOME_URL
