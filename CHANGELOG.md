@@ -10,6 +10,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Add feature flags to enable/disable core resources for the whole site
 - Add support for storing markdown images on Scaleway S3
 - Add support for storing deposited files on Scaleway S3
 - Add support for storing classroom documents on Scaleway S3
