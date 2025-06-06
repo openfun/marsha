@@ -1,6 +1,6 @@
 # arnold.yml
 metadata:
   name: marsha
-  version: 5.7.0
+  version: 5.8.0
 source:
   path: src/tray
