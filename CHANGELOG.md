@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [5.8.0] - 2025-06-06
+
 ### Added
 
 - Add feature flags to enable/disable core resources for the whole site
@@ -2059,7 +2061,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v5.7.0...master
+[unreleased]: https://github.com/openfun/marsha/compare/v5.8.0...master
+[5.8.0]: https://github.com/openfun/marsha/compare/v5.7.0...v5.8.0
 [5.7.0]: https://github.com/openfun/marsha/compare/v5.6.0...v5.7.0
 [5.6.0]: https://github.com/openfun/marsha/compare/v5.5.3...v5.6.0
 [5.5.3]: https://github.com/openfun/marsha/compare/v5.5.2...v5.5.3
