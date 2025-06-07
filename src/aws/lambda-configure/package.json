@@ -19,9 +19,9 @@
   },
   "devDependencies": {
     "@types/jest": "29.5.14",
-    "aws-sdk-mock": "6.2.0",
+    "aws-sdk-mock": "6.2.1",
     "jest": "29.7.0",
-    "prettier": "3.4.2"
+    "prettier": "3.5.3"
   },
   "resolutions": {
     "merge": "^2.0.0",
