@@ -8,6 +8,13 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix storage location field for existing files stored on AWS S3:
+  - markdown images
+  - deposited files
+  - clasroom documents
+
 ## [5.8.0] - 2025-06-06
 
 ### Added
