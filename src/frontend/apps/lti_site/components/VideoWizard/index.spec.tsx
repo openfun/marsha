@@ -6,6 +6,7 @@ import {
   builderDashboardRoute,
   liveState,
   modelName,
+  useFlags,
 } from 'lib-components';
 import { videoMockFactory } from 'lib-components/tests';
 import { render } from 'lib-tests';
@@ -34,6 +35,14 @@ jest.mock('lib-components', () => ({
   }),
 }));
 
+useFlags.getState().setFlags({
+  video: true,
+  document: true,
+  webinar: true,
+  classroom: true,
+  deposit: true,
+});
+
 describe('<VideoWizard />', () => {
   beforeEach(() => {
     jest.resetAllMocks();
@@ -60,9 +69,9 @@ describe('<VideoWizard />', () => {
     });
 
     await screen.findByText(
-      'You can choose between creating a video and uploading one, or creating a live, that you will be able to schedule if needed.',
+      'You can choose how you want to share your content using the options below.',
     );
-    screen.getByText('What are you willing to do ?');
+    screen.getByText('What would you like to do?');
     const createVODButton = screen.getByRole('button', {
       name: 'Create a video',
     });
@@ -102,9 +111,9 @@ describe('<VideoWizard />', () => {
     });
 
     await screen.findByText(
-      'You can choose between creating a video and uploading one, or creating a live, that you will be able to schedule if needed.',
+      'You can choose how you want to share your content using the options below.',
     );
-    screen.getByText('What are you willing to do ?');
+    screen.getByText('What would you like to do?');
     screen.getByRole('button', { name: 'Create a video' });
     const configureLiveButton = screen.getByRole('button', {
       name: 'Start a live',
@@ -114,4 +123,33 @@ describe('<VideoWizard />', () => {
 
     expect(await screen.findByText('live dashboard')).toBeInTheDocument();
   });
+  it('renders VideoWizard with the CreateVODButton only', async () => {
+    useFlags.getState().setFlags({
+      webinar: false,
+    });
+    render(<VideoWizard />, {
+      routerOptions: {
+        componentPath: `/${VIDEO_WIZARD_ROUTE.all}`,
+        history: [builderVideoWizzardRoute()],
+      },
+    });
+    await screen.findByText(
+      'You can choose how you want to share your content using the options below.',
+    );
+    screen.getByText('What would you like to do?');
+    screen.getByRole('button', {
+      name: 'Create a video',
+    });
+    expect(
+      screen.queryByRole('button', { name: 'Start a live' }),
+    ).not.toBeInTheDocument();
+  });
+});
+
+useFlags.getState().setFlags({
+  video: true,
+  document: true,
+  webinar: true,
+  classroom: true,
+  deposit: true,
 });

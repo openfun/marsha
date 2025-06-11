@@ -6,6 +6,7 @@ import {
   uploadState,
   useAppConfig,
   useCurrentResourceContext,
+  useFlags,
 } from 'lib-components';
 import {
   ltiInstructorTokenMockFactory,
@@ -69,6 +70,14 @@ jest.mock('components/SelectContent', () => ({
 }));
 
 jest.setTimeout(15000);
+
+useFlags.getState().setFlags({
+  video: true,
+  document: true,
+  webinar: true,
+  classroom: true,
+  deposit: true,
+});
 
 describe('<LTIRoutes />', () => {
   beforeEach(() => {
