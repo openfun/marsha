@@ -8,8 +8,10 @@ import {
   WizardLayout,
   builderDashboardRoute,
   builderFullScreenErrorRoute,
+  flags,
   modelName,
   useAppConfig,
+  useFlags,
   useResponsive,
   withLink,
 } from 'lib-components';
@@ -25,14 +27,14 @@ import {
 
 const messages = defineMessages({
   chooseActionTitle: {
-    defaultMessage: 'What are you willing to do ?',
+    defaultMessage: 'What would you like to do?',
     description: 'Title asking what actions the user wants to do.',
     id: 'component.VideoWizard.chooseActionTitle',
   },
   descriptionText: {
     defaultMessage:
-      'You can choose between creating a video and uploading one, or creating a live, that you will be able to schedule if needed.',
-    description: 'A paragraph presenting the actions below.',
+      'You can choose how you want to share your content using the options below.',
+    description: 'A generic paragraph presenting the available actions.',
     id: 'component.VideoWizard.descriptionText',
   },
   createVideoButtonLabel: {
@@ -49,6 +51,7 @@ const VideoWizard = () => {
   const navigate = useNavigate();
   const { breakpoint, isSmallerBreakpoint } = useResponsive();
   const { video } = useAppConfig();
+  const isFlagEnabled = useFlags((state) => state.isFlagEnabled);
 
   if (!video) {
     return (
@@ -96,28 +99,35 @@ const VideoWizard = () => {
                   {intl.formatMessage(messages.descriptionText)}
                 </Text>
 
-                <CreateVODButton
-                  aria-label={intl.formatMessage(
-                    messages.createVideoButtonLabel,
-                  )}
-                  fullWidth
-                  title={intl.formatMessage(messages.createVideoButtonLabel)}
-                  to={builderVideoWizzardRoute(VideoWizzardSubPage.createVideo)}
-                >
-                  {intl.formatMessage(messages.createVideoButtonLabel)}
-                </CreateVODButton>
-
-                <ConfigureLiveButton
-                  video={video}
-                  RenderOnSuccess={
-                    <Navigate to={builderDashboardRoute(modelName.VIDEOS)} />
-                  }
-                  RenderOnError={
-                    <Navigate
-                      to={builderFullScreenErrorRoute(ErrorComponents.liveInit)}
-                    />
-                  }
-                />
+                {isFlagEnabled(flags.VIDEO) && (
+                  <CreateVODButton
+                    aria-label={intl.formatMessage(
+                      messages.createVideoButtonLabel,
+                    )}
+                    fullWidth
+                    title={intl.formatMessage(messages.createVideoButtonLabel)}
+                    to={builderVideoWizzardRoute(
+                      VideoWizzardSubPage.createVideo,
+                    )}
+                  >
+                    {intl.formatMessage(messages.createVideoButtonLabel)}
+                  </CreateVODButton>
+                )}
+                {isFlagEnabled(flags.WEBINAR) && (
+                  <ConfigureLiveButton
+                    video={video}
+                    RenderOnSuccess={
+                      <Navigate to={builderDashboardRoute(modelName.VIDEOS)} />
+                    }
+                    RenderOnError={
+                      <Navigate
+                        to={builderFullScreenErrorRoute(
+                          ErrorComponents.liveInit,
+                        )}
+                      />
+                    }
+                  />
+                )}
               </Box>
             </WhiteCard>
           }

@@ -10,6 +10,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- Use feature flags to control visibility of LTI video/webinar buttons
 - Fix storage location field for existing files stored on AWS S3:
   - markdown images
   - deposited files

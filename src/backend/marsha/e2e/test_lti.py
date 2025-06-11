@@ -99,7 +99,7 @@ def _preview_video(live_server, page, video_uploaded=False):
     page.click('#lti_resource_page input[type="submit"]')
 
     if not video_uploaded:
-        page.wait_for_selector("text=What are you willing to do ?")
+        page.wait_for_selector("text=What would you like to do?")
     return page, video
 
 
@@ -716,7 +716,7 @@ def test_lti_nav_video(page: Page, live_server: LiveServer):
     """
     page, _ = _preview_video(live_server, page, video_uploaded=True)
 
-    page.wait_for_selector("text=What are you willing to do ?", state="detached")
+    page.wait_for_selector("text=What would you like to do?", state="detached")
     assert page.is_enabled('button:has-text("Play Video")')
 
 
@@ -730,7 +730,7 @@ def test_lti_nav_no_video(page: Page, live_server: LiveServer):
     """
     page, _ = _preview_video(live_server, page)
 
-    page.wait_for_selector("text=What are you willing to do ?")
+    page.wait_for_selector("text=What would you like to do?")
     page.wait_for_selector("text=Preview", state="detached")
 
 
