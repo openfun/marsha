@@ -8,13 +8,15 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [5.8.1] - 2025-06-13
+
 ### Fixed
 
 - Use feature flags to control visibility of LTI video/webinar buttons
 - Fix storage location field for existing files stored on AWS S3:
   - markdown images
   - deposited files
-  - clasroom documents
+  - classroom documents
 
 ## [5.8.0] - 2025-06-06
 
@@ -2069,7 +2071,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v5.8.0...master
+[unreleased]: https://github.com/openfun/marsha/compare/v5.8.1...master
+[5.8.1]: https://github.com/openfun/marsha/compare/v5.8.0...v5.8.1
 [5.8.0]: https://github.com/openfun/marsha/compare/v5.7.0...v5.8.0
 [5.7.0]: https://github.com/openfun/marsha/compare/v5.6.0...v5.7.0
 [5.6.0]: https://github.com/openfun/marsha/compare/v5.5.3...v5.6.0
