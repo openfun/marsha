@@ -213,15 +213,15 @@
   },
   "component.VideoWizard.chooseActionTitle": {
     "description": "Title asking what actions the user wants to do.",
-    "message": "What are you willing to do ?"
+    "message": "What would you like to do?"
   },
   "component.VideoWizard.createVideoButtonLabel": {
     "description": "Label of the button used for creating a new video.",
     "message": "Create a video"
   },
   "component.VideoWizard.descriptionText": {
-    "description": "A paragraph presenting the actions below.",
-    "message": "You can choose between creating a video and uploading one, or creating a live, that you will be able to schedule if needed."
+    "description": "A generic paragraph presenting the available actions.",
+    "message": "You can choose how you want to share your content using the options below."
   },
   "components.App.AppContentLoader.errorAppSet": {
     "description": "Application and frontend are not properly set",
