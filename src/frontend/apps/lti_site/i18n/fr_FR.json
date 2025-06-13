@@ -220,8 +220,8 @@
     "message": "Créer une vidéo"
   },
   "component.VideoWizard.descriptionText": {
-    "description": "A paragraph presenting the actions below.",
-    "message": "Vous pouvez choisir entre créer une vidéo et la téléverser ou créer un webinaire que vous pourrez planifier si nécessaire."
+    "description": "A generic paragraph presenting the available actions.",
+    "message": "Vous pouvez choisir la manière dont vous souhaitez partager votre contenu en utilisant les options ci-dessous."
   },
   "components.App.AppContentLoader.errorAppSet": {
     "description": "Application and frontend are not properly set",
