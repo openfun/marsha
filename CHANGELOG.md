@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [5.9.1] - 2025-06-25
+
 ### Fixed
 
 - Fix settings import in Marsha Document
@@ -2085,7 +2087,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v5.9.0...master
+[unreleased]: https://github.com/openfun/marsha/compare/v5.9.1...master
+[5.9.1]: https://github.com/openfun/marsha/compare/v5.9.0...v5.9.1
 [5.9.0]: https://github.com/openfun/marsha/compare/v5.8.1...v5.9.0
 [5.8.1]: https://github.com/openfun/marsha/compare/v5.8.0...v5.8.1
 [5.8.0]: https://github.com/openfun/marsha/compare/v5.7.0...v5.8.0
