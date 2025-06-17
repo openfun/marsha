@@ -1,16 +1,17 @@
 """Declare API endpoints for documents with Django RestFramework viewsets."""
 
-from mimetypes import guess_extension
-from os.path import splitext
+from django.utils import timezone
 
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from marsha import settings
 from marsha.core import defaults, permissions, serializers, storage
 from marsha.core.api.base import APIViewMixin, ObjectPkMixin
 from marsha.core.forms import DocumentForm
 from marsha.core.models import Document
+from marsha.core.utils.time_utils import to_datetime, to_timestamp
 
 
 class DocumentViewSet(
@@ -79,19 +80,68 @@ class DocumentViewSet(
             HttpResponse carrying the AWS S3 upload policy as a JSON object.
 
         """
-        serializer = serializers.DocumentUploadSerializer(data=request.data)
+        document = self.get_object()
 
-        serializer.is_valid(raise_exception=True)
+        serializer = serializers.DocumentInitiateUploadSerializer(data=request.data)
 
-        extension = splitext(serializer.validated_data["filename"])[
-            1
-        ] or guess_extension(serializer.validated_data["mimetype"])
+        if serializer.is_valid() is not True:
+            return Response(serializer.errors, status=400)
 
-        response = storage.get_initiate_backend().initiate_document_upload(
-            request, pk, extension
+        filename = serializer.validated_data["filename"]
+        extension = serializer.validated_data["extension"]
+
+        if not filename.endswith(extension):
+            filename = f"{filename}{extension}"
+
+        presigned_post = (
+            storage.get_initiate_backend().initiate_document_storage_upload(
+                request,
+                document,
+                filename,
+                [["content-length-range", 0, settings.DOCUMENT_SOURCE_MAX_SIZE]],
+            )
         )
 
         # Reset the upload state of the document
-        Document.objects.filter(pk=pk).update(upload_state=defaults.PENDING)
+        Document.objects.filter(pk=pk).update(
+            filename=serializer.validated_data["filename"],
+            upload_state=defaults.PENDING,
+        )
 
-        return Response(response)
+        return Response(presigned_post)
+
+    @action(methods=["post"], detail=True, url_path="upload-ended")
+    # pylint: disable=unused-argument
+    def upload_ended(self, request, pk=None):
+        """Notify the API that the file upload has ended.
+
+        Calling the endpoint will update the upload state of the file.
+        The request should have a file_key in the body, which is the key of the
+        uploaded file.
+
+        Parameters
+        ----------
+        request : Type[django.http.request.HttpRequest]
+            The request on the API endpoint
+        pk: string
+            The primary key of the deposited file
+
+        Returns
+        -------
+        Type[rest_framework.response.Response]
+            HttpResponse with the serialized deposited file.
+        """
+        document = self.get_object()  # check permissions first
+
+        serializer = serializers.DocumentUploadEndedSerializer(
+            data=request.data, context={"obj": document}
+        )
+
+        serializer.is_valid(raise_exception=True)
+
+        now = timezone.now()
+        stamp = to_timestamp(now)
+
+        document.update_upload_state(defaults.READY, to_datetime(stamp))
+
+        return Response(serializer.data)

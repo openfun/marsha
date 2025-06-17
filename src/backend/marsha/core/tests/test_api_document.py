@@ -8,6 +8,7 @@ from unittest import mock
 from django.test import TestCase, override_settings
 
 from marsha.core.api import timezone
+from marsha.core.defaults import AWS_S3, READY, SCW_S3
 from marsha.core.factories import DocumentFactory, PlaylistFactory
 from marsha.core.models import Document
 from marsha.core.simple_jwt.factories import (
@@ -56,7 +57,7 @@ class DocumentAPITest(TestCase):
         )
 
     @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
-    def test_api_document_fetch_instructor(self):
+    def test_api_document_fetch_instructor_on_aws(self):
         """An instructor should be able to fetch a document."""
         document = DocumentFactory(
             pk="4c51f469-f91e-4998-b438-e31ee3bd3ea6",
@@ -66,6 +67,7 @@ class DocumentAPITest(TestCase):
             playlist__title="foo",
             playlist__lti_id="course-v1:ufr+mathematics+00001",
             title="bar baz",
+            storage_location=AWS_S3,
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(playlist=document.playlist)
@@ -89,6 +91,50 @@ class DocumentAPITest(TestCase):
                 "url": "https://abc.cloudfront.net/4c51f469-f91e-4998-b438-e31ee3bd3ea6/"
                 "document/1533686400.pdf"
                 "?response-content-disposition=attachment%3B+filename%3Dfoo_bar-baz.pdf",
+                "show_download": True,
+                "playlist": {
+                    "id": str(document.playlist.id),
+                    "title": "foo",
+                    "lti_id": "course-v1:ufr+mathematics+00001",
+                },
+            },
+        )
+
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
+    def test_api_document_fetch_instructor_on_scw(self):
+        """An instructor should be able to fetch a document."""
+        document = DocumentFactory(
+            pk="4c51f469-f91e-4998-b438-e31ee3bd3ea6",
+            uploaded_on=datetime(2018, 8, 8, tzinfo=baseTimezone.utc),
+            upload_state="ready",
+            filename="bar.pdf",
+            extension="pdf",
+            playlist__title="foo",
+            playlist__lti_id="course-v1:ufr+mathematics+00001",
+            title="bar baz",
+            storage_location=SCW_S3,
+        )
+
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=document.playlist)
+
+        response = self.client.get(
+            f"/api/documents/{document.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content)
+        self.assertEqual(
+            content,
+            {
+                "active_stamp": "1533686400",
+                "extension": "pdf",
+                "filename": "bar.pdf",
+                "id": str(document.id),
+                "is_ready_to_show": True,
+                "title": document.title,
+                "upload_state": "ready",
+                "url": "https://abc.svc.edge.scw.cloud/document/"
+                "4c51f469-f91e-4998-b438-e31ee3bd3ea6/bar.pdf",
                 "show_download": True,
                 "playlist": {
                     "id": str(document.playlist.id),
@@ -192,7 +238,7 @@ class DocumentAPITest(TestCase):
             {
                 "active_stamp": None,
                 "extension": None,
-                "filename": "playlist_some-document",
+                "filename": None,
                 "id": str(document.id),
                 "is_ready_to_show": False,
                 "playlist": {
@@ -366,9 +412,10 @@ class DocumentAPITest(TestCase):
         jwt_token = InstructorOrAdminLtiTokenFactory(playlist=document.playlist)
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
-        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
-            "datetime.datetime"
-        ) as mock_dt:
+        with (
+            mock.patch.object(timezone, "now", return_value=now),
+            mock.patch("datetime.datetime") as mock_dt,
+        ):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/documents/{document.id}/initiate-upload/",
@@ -378,35 +425,26 @@ class DocumentAPITest(TestCase):
             )
 
         self.assertEqual(response.status_code, 200)
+        response_json = response.json()
+        fields = response_json["fields"]
+
         self.assertEqual(
-            json.loads(response.content),
-            {
-                "url": "https://test-marsha-source.s3.amazonaws.com/",
-                "fields": {
-                    "acl": "private",
-                    "key": (
-                        "27a23f52-3379-46a2-94fa-697b59cfe3c7/document/27a23f52-3379-46a2-94fa-"
-                        "697b59cfe3c7/1533686400.pdf"
-                    ),
-                    "x-amz-algorithm": "AWS4-HMAC-SHA256",
-                    "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
-                    "x-amz-date": "20180808T000000Z",
-                    "policy": (
-                        "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBb"
-                        "eyJhY2wiOiAicHJpdmF0ZSJ9LCBbImNvbnRlbnQtbGVuZ3RoLXJhbmdlIiwgMCwgMTA3Mzc0"
-                        "MTgyNF0sIHsiYnVja2V0IjogInRlc3QtbWFyc2hhLXNvdXJjZSJ9LCB7ImtleSI6ICIyN2Ey"
-                        "M2Y1Mi0zMzc5LTQ2YTItOTRmYS02OTdiNTljZmUzYzcvZG9jdW1lbnQvMjdhMjNmNTItMzM3"
-                        "OS00NmEyLTk0ZmEtNjk3YjU5Y2ZlM2M3LzE1MzM2ODY0MDAucGRmIn0sIHsieC1hbXotYWxn"
-                        "b3JpdGhtIjogIkFXUzQtSE1BQy1TSEEyNTYifSwgeyJ4LWFtei1jcmVkZW50aWFsIjogImF3"
-                        "cy1hY2Nlc3Mta2V5LWlkLzIwMTgwODA4L2V1LXdlc3QtMS9zMy9hd3M0X3JlcXVlc3QifSwg"
-                        "eyJ4LWFtei1kYXRlIjogIjIwMTgwODA4VDAwMDAwMFoifV19"
-                    ),
-                    "x-amz-signature": (
-                        "9ee691c89e2061c5f631b093e01e7faee1ffe71de4c9684fb83d810a3fca799e"
-                    ),
-                },
-            },
+            response_json["url"], "https://s3.fr-par.scw.cloud/test-marsha"
         )
+        self.assertEqual(fields["acl"], "private")
+        self.assertEqual(
+            fields["key"],
+            "document/27a23f52-3379-46a2-94fa-697b59cfe3c7/foo.pdf",
+        )
+        self.assertEqual(fields["x-amz-algorithm"], "AWS4-HMAC-SHA256")
+        self.assertEqual(
+            fields["x-amz-credential"],
+            "scw-access-key/20180808/fr-par/s3/aws4_request",
+        )
+        self.assertEqual(fields["x-amz-date"], "20180808T000000Z")
+
+        document.refresh_from_db()
+        self.assertEqual(document.upload_state, "pending")
 
     def test_api_document_initiate_upload_file_without_extension(self):
         """An extension should be guessed from the mimetype."""
@@ -418,9 +456,10 @@ class DocumentAPITest(TestCase):
         jwt_token = InstructorOrAdminLtiTokenFactory(playlist=document.playlist)
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
-        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
-            "datetime.datetime"
-        ) as mock_dt:
+        with (
+            mock.patch.object(timezone, "now", return_value=now),
+            mock.patch("datetime.datetime") as mock_dt,
+        ):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/documents/{document.id}/initiate-upload/",
@@ -430,35 +469,26 @@ class DocumentAPITest(TestCase):
             )
 
         self.assertEqual(response.status_code, 200)
+        response_json = response.json()
+        fields = response_json["fields"]
+
         self.assertEqual(
-            json.loads(response.content),
-            {
-                "url": "https://test-marsha-source.s3.amazonaws.com/",
-                "fields": {
-                    "acl": "private",
-                    "key": (
-                        "27a23f52-3379-46a2-94fa-697b59cfe3c7/document/27a23f52-3379-46a2-94fa-"
-                        "697b59cfe3c7/1533686400.pdf"
-                    ),
-                    "x-amz-algorithm": "AWS4-HMAC-SHA256",
-                    "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
-                    "x-amz-date": "20180808T000000Z",
-                    "policy": (
-                        "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBbe"
-                        "yJhY2wiOiAicHJpdmF0ZSJ9LCBbImNvbnRlbnQtbGVuZ3RoLXJhbmdlIiwgMCwgMTA3Mzc0MT"
-                        "gyNF0sIHsiYnVja2V0IjogInRlc3QtbWFyc2hhLXNvdXJjZSJ9LCB7ImtleSI6ICIyN2EyM2Y"
-                        "1Mi0zMzc5LTQ2YTItOTRmYS02OTdiNTljZmUzYzcvZG9jdW1lbnQvMjdhMjNmNTItMzM3OS00"
-                        "NmEyLTk0ZmEtNjk3YjU5Y2ZlM2M3LzE1MzM2ODY0MDAucGRmIn0sIHsieC1hbXotYWxnb3Jpd"
-                        "GhtIjogIkFXUzQtSE1BQy1TSEEyNTYifSwgeyJ4LWFtei1jcmVkZW50aWFsIjogImF3cy1hY2"
-                        "Nlc3Mta2V5LWlkLzIwMTgwODA4L2V1LXdlc3QtMS9zMy9hd3M0X3JlcXVlc3QifSwgeyJ4LWF"
-                        "tei1kYXRlIjogIjIwMTgwODA4VDAwMDAwMFoifV19"
-                    ),
-                    "x-amz-signature": (
-                        "9ee691c89e2061c5f631b093e01e7faee1ffe71de4c9684fb83d810a3fca799e"
-                    ),
-                },
-            },
+            response_json["url"], "https://s3.fr-par.scw.cloud/test-marsha"
         )
+        self.assertEqual(fields["acl"], "private")
+        self.assertEqual(
+            fields["key"],
+            "document/27a23f52-3379-46a2-94fa-697b59cfe3c7/foo.pdf",
+        )
+        self.assertEqual(fields["x-amz-algorithm"], "AWS4-HMAC-SHA256")
+        self.assertEqual(
+            fields["x-amz-credential"],
+            "scw-access-key/20180808/fr-par/s3/aws4_request",
+        )
+        self.assertEqual(fields["x-amz-date"], "20180808T000000Z")
+
+        document.refresh_from_db()
+        self.assertEqual(document.upload_state, "pending")
 
     def test_api_document_initiate_upload_file_without_mimetype(self):
         """With no mimetype the extension should be ignored."""
@@ -470,9 +500,10 @@ class DocumentAPITest(TestCase):
         jwt_token = InstructorOrAdminLtiTokenFactory(playlist=document.playlist)
 
         now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
-        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
-            "datetime.datetime"
-        ) as mock_dt:
+        with (
+            mock.patch.object(timezone, "now", return_value=now),
+            mock.patch("datetime.datetime") as mock_dt,
+        ):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/documents/{document.id}/initiate-upload/",
@@ -482,32 +513,89 @@ class DocumentAPITest(TestCase):
             )
 
         self.assertEqual(response.status_code, 200)
+        response_json = response.json()
+        fields = response_json["fields"]
+
         self.assertEqual(
-            json.loads(response.content),
-            {
-                "url": "https://test-marsha-source.s3.amazonaws.com/",
-                "fields": {
-                    "acl": "private",
-                    "key": (
-                        "27a23f52-3379-46a2-94fa-697b59cfe3c7/document/27a23f52-3379-46a2-94fa-"
-                        "697b59cfe3c7/1533686400"
-                    ),
-                    "x-amz-algorithm": "AWS4-HMAC-SHA256",
-                    "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
-                    "x-amz-date": "20180808T000000Z",
-                    "policy": (
-                        "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBbe"
-                        "yJhY2wiOiAicHJpdmF0ZSJ9LCBbImNvbnRlbnQtbGVuZ3RoLXJhbmdlIiwgMCwgMTA3Mzc0MT"
-                        "gyNF0sIHsiYnVja2V0IjogInRlc3QtbWFyc2hhLXNvdXJjZSJ9LCB7ImtleSI6ICIyN2EyM2Y"
-                        "1Mi0zMzc5LTQ2YTItOTRmYS02OTdiNTljZmUzYzcvZG9jdW1lbnQvMjdhMjNmNTItMzM3OS00"
-                        "NmEyLTk0ZmEtNjk3YjU5Y2ZlM2M3LzE1MzM2ODY0MDAifSwgeyJ4LWFtei1hbGdvcml0aG0iO"
-                        "iAiQVdTNC1ITUFDLVNIQTI1NiJ9LCB7IngtYW16LWNyZWRlbnRpYWwiOiAiYXdzLWFjY2Vzcy"
-                        "1rZXktaWQvMjAxODA4MDgvZXUtd2VzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LCB7IngtYW16LWR"
-                        "hdGUiOiAiMjAxODA4MDhUMDAwMDAwWiJ9XX0="
-                    ),
-                    "x-amz-signature": (
-                        "b952d4bcdd88a082e0cae8e01ea7754ef0959475887fd732d79e3a04d672a166"
-                    ),
-                },
-            },
+            response_json["url"], "https://s3.fr-par.scw.cloud/test-marsha"
         )
+        self.assertEqual(fields["acl"], "private")
+        self.assertEqual(
+            fields["key"],
+            "document/27a23f52-3379-46a2-94fa-697b59cfe3c7/foo",
+        )
+        self.assertEqual(fields["x-amz-algorithm"], "AWS4-HMAC-SHA256")
+        self.assertEqual(
+            fields["x-amz-credential"],
+            "scw-access-key/20180808/fr-par/s3/aws4_request",
+        )
+        self.assertEqual(fields["x-amz-date"], "20180808T000000Z")
+
+        document.refresh_from_db()
+        self.assertEqual(document.upload_state, "pending")
+
+    def test_api_document_upload_ended_student(self):
+        """Student should not be able to end an upload."""
+        document = DocumentFactory()
+
+        jwt_token = StudentLtiTokenFactory(
+            playlist=document.playlist,
+            permissions__can_update=True,
+        )
+
+        response = self.client.post(
+            f"/api/documents/{document.id}/upload-ended/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_api_document_upload_ended_instructor(self):
+        """An instructor should be able to end an upload for a document."""
+        document = DocumentFactory()
+
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=document.playlist)
+
+        response = self.client.post(
+            f"/api/documents/{document.id}/upload-ended/",
+            {
+                "file_key": f"document/{document.pk}/foo.pdf",
+            },
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        document.refresh_from_db()
+        self.assertEqual(document.upload_state, READY)
+
+    def test_api_document_upload_ended_with_wrong_body(self):
+        """A wrong body should not succeed."""
+        document = DocumentFactory()
+
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=document.playlist)
+
+        response = self.client.post(
+            f"/api/documents/{document.id}/upload-ended/",
+            {
+                "wrong_key": f"document/{document.pk}/foo.pdf",
+            },
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_api_document_upload_ended_with_wrong_path(self):
+        """A wrong path should not succeed."""
+        document = DocumentFactory()
+
+        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=document.playlist)
+
+        response = self.client.post(
+            f"/api/documents/{document.id}/upload-ended/",
+            {
+                "file_key": f"wrongpath/{document.pk}/foo.pdf",
+            },
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 400)

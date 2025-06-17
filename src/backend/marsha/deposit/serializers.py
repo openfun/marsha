@@ -122,10 +122,6 @@ class DepositedFileSerializer(
         """
         return "." + obj.extension if obj.extension else ""
 
-    # def get_filename(self, obj):
-    #     """Filename of the deposited file."""
-    #     return self._get_filename(obj.title) if obj.uploaded_on else None
-
     def get_url(self, obj):
         """Url of the DepositedFile.
 

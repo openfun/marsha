@@ -212,6 +212,11 @@ elif "filesystem" in settings.STORAGE_BACKEND:
             name="local-videos-storage-upload",
         ),
         path(
+            "api/document-upload/<uuid:uuid>",
+            local_document_upload,
+            name="local-document-upload",
+        ),
+        path(
             "api/classroomdocument-upload/<uuid:uuid>",
             local_classroom_document_upload,
             name="local-classroom-document-upload",

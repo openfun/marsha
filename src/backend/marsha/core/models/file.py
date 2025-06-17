@@ -3,7 +3,15 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from marsha.core.defaults import PENDING, STATE_CHOICES
+from marsha.core.defaults import (
+    DELETED_STORAGE_BASE_DIRECTORY,
+    DOCUMENT_STORAGE_BASE_DIRECTORY,
+    PENDING,
+    SCW_S3,
+    STATE_CHOICES,
+    STORAGE_BASE_DIRECTORY,
+    STORAGE_LOCATION_CHOICES,
+)
 from marsha.core.models.account import User
 from marsha.core.models.base import BaseModel
 from marsha.core.models.playlist import Playlist
@@ -166,6 +174,22 @@ class Document(BaseFile):
         help_text=_("Is the document publicly accessible?"),
     )
 
+    filename = models.CharField(
+        max_length=255,
+        verbose_name=_("filename"),
+        help_text=_("filename of the document"),
+        null=True,
+        blank=True,
+    )
+
+    storage_location = models.CharField(
+        max_length=255,
+        verbose_name=_("storage location"),
+        help_text=_("Location used to store the document"),
+        choices=STORAGE_LOCATION_CHOICES,
+        default=SCW_S3,
+    )
+
     class Meta:
         """Options for the ``Document`` model."""
 
@@ -180,42 +204,33 @@ class Document(BaseFile):
             )
         ]
 
-    def get_source_s3_key(self, stamp=None, extension=None):
-        """Compute the S3 key in the source bucket (ID of the file + version stamp).
+    def get_storage_key(
+        self,
+        filename,
+        base_dir: STORAGE_BASE_DIRECTORY = DOCUMENT_STORAGE_BASE_DIRECTORY,  # type: ignore
+    ):
+        """Compute the storage key for the document.
 
         Parameters
         ----------
-        stamp: Type[string]
-            Passing a value for this argument will return the source S3 key for the document
-            assuming its active stamp is set to this value. This is useful to create an upload
-            policy for this prospective version of the document, so that the client can upload the
-            file to S3 and the confirmation lambda can set the `uploaded_on` field to this value
-            only after file upload is successful.
-        extension: Type[string]
-            The extension used by the uploaded file. This extension is added at the end of the key
-            to keep a record of the extension. We will use it in the update-state endpoint to
-            record it in the database.
+        filename: Type[string]
+            The filename of the uploaded media. For documents, the filename is
+            directly set into the key.
+        base: Type[STORAGE_BASE_DIRECTORY]
+            The storage base directory. Defaults to Document. It will be used to
+            compute the storage key.
 
         Returns
         -------
         string
-            The S3 key for the document in the source bucket, where uploaded files are stored
-            before they are moved to the destination bucket.
-
+            The storage key for the document, depending on the base directory
+            passed.
         """
-        stamp = stamp or self.uploaded_on_stamp()
+        base = base_dir
+        if base == DELETED_STORAGE_BASE_DIRECTORY:
+            base = f"{base}/{DOCUMENT_STORAGE_BASE_DIRECTORY}"
 
-        # We don't want to deal with None value so we set it with an empty string
-        extension = extension or ""
-
-        # We check if the extension starts with a leading dot or not. If it's not the case we add
-        # it at the beginning of the string
-        if extension and extension[:1] != ".":
-            extension = "." + extension
-
-        return "{pk!s}/document/{pk!s}/{stamp:s}{extension:s}".format(
-            pk=self.pk, stamp=stamp, extension=extension
-        )
+        return f"{base}/{self.pk}/{filename}"
 
     def update_upload_state(self, upload_state, uploaded_on, **extra_parameters):
         """Manage upload state.

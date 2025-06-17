@@ -1005,15 +1005,12 @@ class Development(Base):
         },
         "files": {
             "BACKEND": values.Value(
-                "django.core.files.storage.FileSystemStorage",
+                "marsha.core.storage.s3.S3FileStorage",
                 environ_name="STORAGES_FILES_BACKEND",
             ),
             "OPTIONS": values.DictValue(
-                {
-                    "location": str(Base.FILES_ROOT),
-                    "base_url": str(Base.FILES_ROOT),
-                },
-                environ_name="STORAGES_VIDEOS_OPTIONS",
+                {},
+                environ_name="STORAGES_FILES_OPTIONS",
             ),
         },
         "staticfiles": {
