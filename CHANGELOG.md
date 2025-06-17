@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Add support for storing documents on Scaleway S3
+
 ### Fixed
 
 - Fix upload state of deposited files to Scaleway
