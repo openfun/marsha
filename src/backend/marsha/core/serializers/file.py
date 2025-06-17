@@ -13,12 +13,14 @@ from django.utils import timezone
 from botocore.signers import CloudFrontSigner
 from rest_framework import serializers
 
+from marsha.core.defaults import SCW_S3
 from marsha.core.models import Document
 from marsha.core.serializers.base import (
     TimestampField,
     UploadableFileWithExtensionSerializerMixin,
 )
 from marsha.core.serializers.playlist import PlaylistLiteSerializer
+from marsha.core.storage.storage_class import file_storage
 from marsha.core.utils import cloudfront_utils, time_utils
 
 
@@ -90,6 +92,9 @@ class DocumentSerializer(
             The document's filename
 
         """
+        if obj.storage_location == SCW_S3:
+            return obj.filename
+
         return self._get_filename(obj.title, obj.extension, obj.playlist.title)
 
     def get_url(self, obj):
@@ -110,6 +115,12 @@ class DocumentSerializer(
         if obj.uploaded_on is None:
             return None
 
+        if obj.storage_location == SCW_S3:
+            file_key = obj.get_storage_key(self.get_filename(obj))
+
+            return file_storage.url(file_key)
+
+        # Default AWS fallback:
         url = (
             f"{settings.AWS_S3_URL_PROTOCOL}://{settings.CLOUDFRONT_DOMAIN}/{obj.pk}/document/"
             f"{time_utils.to_timestamp(obj.uploaded_on)}{self._get_extension_string(obj)}?response"
@@ -197,7 +208,7 @@ class BaseInitiateUploadSerializer(serializers.Serializer):
         return value
 
 
-class DocumentUploadSerializer(BaseInitiateUploadSerializer):
+class DocumentInitiateUploadSerializer(BaseInitiateUploadSerializer):
     """An initiate-upload serializer dedicated to Document."""
 
     @property
@@ -209,6 +220,55 @@ class DocumentUploadSerializer(BaseInitiateUploadSerializer):
         an upload with a size higher than the one defined in the settings
         """
         return settings.DOCUMENT_SOURCE_MAX_SIZE
+
+    def validate_filename(self, value):
+        """Check if the filename is valid."""
+        if "/" in value or "\\" in value:
+            raise serializers.ValidationError("Filename must not contain slashes.")
+
+        if value.startswith("."):
+            raise serializers.ValidationError("Filename must not start with a dot.")
+
+        if len(value) > 255:
+            raise serializers.ValidationError("Filename is too long.")
+
+        return value
+
+    def validate(self, attrs):
+        """Validate if the mimetype is allowed or not."""
+        # mimetype is provided, we directly check it
+        if attrs["mimetype"] != "":
+            attrs["extension"] = mimetypes.guess_extension(attrs["mimetype"])
+
+        # mimetype is not provided, we have to guess it from the extension
+        else:
+            mimetypes.init()
+            extension = splitext(attrs["filename"])[1]
+            mimetype = mimetypes.types_map.get(extension)
+            # extension is added to the data in order to be used later
+            attrs["extension"] = extension
+            attrs["mimetype"] = mimetype
+
+        return attrs
+
+
+class DocumentUploadEndedSerializer(serializers.Serializer):
+    """A serializer to validate data submitted on the UploadEnded API endpoint."""
+
+    file_key = serializers.CharField()
+
+    def validate_file_key(self, value):
+        """Check if the file_key is valid."""
+        filename = value.split("/")[-1]
+        _, extension = splitext(filename)
+
+        if not extension:
+            raise serializers.ValidationError("Filename must include an extension.")
+
+        if self.context["obj"].get_storage_key(filename=filename) != value:
+            raise serializers.ValidationError("file_key is not valid")
+
+        return value
 
 
 class SharedLiveMediaInitiateUploadSerializer(BaseInitiateUploadSerializer):

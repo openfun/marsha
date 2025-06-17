@@ -11,7 +11,6 @@ from marsha.core.defaults import (
     MARKDOWN_DOCUMENT_STORAGE_BASE_DIRECTORY,
     TMP_STORAGE_BASE_DIRECTORY,
 )
-from marsha.core.models import Document
 from marsha.core.utils.cloudfront_utils import get_cloudfront_private_key
 from marsha.core.utils.s3_utils import create_presigned_post
 from marsha.core.utils.time_utils import to_timestamp
@@ -91,10 +90,11 @@ def initiate_object_videos_storage_upload(request, obj, conditions):
 
 
 # pylint: disable=unused-argument
-def initiate_document_upload(request, pk, extension):
+def initiate_document_storage_upload(request, obj, filename, conditions):
     """Get an upload policy for a document.
 
-    Returns an upload policy to our AWS S3 source bucket.
+    The object must implement the get_storage_key method.
+    Returns an upload policy to our storage S3 destination bucket.
 
     Returns
     -------
@@ -104,16 +104,14 @@ def initiate_document_upload(request, pk, extension):
         the post.
 
     """
-    now = timezone.now()
-    stamp = to_timestamp(now)
-
-    document = Document.objects.get(pk=pk)
-    key = document.get_source_s3_key(stamp=stamp, extension=extension)
+    key = obj.get_storage_key(filename=filename)
 
     return create_presigned_post(
-        [["content-length-range", 0, settings.DOCUMENT_SOURCE_MAX_SIZE]],
+        conditions,
         {},
         key,
+        S3FileStorage.bucket_name,
+        "STORAGE_S3",
     )
 
 

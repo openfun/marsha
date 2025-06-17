@@ -9,13 +9,6 @@ def initiate_object_videos_storage_upload(request, obj, conditions):
 
     Returns an upload policy for dummy video backend.
 
-    Parameters
-    ----------
-    request : Type[django.http.request.HttpRequest]
-        The request on the API endpoint
-    pk: string
-        The primary key of the video
-
     Returns
     -------
     Dictionary
@@ -33,19 +26,10 @@ def initiate_object_videos_storage_upload(request, obj, conditions):
 
 
 # pylint: disable=unused-argument
-def initiate_document_upload(request, pk, extension):
+def initiate_document_storage_upload(request, obj, filename, conditions):
     """Get an upload policy for a document.
 
     Returns an upload policy for dummy document backend.
-
-    Parameters
-    ----------
-    request : Type[django.http.request.HttpRequest]
-        The request on the API endpoint
-    pk: string
-        The primary key of the document
-    extension: string
-        The extension of the document
 
     Returns
     -------
@@ -57,5 +41,7 @@ def initiate_document_upload(request, pk, extension):
     """
     return {
         "fields": {},
-        "url": request.build_absolute_uri(reverse("local-document-upload", args=[pk])),
+        "url": request.build_absolute_uri(
+            reverse("local-document-upload", args=[obj.pk])
+        ),
     }
