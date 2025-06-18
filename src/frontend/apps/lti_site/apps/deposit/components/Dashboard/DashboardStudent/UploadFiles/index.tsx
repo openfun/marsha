@@ -10,6 +10,7 @@ import {
   FileDepositoryModelName as modelName,
   report,
   truncateFilename,
+  uploadEnded,
   useUploadManager,
 } from 'lib-components';
 import { DateTime } from 'luxon';
@@ -105,6 +106,14 @@ export const UploadFiles = () => {
         depositedFile.id,
         file,
         depositedFile.file_depository_id,
+        (presignedPost) => {
+          uploadEnded(
+            modelName.DepositedFiles,
+            depositedFile.id,
+            presignedPost.fields['key'],
+            depositedFile.file_depository_id,
+          );
+        },
       );
       refreshDepositedFiles();
     } catch (error) {

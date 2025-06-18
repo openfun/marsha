@@ -97,6 +97,7 @@ describe('<UploadFiles />', () => {
       depositedFile.id,
       file,
       depositedFile.file_depository_id,
+      expect.any(Function),
     );
   });
 
