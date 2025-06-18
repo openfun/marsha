@@ -110,7 +110,7 @@ def initiate_deposited_file_storage_upload(request, obj, filename, conditions):
         },
         "url": request.build_absolute_uri(
             reverse(
-                "local-deposited_file-upload",
+                "local-deposited-file-upload",
                 args=[obj.pk],
             )
         ),

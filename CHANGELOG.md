@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix upload state of deposited files to Scaleway
+
 ## [5.8.1] - 2025-06-13
 
 ### Fixed
