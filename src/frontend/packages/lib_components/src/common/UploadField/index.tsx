@@ -5,6 +5,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { useUploadManager } from '@lib-components/common/UploadManager';
+import { uploadEnded } from '@lib-components/data/sideEffects/uploadEnded';
 import { uploadableModelName } from '@lib-components/types/models';
 
 import { DropzonePlaceholder } from './DropzonePlaceholder';
@@ -39,7 +40,9 @@ export const UploadField = ({
 
   const onDrop = (files: File[]) => {
     setFile(files[0]);
-    addUpload(objectType, objectId, files[0], parentId);
+    addUpload(objectType, objectId, files[0], parentId, (presignedPost) => {
+      uploadEnded(objectType, objectId, presignedPost.fields['key'], parentId);
+    });
   };
 
   return (
