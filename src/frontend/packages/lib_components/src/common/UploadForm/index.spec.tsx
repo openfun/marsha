@@ -6,6 +6,7 @@ import { JSX } from 'react';
 import { builderFullScreenErrorRoute } from '@lib-components/common/ErrorComponents/route';
 import { UploadManager } from '@lib-components/common/UploadManager';
 import { DASHBOARD_ROUTE } from '@lib-components/data/routes';
+import { uploadEnded } from '@lib-components/data/sideEffects/uploadEnded';
 import { uploadFile } from '@lib-components/data/sideEffects/uploadFile';
 import { getStoreResource } from '@lib-components/data/stores/generics';
 import { videoMockFactory } from '@lib-components/tests';
@@ -30,11 +31,17 @@ jest.mock('data/sideEffects/uploadFile', () => ({
   uploadFile: jest.fn(),
 }));
 
+jest.mock('data/sideEffects/uploadEnded', () => ({
+  uploadEnded: jest.fn(),
+}));
+
 const mockUploadFile: jest.MockedFunction<typeof uploadFile> =
   uploadFile as any;
 const mockGetResource = getStoreResource as jest.MockedFunction<
   typeof getStoreResource
 >;
+const mockUploadEnded: jest.MockedFunction<typeof uploadEnded> =
+  uploadEnded as any;
 
 describe('UploadForm', () => {
   const object = videoMockFactory({
@@ -134,6 +141,7 @@ describe('UploadForm', () => {
 
     mockGetResource.mockReturnValue(object);
     mockUploadFile.mockResolvedValue(true);
+    mockUploadEnded.mockResolvedValue(true);
 
     render(<UploadForm objectId={object.id} objectType={modelName.VIDEOS} />, {
       routerOptions: {
@@ -161,6 +169,7 @@ describe('UploadForm', () => {
 
     await waitFor(() => expect(mockInitiateUpload.calls()).toHaveLength(1));
     expect(mockUploadFile).toHaveBeenCalled();
+    expect(mockUploadEnded).toHaveBeenCalled();
     screen.getByText('dashboard');
   });
 
@@ -194,6 +203,7 @@ describe('UploadForm', () => {
     });
     await waitFor(() => expect(mockInitiateUpload.calls()).toHaveLength(1));
     expect(mockUploadFile).not.toHaveBeenCalled();
+    expect(mockUploadEnded).not.toHaveBeenCalled();
     screen.getByText('error policy');
   });
 
@@ -237,6 +247,7 @@ describe('UploadForm', () => {
     });
     await waitFor(() => expect(mockInitiateUpload.calls()).toHaveLength(1));
     expect(mockUploadFile).toHaveBeenCalled();
+    expect(mockUploadEnded).not.toHaveBeenCalled();
     screen.getByText('error upload');
   });
 });
