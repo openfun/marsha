@@ -14,9 +14,10 @@ import { UploadField } from '.';
 describe('<UploadField />', () => {
   const objectType = modelName.VIDEOS;
   const objectId = uuidv4();
+  const parentId = uuidv4();
 
   it('renders a Dropzone with the relevant messages', () => {
-    render(<UploadField {...{ objectId, objectType }} />);
+    render(<UploadField {...{ objectId, objectType, parentId }} />);
 
     expect(screen.getByText('Select a file to upload')).toBeInTheDocument();
   });
@@ -27,7 +28,7 @@ describe('<UploadField />', () => {
       <UploadManagerContext.Provider
         value={{ setUploadState, uploadManagerState: {} }}
       >
-        <UploadField {...{ objectId, objectType }} />
+        <UploadField {...{ objectId, objectType, parentId }} />
       </UploadManagerContext.Provider>,
     );
 
@@ -47,6 +48,8 @@ describe('<UploadField />', () => {
         objectType,
         progress: 0,
         status: UploadManagerStatus.INIT,
+        onUploadEnded: expect.any(Function),
+        parentId,
       },
     });
   });
