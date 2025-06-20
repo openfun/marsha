@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Serve legacy classroom documents from Scaleway S3 after AWS migration
+
 ## [5.9.1] - 2025-06-25
 
 ### Fixed

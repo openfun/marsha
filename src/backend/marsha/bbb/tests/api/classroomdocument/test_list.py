@@ -112,8 +112,7 @@ class ClassroomClassroomdocumentsAPITest(TestCase):
         )
 
     @override_settings(
-        CLOUDFRONT_SIGNED_URLS_ACTIVE=True,
-        CLOUDFRONT_SIGNED_PUBLIC_KEY_ID="cloudfront-access-key-id",
+        MEDIA_URL="https://abc.svc.edge.scw.cloud/",
     )
     def test_api_list_classroom_documents_on_aws(self):
         """Classroom documents should not been signed."""
@@ -156,10 +155,8 @@ class ClassroomClassroomdocumentsAPITest(TestCase):
                         "upload_state": "pending",
                         "uploaded_on": "2018-08-08T00:00:00Z",
                         "url": (
-                            f"https://abc.cloudfront.net/{classroom.id}/classroomdocument/"
-                            f"{classroom_documents[3].id}/1533686400"
-                            f"?response-content-disposition"
-                            f"=attachment%3B+filename%3D{classroom_documents[3].filename}"
+                            f"https://abc.svc.edge.scw.cloud/aws/{classroom.id}/classroomdocument/"
+                            f"{classroom_documents[3].id}/{classroom_documents[3].filename}"
                         ),
                     },
                     {
@@ -170,11 +167,8 @@ class ClassroomClassroomdocumentsAPITest(TestCase):
                         "upload_state": "pending",
                         "uploaded_on": "2018-08-08T00:00:00Z",
                         "url": (
-                            f"https://abc.cloudfront.net/{classroom.id}/classroomdocument/"
-                            f"{classroom_documents[2].id}/1533686400"
-                            f".{classroom_documents[2].filename.split('.')[-1]}"
-                            f"?response-content-disposition"
-                            f"=attachment%3B+filename%3D{classroom_documents[2].filename}"
+                            f"https://abc.svc.edge.scw.cloud/aws/{classroom.id}/classroomdocument/"
+                            f"{classroom_documents[2].id}/{classroom_documents[2].filename}"
                         ),
                     },
                     {
@@ -185,11 +179,8 @@ class ClassroomClassroomdocumentsAPITest(TestCase):
                         "upload_state": "pending",
                         "uploaded_on": "2018-08-08T00:00:00Z",
                         "url": (
-                            f"https://abc.cloudfront.net/{classroom.id}/classroomdocument/"
-                            f"{classroom_documents[1].id}/1533686400"
-                            f".{classroom_documents[1].filename.split('.')[-1]}"
-                            f"?response-content-disposition"
-                            f"=attachment%3B+filename%3D{classroom_documents[1].filename}"
+                            f"https://abc.svc.edge.scw.cloud/aws/{classroom.id}/classroomdocument/"
+                            f"{classroom_documents[1].id}/{classroom_documents[1].filename}"
                         ),
                     },
                     {
@@ -200,11 +191,8 @@ class ClassroomClassroomdocumentsAPITest(TestCase):
                         "upload_state": "pending",
                         "uploaded_on": "2018-08-08T00:00:00Z",
                         "url": (
-                            f"https://abc.cloudfront.net/{classroom.id}/classroomdocument/"
-                            f"{classroom_documents[0].id}/1533686400"
-                            f".{classroom_documents[0].filename.split('.')[-1]}"
-                            f"?response-content-disposition"
-                            f"=attachment%3B+filename%3D{classroom_documents[0].filename}"
+                            f"https://abc.svc.edge.scw.cloud/aws/{classroom.id}/classroomdocument/"
+                            f"{classroom_documents[0].id}/{classroom_documents[0].filename}"
                         ),
                     },
                 ],
