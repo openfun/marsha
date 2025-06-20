@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from marsha.bbb.models import ClassroomDocument
 from marsha.core.defaults import TMP_STORAGE_BASE_DIRECTORY
 from marsha.core.models import Document, Video
+from marsha.core.serializers.file import DocumentSerializer
 from marsha.core.storage.storage_class import file_storage
 from marsha.core.utils import time_utils
 from marsha.deposit.models import DepositedFile
@@ -57,8 +58,8 @@ def local_videos_storage_upload(
 
 
 @api_view(["POST"])
-def local_document_upload(request: HttpRequest, uuid=None):
-    """Endpoint to mock s3 document upload."""
+def dummy_document_upload(request: HttpRequest, uuid=None):
+    """Dummy endpoint to mock s3 document upload."""
     try:
         document = Document.objects.get(id=uuid)
     except Document.DoesNotExist:
@@ -70,6 +71,23 @@ def local_document_upload(request: HttpRequest, uuid=None):
     )
 
     return Response({"success": True}, status=204)
+
+
+@api_view(["POST"])
+def local_document_upload(request: HttpRequest, uuid=None):
+    """Endpoint to mock s3 document upload."""
+    uploaded_document = request.FILES["file"]
+
+    try:
+        document = Document.objects.get(id=uuid)
+    except Document.DoesNotExist:
+        return Response({"success": False}, status=404)
+
+    filename = DocumentSerializer().get_filename(document)
+    destination = document.get_storage_key(filename=filename)
+
+    file_storage.save(destination, uploaded_document)
+    return Response(status=204)
 
 
 @api_view(["POST"])
