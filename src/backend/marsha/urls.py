@@ -50,6 +50,7 @@ from marsha.core.views import (
     VideoView,
 )
 from marsha.development.api import (
+    dummy_document_upload,
     dummy_video_upload,
     local_classroom_document_upload,
     local_deposited_file_upload,
@@ -184,8 +185,8 @@ if "dummy" in settings.STORAGE_BACKEND:
             name="local-videos-storage-upload",
         ),
         path(
-            "api/document-upload/<uuid:uuid>",
-            local_document_upload,
+            "e2e/api/document-upload/<uuid:uuid>",
+            dummy_document_upload,
             name="local-document-upload",
         ),
         path(

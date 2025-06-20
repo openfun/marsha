@@ -58,6 +58,22 @@ def local_videos_storage_upload(
 
 
 @api_view(["POST"])
+def dummy_document_upload(request: HttpRequest, uuid=None):
+    """Dummy endpoint to mock s3 document upload."""
+    try:
+        document = Document.objects.get(id=uuid)
+    except Document.DoesNotExist:
+        return Response({"success": False}, status=404)
+
+    document.update_upload_state(
+        upload_state="ready",
+        uploaded_on=time_utils.to_datetime(1533686400),
+    )
+
+    return Response({"success": True}, status=204)
+
+
+@api_view(["POST"])
 def local_document_upload(request: HttpRequest, uuid=None):
     """Endpoint to mock s3 document upload."""
     uploaded_document = request.FILES["file"]
