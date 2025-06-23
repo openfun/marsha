@@ -1,6 +1,6 @@
 {
   "name": "marsha",
-  "version": "5.10.0",
+  "version": "5.11.0",
   "description": "🐠 a FUN LTI video provider",
   "main": "front/index.tsx",
   "scripts": {

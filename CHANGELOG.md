@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [5.11.0] - 2025-07-17
+
 ### Changed
 
 - Serve legacy deposited files from Scaleway S3 after AWS migration
@@ -2100,7 +2102,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v5.10.0...master
+[unreleased]: https://github.com/openfun/marsha/compare/v5.11.0...master
+[5.11.0]: https://github.com/openfun/marsha/compare/v5.10.0...v5.11.0
 [5.10.0]: https://github.com/openfun/marsha/compare/v5.9.1...v5.10.0
 [5.9.1]: https://github.com/openfun/marsha/compare/v5.9.0...v5.9.1
 [5.9.0]: https://github.com/openfun/marsha/compare/v5.8.1...v5.9.0
