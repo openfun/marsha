@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [5.9.0] - 2025-06-23
+
 ### Added
 
 - Add support for storing documents on Scaleway S3
@@ -2079,7 +2081,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v5.8.1...master
+[unreleased]: https://github.com/openfun/marsha/compare/v5.9.0...master
+[5.9.0]: https://github.com/openfun/marsha/compare/v5.8.1...v5.9.0
 [5.8.1]: https://github.com/openfun/marsha/compare/v5.8.0...v5.8.1
 [5.8.0]: https://github.com/openfun/marsha/compare/v5.7.0...v5.8.0
 [5.7.0]: https://github.com/openfun/marsha/compare/v5.6.0...v5.7.0
