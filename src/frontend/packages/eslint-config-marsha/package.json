@@ -1,6 +1,6 @@
 {
   "name": "eslint-config-marsha",
-  "version": "5.8.1",
+  "version": "5.9.0",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
