@@ -1,12 +1,12 @@
 """Declare API endpoints for documents with Django RestFramework viewsets."""
 
+from django.conf import settings
 from django.utils import timezone
 
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from marsha import settings
 from marsha.core import defaults, permissions, serializers, storage
 from marsha.core.api.base import APIViewMixin, ObjectPkMixin
 from marsha.core.forms import DocumentForm

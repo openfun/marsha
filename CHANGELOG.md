@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix settings import in Marsha Document
+
 ## [5.9.0] - 2025-06-23
 
 ### Added
