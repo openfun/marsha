@@ -665,6 +665,7 @@ class VideoStartLiveAPITest(TestCase):
     @override_settings(XMPP_CONFERENCE_DOMAIN="conference.xmpp-server.com")
     @override_settings(XMPP_DOMAIN="conference.xmpp-server.com")
     @override_settings(XMPP_JWT_SHARED_SECRET="xmpp_shared_secret")
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
     def test_api_instructor_start_harvested_live(self):
         """AWS stack and chat room should be created after harvesting.
 
@@ -833,20 +834,24 @@ class VideoStartLiveAPITest(TestCase):
                         "title": "python structures",
                         "upload_state": "ready",
                         "urls": {
+                            "media": (
+                                f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
+                                f"sharedlivemedia/{shared_live_media.id}/1638230400.pdf"
+                            ),
                             "pages": {
                                 "1": (
-                                    f"https://abc.cloudfront.net/{video.id}/"
+                                    f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
                                     f"sharedlivemedia/{shared_live_media.id}/1638230400_1.svg"
                                 ),
                                 "2": (
-                                    f"https://abc.cloudfront.net/{video.id}/"
+                                    f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
                                     f"sharedlivemedia/{shared_live_media.id}/1638230400_2.svg"
                                 ),
                                 "3": (
-                                    f"https://abc.cloudfront.net/{video.id}/"
+                                    f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
                                     f"sharedlivemedia/{shared_live_media.id}/1638230400_3.svg"
                                 ),
-                            }
+                            },
                         },
                         "video": str(video.id),
                     },

@@ -29,7 +29,8 @@ from marsha.core.tests.testing_utils import RSA_KEY_MOCK
 
 
 # This test module is quite long...
-# pylint: disable=too-many-lines,duplicate-code
+# pylint: disable=too-many-lines,duplicate-code,line-too-long
+# flake8: noqa: E501
 
 
 class VideoRetrieveAPITest(TestCase):
@@ -139,7 +140,10 @@ class VideoRetrieveAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
 
-    @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
+    @override_settings(
+        CLOUDFRONT_SIGNED_URLS_ACTIVE=False,
+        MEDIA_URL="https://abc.svc.edge.scw.cloud/",
+    )
     def test_api_video_read_detail_token_user(self):
         """Instructors should be able to read the detail of their video."""
         resolutions = [144, 240, 480, 720, 1080]
@@ -300,20 +304,24 @@ class VideoRetrieveAPITest(TestCase):
                         "title": "python structures",
                         "upload_state": "ready",
                         "urls": {
+                            "media": (
+                                f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
+                                f"sharedlivemedia/{shared_live_media.id}/1638230400.pdf"
+                            ),
                             "pages": {
                                 "1": (
-                                    f"https://abc.cloudfront.net/{video.id}/"
+                                    f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
                                     f"sharedlivemedia/{shared_live_media.id}/1638230400_1.svg"
                                 ),
                                 "2": (
-                                    f"https://abc.cloudfront.net/{video.id}/"
+                                    f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
                                     f"sharedlivemedia/{shared_live_media.id}/1638230400_2.svg"
                                 ),
                                 "3": (
-                                    f"https://abc.cloudfront.net/{video.id}/"
+                                    f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
                                     f"sharedlivemedia/{shared_live_media.id}/1638230400_3.svg"
                                 ),
-                            }
+                            },
                         },
                         "video": str(video.id),
                     },
@@ -343,6 +351,7 @@ class VideoRetrieveAPITest(TestCase):
     @override_settings(
         CLOUDFRONT_SIGNED_URLS_ACTIVE=True,
         CLOUDFRONT_SIGNED_PUBLIC_KEY_ID="cloudfront-access-key-id",
+        MEDIA_URL="https://abc.svc.edge.scw.cloud/",
     )
     def test_api_video_read_detail_token_user_nested_shared_live_media_urls_signed(
         self,
@@ -383,8 +392,11 @@ class VideoRetrieveAPITest(TestCase):
 
         # fix the time so that the url signature is deterministic and can be checked
         now = datetime(2021, 11, 30, tzinfo=baseTimezone.utc)
-        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
-            "builtins.open", new_callable=mock.mock_open, read_data=RSA_KEY_MOCK
+        with (
+            mock.patch.object(timezone, "now", return_value=now),
+            mock.patch(
+                "builtins.open", new_callable=mock.mock_open, read_data=RSA_KEY_MOCK
+            ),
         ):
             response = self.client.get(
                 f"/api/videos/{video.id}/",
@@ -515,26 +527,21 @@ class VideoRetrieveAPITest(TestCase):
                         "upload_state": "ready",
                         "urls": {
                             "media": (
-                                "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
-                                "sharedlivemedia/f16dc536-8cba-473c-a85d-0eb88f64d8f9/1638230400."
-                                "pdf?response-content-disposition=attachment%3B+filename%3Dpython"
-                                f"-expressions.pdf&{expected_cloudfront_signature}"
+                                "https://abc.svc.edge.scw.cloud/aws/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
+                                "sharedlivemedia/f16dc536-8cba-473c-a85d-0eb88f64d8f9/1638230400.pdf"
                             ),
                             "pages": {
                                 "1": (
-                                    "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b"
-                                    "9fb/sharedlivemedia/f16dc536-8cba-473c-a85d-0eb88f64d8f9/163"
-                                    f"8230400_1.svg?{expected_cloudfront_signature}"
+                                    "https://abc.svc.edge.scw.cloud/aws/d9d7049c-5a3f-4070-a494-e6bf0bd8b"
+                                    "9fb/sharedlivemedia/f16dc536-8cba-473c-a85d-0eb88f64d8f9/1638230400_1.svg"
                                 ),
                                 "2": (
-                                    "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b"
-                                    "9fb/sharedlivemedia/f16dc536-8cba-473c-a85d-0eb88f64d8f9/163"
-                                    f"8230400_2.svg?{expected_cloudfront_signature}"
+                                    "https://abc.svc.edge.scw.cloud/aws/d9d7049c-5a3f-4070-a494-e6bf0bd8b"
+                                    "9fb/sharedlivemedia/f16dc536-8cba-473c-a85d-0eb88f64d8f9/1638230400_2.svg"
                                 ),
                                 "3": (
-                                    "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b"
-                                    "9fb/sharedlivemedia/f16dc536-8cba-473c-a85d-0eb88f64d8f9/163"
-                                    f"8230400_3.svg?{expected_cloudfront_signature}"
+                                    "https://abc.svc.edge.scw.cloud/aws/d9d7049c-5a3f-4070-a494-e6bf0bd8b"
+                                    "9fb/sharedlivemedia/f16dc536-8cba-473c-a85d-0eb88f64d8f9/1638230400_3.svg"
                                 ),
                             },
                         },
@@ -566,6 +573,7 @@ class VideoRetrieveAPITest(TestCase):
     @override_settings(
         CLOUDFRONT_SIGNED_URLS_ACTIVE=True,
         CLOUDFRONT_SIGNED_PUBLIC_KEY_ID="cloudfront-access-key-id",
+        MEDIA_URL="https://abc.svc.edge.scw.cloud/",
     )
     def test_api_video_read_detail_token_student_user_nested_shared_live_media_urls_signed(
         self,
@@ -606,8 +614,11 @@ class VideoRetrieveAPITest(TestCase):
 
         # fix the time so that the url signature is deterministic and can be checked
         now = datetime(2021, 11, 30, tzinfo=baseTimezone.utc)
-        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
-            "builtins.open", new_callable=mock.mock_open, read_data=RSA_KEY_MOCK
+        with (
+            mock.patch.object(timezone, "now", return_value=now),
+            mock.patch(
+                "builtins.open", new_callable=mock.mock_open, read_data=RSA_KEY_MOCK
+            ),
         ):
             response = self.client.get(
                 f"/api/videos/{video.id}/",
@@ -739,19 +750,16 @@ class VideoRetrieveAPITest(TestCase):
                         "urls": {
                             "pages": {
                                 "1": (
-                                    "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b"
-                                    "9fb/sharedlivemedia/7d9a2087-79be-4731-bcda-f59c7b8b9699/163"
-                                    f"8230400_1.svg?{expected_cloudfront_signature}"
+                                    "https://abc.svc.edge.scw.cloud/aws/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
+                                    "sharedlivemedia/7d9a2087-79be-4731-bcda-f59c7b8b9699/1638230400_1.svg"
                                 ),
                                 "2": (
-                                    "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b"
-                                    "9fb/sharedlivemedia/7d9a2087-79be-4731-bcda-f59c7b8b9699/163"
-                                    f"8230400_2.svg?{expected_cloudfront_signature}"
+                                    "https://abc.svc.edge.scw.cloud/aws/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
+                                    "sharedlivemedia/7d9a2087-79be-4731-bcda-f59c7b8b9699/1638230400_2.svg"
                                 ),
                                 "3": (
-                                    "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b"
-                                    "9fb/sharedlivemedia/7d9a2087-79be-4731-bcda-f59c7b8b9699/163"
-                                    f"8230400_3.svg?{expected_cloudfront_signature}"
+                                    "https://abc.svc.edge.scw.cloud/aws/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
+                                    "sharedlivemedia/7d9a2087-79be-4731-bcda-f59c7b8b9699/1638230400_3.svg"
                                 ),
                             },
                         },
