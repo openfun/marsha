@@ -1,20 +1,15 @@
 """Structure of SharedLiveMedia related models API responses with DRF serializers."""
 
-from urllib.parse import quote_plus
-
-from django.conf import settings
-
 from rest_framework import serializers
 
-from marsha.core.defaults import CELERY_PIPELINE
+from marsha.core.defaults import AWS_STORAGE_BASE_DIRECTORY, CELERY_PIPELINE
 from marsha.core.models import SharedLiveMedia
 from marsha.core.serializers.base import (
     TimestampField,
     UploadableFileWithExtensionSerializerMixin,
-    get_video_cloudfront_url_params,
 )
 from marsha.core.storage.storage_class import file_storage
-from marsha.core.utils import cloudfront_utils, time_utils
+from marsha.core.utils import time_utils
 
 
 class SharedLiveMediaSerializer(
@@ -100,33 +95,20 @@ class SharedLiveMediaSerializer(
         urls = {}
 
         stamp = time_utils.to_timestamp(obj.uploaded_on)
-        base = (
-            f"{settings.AWS_S3_URL_PROTOCOL}://{settings.CLOUDFRONT_DOMAIN}/"
-            f"{obj.video_id}/sharedlivemedia/{obj.pk}/{stamp}"
-        )
 
-        if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
-            params = get_video_cloudfront_url_params(obj.video_id)
+        base = obj.get_storage_prefix(stamp=stamp, base_dir=AWS_STORAGE_BASE_DIRECTORY)
 
         pages = {}
         for page_number in range(1, obj.nb_pages + 1):
-            url = f"{base:s}_{page_number:d}.svg"
-            if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
-                url = cloudfront_utils.build_signed_url(url, params)
-            pages[page_number] = url
+            url = f"{base}_{page_number}.svg"
+            pages[page_number] = file_storage.url(url)
 
         urls["pages"] = pages
 
-        # Downloadable link can be generated only when cloudfront request is signed
-        if (
-            self.context.get("is_admin") or obj.show_download
-        ) and settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
+        if self.context.get("is_admin") or obj.show_download:
             extension = f".{obj.extension}" if obj.extension else ""
-            urls["media"] = cloudfront_utils.build_signed_url(
-                f"{base}{extension}?response-content-disposition="
-                f"{quote_plus('attachment; filename=' + self.get_filename(obj))}",
-                params,
-            )
+            url = f"{base}{extension}"
+            urls["media"] = file_storage.url(url)
 
         return urls
 
