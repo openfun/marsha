@@ -12,6 +12,7 @@ from marsha.core.serializers import TimedTextTrackSerializer
 class TimedTextTrackSerializerTest(TestCase):
     """Test the TimedTextTrack serializer."""
 
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
     def test_timed_text_track_serializer_urls_with_aws_pipeline(self):
         """The TimedTextTrackSerializer should return AWS URLs."""
         date = datetime(2022, 1, 1, tzinfo=baseTimezone.utc)
@@ -32,18 +33,15 @@ class TimedTextTrackSerializerTest(TestCase):
         )
         serializer = TimedTextTrackSerializer(timed_text_track)
         self.assertEqual(
-            f"https://abc.cloudfront.net/{video.pk}/timedtext/1640995200_fr_ts.vtt",
+            f"https://abc.svc.edge.scw.cloud/aws/{video.pk}/timedtext/1640995200_fr_ts.vtt",
             serializer.data["url"],
         )
         self.assertEqual(
-            f"https://abc.cloudfront.net/{video.pk}/timedtext/source/1640995200_fr_ts"
-            "?response-content-disposition=attachment%3B+filename%3Dplaylist-001_1640995200.srt",
+            f"https://abc.svc.edge.scw.cloud/aws/{video.pk}/timedtext/source/1640995200_fr_ts",
             serializer.data["source_url"],
         )
 
-    @override_settings(
-        MEDIA_URL="https://abc.cloudfront.net/",
-    )
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
     def test_timed_text_track_serializer_urls_with_celery_pipeline(self):
         """The TimedTextTrackSerializer should return videos storage URLs."""
         date = datetime(2022, 1, 1, tzinfo=baseTimezone.utc)
@@ -63,12 +61,12 @@ class TimedTextTrackSerializerTest(TestCase):
         )
         serializer = TimedTextTrackSerializer(timed_text_track)
         self.assertEqual(
-            f"https://abc.cloudfront.net/vod/{video.pk}/timedtext/"
+            f"https://abc.svc.edge.scw.cloud/vod/{video.pk}/timedtext/"
             f"{timed_text_track.pk}/1640995200/1640995200.vtt",
             serializer.data["url"],
         )
         self.assertEqual(
-            f"https://abc.cloudfront.net/vod/{video.pk}/timedtext/"
+            f"https://abc.svc.edge.scw.cloud/vod/{video.pk}/timedtext/"
             f"{timed_text_track.pk}/1640995200/source.srt",
             serializer.data["source_url"],
         )
