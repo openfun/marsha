@@ -212,6 +212,7 @@ class MarkdownImageRetrieveApiTest(TestCase):
             },
         )
 
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
     def test_api_markdown_image_read_ready_markdown_image_aws(self):
         """A ready Markdown image on AWS should have computed urls."""
         markdown_document = MarkdownDocumentFactory(
@@ -248,7 +249,7 @@ class MarkdownImageRetrieveApiTest(TestCase):
                 "is_ready_to_show": True,
                 "upload_state": "ready",
                 "url": (
-                    "https://abc.cloudfront.net/"
+                    "https://abc.svc.edge.scw.cloud/aws/"
                     "78338c1c-356e-4156-bd95-5bed71ffb655/markdown-image/"
                     "9ddf9c1f-ec88-4a3a-bfa0-423c4fe89b15/1533686400.gif"
                 ),
