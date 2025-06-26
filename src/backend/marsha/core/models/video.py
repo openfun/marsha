@@ -20,6 +20,7 @@ from safedelete.queryset import SafeDeleteQueryset
 
 from marsha.core.defaults import (
     APPROVAL,
+    AWS_STORAGE_BASE_DIRECTORY,
     CELERY_PIPELINE,
     DELETED,
     DELETED_STORAGE_BASE_DIRECTORY,
@@ -340,6 +341,10 @@ class Video(BaseFile, RetentionDateObjectMixin):
         """
         stamp = stamp or self.uploaded_on_stamp()
         base = base_dir
+
+        if base == AWS_STORAGE_BASE_DIRECTORY:
+            return f"{base}/{self.pk}"
+
         if base == DELETED_STORAGE_BASE_DIRECTORY:
             base = f"{base}/{VOD_STORAGE_BASE_DIRECTORY}"
 
@@ -693,7 +698,10 @@ class TimedTextTrack(BaseTrack):
         stamp = stamp or self.uploaded_on_stamp()
         base = base_dir
         if base_dir == DELETED_STORAGE_BASE_DIRECTORY:
-            base = f"{DELETED_STORAGE_BASE_DIRECTORY}/{VOD_STORAGE_BASE_DIRECTORY}"
+            base = f"{base}/{VOD_STORAGE_BASE_DIRECTORY}"
+
+        if base_dir == AWS_STORAGE_BASE_DIRECTORY:
+            base = f"{base}/{self.video.pk}/timedtext/source"
 
         return f"{base}/{self.video.pk}/timedtext/{self.pk}/{stamp}"
 
@@ -845,7 +853,10 @@ class Thumbnail(AbstractImage):
         stamp = stamp or self.uploaded_on_stamp()
         base = base_dir
         if base_dir == DELETED_STORAGE_BASE_DIRECTORY:
-            base = f"{DELETED_STORAGE_BASE_DIRECTORY}/{VOD_STORAGE_BASE_DIRECTORY}"
+            base = f"{base}/{VOD_STORAGE_BASE_DIRECTORY}"
+
+        if base_dir == AWS_STORAGE_BASE_DIRECTORY:
+            return f"{base}/{self.video.pk}/thumbnails"
 
         return f"{base}/{self.video.pk}/thumbnail/{stamp}"
 
@@ -1327,7 +1338,7 @@ class SharedLiveMedia(UploadableFileMixin, BaseModel):
         stamp = stamp or self.uploaded_on_stamp()
         base = base_dir
         if base_dir == DELETED_STORAGE_BASE_DIRECTORY:
-            base = f"{DELETED_STORAGE_BASE_DIRECTORY}/{VOD_STORAGE_BASE_DIRECTORY}"
+            base = f"{base}/{VOD_STORAGE_BASE_DIRECTORY}"
 
         return f"{base}/{self.video.pk}/sharedlivemedia/{self.pk}/{stamp}"
 

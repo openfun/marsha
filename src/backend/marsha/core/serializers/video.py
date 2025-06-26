@@ -16,6 +16,7 @@ from sentry_sdk import capture_message
 
 from marsha.core.defaults import (
     AWS_PIPELINE,
+    AWS_STORAGE_BASE_DIRECTORY,
     ENDED,
     HARVESTED,
     IDLE,
@@ -28,7 +29,7 @@ from marsha.core.defaults import (
     TMP_STORAGE_BASE_DIRECTORY,
 )
 from marsha.core.models import TimedTextTrack, Video
-from marsha.core.serializers.base import TimestampField, get_video_cloudfront_url_params
+from marsha.core.serializers.base import TimestampField
 from marsha.core.serializers.playlist import PlaylistLiteSerializer
 from marsha.core.serializers.shared_live_media import (
     SharedLiveMediaId3TagsSerializer,
@@ -37,7 +38,7 @@ from marsha.core.serializers.shared_live_media import (
 from marsha.core.serializers.thumbnail import ThumbnailSerializer
 from marsha.core.serializers.timed_text_track import TimedTextTrackSerializer
 from marsha.core.storage.storage_class import file_storage
-from marsha.core.utils import cloudfront_utils, jitsi_utils, time_utils, xmpp_utils
+from marsha.core.utils import jitsi_utils, time_utils, xmpp_utils
 from marsha.core.utils.time_utils import to_datetime
 
 
@@ -220,9 +221,9 @@ class VideoBaseSerializer(serializers.ModelSerializer):
             )
 
         if obj.transcode_pipeline == AWS_PIPELINE:
-            base = f"{settings.AWS_S3_URL_PROTOCOL}://{settings.CLOUDFRONT_DOMAIN}/{obj.pk}"
-            if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
-                params = get_video_cloudfront_url_params(obj.pk)
+            base = obj.get_storage_prefix(
+                stamp=stamp, base_dir=AWS_STORAGE_BASE_DIRECTORY
+            )
 
             filename = f"{slugify(obj.playlist.title)}_{stamp}.mp4"
             content_disposition = quote_plus(f"attachment; filename={filename}")
@@ -239,10 +240,6 @@ class VideoBaseSerializer(serializers.ModelSerializer):
                     resolution,
                     f"{base}/thumbnails/{stamp}_{resolution}.0000000.jpg",
                 )
-
-                # Sign the urls of mp4 videos only if the functionality is activated
-                if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
-                    mp4_url = cloudfront_utils.build_signed_url(mp4_url, params)
 
                 urls["mp4"][resolution] = mp4_url
 
