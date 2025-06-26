@@ -1261,44 +1261,6 @@ class SharedLiveMedia(UploadableFileMixin, BaseModel):
         verbose_name = _("shared live media")
         verbose_name_plural = _("shared live medias")
 
-    def get_source_s3_key(self, stamp=None, extension=None):
-        """Compute the S3 key in the source bucket.
-
-        It is built from the video ID + ID of the shared live media + version stamp.
-
-        Parameters
-        ----------
-        stamp: Type[string]
-            Passing a value for this argument will return the source S3 key for the shared live
-            media assuming its active stamp is set to this value. This is useful to create an
-            upload policy for this prospective version of the track, so that the client can
-            upload the file to S3 and the confirmation lambda can set the `uploaded_on` field
-            to this value only after the file upload and processing is successful.
-
-
-        extension: Type[string]
-            The extension used by the uploaded media. This extension is added at the end of the key
-            to keep a record of the extension. We will use it in the update-state endpoint to
-            record it in the database.
-
-        Returns
-        -------
-        string
-            The S3 key for the shared live media in the source bucket, where uploaded files are
-            stored before they are converted and copied to the destination bucket.
-
-        """
-        # We don't want to deal with None value so we set it with an empty string
-        extension = extension or ""
-
-        # We check if the extension starts with a leading dot or not. If it's not the case we add
-        # it at the beginning of the string
-        if extension and not extension.startswith("."):
-            extension = "." + extension
-
-        stamp = stamp or self.uploaded_on_stamp()
-        return f"{self.video.pk}/sharedlivemedia/{self.pk}/{stamp}{extension}"
-
     def get_storage_prefix(
         self,
         stamp=None,

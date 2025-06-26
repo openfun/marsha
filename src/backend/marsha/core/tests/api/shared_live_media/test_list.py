@@ -72,6 +72,9 @@ class SharedLiveMediaListAPITest(TestCase):
 
         self.assertEqual(response.status_code, 403)
 
+    @override_settings(
+        MEDIA_URL="https://abc.svc.edge.scw.cloud/",
+    )
     def test_api_shared_live_media_list_instructor(self):
         """An instructor can list shared live media details."""
         video = VideoFactory()
@@ -136,20 +139,24 @@ class SharedLiveMediaListAPITest(TestCase):
                         "title": "python expressions",
                         "upload_state": "ready",
                         "urls": {
+                            "media": (
+                                f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
+                                f"sharedlivemedia/{shared_live_media2.id}/1638230400.pdf"
+                            ),
                             "pages": {
                                 "1": (
-                                    f"https://abc.cloudfront.net/{video.id}/"
+                                    f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
                                     f"sharedlivemedia/{shared_live_media2.id}/1638230400_1.svg"
                                 ),
                                 "2": (
-                                    f"https://abc.cloudfront.net/{video.id}/"
+                                    f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
                                     f"sharedlivemedia/{shared_live_media2.id}/1638230400_2.svg"
                                 ),
                                 "3": (
-                                    f"https://abc.cloudfront.net/{video.id}/"
+                                    f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
                                     f"sharedlivemedia/{shared_live_media2.id}/1638230400_3.svg"
                                 ),
-                            }
+                            },
                         },
                         "video": str(video.id),
                     },
@@ -198,10 +205,9 @@ class SharedLiveMediaListAPITest(TestCase):
         )
 
     @override_settings(
-        CLOUDFRONT_SIGNED_URLS_ACTIVE=True,
-        CLOUDFRONT_SIGNED_PUBLIC_KEY_ID="cloudfront-access-key-id",
+        MEDIA_URL="https://abc.svc.edge.scw.cloud/",
     )
-    def test_api_shared_live_media_list_instructor_ready_to_show_and_signed_url_active(
+    def test_api_shared_live_media_list_instructor_ready_to_show(
         self,
     ):
         """An instructor can list shared live media details ready to show and signed url on."""
@@ -236,8 +242,11 @@ class SharedLiveMediaListAPITest(TestCase):
 
         # fix the time so that the url signature is deterministic and can be checked
         now = datetime(2021, 11, 30, tzinfo=baseTimezone.utc)
-        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
-            "builtins.open", new_callable=mock.mock_open, read_data=RSA_KEY_MOCK
+        with (
+            mock.patch.object(timezone, "now", return_value=now),
+            mock.patch(
+                "builtins.open", new_callable=mock.mock_open, read_data=RSA_KEY_MOCK
+            ),
         ):
             response = self.client.get(
                 self._get_url(video),
@@ -245,19 +254,6 @@ class SharedLiveMediaListAPITest(TestCase):
             )
 
         self.assertEqual(response.status_code, 200)
-
-        expected_cloudfront_signature = (
-            "Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0"
-            "cHM6Ly9hYmMuY2xvdWRmcm9udC5uZXQvZDlkNzA0OWMtNWEzZi00MDcwLWE0OTQt"
-            "ZTZiZjBiZDhiOWZiLyoiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFX"
-            "UzpFcG9jaFRpbWUiOjE2MzgyMzc2MDB9fX1dfQ__&Signature=IVWMFfS7WQVTK"
-            "LZl~gKgGES~BS~wVLBIOncSE6yVgg9zIrEI1Epq3AVkOsI7z10dyjgInNbPviArn"
-            "xmlV~DQeN-ykgEWmGy7aT4lRCx61oXuHFtNkq8Qx-we~UY87mZ4~UTqmM~JVuuLd"
-            "uMiRQB-I3XKaRQGRlsok5yGu0RhvLcZntVFp6QgYui3WtGvxSs2LjW0IakR1qepS"
-            "Dl9LXI-F2bgl9Vd1U9eapPBhhoD0okebXm7NGg9gUMLXlmUo-RvsrAzzEteKctPp"
-            "0Xzkydk~tcnMkJs4jfbQxKrpyF~N9OuCRYCs68ONhHvypOYU3K-wQEoAFlERBLia"
-            "OzDZUzlyA__&Key-Pair-Id=cloudfront-access-key-id"
-        )
 
         content = json.loads(response.content)
         self.assertEqual(
@@ -278,26 +274,21 @@ class SharedLiveMediaListAPITest(TestCase):
                         "upload_state": "ready",
                         "urls": {
                             "media": (
-                                "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
-                                "sharedlivemedia/7520c16b-5846-41ca-822b-52b446a96809/1638230400."
-                                "pdf?response-content-disposition=attachment%3B+filename%3Dpython"
-                                f"-expressions.pdf&{expected_cloudfront_signature}"
+                                f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
+                                f"sharedlivemedia/{shared_live_media.id}/1638230400.pdf"
                             ),
                             "pages": {
                                 "1": (
-                                    "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9"
-                                    "fb/sharedlivemedia/7520c16b-5846-41ca-822b-52b446a96809/16382"
-                                    f"30400_1.svg?{expected_cloudfront_signature}"
+                                    f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
+                                    f"sharedlivemedia/{shared_live_media.id}/1638230400_1.svg"
                                 ),
                                 "2": (
-                                    "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9"
-                                    "fb/sharedlivemedia/7520c16b-5846-41ca-822b-52b446a96809/16382"
-                                    f"30400_2.svg?{expected_cloudfront_signature}"
+                                    f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
+                                    f"sharedlivemedia/{shared_live_media.id}/1638230400_2.svg"
                                 ),
                                 "3": (
-                                    "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9"
-                                    "fb/sharedlivemedia/7520c16b-5846-41ca-822b-52b446a96809/16382"
-                                    f"30400_3.svg?{expected_cloudfront_signature}"
+                                    f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
+                                    f"sharedlivemedia/{shared_live_media.id}/1638230400_3.svg"
                                 ),
                             },
                         },
@@ -346,6 +337,9 @@ class SharedLiveMediaListAPITest(TestCase):
 
         self.assertEqual(response.status_code, 403)
 
+    @override_settings(
+        MEDIA_URL="https://abc.svc.edge.scw.cloud/",
+    )
     def test_api_shared_live_media_list_by_video_playlist_admin(self):
         """
         Playlist administrator token user list shared live medias for a video.
@@ -418,17 +412,21 @@ class SharedLiveMediaListAPITest(TestCase):
                         "title": "python extensions",
                         "upload_state": "ready",
                         "urls": {
+                            "media": (
+                                f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
+                                f"sharedlivemedia/{shared_live_media2.id}/1638230400.pdf"
+                            ),
                             "pages": {
                                 "1": (
-                                    f"https://abc.cloudfront.net/{video.id}/"
+                                    f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
                                     f"sharedlivemedia/{shared_live_media2.id}/1638230400_1.svg"
                                 ),
                                 "2": (
-                                    f"https://abc.cloudfront.net/{video.id}/"
+                                    f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
                                     f"sharedlivemedia/{shared_live_media2.id}/1638230400_2.svg"
                                 ),
                                 "3": (
-                                    f"https://abc.cloudfront.net/{video.id}/"
+                                    f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
                                     f"sharedlivemedia/{shared_live_media2.id}/1638230400_3.svg"
                                 ),
                             },
@@ -503,6 +501,9 @@ class SharedLiveMediaListAPITest(TestCase):
 
         self.assertEqual(response.status_code, 403)
 
+    @override_settings(
+        MEDIA_URL="https://abc.svc.edge.scw.cloud/",
+    )
     def test_api_shared_live_media_list_by_video_organization_admin(self):
         """
         Organization administrator token user list shared live medias for a video.
@@ -578,20 +579,24 @@ class SharedLiveMediaListAPITest(TestCase):
                         "title": "python extensions",
                         "upload_state": "ready",
                         "urls": {
+                            "media": (
+                                f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
+                                f"sharedlivemedia/{shared_live_media2.id}/1638230400.pdf"
+                            ),
                             "pages": {
                                 "1": (
-                                    f"https://abc.cloudfront.net/{video.id}/"
+                                    f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
                                     f"sharedlivemedia/{shared_live_media2.id}/1638230400_1.svg"
                                 ),
                                 "2": (
-                                    f"https://abc.cloudfront.net/{video.id}/"
+                                    f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
                                     f"sharedlivemedia/{shared_live_media2.id}/1638230400_2.svg"
                                 ),
                                 "3": (
-                                    f"https://abc.cloudfront.net/{video.id}/"
+                                    f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
                                     f"sharedlivemedia/{shared_live_media2.id}/1638230400_3.svg"
                                 ),
-                            }
+                            },
                         },
                         "video": str(video.id),
                     },

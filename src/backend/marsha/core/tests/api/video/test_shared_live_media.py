@@ -83,11 +83,14 @@ class VideoSharedLiveMediaStartTestCase(TestCase):
         """Assert the user can start sharing the live."""
         self.assertIsNone(video.active_shared_live_media_id)
 
-        with mock.patch.object(
-            channel_layers_utils, "dispatch_video_to_groups"
-        ) as mock_dispatch_video_to_groups, mock.patch(
-            "marsha.core.serializers.xmpp_utils.generate_jwt"
-        ) as mock_jwt_encode:
+        with (
+            mock.patch.object(
+                channel_layers_utils, "dispatch_video_to_groups"
+            ) as mock_dispatch_video_to_groups,
+            mock.patch(
+                "marsha.core.serializers.xmpp_utils.generate_jwt"
+            ) as mock_jwt_encode,
+        ):
             mock_jwt_encode.return_value = "xmpp_jwt"
 
             jwt_token = UserAccessTokenFactory(user=user)
@@ -241,11 +244,14 @@ class VideoSharedLiveMediaNavigateTestCase(TestCase):
         """Assert the user can navigate sharing the live."""
         self.assertNotEqual(video.active_shared_live_media_page, 2)
 
-        with mock.patch.object(
-            channel_layers_utils, "dispatch_video_to_groups"
-        ) as mock_dispatch_video_to_groups, mock.patch(
-            "marsha.core.serializers.xmpp_utils.generate_jwt"
-        ) as mock_jwt_encode:
+        with (
+            mock.patch.object(
+                channel_layers_utils, "dispatch_video_to_groups"
+            ) as mock_dispatch_video_to_groups,
+            mock.patch(
+                "marsha.core.serializers.xmpp_utils.generate_jwt"
+            ) as mock_jwt_encode,
+        ):
             mock_jwt_encode.return_value = "xmpp_jwt"
 
             jwt_token = UserAccessTokenFactory(user=user)
@@ -391,11 +397,14 @@ class VideoSharedLiveMediaEndTestCase(TestCase):
         """Assert the user can end sharing the live."""
         self.assertEqual(video.active_shared_live_media_id, shared_live_media.pk)
 
-        with mock.patch.object(
-            channel_layers_utils, "dispatch_video_to_groups"
-        ) as mock_dispatch_video_to_groups, mock.patch(
-            "marsha.core.serializers.xmpp_utils.generate_jwt"
-        ) as mock_jwt_encode:
+        with (
+            mock.patch.object(
+                channel_layers_utils, "dispatch_video_to_groups"
+            ) as mock_dispatch_video_to_groups,
+            mock.patch(
+                "marsha.core.serializers.xmpp_utils.generate_jwt"
+            ) as mock_jwt_encode,
+        ):
             mock_jwt_encode.return_value = "xmpp_jwt"
 
             jwt_token = UserAccessTokenFactory(user=user)
@@ -652,6 +661,7 @@ class TestVideoSharedLiveMedia(TestCase):
     @override_settings(XMPP_CONFERENCE_DOMAIN="conference.xmpp-server.com")
     @override_settings(XMPP_DOMAIN="conference.xmpp-server.com")
     @override_settings(XMPP_JWT_SHARED_SECRET="xmpp_shared_secret")
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
     def test_api_video_shared_live_media_start_instructor_ready(self):
         """An instructor can start a ready shared live media."""
 
@@ -697,13 +707,15 @@ class TestVideoSharedLiveMedia(TestCase):
         jwt_token = InstructorOrAdminLtiTokenFactory(
             playlist=shared_live_media.video.playlist,
         )
-        with mock.patch.object(
-            channel_layers_utils, "dispatch_video_to_groups"
-        ) as mock_dispatch_video_to_groups, mock.patch.object(
-            api.video, "update_id3_tags"
-        ) as mock_update_id3_tags, mock.patch(
-            "marsha.core.serializers.xmpp_utils.generate_jwt"
-        ) as mock_jwt_encode:
+        with (
+            mock.patch.object(
+                channel_layers_utils, "dispatch_video_to_groups"
+            ) as mock_dispatch_video_to_groups,
+            mock.patch.object(api.video, "update_id3_tags") as mock_update_id3_tags,
+            mock.patch(
+                "marsha.core.serializers.xmpp_utils.generate_jwt"
+            ) as mock_jwt_encode,
+        ):
             mock_update_id3_tags.assert_not_called()
             mock_jwt_encode.return_value = "xmpp_jwt"
             response = self.client.patch(
@@ -731,23 +743,28 @@ class TestVideoSharedLiveMedia(TestCase):
                         "title": "slides",
                         "upload_state": READY,
                         "urls": {
+                            "media": (
+                                "https://abc.svc.edge.scw.cloud/aws/"
+                                f"{video.id}/sharedlivemedia/"
+                                f"{shared_live_media.id}/1638230400.pdf"
+                            ),
                             "pages": {
                                 "1": (
-                                    "https://abc.cloudfront.net/"
+                                    "https://abc.svc.edge.scw.cloud/aws/"
                                     f"{video.id}/sharedlivemedia/"
                                     f"{shared_live_media.id}/1638230400_1.svg"
                                 ),
                                 "2": (
-                                    "https://abc.cloudfront.net/"
+                                    "https://abc.svc.edge.scw.cloud/aws/"
                                     f"{video.id}/sharedlivemedia/"
                                     f"{shared_live_media.id}/1638230400_2.svg"
                                 ),
                                 "3": (
-                                    "https://abc.cloudfront.net/"
+                                    "https://abc.svc.edge.scw.cloud/aws/"
                                     f"{video.id}/sharedlivemedia/"
                                     f"{shared_live_media.id}/1638230400_3.svg"
                                 ),
-                            }
+                            },
                         },
                         "video": str(video.id),
                     },
@@ -801,23 +818,28 @@ class TestVideoSharedLiveMedia(TestCase):
                             "title": "slides",
                             "upload_state": READY,
                             "urls": {
+                                "media": (
+                                    "https://abc.svc.edge.scw.cloud/aws/"
+                                    f"{video.id}/sharedlivemedia/"
+                                    f"{shared_live_media.id}/1638230400.pdf"
+                                ),
                                 "pages": {
                                     "1": (
-                                        "https://abc.cloudfront.net/"
+                                        "https://abc.svc.edge.scw.cloud/aws/"
                                         f"{video.id}/sharedlivemedia/"
                                         f"{shared_live_media.id}/1638230400_1.svg"
                                     ),
                                     "2": (
-                                        "https://abc.cloudfront.net/"
+                                        "https://abc.svc.edge.scw.cloud/aws/"
                                         f"{video.id}/sharedlivemedia/"
                                         f"{shared_live_media.id}/1638230400_2.svg"
                                     ),
                                     "3": (
-                                        "https://abc.cloudfront.net/"
+                                        "https://abc.svc.edge.scw.cloud/aws/"
                                         f"{video.id}/sharedlivemedia/"
                                         f"{shared_live_media.id}/1638230400_3.svg"
                                     ),
-                                }
+                                },
                             },
                             "video": str(video.id),
                         },
@@ -1082,13 +1104,15 @@ class TestVideoSharedLiveMedia(TestCase):
             playlist=shared_live_media.video.playlist,
         )
 
-        with mock.patch.object(
-            channel_layers_utils, "dispatch_video_to_groups"
-        ) as mock_dispatch_video_to_groups, mock.patch.object(
-            api.video, "update_id3_tags"
-        ) as mock_update_id3_tags, mock.patch(
-            "marsha.core.serializers.xmpp_utils.generate_jwt"
-        ) as mock_jwt_encode:
+        with (
+            mock.patch.object(
+                channel_layers_utils, "dispatch_video_to_groups"
+            ) as mock_dispatch_video_to_groups,
+            mock.patch.object(api.video, "update_id3_tags") as mock_update_id3_tags,
+            mock.patch(
+                "marsha.core.serializers.xmpp_utils.generate_jwt"
+            ) as mock_jwt_encode,
+        ):
             mock_update_id3_tags.assert_not_called()
             mock_jwt_encode.return_value = "xmpp_jwt"
             response = self.client.patch(
@@ -1488,13 +1512,15 @@ class TestVideoSharedLiveMedia(TestCase):
             playlist=shared_live_media.video.playlist,
         )
 
-        with mock.patch.object(
-            channel_layers_utils, "dispatch_video_to_groups"
-        ) as mock_dispatch_video_to_groups, mock.patch.object(
-            api.video, "update_id3_tags"
-        ) as mock_update_id3_tags, mock.patch(
-            "marsha.core.serializers.xmpp_utils.generate_jwt"
-        ) as mock_jwt_encode:
+        with (
+            mock.patch.object(
+                channel_layers_utils, "dispatch_video_to_groups"
+            ) as mock_dispatch_video_to_groups,
+            mock.patch.object(api.video, "update_id3_tags") as mock_update_id3_tags,
+            mock.patch(
+                "marsha.core.serializers.xmpp_utils.generate_jwt"
+            ) as mock_jwt_encode,
+        ):
             mock_update_id3_tags.assert_not_called()
             mock_jwt_encode.return_value = "xmpp_jwt"
             response = self.client.patch(

@@ -12,8 +12,11 @@ from marsha.core.serializers import SharedLiveMediaSerializer
 class SharedLiveMediaSerializerTest(TestCase):
     """Test the SharedLiveMedia serializer."""
 
+    @override_settings(
+        MEDIA_URL="https://abc.svc.edge.scw.cloud/",
+    )
     def test_shared_live_media_serializer_urls_with_aws_pipeline(self):
-        """The SharedLiveMediaSerializer should return AWS URLs."""
+        """The SharedLiveMediaSerializer should return legacy URLs."""
         date = datetime(2022, 1, 1, tzinfo=baseTimezone.utc)
         video = VideoFactory(
             transcode_pipeline=AWS_PIPELINE,
@@ -29,13 +32,13 @@ class SharedLiveMediaSerializerTest(TestCase):
         serializer = SharedLiveMediaSerializer(shared_live_media)
         for page in range(1, shared_live_media.nb_pages + 1):
             self.assertEqual(
-                f"https://abc.cloudfront.net/{video.pk}/sharedlivemedia/"
+                f"https://abc.svc.edge.scw.cloud/aws/{video.pk}/sharedlivemedia/"
                 f"{shared_live_media.pk}/1640995200_{page}.svg",
                 serializer.data["urls"]["pages"][page],
             )
 
     @override_settings(
-        MEDIA_URL="https://abc.cloudfront.net/",
+        MEDIA_URL="https://abc.svc.edge.scw.cloud/",
     )
     def test_shared_live_media_serializer_urls_with_celery_pipeline(self):
         """The SharedLiveMediaSerializer should return videos storage URLs."""
@@ -55,7 +58,7 @@ class SharedLiveMediaSerializerTest(TestCase):
 
         for page in range(1, shared_live_media.nb_pages + 1):
             self.assertEqual(
-                f"https://abc.cloudfront.net/vod/{video.pk}/sharedlivemedia/"
+                f"https://abc.svc.edge.scw.cloud/vod/{video.pk}/sharedlivemedia/"
                 f"{shared_live_media.pk}/1640995200/1640995200_{page}.svg",
                 serializer.data["urls"]["pages"][page],
             )
