@@ -23,6 +23,10 @@ from marsha.core.simple_jwt.factories import (
 )
 
 
+# flake8: noqa: E501
+# pylint: disable=line-too-long
+
+
 class ThumbnailRetrieveApiTest(TestCase):
     """Test the retrieve API of the thumbnail object."""
 
@@ -199,7 +203,6 @@ class ThumbnailRetrieveApiTest(TestCase):
 
         self.assertEqual(response.status_code, 403)
 
-    @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
     def test_api_thumbnail_read_detail_token_user(self):
         """Instructors should be able to read details of thumbnail associated to their video."""
         video = VideoFactory(
@@ -245,7 +248,6 @@ class ThumbnailRetrieveApiTest(TestCase):
 
         self.assertEqual(response.status_code, 403)
 
-    @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
     def test_api_thumbnail_read_detail_admin_user(self):
         """Admin should be able to read details of thumbnail associated to their video."""
         video = VideoFactory(
@@ -278,6 +280,7 @@ class ThumbnailRetrieveApiTest(TestCase):
             },
         )
 
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
     def test_api_thumbnail_read_ready_thumbnail(self):
         """A ready thumbnail should have computed urls."""
         video = VideoFactory(
@@ -310,15 +313,15 @@ class ThumbnailRetrieveApiTest(TestCase):
                 "is_ready_to_show": True,
                 "upload_state": "ready",
                 "urls": {
-                    "240": "https://abc.cloudfront.net/78338c1c-356e-4156-bd95-5bed71ffb655/"
+                    "240": "https://abc.svc.edge.scw.cloud/aws/78338c1c-356e-4156-bd95-5bed71ffb655/"
                     "thumbnails/1533686400_240.jpg",
-                    "360": "https://abc.cloudfront.net/78338c1c-356e-4156-bd95-5bed71ffb655/"
+                    "360": "https://abc.svc.edge.scw.cloud/aws/78338c1c-356e-4156-bd95-5bed71ffb655/"
                     "thumbnails/1533686400_360.jpg",
-                    "480": "https://abc.cloudfront.net/78338c1c-356e-4156-bd95-5bed71ffb655/"
+                    "480": "https://abc.svc.edge.scw.cloud/aws/78338c1c-356e-4156-bd95-5bed71ffb655/"
                     "thumbnails/1533686400_480.jpg",
-                    "720": "https://abc.cloudfront.net/78338c1c-356e-4156-bd95-5bed71ffb655/"
+                    "720": "https://abc.svc.edge.scw.cloud/aws/78338c1c-356e-4156-bd95-5bed71ffb655/"
                     "thumbnails/1533686400_720.jpg",
-                    "1080": "https://abc.cloudfront.net/78338c1c-356e-4156-bd95-5bed71ffb655/"
+                    "1080": "https://abc.svc.edge.scw.cloud/aws/78338c1c-356e-4156-bd95-5bed71ffb655/"
                     "thumbnails/1533686400_1080.jpg",
                 },
                 "video": str(video.id),

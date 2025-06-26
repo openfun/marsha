@@ -12,6 +12,7 @@ from marsha.core.serializers import ThumbnailSerializer
 class ThumbnailSerializerTest(TestCase):
     """Test the ThumbnailSerializer serializer."""
 
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
     def test_thumbnail_serializer_urls_with_aws_pipeline(self):
         """The ThumbnailSerializer should return the AWS URLs."""
         date = datetime(2022, 1, 1, tzinfo=baseTimezone.utc)
@@ -30,13 +31,11 @@ class ThumbnailSerializerTest(TestCase):
         sizes = [240, 360, 480, 720, 1080]
         for size in sizes:
             self.assertEqual(
-                f"https://abc.cloudfront.net/{video.pk}/thumbnails/1640995200_{size}.jpg",
+                f"https://abc.svc.edge.scw.cloud/aws/{video.pk}/thumbnails/1640995200_{size}.jpg",
                 serializer.data["urls"][size],
             )
 
-    @override_settings(
-        MEDIA_URL="https://abc.cloudfront.net/",
-    )
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
     def test_thumbnail_serializer_urls_with_celery_pipeline(self):
         """The ThumbnailSerializer should return the videos storage URLs."""
         date = datetime(2022, 1, 1, tzinfo=baseTimezone.utc)
@@ -56,7 +55,7 @@ class ThumbnailSerializerTest(TestCase):
         sizes = [240, 360, 480, 720, 1080]
         for size in sizes:
             self.assertEqual(
-                f"https://abc.cloudfront.net/vod/{video.pk}/thumbnail/1640995200/{size}.jpg",
+                f"https://abc.svc.edge.scw.cloud/vod/{video.pk}/thumbnail/1640995200/{size}.jpg",
                 serializer.data["urls"][size],
             )
 
