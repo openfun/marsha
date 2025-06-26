@@ -623,32 +623,6 @@ class TimedTextTrack(BaseTrack):
             )
         ]
 
-    def get_source_s3_key(self, stamp=None):
-        """Compute the S3 key in the source bucket.
-
-        It is built from the video ID + ID of the timed text track + version stamp + language +
-        closed captioning flag.
-
-        Parameters
-        ----------
-        stamp: Type[string]
-            Passing a value for this argument will return the source S3 key for the timed text
-            track assuming its active stamp is set to this value. This is useful to create an
-            upload policy for this prospective version of the track, so that the client can
-            upload the file to S3 and the confirmation lambda can set the `uploaded_on` field
-            to this value only after the file upload and processing is successful.
-
-        Returns
-        -------
-        string
-            The S3 key for the timed text files in the source bucket, where uploaded files are
-            stored before they are converted and copied to the destination bucket.
-
-        """
-        stamp = stamp or self.uploaded_on_stamp()
-        mode = f"_{self.mode}" if self.mode else ""
-        return f"{self.video.pk}/timedtexttrack/{self.pk}/{stamp}_{self.language}{mode}"
-
     def get_storage_prefix(
         self,
         stamp=None,

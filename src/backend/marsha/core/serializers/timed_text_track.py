@@ -1,17 +1,14 @@
 """Structure of TimedTextTrack related models API responses with DRF serializers."""
 
-from urllib.parse import quote_plus
-
 from django.conf import settings
-from django.utils.text import slugify
 
 from rest_framework import serializers
 
-from marsha.core.defaults import CELERY_PIPELINE
+from marsha.core.defaults import AWS_STORAGE_BASE_DIRECTORY, CELERY_PIPELINE
 from marsha.core.models import TimedTextTrack
-from marsha.core.serializers.base import TimestampField, get_video_cloudfront_url_params
+from marsha.core.serializers.base import TimestampField
 from marsha.core.storage.storage_class import file_storage
-from marsha.core.utils import cloudfront_utils, time_utils
+from marsha.core.utils import time_utils
 
 
 class TimedTextTrackSerializer(serializers.ModelSerializer):
@@ -80,51 +77,8 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
 
         return super().create(validated_data)
 
-    def _sign_url(self, url, video_id):
-        """Generate a presigned cloudfront url.
-
-        Parameters
-        ----------
-        url: string
-            The url to sign
-
-        Returns:
-        string
-            The signed url
-
-        """
-        params = get_video_cloudfront_url_params(video_id)
-        return cloudfront_utils.build_signed_url(url, params)
-
-    def _generate_url(self, obj, object_path, extension=None, content_disposition=None):
-        """Generate an url to fetch a timed text track file depending on argument passed.
-
-        Parameters:
-        obj : Type[models.TimedTextTrack]
-            The timed text track that we want to serialize
-
-        object_patch: string
-            The path in the path the timed text track is stored
-
-        extension: string or None
-            If the timed text track need an extension in the url, add it to the end
-
-        content_disposition: string or None
-            Add a response-content-disposition query string to url if present
-        """
-        base = f"{settings.AWS_S3_URL_PROTOCOL}://{settings.CLOUDFRONT_DOMAIN}/{obj.video_id}"
-        stamp = time_utils.to_timestamp(obj.uploaded_on)
-        mode = f"_{obj.mode}" if obj.mode else ""
-        url = f"{base}/{object_path}/{stamp}_{obj.language:s}{mode:s}"
-        if extension:
-            url = f"{url}.{extension}"
-
-        if content_disposition:
-            url = f"{url}?response-content-disposition={content_disposition}"
-        return url
-
     def get_source_url(self, obj):
-        """Source url of the timed text track, signed with a CloudFront key if activated.
+        """Source url of the timed text track.
 
         This is the url of the uploaded file without any modification.
 
@@ -150,21 +104,15 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
 
             return file_storage.url(f"{base}/source.{obj.extension}")
 
-        # Default AWS fallback
-        filename = f"{slugify(obj.video.playlist.title)}_{stamp}.{obj.extension}"
-        url = self._generate_url(
-            obj,
-            "timedtext/source",
-            content_disposition=quote_plus(f"attachment; filename={filename}"),
-        )
+        # Default fallback to location under "aws" directory
+        base = obj.get_storage_prefix(base_dir=AWS_STORAGE_BASE_DIRECTORY)
+        stamp = time_utils.to_timestamp(obj.uploaded_on)
+        mode = f"_{obj.mode}" if obj.mode else ""
 
-        # Sign the url only if the functionality is activated
-        if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
-            url = self._sign_url(url, obj.video_id)
-        return url
+        return file_storage.url(f"{base}/source/{stamp}_{obj.language:s}{mode:s}")
 
     def get_url(self, obj):
-        """Url of the timed text track, signed with a CloudFront key if activated.
+        """Url of the timed text track.
 
         Parameters
         ----------
@@ -187,10 +135,9 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
 
             return file_storage.url(f"{base}/{stamp}.vtt")
 
-        # Default AWS fallback
-        url = self._generate_url(obj, "timedtext", extension="vtt")
+        # Default fallback to location under "aws" directory
+        base = obj.get_storage_prefix(base_dir=AWS_STORAGE_BASE_DIRECTORY)
+        stamp = time_utils.to_timestamp(obj.uploaded_on)
+        mode = f"_{obj.mode}" if obj.mode else ""
 
-        # Sign the url only if the functionality is activated
-        if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
-            url = self._sign_url(url, obj.video_id)
-        return url
+        return file_storage.url(f"{base}/{stamp}_{obj.language:s}{mode:s}.vtt")

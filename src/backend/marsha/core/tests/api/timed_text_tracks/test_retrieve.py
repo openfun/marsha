@@ -3,12 +3,10 @@
 from datetime import datetime, timezone as baseTimezone
 import json
 import random
-from unittest import mock
 
 from django.test import TestCase, override_settings
 
 from marsha.core import factories, models
-from marsha.core.api import timezone
 from marsha.core.defaults import AWS_PIPELINE
 from marsha.core.factories import TimedTextTrackFactory, UserFactory, VideoFactory
 from marsha.core.simple_jwt.factories import (
@@ -16,7 +14,10 @@ from marsha.core.simple_jwt.factories import (
     StudentLtiTokenFactory,
     UserAccessTokenFactory,
 )
-from marsha.core.tests.testing_utils import RSA_KEY_MOCK
+
+
+# flake8: noqa: E501
+# pylint: disable=line-too-long
 
 
 class TimedTextTrackRetrieveAPITest(TestCase):
@@ -55,7 +56,7 @@ class TimedTextTrackRetrieveAPITest(TestCase):
             content, {"detail": "You do not have permission to perform this action."}
         )
 
-    @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
     def test_api_timed_text_track_read_detail_token_user(self):
         """A token user associated to a video can read a timed text track related to this video."""
         timed_text_track = TimedTextTrackFactory(
@@ -91,12 +92,11 @@ class TimedTextTrackRetrieveAPITest(TestCase):
                 "language": "fr",
                 "upload_state": "ready",
                 "source_url": (
-                    "https://abc.cloudfront.net/b8d40ed7-95b8-4848-98c9-50728dfee25d/"
-                    "timedtext/source/1533686400_fr_cc?response-content-disposition=a"
-                    "ttachment%3B+filename%3Dfoo_1533686400.srt"
+                    "https://abc.svc.edge.scw.cloud/aws/b8d40ed7-95b8-4848-98c9-50728dfee25d/"
+                    "timedtext/source/1533686400_fr_cc"
                 ),
                 "url": (
-                    "https://abc.cloudfront.net/b8d40ed7-95b8-4848-98c9-50728dfee25d/"
+                    "https://abc.svc.edge.scw.cloud/aws/b8d40ed7-95b8-4848-98c9-50728dfee25d/"
                     "timedtext/1533686400_fr_cc.vtt"
                 ),
                 "video": str(timed_text_track.video.id),
@@ -116,7 +116,7 @@ class TimedTextTrackRetrieveAPITest(TestCase):
             content, {"detail": "You do not have permission to perform this action."}
         )
 
-    @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
     def test_api_timed_text_track_without_extension_read_detail_token_user(self):
         """A timed text track without extension should return empty source url."""
         timed_text_track = TimedTextTrackFactory(
@@ -152,7 +152,7 @@ class TimedTextTrackRetrieveAPITest(TestCase):
                 "upload_state": "ready",
                 "source_url": None,
                 "url": (
-                    "https://abc.cloudfront.net/b8d40ed7-95b8-4848-98c9-50728dfee25d/"
+                    "https://abc.svc.edge.scw.cloud/aws/b8d40ed7-95b8-4848-98c9-50728dfee25d/"
                     "timedtext/1533686400_fr_cc.vtt"
                 ),
                 "video": str(timed_text_track.video.id),
@@ -172,7 +172,7 @@ class TimedTextTrackRetrieveAPITest(TestCase):
             content, {"detail": "You do not have permission to perform this action."}
         )
 
-    @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
     def test_api_timed_text_track_read_detail_admin_user(self):
         """Admin user associated to a video can read a timed text track related to this video."""
         timed_text_track = TimedTextTrackFactory(
@@ -209,12 +209,11 @@ class TimedTextTrackRetrieveAPITest(TestCase):
                 "language": "fr",
                 "upload_state": "ready",
                 "source_url": (
-                    "https://abc.cloudfront.net/b8d40ed7-95b8-4848-98c9-50728dfee25d/timedtext/"
-                    "source/1533686400_fr_cc?response-content-disposition=attachment%3B+filenam"
-                    "e%3Dfoo_1533686400.srt"
+                    "https://abc.svc.edge.scw.cloud/aws/b8d40ed7-95b8-4848-98c9-50728dfee25d/timedtext/"
+                    "source/1533686400_fr_cc"
                 ),
                 "url": (
-                    "https://abc.cloudfront.net/b8d40ed7-95b8-4848-98c9-50728dfee25d/timedtext/"
+                    "https://abc.svc.edge.scw.cloud/aws/b8d40ed7-95b8-4848-98c9-50728dfee25d/timedtext/"
                     "1533686400_fr_cc.vtt"
                 ),
                 "video": str(timed_text_track.video.id),
@@ -258,7 +257,6 @@ class TimedTextTrackRetrieveAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 403)
 
-    @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
     def test_api_timed_text_track_read_detail_token_user_no_active_stamp(self):
         """A timed text track with no active stamp should not fail.
 
@@ -279,7 +277,6 @@ class TimedTextTrackRetrieveAPITest(TestCase):
         content = json.loads(response.content)
         self.assertIsNone(content["url"])
 
-    @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
     def test_api_timed_text_track_read_detail_token_user_not_ready(self):
         """A timed_text_track that has never been uploaded successfully should have no url."""
         timed_text_track = TimedTextTrackFactory(
@@ -298,66 +295,6 @@ class TimedTextTrackRetrieveAPITest(TestCase):
         self.assertIn('"url":null', response.content.decode("utf-8"))
         content = json.loads(response.content)
         self.assertIsNone(content["url"])
-
-    @override_settings(
-        CLOUDFRONT_SIGNED_URLS_ACTIVE=True,
-        CLOUDFRONT_SIGNED_PUBLIC_KEY_ID="cloudfront-access-key-id",
-    )
-    @mock.patch("builtins.open", new_callable=mock.mock_open, read_data=RSA_KEY_MOCK)
-    def test_api_timed_text_track_read_detail_token_user_signed_urls(self, _mock_open):
-        """Activating signed urls should add Cloudfront query string authentication parameters."""
-        timed_text_track = TimedTextTrackFactory(
-            video__pk="b8d40ed7-95b8-4848-98c9-50728dfee25d",
-            video__playlist__title="foo",
-            mode="cc",
-            language="fr",
-            uploaded_on=datetime(2018, 8, 8, tzinfo=baseTimezone.utc),
-            upload_state="ready",
-            process_pipeline=AWS_PIPELINE,
-            extension="srt",
-        )
-        jwt_token = InstructorOrAdminLtiTokenFactory(
-            playlist=timed_text_track.video.playlist
-        )
-
-        # Get the timed_text_track via the API using the JWT token
-        # fix the time so that the url signature is deterministic and can be checked
-        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
-        with mock.patch.object(timezone, "now", return_value=now):
-            response = self.client.get(
-                self._get_url(timed_text_track.video, timed_text_track),
-                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-            )
-        self.assertEqual(response.status_code, 200)
-        content = json.loads(response.content)
-
-        expected_cloudfront_signature = (
-            "Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6"
-            "Ly9hYmMuY2xvdWRmcm9udC5uZXQvYjhkNDBlZDctOTViOC00ODQ4LTk4YzktNTA3MjhkZmVlM"
-            "jVkLyoiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE1Mz"
-            "M2OTM2MDB9fX1dfQ__&Signature=PkRZOcfOxbalcuNG9XN6wO72enDenSetWgTthNjR4Nsy"
-            "UvCao1rZ9s4MZbqU61NDxB8Q3yDoWZUm-PP0uFa6v2Rz9g6XSTCA~-x8Yhh72-jc1J5NZOavh"
-            "~HT6lbC2HnPAesaxbVG4EejSDuXjncE8kBiUdT6YNotAv1JzbqidXuOBdkSjR32PEav98PT0r"
-            "UKmXohNAL-RFdwHL1cKGhy17CoxABn4ToDJ-t0Z4cT4husb5HebH~6nOmhlDDdFMSdmD7FjZ~"
-            "qaJwagJ3sAqG1ph9NcTX45bDn2rcrDXUy0jHWxBPYUId6NGbKCITp1SFj0QAsoxsXnh90Ibkr"
-            "GQ4XUA__&Key-Pair-Id=cloudfront-access-key-id"
-        )
-
-        self.assertEqual(
-            content["url"],
-            (
-                "https://abc.cloudfront.net/b8d40ed7-95b8-4848-98c9-50728dfee25d/timedtext"
-                f"/1533686400_fr_cc.vtt?{expected_cloudfront_signature}"
-            ),
-        )
-        self.assertEqual(
-            content["source_url"],
-            (
-                "https://abc.cloudfront.net/b8d40ed7-95b8-4848-98c9-50728dfee25d/timedtext"
-                "/source/1533686400_fr_cc?response-content-disposition=attachment%3B+filen"
-                f"ame%3Dfoo_1533686400.srt&{expected_cloudfront_signature}"
-            ),
-        )
 
     def test_api_timed_text_track_read_detail_staff_or_user(self):
         """Users authenticated via a session are not allowed to read a timed text track detail."""
