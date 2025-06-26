@@ -123,7 +123,7 @@ class VideoRetrieveAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json().get("live_info"), {})
 
-    @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
     def test_api_video_read_detail_admin_token_user(self):
         """Administrator should be able to read detail of a video."""
         video = factories.VideoFactory(upload_state="pending")
@@ -140,10 +140,7 @@ class VideoRetrieveAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
 
-    @override_settings(
-        CLOUDFRONT_SIGNED_URLS_ACTIVE=False,
-        MEDIA_URL="https://abc.svc.edge.scw.cloud/",
-    )
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
     def test_api_video_read_detail_token_user(self):
         """Instructors should be able to read the detail of their video."""
         resolutions = [144, 240, 480, 720, 1080]
@@ -193,9 +190,7 @@ class VideoRetrieveAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
 
-        thumbnails_template = (
-            "https://abc.cloudfront.net/{!s}/thumbnails/1533686400_{!s}.0000000.jpg"
-        )
+        thumbnails_template = "https://abc.svc.edge.scw.cloud/aws/{!s}/thumbnails/1533686400_{!s}.0000000.jpg"
         thumbnails_dict = {
             # pylint: disable=consider-using-f-string
             str(resolution): thumbnails_template.format(video.pk, resolution)
@@ -203,7 +198,7 @@ class VideoRetrieveAPITest(TestCase):
         }
 
         mp4_template = (
-            "https://abc.cloudfront.net/{!s}/mp4/1533686400_{!s}.mp4"
+            "https://abc.svc.edge.scw.cloud/aws/{!s}/mp4/1533686400_{!s}.mp4"
             "?response-content-disposition=attachment%3B+filename%3Dfoo-bar_1533686400.mp4"
         )
         mp4_dict = {
@@ -247,12 +242,12 @@ class VideoRetrieveAPITest(TestCase):
                         "language": "fr",
                         "upload_state": "ready",
                         "source_url": (
-                            "https://abc.cloudfront.net/a2f27fde-973a-4e89-8dca-cc59e01d255c/"
+                            "https://abc.svc.edge.scw.cloud/aws/a2f27fde-973a-4e89-8dca-cc59e01d255c/"
                             "timedtext/source/1533686400_fr_cc?response-content-disposition=a"
                             "ttachment%3B+filename%3Dfoo-bar_1533686400.srt"
                         ),
                         "url": (
-                            "https://abc.cloudfront.net/a2f27fde-973a-4e89-8dca-cc59e01d255c/"
+                            "https://abc.svc.edge.scw.cloud/aws/a2f27fde-973a-4e89-8dca-cc59e01d255c/"
                             "timedtext/1533686400_fr_cc.vtt"
                         ),
                         "video": str(video.id),
@@ -263,12 +258,12 @@ class VideoRetrieveAPITest(TestCase):
                     "thumbnails": thumbnails_dict,
                     "manifests": {
                         "hls": (
-                            "https://abc.cloudfront.net/a2f27fde-973a-4e89-8dca-cc59e01d255c/"
+                            "https://abc.svc.edge.scw.cloud/aws/a2f27fde-973a-4e89-8dca-cc59e01d255c/"
                             "cmaf/1533686400.m3u8"
                         ),
                     },
                     "previews": (
-                        "https://abc.cloudfront.net/a2f27fde-973a-4e89-8dca-cc59e01d255c/"
+                        "https://abc.svc.edge.scw.cloud/aws/a2f27fde-973a-4e89-8dca-cc59e01d255c/"
                         "previews/1533686400_100.jpg"
                     ),
                 },
@@ -348,11 +343,7 @@ class VideoRetrieveAPITest(TestCase):
             content, {"detail": "You do not have permission to perform this action."}
         )
 
-    @override_settings(
-        CLOUDFRONT_SIGNED_URLS_ACTIVE=True,
-        CLOUDFRONT_SIGNED_PUBLIC_KEY_ID="cloudfront-access-key-id",
-        MEDIA_URL="https://abc.svc.edge.scw.cloud/",
-    )
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
     def test_api_video_read_detail_token_user_nested_shared_live_media_urls_signed(
         self,
     ):
@@ -405,27 +396,12 @@ class VideoRetrieveAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
 
-        thumbnails_template = (
-            "https://abc.cloudfront.net/{!s}/thumbnails/1533686400_{!s}.0000000.jpg"
-        )
+        thumbnails_template = "https://abc.svc.edge.scw.cloud/aws/{!s}/thumbnails/1533686400_{!s}.0000000.jpg"
         thumbnails_dict = {
             # pylint: disable=consider-using-f-string
             str(resolution): thumbnails_template.format(video.pk, resolution)
             for resolution in resolutions
         }
-
-        expected_cloudfront_signature = (
-            "Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNl"
-            "IjoiaHR0cHM6Ly9hYmMuY2xvdWRmcm9udC5uZXQvZDlkNzA0OWMtNWEzZi00MDcwLWE0"
-            "OTQtZTZiZjBiZDhiOWZiLyoiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFX"
-            "UzpFcG9jaFRpbWUiOjE2MzgyMzc2MDB9fX1dfQ__&Signature=IVWMFfS7WQVTKLZl~"
-            "gKgGES~BS~wVLBIOncSE6yVgg9zIrEI1Epq3AVkOsI7z10dyjgInNbPviArnxmlV~DQe"
-            "N-ykgEWmGy7aT4lRCx61oXuHFtNkq8Qx-we~UY87mZ4~UTqmM~JVuuLduMiRQB-I3XKa"
-            "RQGRlsok5yGu0RhvLcZntVFp6QgYui3WtGvxSs2LjW0IakR1qepSDl9LXI-F2bgl9Vd1"
-            "U9eapPBhhoD0okebXm7NGg9gUMLXlmUo-RvsrAzzEteKctPp0Xzkydk~tcnMkJs4jfbQ"
-            "xKrpyF~N9OuCRYCs68ONhHvypOYU3K-wQEoAFlERBLiaOzDZUzlyA__&Key-Pair-Id="
-            "cloudfront-access-key-id"
-        )
 
         self.assertEqual(
             content,
@@ -457,40 +433,35 @@ class VideoRetrieveAPITest(TestCase):
                 "urls": {
                     "mp4": {
                         "144": (
-                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/mp4/"
-                            "1533686400_144.mp4?response-content-disposition=attachment%3B+filen"
-                            f"ame%3Dfoo-bar_1533686400.mp4&{expected_cloudfront_signature}"
+                            "https://abc.svc.edge.scw.cloud/aws/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/mp4/"
+                            "1533686400_144.mp4"
                         ),
                         "240": (
-                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/mp4/"
-                            "1533686400_240.mp4?response-content-disposition=attachment%3B+filen"
-                            f"ame%3Dfoo-bar_1533686400.mp4&{expected_cloudfront_signature}"
+                            "https://abc.svc.edge.scw.cloud/aws/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/mp4/"
+                            "1533686400_240.mp4"
                         ),
                         "480": (
-                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/mp4/"
-                            "1533686400_480.mp4?response-content-disposition=attachment%3B+filen"
-                            f"ame%3Dfoo-bar_1533686400.mp4&{expected_cloudfront_signature}"
+                            "https://abc.svc.edge.scw.cloud/aws/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/mp4/"
+                            "1533686400_480.mp4"
                         ),
                         "720": (
-                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/mp4/"
-                            "1533686400_720.mp4?response-content-disposition=attachment%3B+filen"
-                            f"ame%3Dfoo-bar_1533686400.mp4&{expected_cloudfront_signature}"
+                            "https://abc.svc.edge.scw.cloud/aws/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/mp4/"
+                            "1533686400_720.mp4"
                         ),
                         "1080": (
-                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/mp4/"
-                            "1533686400_1080.mp4?response-content-disposition=attachment%3B+filen"
-                            f"ame%3Dfoo-bar_1533686400.mp4&{expected_cloudfront_signature}"
+                            "https://abc.svc.edge.scw.cloud/aws/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/mp4/"
+                            "1533686400_1080.mp4"
                         ),
                     },
                     "thumbnails": thumbnails_dict,
                     "manifests": {
                         "hls": (
-                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
+                            "https://abc.svc.edge.scw.cloud/aws/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
                             "cmaf/1533686400.m3u8"
                         ),
                     },
                     "previews": (
-                        "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
+                        "https://abc.svc.edge.scw.cloud/aws/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
                         "previews/1533686400_100.jpg"
                     ),
                 },
@@ -627,9 +598,7 @@ class VideoRetrieveAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content)
 
-        thumbnails_template = (
-            "https://abc.cloudfront.net/{!s}/thumbnails/1533686400_{!s}.0000000.jpg"
-        )
+        thumbnails_template = "https://abc.svc.edge.scw.cloud/aws/{!s}/thumbnails/1533686400_{!s}.0000000.jpg"
         thumbnails_dict = {
             # pylint: disable=consider-using-f-string
             str(resolution): thumbnails_template.format(video.pk, resolution)
@@ -1012,57 +981,6 @@ class VideoRetrieveAPITest(TestCase):
             },
         )
 
-    @override_settings(
-        CLOUDFRONT_SIGNED_URLS_ACTIVE=True,
-        CLOUDFRONT_SIGNED_PUBLIC_KEY_ID="cloudfront-access-key-id",
-    )
-    @mock.patch("builtins.open", new_callable=mock.mock_open, read_data=RSA_KEY_MOCK)
-    def test_api_video_read_detail_token_user_signed_urls(self, _mock_open):
-        """Activating signed urls should add Cloudfront query string authentication parameters."""
-        video = factories.VideoFactory(
-            pk="a2f27fde-973a-4e89-8dca-cc59e01d255c",
-            uploaded_on=datetime(2018, 8, 8, tzinfo=baseTimezone.utc),
-            transcode_pipeline="AWS",
-            upload_state="ready",
-            resolutions=[144],
-            playlist__title="foo",
-        )
-        jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
-
-        # Get the video linked to the JWT token
-        # fix the time so that the url signature is deterministic and can be checked
-        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
-        with mock.patch.object(timezone, "now", return_value=now):
-            response = self.client.get(
-                f"/api/videos/{video.id}/",
-                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-            )
-        self.assertEqual(response.status_code, 200)
-        content = json.loads(response.content)
-
-        self.assertEqual(
-            content["urls"]["thumbnails"]["144"],
-            (
-                "https://abc.cloudfront.net/a2f27fde-973a-4e89-8dca-cc59e01d255c/"
-                "thumbnails/1533686400_144.0000000.jpg"
-            ),
-        )
-        self.assertEqual(
-            content["urls"]["mp4"]["144"],
-            (
-                "https://abc.cloudfront.net/a2f27fde-973a-4e89-8dca-cc59e01d255c/mp4/1533686400_14"
-                "4.mp4?response-content-disposition=attachment%3B+filename%3Dfoo_1533686400.mp4&Po"
-                "licy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9hYmMuY2xvdWRmcm9udC5uZXQvYTJm"
-                "MjdmZGUtOTczYS00ZTg5LThkY2EtY2M1OWUwMWQyNTVjLyoiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUa"
-                "GFuIjp7IkFXUzpFcG9jaFRpbWUiOjE1MzM2OTM2MDB9fX1dfQ__&Signature=DMuAMeYCa4sslOKW7X4"
-                "R5kXJlYt0k8X49j-4h0x-DTkKN7cYKyDVmsUyEKn1kVBMZLQC1GwnnNjOpbsvyg6hKo7cskwn-zkEr~FM"
-                "fpzO3fAh6PHDqCJa7pBf8iiykCtj~Xm3yF0ATesAnuVda1jAmExM3j43YYFsp2ovU9tXRfeZTD8yJ9QXd"
-                "cSd6phfPNSOE091Bc1OxhBycMjQu7UgYsYYKRQg6tmizzYzv30jp5dNVKh8DPREd1hL3V1O1XnqrCxI1W"
-                "FJ-L680yBs3DzjJyiEeUWsBL2PcjSExKqa0YZkEVhN3N5jYwxmFxWiox1DjBeQg5~mWVF6Of~-xr0XrQ_"
-                "_&Key-Pair-Id=cloudfront-access-key-id"
-            ),
-        )
-
     def test_api_video_read_detail_staff_or_user(self):
         """Users authenticated via a session should not be allowed to read a video detail."""
         for user in [factories.UserFactory(), factories.UserFactory(is_staff=True)]:
@@ -1290,7 +1208,7 @@ class VideoRetrieveAPITest(TestCase):
             },
         )
 
-    @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
     def test_api_video_with_a_thumbnail(self):
         """A video with a custom thumbnail should have it in its payload."""
         video = factories.VideoFactory(
@@ -1325,15 +1243,15 @@ class VideoRetrieveAPITest(TestCase):
                 "is_ready_to_show": True,
                 "upload_state": "ready",
                 "urls": {
-                    "240": "https://abc.cloudfront.net/38a91911-9aee-41e2-94dd-573abda6f48f/"
+                    "240": "https://abc.svc.edge.scw.cloud/aws/38a91911-9aee-41e2-94dd-573abda6f48f/"
                     "thumbnails/1533686400_240.jpg",
-                    "360": "https://abc.cloudfront.net/38a91911-9aee-41e2-94dd-573abda6f48f/"
+                    "360": "https://abc.svc.edge.scw.cloud/aws/38a91911-9aee-41e2-94dd-573abda6f48f/"
                     "thumbnails/1533686400_360.jpg",
-                    "480": "https://abc.cloudfront.net/38a91911-9aee-41e2-94dd-573abda6f48f/"
+                    "480": "https://abc.svc.edge.scw.cloud/aws/38a91911-9aee-41e2-94dd-573abda6f48f/"
                     "thumbnails/1533686400_480.jpg",
-                    "720": "https://abc.cloudfront.net/38a91911-9aee-41e2-94dd-573abda6f48f/"
+                    "720": "https://abc.svc.edge.scw.cloud/aws/38a91911-9aee-41e2-94dd-573abda6f48f/"
                     "thumbnails/1533686400_720.jpg",
-                    "1080": "https://abc.cloudfront.net/38a91911-9aee-41e2-94dd-573abda6f48f/"
+                    "1080": "https://abc.svc.edge.scw.cloud/aws/38a91911-9aee-41e2-94dd-573abda6f48f/"
                     "thumbnails/1533686400_1080.jpg",
                 },
                 "video": str(video.id),
@@ -1343,15 +1261,15 @@ class VideoRetrieveAPITest(TestCase):
         self.assertEqual(
             content["urls"]["thumbnails"],
             {
-                "240": "https://abc.cloudfront.net/38a91911-9aee-41e2-94dd-573abda6f48f/"
+                "240": "https://abc.svc.edge.scw.cloud/aws/38a91911-9aee-41e2-94dd-573abda6f48f/"
                 "thumbnails/1533686400_240.jpg",
-                "360": "https://abc.cloudfront.net/38a91911-9aee-41e2-94dd-573abda6f48f/"
+                "360": "https://abc.svc.edge.scw.cloud/aws/38a91911-9aee-41e2-94dd-573abda6f48f/"
                 "thumbnails/1533686400_360.jpg",
-                "480": "https://abc.cloudfront.net/38a91911-9aee-41e2-94dd-573abda6f48f/"
+                "480": "https://abc.svc.edge.scw.cloud/aws/38a91911-9aee-41e2-94dd-573abda6f48f/"
                 "thumbnails/1533686400_480.jpg",
-                "720": "https://abc.cloudfront.net/38a91911-9aee-41e2-94dd-573abda6f48f/"
+                "720": "https://abc.svc.edge.scw.cloud/aws/38a91911-9aee-41e2-94dd-573abda6f48f/"
                 "thumbnails/1533686400_720.jpg",
-                "1080": "https://abc.cloudfront.net/38a91911-9aee-41e2-94dd-573abda6f48f/"
+                "1080": "https://abc.svc.edge.scw.cloud/aws/38a91911-9aee-41e2-94dd-573abda6f48f/"
                 "thumbnails/1533686400_1080.jpg",
             },
         )

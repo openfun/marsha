@@ -5,7 +5,7 @@ from django.db.utils import IntegrityError
 
 from rest_framework import serializers
 
-from marsha.core.defaults import CELERY_PIPELINE
+from marsha.core.defaults import AWS_STORAGE_BASE_DIRECTORY, CELERY_PIPELINE
 from marsha.core.models import Thumbnail
 from marsha.core.serializers.base import TimestampField
 from marsha.core.storage.storage_class import file_storage
@@ -122,10 +122,10 @@ class ThumbnailSerializer(serializers.ModelSerializer):
                 urls[resolution] = file_storage.url(f"{base}/{resolution}.jpg")
             return urls
 
-        # Default AWS fallback:
-        base = f"{settings.AWS_S3_URL_PROTOCOL}://{settings.CLOUDFRONT_DOMAIN}/{obj.video.pk}"
-        urls = {}
+        # Default fallback to location under "aws" directory
+        base = obj.get_storage_prefix(base_dir=AWS_STORAGE_BASE_DIRECTORY)
         stamp = time_utils.to_timestamp(obj.uploaded_on)
+        urls = {}
         for resolution in settings.VIDEO_RESOLUTIONS:
-            urls[resolution] = f"{base}/thumbnails/{stamp}_{resolution}.jpg"
+            urls[resolution] = file_storage.url(f"{base}/{stamp}_{resolution}.jpg")
         return urls
