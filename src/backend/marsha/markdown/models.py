@@ -14,6 +14,7 @@ from parler.managers import TranslatableManager
 from parler.models import TranslatableModelMixin, TranslatedFields
 
 from marsha.core.defaults import (
+    AWS_STORAGE_BASE_DIRECTORY,
     DELETED_STORAGE_BASE_DIRECTORY,
     MARKDOWN_DOCUMENT_STORAGE_BASE_DIRECTORY,
     SCW_S3,
@@ -240,6 +241,12 @@ class MarkdownImage(AbstractImage):
         stamp = stamp or self.uploaded_on_stamp()
 
         base = base_dir
+        if base == AWS_STORAGE_BASE_DIRECTORY:
+            return (
+                f"{base}/{self.markdown_document.pk}/markdown-image/"
+                f"{self.pk}/{stamp}.{self.extension.lstrip('.')}"
+            )
+
         if base == DELETED_STORAGE_BASE_DIRECTORY:
             base = f"{base}/{MARKDOWN_DOCUMENT_STORAGE_BASE_DIRECTORY}"
 

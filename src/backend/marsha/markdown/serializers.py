@@ -9,17 +9,20 @@ from django.urls import reverse
 
 from rest_framework import serializers
 
-from marsha.core.defaults import MARKDOWN_DOCUMENT_STORAGE_BASE_DIRECTORY, SCW_S3
+from marsha.core.defaults import (
+    AWS_S3,
+    AWS_STORAGE_BASE_DIRECTORY,
+    MARKDOWN_DOCUMENT_STORAGE_BASE_DIRECTORY,
+)
 from marsha.core.serializers import (
     BaseInitiateUploadSerializer,
     ReadOnlyModelSerializer,
     TimestampField,
     UploadableFileWithExtensionSerializerMixin,
-    get_resource_cloudfront_url_params,
 )
 from marsha.core.serializers.playlist import PlaylistLiteSerializer
 from marsha.core.storage.storage_class import file_storage
-from marsha.core.utils import cloudfront_utils, time_utils
+from marsha.core.utils import time_utils
 from marsha.markdown.models import MarkdownDocument, MarkdownImage
 
 
@@ -99,23 +102,12 @@ class MarkdownImageSerializer(
         if not obj.uploaded_on:
             return None
 
-        if obj.storage_location == SCW_S3:
+        if obj.storage_location == AWS_S3:
+            file_key = obj.get_storage_key(base_dir=AWS_STORAGE_BASE_DIRECTORY)
+        else:
             file_key = obj.get_storage_key()
 
-            return file_storage.url(file_key)
-
-        base = f"{settings.AWS_S3_URL_PROTOCOL}://{settings.CLOUDFRONT_DOMAIN}"
-        base = f"{base}/{obj.markdown_document_id}/markdown-image"
-        stamp = time_utils.to_timestamp(obj.uploaded_on)
-        url = f"{base}/{obj.pk}/{stamp}.{obj.extension.lstrip('.')}"
-
-        if not settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
-            return url
-
-        params = get_resource_cloudfront_url_params(
-            "markdown-document", obj.markdown_document_id
-        )
-        return cloudfront_utils.build_signed_url(url, params)
+        return file_storage.url(file_key)
 
 
 class MarkdownImageInitiateUploadSerializer(BaseInitiateUploadSerializer):
