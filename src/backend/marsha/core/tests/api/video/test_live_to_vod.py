@@ -46,13 +46,15 @@ class VideoLivetoVodAPITest(TestCase):
         """Assert the user can convert the live."""
         self.assertNotEqual(video.upload_state, READY)
 
-        with mock.patch(
-            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
-        ) as mock_dispatch_video_to_groups, mock.patch.object(
-            api.video, "reopen_room_for_vod"
-        ) as mock_reopen_room, mock.patch(
-            "marsha.core.serializers.xmpp_utils.generate_jwt"
-        ) as mock_jwt_encode:
+        with (
+            mock.patch(
+                "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+            ) as mock_dispatch_video_to_groups,
+            mock.patch.object(api.video, "reopen_room_for_vod") as mock_reopen_room,
+            mock.patch(
+                "marsha.core.serializers.xmpp_utils.generate_jwt"
+            ) as mock_jwt_encode,
+        ):
             mock_jwt_encode.return_value = "xmpp_jwt"
             jwt_token = UserAccessTokenFactory(user=user)
             response = self.client.post(
@@ -155,6 +157,7 @@ class VideoLivetoVodAPITest(TestCase):
     @override_settings(XMPP_CONVERSE_PERSISTENT_STORE="localStorage")
     @override_settings(XMPP_DOMAIN="conference.xmpp-server.com")
     @override_settings(XMPP_JWT_SHARED_SECRET="xmpp_shared_secret")
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
     def test_api_video_instructor_harvested_live_to_vod(self):
         """An instructor can transform a harvested live to a vod."""
         video = factories.VideoFactory(
@@ -169,13 +172,15 @@ class VideoLivetoVodAPITest(TestCase):
         )
         jwt_token = InstructorOrAdminLtiTokenFactory(playlist=video.playlist)
 
-        with mock.patch(
-            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
-        ) as mock_dispatch_video_to_groups, mock.patch.object(
-            api.video, "reopen_room_for_vod"
-        ) as mock_reopen_room, mock.patch(
-            "marsha.core.serializers.xmpp_utils.generate_jwt"
-        ) as mock_jwt_encode:
+        with (
+            mock.patch(
+                "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+            ) as mock_dispatch_video_to_groups,
+            mock.patch.object(api.video, "reopen_room_for_vod") as mock_reopen_room,
+            mock.patch(
+                "marsha.core.serializers.xmpp_utils.generate_jwt"
+            ) as mock_jwt_encode,
+        ):
             mock_jwt_encode.return_value = "xmpp_jwt"
             response = self.client.post(
                 f"/api/videos/{video.id}/live-to-vod/",
@@ -212,29 +217,26 @@ class VideoLivetoVodAPITest(TestCase):
                 "title": video.title,
                 "urls": {
                     "mp4": {
-                        "240": f"https://abc.cloudfront.net/{video.id}/"
-                        "mp4/1569309880_240.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-002_1569309880.mp4",
-                        "480": f"https://abc.cloudfront.net/{video.id}/"
-                        "mp4/1569309880_480.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-002_1569309880.mp4",
-                        "720": f"https://abc.cloudfront.net/{video.id}/"
-                        "mp4/1569309880_720.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-002_1569309880.mp4",
+                        "240": f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
+                        "mp4/1569309880_240.mp4",
+                        "480": f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
+                        "mp4/1569309880_480.mp4",
+                        "720": f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
+                        "mp4/1569309880_720.mp4",
                     },
                     "thumbnails": {
-                        "240": f"https://abc.cloudfront.net/{video.id}/"
+                        "240": f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
                         "thumbnails/1569309880_240.0000000.jpg",
-                        "480": f"https://abc.cloudfront.net/{video.id}/"
+                        "480": f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
                         "thumbnails/1569309880_480.0000000.jpg",
-                        "720": f"https://abc.cloudfront.net/{video.id}/"
+                        "720": f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
                         "thumbnails/1569309880_720.0000000.jpg",
                     },
                     "manifests": {
-                        "hls": f"https://abc.cloudfront.net/{video.id}/"
+                        "hls": f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
                         "cmaf/1569309880.m3u8"
                     },
-                    "previews": f"https://abc.cloudfront.net/{video.id}/"
+                    "previews": f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
                     "previews/1569309880_100.jpg",
                 },
                 "should_use_subtitle_as_transcript": False,

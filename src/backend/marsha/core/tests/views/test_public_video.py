@@ -28,7 +28,8 @@ from marsha.core.simple_jwt.tokens import PlaylistAccessToken, PlaylistRefreshTo
 
 
 # We don't enforce arguments documentation in tests
-# pylint: disable=unused-argument,too-many-lines
+# flake8: noqa: E501
+# pylint: disable=unused-argument,too-many-lines,line-too-long
 
 
 class VideoPublicViewTestCase(TestCase):
@@ -40,6 +41,7 @@ class VideoPublicViewTestCase(TestCase):
         super().tearDown()
         cache.clear()
 
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
     def test_video_publicly_accessible(self):
         """Validate to access to a public video."""
         video = VideoFactory(
@@ -110,39 +112,34 @@ class VideoPublicViewTestCase(TestCase):
                 "title": video.title,
                 "urls": {
                     "mp4": {
-                        "144": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c397/"
-                        "mp4/1569309880_144.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-003_1569309880.mp4",
-                        "240": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c397/"
-                        "mp4/1569309880_240.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-003_1569309880.mp4",
-                        "480": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c397/"
-                        "mp4/1569309880_480.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-003_1569309880.mp4",
-                        "720": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c397/"
-                        "mp4/1569309880_720.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-003_1569309880.mp4",
-                        "1080": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c397/"
-                        "mp4/1569309880_1080.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-003_1569309880.mp4",
+                        "144": "https://abc.svc.edge.scw.cloud/aws/301b5f4f-b9f1-4a5f-897d-f8f1bf22c397/"
+                        "mp4/1569309880_144.mp4",
+                        "240": "https://abc.svc.edge.scw.cloud/aws/301b5f4f-b9f1-4a5f-897d-f8f1bf22c397/"
+                        "mp4/1569309880_240.mp4",
+                        "480": "https://abc.svc.edge.scw.cloud/aws/301b5f4f-b9f1-4a5f-897d-f8f1bf22c397/"
+                        "mp4/1569309880_480.mp4",
+                        "720": "https://abc.svc.edge.scw.cloud/aws/301b5f4f-b9f1-4a5f-897d-f8f1bf22c397/"
+                        "mp4/1569309880_720.mp4",
+                        "1080": "https://abc.svc.edge.scw.cloud/aws/301b5f4f-b9f1-4a5f-897d-f8f1bf22c397/"
+                        "mp4/1569309880_1080.mp4",
                     },
                     "thumbnails": {
-                        "144": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c397/"
+                        "144": "https://abc.svc.edge.scw.cloud/aws/301b5f4f-b9f1-4a5f-897d-f8f1bf22c397/"
                         "thumbnails/1569309880_144.0000000.jpg",
-                        "240": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c397/"
+                        "240": "https://abc.svc.edge.scw.cloud/aws/301b5f4f-b9f1-4a5f-897d-f8f1bf22c397/"
                         "thumbnails/1569309880_240.0000000.jpg",
-                        "480": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c397/"
+                        "480": "https://abc.svc.edge.scw.cloud/aws/301b5f4f-b9f1-4a5f-897d-f8f1bf22c397/"
                         "thumbnails/1569309880_480.0000000.jpg",
-                        "720": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c397/"
+                        "720": "https://abc.svc.edge.scw.cloud/aws/301b5f4f-b9f1-4a5f-897d-f8f1bf22c397/"
                         "thumbnails/1569309880_720.0000000.jpg",
-                        "1080": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c397/"
+                        "1080": "https://abc.svc.edge.scw.cloud/aws/301b5f4f-b9f1-4a5f-897d-f8f1bf22c397/"
                         "thumbnails/1569309880_1080.0000000.jpg",
                     },
                     "manifests": {
-                        "hls": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c397/"
+                        "hls": "https://abc.svc.edge.scw.cloud/aws/301b5f4f-b9f1-4a5f-897d-f8f1bf22c397/"
                         "cmaf/1569309880.m3u8",
                     },
-                    "previews": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c397/"
+                    "previews": "https://abc.svc.edge.scw.cloud/aws/301b5f4f-b9f1-4a5f-897d-f8f1bf22c397/"
                     "previews/1569309880_100.jpg",
                 },
                 "should_use_subtitle_as_transcript": False,
@@ -558,6 +555,7 @@ class VideoPublicViewTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 404)
 
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
     def test_video_public_without_consumer_site(self):
         """Public video without consumer site should have x-frame-options header."""
         organization = OrganizationFactory()
@@ -626,39 +624,34 @@ class VideoPublicViewTestCase(TestCase):
                 "title": video.title,
                 "urls": {
                     "mp4": {
-                        "144": f"https://abc.cloudfront.net/{video.pk}/"
-                        "mp4/1569309880_144.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-003_1569309880.mp4",
-                        "240": f"https://abc.cloudfront.net/{video.pk}/"
-                        "mp4/1569309880_240.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-003_1569309880.mp4",
-                        "480": f"https://abc.cloudfront.net/{video.pk}/"
-                        "mp4/1569309880_480.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-003_1569309880.mp4",
-                        "720": f"https://abc.cloudfront.net/{video.pk}/"
-                        "mp4/1569309880_720.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-003_1569309880.mp4",
-                        "1080": f"https://abc.cloudfront.net/{video.pk}/"
-                        "mp4/1569309880_1080.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-003_1569309880.mp4",
+                        "144": f"https://abc.svc.edge.scw.cloud/aws/{video.pk}/"
+                        "mp4/1569309880_144.mp4",
+                        "240": f"https://abc.svc.edge.scw.cloud/aws/{video.pk}/"
+                        "mp4/1569309880_240.mp4",
+                        "480": f"https://abc.svc.edge.scw.cloud/aws/{video.pk}/"
+                        "mp4/1569309880_480.mp4",
+                        "720": f"https://abc.svc.edge.scw.cloud/aws/{video.pk}/"
+                        "mp4/1569309880_720.mp4",
+                        "1080": f"https://abc.svc.edge.scw.cloud/aws/{video.pk}/"
+                        "mp4/1569309880_1080.mp4",
                     },
                     "thumbnails": {
-                        "144": f"https://abc.cloudfront.net/{video.pk}/"
+                        "144": f"https://abc.svc.edge.scw.cloud/aws/{video.pk}/"
                         "thumbnails/1569309880_144.0000000.jpg",
-                        "240": f"https://abc.cloudfront.net/{video.pk}/"
+                        "240": f"https://abc.svc.edge.scw.cloud/aws/{video.pk}/"
                         "thumbnails/1569309880_240.0000000.jpg",
-                        "480": f"https://abc.cloudfront.net/{video.pk}/"
+                        "480": f"https://abc.svc.edge.scw.cloud/aws/{video.pk}/"
                         "thumbnails/1569309880_480.0000000.jpg",
-                        "720": f"https://abc.cloudfront.net/{video.pk}/"
+                        "720": f"https://abc.svc.edge.scw.cloud/aws/{video.pk}/"
                         "thumbnails/1569309880_720.0000000.jpg",
-                        "1080": f"https://abc.cloudfront.net/{video.pk}/"
+                        "1080": f"https://abc.svc.edge.scw.cloud/aws/{video.pk}/"
                         "thumbnails/1569309880_1080.0000000.jpg",
                     },
                     "manifests": {
-                        "hls": f"https://abc.cloudfront.net/{video.pk}/"
+                        "hls": f"https://abc.svc.edge.scw.cloud/aws/{video.pk}/"
                         "cmaf/1569309880.m3u8",
                     },
-                    "previews": f"https://abc.cloudfront.net/{video.pk}/"
+                    "previews": f"https://abc.svc.edge.scw.cloud/aws/{video.pk}/"
                     "previews/1569309880_100.jpg",
                 },
                 "should_use_subtitle_as_transcript": False,

@@ -12,9 +12,14 @@ from marsha.core.serializers import VideoBaseSerializer
 from marsha.core.storage import storage_class
 
 
+# flake8: noqa: E501
+# pylint: disable=line-too-long
+
+
 class VideoBaseSerializerTest(TestCase):
     """Test the VideoBaseSerializer serializer."""
 
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
     def test_video_serializer_urls_with_aws_pipeline(self):
         """The VideoBaseSerializer should return the right URLs."""
         date = datetime(2022, 1, 1, tzinfo=baseTimezone.utc)
@@ -28,25 +33,23 @@ class VideoBaseSerializerTest(TestCase):
         serializer = VideoBaseSerializer(video)
 
         self.assertTrue(
-            f"https://abc.cloudfront.net/{video.pk}/mp4/1640995200_1080.mp4"
+            f"https://abc.svc.edge.scw.cloud/aws/{video.pk}/mp4/1640995200_1080.mp4"
             in serializer.data["urls"]["mp4"][1080]
         )
         self.assertEqual(
-            f"https://abc.cloudfront.net/{video.pk}/thumbnails/1640995200_1080.0000000.jpg",
+            f"https://abc.svc.edge.scw.cloud/aws/{video.pk}/thumbnails/1640995200_1080.0000000.jpg",
             serializer.data["urls"]["thumbnails"][1080],
         )
         self.assertEqual(
-            f"https://abc.cloudfront.net/{video.pk}/cmaf/1640995200.m3u8",
+            f"https://abc.svc.edge.scw.cloud/aws/{video.pk}/cmaf/1640995200.m3u8",
             serializer.data["urls"]["manifests"]["hls"],
         )
         self.assertEqual(
-            f"https://abc.cloudfront.net/{video.pk}/previews/1640995200_100.jpg",
+            f"https://abc.svc.edge.scw.cloud/aws/{video.pk}/previews/1640995200_100.jpg",
             serializer.data["urls"]["previews"],
         )
 
-    @override_settings(
-        MEDIA_URL="https://abc.svc.edge.scw.cloud/",
-    )
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
     def test_video_serializer_urls_with_peertube_pipeline(self):
         """The VideoBaseSerializer should return the right URLs."""
         # Reload the storage class to have the right storage class
@@ -81,6 +84,7 @@ class VideoBaseSerializerTest(TestCase):
                 in serializer.data["urls"]["mp4"][1080]
             )
 
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
     def test_video_serializer_urls_with_no_pipeline(self):
         """The VideoBaseSerializer should default to AWS pipeline."""
         date = datetime(2022, 1, 1, tzinfo=baseTimezone.utc)
@@ -96,19 +100,19 @@ class VideoBaseSerializerTest(TestCase):
         ) as sentry_capture_message:
             serializer = VideoBaseSerializer(video)
             self.assertTrue(
-                f"https://abc.cloudfront.net/{video.pk}/mp4/1640995200_1080.mp4"
+                f"https://abc.svc.edge.scw.cloud/aws/{video.pk}/mp4/1640995200_1080.mp4"
                 in serializer.data["urls"]["mp4"][1080]
             )
             self.assertEqual(
-                f"https://abc.cloudfront.net/{video.pk}/thumbnails/1640995200_1080.0000000.jpg",
+                f"https://abc.svc.edge.scw.cloud/aws/{video.pk}/thumbnails/1640995200_1080.0000000.jpg",
                 serializer.data["urls"]["thumbnails"][1080],
             )
             self.assertEqual(
-                f"https://abc.cloudfront.net/{video.pk}/cmaf/1640995200.m3u8",
+                f"https://abc.svc.edge.scw.cloud/aws/{video.pk}/cmaf/1640995200.m3u8",
                 serializer.data["urls"]["manifests"]["hls"],
             )
             self.assertEqual(
-                f"https://abc.cloudfront.net/{video.pk}/previews/1640995200_100.jpg",
+                f"https://abc.svc.edge.scw.cloud/aws/{video.pk}/previews/1640995200_100.jpg",
                 serializer.data["urls"]["previews"],
             )
             self.assertEqual(video.transcode_pipeline, AWS_PIPELINE)
@@ -116,9 +120,7 @@ class VideoBaseSerializerTest(TestCase):
                 f"VOD {video.pk} had no transcode_pipeline and was recovered to AWS",
             )
 
-    @override_settings(
-        MEDIA_URL="https://abc.svc.edge.scw.cloud/",
-    )
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
     def test_video_serializer_urls_with_no_pipeline_recovered_to_peertube(self):
         """The VideoBaseSerializer should return the right URLs with Peertube pipeline."""
         date = datetime(2022, 1, 1, tzinfo=baseTimezone.utc)
