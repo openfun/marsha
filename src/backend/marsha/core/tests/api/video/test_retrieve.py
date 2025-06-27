@@ -197,10 +197,7 @@ class VideoRetrieveAPITest(TestCase):
             for resolution in resolutions
         }
 
-        mp4_template = (
-            "https://abc.svc.edge.scw.cloud/aws/{!s}/mp4/1533686400_{!s}.mp4"
-            "?response-content-disposition=attachment%3B+filename%3Dfoo-bar_1533686400.mp4"
-        )
+        mp4_template = "https://abc.svc.edge.scw.cloud/aws/{!s}/mp4/1533686400_{!s}.mp4"
         mp4_dict = {
             # pylint: disable=consider-using-f-string
             str(resolution): mp4_template.format(video.pk, resolution)
@@ -243,8 +240,7 @@ class VideoRetrieveAPITest(TestCase):
                         "upload_state": "ready",
                         "source_url": (
                             "https://abc.svc.edge.scw.cloud/aws/a2f27fde-973a-4e89-8dca-cc59e01d255c/"
-                            "timedtext/source/1533686400_fr_cc?response-content-disposition=a"
-                            "ttachment%3B+filename%3Dfoo-bar_1533686400.srt"
+                            "timedtext/source/1533686400_fr_cc"
                         ),
                         "url": (
                             "https://abc.svc.edge.scw.cloud/aws/a2f27fde-973a-4e89-8dca-cc59e01d255c/"
@@ -344,11 +340,11 @@ class VideoRetrieveAPITest(TestCase):
         )
 
     @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
-    def test_api_video_read_detail_token_user_nested_shared_live_media_urls_signed(
+    def test_api_video_read_detail_token_user_nested_shared_live_media(
         self,
     ):
         """
-        An instructor reading video details with nested shared live media and cloudfront signed
+        An instructor reading video details with nested shared live media
         urls activated should have the urls.media available
         """
         resolutions = [144, 240, 480, 720, 1080]
@@ -541,17 +537,13 @@ class VideoRetrieveAPITest(TestCase):
             content, {"detail": "You do not have permission to perform this action."}
         )
 
-    @override_settings(
-        CLOUDFRONT_SIGNED_URLS_ACTIVE=True,
-        CLOUDFRONT_SIGNED_PUBLIC_KEY_ID="cloudfront-access-key-id",
-        MEDIA_URL="https://abc.svc.edge.scw.cloud/",
-    )
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud")
     def test_api_video_read_detail_token_student_user_nested_shared_live_media_urls_signed(
         self,
     ):
         """
-        A student reading video details with nested shared live media and cloudfront signed
-        urls activated should not have the urls.media available
+        A student reading video details with nested shared live media should not have
+        the urls.media available
         """
         resolutions = [144, 240, 480, 720, 1080]
         video = factories.VideoFactory(
@@ -605,19 +597,6 @@ class VideoRetrieveAPITest(TestCase):
             for resolution in resolutions
         }
 
-        expected_cloudfront_signature = (
-            "Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNl"
-            "IjoiaHR0cHM6Ly9hYmMuY2xvdWRmcm9udC5uZXQvZDlkNzA0OWMtNWEzZi00MDcwLWE0"
-            "OTQtZTZiZjBiZDhiOWZiLyoiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFX"
-            "UzpFcG9jaFRpbWUiOjE2MzgyMzc2MDB9fX1dfQ__&Signature=IVWMFfS7WQVTKLZl~"
-            "gKgGES~BS~wVLBIOncSE6yVgg9zIrEI1Epq3AVkOsI7z10dyjgInNbPviArnxmlV~DQe"
-            "N-ykgEWmGy7aT4lRCx61oXuHFtNkq8Qx-we~UY87mZ4~UTqmM~JVuuLduMiRQB-I3XKa"
-            "RQGRlsok5yGu0RhvLcZntVFp6QgYui3WtGvxSs2LjW0IakR1qepSDl9LXI-F2bgl9Vd1"
-            "U9eapPBhhoD0okebXm7NGg9gUMLXlmUo-RvsrAzzEteKctPp0Xzkydk~tcnMkJs4jfbQ"
-            "xKrpyF~N9OuCRYCs68ONhHvypOYU3K-wQEoAFlERBLiaOzDZUzlyA__&Key-Pair-Id="
-            "cloudfront-access-key-id"
-        )
-
         self.assertEqual(
             content,
             {
@@ -648,40 +627,35 @@ class VideoRetrieveAPITest(TestCase):
                 "urls": {
                     "mp4": {
                         "144": (
-                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/mp4/"
-                            "1533686400_144.mp4?response-content-disposition=attachment%3B+filen"
-                            f"ame%3Dfoo-bar_1533686400.mp4&{expected_cloudfront_signature}"
+                            "https://abc.svc.edge.scw.cloud/aws/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/mp4/"
+                            "1533686400_144.mp4"
                         ),
                         "240": (
-                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/mp4/"
-                            "1533686400_240.mp4?response-content-disposition=attachment%3B+filen"
-                            f"ame%3Dfoo-bar_1533686400.mp4&{expected_cloudfront_signature}"
+                            "https://abc.svc.edge.scw.cloud/aws/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/mp4/"
+                            "1533686400_240.mp4"
                         ),
                         "480": (
-                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/mp4/"
-                            "1533686400_480.mp4?response-content-disposition=attachment%3B+filen"
-                            f"ame%3Dfoo-bar_1533686400.mp4&{expected_cloudfront_signature}"
+                            "https://abc.svc.edge.scw.cloud/aws/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/mp4/"
+                            "1533686400_480.mp4"
                         ),
                         "720": (
-                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/mp4/"
-                            "1533686400_720.mp4?response-content-disposition=attachment%3B+filen"
-                            f"ame%3Dfoo-bar_1533686400.mp4&{expected_cloudfront_signature}"
+                            "https://abc.svc.edge.scw.cloud/aws/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/mp4/"
+                            "1533686400_720.mp4"
                         ),
                         "1080": (
-                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/mp4/"
-                            "1533686400_1080.mp4?response-content-disposition=attachment%3B+filen"
-                            f"ame%3Dfoo-bar_1533686400.mp4&{expected_cloudfront_signature}"
+                            "https://abc.svc.edge.scw.cloud/aws/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/mp4/"
+                            "1533686400_1080.mp4"
                         ),
                     },
                     "thumbnails": thumbnails_dict,
                     "manifests": {
                         "hls": (
-                            "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
+                            "https://abc.svc.edge.scw.cloud/aws/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
                             "cmaf/1533686400.m3u8"
                         ),
                     },
                     "previews": (
-                        "https://abc.cloudfront.net/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
+                        "https://abc.svc.edge.scw.cloud/aws/d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb/"
                         "previews/1533686400_100.jpg"
                     ),
                 },
@@ -846,7 +820,6 @@ class VideoRetrieveAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
 
-    @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
     def test_api_video_read_detail_token_user_no_active_stamp(self):
         """A video with no active stamp should not fail and its "urls" should be set to `None`."""
         video = factories.VideoFactory(
@@ -913,7 +886,6 @@ class VideoRetrieveAPITest(TestCase):
             },
         )
 
-    @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
     def test_api_video_read_detail_token_user_not_sucessfully_uploaded(self):
         """A video that has never been uploaded successfully should have no url."""
         state = random.choice(["pending", "error", "ready"])

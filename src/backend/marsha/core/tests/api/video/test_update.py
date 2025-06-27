@@ -7,7 +7,7 @@ from unittest import mock
 import uuid
 
 from django.conf import settings
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 from marsha.core import factories, models
 from marsha.core.api import timezone
@@ -424,6 +424,7 @@ class VideoUpdateAPITest(TestCase):
         video.refresh_from_db()
         self.assertEqual(video.uploaded_on, None)
 
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
     def test_api_video_update_detail_token_user_upload_state(self):
         """Token users should not be able to update "upload_state" through the API."""
         video = factories.VideoFactory(
@@ -485,22 +486,19 @@ class VideoUpdateAPITest(TestCase):
                 "urls": {
                     "manifests": {},
                     "mp4": {
-                        "240": f"https://abc.cloudfront.net/{video.id}/"
-                        "mp4/1569309880_240.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-002_1569309880.mp4",
-                        "480": f"https://abc.cloudfront.net/{video.id}/"
-                        "mp4/1569309880_480.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-002_1569309880.mp4",
-                        "720": f"https://abc.cloudfront.net/{video.id}/"
-                        "mp4/1569309880_720.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-002_1569309880.mp4",
+                        "240": f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
+                        "mp4/1569309880_240.mp4",
+                        "480": f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
+                        "mp4/1569309880_480.mp4",
+                        "720": f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
+                        "mp4/1569309880_720.mp4",
                     },
                     "thumbnails": {
-                        "240": f"https://abc.cloudfront.net/{video.id}/"
+                        "240": f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
                         "thumbnails/1569309880_240.0000000.jpg",
-                        "480": f"https://abc.cloudfront.net/{video.id}/"
+                        "480": f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
                         "thumbnails/1569309880_480.0000000.jpg",
-                        "720": f"https://abc.cloudfront.net/{video.id}/"
+                        "720": f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
                         "thumbnails/1569309880_720.0000000.jpg",
                     },
                 },

@@ -45,7 +45,8 @@ from marsha.core.tests.views.test_lti_base import BaseLTIViewForPortabilityTestC
 
 
 # We don't enforce arguments documentation in tests
-# pylint: disable=unused-argument,too-many-lines
+# flake8: noqa: E501
+# pylint: disable=unused-argument,too-many-lines,line-too-long
 
 
 class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
@@ -1206,6 +1207,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
 
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
     def test_views_lti_video_read_other_playlist(
         self, mock_get_consumer_site, mock_verify
     ):
@@ -1279,39 +1281,34 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
                 "title": video.title,
                 "urls": {
                     "mp4": {
-                        "144": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
-                        "mp4/1569309880_144.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-003_1569309880.mp4",
-                        "240": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
-                        "mp4/1569309880_240.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-003_1569309880.mp4",
-                        "480": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
-                        "mp4/1569309880_480.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-003_1569309880.mp4",
-                        "720": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
-                        "mp4/1569309880_720.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-003_1569309880.mp4",
-                        "1080": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
-                        "mp4/1569309880_1080.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-003_1569309880.mp4",
+                        "144": "https://abc.svc.edge.scw.cloud/aws/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
+                        "mp4/1569309880_144.mp4",
+                        "240": "https://abc.svc.edge.scw.cloud/aws/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
+                        "mp4/1569309880_240.mp4",
+                        "480": "https://abc.svc.edge.scw.cloud/aws/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
+                        "mp4/1569309880_480.mp4",
+                        "720": "https://abc.svc.edge.scw.cloud/aws/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
+                        "mp4/1569309880_720.mp4",
+                        "1080": "https://abc.svc.edge.scw.cloud/aws/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
+                        "mp4/1569309880_1080.mp4",
                     },
                     "thumbnails": {
-                        "144": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
+                        "144": "https://abc.svc.edge.scw.cloud/aws/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
                         "thumbnails/1569309880_144.0000000.jpg",
-                        "240": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
+                        "240": "https://abc.svc.edge.scw.cloud/aws/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
                         "thumbnails/1569309880_240.0000000.jpg",
-                        "480": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
+                        "480": "https://abc.svc.edge.scw.cloud/aws/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
                         "thumbnails/1569309880_480.0000000.jpg",
-                        "720": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
+                        "720": "https://abc.svc.edge.scw.cloud/aws/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
                         "thumbnails/1569309880_720.0000000.jpg",
-                        "1080": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
+                        "1080": "https://abc.svc.edge.scw.cloud/aws/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
                         "thumbnails/1569309880_1080.0000000.jpg",
                     },
                     "manifests": {
-                        "hls": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
+                        "hls": "https://abc.svc.edge.scw.cloud/aws/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
                         "cmaf/1569309880.m3u8",
                     },
-                    "previews": "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
+                    "previews": "https://abc.svc.edge.scw.cloud/aws/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396/"
                     "previews/1569309880_100.jpg",
                 },
                 "should_use_subtitle_as_transcript": False,
@@ -1342,6 +1339,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
 
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
     def test_views_lti_video_restricted_resolutions_list(
         self, mock_get_consumer_site, mock_verify
     ):
@@ -1431,29 +1429,26 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
                 "title": video.title,
                 "urls": {
                     "mp4": {
-                        "144": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
-                        "mp4/1569309880_144.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-002_1569309880.mp4",
-                        "240": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
-                        "mp4/1569309880_240.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-002_1569309880.mp4",
-                        "480": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
-                        "mp4/1569309880_480.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-002_1569309880.mp4",
+                        "144": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "mp4/1569309880_144.mp4",
+                        "240": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "mp4/1569309880_240.mp4",
+                        "480": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "mp4/1569309880_480.mp4",
                     },
                     "thumbnails": {
-                        "144": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "144": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
                         "thumbnails/1569309880_144.0000000.jpg",
-                        "240": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "240": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
                         "thumbnails/1569309880_240.0000000.jpg",
-                        "480": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "480": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
                         "thumbnails/1569309880_480.0000000.jpg",
                     },
                     "manifests": {
-                        "hls": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "hls": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
                         "cmaf/1569309880.m3u8",
                     },
-                    "previews": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                    "previews": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
                     "previews/1569309880_100.jpg",
                 },
                 "should_use_subtitle_as_transcript": False,
@@ -1599,6 +1594,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
 
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
     def test_views_lti_video_harvested_live_state_instructor(
         self, mock_get_consumer_site, mock_verify
     ):
@@ -1689,22 +1685,19 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
                 "urls": {
                     "manifests": {},
                     "mp4": {
-                        "240": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
-                        "mp4/1569309880_240.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-002_1569309880.mp4",
-                        "480": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
-                        "mp4/1569309880_480.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-002_1569309880.mp4",
-                        "720": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
-                        "mp4/1569309880_720.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-002_1569309880.mp4",
+                        "240": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "mp4/1569309880_240.mp4",
+                        "480": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "mp4/1569309880_480.mp4",
+                        "720": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "mp4/1569309880_720.mp4",
                     },
                     "thumbnails": {
-                        "240": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "240": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
                         "thumbnails/1569309880_240.0000000.jpg",
-                        "480": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "480": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
                         "thumbnails/1569309880_480.0000000.jpg",
-                        "720": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "720": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
                         "thumbnails/1569309880_720.0000000.jpg",
                     },
                 },
@@ -1744,6 +1737,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
 
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
     def test_views_lti_video_post_student_with_video(
         self, mock_get_consumer_site, mock_verify
     ):
@@ -1833,39 +1827,34 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
                 "title": video.title,
                 "urls": {
                     "mp4": {
-                        "144": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
-                        "mp4/1569309880_144.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-002_1569309880.mp4",
-                        "240": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
-                        "mp4/1569309880_240.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-002_1569309880.mp4",
-                        "480": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
-                        "mp4/1569309880_480.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-002_1569309880.mp4",
-                        "720": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
-                        "mp4/1569309880_720.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-002_1569309880.mp4",
-                        "1080": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
-                        "mp4/1569309880_1080.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-002_1569309880.mp4",
+                        "144": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "mp4/1569309880_144.mp4",
+                        "240": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "mp4/1569309880_240.mp4",
+                        "480": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "mp4/1569309880_480.mp4",
+                        "720": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "mp4/1569309880_720.mp4",
+                        "1080": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "mp4/1569309880_1080.mp4",
                     },
                     "thumbnails": {
-                        "144": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "144": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
                         "thumbnails/1569309880_144.0000000.jpg",
-                        "240": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "240": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
                         "thumbnails/1569309880_240.0000000.jpg",
-                        "480": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "480": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
                         "thumbnails/1569309880_480.0000000.jpg",
-                        "720": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "720": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
                         "thumbnails/1569309880_720.0000000.jpg",
-                        "1080": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "1080": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
                         "thumbnails/1569309880_1080.0000000.jpg",
                     },
                     "manifests": {
-                        "hls": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "hls": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
                         "cmaf/1569309880.m3u8",
                     },
-                    "previews": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                    "previews": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
                     "previews/1569309880_100.jpg",
                 },
                 "should_use_subtitle_as_transcript": False,
@@ -1896,6 +1885,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
 
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
     def test_views_lti_video_post_student_with_video_generic(
         self, mock_get_consumer_site, mock_verify
     ):
@@ -1991,39 +1981,34 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
                 "title": video.title,
                 "urls": {
                     "mp4": {
-                        "144": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
-                        "mp4/1569309880_144.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-002_1569309880.mp4",
-                        "240": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
-                        "mp4/1569309880_240.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-002_1569309880.mp4",
-                        "480": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
-                        "mp4/1569309880_480.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-002_1569309880.mp4",
-                        "720": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
-                        "mp4/1569309880_720.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-002_1569309880.mp4",
-                        "1080": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
-                        "mp4/1569309880_1080.mp4?response-content-disposition=attachment%3B+"
-                        "filename%3Dplaylist-002_1569309880.mp4",
+                        "144": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "mp4/1569309880_144.mp4",
+                        "240": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "mp4/1569309880_240.mp4",
+                        "480": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "mp4/1569309880_480.mp4",
+                        "720": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "mp4/1569309880_720.mp4",
+                        "1080": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "mp4/1569309880_1080.mp4",
                     },
                     "thumbnails": {
-                        "144": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "144": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
                         "thumbnails/1569309880_144.0000000.jpg",
-                        "240": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "240": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
                         "thumbnails/1569309880_240.0000000.jpg",
-                        "480": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "480": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
                         "thumbnails/1569309880_480.0000000.jpg",
-                        "720": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "720": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
                         "thumbnails/1569309880_720.0000000.jpg",
-                        "1080": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "1080": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
                         "thumbnails/1569309880_1080.0000000.jpg",
                     },
                     "manifests": {
-                        "hls": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                        "hls": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
                         "cmaf/1569309880.m3u8",
                     },
-                    "previews": "https://abc.cloudfront.net/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
+                    "previews": "https://abc.svc.edge.scw.cloud/aws/59c0fc7a-0f64-46c0-993f-bdf47ecd837f/"
                     "previews/1569309880_100.jpg",
                 },
                 "should_use_subtitle_as_transcript": False,
@@ -2268,6 +2253,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
 
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
     def test_views_lti_video_has_transcript(self, mock_get_consumer_site, mock_verify):
         """Compute has_transcript when a transcript is uploaded."""
         passport = ConsumerSiteLTIPassportFactory()
@@ -2339,13 +2325,11 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
                         "language": transcript.language,
                         "upload_state": "ready",
                         "source_url": (
-                            f"https://abc.cloudfront.net/{video.id}/"
-                            f"timedtext/source/1569309880_{transcript.language}_ts?"
-                            "response-content-disposition=attachment%3B+filename%3Dfoo-bar"
-                            "_1569309880.srt"
+                            f"https://abc.svc.edge.scw.cloud/aws/{video.id}/"
+                            f"timedtext/source/1569309880_{transcript.language}_ts"
                         ),
                         "url": (
-                            f"https://abc.cloudfront.net/{video.id}/timedtext/"
+                            f"https://abc.svc.edge.scw.cloud/aws/{video.id}/timedtext/"
                             f"1569309880_{transcript.language}_ts.vtt"
                         ),
                         "video": str(video.id),

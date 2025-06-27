@@ -293,28 +293,6 @@ class Video(BaseFile, RetentionDateObjectMixin):
             ),
         ]
 
-    def get_source_s3_key(self, stamp=None):
-        """Compute the S3 key in the source bucket (ID of the video + version stamp).
-
-        Parameters
-        ----------
-        stamp: Type[string]
-            Passing a value for this argument will return the source S3 key for the video assuming
-            its active stamp is set to this value. This is useful to create an upload policy for
-            this prospective version of the video, so that the client can upload the file to S3
-            and the confirmation lambda can set the `uploaded_on` field to this value only after
-            the video transcoding job is successful.
-
-        Returns
-        -------
-        string
-            The S3 key for the video in the source bucket, where uploaded videos are stored before
-            they are converted to the destination bucket.
-
-        """
-        stamp = stamp or self.uploaded_on_stamp()
-        return f"{self.pk}/video/{self.pk}/{stamp}"
-
     def get_storage_prefix(
         self,
         stamp=None,
@@ -341,6 +319,10 @@ class Video(BaseFile, RetentionDateObjectMixin):
         """
         stamp = stamp or self.uploaded_on_stamp()
         base = base_dir
+
+        if base == AWS_STORAGE_BASE_DIRECTORY:
+            return f"{base}/{self.pk}"
+
         if base == DELETED_STORAGE_BASE_DIRECTORY:
             base = f"{base}/{VOD_STORAGE_BASE_DIRECTORY}"
 
@@ -693,8 +675,12 @@ class TimedTextTrack(BaseTrack):
         """
         stamp = stamp or self.uploaded_on_stamp()
         base = base_dir
+
+        if base_dir == AWS_STORAGE_BASE_DIRECTORY:
+            return f"{base}/{self.video.pk}/timedtext"
+
         if base_dir == DELETED_STORAGE_BASE_DIRECTORY:
-            base = f"{DELETED_STORAGE_BASE_DIRECTORY}/{VOD_STORAGE_BASE_DIRECTORY}"
+            base = f"{base}/{VOD_STORAGE_BASE_DIRECTORY}"
 
         return f"{base}/{self.video.pk}/timedtext/{self.pk}/{stamp}"
 
