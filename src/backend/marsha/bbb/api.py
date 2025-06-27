@@ -599,19 +599,19 @@ class ClassroomDocumentViewSet(
         """Get an upload policy for a classroom document.
 
         Calling the endpoint resets the upload state to `pending` and returns an upload policy to
-        our AWS S3 source bucket.
+        our S3 bucket.
 
         Parameters
         ----------
         request : Type[django.http.request.HttpRequest]
             The request on the API endpoint
         pk: string
-            The primary key of the shared live media
+            The primary key of the classroom document
 
         Returns
         -------
         Type[rest_framework.response.Response]
-            HttpResponse carrying the AWS S3 upload policy as a JSON object.
+            HttpResponse carrying the S3 upload policy as a JSON object.
 
         """
         classroom_document = self.get_object()  # check permissions first

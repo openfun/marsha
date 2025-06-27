@@ -3,7 +3,6 @@
 from datetime import datetime
 import mimetypes
 from os.path import splitext
-from urllib.parse import quote_plus
 from uuid import uuid4
 
 from django.conf import settings
@@ -22,7 +21,7 @@ from marsha.bbb.models import (
     ClassroomSession,
 )
 from marsha.bbb.utils.bbb_utils import get_recording_url, get_url as get_document_url
-from marsha.core.defaults import CLASSROOM_RECORDINGS_KEY_CACHE, SCW_S3, VOD_CONVERT
+from marsha.core.defaults import CLASSROOM_RECORDINGS_KEY_CACHE, VOD_CONVERT
 from marsha.core.serializers import (
     BaseInitiateUploadSerializer,
     PlaylistLiteSerializer,
@@ -30,7 +29,6 @@ from marsha.core.serializers import (
     UploadableFileWithExtensionSerializerMixin,
     VideoFromRecordingSerializer,
 )
-from marsha.core.storage.storage_class import file_storage
 
 
 class ClassroomRecordingSerializer(ReadOnlyModelSerializer):
@@ -405,25 +403,11 @@ class ClassroomDocumentSerializer(
         Returns
         -------
         String or None
-            the url to fetch the classroom document on CloudFront/Storage
+            the url to fetch the classroom document on Storage
             None if the classroom document is still not uploaded to S3 with success
 
         """
-        if not obj.uploaded_on:
-            return None
-
-        if obj.storage_location == SCW_S3:
-            file_key = obj.get_storage_key(obj.filename)
-
-            return file_storage.url(file_key)
-
-        # Default AWS fallback
-        url = get_document_url(obj)
-
-        return (
-            f"{url}?response-content-disposition="
-            f"{quote_plus('attachment; filename=' + obj.filename)}"
-        )
+        return get_document_url(obj)
 
 
 class ClassroomDocumentInitiateUploadSerializer(BaseInitiateUploadSerializer):

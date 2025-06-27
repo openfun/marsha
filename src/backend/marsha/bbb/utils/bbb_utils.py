@@ -5,7 +5,6 @@ import hashlib
 import json
 from json import JSONDecodeError
 import logging
-from os.path import splitext
 
 from django.conf import settings
 from django.utils.timezone import now
@@ -16,7 +15,7 @@ from requests.exceptions import MissingSchema
 import xmltodict
 
 from marsha.bbb.models import Classroom, ClassroomRecording, ClassroomSession
-from marsha.core.defaults import SCW_S3
+from marsha.core.defaults import AWS_STORAGE_BASE_DIRECTORY, SCW_S3
 from marsha.core.storage.storage_class import file_storage
 from marsha.core.utils import time_utils
 
@@ -106,7 +105,7 @@ def get_url(obj):
     Returns
     -------
     String or None
-        the url to fetch the classroom document on CloudFront or Edge Service
+        the url to fetch the classroom document on Edge Service
         None if the classroom document is still not uploaded to S3 with success
 
     """
@@ -117,19 +116,12 @@ def get_url(obj):
         file_key = obj.get_storage_key(obj.filename)
         return file_storage.url(file_key)
 
-    extension = ""
-    if "." in obj.filename:
-        extension = splitext(obj.filename)[1]
-
-    stamp = time_utils.to_timestamp(obj.uploaded_on)
-
-    # Default AWS fallback
-    url = (
-        f"{settings.AWS_S3_URL_PROTOCOL}://{settings.CLOUDFRONT_DOMAIN}/"
-        f"{obj.classroom.pk}/classroomdocument/{obj.pk}/{stamp}{extension}"
+    # Default fallback to location under "aws" directory
+    file_key = obj.get_storage_key(
+        filename=f"{obj.filename}", base_dir=AWS_STORAGE_BASE_DIRECTORY
     )
 
-    return url
+    return file_storage.url(file_key)
 
 
 def create(classroom: Classroom, recording_ready_callback_url: str, attempt=0):
