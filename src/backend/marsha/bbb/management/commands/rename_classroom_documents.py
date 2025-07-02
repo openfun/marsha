@@ -9,7 +9,7 @@ from django.core.management.base import BaseCommand
 import boto3
 
 from marsha.bbb.models import ClassroomDocument
-from marsha.core.defaults import AWS_STORAGE_BASE_DIRECTORY
+from marsha.core.defaults import AWS_S3, AWS_STORAGE_BASE_DIRECTORY, READY
 from marsha.core.storage.storage_class import file_storage
 from marsha.core.utils import time_utils
 
@@ -44,7 +44,11 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         """Execute management command."""
 
-        for document in ClassroomDocument.objects.all():
+        documents = ClassroomDocument.objects.filter(
+            storage_location=AWS_S3, upload_state=READY
+        )
+
+        for document in documents:
             # Get the file stored on Scaleway S3 under `aws/`
             stamp = time_utils.to_timestamp(document.uploaded_on)
             extension = ""

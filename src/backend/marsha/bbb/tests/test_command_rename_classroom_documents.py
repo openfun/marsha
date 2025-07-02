@@ -13,6 +13,7 @@ from marsha import settings
 from marsha.bbb.factories import ClassroomDocumentFactory, ClassroomFactory
 from marsha.bbb.management.commands import rename_classroom_documents
 from marsha.bbb.models import ClassroomDocument
+from marsha.core.defaults import AWS_S3, PENDING, READY, SCW_S3
 from marsha.core.utils import time_utils
 
 
@@ -44,8 +45,9 @@ class RenameClassroomDocumentsTestCase(TestCase):
                     classroom=ClassroomFactory(),
                     filename=filename_src,
                     uploaded_on=now,
+                    upload_state=READY,
+                    storage_location=AWS_S3,
                 )
-
                 documents.append(document)
 
             # Create mocks for copy_objects with Stubber
@@ -81,6 +83,18 @@ class RenameClassroomDocumentsTestCase(TestCase):
                     "Key": file_key_dest,
                 }
                 s3_client_stubber.add_response("copy_object", {}, expected_params)
+
+            # Create some classroom documents that should not be concerned
+            ClassroomDocumentFactory(
+                classroom=ClassroomFactory(),
+                upload_state=READY,
+                storage_location=SCW_S3,
+            )
+            ClassroomDocumentFactory(
+                classroom=ClassroomFactory(),
+                upload_state=PENDING,
+                storage_location=AWS_S3,
+            )
 
             call_command("rename_classroom_documents")
 
