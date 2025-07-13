@@ -4,6 +4,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from marsha.core.defaults import (
+    AWS_STORAGE_BASE_DIRECTORY,
     DELETED_STORAGE_BASE_DIRECTORY,
     DOCUMENT_STORAGE_BASE_DIRECTORY,
     PENDING,
@@ -227,6 +228,9 @@ class Document(BaseFile):
             passed.
         """
         base = base_dir
+        if base == AWS_STORAGE_BASE_DIRECTORY:
+            return f"{base}/{self.pk}/document/{filename}"
+
         if base == DELETED_STORAGE_BASE_DIRECTORY:
             base = f"{base}/{DOCUMENT_STORAGE_BASE_DIRECTORY}"
 

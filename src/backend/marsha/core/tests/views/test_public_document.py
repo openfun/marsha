@@ -27,6 +27,7 @@ class DocumentPublicViewTestCase(TestCase):
         super().tearDown()
         cache.clear()
 
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
     def test_document_publicly_accessible_on_aws(self):
         """Validate to access to a public document."""
         document = DocumentFactory(
@@ -85,9 +86,8 @@ class DocumentPublicViewTestCase(TestCase):
                     "lti_id": "course-v1:ufr+mathematics+00001",
                 },
                 "url": (
-                    "https://abc.cloudfront.net/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396"
-                    "/document/1569309880?response-content-disposition=attachment%3B"
-                    "+filename%3Dplaylist-003_document-001"
+                    "https://abc.svc.edge.scw.cloud/aws/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396"
+                    "/document/playlist-003_document-001"
                 ),
             },
         )
@@ -192,6 +192,7 @@ class DocumentPublicViewTestCase(TestCase):
             "frame-ancestors trusted_domain.com *.trusted_domain.com;",
         )
 
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
     def test_public_document_without_consumer_site(self):
         """Public document without consumer site should have x-frame-options header"""
         organization = OrganizationFactory()
@@ -249,9 +250,8 @@ class DocumentPublicViewTestCase(TestCase):
                     "lti_id": None,
                 },
                 "url": (
-                    f"https://abc.cloudfront.net/{document.pk}"
-                    "/document/1569309880?response-content-disposition=attachment%3B"
-                    "+filename%3Dplaylist-003_document-001"
+                    f"https://abc.svc.edge.scw.cloud/aws/{document.pk}"
+                    "/document/playlist-003_document-001"
                 ),
             },
         )

@@ -1,19 +1,15 @@
 """Structure of Document related models API responses with Django Rest Framework serializers."""
 
-from datetime import timedelta
 import mimetypes
 from os.path import splitext
-from urllib.parse import quote_plus
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.urls import reverse
-from django.utils import timezone
 
-from botocore.signers import CloudFrontSigner
 from rest_framework import serializers
 
-from marsha.core.defaults import SCW_S3
+from marsha.core.defaults import AWS_STORAGE_BASE_DIRECTORY, SCW_S3
 from marsha.core.models import Document
 from marsha.core.serializers.base import (
     TimestampField,
@@ -21,7 +17,6 @@ from marsha.core.serializers.base import (
 )
 from marsha.core.serializers.playlist import PlaylistLiteSerializer
 from marsha.core.storage.storage_class import file_storage
-from marsha.core.utils import cloudfront_utils, time_utils
 
 
 class DocumentSerializer(
@@ -117,29 +112,12 @@ class DocumentSerializer(
 
         if obj.storage_location == SCW_S3:
             file_key = obj.get_storage_key(self.get_filename(obj))
-
-            return file_storage.url(file_key)
-
-        # Default AWS fallback:
-        url = (
-            f"{settings.AWS_S3_URL_PROTOCOL}://{settings.CLOUDFRONT_DOMAIN}/{obj.pk}/document/"
-            f"{time_utils.to_timestamp(obj.uploaded_on)}{self._get_extension_string(obj)}?response"
-            f"-content-disposition={quote_plus('attachment; filename=' + self.get_filename(obj))}"
-        )
-
-        # Sign the document urls only if the functionality is activated
-        if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
-            date_less_than = timezone.now() + timedelta(
-                seconds=settings.CLOUDFRONT_SIGNED_URLS_VALIDITY
-            )
-            cloudfront_signer = CloudFrontSigner(
-                settings.CLOUDFRONT_SIGNED_PUBLIC_KEY_ID, cloudfront_utils.rsa_signer
-            )
-            url = cloudfront_signer.generate_presigned_url(
-                url, date_less_than=date_less_than
+        else:
+            file_key = obj.get_storage_key(
+                self.get_filename(obj), base_dir=AWS_STORAGE_BASE_DIRECTORY
             )
 
-        return url
+        return file_storage.url(file_key)
 
 
 class DocumentSelectLTISerializer(serializers.ModelSerializer):
