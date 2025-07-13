@@ -56,7 +56,7 @@ class DocumentAPITest(TestCase):
             content, {"detail": "You do not have permission to perform this action."}
         )
 
-    @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
     def test_api_document_fetch_instructor_on_aws(self):
         """An instructor should be able to fetch a document."""
         document = DocumentFactory(
@@ -88,9 +88,8 @@ class DocumentAPITest(TestCase):
                 "is_ready_to_show": True,
                 "title": document.title,
                 "upload_state": "ready",
-                "url": "https://abc.cloudfront.net/4c51f469-f91e-4998-b438-e31ee3bd3ea6/"
-                "document/1533686400.pdf"
-                "?response-content-disposition=attachment%3B+filename%3Dfoo_bar-baz.pdf",
+                "url": "https://abc.svc.edge.scw.cloud/aws/4c51f469-f91e-4998-b438-e31ee3bd3ea6/"
+                "document/foo_bar-baz.pdf",
                 "show_download": True,
                 "playlist": {
                     "id": str(document.playlist.id),
