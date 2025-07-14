@@ -2,23 +2,20 @@
 
 import mimetypes
 from os.path import splitext
-from urllib.parse import quote, quote_plus
 
 from django.conf import settings
 from django.urls import reverse
 
 from rest_framework import serializers
 
-from marsha.core.defaults import SCW_S3
+from marsha.core.defaults import AWS_STORAGE_BASE_DIRECTORY, SCW_S3
 from marsha.core.models import User
 from marsha.core.serializers import (
     BaseInitiateUploadSerializer,
     UploadableFileWithExtensionSerializerMixin,
-    get_resource_cloudfront_url_params,
 )
 from marsha.core.serializers.playlist import PlaylistLiteSerializer
 from marsha.core.storage.storage_class import file_storage
-from marsha.core.utils import cloudfront_utils, time_utils
 from marsha.deposit.models import DepositedFile, FileDepository
 
 
@@ -145,26 +142,10 @@ class DepositedFileSerializer(
 
             return file_storage.url(file_key)
 
-        base = (
-            f"{settings.AWS_S3_URL_PROTOCOL}://{settings.CLOUDFRONT_DOMAIN}/"
-            f"{obj.file_depository.pk}/depositedfile/{obj.pk}/"
-            f"{time_utils.to_timestamp(obj.uploaded_on)}"
+        file_key = obj.get_storage_key(
+            obj.filename, base_dir=AWS_STORAGE_BASE_DIRECTORY
         )
-
-        response_content_disposition = quote_plus(
-            "attachment; filename=" + quote(obj.filename)
-        )
-        url = (
-            f"{base:s}{self._get_extension_string(obj)}?"
-            f"response-content-disposition={response_content_disposition}"
-        )
-
-        if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
-            params = get_resource_cloudfront_url_params(
-                "depositedfile", obj.file_depository_id
-            )
-            url = cloudfront_utils.build_signed_url(url, params)
-        return url
+        return file_storage.url(file_key)
 
 
 class DepositedFileInitiateUploadSerializer(BaseInitiateUploadSerializer):
