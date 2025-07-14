@@ -8,7 +8,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-## [5.10.] - 2025-07-09
+### Changed
+
+- Serve legacy deposited files from Scaleway S3 after AWS migration
+
+## [5.10.0] - 2025-07-09
 
 ### Changed
 

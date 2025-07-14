@@ -24,7 +24,8 @@ from marsha.deposit.factories import DepositedFileFactory, FileDepositoryFactory
 
 
 # We don't enforce arguments documentation in tests
-# pylint: disable=unused-argument
+# flake8: noqa: E501
+# pylint: disable=unused-argument,line-too-long
 
 
 @override_settings(DEPOSIT_ENABLED=True)
@@ -292,11 +293,8 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
             },
         )
 
-    @override_settings(
-        CLOUDFRONT_SIGNED_URLS_ACTIVE=True,
-        CLOUDFRONT_SIGNED_PUBLIC_KEY_ID="cloudfront-access-key-id",
-    )
-    def test_api_file_depository_list_deposited_files_instructor_signed_urls_aws(self):
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
+    def test_api_file_depository_list_deposited_files_instructor_urls_aws(self):
         """All deposited files should have the same signature."""
         file_depository = FileDepositoryFactory(
             id="4e126eac-9ca8-47b1-8dcd-157686b43c60"
@@ -329,17 +327,6 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
             )
         self.assertEqual(response.status_code, 200)
 
-        expected_cloudfront_signature = (
-            "Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9hYmMuY2xvdWRmcm9udC5uZXQvNGUxM"
-            "jZlYWMtOWNhOC00N2IxLThkY2QtMTU3Njg2YjQzYzYwLyoiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuI"
-            "jp7IkFXUzpFcG9jaFRpbWUiOjE2MzgyMzc2MDB9fX1dfQ__&Signature=BGMvqnlKwJW~PwkL1Om4Pp7Pk5"
-            "ZLlJGgS~q5c02NIL5--QBssu6C-gbhBgfGVQOY8~YwEqkJVSFfsqX54jOvzjVi-0t4mDANocv0hD5CQAy103"
-            "79gj14UQ5-4i2lcPoDdEcpsTekrtC9W1oRzZlyKSygNnL5NJKSjLy7St3TN8AK7sHbOMYTiFEpnxvuz8CaIh"
-            "DLf0xG~IbILgw83w9D1xlmAFu9Mxe5KXXQZa6Z60dXcXf67AS9vO1YRTK4CxtfF5EkDI31DeOm-Fm78VZzFE"
-            "j4MtdzMRQV1ag~4SruE7RMS10nIgHLN7CxpdHpybqAK4V-OWXlMsx8vSxC1bLHcQ__"
-            "&Key-Pair-Id=cloudfront-access-key-id"
-        )
-
         self.assertEqual(
             response.json(),
             {
@@ -357,10 +344,8 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
                         "upload_state": "pending",
                         "uploaded_on": "2018-08-08T00:00:00Z",
                         "url": (
-                            f"https://abc.cloudfront.net/{file_depository.id}/depositedfile/"
-                            f"{unicode_deposited_file.id}/1533686400?response-content-disposition"
-                            "=attachment%3B+filename%3Dtest%25E2%2580%2599.pdf"
-                            f"&{expected_cloudfront_signature}"
+                            f"https://abc.svc.edge.scw.cloud/aws/{file_depository.id}/depositedfile/"
+                            f"{unicode_deposited_file.id}/test%E2%80%99.pdf"
                         ),
                     },
                     {
@@ -373,10 +358,8 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
                         "upload_state": "pending",
                         "uploaded_on": "2018-08-08T00:00:00Z",
                         "url": (
-                            f"https://abc.cloudfront.net/{file_depository.id}/depositedfile/"
-                            f"{deposited_files[2].id}/1533686400?response-content-disposition"
-                            f"=attachment%3B+filename%3D{deposited_files[2].filename}"
-                            f"&{expected_cloudfront_signature}"
+                            f"https://abc.svc.edge.scw.cloud/aws/{file_depository.id}/depositedfile/"
+                            f"{deposited_files[2].id}/{deposited_files[2].filename}"
                         ),
                     },
                     {
@@ -389,10 +372,8 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
                         "upload_state": "pending",
                         "uploaded_on": "2018-08-08T00:00:00Z",
                         "url": (
-                            f"https://abc.cloudfront.net/{file_depository.id}/depositedfile/"
-                            f"{deposited_files[1].id}/1533686400?response-content-disposition"
-                            f"=attachment%3B+filename%3D{deposited_files[1].filename}"
-                            f"&{expected_cloudfront_signature}"
+                            f"https://abc.svc.edge.scw.cloud/aws/{file_depository.id}/depositedfile/"
+                            f"{deposited_files[1].id}/{deposited_files[1].filename}"
                         ),
                     },
                     {
@@ -405,19 +386,15 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
                         "upload_state": "pending",
                         "uploaded_on": "2018-08-08T00:00:00Z",
                         "url": (
-                            f"https://abc.cloudfront.net/{file_depository.id}/depositedfile/"
-                            f"{deposited_files[0].id}/1533686400?response-content-disposition"
-                            f"=attachment%3B+filename%3D{deposited_files[0].filename}"
-                            f"&{expected_cloudfront_signature}"
+                            f"https://abc.svc.edge.scw.cloud/aws/{file_depository.id}/depositedfile/"
+                            f"{deposited_files[0].id}/{deposited_files[0].filename}"
                         ),
                     },
                 ],
             },
         )
 
-    @override_settings(
-        MEDIA_URL="https://abc.svc.edge.scw.cloud/",
-    )
+    @override_settings(MEDIA_URL="https://abc.svc.edge.scw.cloud/")
     def test_api_file_depository_list_deposited_files_instructor_urls_scw(self):
         """Deposited files on Scaleway should not be signed."""
         file_depository = FileDepositoryFactory(
