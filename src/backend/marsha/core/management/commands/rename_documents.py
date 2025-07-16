@@ -36,6 +36,7 @@ class Command(BaseCommand):
 
         value = value.replace("/", "_")
         value = value.replace("\\", "_")
+        value = value.replace(" ", "_")
         value = value.lstrip(".")
 
         return value
@@ -58,7 +59,7 @@ class Command(BaseCommand):
                 "Key": file_key_src,
             }
 
-            filename = self.validate_filename(document.filename)
+            filename = self.validate_filename(document.title + extension)
 
             # Override document filename with the validated S3-compatible filename
             if filename != document.filename:
