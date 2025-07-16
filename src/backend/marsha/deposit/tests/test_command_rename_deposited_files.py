@@ -1,7 +1,6 @@
 """Test the ``rename_deposited_files`` management command."""
 
 from datetime import datetime, timezone
-from os.path import splitext
 from unittest import mock
 
 from django.core.management import call_command
@@ -43,6 +42,7 @@ class RenameDepositedFilesTestCase(TestCase):
             for filename_src, _ in filenames:
                 file = DepositedFileFactory(
                     filename=filename_src,
+                    extension="pdf",
                     uploaded_on=now,
                     upload_state=READY,
                     storage_location=AWS_S3,
@@ -54,9 +54,7 @@ class RenameDepositedFilesTestCase(TestCase):
             # were created, so we must iterate over objects.all() in the same sequence
             for file in DepositedFile.objects.all():
                 stamp = time_utils.to_timestamp(file.uploaded_on)
-                extension = ""
-                if "." in file.filename:
-                    extension = splitext(file.filename)[1]
+                extension = "." + file.extension if file.extension else ""
 
                 file_key_src = (
                     f"aws/{file.file_depository.id}/depositedfile/"
