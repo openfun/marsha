@@ -38,25 +38,16 @@ Moreover, Marsha provides:
 
 ### The `Django` backend
 
-The `Django` backend is tasked with serving the LTI pages that are integrated into the LMS. It also manages all the objects with their relationships, user accounts and all authentication concerns. It exposes a JSON API to communicate with the part of the infrastructure that operates on `AWS lambdas` and the `React` frontend.
+The `Django` backend is tasked with serving the LTI pages that are integrated into the LMS. It also manages all the objects with their relationships, user accounts and all authentication concerns. It exposes a JSON API to communicate with the `React` frontend.
 
 It is defined using a [docker-compose file](../docker-compose.yml) for development, and can be deployed on any container environment (such as `Kubernetes`) for production.
 
 ### The storage & transcoding environment
 
-Source files (video, documents, subtitles,...) are directly uploaded to an `S3` bucket by instructors. Depending the uploaded resource a lambda will be triggered to do different jobs:
-- Launch `MediaConvert` to generate all necessary video files (various formats and fragments & manifests for adaptive-bitrate streaming) into a destination `S3` bucket. Those files are then served through the `CloudFront` CDN.
+Source files (video, documents, subtitles,...) are directly uploaded to an `S3` bucket by instructors. Depending the uploaded resource, Celery tasks will be triggered to do different jobs:
+- Transcode videos using Peertube runners to generate all necessary video files (various formats and fragments & manifests for adaptive-bitrate streaming) into a destination `S3` bucket. Those files are then served through the `Scaleway Edge service` CDN.
 - Convert any kind of subtitles (also captions and transcripts) in [WebVTT](https://www.w3.org/TR/webvtt1/) format and encode them properly.
 - Resize thumbnails in many formats.
-- Copy documents from a source to a destination `S3` Bucket accessible through the `CloudFront` CDN.
-
-Lambdas are used to manage and monitor the process and report back to the `Django` backend.
-
-This storage & transcoding environment requires `AWS` as it heavily relies on `AWS MediaConvert` to do the heavy lifting when it comes to transcoding. All the services it relies on are configured through `Terraform` and can be deployed effortlessly through a `make` command.
-
-⚠️ **Privacy concerns**
-
-Please note that the only objects we handle in `AWS` are the actual video, documents or subtitles files, from the upload to the distribution through transcoding and storage. It is not required to deploy any database or application backend to `AWS` or send any user's personal information there.
 
 ### The `React` frontend
 

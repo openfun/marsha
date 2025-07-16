@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Removed
+
+- Remove all legacy Cloudfront code and mentions
+
 ## [5.11.1] - 2025-07-17
 
 ### Fixed
