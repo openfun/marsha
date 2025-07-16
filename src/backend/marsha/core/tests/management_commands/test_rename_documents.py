@@ -16,6 +16,9 @@ from marsha.core.models.file import Document
 from marsha.core.utils import time_utils
 
 
+# pylint: disable=too-many-locals
+
+
 class RenameDocumentsTestCase(TestCase):
     """
     Test the ``rename_documents`` command.
@@ -31,17 +34,18 @@ class RenameDocumentsTestCase(TestCase):
 
         with Stubber(rename_documents.s3_client) as s3_client_stubber:
             # Generate some documents
-            # (<original filename>, <expected and cleaned>)
+            # (<original title>, <expected and cleaned filename>)
             filenames = [
-                ("normal_filename.pdf", "normal_filename.pdf"),
-                ("weird\\file/name.pdf", "weird_file_name.pdf"),
-                (".hidden_file", "hidden_file"),
+                ("normal_filename", "normal_filename.pdf"),
+                ("weird\\file name", "weird_file_name.pdf"),
+                (".hidden_file", "hidden_file.pdf"),
             ]
 
             documents = []
             for filename_src, _ in filenames:
                 document = DocumentFactory(
-                    filename=filename_src,
+                    title=filename_src,
+                    extension="pdf",
                     uploaded_on=now,
                     upload_state=READY,
                     storage_location=AWS_S3,
@@ -57,8 +61,9 @@ class RenameDocumentsTestCase(TestCase):
 
                 file_key_src = f"aws/{document.id}/document/{stamp}{extension}"
 
+                filename = document.title + extension
                 sanitized_filename = rename_documents.Command().validate_filename(
-                    document.filename
+                    filename
                 )
                 file_key_dest = f"aws/{document.id}/document/{sanitized_filename}"
 
