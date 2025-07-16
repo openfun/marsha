@@ -1,7 +1,6 @@
 """Rename deposited files in Scaleway S3 for serving them with the right name."""
 
 import logging
-from os.path import splitext
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -51,9 +50,7 @@ class Command(BaseCommand):
         for file in files:
             # Get the file stored on Scaleway S3 under `aws/`
             stamp = time_utils.to_timestamp(file.uploaded_on)
-            extension = ""
-            if "." in file.filename:
-                extension = splitext(file.filename)[1]
+            extension = "." + file.extension if file.extension else ""
 
             file_key_src = file.get_storage_key(
                 filename=f"{stamp}{extension}", base_dir=AWS_STORAGE_BASE_DIRECTORY
