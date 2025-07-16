@@ -52,8 +52,6 @@ items:
                       value: "marsha-{{ marsha_postgresql_host }}-{{ deployment_stamp }}"
                     - name: POSTGRES_PORT
                       value: "{{ marsha_postgresql_port }}"
-                    - name: DJANGO_CLOUDFRONT_PRIVATE_KEY_PATH
-                      value: "{{ marsha_cloudfront_private_key_path }}"                      
                   envFrom:
                     - secretRef:
                         name: "{{ marsha_secret_name }}"
@@ -63,10 +61,6 @@ items:
                   volumeMounts:
                     - name: marsha-configmap
                       mountPath: /app/src/backend/marsha/configs
-{% if marsha_should_sign_requests %}
-                    - mountPath: "{{ marsha_cloudfront_private_key_path | dirname }}"
-                      name: marsha-cloudfront-private-key-secret
-{% endif %}                      
               securityContext:
                 runAsUser: {{ container_uid }}
                 runAsGroup: {{ container_gid }}
@@ -75,11 +69,6 @@ items:
                   configMap:
                     defaultMode: 420
                     name: marsha-app-{{ deployment_stamp }}
-{% if marsha_should_sign_requests %}
-                - name: marsha-cloudfront-private-key-secret
-                  secret:
-                    secretName: "{{ marsha_cloudfront_private_key_secret_name }}"
-{% endif %}                    
               restartPolicy: Never
 {% endif %}
 {% endfor %}

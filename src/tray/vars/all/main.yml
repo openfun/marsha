@@ -38,11 +38,6 @@ marsha_xapi_replicas: 1
 marsha_celery_replicas: 1
 marsha_django_configuration: "Development"
 marsha_secret_name: "marsha-{{ marsha_vault_checksum | default('undefined_marsha_vault_checksum') }}"
-marsha_cloudfront_private_key_secret_name: "marsha-sshkey-{{ marsha_vault_checksum | default('undefined_marsha_vault_checksum') }}"
-marsha_cloudfront_private_key_path: "/private/.ssh/aws/ssh-privatekey"
-# Set this to true if you have configured AWS CloudFront to require requests
-# signature with the aforementioned SSH key
-marsha_should_sign_requests: true
 marsha_activate_http_basic_auth: false
 marsha_celery_command:
   - celery
