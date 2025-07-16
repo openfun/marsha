@@ -255,57 +255,6 @@ class LTIConfigViewTestCase(TestCase):
             ),
         )
 
-    @override_settings(CLOUDFRONT_DOMAIN="abc123.cloudfront")
-    @override_settings(STATIC_URL="//abc123.cloudfront/static/")
-    def test_views_lti_config_default_cloudfront(self):
-        """Validate that icons urls are correct when cloudfront is used."""
-        response = self.client.get("/lti/config.xml")
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.context_data,
-            {
-                "code": "marsha",
-                "contact_email": None,
-                "description": "An LTI first, opensource and extensible "
-                "Learning Content Management System",
-                "launch_url": "testserver",
-                "icon_url": "//abc123.cloudfront/static/marsha_32x32_blue.png",
-                "title": "Marsha",
-                "url": None,
-            },
-        )
-        self.assertEqual(response["Content-Type"], "text/xml; charset=utf-8")
-        self.assertEqual(
-            xmltodict.parse(response.content),
-            xmltodict.parse(
-                """<?xml version="1.0" encoding="UTF-8"?>
-            <cartridge_basiclti_link xmlns="http://www.imsglobal.org/xsd/imslticc_v1p0"
-                xmlns:blti = "http://www.imsglobal.org/xsd/imsbasiclti_v1p0"
-                xmlns:lticm ="http://www.imsglobal.org/xsd/imslticm_v1p0"
-                xmlns:lticp ="http://www.imsglobal.org/xsd/imslticp_v1p0"
-                xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
-                xsi:schemaLocation = "http://www.imsglobal.org/xsd/imslticc_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imslticc_v1p0.xsd
-    http://www.imsglobal.org/xsd/imsbasiclti_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imsbasiclti_v1p0.xsd
-    http://www.imsglobal.org/xsd/imslticm_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imslticm_v1p0.xsd
-    http://www.imsglobal.org/xsd/imslticp_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imslticp_v1p0.xsd">
-                <blti:title>Marsha</blti:title>
-                <blti:description>An LTI first, opensource and extensible Learning Content Management System</blti:description>
-                <blti:launch_url>http://testserver</blti:launch_url>
-                <blti:secure_launch_url>https://testserver</blti:secure_launch_url>
-                <blti:icon>http://abc123.cloudfront/static/marsha_32x32_blue.png</blti:icon>
-                <blti:secure_icon>https://abc123.cloudfront/static/marsha_32x32_blue.png</blti:secure_icon>
-                <blti:vendor>
-                    <lticp:code>marsha</lticp:code>
-                    <lticp:name>Marsha</lticp:name>
-                    <lticp:description>An LTI first, opensource and extensible Learning Content Management System</lticp:description>
-                </blti:vendor>
-                <cartridge_bundle identifierref="BLTI001_Bundle"/>
-                <cartridge_icon identifierref="BLTI001_Icon"/>
-            </cartridge_basiclti_link>
-                        """  # noqa: E501 pylint: disable=line-too-long
-            ),
-        )
-
     @override_settings(LTI_CONFIG_TITLE="Marsha")
     @override_settings(LTI_CONFIG_DESCRIPTION="Open source LTI resource provider")
     @override_settings(

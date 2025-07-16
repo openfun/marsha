@@ -268,7 +268,6 @@ jobs:
           POSTGRES_PORT: 5432
           DJANGO_AWS_ACCESS_KEY_ID: aws-access-key-id
           DJANGO_AWS_SECRET_ACCESS_KEY: aws-secret-access-key
-          DJANGO_CLOUDFRONT_DOMAIN: abc.cloudfront.net
           DJANGO_SCW_EDGE_SERVICE_DOMAIN: abc.svc.edge.scw.cloud
           DJANGO_UPDATE_STATE_SHARED_SECRETS: dummy,secret
           DJANGO_AWS_MEDIALIVE_ROLE_ARN: aws:medialive:arn:role
@@ -351,7 +350,6 @@ jobs:
           POSTGRES_PORT: 5432
           DJANGO_AWS_ACCESS_KEY_ID: aws-access-key-id
           DJANGO_AWS_SECRET_ACCESS_KEY: aws-secret-access-key
-          DJANGO_CLOUDFRONT_DOMAIN: abc.cloudfront.net
           DJANGO_SCW_EDGE_SERVICE_DOMAIN: abc.svc.edge.scw.cloud
           DJANGO_UPDATE_STATE_SHARED_SECRETS: dummy,secret
           DJANGO_AWS_MEDIALIVE_ROLE_ARN: aws:medialive:arn:role
@@ -592,7 +590,6 @@ jobs:
           POSTGRES_PORT: 5432
           DJANGO_AWS_ACCESS_KEY_ID: aws-access-key-id
           DJANGO_AWS_SECRET_ACCESS_KEY: aws-secret-access-key
-          DJANGO_CLOUDFRONT_DOMAIN: abc.cloudfront.net
           DJANGO_SCW_EDGE_SERVICE_DOMAIN: abc.svc.edge.scw.cloud
           DJANGO_UPDATE_STATE_SHARED_SECRETS: dummy,secret
           DJANGO_AWS_MEDIALIVE_ROLE_ARN: aws:medialive:arn:role

@@ -451,17 +451,6 @@ class Base(Configuration):
     # LIVE_RAW
     LIVE_RAW_ENABLED = values.BooleanValue(False)
 
-    # Cloud Front key pair for signed urls
-    CLOUDFRONT_PRIVATE_KEY_PATH = values.Value(
-        os.path.join(BASE_DIR, "..", ".ssh", "cloudfront_private_key")
-    )
-    CLOUDFRONT_SIGNED_URLS_ACTIVE = values.BooleanValue(True)
-    CLOUDFRONT_SIGNED_URLS_VALIDITY = 2 * 60 * 60  # 2 hours
-    CLOUDFRONT_SIGNED_URL_CACHE_DURATION = values.Value(900)  # 15 minutes
-    CLOUDFRONT_SIGNED_PUBLIC_KEY_ID = values.Value(None)
-
-    CLOUDFRONT_DOMAIN = values.Value(None)
-
     BYPASS_LTI_VERIFICATION = values.BooleanValue(False)
 
     # Cache
@@ -949,7 +938,6 @@ class Build(Base):
     AWS_BASE_NAME = values.Value("")
     AWS_MEDIALIVE_ROLE_ARN = values.Value("")
     AWS_MEDIAPACKAGE_HARVEST_JOB_ARN = values.Value("")
-    CLOUDFRONT_SIGNED_URLS_ACTIVE = values.BooleanValue(False)
     STORAGE_S3_ACCESS_KEY = values.Value("DummyKey")
     STORAGE_S3_SECRET_KEY = values.Value("DummyKey")
     BBB_API_SECRET = values.Value("")
@@ -981,7 +969,6 @@ class Development(Base):
     CORS_ALLOWED_ORIGINS = values.ListValue(["http://localhost:3000"])
     AWS_BASE_NAME = values.Value("development")
     DEBUG = values.BooleanValue(True)
-    CLOUDFRONT_SIGNED_URLS_ACTIVE = values.BooleanValue(False)
     CACHES = {"default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"}}
     STAT_BACKEND = values.Value("marsha.core.stats.dummy_backend")
     # use marsha.core.storage.s3 for S3 storage
@@ -1101,7 +1088,6 @@ class Development(Base):
 class Test(Base):
     """Test environment settings."""
 
-    CLOUDFRONT_SIGNED_URLS_ACTIVE = False
     AWS_BASE_NAME = values.Value("test")
     # Enable it to speed up tests by stopping WhiteNoise from scanning your static files
     WHITENOISE_AUTOREFRESH = True
@@ -1178,12 +1164,6 @@ class Production(Base):
 
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-
-    # pylint: disable=invalid-name
-    @property
-    def STATIC_URL(self):
-        """Compute the absolute static url used in the lti template."""
-        return f"//{self.CLOUDFRONT_DOMAIN}/static/"
 
 
 class Staging(Production):
