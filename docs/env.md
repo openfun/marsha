@@ -93,16 +93,6 @@ Should be set to activate sentry for an environment. The value of this DSN is gi
 - Required: No
 - Default: None
 
-#### DJANGO_UPDATE_STATE_SHARED_SECRETS
-
-Secrets used to sign messages sent to the Django backend from AWS lambdas (like state updates). This being a list lets us support 1 or more shared secrets — and 1 or more deployments — at the same time.
-
-Note: should include the value from `TF_VAR_update_state_secret` in `src/aws` for any stack deployed to AWS which should communicate with the Django backend.
-
-- Type: comma-separated list of strings <br> ⚠️ *ITEMS MUST NOT INCLUDE ANY COMMAS* as commas are used to separated items.
-- Required: Yes
-- Default: None
-
 #### DJANGO_EXTERNAL_JAVASCRIPT_SCRIPTS
 
 List of external javascript scripts to load in the LTI template. This list will be loaded after loading the main react script. This setting allows to load scripts hosted on another domain and specific to your project.

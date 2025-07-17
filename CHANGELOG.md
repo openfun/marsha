@@ -11,6 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Removed
 
 - Remove all legacy Cloudfront code and mentions
+- Remove all legacy Lambdas
 
 ## [5.11.1] - 2025-07-17
 

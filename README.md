@@ -115,28 +115,6 @@ Initialize your `Terraform` config:
 
 The `make init` command will also create an [ECR](https://aws.amazon.com/ecr/) repository. Before going further you have to build and publish the lambda docker image. Unfortunately AWS doesn't allow to use a public image, so you have to host this one on a private ECR instance. Copy the output of the `init` command, you will use them in the next step.
 
-#### Build and publish the lambda image
-
-For this step, we cooked a script to help you build, tag and deploy images. All the scripts are run from the marsha root directory.
-
-🔧 **Before you go further**, you need to create `./env.d/lambda` and replace the relevant values with your own. The `ECR` url is available in the `shared_resources` terraform output you copied earlier. You should use this command to create the file from the existing model:
-
-    $ cp ./env.d/lambda.dist ./env.d/lambda
-
-You have to successively run these commands : 
-
-Build the image:
-
-    $ ./bin/lambda build
-
-Tag the image:
-
-    $ ./bin/lambda tag
-
-And then publish it:
-
-    $ ./bin/lambda publish
-
 #### Apply all terraform plans
 
 Terraform is split in two parts. The main one, directly in `src/aws` can work on multiple [`Terraform` workspaces](https://www.terraform.io/docs/state/workspaces.html). You will use this feature if you want separate environments (development, staging, preprod and production). We also need some resources available across all workspaces. For this we have an other terraform in `src/aws/shared_resources`.
