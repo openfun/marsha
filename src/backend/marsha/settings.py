@@ -368,8 +368,6 @@ class Base(Configuration):
     AWS_BASE_NAME = values.Value()
     UPDATE_STATE_SHARED_SECRETS = values.ListValue()
     AWS_UPLOAD_EXPIRATION_DELAY = values.Value(24 * 60 * 60)  # 24h
-    AWS_MEDIALIVE_ROLE_ARN = values.SecretValue()
-    AWS_MEDIAPACKAGE_HARVEST_JOB_ARN = values.SecretValue()
     AWS_MEDIAPACKAGE_HARVEST_JOB_TIMEOUT = values.PositiveIntegerValue(10)
     AWS_MEDIALIVE_INPUT_WAITER_DELAY = values.PositiveIntegerValue(5)
     AWS_MEDIALIVE_INPUT_WAITER_MAX_ATTEMPTS = values.PositiveIntegerValue(84)
@@ -936,8 +934,6 @@ class Build(Base):
     AWS_ACCESS_KEY_ID = values.Value("")
     AWS_SECRET_ACCESS_KEY = values.Value("")
     AWS_BASE_NAME = values.Value("")
-    AWS_MEDIALIVE_ROLE_ARN = values.Value("")
-    AWS_MEDIAPACKAGE_HARVEST_JOB_ARN = values.Value("")
     STORAGE_S3_ACCESS_KEY = values.Value("DummyKey")
     STORAGE_S3_SECRET_KEY = values.Value("DummyKey")
     BBB_API_SECRET = values.Value("")
