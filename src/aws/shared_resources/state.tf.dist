@@ -1,9 +1,0 @@
-# documentation to mange the state in AWS:  https://www.terraform.io/docs/backends/types/s3.html
-terraform {
-  backend "s3" {
-    key            = "marsh-shared-state.tfstate"
-    bucket         = "bucketname-storing-the-state"
-    dynamodb_table = "{dynamodb-table-name}"
-    encrypt        = true
-  }
-}
