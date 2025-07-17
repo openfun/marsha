@@ -12,7 +12,6 @@ from rest_framework.response import Response
 from marsha.bbb.models import ClassroomDocument
 from marsha.core.defaults import TMP_STORAGE_BASE_DIRECTORY
 from marsha.core.models import Document, Video
-from marsha.core.serializers.file import DocumentSerializer
 from marsha.core.storage.storage_class import file_storage
 from marsha.core.utils import time_utils
 from marsha.deposit.models import DepositedFile
@@ -83,8 +82,7 @@ def local_document_upload(request: HttpRequest, uuid=None):
     except Document.DoesNotExist:
         return Response({"success": False}, status=404)
 
-    filename = DocumentSerializer().get_filename(document)
-    destination = document.get_storage_key(filename=filename)
+    destination = document.get_storage_key(filename=document.filename)
 
     file_storage.save(destination, uploaded_document)
     return Response(status=204)

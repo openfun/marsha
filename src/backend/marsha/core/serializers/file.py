@@ -87,10 +87,7 @@ class DocumentSerializer(
             The document's filename
 
         """
-        if obj.storage_location == SCW_S3:
-            return obj.filename
-
-        return self._get_filename(obj.title, obj.extension, obj.playlist.title)
+        return obj.filename
 
     def get_url(self, obj):
         """Url of the Document.

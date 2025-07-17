@@ -63,6 +63,7 @@ class DocumentAPITest(TestCase):
             pk="4c51f469-f91e-4998-b438-e31ee3bd3ea6",
             uploaded_on=datetime(2018, 8, 8, tzinfo=baseTimezone.utc),
             upload_state="ready",
+            filename="bar_baz.pdf",
             extension="pdf",
             playlist__title="foo",
             playlist__lti_id="course-v1:ufr+mathematics+00001",
@@ -83,13 +84,13 @@ class DocumentAPITest(TestCase):
             {
                 "active_stamp": "1533686400",
                 "extension": "pdf",
-                "filename": "foo_bar-baz.pdf",
+                "filename": "bar_baz.pdf",
                 "id": str(document.id),
                 "is_ready_to_show": True,
                 "title": document.title,
                 "upload_state": "ready",
                 "url": "https://abc.svc.edge.scw.cloud/aws/4c51f469-f91e-4998-b438-e31ee3bd3ea6/"
-                "document/foo_bar-baz.pdf",
+                "document/bar_baz.pdf",
                 "show_download": True,
                 "playlist": {
                     "id": str(document.playlist.id),
