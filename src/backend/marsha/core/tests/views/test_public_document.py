@@ -37,6 +37,7 @@ class DocumentPublicViewTestCase(TestCase):
             playlist__consumer_site__domain="trusted_domain.com",
             is_public=True,
             title="document-001",
+            filename="document-001.pdf",
             upload_state=random.choice([s[0] for s in STATE_CHOICES]),
             uploaded_on="2019-09-24 07:24:40+00",
             storage_location=AWS_S3,
@@ -79,7 +80,7 @@ class DocumentPublicViewTestCase(TestCase):
                 "upload_state": document.upload_state,
                 "title": document.title,
                 "extension": None,
-                "filename": "playlist-003_document-001",
+                "filename": "document-001.pdf",
                 "playlist": {
                     "id": str(document.playlist.id),
                     "title": "playlist-003",
@@ -87,7 +88,7 @@ class DocumentPublicViewTestCase(TestCase):
                 },
                 "url": (
                     "https://abc.svc.edge.scw.cloud/aws/301b5f4f-b9f1-4a5f-897d-f8f1bf22c396"
-                    "/document/playlist-003_document-001"
+                    "/document/document-001.pdf"
                 ),
             },
         )
@@ -206,6 +207,7 @@ class DocumentPublicViewTestCase(TestCase):
             playlist=playlist,
             is_public=True,
             title="document-001",
+            filename="document-001.pdf",
             upload_state=random.choice([s[0] for s in STATE_CHOICES]),
             uploaded_on="2019-09-24 07:24:40+00",
             storage_location=AWS_S3,
@@ -243,7 +245,7 @@ class DocumentPublicViewTestCase(TestCase):
                 "upload_state": document.upload_state,
                 "title": document.title,
                 "extension": None,
-                "filename": "playlist-003_document-001",
+                "filename": "document-001.pdf",
                 "playlist": {
                     "id": str(document.playlist.pk),
                     "title": "playlist-003",
@@ -251,7 +253,7 @@ class DocumentPublicViewTestCase(TestCase):
                 },
                 "url": (
                     f"https://abc.svc.edge.scw.cloud/aws/{document.pk}"
-                    "/document/playlist-003_document-001"
+                    "/document/document-001.pdf"
                 ),
             },
         )
