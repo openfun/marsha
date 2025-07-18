@@ -130,7 +130,7 @@ class DepositedFileSerializer(
         Returns
         -------
         String or None
-            the url to fetch the deposited file on CloudFront
+            the url to fetch the deposited file on storage
             None if the deposited file is still not uploaded to S3 with success
 
         """

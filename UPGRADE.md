@@ -7,6 +7,16 @@ not skip minor/major releases while upgrading (fix releases can be skipped).
 The format is inspired from [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### 5.10.0 to 5.11.0
+
+Cloudfront signed URLs are not used anymore in the project, make sure to remove the following environment variables:
+- CLOUDFRONT_PRIVATE_KEY_PATH
+- CLOUDFRONT_SIGNED_URLS_ACTIVE
+- CLOUDFRONT_SIGNED_URLS_VALIDITY
+- CLOUDFRONT_SIGNED_URL_CACHE_DURATION
+- CLOUDFRONT_SIGNED_PUBLIC_KEY_ID
+- CLOUDFRONT_DOMAIN = values.Value(None)
+
 ### 5.7.x to 5.8.0
 
 Environment variables previously prefixed with `DJANGO_VIDEOS_STORAGE_` are now prefixed with `DJANGO_STORAGE_`. Make sure to update your configuration accordingly.
