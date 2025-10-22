@@ -9,7 +9,11 @@ from social_django.utils import load_backend, load_strategy
 from waffle.testutils import override_switch
 
 from marsha.account.social_pipeline import MARSHA_DEFAULT_AUTH_PIPELINE
-from marsha.account.social_pipeline.social_auth import auth_allowed, social_details
+from marsha.account.social_pipeline.social_auth import (
+    associate_by_email,
+    auth_allowed,
+    social_details,
+)
 from marsha.core.defaults import RENATER_FER_SAML
 
 
@@ -188,3 +192,87 @@ class SocialDetailsPipelineTestCase(TestCase):
                 social_details(backend, details, response=None),
                 {"details": {"first_name": "", "last_name": ""}},
             )
+
+
+class AssociateByEmailPipelineTestCase(TestCase):
+    """Test case for the `associate_by_email` pipeline step."""
+
+    maxDiff = None
+
+    def test_marsha_pipeline_includes_associate_by_email_step(self):
+        """Asserts the `associate_by_email` step is in Marsha's default pipeline."""
+        self.assertListEqual(
+            [
+                "marsha.account.social_pipeline.social_auth.social_details",
+                "social_core.pipeline.social_auth.social_uid",
+                "marsha.account.social_pipeline.social_auth.auth_allowed",
+                "social_core.pipeline.social_auth.social_user",
+                "social_core.pipeline.user.get_username",
+                "marsha.account.social_pipeline.social_auth.associate_by_email",
+                "social_edu_federation.pipeline.user.create_user",
+                "social_core.pipeline.social_auth.associate_user",
+                "social_core.pipeline.social_auth.load_extra_data",
+                "social_core.pipeline.user.user_details",
+                "marsha.account.social_pipeline.organization.create_organization_from_saml",
+                "marsha.account.social_pipeline.playlist.create_playlist_from_saml",
+            ],
+            MARSHA_DEFAULT_AUTH_PIPELINE,
+            msg="MARSHA_DEFAULT_AUTH_PIPELINE must be fixed to include `associate_by_email`",
+        )
+
+        self.assertListEqual(
+            [
+                "marsha.account.social_pipeline.social_auth.social_details",
+                "social_core.pipeline.social_auth.social_uid",
+                "marsha.account.social_pipeline.social_auth.auth_allowed",
+                "social_core.pipeline.social_auth.social_user",
+                "social_core.pipeline.user.get_username",
+                "marsha.account.social_pipeline.social_auth.associate_by_email",
+                "social_edu_federation.pipeline.user.create_user",
+                "social_core.pipeline.social_auth.associate_user",
+                "social_core.pipeline.social_auth.load_extra_data",
+                "social_core.pipeline.user.user_details",
+                "marsha.account.social_pipeline.organization.create_organization_from_saml",
+                "marsha.account.social_pipeline.playlist.create_playlist_from_saml",
+            ],
+            settings.SOCIAL_AUTH_SAML_FER_PIPELINE,
+            msg="SOCIAL_AUTH_SAML_FER_PIPELINE must be fixed to include `associate_by_email`",
+        )
+
+    @override_switch(RENATER_FER_SAML, active=True)
+    def test_associate_by_email_step_enabled(self):
+        """Asserts the email is used to associate the user when the waffle switch is enabled."""
+        strategy = load_strategy()
+        backend = load_backend(strategy, "saml_fer", None)
+        with mock.patch(
+            "marsha.account.social_pipeline.social_auth.social_associate_by_email"
+        ) as social_associate_by_email_mock:
+            details = {"not": "relevant"}
+
+            associate_by_email(backend, details, strategy, 42, some_kwargs=18)
+
+            social_associate_by_email_mock.assert_called_once_with(
+                backend,
+                details,
+                None,
+                strategy,
+                42,
+                some_kwargs=18,
+            )
+
+    @override_switch(RENATER_FER_SAML, active=False)
+    def test_associate_by_email_step_disabled(self):
+        """
+        Asserts the email is not used to associate the user when the waffle switch is disabled.
+        """
+        strategy = load_strategy()
+        backend = load_backend(strategy, "saml_fer", None)
+        with mock.patch(
+            "marsha.account.social_pipeline.social_auth.social_associate_by_email"
+        ) as social_associate_by_email_mock:
+            details = {"not": "relevant"}
+
+            self.assertIsNone(
+                associate_by_email(backend, details, strategy, 42, some_kwargs=18)
+            )
+            self.assertFalse(social_associate_by_email_mock.called)
