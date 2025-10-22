@@ -13,6 +13,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Remove all legacy Cloudfront code and mentions
 - Remove all legacy Lambdas
 
+### Changed
+
+- Use associate_by_email when RENATER_FER_SAML switch is enabled
+
 ## [5.11.1] - 2025-07-17
 
 ### Fixed
