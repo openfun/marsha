@@ -93,7 +93,7 @@ jobs:
       - run:
           name: Check that the CHANGELOG has been modified in the current branch
           command: |
-            git whatchanged --name-only --pretty="" origin..HEAD | grep CHANGELOG
+            git log --raw --name-only --pretty="" origin..HEAD | grep CHANGELOG
 
   # Check that the CHANGELOG max line length does not exceed 80 characters
   lint-changelog:
