@@ -309,6 +309,7 @@ class Base(Configuration):
     # the few languages active in Marsha.
     # pylint: disable=no-member
     ALL_LANGUAGES = Configuration.LANGUAGES
+    ALL_LANGUAGES.append(("qu", _("Quechua")))
 
     LANGUAGE_CODE = "en-us"
 
