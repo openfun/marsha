@@ -13,7 +13,7 @@ from marsha.core.simple_jwt.factories import (
 
 
 @override_settings(
-    ALL_LANGUAGES=(("af", "Afrikaans"), ("ast", "Asturian")),
+    ALL_LANGUAGES=(("af", "Afrikaans"), ("ast", "Asturian"), ("qu", "Quechua")),
     SUBTITLE_SOURCE_MAX_SIZE=10,
 )
 class TimedTextTrackOptionsAPITest(TestCase):
@@ -50,6 +50,7 @@ class TimedTextTrackOptionsAPITest(TestCase):
             [
                 {"value": "af", "display_name": "Afrikaans"},
                 {"value": "ast", "display_name": "Asturian"},
+                {"value": "qu", "display_name": "Quechua"},
             ],
         )
 
