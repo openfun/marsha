@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [5.12.0] - 2025-11-06
+
 ### Removed
 
 - Remove all legacy Cloudfront code and mentions
@@ -2117,7 +2119,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v5.11.1...master
+[unreleased]: https://github.com/openfun/marsha/compare/v5.12.0...master
+[5.12.0]: https://github.com/openfun/marsha/compare/v5.11.1...v5.12.0
 [5.11.1]: https://github.com/openfun/marsha/compare/v5.11.0...v5.11.1
 [5.11.0]: https://github.com/openfun/marsha/compare/v5.10.0...v5.11.0
 [5.10.0]: https://github.com/openfun/marsha/compare/v5.9.1...v5.10.0
