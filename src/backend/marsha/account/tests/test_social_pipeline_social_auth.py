@@ -5,6 +5,7 @@ from unittest import mock
 from django.conf import settings
 from django.test import TestCase, override_settings
 
+from social_django.models import UserSocialAuth
 from social_django.utils import load_backend, load_strategy
 from waffle.testutils import override_switch
 
@@ -15,6 +16,7 @@ from marsha.account.social_pipeline.social_auth import (
     social_details,
 )
 from marsha.core.defaults import RENATER_FER_SAML
+from marsha.core.factories import UserFactory
 
 
 class AuthAllowedPipelineTestCase(TestCase):
@@ -276,3 +278,22 @@ class AssociateByEmailPipelineTestCase(TestCase):
                 associate_by_email(backend, details, strategy, 42, some_kwargs=18)
             )
             self.assertFalse(social_associate_by_email_mock.called)
+
+    @override_switch(RENATER_FER_SAML, active=True)
+    def test_associate_by_email_associate_email(self):
+        """Asserts the email is used to associate the user when the waffle switch is enabled."""
+        user = UserFactory(email="Baptiste.Doucey@univ-lemans.fr")
+        UserSocialAuth.objects.create(
+            user=user, uid="lmu-le-mans-universite:bdoucey@univ-lemans.fr"
+        )
+
+        strategy = load_strategy()
+        backend = load_backend(strategy, "saml_fer", None)
+        details = {"email": user.email}
+
+        kwargs = {
+            "uid": "lmu-le-mans-universite-test:bdoucey@univ-lemans.fr",
+        }
+
+        user_found = associate_by_email(backend, details, strategy, 42, **kwargs)
+        self.assertEqual(user_found.get("user").id, user.id)
