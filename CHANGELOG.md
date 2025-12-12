@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Document link opens in new tab
+
 ## [5.12.0] - 2025-11-06
 
 ### Removed
