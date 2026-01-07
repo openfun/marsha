@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Get recording from BBB even if no cookie
+
 ## [5.12.1] - 2025-12-12
 
 ### Fixed
