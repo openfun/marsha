@@ -42,7 +42,7 @@ def copy_video_recording(record_url: str, video_pk: str, stamp: str):
         if not response.history:
             raise RecordingSourceError("No redirection have been followed.")
 
-        raw_cookie = response.history[0].headers.get("set-cookie")
+        raw_cookie = response.history[0].headers.get("set-cookie", "")
         cookie = raw_cookie.split(";")[0]
 
         base_url = response.url.rstrip("/")
@@ -56,7 +56,7 @@ def copy_video_recording(record_url: str, video_pk: str, stamp: str):
 
         with requests.get(
             video_url,
-            headers={"Cookie": cookie},
+            headers={"Cookie": cookie} if cookie else {},
             stream=True,
             timeout=10,
         ) as video_response:
