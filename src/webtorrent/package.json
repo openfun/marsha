@@ -17,7 +17,8 @@
     "node": "20"
   },
   "volta": {
-    "node": "20.9.0"
+    "node": "20.9.0",
+    "yarn": "1.22.22"
   },
   "dependencies": {
     "@sentry/node": "8.48.0",

@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Update Volta configuration with yarn fixed version
+
 ## [5.12.2] - 2026-01-22
 
 ### Fixed
