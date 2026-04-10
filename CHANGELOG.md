@@ -11,6 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Update Volta configuration with yarn fixed version
+- Update docker-compose for new versions
 
 ## [5.12.2] - 2026-01-22
 
