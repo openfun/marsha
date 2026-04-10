@@ -85,6 +85,7 @@
     "source-map-explorer": "2.5.3"
   },
   "volta": {
-    "node": "20.9.0"
+    "node": "20.9.0",
+    "yarn": "1.22.22"
   }
 }

@@ -68,6 +68,7 @@
     "vite-tsconfig-paths": "5.1.4"
   },
   "volta": {
-    "node": "20.9.0"
+    "node": "20.9.0",
+    "yarn": "1.22.22"
   }
 }

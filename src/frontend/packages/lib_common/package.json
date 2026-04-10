@@ -50,6 +50,7 @@
   },
   "dependencies": {},
   "volta": {
-    "node": "20.9.0"
+    "node": "20.9.0",
+    "yarn": "1.22.22"
   }
 }
