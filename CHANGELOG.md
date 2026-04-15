@@ -12,6 +12,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Update Volta configuration with yarn fixed version
 - Update docker-compose for new versions
+- Upgrade Celery version from 5.5.2 to 5.6.3
 
 ## [5.12.2] - 2026-01-22
 
