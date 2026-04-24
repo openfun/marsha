@@ -86,7 +86,7 @@
     "m3u8-parser": "7.2.0",
     "lib-common": "*",
     "lib-components": "*",
-    "linkifyjs": "4.2.0",
+    "linkifyjs": "4.3.2",
     "p2p-media-loader-hlsjs": "0.6.2",
     "process": "0.11.10",
     "react-icalendar-link": "3.0.2",
