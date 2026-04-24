@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [5.12.3] - 2026-04-24
+
 ### Added
 
 - Update Volta configuration with yarn fixed version
@@ -2137,7 +2139,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v5.12.2...master
+[unreleased]: https://github.com/openfun/marsha/compare/v5.12.3...master
+[5.12.3]: https://github.com/openfun/marsha/compare/v5.12.2...v5.12.3
 [5.12.2]: https://github.com/openfun/marsha/compare/v5.12.1...v5.12.2
 [5.12.1]: https://github.com/openfun/marsha/compare/v5.12.0...v5.12.1
 [5.12.0]: https://github.com/openfun/marsha/compare/v5.11.1...v5.12.0
