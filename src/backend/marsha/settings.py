@@ -789,6 +789,9 @@ class Base(Configuration):
     CELERY_RESULT_BACKEND = values.Value("redis://redis:6379/0")
     CELERY_BROKER_TRANSPORT_OPTIONS = values.DictValue({})
     CELERY_DEFAULT_QUEUE = values.Value("celery")
+    # Celery defaults to os.cpu_count() child processes when unset, which ignores
+    # the CPU actually allocated to the pod.
+    CELERY_WORKER_CONCURRENCY = values.PositiveIntegerValue(None)
 
     # pylint: disable=invalid-name
     @property
