@@ -8,6 +8,14 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Handle BBB error when converting a video
+
+### Added
+
+- Allow tuning Celery worker concurrency via Matsuo
+
 ## [5.12.3] - 2026-04-24
 
 ### Added
