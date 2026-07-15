@@ -74,10 +74,19 @@ LIVE_CHOICES = (
 # UPLOAD ERROR REASONS
 MAX_RESOLUTION_EXCEDEED = "max_resolution_excedeed"
 RECORDING_SOURCE_ERROR = "recording_source_error"
+PROBE_ERROR = "ffmpeg_probe_error"
 
 UPLOAD_ERROR_REASON_CHOICES = (
     (MAX_RESOLUTION_EXCEDEED, _("max_resolution_excedeed")),
     (RECORDING_SOURCE_ERROR, _("recording_source_error")),
+    (PROBE_ERROR, _("probe_error")),
+)
+
+# TRANSCODING ERROR REASONS
+TMP_SOURCE_FILE_MISSING = "tmp_source_file_missing"
+
+TRANSCODING_ERROR_REASONS = (
+    (TMP_SOURCE_FILE_MISSING, _("temporary source file missing")),
 )
 
 # LIVE TYPE
