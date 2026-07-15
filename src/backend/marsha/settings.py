@@ -792,6 +792,12 @@ class Base(Configuration):
     # Celery defaults to os.cpu_count() child processes when unset, which ignores
     # the CPU actually allocated to the pod.
     CELERY_WORKER_CONCURRENCY = values.PositiveIntegerValue(None)
+    # Recycle a worker child process after this many tasks, to mitigate memory
+    # growth from libraries that leak (e.g. native codecs used during transcoding).
+    CELERY_WORKER_MAX_TASKS_PER_CHILD = values.PositiveIntegerValue(None)
+    # Kill and replace a worker child process once it exceeds this RSS, in kilobytes
+    # (Celery's `worker_max_memory_per_child` unit). Unset by default, tune via Matsuo.
+    CELERY_WORKER_MAX_MEMORY_PER_CHILD = values.PositiveIntegerValue(None)
 
     # pylint: disable=invalid-name
     @property

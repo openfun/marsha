@@ -15,6 +15,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Allow tuning Celery worker concurrency via Matsuo
+- Allow tuning Celery worker max tasks/memory per child via Matsuo
 
 ## [5.12.3] - 2026-04-24
 
