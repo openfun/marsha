@@ -93,7 +93,7 @@
     "lib-components": "*",
     "lib-markdown": "*",
     "lib-video": "*",
-    "lodash": "4.17.21",
+    "lodash": "4.17.23",
     "luxon": "3.5.0",
     "marsha-config": "*",
     "polished": "4.3.1",
