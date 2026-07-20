@@ -1,6 +1,6 @@
 {
   "name": "webtorrent-tracker",
-  "version": "5.12.3",
+  "version": "5.12.4",
   "description": "Webtorrent tracker implementation for Marsha",
   "main": "./dist/app.js",
   "exports": "./dist/app.js",
