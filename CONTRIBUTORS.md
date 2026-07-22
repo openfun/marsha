@@ -28,6 +28,7 @@
 - [Jean-Baptiste Penrath](https://github.com/jbpenrath) <jb.penrath@gmail.com>
 - [Nicolas Can](https://github.com/ptitloup) <nicolas.can@fun-mooc.fr>
 - [Liam Le Strat](https://github.com/liamls) <liam.le-strat@fun-mooc.fr>
+- [Jonathan Reveille](https://github.com/jonathanreveille) <jon.rev93001@gmail.com>
 
 - [Renovate Bot](https://renovatebot.com) <bot@renovateapp.com>
 - [Renovate Bot](https://renovatebot.com) <29139614+renovate[bot]@users.noreply.github.com>

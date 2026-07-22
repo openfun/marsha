@@ -1,9 +1,16 @@
 """Utils to create MediaLive configuration."""
 
+import logging
+
+from botocore.exceptions import ClientError
+
 from marsha.core.utils.medialive_utils.medialive_client_utils import (
     medialive_client,
     mediapackage_client,
 )
+
+
+logger = logging.getLogger(__name__)
 
 
 def _get_items(  # nosec
@@ -39,7 +46,12 @@ def _get_items(  # nosec
     if next_token:
         params[next_token_key] = next_token
 
-    response = get_items(**params)
+    try:
+        response = get_items(**params)
+    except ClientError as e:
+        logger.warning("Failed to fetch items: %s, reason no more AWS credentials", e)
+        return []
+
     items = response.get(items_key)
     next_token = response.get(next_token_key)
 

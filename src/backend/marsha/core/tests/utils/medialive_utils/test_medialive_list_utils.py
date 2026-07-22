@@ -1,5 +1,7 @@
 """Test medialive utils functions."""
 
+from unittest import mock
+
 from django.test import TestCase
 
 from botocore.stub import Stubber
@@ -10,13 +12,31 @@ from marsha.core.utils import medialive_utils
 # pylint: disable=too-many-lines
 
 
-# pylint: disable=too-many-lines
-
-
 class MediaLiveUtilsTestCase(TestCase):
     """Test medialive utils."""
 
     maxDiff = None
+
+    def test_list_mediapackage_channels_client_error(self):
+        """Should return an empty list and log a warning when AWS credentials are invalid."""
+        with Stubber(
+            medialive_utils.mediapackage_client
+        ) as mediapackage_client_stubber, mock.patch.object(
+            medialive_utils.logger, "warning"
+        ) as mock_logger_warning:
+
+            mediapackage_client_stubber.add_client_error(
+                "list_channels",
+                service_error_code="UnrecognizedClientException",
+                service_message="The security token included in the request is invalid.",
+                http_status_code=403,
+            )
+
+            channels = medialive_utils.list_mediapackage_channels()
+
+            mediapackage_client_stubber.assert_no_pending_responses()
+            self.assertEqual(channels, [])
+            mock_logger_warning.assert_called_once()
 
     def test_list_mediapackage_channels(self):
         """Should recursively get all mediapackage channels."""
