@@ -5,13 +5,17 @@ from unittest import mock
 
 from django.test import TestCase
 
+from celery.exceptions import Retry
+
 from marsha.core.defaults import (
     ERROR,
     MAX_RESOLUTION_EXCEDEED,
     PEERTUBE_PIPELINE,
+    PROBE_ERROR,
     READY,
 )
 from marsha.core.factories import VideoFactory
+from marsha.core.storage.storage_class import file_storage
 from marsha.core.tasks.video import (
     compute_video_information,
     ffmpeg,
@@ -237,6 +241,30 @@ class TestVideoTask(TestCase):
     Test for video celery tasks
     """
 
+    def test_launch_video_transcode_source_not_found_retries(self):
+        """
+        If the source file doesn't exist yet, the task should retry
+        rather than failing immediately.
+        """
+        video = VideoFactory()
+        stamp = "1640995200"
+
+        with mock.patch.object(
+            file_storage, "exists"
+        ) as mock_file_storage_exists, mock.patch.object(
+            launch_video_transcoding, "retry"
+        ) as mock_retry:
+
+            mock_file_storage_exists.return_value = False
+            mock_retry.side_effect = Retry()  # simulate Celery's retry signal
+
+            with self.assertRaises(Retry):
+                launch_video_transcoding.run(
+                    str(video.pk), stamp, "http://127.0.0.1:8000"
+                )
+
+            mock_retry.assert_called_once()
+
     def test_launch_video_transcode(self):
         """
         Test the the launch_video_transcoding task. It should simply call
@@ -248,10 +276,13 @@ class TestVideoTask(TestCase):
             "marsha.core.tasks.video.transcode_video"
         ) as mock_transcode_video, mock.patch.object(
             ffmpeg, "probe"
-        ) as mock_ffmpeg_probe:
+        ) as mock_ffmpeg_probe, mock.patch.object(
+            file_storage, "exists"
+        ) as mock_file_storage_exists:
 
+            mock_file_storage_exists.return_value = True
             mock_ffmpeg_probe.return_value = FFMPEG_PROBE_VALID
-            launch_video_transcoding(str(video.pk), stamp, "http://127.0.0.1:8000")
+            launch_video_transcoding.run(str(video.pk), stamp, "http://127.0.0.1:8000")
             mock_transcode_video.assert_called_once_with(
                 file_path=f"tmp/{video.pk}/video/{stamp}",
                 destination=f"vod/{video.pk}/video/{stamp}",
@@ -274,10 +305,13 @@ class TestVideoTask(TestCase):
             "marsha.core.tasks.video.transcode_video"
         ) as mock_transcode_video, mock.patch.object(
             ffmpeg, "probe"
-        ) as mock_ffmpeg_probe:
+        ) as mock_ffmpeg_probe, mock.patch.object(
+            file_storage, "exists"
+        ) as mock_file_storage_exists:
 
+            mock_file_storage_exists.return_value = True
             mock_ffmpeg_probe.return_value = FFMPEG_PROBE_WITHOUT_VIDEO_STREAM
-            launch_video_transcoding(str(video.pk), stamp, "http://127.0.0.1:8000")
+            launch_video_transcoding.run(str(video.pk), stamp, "http://127.0.0.1:8000")
             mock_transcode_video.assert_called_once_with(
                 file_path=f"tmp/{video.pk}/video/{stamp}",
                 destination=f"vod/{video.pk}/video/{stamp}",
@@ -300,22 +334,53 @@ class TestVideoTask(TestCase):
             "marsha.core.tasks.video.transcode_video"
         ) as mock_transcode_video, mock.patch.object(
             ffmpeg, "probe"
-        ) as mock_ffmpeg_probe:
+        ) as mock_ffmpeg_probe, mock.patch.object(
+            file_storage, "exists"
+        ) as mock_file_storage_exists:
 
+            mock_file_storage_exists.return_value = True
             mock_ffmpeg_probe.return_value = FFMPEG_PROBE_VALID
-
             mock_transcode_video.side_effect = Exception("Test exception")
-            launch_video_transcoding(str(video.pk), stamp, "http://127.0.0.1:8000")
-            mock_transcode_video.assert_called_once_with(
-                file_path=f"tmp/{video.pk}/video/{stamp}",
-                destination=f"vod/{video.pk}/video/{stamp}",
-                base_name=stamp,
-                domain="http://127.0.0.1:8000",
-            )
-            video.refresh_from_db()
-            self.assertEqual(video.upload_state, ERROR)
 
-    def test_launch_video_transcode_fail_resolution_too_hight(self):
+            launch_video_transcoding.run(str(video.pk), stamp, "http://127.0.0.1:8000")
+
+        video.refresh_from_db()
+        self.assertEqual(video.upload_state, ERROR)
+
+    def test_launch_video_transcode_probe_error(self):
+        """
+        Test the launch_video_transcoding task. The ffmpeg.probe call should
+        raise an ffmpeg.Error and video state should be ERROR with PROBE_ERROR reason.
+        """
+        video = VideoFactory()
+        stamp = "1640995200"
+        with mock.patch(
+            "marsha.core.tasks.video.transcode_video"
+        ) as mock_transcode_video, mock.patch.object(
+            ffmpeg, "probe"
+        ) as mock_ffmpeg_probe, mock.patch.object(
+            file_storage, "exists"
+        ) as mock_file_storage_exists, mock.patch(
+            "marsha.core.tasks.video.capture_exception"
+        ) as mock_capture_exception:
+
+            mock_file_storage_exists.return_value = True
+            mock_ffmpeg_probe.side_effect = ffmpeg.Error(
+                "ffprobe", b"", b"stderr error message"
+            )
+
+            launch_video_transcoding.run(
+                str(video.pk), stamp, "http://127.0.0.1:8000"
+            )
+
+            mock_transcode_video.assert_not_called()
+            mock_capture_exception.assert_called_once()
+
+        video.refresh_from_db()
+        self.assertEqual(video.upload_state, ERROR)
+        self.assertEqual(video.upload_error_reason, PROBE_ERROR)
+
+    def test_launch_video_transcode_fail_resolution_too_high(self):
         """
         Test the the launch_video_transcoding task. The transcode_video
         function should raise an exception and video state should be ERROR
@@ -327,16 +392,20 @@ class TestVideoTask(TestCase):
             "marsha.core.tasks.video.transcode_video"
         ) as mock_transcode_video, mock.patch.object(
             ffmpeg, "probe"
-        ) as mock_ffmpeg_probe:
+        ) as mock_ffmpeg_probe, mock.patch.object(
+            file_storage, "exists"
+        ) as mock_file_storage_exists:
 
+            mock_file_storage_exists.return_value = True
             mock_ffmpeg_probe.return_value = FFMPEG_PROBE_TOO_HIGH_RESOLUTION
 
-            mock_transcode_video.side_effect = Exception("Test exception")
-            launch_video_transcoding(str(video.pk), stamp, "http://127.0.0.1:8000")
+            launch_video_transcoding.run(str(video.pk), stamp, "http://127.0.0.1:8000")
+
             mock_transcode_video.assert_not_called()
-            video.refresh_from_db()
-            self.assertEqual(video.upload_state, ERROR)
-            self.assertEqual(video.upload_error_reason, MAX_RESOLUTION_EXCEDEED)
+
+        video.refresh_from_db()
+        self.assertEqual(video.upload_state, ERROR)
+        self.assertEqual(video.upload_error_reason, MAX_RESOLUTION_EXCEDEED)
 
     def test_launch_video_transcript(self):
         """
@@ -348,7 +417,7 @@ class TestVideoTask(TestCase):
         with mock.patch(
             "marsha.core.tasks.video.transcript_video"
         ) as mock_transcript_video:
-            launch_video_transcript(str(video.pk), stamp, "http://127.0.0.1:8000")
+            launch_video_transcript.run(str(video.pk), stamp, "http://127.0.0.1:8000")
             mock_transcript_video.assert_called_once_with(
                 destination=f"vod/{video.pk}/video/{stamp}",
                 domain="http://127.0.0.1:8000",
@@ -364,7 +433,7 @@ class TestVideoTask(TestCase):
         with mock.patch(
             "marsha.core.tasks.video.transcript_video"
         ) as mock_transcript_video:
-            launch_video_transcript(
+            launch_video_transcript.run(
                 str(video.pk), stamp, "http://127.0.0.1:8000", "video_url"
             )
             mock_transcript_video.assert_called_once_with(
