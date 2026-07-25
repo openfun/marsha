@@ -69,7 +69,7 @@
     "style-loader": "4.0.0",
     "terser-webpack-plugin": "5.3.11",
     "typescript": "*",
-    "webpack": "5.97.1",
+    "webpack": "5.104.1",
     "webpack-cli": "6.0.1"
   },
   "dependencies": {
@@ -93,7 +93,7 @@
     "lib-components": "*",
     "lib-markdown": "*",
     "lib-video": "*",
-    "lodash": "4.17.21",
+    "lodash": "4.18.1",
     "luxon": "3.5.0",
     "marsha-config": "*",
     "polished": "4.3.1",
