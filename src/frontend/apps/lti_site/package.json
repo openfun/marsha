@@ -1,6 +1,6 @@
 {
   "name": "marsha",
-  "version": "5.11.1",
+  "version": "5.12.4",
   "description": "🐠 a FUN LTI video provider",
   "main": "front/index.tsx",
   "scripts": {
@@ -114,6 +114,7 @@
     "zustand": "*"
   },
   "volta": {
-    "node": "20.9.0"
+    "node": "20.9.0",
+    "yarn": "1.22.22"
   }
 }

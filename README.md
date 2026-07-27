@@ -38,25 +38,16 @@ Moreover, Marsha provides:
 
 ### The `Django` backend
 
-The `Django` backend is tasked with serving the LTI pages that are integrated into the LMS. It also manages all the objects with their relationships, user accounts and all authentication concerns. It exposes a JSON API to communicate with the part of the infrastructure that operates on `AWS lambdas` and the `React` frontend.
+The `Django` backend is tasked with serving the LTI pages that are integrated into the LMS. It also manages all the objects with their relationships, user accounts and all authentication concerns. It exposes a JSON API to communicate with the `React` frontend.
 
 It is defined using a [docker-compose file](../docker-compose.yml) for development, and can be deployed on any container environment (such as `Kubernetes`) for production.
 
 ### The storage & transcoding environment
 
-Source files (video, documents, subtitles,...) are directly uploaded to an `S3` bucket by instructors. Depending the uploaded resource a lambda will be triggered to do different jobs:
-- Launch `MediaConvert` to generate all necessary video files (various formats and fragments & manifests for adaptive-bitrate streaming) into a destination `S3` bucket. Those files are then served through the `CloudFront` CDN.
+Source files (video, documents, subtitles,...) are directly uploaded to an `S3` bucket by instructors. Depending the uploaded resource, Celery tasks will be triggered to do different jobs:
+- Transcode videos using Peertube runners to generate all necessary video files (various formats and fragments & manifests for adaptive-bitrate streaming) into a destination `S3` bucket. Those files are then served through the `Scaleway Edge service` CDN.
 - Convert any kind of subtitles (also captions and transcripts) in [WebVTT](https://www.w3.org/TR/webvtt1/) format and encode them properly.
 - Resize thumbnails in many formats.
-- Copy documents from a source to a destination `S3` Bucket accessible through the `CloudFront` CDN.
-
-Lambdas are used to manage and monitor the process and report back to the `Django` backend.
-
-This storage & transcoding environment requires `AWS` as it heavily relies on `AWS MediaConvert` to do the heavy lifting when it comes to transcoding. All the services it relies on are configured through `Terraform` and can be deployed effortlessly through a `make` command.
-
-⚠️ **Privacy concerns**
-
-Please note that the only objects we handle in `AWS` are the actual video, documents or subtitles files, from the upload to the distribution through transcoding and storage. It is not required to deploy any database or application backend to `AWS` or send any user's personal information there.
 
 ### The `React` frontend
 
@@ -123,28 +114,6 @@ Initialize your `Terraform` config:
     $ make init
 
 The `make init` command will also create an [ECR](https://aws.amazon.com/ecr/) repository. Before going further you have to build and publish the lambda docker image. Unfortunately AWS doesn't allow to use a public image, so you have to host this one on a private ECR instance. Copy the output of the `init` command, you will use them in the next step.
-
-#### Build and publish the lambda image
-
-For this step, we cooked a script to help you build, tag and deploy images. All the scripts are run from the marsha root directory.
-
-🔧 **Before you go further**, you need to create `./env.d/lambda` and replace the relevant values with your own. The `ECR` url is available in the `shared_resources` terraform output you copied earlier. You should use this command to create the file from the existing model:
-
-    $ cp ./env.d/lambda.dist ./env.d/lambda
-
-You have to successively run these commands : 
-
-Build the image:
-
-    $ ./bin/lambda build
-
-Tag the image:
-
-    $ ./bin/lambda tag
-
-And then publish it:
-
-    $ ./bin/lambda publish
 
 #### Apply all terraform plans
 

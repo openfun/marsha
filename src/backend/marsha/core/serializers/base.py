@@ -1,12 +1,8 @@
 """This module holds serializers and constants used across the Marsha project."""
 
-from datetime import timedelta
 import re
 
-from django.conf import settings
-from django.core.cache import cache
 from django.core.exceptions import ValidationError
-from django.utils import timezone
 from django.utils.text import slugify
 
 from rest_framework import serializers
@@ -23,7 +19,7 @@ from marsha.core.defaults import (
     STATE_CHOICES,
 )
 from marsha.core.models import TimedTextTrack
-from marsha.core.utils import cloudfront_utils, time_utils
+from marsha.core.utils import time_utils
 from marsha.core.utils.api_utils import get_uploadable_models_s3_mapping
 
 
@@ -46,41 +42,6 @@ KEY_PATTERN = (
     models=MODEL_REGEX,
 )
 KEY_REGEX = re.compile(KEY_PATTERN)
-
-
-def get_resource_cloudfront_url_params(resource_kind, resource_id):
-    """
-    Generate the policy and sign it to allow accessing to all sub resources
-    for a given resource id.
-    Parameters
-    ----------
-    resource_kind: str
-        Only used to define the cache key.
-    resource_id: str
-        The "parent" resource ID
-    """
-    resource = (
-        f"{settings.AWS_S3_URL_PROTOCOL}://{settings.CLOUDFRONT_DOMAIN}/{resource_id}/*"
-    )
-    cache_key = f"cloudfront_signed_url:{resource_kind}:{resource_id}:{resource}"
-    date_less_than = timezone.now() + timedelta(
-        seconds=settings.CLOUDFRONT_SIGNED_URLS_VALIDITY
-    )
-    if (params := cache.get(cache_key)) is None:
-        params = cloudfront_utils.generate_cloudfront_urls_signed_parameters(
-            resource,
-            date_less_than=date_less_than,
-        )
-        cache.set(cache_key, params, settings.CLOUDFRONT_SIGNED_URL_CACHE_DURATION)
-
-    return params
-
-
-def get_video_cloudfront_url_params(video_id):
-    """
-    Generate the policy and sign it to allow accessing to all resources for a given video id.
-    """
-    return get_resource_cloudfront_url_params("video", video_id)
 
 
 class ReadOnlyModelSerializer(serializers.ModelSerializer):

@@ -8,6 +8,48 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [5.12.4] - 2026-07-20
+
+### Fixed
+
+- Handle BBB error when converting a video
+
+### Added
+
+- Allow tuning Celery worker concurrency via Matsuo
+- Allow tuning Celery worker max tasks/memory per child via Matsuo
+
+## [5.12.3] - 2026-04-24
+
+### Added
+
+- Update Volta configuration with yarn fixed version
+- Update docker-compose for new versions
+- Upgrade Celery version from 5.5.2 to 5.6.3
+
+## [5.12.2] - 2026-01-22
+
+### Fixed
+
+- Get recording from BBB even if no cookie
+
+## [5.12.1] - 2025-12-12
+
+### Fixed
+
+- Document link opens in new tab
+
+## [5.12.0] - 2025-11-06
+
+### Removed
+
+- Remove all legacy Cloudfront code and mentions
+- Remove all legacy Lambdas
+
+### Changed
+
+- Use associate_by_email when RENATER_FER_SAML switch is enabled
+
 ## [5.11.1] - 2025-07-17
 
 ### Fixed
@@ -2108,7 +2150,12 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v5.11.1...master
+[unreleased]: https://github.com/openfun/marsha/compare/v5.12.4...master
+[5.12.4]: https://github.com/openfun/marsha/compare/v5.12.3...v5.12.4
+[5.12.3]: https://github.com/openfun/marsha/compare/v5.12.2...v5.12.3
+[5.12.2]: https://github.com/openfun/marsha/compare/v5.12.1...v5.12.2
+[5.12.1]: https://github.com/openfun/marsha/compare/v5.12.0...v5.12.1
+[5.12.0]: https://github.com/openfun/marsha/compare/v5.11.1...v5.12.0
 [5.11.1]: https://github.com/openfun/marsha/compare/v5.11.0...v5.11.1
 [5.11.0]: https://github.com/openfun/marsha/compare/v5.10.0...v5.11.0
 [5.10.0]: https://github.com/openfun/marsha/compare/v5.9.1...v5.10.0

@@ -309,6 +309,7 @@ class Base(Configuration):
     # the few languages active in Marsha.
     # pylint: disable=no-member
     ALL_LANGUAGES = Configuration.LANGUAGES
+    ALL_LANGUAGES.append(("qu", _("Quechua")))
 
     LANGUAGE_CODE = "en-us"
 
@@ -368,8 +369,6 @@ class Base(Configuration):
     AWS_BASE_NAME = values.Value()
     UPDATE_STATE_SHARED_SECRETS = values.ListValue()
     AWS_UPLOAD_EXPIRATION_DELAY = values.Value(24 * 60 * 60)  # 24h
-    AWS_MEDIALIVE_ROLE_ARN = values.SecretValue()
-    AWS_MEDIAPACKAGE_HARVEST_JOB_ARN = values.SecretValue()
     AWS_MEDIAPACKAGE_HARVEST_JOB_TIMEOUT = values.PositiveIntegerValue(10)
     AWS_MEDIALIVE_INPUT_WAITER_DELAY = values.PositiveIntegerValue(5)
     AWS_MEDIALIVE_INPUT_WAITER_MAX_ATTEMPTS = values.PositiveIntegerValue(84)
@@ -450,17 +449,6 @@ class Base(Configuration):
 
     # LIVE_RAW
     LIVE_RAW_ENABLED = values.BooleanValue(False)
-
-    # Cloud Front key pair for signed urls
-    CLOUDFRONT_PRIVATE_KEY_PATH = values.Value(
-        os.path.join(BASE_DIR, "..", ".ssh", "cloudfront_private_key")
-    )
-    CLOUDFRONT_SIGNED_URLS_ACTIVE = values.BooleanValue(True)
-    CLOUDFRONT_SIGNED_URLS_VALIDITY = 2 * 60 * 60  # 2 hours
-    CLOUDFRONT_SIGNED_URL_CACHE_DURATION = values.Value(900)  # 15 minutes
-    CLOUDFRONT_SIGNED_PUBLIC_KEY_ID = values.Value(None)
-
-    CLOUDFRONT_DOMAIN = values.Value(None)
 
     BYPASS_LTI_VERIFICATION = values.BooleanValue(False)
 
@@ -801,6 +789,15 @@ class Base(Configuration):
     CELERY_RESULT_BACKEND = values.Value("redis://redis:6379/0")
     CELERY_BROKER_TRANSPORT_OPTIONS = values.DictValue({})
     CELERY_DEFAULT_QUEUE = values.Value("celery")
+    # Celery defaults to os.cpu_count() child processes when unset, which ignores
+    # the CPU actually allocated to the pod.
+    CELERY_WORKER_CONCURRENCY = values.PositiveIntegerValue(None)
+    # Recycle a worker child process after this many tasks, to mitigate memory
+    # growth from libraries that leak (e.g. native codecs used during transcoding).
+    CELERY_WORKER_MAX_TASKS_PER_CHILD = values.PositiveIntegerValue(None)
+    # Kill and replace a worker child process once it exceeds this RSS, in kilobytes
+    # (Celery's `worker_max_memory_per_child` unit). Unset by default, tune via Matsuo.
+    CELERY_WORKER_MAX_MEMORY_PER_CHILD = values.PositiveIntegerValue(None)
 
     # pylint: disable=invalid-name
     @property
@@ -947,9 +944,6 @@ class Build(Base):
     AWS_ACCESS_KEY_ID = values.Value("")
     AWS_SECRET_ACCESS_KEY = values.Value("")
     AWS_BASE_NAME = values.Value("")
-    AWS_MEDIALIVE_ROLE_ARN = values.Value("")
-    AWS_MEDIAPACKAGE_HARVEST_JOB_ARN = values.Value("")
-    CLOUDFRONT_SIGNED_URLS_ACTIVE = values.BooleanValue(False)
     STORAGE_S3_ACCESS_KEY = values.Value("DummyKey")
     STORAGE_S3_SECRET_KEY = values.Value("DummyKey")
     BBB_API_SECRET = values.Value("")
@@ -981,7 +975,6 @@ class Development(Base):
     CORS_ALLOWED_ORIGINS = values.ListValue(["http://localhost:3000"])
     AWS_BASE_NAME = values.Value("development")
     DEBUG = values.BooleanValue(True)
-    CLOUDFRONT_SIGNED_URLS_ACTIVE = values.BooleanValue(False)
     CACHES = {"default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"}}
     STAT_BACKEND = values.Value("marsha.core.stats.dummy_backend")
     # use marsha.core.storage.s3 for S3 storage
@@ -1101,7 +1094,6 @@ class Development(Base):
 class Test(Base):
     """Test environment settings."""
 
-    CLOUDFRONT_SIGNED_URLS_ACTIVE = False
     AWS_BASE_NAME = values.Value("test")
     # Enable it to speed up tests by stopping WhiteNoise from scanning your static files
     WHITENOISE_AUTOREFRESH = True
@@ -1178,12 +1170,6 @@ class Production(Base):
 
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-
-    # pylint: disable=invalid-name
-    @property
-    def STATIC_URL(self):
-        """Compute the absolute static url used in the lti template."""
-        return f"//{self.CLOUDFRONT_DOMAIN}/static/"
 
 
 class Staging(Production):

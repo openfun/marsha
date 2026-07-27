@@ -1,6 +1,7 @@
 """Marsha's specific Python Social Auth pipeline steps for authentication."""
 
 from social_core.pipeline.social_auth import (
+    associate_by_email as social_associate_by_email,
     auth_allowed as social_auth_allowed,
     social_details as social_social_details,
 )
@@ -47,3 +48,13 @@ def social_details(backend, details, response, *args, **kwargs):
         details["last_name"] = fullname
 
     return results_dict
+
+
+def associate_by_email(backend, details, *args, user=None, **kwargs):
+    """
+    Associates user by email when the RENATER_FER_SAML feature is enabled.
+    """
+    if not waffle.switch_is_active(RENATER_FER_SAML):
+        return None
+
+    return social_associate_by_email(backend, details, user, *args, **kwargs)

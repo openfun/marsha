@@ -843,10 +843,7 @@ class LTIConfigView(TemplateResponseMixin, View):
                 launch_url += reverse(f"{app}:{model}_lti_view_generic")
 
         if icon_url:
-            if settings.CLOUDFRONT_DOMAIN in settings.STATIC_URL:
-                icon_url = static(icon_url)
-            else:
-                icon_url = f"//{request.get_host()}{static(icon_url)}"
+            icon_url = f"//{request.get_host()}{static(icon_url)}"
         context = {
             "code": (
                 settings.LTI_CONFIG_TITLE.lower() if settings.LTI_CONFIG_TITLE else None

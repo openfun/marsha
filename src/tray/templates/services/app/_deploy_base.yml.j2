@@ -75,8 +75,6 @@ spec:
               value: "{{ marsha_hosts | map('blue_green_hosts') | join(',') }},marsha-nginx-current"
             - name: DJANGO_CSRF_TRUSTED_ORIGINS
               value: "{{ marsha_hosts | map('blue_green_hosts') | join(',') | split(',') | map('regex_replace', '^(.*)$', 'https://\\1') | join(',') }},http://marsha-nginx-current"
-            - name: DJANGO_CLOUDFRONT_PRIVATE_KEY_PATH
-              value: "{{ marsha_cloudfront_private_key_path }}"
             - name: DJANGO_CELERY_DEFAULT_QUEUE
               value: "default-queue-{{ deployment_stamp }}"
           envFrom:
@@ -94,10 +92,6 @@ spec:
             - name: marsha-v-static
               mountPath: /data/static
 {% endif %}
-{% if marsha_should_sign_requests %}
-            - mountPath: "{{ marsha_cloudfront_private_key_path | dirname }}"
-              name: marsha-cloudfront-private-key-secret
-{% endif %}
       securityContext:
         runAsUser: {{ container_uid }}
         runAsGroup: {{ container_gid }}
@@ -113,9 +107,4 @@ spec:
         - name: marsha-v-static
           persistentVolumeClaim:
             claimName: "{{ marsha_pvc_static_name }}"
-{% endif %}
-{% if marsha_should_sign_requests %}
-        - name: marsha-cloudfront-private-key-secret
-          secret:
-            secretName: "{{ marsha_cloudfront_private_key_secret_name }}"
 {% endif %}

@@ -42,7 +42,10 @@ describe('<DocumentPlayer />', () => {
     });
     render(<DocumentPlayer document={document} />);
 
-    screen.getByRole('link', { name: 'foo.pdf' });
+    const link = screen.getByRole('link', { name: 'foo.pdf' });
+    expect(link).toHaveAttribute('target', '_blank');
+    expect(link).toHaveAttribute('rel', 'noreferrer');
+    expect(link).toHaveAttribute('download', 'foo.pdf');
     expect(screen.getByRole('img')).toHaveClass('icon-file-text2');
   });
 

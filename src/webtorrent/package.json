@@ -1,6 +1,6 @@
 {
   "name": "webtorrent-tracker",
-  "version": "5.11.1",
+  "version": "5.12.4",
   "description": "Webtorrent tracker implementation for Marsha",
   "main": "./dist/app.js",
   "exports": "./dist/app.js",
@@ -17,7 +17,8 @@
     "node": "20"
   },
   "volta": {
-    "node": "20.9.0"
+    "node": "20.9.0",
+    "yarn": "1.22.22"
   },
   "dependencies": {
     "@sentry/node": "8.48.0",

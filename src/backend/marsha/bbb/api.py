@@ -18,6 +18,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle
+from sentry_sdk import capture_exception
 
 from marsha.bbb import permissions, serializers
 from marsha.bbb.defaults import LTI_ROUTE
@@ -818,9 +819,14 @@ class ClassroomRecordingViewSet(
         else:
             domain = f"{request.scheme}://{request.get_host()}"
 
+        try:
+            record_url = get_recording_url(record_id=classroom_recording.record_id)
+        except ApiMeetingException as error:
+            capture_exception(error)
+
         process_chain = chain(
             copy_video_recording.si(
-                record_url=get_recording_url(record_id=classroom_recording.record_id),
+                record_url=record_url,
                 video_pk=classroom_recording.vod.pk,
                 stamp=stamp,
             ),

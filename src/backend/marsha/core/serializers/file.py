@@ -100,7 +100,7 @@ class DocumentSerializer(
         Returns
         -------
         String or None
-            the url to fetch the document on CloudFront
+            the url to fetch the document on storage
             None if the document is still not uploaded to S3 with success
 
         """

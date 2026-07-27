@@ -41,7 +41,6 @@ COMPOSE_BUILD        = DOCKER_USER=$(DOCKER_USER) COMPOSE_DOCKER_CLI_BUILD=1 DOC
 COMPOSE_RUN          = $(COMPOSE) run --rm
 COMPOSE_RUN_APP      = $(COMPOSE_RUN) app
 COMPOSE_RUN_CROWDIN  = $(COMPOSE_RUN) crowdin crowdin
-COMPOSE_RUN_LAMBDA   = $(COMPOSE_RUN) --entrypoint "" # disable lambda entrypoint to run command in container
 COMPOSE_RUN_MAIL  	 = $(COMPOSE_RUN) mail-generator yarn 
 COMPOSE_RUN_NODE     = $(COMPOSE_RUN) node
 YARN                 = $(COMPOSE_RUN_NODE) yarn
@@ -57,9 +56,7 @@ bootstrap: ## Prepare Docker images for the project
 bootstrap: \
 	env.d/development \
 	env.d/localtunnel \
-	env.d/lambda \
 	build \
-	build-lambda-dev \
 	run \
 	migrate \
 	i18n-compile-back \
@@ -80,10 +77,6 @@ build: ## build the app container
 build-backend-dev: ## build the app container
 	@$(COMPOSE_BUILD) app;
 .PHONY: build-backend-dev
-
-build-lambda-dev: ## build all aws lambda
-	@bin/lambda build dev development
-.PHONY: build-lambda-dev
 
 down: ## Stop and remove containers, networks, images, and volumes
 	@$(COMPOSE) down
@@ -298,125 +291,6 @@ install-webtorrent: ## Build node webtorrent dependencies
 	@$(COMPOSE_RUN) webtorrent yarn install
 .PHONY: install-webtorrent
 
-## -- AWS
-
-lambda-install-dev-dependencies: ## Install all lambda dependencies
-lambda-install-dev-dependencies: \
-	lambda-install-dev-dependencies-complete \
-	lambda-install-dev-dependencies-configure \
-	lambda-install-dev-dependencies-convert \
-	lambda-install-dev-dependencies-medialive \
-	lambda-install-dev-dependencies-mediapackage \
-	lambda-install-dev-dependencies-elemental-routing \
-	lambda-install-dev-dependencies-migrate
-.PHONY: lambda-install-dev-dependencies
-
-lambda-install-dev-dependencies-complete: ## Install dependencies for lambda complete
-	@$(COMPOSE_RUN_LAMBDA) lambda_complete yarn install
-.PHONY: lambda-install-dev-dependencies-convert
-
-lambda-install-dev-dependencies-configure: ## Install dependencies for lambda configure
-	@$(COMPOSE_RUN_LAMBDA) lambda_configure yarn install
-.PHONY: lambda-install-dev-dependencies-configure
-
-lambda-install-dev-dependencies-convert: ## Install dependencies for lambda convert
-	@$(COMPOSE_RUN_LAMBDA) lambda_convert yarn install
-.PHONY: lambda-install-dev-dependencies-convert
-
-lambda-install-dev-dependencies-medialive: ## Install dependencies for lambda medialive
-	@$(COMPOSE_RUN_LAMBDA) lambda_medialive yarn install
-.PHONY: lambda-install-dev-dependencies-medialive
-
-lambda-install-dev-dependencies-mediapackage: ## Install dependencies for lambda mediapackage
-	@$(COMPOSE_RUN_LAMBDA) lambda_mediapackage yarn install
-.PHONY: lambda-install-dev-dependencies-mediapackage
-
-lambda-install-dev-dependencies-elemental-routing: ## Install dependencies for lambda elemental routing
-	@$(COMPOSE_RUN_LAMBDA) lambda_elemental_routing yarn install
-.PHONY: lambda-install-dev-dependencies-elemental-routing
-
-lambda-install-dev-dependencies-migrate: ## Install dependencies for lambda migrate
-	@$(COMPOSE_RUN_LAMBDA) lambda_migrate yarn install
-.PHONY: lambda-install-dev-dependencies-migrate
-
-test-lambda: ## Run all aws lambda tests
-test-lambda: \
-	test-lambda-complete \
-	test-lambda-configure \
-	test-lambda-convert \
-	test-lambda-medialive \
-	test-lambda-mediapackage \
-	test-lambda-elemental-routing \
-	test-lambda-migrate
-.PHONY: test-lambda
-
-test-lambda-complete: ## test aws lambda complete
-	@$(COMPOSE_RUN_LAMBDA) lambda_complete yarn test
-.PHONY: test-lambda-complete
-
-test-lambda-configure: ## test aws lambda configure
-	@$(COMPOSE_RUN_LAMBDA) lambda_configure yarn test
-.PHONY: test-lambda-configure
-
-test-lambda-convert: ## test aws lambda convert
-	@$(COMPOSE_RUN_LAMBDA) lambda_convert yarn test
-.PHONY: test-lambda-convert
-
-test-lambda-medialive: ## test aws lambda medialive
-	@$(COMPOSE_RUN_LAMBDA) lambda_medialive yarn test
-.PHONY: test-lambda-medialive
-
-test-lambda-mediapackage: ## test aws lambda mediapackage
-	@$(COMPOSE_RUN_LAMBDA) lambda_mediapackage yarn test
-.PHONY: test-lambda-mediapackage
-
-test-lambda-elemental-routing: ## test aws lambda elemental routing
-	@$(COMPOSE_RUN_LAMBDA) lambda_elemental_routing yarn test
-.PHONY: test-lambda-elemental-routing
-
-test-lambda-migrate: ## test aws lambda migrate
-	@$(COMPOSE_RUN_LAMBDA) lambda_migrate yarn test
-.PHONY: test-lambda-migrate
-
-lint-lambda: ## Run linter an all lambda functions
-lint-lambda: \
-	lint-lambda-complete \
-	lint-lambda-configure \
-	lint-lambda-convert \
-	lint-lambda-medialive \
-	lint-lambda-mediapackage \
-	lint-lambda-elemental-routing \
-	lint-lambda-migrate
-.PHONY: lint-lambda
-
-lint-lambda-complete: ## run linter on lambda complete function
-	@$(COMPOSE_RUN_LAMBDA) lambda_complete yarn lint
-.PHONY: lint-lambda-complete
-
-lint-lambda-configure: ## run linter on lambda configure function
-	@$(COMPOSE_RUN_LAMBDA) lambda_configure yarn lint
-.PHONY: lint-lambda-configure
-
-lint-lambda-convert: ## run linter on lambda convert function
-	@$(COMPOSE_RUN_LAMBDA) lambda_convert yarn lint
-.PHONY: lint-lambda-convert
-
-lint-lambda-medialive: ## run linter on lambda medialive function
-	@$(COMPOSE_RUN_LAMBDA) lambda_medialive yarn lint
-.PHONY: lint-lambda-medialive
-
-lint-lambda-mediapackage: ## run linter on lambda mediapackage function
-	@$(COMPOSE_RUN_LAMBDA) lambda_mediapackage yarn lint
-.PHONY: lint-lambda-mediapackage
-
-lint-lambda-elemental-routing: ## run linter on lambda elemental routing function
-	@$(COMPOSE_RUN_LAMBDA) lambda_elemental_routing yarn lint
-.PHONY: lint-lambda-elemental-routing
-
-lint-lambda-migrate: ## run linter on lambda complete function
-	@$(COMPOSE_RUN_LAMBDA) lambda_migrate yarn lint
-.PHONY: lint-lambda-migrate
-
 # -- Internationalization
 
 crowdin-download: ## Download translated message from crowdin
@@ -493,9 +367,6 @@ env.d/development:
 	
 env.d/localtunnel:
 	cp env.d/localtunnel.dist env.d/localtunnel
-
-env.d/lambda:
-	cp env.d/lambda.dist env.d/lambda
 
 h: # short default help task
 	@echo "$(BOLD)Marsha Makefile$(RESET)"

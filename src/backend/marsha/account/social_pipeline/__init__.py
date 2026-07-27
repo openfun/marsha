@@ -24,10 +24,20 @@ assert len(  # nosec
     set(_steps_mapping.keys()) & set(DEFAULT_EDU_FED_AUTH_PIPELINE)
 ) == len(_steps_mapping)
 
+MARSHA_DEFAULT_AUTH_PIPELINE = []
+for step in DEFAULT_EDU_FED_AUTH_PIPELINE:
+    if step == "social_edu_federation.pipeline.user.create_user":
+        # Associate by email must be before user creation
+        MARSHA_DEFAULT_AUTH_PIPELINE.append(
+            "marsha.account.social_pipeline.social_auth.associate_by_email"
+        )
 
-MARSHA_DEFAULT_AUTH_PIPELINE = tuple(
-    _steps_mapping.get(step, step) for step in DEFAULT_EDU_FED_AUTH_PIPELINE
-) + (
+    if step in _steps_mapping:
+        MARSHA_DEFAULT_AUTH_PIPELINE.append(_steps_mapping[step])
+    else:
+        MARSHA_DEFAULT_AUTH_PIPELINE.append(step)
+
+MARSHA_DEFAULT_AUTH_PIPELINE += [
     "marsha.account.social_pipeline.organization.create_organization_from_saml",
     "marsha.account.social_pipeline.playlist.create_playlist_from_saml",
-)
+]

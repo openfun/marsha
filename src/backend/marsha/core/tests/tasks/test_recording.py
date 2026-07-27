@@ -32,6 +32,70 @@ class TestRecordingTask(TestCase):
         cls.video_content = TEST_VIDEO_PATH.read_bytes()
 
     @responses.activate(assert_all_requests_are_fired=True)
+    def test_copy_video_recording_no_cookie(self):
+        """
+        Test the copy_video_recording task without cookie.
+        """
+        # Prepare URLs
+        record_url = "https://example.com/recording/1234/video"
+        playback_url = "https://example.com/playback/video/1234"
+        html_video_url = "https://example.com/video/1234"
+        video_file_url = f"{html_video_url}/video-0.m4v"
+
+        # First redirect from record URL
+        responses.add(
+            responses.GET,
+            record_url,
+            status=302,
+            headers={
+                "Location": playback_url,
+                "Content-Type": "text/html",
+            },
+        )
+
+        # Second redirect to HTML video page
+        responses.add(
+            responses.GET,
+            playback_url,
+            status=302,
+            headers={"Location": html_video_url, "Content-Type": "text/html"},
+        )
+
+        # HTML video page response
+        responses.add(
+            responses.GET,
+            html_video_url,
+            status=200,
+            body=self.html_content,
+            headers={"Content-Type": "text/html"},
+        )
+
+        # Video file response
+        responses.add(
+            responses.GET,
+            video_file_url,
+            status=200,
+            body=self.video_content,
+            headers={"Content-Type": "video/mp4"},
+        )
+
+        video = VideoFactory()
+        stamp = "1640995200"
+
+        copy_video_recording(record_url, video.pk, stamp)
+
+        video.refresh_from_db()
+        self.assertEqual(video.upload_state, defaults.PROCESSING)
+
+        expected_key = f"tmp/{str(video.pk)}/video/{stamp}"
+        self.assertTrue(file_storage.exists(expected_key))
+        with file_storage.open(expected_key, "rb") as video_file:
+            self.assertEqual(
+                video_file.read(),
+                self.video_content,
+            )
+
+    @responses.activate(assert_all_requests_are_fired=True)
     def test_copy_video_recording(self):
         """
         Test the copy_video_recording task.

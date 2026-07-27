@@ -53,19 +53,6 @@
       ]
     },
     {
-      "enabled": false,
-      "groupName": "ignored lambda-convert js dependencies",
-      "includePaths": [
-        "src/aws/lambda-convert/package.json"
-      ],
-      "matchManagers": [
-        "npm"
-      ],
-      "matchPackageNames": [
-        "jimp"
-      ]
-    },
-    {
       "groupName": "allowed docker images",
       "matchDatasources": [
         "docker"
