@@ -1,7 +1,8 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <title>Marsha LTI development toolbox</title>
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <style>
       * {
@@ -20,6 +21,9 @@
         flex-basis: 50%;
         text-align: center;
         width: 100%;
+        border: 1px solid #DFDFDF;
+        margin: .5em;
+        padding: .5em;
       }
 
       .resource-list {
@@ -95,6 +99,7 @@
     </style>
   </head>
   <body>
+    <header><h1>Marsha LTI development toolbox</h1></header>
   {% if content_selected %}
     <script src="{% static 'js/iframeResizer.contentWindow.min.js' %}"></script>
     <dl>
@@ -112,23 +117,23 @@
         target="lti_select"
       >
         <div class="input-group">
-          <label>lti_message_type</label>
-          <input type="text" name="lti_message_type" value="ContentItemSelectionRequest"/>
+          <label for="lti_message_type">lti_message_type</label>
+          <input type="text" name="lti_message_type" id="lti_message_type" value="ContentItemSelectionRequest"/>
         </div>
         <div class="input-group">
-          <label>lti_version</label>
-          <input type="text" name="lti_version" value="LTI-1p0"/>
+          <label for="lti_version">lti_version</label>
+          <input type="text" name="lti_version" id="lti_version" value="LTI-1p0"/>
         </div>
         <div class="input-group">
-          <label>roles</label>
-          <select name="roles">
+          <label for="roles">roles</label>
+          <select name="roles" id="roles">
             <option value="instructor" selected>Instructor</option>
             <option value="administrator">Administrator</option>
             <option value="student">Student</option>
           </select>
         </div>
         <div class="input-group">
-          <label>resource</label>
+          <label for="lti_select_resource">resource</label>
           <select id="lti_select_resource">
             <option selected></option>
             <option value="video">video</option>
@@ -140,26 +145,26 @@
           </select>
         </div>
         <div class="input-group">
-          <label>context_id</label>
-          <input type="text" name="context_id" value="{{ select_context_id }}"/>
+          <label for="context_id">context_id</label>
+          <input type="text" name="context_id" id="context_id" value="{{ select_context_id }}"/>
         </div>
         <div class="input-group">
-          <label>content_item_return_url</label>
-          <input type="text" name="content_item_return_url" value="{{ select_content_item_return_url }}"/>
+          <label for="content_item_return_url">content_item_return_url</label>
+          <input type="text" name="content_item_return_url" value="{{ select_content_item_return_url }}" id="content_item_return_url"/>
         </div>
         {% for key, value in oauth_dict.items %}
           <div class="input-group">
-            <label>{{ key }}</label>
-            <input type="text" name="{{ key }}" value="{{ value }}"/>
+            <label for="{{ key }}">{{ key }}</label>
+            <input type="text" name="{{ key }}" id="{{ key }}" value="{{ value }}"/>
           </div>
         {% endfor %}
         <div class="input-group">
-          <label>title (LMS activity title)</label>
-          <input type="text" name="title" value="Title sent by the LMS"/>
+          <label for="title">title (LMS activity title)</label>
+          <input type="text" name="title" id="title" value="Title sent by the LMS"/>
         </div>
         <div class="input-group">
-          <label>text (LMS activity description)</label>
-          <input type="text" name="text" value=""/>
+          <label for="text">text (LMS activity description)</label>
+          <input type="text" name="text" id="text" value=""/>
         </div>
         <input type="submit"/>
       </form>
@@ -236,32 +241,33 @@
         class="resource"
       >
         <div class="input-group">
-          <label>uuid</label>
-          <input type="text" name="uuid" value="{{ uuid }}"/>
+          <label for="uuid">uuid</label>
+          <input type="text" name="uuid" id="uuid" value="{{ uuid }}"/>
         </div>
         <div class="input-group">
-          <label>ressource_link_id</label>
-          <input type="text" name="resource_link_id" value="{{ resource_link_id }}"/>
+          <label for="resource_link_id">ressource_link_id</label>
+          <input type="text" name="resource_link_id" id="resource_link_id" value="{{ resource_link_id }}"/>
         </div>
         <div class="input-group">
-          <label>context_id</label>
+          <label for="context_id-setup">context_id</label>
           <input
             type="text"
             name="context_id"
+            id="context_id-setup"
             value="course-v1:ufr+mathematics+0001"
           />
         </div>
         <div class="input-group">
-          <label>roles</label>
-          <select name="roles">
+          <label for="roles-setup">roles</label>
+          <select name="roles" id="roles-setup">
             <option value="instructor" selected>Instructor</option>
             <option value="administrator">Administrator</option>
             <option value="student">Student</option>
           </select>
         </div>
         <div class="input-group">
-          <label>resource</label>
-          <select name="resource">
+          <label for="resource">resource</label>
+          <select name="resource" id="resource">
             <option>Resource</option>
             <option value="videos" selected>video</option>
             <option value="documents">document</option>
@@ -271,16 +277,20 @@
           </select>
         </div>
         <div class="input-group">
-          <label>user_id</label>
-          <input type="text" name="user_id" value="{{ user_id }}"/>
+          <label for="user_id">user_id</label>
+          <input type="text" name="user_id" id="user_id" value="{{ user_id }}"/>
         </div>
         <div class="input-group">
-          <label>lis_person_contact_email_primary</label>
-          <input type="text" name="lis_person_contact_email_primary" value="{{ lis_person_contact_email_primary }}"/>
+          <label for="lis_person_contact_email_primary">lis_person_contact_email_primary</label>
+          <input
+            type="text"
+            name="lis_person_contact_email_primary"
+            id="lis_person_contact_email_primary"
+            value="{{ lis_person_contact_email_primary }}"/>
         </div>
         <div class="input-group">
-          <label>launch_presentation_locale</label>
-          <select name="launch_presentation_locale">
+          <label for="launch_presentation_locale">launch_presentation_locale</label>
+          <select name="launch_presentation_locale" id="launch_presentation_locale">
             <option>Locale</option>
             <option value="en" selected>English</option>
             <option value="fr">French</option>
@@ -288,16 +298,24 @@
           </select>
         </div>
         <div class="input-group">
-          <label>lis_person_sourcedid</label>
-          <input type="text" name="lis_person_sourcedid" value="{{ lis_result_sourcedid }}"/>
+          <label for="lis_person_sourcedid">lis_person_sourcedid</label>
+          <input
+            type="text"
+            name="lis_person_sourcedid"
+            id="lis_person_sourcedid"
+            value="{{ lis_result_sourcedid }}"/>
         </div>
         <div class="input-group">
-          <label>lis_person_name_full</label>
-          <input type="text" name="lis_person_name_full" value="{{ lis_person_name_full }}"/>
+          <label for="lis_person_name_full">lis_person_name_full</label>
+          <input
+            type="text"
+            name="lis_person_name_full"
+            id="lis_person_name_full"
+            value="{{ lis_person_name_full }}"/>
         </div>
         <div class="input-group">
-          <label>custom_embedded_resource</label>
-          <input type="checkbox" name="custom_embedded_resource"/>
+          <label for="custom_embedded_resource">custom_embedded_resource</label>
+          <input type="checkbox" name="custom_embedded_resource" id="custom_embedded_resource"/>
         </div>
         <input type="hidden" name="custom_component_display_name" value="LTI Consumer"/>
         <input type="hidden" name="lti_version" value="LTI-1p0"/>
@@ -348,32 +366,37 @@
         class="resource"
       >
         <div class="input-group">
-          <label>uuid</label>
-          <input type="text" name="uuid" value="{{ uuid }}"/>
+          <label for="uuid-new">uuid</label>
+          <input type="text" name="uuid" id="uuid-new" value="{{ uuid }}"/>
         </div>
         <div class="input-group">
-          <label>resource_link_id</label>
-          <input type="text" name="resource_link_id" value="{{ resource_link_id }}"/>
+          <label for="resource_link_id-new">resource_link_id</label>
+          <input
+            type="text"
+            name="resource_link_id"
+            id="resource_link_id-new"
+            value="{{ resource_link_id }}"/>
         </div>
         <div class="input-group">
-          <label>context_id</label>
+          <label for="context_id-new">context_id</label>
           <input
             type="text"
             name="context_id"
+            id="context_id-new"
             value="course-v1:ufr+mathematics+0001"
           />
         </div>
         <div class="input-group">
-          <label>roles</label>
-          <select name="roles">
+          <label for="roles-new">roles</label>
+          <select name="roles" id="roles-new">
             <option value="instructor" selected>Instructor</option>
             <option value="administrator">Administrator</option>
             <option value="student">Student</option>
           </select>
         </div>
         <div class="input-group">
-          <label>resource</label>
-          <select name="resource">
+          <label for="resource-new">resource</label>
+          <select name="resource" id="resource-new">
             <option>Resource</option>
             <option value="videos" selected>video</option>
             <option value="documents">document</option>
@@ -383,16 +406,20 @@
           </select>
         </div>
         <div class="input-group">
-          <label>user_id</label>
-          <input type="text" name="user_id" value="{{ user_id }}"/>
+          <label for="user_id-new">user_id</label>
+          <input type="text" name="user_id" id="user_id-new" value="{{ user_id }}"/>
         </div>
         <div class="input-group">
-          <label>lis_person_contact_email_primary</label>
-          <input type="text" name="lis_person_contact_email_primary" value="{{ lis_person_contact_email_primary }}"/>
+          <label for="lis_person_contact_email_primary-new">lis_person_contact_email_primary</label>
+          <input
+            type="text"
+            name="lis_person_contact_email_primary"
+            id="lis_person_contact_email_primary-new"
+            value="{{ lis_person_contact_email_primary }}"/>
         </div>
         <div class="input-group">
-          <label>launch_presentation_locale</label>
-          <select name="launch_presentation_locale">
+          <label for="launch_presentation_locale-new">launch_presentation_locale</label>
+          <select name="launch_presentation_locale" id="launch_presentation_locale-new">
             <option>Locale</option>
             <option value="en" selected>English</option>
             <option value="fr">French</option>
@@ -400,21 +427,29 @@
           </select>
         </div>
         <div class="input-group">
-          <label>lis_person_sourcedid</label>
-          <input type="text" name="lis_person_sourcedid" value="{{ lis_result_sourcedid }}"/>
+          <label for="lis_person_sourcedid-new">lis_person_sourcedid</label>
+          <input
+            type="text"
+            name="lis_person_sourcedid"
+            id="lis_person_sourcedid-new"
+            value="{{ lis_result_sourcedid }}"/>
         </div>
         <div class="input-group">
-          <label>lis_person_name_full</label>
-          <input type="text" name="lis_person_name_full" value="{{ lis_person_name_full }}"/>
+          <label for="lis_person_name_full-new">lis_person_name_full</label>
+          <input
+            type="text"
+            name="lis_person_name_full"
+            id="lis_person_name_full-new"
+            value="{{ lis_person_name_full }}"/>
         </div>
         <div class="input-group">
-          <label>custom_embedded_resource</label>
-          <input type="checkbox" name="custom_embedded_resource"/>
+          <label for="custom_embedded_resource-new">custom_embedded_resource</label>
+          <input type="checkbox" name="custom_embedded_resource" id="custom_embedded_resource-new"/>
         </div>
         {% for key, value in oauth_dict.items %}
           <div class="input-group">
-            <label>{{ key }}</label>
-            <input type="text" name="{{ key }}" value="{{ value }}"/>
+            <label for="{{ key }}-new">{{ key }}</label>
+            <input type="text" name="{{ key }}" id="{{ key }}-new" value="{{ value }}"/>
           </div>
         {% endfor %}
         <input type="hidden" name="custom_component_display_name" value="LTI Consumer"/>
