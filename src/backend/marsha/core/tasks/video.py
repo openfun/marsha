@@ -4,6 +4,7 @@ import logging
 
 from django.conf import settings
 
+from celery.exceptions import MaxRetriesExceededError
 from django_peertube_runner_connector.transcode import transcode_video
 from django_peertube_runner_connector.transcript import transcript_video
 from django_peertube_runner_connector.utils.ffprobe import (
@@ -16,7 +17,9 @@ from marsha.celery_app import app
 from marsha.core.defaults import (
     ERROR,
     MAX_RESOLUTION_EXCEDEED,
+    PROBE_ERROR,
     READY,
+    TMP_SOURCE_FILE_MISSING,
     TMP_STORAGE_BASE_DIRECTORY,
 )
 from marsha.core.models.video import Video
@@ -31,8 +34,14 @@ class MaxResolutionError(Exception):
     """Raised when the resolution of a video is higher than the maximum enabled resolution."""
 
 
-@app.task
-def launch_video_transcoding(video_pk: str, stamp: str, domain: str):
+@app.task(
+    bind=True,
+    max_retries=5,
+    retry_backoff=True,
+    retry_backoff_max=60,
+    retry_jitter=True,
+)
+def launch_video_transcoding(self, video_pk: str, stamp: str, domain: str):
     """Transcodes a video using file_storage.
     Args:
         video_pk (UUID): The video to transcode.
@@ -41,8 +50,25 @@ def launch_video_transcoding(video_pk: str, stamp: str, domain: str):
         domain (str): The domain name used to construct the download URL for peerTube runners.
     """
     video = Video.objects.get(pk=video_pk)
+    source = video.get_storage_prefix(stamp, TMP_STORAGE_BASE_DIRECTORY)
+
+    if not file_storage.exists(source):
+        logger.info(
+            "Source file not yet available (attempt %s/%s): %s (video %s)",
+            self.request.retries,
+            self.max_retries,
+            source,
+            video_pk,
+        )
+        try:
+            raise self.retry()
+        except MaxRetriesExceededError:
+            logger.error("Source file never appeared: %s (video %s)", source, video_pk)
+            video.upload_error_reason = TMP_SOURCE_FILE_MISSING
+            video.update_upload_state(ERROR, None)
+            return
+
     try:
-        source = video.get_storage_prefix(stamp, TMP_STORAGE_BASE_DIRECTORY)
         probe = ffmpeg.probe(file_storage.url(source))
         dimensions_info = get_video_stream_dimensions_info(
             path=source, existing_probe=probe
@@ -70,6 +96,12 @@ def launch_video_transcoding(video_pk: str, stamp: str, domain: str):
         video.upload_error_reason = MAX_RESOLUTION_EXCEDEED
         video.update_upload_state(ERROR, None)
         logger.info(exception)
+    except ffmpeg.Error as exception:
+        stderr = exception.stderr.decode(errors="replace") if exception.stderr else ""
+        logger.exception("ffmpeg/ffprobe error for video %s: %s", video.id, stderr)
+        video.upload_error_reason = PROBE_ERROR
+        video.update_upload_state(ERROR, None)
+        capture_exception(exception)
     except Exception as exception:  # pylint: disable=broad-except+
         capture_exception(exception)
         video.update_upload_state(ERROR, None)
