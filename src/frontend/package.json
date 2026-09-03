@@ -59,7 +59,7 @@
     "@typescript-eslint/typescript-estree": "8.20.0",
     "eslint": "8.57.0",
     "eslint-config-marsha": "5.12.4",
-    "@faker-js/faker": "9.3.0",
+    "@faker-js/faker": "10.5.0",
     "grommet": "2.43.0",
     "lib-classroom": "5.12.4",
     "lib-common": "5.12.4",
