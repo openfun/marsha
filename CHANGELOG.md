@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [5.12.5] - 2026-09-07
+
 ### Changed
 
 - Update renater xml metadata configuration
@@ -2154,7 +2156,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v5.12.4...master
+[unreleased]: https://github.com/openfun/marsha/compare/v5.12.5...master
+[5.12.5]: https://github.com/openfun/marsha/compare/v5.12.4...v5.12.5
 [5.12.4]: https://github.com/openfun/marsha/compare/v5.12.3...v5.12.4
 [5.12.3]: https://github.com/openfun/marsha/compare/v5.12.2...v5.12.3
 [5.12.2]: https://github.com/openfun/marsha/compare/v5.12.1...v5.12.2

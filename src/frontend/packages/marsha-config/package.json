@@ -1,6 +1,6 @@
 {
   "name": "marsha-config",
-  "version": "5.12.4",
+  "version": "5.12.5",
   "private": true,
   "description": "Marsha configuration",
   "main": "index.js",
