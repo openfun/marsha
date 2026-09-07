@@ -727,7 +727,7 @@ class Base(Configuration):
 
     # Custom parameter to define the Renater Federation Metadata
     SOCIAL_AUTH_SAML_FER_FEDERATION_SAML_METADATA_URL = values.Value(
-        "https://metadata.federation.renater.fr/renater/main/main-idps-renater-metadata.xml"
+        "https://pub.federation.renater.fr/metadata/fer/idps.xml"
     )
 
     SOCIAL_AUTH_SAML_FER_PIPELINE = MARSHA_DEFAULT_AUTH_PIPELINE
