@@ -40,7 +40,7 @@
     {
       "enabled": false,
       "groupName": "ignored webtorrent js dependencies",
-      "includePaths": [
+      "matchFileNames": [
         "src/webtorrent/package.json"
       ],
       "matchManagers": [
