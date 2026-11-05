@@ -3,7 +3,7 @@
 from uuid import uuid4
 
 from django.conf import settings
-from django.db.models import Q
+from django.db.models import Exists, OuterRef
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -39,7 +39,13 @@ from marsha.bbb.utils.tokens import create_classroom_stable_invite_jwt
 from marsha.core import defaults, permissions as core_permissions, storage
 from marsha.core.api import APIViewMixin, BulkDestroyModelMixin, ObjectPkMixin
 from marsha.core.defaults import READY, VOD_CONVERT
-from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, Video
+from marsha.core.models import (
+    ADMINISTRATOR,
+    INSTRUCTOR,
+    OrganizationAccess,
+    PlaylistAccess,
+    Video,
+)
 from marsha.core.tasks.recording import copy_video_recording
 from marsha.core.tasks.video import launch_video_transcoding
 from marsha.core.utils.time_utils import to_datetime, to_timestamp
@@ -206,23 +212,27 @@ class ClassroomViewSet(
 
     def _get_filtered_queryset(self):
         """Build the filtered queryset used on the list and bulk_destroy action."""
-        queryset = (
+        user_id = self.request.user.id
+        # Exists() avoids the LEFT OUTER JOIN fan-out that an OR-on-joins + distinct()
+        # causes on organization_access/playlist_access (one row per access record).
+        is_organization_admin = OrganizationAccess.objects.filter(
+            organization_id=OuterRef("playlist__organization_id"),
+            user_id=user_id,
+            role=ADMINISTRATOR,
+        )
+        is_playlist_admin_or_instructor = PlaylistAccess.objects.filter(
+            playlist_id=OuterRef("playlist_id"),
+            user_id=user_id,
+            role__in=[ADMINISTRATOR, INSTRUCTOR],
+        )
+
+        return (
             super()
             .get_queryset()
             .filter(
-                Q(
-                    playlist__organization__user_accesses__user_id=self.request.user.id,
-                    playlist__organization__user_accesses__role=ADMINISTRATOR,
-                )
-                | Q(
-                    playlist__user_accesses__user_id=self.request.user.id,
-                    playlist__user_accesses__role__in=[ADMINISTRATOR, INSTRUCTOR],
-                )
+                Exists(is_organization_admin) | Exists(is_playlist_admin_or_instructor)
             )
-            .distinct()
         )
-
-        return queryset
 
     def get_queryset(self):
         """Redefine the queryset to use based on the current action."""
