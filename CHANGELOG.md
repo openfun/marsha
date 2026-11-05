@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Optimize slow classroom list query causing server overload
+
 ## [5.12.5] - 2026-09-07
 
 ### Changed
