@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [5.12.7] - 2026-11-06
+
 ### Fixed
 
 - Pin kombu to 5.6.2, kombu 5.7 requires redis-py >= 6.1
@@ -2166,7 +2168,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v5.12.6...master
+[unreleased]: https://github.com/openfun/marsha/compare/v5.12.7...master
+[5.12.7]: https://github.com/openfun/marsha/compare/v5.12.6...v5.12.7
 [5.12.6]: https://github.com/openfun/marsha/compare/v5.12.5...v5.12.6
 [5.12.5]: https://github.com/openfun/marsha/compare/v5.12.4...v5.12.5
 [5.12.4]: https://github.com/openfun/marsha/compare/v5.12.3...v5.12.4
