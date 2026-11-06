@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic
 Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [5.12.6] - 2026-11-06
 
 ### Fixed
 
@@ -2160,7 +2160,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v5.12.5...master
+[unreleased]: https://github.com/openfun/marsha/compare/v5.12.6...master
+[5.12.6]: https://github.com/openfun/marsha/compare/v5.12.5...v5.12.6
 [5.12.5]: https://github.com/openfun/marsha/compare/v5.12.4...v5.12.5
 [5.12.4]: https://github.com/openfun/marsha/compare/v5.12.3...v5.12.4
 [5.12.3]: https://github.com/openfun/marsha/compare/v5.12.2...v5.12.3

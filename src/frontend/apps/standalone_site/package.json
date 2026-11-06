@@ -1,6 +1,6 @@
 {
   "name": "standalone_site",
-  "version": "5.12.5",
+  "version": "5.12.6",
   "private": true,
   "scripts": {
     "start": "vite",
