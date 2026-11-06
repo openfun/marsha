@@ -109,7 +109,7 @@
     "stream-browserify": "3.0.0",
     "styled-components": "*",
     "styled-reboot": "5.0.0",
-    "uuid": "11.0.4",
+    "uuid": "11.1.1",
     "whatwg-fetch": "3.6.20",
     "zustand": "*"
   },
