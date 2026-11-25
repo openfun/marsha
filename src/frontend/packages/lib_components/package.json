@@ -88,7 +88,7 @@
     "lib-common": "*",
     "react-dropzone": "14.3.5",
     "styled-components": "*",
-    "uuid": "11.0.4",
+    "uuid": "14.0.0",
     "web-streams-polyfill": "4.1.0",
     "zustand": "*"
   },
